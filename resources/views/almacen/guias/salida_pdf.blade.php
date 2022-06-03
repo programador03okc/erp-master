@@ -35,6 +35,9 @@
         page-break-before: always;*/
         
     }
+    table tbody tr td {
+        font-size: 9px;
+    }
     div.space {
         page-break-inside: avoid;
         font-size: 8px;
@@ -196,15 +199,14 @@
                 <td class="text-right">{{$prod['simbolo']}}</td>
                 <td class="text-right">{{round($prod['costo_promedio'],2,PHP_ROUND_HALF_UP)}}</td>
                 @if($salida->id_operacion == 27)
-                <td class="text-right">{{round($prod['valor_dolar'],2,PHP_ROUND_HALF_UP)}}</td>
+                    <td class="text-right">{{round($prod['valor_dolar'],2,PHP_ROUND_HALF_UP)}}</td>
+                @else
+                    <td>-</td>
                 @endif
-                <td class="text-right">{{round($prod['valorizacion'],2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-right">{{ number_format(round($prod['valorizacion'],2,PHP_ROUND_HALF_UP), 2) }}</td>
             </tr>
             @if ($prod['series']!=='')
             <tr>
-                @php
-                    $cols = ($salida->id_operacion == 27) ? 7 : 6;
-                @endphp
                 <td @if ($prod['series']!=='') colspan="7" @else colspan="9" @endif><div class="space">{{$prod['series']}}</div></td>
             </tr>
             @endif
