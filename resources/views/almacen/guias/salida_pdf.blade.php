@@ -183,7 +183,7 @@
             <tr>
                 <td class="text-center">{{$prod['codigo']}}</td>
                 <td class="text-center">{{$prod['part_number']}}</td>
-                <td>{{$prod['descripcion']}} <br><strong> {{$prod['series']}}</strong></td>
+                <td>{{$prod['descripcion']}} <strong> {{$prod['series']}}</strong></td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
                 <td class="text-right">{{$prod['simbolo']}}</td>
