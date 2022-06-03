@@ -197,9 +197,9 @@
             if ($det_series!==null) {
                 foreach ($det_series as $s) {
                     if ($series !== '') {
-                        $series .= ', ' . $s->serie;
+                        $series .= ', ' . $s['serie'];
                     } else {
-                        $series = 'Serie(s): ' . $s->serie;
+                        $series = 'Serie(s): ' . $s['serie'];
                     }
                 }
             }
