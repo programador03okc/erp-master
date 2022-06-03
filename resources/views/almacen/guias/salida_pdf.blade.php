@@ -194,7 +194,7 @@
             $series_array = [];
             $series = '';
 
-            if ($det_series!==null) {
+            if ($det_series!==null && $det_series!==undefined) {
                 foreach ($det_series as $s) {
                     if ($series !== '') {
                         $series .= ', ' . $s->serie;
