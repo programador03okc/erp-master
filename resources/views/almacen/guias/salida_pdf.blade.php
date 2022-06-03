@@ -205,7 +205,7 @@
             </tr>
             @if ($prod['series']!=='')
             <tr>
-                <td @if ($salida->id_operacion == 27) colspan="9" @else colspan="8" @endif>
+                <td @if ($salida->id_operacion == 27) colspan="7" @else colspan="6" @endif>
                     <div class="space">{{$prod['series']}}</div>
                 </td>
             </tr>
