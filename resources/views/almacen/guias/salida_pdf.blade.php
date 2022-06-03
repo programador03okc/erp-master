@@ -191,7 +191,6 @@
                 ])
                 ->get();
 
-            $series_array = [];
             $series = '';
 
             if ($det_series!==null) {
