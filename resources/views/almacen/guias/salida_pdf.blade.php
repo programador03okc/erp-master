@@ -37,7 +37,7 @@
     }
     div.space {
         page-break-inside: avoid;
-        font-size: 9px;
+        font-size: 8px;
     }
 
     div.producto-transformar {
@@ -190,9 +190,7 @@
             <tr>
                 <td class="text-center">{{$prod['codigo']}}</td>
                 <td class="text-center">{{$prod['part_number']}}</td>
-                <td>{{$prod['descripcion']}}
-                    <div class="space">{{$prod['series']}}</div>
-                </td>
+                <td>{{$prod['descripcion']}}</td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
                 <td class="text-right">{{$prod['simbolo']}}</td>
@@ -202,6 +200,11 @@
                 @endif
                 <td class="text-right">{{round($prod['valorizacion'],2,PHP_ROUND_HALF_UP)}}</td>
             </tr>
+            @if ($prod['series']!=='')
+            <tr colspan="8">
+                <div class="space">{{$prod['series']}}</div>
+            </tr>
+            @endif
             @endforeach
         </tbody>
     </table>
