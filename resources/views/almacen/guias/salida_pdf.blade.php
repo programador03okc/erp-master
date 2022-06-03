@@ -202,7 +202,10 @@
             </tr>
             @if ($prod['series']!=='')
             <tr>
-                <td colspan="@if ($salida->id_operacion == 27) 7 @else 6 @endif"><div class="space">{{$prod['series']}}</div></td>
+                @php
+                    $cols = ($salida->id_operacion == 27) ? 7 : 6;
+                @endphp
+                <td colspan="{{ $cols }}"><div class="space">{{$prod['series']}}</div></td>
             </tr>
             @endif
             @endforeach
