@@ -205,7 +205,7 @@
                 @php
                     $cols = ($salida->id_operacion == 27) ? 7 : 6;
                 @endphp
-                <td colspan="{{ $cols }}"><div class="space">{{$prod['series']}}</div></td>
+                <td colspan="7"><div class="space">{{$prod['series']}}</div></td>
             </tr>
             @endif
             @endforeach
