@@ -31,9 +31,9 @@
 
     table {
         width: 100%;
-        page-break-after: always;
-        page-break-before: always;
-        /*page-break-inside: avoid;*/
+        /*page-break-after: always;
+        page-break-before: always;*/
+        page-break-inside: avoid;
     }
 
     div.producto-transformar {
