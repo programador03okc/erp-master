@@ -189,8 +189,8 @@
             <tr>
                 <td class="text-center">{{$prod['codigo']}}</td>
                 <td class="text-center">{{$prod['part_number']}}</td>
-                <td>{{$prod['descripcion']}} <strong> </strong>
-                    <div class="space">{{$prod['series']}}</div>
+                <td>{{$prod['descripcion']}}
+                    <div class="space"><strong>{{$prod['series']}}</strong></div>
                 </td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
