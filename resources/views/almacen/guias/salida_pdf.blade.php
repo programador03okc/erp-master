@@ -200,8 +200,6 @@
                 <td class="text-right">{{round($prod['costo_promedio'],2,PHP_ROUND_HALF_UP)}}</td>
                 @if($salida->id_operacion == 27)
                     <td class="text-right">{{round($prod['valor_dolar'],2,PHP_ROUND_HALF_UP)}}</td>
-                @else
-                    <td>-</td>
                 @endif
                 <td class="text-right">{{ number_format(round($prod['valorizacion'],2,PHP_ROUND_HALF_UP), 2) }}</td>
             </tr>
