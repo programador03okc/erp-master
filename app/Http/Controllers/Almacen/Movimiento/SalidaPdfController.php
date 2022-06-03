@@ -98,56 +98,56 @@ class SalidaPdfController extends Controller
             ->where([['mov_alm_det.id_mov_alm', '=', $id_salida], ['mov_alm_det.estado', '=', 1]])
             ->get();
 
-        return $lista;
+        $docs_array = [];
+        $docs_fecha_array = [];
+        $detalle = [];
+        $valor_dolar = 0;
 
-        // $docs_array = [];
-        // $docs_fecha_array = [];
-        // $detalle = [];
-        // $valor_dolar = 0;
+        if ($salida !== null) {
+            foreach ($lista as $det) {
 
-        // if ($salida !== null) {
-        //     foreach ($lista as $det) {
+                if (!in_array($det->doc, $docs_array)) {
+                    array_push($docs_array, $det->doc);
+                }
+                if (!in_array($det->fecha_emision, $docs_fecha_array)) {
+                    array_push($docs_fecha_array, $det->fecha_emision);
+                }
+                //corregir fecha inicial tengo sueño
+                $costo_promedio = $this->obtenerCostoPromedioSalida($det->id_producto, $salida->id_almacen, '2022-01-01', $salida->fecha_emision);
 
-        //         if (!in_array($det->doc, $docs_array)) {
-        //             array_push($docs_array, $det->doc);
-        //         }
-        //         if (!in_array($det->fecha_emision, $docs_fecha_array)) {
-        //             array_push($docs_fecha_array, $det->fecha_emision);
-        //         }
-        //         //corregir fecha inicial tengo sueño
-        //         $costo_promedio = $this->obtenerCostoPromedioSalida($det->id_producto, $salida->id_almacen, '2022-01-01', $salida->fecha_emision);
+                if ($salida->id_operacion == 27) {
+                    $tipo_cambio = TipoCambio::where([
+                        ['moneda', '=', 2],
+                        ['fecha', '<=', $salida->fecha_emision]
+                    ])->orderBy('fecha', 'DESC')->first();
 
-        //         if ($salida->id_operacion == 27) {
-        //             $tipo_cambio = TipoCambio::where([
-        //                 ['moneda', '=', 2],
-        //                 ['fecha', '<=', $salida->fecha_emision]
-        //             ])->orderBy('fecha', 'DESC')->first();
+                    if (intval($det->id_moneda) == 2) {
+                        $valor_dolar = $costo_promedio;
+                    } else {
+                        $valor_dolar = (floatval($costo_promedio) > 0 ? floatval($costo_promedio) / floatval($tipo_cambio->venta) : 0);
+                    }
+                }
 
-        //             if (intval($det->id_moneda) == 2) {
-        //                 $valor_dolar = $costo_promedio;
-        //             } else {
-        //                 $valor_dolar = (floatval($costo_promedio) > 0 ? floatval($costo_promedio) / floatval($tipo_cambio->venta) : 0);
-        //             }
-        //         }
+                array_push(
+                    $detalle,
+                    [
+                        'id_guia_ven_det' => $det->id_guia_ven_det,
+                        'id_producto' => $det->id_producto,
+                        'cantidad' => $det->cantidad,
+                        'costo_promedio' => $costo_promedio,
+                        'valorizacion' => ($costo_promedio * $det->cantidad),
+                        'codigo' => $det->codigo,
+                        'part_number' => $det->part_number,
+                        'descripcion' => $det->descripcion,
+                        'abreviatura' => $det->abreviatura,
+                        'simbolo' => $det->simbolo,
+                        'valor_dolar' => $valor_dolar,
+                    ]
+                );
+            }
+        }
 
-        //         array_push(
-        //             $detalle,
-        //             [
-        //                 'id_guia_ven_det' => $det->id_guia_ven_det,
-        //                 'id_producto' => $det->id_producto,
-        //                 'cantidad' => $det->cantidad,
-        //                 'costo_promedio' => $costo_promedio,
-        //                 'valorizacion' => ($costo_promedio * $det->cantidad),
-        //                 'codigo' => $det->codigo,
-        //                 'part_number' => $det->part_number,
-        //                 'descripcion' => $det->descripcion,
-        //                 'abreviatura' => $det->abreviatura,
-        //                 'simbolo' => $det->simbolo,
-        //                 'valor_dolar' => $valor_dolar,
-        //             ]
-        //         );
-        //     }
-        // }
+        return $detalle;
 
         // $logo_empresa = ".$salida->logo_empresa";
         // $fecha_registro =  (new Carbon($salida->fecha_registro))->format('d-m-Y');
