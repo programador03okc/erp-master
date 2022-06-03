@@ -201,8 +201,8 @@
                 <td class="text-right">{{round($prod['valorizacion'],2,PHP_ROUND_HALF_UP)}}</td>
             </tr>
             @if ($prod['series']!=='')
-            <tr colspan="9">
-                <div class="space">{{$prod['series']}}</div>
+            <tr>
+                <td colspan="9"><div class="space">{{$prod['series']}}</div></td>
             </tr>
             @endif
             @endforeach
