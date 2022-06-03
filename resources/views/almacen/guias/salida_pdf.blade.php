@@ -192,7 +192,7 @@
             //     ->get();
 
             // $series_array = [];
-            // $series = '';
+            $series = '';
 
             // if ($det_series!==null && $det_series!==undefined) {
             //     foreach ($det_series as $s) {
