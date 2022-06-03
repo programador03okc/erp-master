@@ -182,27 +182,27 @@
             @foreach ($detalle as $prod)
             <?php
             
-            $det_series = DB::table('almacen.alm_prod_serie')
-                ->select('alm_prod_serie.serie')
-                ->where([
-                    ['alm_prod_serie.id_prod', '=', $prod['id_producto']],
-                    ['alm_prod_serie.id_guia_ven_det', '=', $prod['id_guia_ven_det']],
-                    ['alm_prod_serie.estado', '!=', 7]
-                ])
-                ->get();
+            // $det_series = DB::table('almacen.alm_prod_serie')
+            //     ->select('alm_prod_serie.serie')
+            //     ->where([
+            //         ['alm_prod_serie.id_prod', '=', $prod['id_producto']],
+            //         ['alm_prod_serie.id_guia_ven_det', '=', $prod['id_guia_ven_det']],
+            //         ['alm_prod_serie.estado', '!=', 7]
+            //     ])
+            //     ->get();
 
-            $series_array = [];
-            $series = '';
+            // $series_array = [];
+            // $series = '';
 
-            if ($det_series!==null && $det_series!==undefined) {
-                foreach ($det_series as $s) {
-                    if ($series !== '') {
-                        $series .= ', ' . $s->serie;
-                    } else {
-                        $series = 'Serie(s): ' . $s->serie;
-                    }
-                }
-            }
+            // if ($det_series!==null && $det_series!==undefined) {
+            //     foreach ($det_series as $s) {
+            //         if ($series !== '') {
+            //             $series .= ', ' . $s->serie;
+            //         } else {
+            //             $series = 'Serie(s): ' . $s->serie;
+            //         }
+            //     }
+            // }
 
             // $unitario = ($prod->cantidad !== null
             //                 ? ($prod->valorizacion / $prod->cantidad)
