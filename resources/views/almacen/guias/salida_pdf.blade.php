@@ -196,11 +196,11 @@
             if ($det_series!==null) {
                 foreach ($det_series as $s) {
                     if ($s->serie !== null){
-                        // if ($series !== '') {
+                        if ($series !== '') {
                         //     $series .= ', ' . $s->serie;
-                        // } else {
+                        } else {
                         //     $series = 'Serie(s): ' . $s->serie;
-                        // }
+                        }
                     }
                 }
             }
