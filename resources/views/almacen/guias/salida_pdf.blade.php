@@ -37,6 +37,7 @@
     }
     div.space {
         page-break-inside: avoid;
+        font-size: 9px;
     }
 
     div.producto-transformar {
@@ -190,7 +191,7 @@
                 <td class="text-center">{{$prod['codigo']}}</td>
                 <td class="text-center">{{$prod['part_number']}}</td>
                 <td>{{$prod['descripcion']}}
-                    <div class="space"><strong>{{$prod['series']}}</strong></div>
+                    <div class="space">{{$prod['series']}}</div>
                 </td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
