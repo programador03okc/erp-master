@@ -171,33 +171,33 @@ class SalidaPdfController extends Controller
                 );
             }
         }
+        return $detalle;
 
+        // $logo_empresa = ".$salida->logo_empresa";
+        // $fecha_registro =  (new Carbon($salida->fecha_registro))->format('d-m-Y');
+        // $hora_registro = (new Carbon($salida->fecha_registro))->format('H:i:s');
+        // // $ocs = implode(",", $ocs_array);
+        // // $softlink = implode(",", $softlink_array);
+        // $docs = implode(",", $docs_array);
+        // $docs_fecha = implode(",", $docs_fecha_array);
 
-        $logo_empresa = ".$salida->logo_empresa";
-        $fecha_registro =  (new Carbon($salida->fecha_registro))->format('d-m-Y');
-        $hora_registro = (new Carbon($salida->fecha_registro))->format('H:i:s');
-        // $ocs = implode(",", $ocs_array);
-        // $softlink = implode(",", $softlink_array);
-        $docs = implode(",", $docs_array);
-        $docs_fecha = implode(",", $docs_fecha_array);
+        // $vista = View::make(
+        //     'almacen/guias/salida_pdf',
+        //     compact(
+        //         'salida',
+        //         'logo_empresa',
+        //         'detalle',
+        //         'docs',
+        //         'docs_fecha',
+        //         'fecha_registro',
+        //         'hora_registro'
+        //     )
+        // )->render();
+        // $pdf = App::make('dompdf.wrapper');
+        // $pdf->loadHTML($vista);
 
-        $vista = View::make(
-            'almacen/guias/salida_pdf',
-            compact(
-                'salida',
-                'logo_empresa',
-                'detalle',
-                'docs',
-                'docs_fecha',
-                'fecha_registro',
-                'hora_registro'
-            )
-        )->render();
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML($vista);
-
-        return $pdf->stream();
-        return $pdf->download($salida->codigo . '.pdf');
+        // return $pdf->stream();
+        // return $pdf->download($salida->codigo . '.pdf');
     }
 
     public function obtenerCostoPromedioSalida($id_producto, $almacen, $finicio, $ffin)
