@@ -188,8 +188,8 @@
         <tbody>
             @foreach ($detalle as $prod)
             <tr>
-                <td class="text-center" rowspan="2">{{$prod['codigo']}}</td>
-                <td class="text-center" rowspan="2">{{$prod['part_number']}}</td>
+                <td class="text-center" @if ($prod['series']!=='') rowspan="2" @endif>{{$prod['codigo']}}</td>
+                <td class="text-center" @if ($prod['series']!=='') rowspan="2" @endif>{{$prod['part_number']}}</td>
                 <td>{{$prod['descripcion']}}</td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
@@ -205,7 +205,7 @@
                 @php
                     $cols = ($salida->id_operacion == 27) ? 7 : 6;
                 @endphp
-                <td colspan="7"><div class="space">{{$prod['series']}}</div></td>
+                <td @if ($prod['series']!=='') colspan="7" @else colspan="9" @endif><div class="space">{{$prod['series']}}</div></td>
             </tr>
             @endif
             @endforeach
