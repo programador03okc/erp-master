@@ -128,6 +128,30 @@ class SalidaPdfController extends Controller
                     }
                 }
 
+                //agregar series
+                $det_series = DB::table('almacen.alm_prod_serie')
+                    ->select('alm_prod_serie.serie')
+                    ->where([
+                        ['alm_prod_serie.id_prod', '=', $det->id_producto],
+                        ['alm_prod_serie.id_guia_ven_det', '=', $det->id_guia_ven_det],
+                        ['alm_prod_serie.estado', '!=', 7]
+                    ])
+                    ->get();
+
+                $series = '';
+
+                if ($det_series !== null) {
+                    foreach ($det_series as $s) {
+                        if ($s->serie !== null) {
+                            if ($series !== '') {
+                                $series .= ', ' . $s->serie;
+                            } else {
+                                $series = 'Serie(s): ' . $s->serie;
+                            }
+                        }
+                    }
+                }
+
                 array_push(
                     $detalle,
                     [
@@ -142,6 +166,7 @@ class SalidaPdfController extends Controller
                         'abreviatura' => $det->abreviatura,
                         'simbolo' => $det->simbolo,
                         'valor_dolar' => $valor_dolar,
+                        'series' => $series,
                     ]
                 );
             }

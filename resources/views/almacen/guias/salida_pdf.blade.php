@@ -180,32 +180,7 @@
         </thead>
         <tbody>
             @foreach ($detalle as $prod)
-            <?php
             
-            $det_series = DB::table('almacen.alm_prod_serie')
-                ->select('alm_prod_serie.serie')
-                ->where([
-                    ['alm_prod_serie.id_prod', '=', $prod['id_producto']],
-                    ['alm_prod_serie.id_guia_ven_det', '=', $prod['id_guia_ven_det']],
-                    ['alm_prod_serie.estado', '!=', 7]
-                ])
-                ->get();
-
-            $series = '';
-
-            if ($det_series!==null) {
-                foreach ($det_series as $s) {
-                    if ($s->serie !== null){
-                        if ($series !== '') {
-                        //     $series .= ', ' . $s->serie;
-                        } else {
-                        //     $series = 'Serie(s): ' . $s->serie;
-                        }
-                    }
-                }
-            }
-
-            ?>
             <tr>
                 <td class="text-center">{{$prod['codigo']}}</td>
                 <td class="text-center">{{$prod['part_number']}}</td>
