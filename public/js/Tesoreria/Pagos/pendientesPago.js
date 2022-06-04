@@ -223,6 +223,7 @@
                 { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
+                    'data': 'fecha_solicitud_pago',
                     'render': function (data, type, row) {
                         return (row['fecha_solicitud_pago'] !== null ? formatDateHour(row['fecha_solicitud_pago']) : '');
                     }, 'className': 'text-center', 'searchable': false
@@ -355,7 +356,7 @@
                     targets: 2
                 },
             ],
-            'order': [12, "asc"]
+            'order': [[12, "asc"], [7, "asc"]]
         });
 
     }
