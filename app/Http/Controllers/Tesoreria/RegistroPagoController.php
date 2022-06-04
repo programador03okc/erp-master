@@ -10,6 +10,7 @@ use App\Models\Rrhh\Persona;
 use App\Models\Tesoreria\RequerimientoPagoAdjunto;
 use App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle;
 use App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +66,7 @@ class RegistroPagoController extends Controller
                 'tp_cta_persona.descripcion as tipo_cuenta_persona',
                 'banco_persona.razon_social as banco_persona',
                 'sis_usua.nombre_corto',
+                'autorizado.nombre_corto as nombre_autorizado',
                 'rrhh_perso.nro_documento as dni_persona',
                 DB::raw("concat(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno, ' ' ,rrhh_perso.apellido_materno) AS persona"),
                 DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_adjunto
@@ -101,6 +103,7 @@ class RegistroPagoController extends Controller
             ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
             ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'requerimiento_pago.id_usuario')
+            ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'requerimiento_pago.usuario_autorizacion')
             ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8]);
         // ->where([['requerimiento_pago.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 1]]);
 
@@ -134,6 +137,7 @@ class RegistroPagoController extends Controller
             DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo_persona"),
             'rrhh_perso.nro_documento as nro_documento_persona',
             'adm_prioridad.descripcion as prioridad',
+            'autorizado.nombre_corto as nombre_autorizado',
             DB::raw("(SELECT sum(subtotal) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra
                         and log_det_ord_compra.estado != 7) AS suma_total"),
@@ -158,6 +162,7 @@ class RegistroPagoController extends Controller
             ->leftJoin('contabilidad.cont_banco as bco_persona', 'bco_persona.id_banco', '=', 'rrhh_cta_banc.id_banco')
             ->leftJoin('contabilidad.adm_contri as banco_persona', 'banco_persona.id_contribuyente', '=', 'bco_persona.id_contribuyente')
             ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
+            ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'log_ord_compra.usuario_autorizacion')
             ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'log_ord_compra.id_prioridad_pago')
             ->whereIn('log_ord_compra.estado_pago', [8, 5, 6]);
 
@@ -477,6 +482,7 @@ class RegistroPagoController extends Controller
             DB::beginTransaction();
             $msj = '';
             $tipo = '';
+            $id_usuario = Auth::user()->id_usuario;
 
             if ($request->tipo == "requerimiento") {
                 $req = DB::table('tesoreria.requerimiento_pago')
@@ -487,8 +493,12 @@ class RegistroPagoController extends Controller
                     if ($req->id_estado !== 7) {
                         DB::table('tesoreria.requerimiento_pago')
                             ->where('id_requerimiento_pago', $request->id)
-                            ->update(['id_estado' => 5]); //enviado a pago
-                        $msj = 'El requerimiento fue enviado a pago exitosamente';
+                            ->update([
+                                'id_estado' => 5,
+                                'fecha_autorizacion' => new Carbon(),
+                                'usuario_autorizacion' => $id_usuario
+                            ]); //enviado a pago
+                        $msj = 'Se autorizó el pago del requerimiento exitosamente';
                         $tipo = 'success';
                     } else {
                         $msj = 'El requerimiento fue anulado';
@@ -507,8 +517,12 @@ class RegistroPagoController extends Controller
                     if ($oc->estado !== 7) {
                         DB::table('logistica.log_ord_compra')
                             ->where('id_orden_compra', $request->id)
-                            ->update(['estado_pago' => 5]); //enviado a pago
-                        $msj = 'La orden fue enviada a pago exitosamente';
+                            ->update([
+                                'estado_pago' => 5,
+                                'fecha_autorizacion' => new Carbon(),
+                                'usuario_autorizacion' => $id_usuario
+                            ]); //enviado a pago
+                        $msj = 'Se autorizó el pago de la orden exitosamente';
                         $tipo = 'success';
                     } else {
                         $msj = 'La orden fue anulada';

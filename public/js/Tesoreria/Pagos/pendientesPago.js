@@ -100,10 +100,20 @@
                         var por_pagar = (total - pagado);
                         if (por_pagar > 0 && por_pagar < total) {
                             estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
-                        }  
+                        }
                         return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span> <br>' + estadoAdd;
 
-                    },className: 'text-center'
+                    }, className: 'text-center'
+                },
+                {
+                    'data': 'nombre_autorizado', 'name': 'autorizado.nombre_corto',
+                    'render': function (data, type, row) {
+                        if (row['nombre_autorizado'] !== null) {
+                            return row['nombre_autorizado'] + ' el ' + formatDateHour(row['fecha_autorizacion']);
+                        } else {
+                            return '';
+                        }
+                    }
                 },
                 {
                     'render':
@@ -247,36 +257,46 @@
                     }, className: 'text-center'
                 },
                 {
+                    'data': 'nombre_autorizado', 'name': 'autorizado.nombre_corto',
+                    'render': function (data, type, row) {
+                        if (row['nombre_autorizado'] !== null) {
+                            return row['nombre_autorizado'] + ' el ' + formatDateHour(row['fecha_autorizacion']);
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
                     'render':
                         function (data, type, row) {
 
                             let observacionRequerimiento = row.requerimientos != null && row.requerimientos.length > 0 ? row.requerimientos.map(e => (e.observacion)).join(",") : '';
 
-                            let nombreDestinatario='';
-                            let cuentaDestinatario='';
-                            let nroDocumentoDestinatario='';
-                            let tipoCuentaDestinatario='';
-                            let cuentaCCIDestinatario='';
-                            let bancoDestinatario='';
+                            let nombreDestinatario = '';
+                            let cuentaDestinatario = '';
+                            let nroDocumentoDestinatario = '';
+                            let tipoCuentaDestinatario = '';
+                            let cuentaCCIDestinatario = '';
+                            let bancoDestinatario = '';
                             switch (row['id_tipo_destinatario_pago']) {
                                 case 1:
-                                        nombreDestinatario=row['nombre_completo_persona']??'';
-                                        nroDocumentoDestinatario=row['nro_documento_persona']??'';
-                                        tipoCuentaDestinatario=row['tipo_cuenta_persona']??'';
-                                        cuentaDestinatario=row['nro_cuenta_persona']??'';
-                                        cuentaCCIDestinatario=row['nro_cci_persona']??'';
-                                        bancoDestinatario=row['banco_persona']??'';
+                                    nombreDestinatario = row['nombre_completo_persona'] ?? '';
+                                    nroDocumentoDestinatario = row['nro_documento_persona'] ?? '';
+                                    tipoCuentaDestinatario = row['tipo_cuenta_persona'] ?? '';
+                                    cuentaDestinatario = row['nro_cuenta_persona'] ?? '';
+                                    cuentaCCIDestinatario = row['nro_cci_persona'] ?? '';
+                                    bancoDestinatario = row['banco_persona'] ?? '';
 
                                     break;
-                                    case 2:
-                                        nombreDestinatario=encodeURIComponent(row['razon_social'])??'';
-                                        nroDocumentoDestinatario=row['nro_documento']??'';
-                                        cuentaDestinatario=row['nro_cuenta']??'';
-                                        tipoCuentaDestinatario=row['tipo_cuenta']??'';
-                                        cuentaCCIDestinatario=row['nro_cuenta_interbancaria']??'';
-                                        bancoDestinatario=row['banco_contribuyente']??'';
+                                case 2:
+                                    nombreDestinatario = encodeURIComponent(row['razon_social']) ?? '';
+                                    nroDocumentoDestinatario = row['nro_documento'] ?? '';
+                                    cuentaDestinatario = row['nro_cuenta'] ?? '';
+                                    tipoCuentaDestinatario = row['tipo_cuenta'] ?? '';
+                                    cuentaCCIDestinatario = row['nro_cuenta_interbancaria'] ?? '';
+                                    bancoDestinatario = row['banco_contribuyente'] ?? '';
                                     break;
-                            
+
                                 default:
                                     break;
                             }
