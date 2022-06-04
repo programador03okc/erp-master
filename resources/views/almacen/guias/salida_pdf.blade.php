@@ -36,7 +36,7 @@
         
     }
     table tbody tr td {
-        font-size: 9px;
+        font-size: 10px;
     }
     div.space {
         page-break-inside: avoid;
