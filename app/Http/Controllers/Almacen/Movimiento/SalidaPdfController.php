@@ -128,6 +128,30 @@ class SalidaPdfController extends Controller
                     }
                 }
 
+                //agregar series
+                $det_series = DB::table('almacen.alm_prod_serie')
+                    ->select('alm_prod_serie.serie')
+                    ->where([
+                        ['alm_prod_serie.id_prod', '=', $det->id_producto],
+                        ['alm_prod_serie.id_guia_ven_det', '=', $det->id_guia_ven_det],
+                        ['alm_prod_serie.estado', '!=', 7]
+                    ])
+                    ->get();
+
+                $series = '';
+
+                if ($det_series !== null) {
+                    foreach ($det_series as $s) {
+                        if ($s->serie !== null) {
+                            if ($series !== '') {
+                                $series .= ', ' . $s->serie;
+                            } else {
+                                $series = 'Serie(s): ' . $s->serie;
+                            }
+                        }
+                    }
+                }
+
                 array_push(
                     $detalle,
                     [
@@ -142,38 +166,36 @@ class SalidaPdfController extends Controller
                         'abreviatura' => $det->abreviatura,
                         'simbolo' => $det->simbolo,
                         'valor_dolar' => $valor_dolar,
+                        'series' => $series,
                     ]
                 );
             }
         }
+        // return $detalle;
 
-        return $detalle;
+        $logo_empresa = ".$salida->logo_empresa";
+        $fecha_registro =  (new Carbon($salida->fecha_registro))->format('d-m-Y');
+        $hora_registro = (new Carbon($salida->fecha_registro))->format('H:i:s');
+        $docs = implode(",", $docs_array);
+        $docs_fecha = implode(",", $docs_fecha_array);
 
-        // $logo_empresa = ".$salida->logo_empresa";
-        // $fecha_registro =  (new Carbon($salida->fecha_registro))->format('d-m-Y');
-        // $hora_registro = (new Carbon($salida->fecha_registro))->format('H:i:s');
-        // // $ocs = implode(",", $ocs_array);
-        // // $softlink = implode(",", $softlink_array);
-        // $docs = implode(",", $docs_array);
-        // $docs_fecha = implode(",", $docs_fecha_array);
+        $vista = View::make(
+            'almacen/guias/salida_pdf',
+            compact(
+                'salida',
+                'logo_empresa',
+                'detalle',
+                'docs',
+                'docs_fecha',
+                'fecha_registro',
+                'hora_registro'
+            )
+        )->render();
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($vista);
 
-        // $vista = View::make(
-        //     'almacen/guias/salida_pdf',
-        //     compact(
-        //         'salida',
-        //         'logo_empresa',
-        //         'detalle',
-        //         'docs',
-        //         'docs_fecha',
-        //         'fecha_registro',
-        //         'hora_registro'
-        //     )
-        // )->render();
-        // $pdf = App::make('dompdf.wrapper');
-        // $pdf->loadHTML($vista);
-
-        // return $pdf->stream();
-        // return $pdf->download($salida->codigo . '.pdf');
+        return $pdf->stream();
+        return $pdf->download($salida->codigo . '.pdf');
     }
 
     public function obtenerCostoPromedioSalida($id_producto, $almacen, $finicio, $ffin)

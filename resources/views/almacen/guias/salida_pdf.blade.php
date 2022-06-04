@@ -31,6 +31,16 @@
 
     table {
         width: 100%;
+        /*page-break-after: always;
+        page-break-before: always;*/
+        
+    }
+    table tbody tr td {
+        font-size: 9px;
+    }
+    div.space {
+        page-break-inside: avoid;
+        font-size: 8px;
     }
 
     div.producto-transformar {
@@ -180,50 +190,26 @@
         </thead>
         <tbody>
             @foreach ($detalle as $prod)
-            <?php
-            
-            $det_series = DB::table('almacen.alm_prod_serie')
-                ->select('alm_prod_serie.serie')
-                ->where([
-                    ['alm_prod_serie.id_prod', '=', $prod['id_producto']],
-                    ['alm_prod_serie.id_guia_ven_det', '=', $prod['id_guia_ven_det']],
-                    ['alm_prod_serie.estado', '!=', 7]
-                ])
-                ->get();
-
-            $series_array = [];
-            $series = '';
-
-            if ($det_series!==null) {
-                foreach ($det_series as $s) {
-                    if ($series !== '') {
-                        $series .= ', ' . $s->serie;
-                    } else {
-                        $series = 'Serie(s): ' . $s->serie;
-                    }
-                }
-            }
-
-            // $unitario = ($prod->cantidad !== null
-            //                 ? ($prod->valorizacion / $prod->cantidad)
-            //                 : 0);
-            // $valorizacion = $unitario * ($prod->cantidad);
-
-            ?>
             <tr>
-                <td class="text-center">{{$prod['codigo']}}</td>
-                <td class="text-center">{{$prod['part_number']}}</td>
-                <td>{{$prod['descripcion']}} <br><strong> {{$series}}</strong></td>
+                <td class="text-center" @if ($prod['series']!=='') rowspan="2" @endif>{{$prod['codigo']}}</td>
+                <td class="text-center" @if ($prod['series']!=='') rowspan="2" @endif>{{$prod['part_number']}}</td>
+                <td>{{$prod['descripcion']}}</td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
-                {{-- <td class="text-right">{{$prod->moneda_doc!==null?$prod->moneda_doc:'S/'}}</td> --}}
                 <td class="text-right">{{$prod['simbolo']}}</td>
                 <td class="text-right">{{round($prod['costo_promedio'],2,PHP_ROUND_HALF_UP)}}</td>
                 @if($salida->id_operacion == 27)
-                <td class="text-right">{{round($prod['valor_dolar'],2,PHP_ROUND_HALF_UP)}}</td>
+                    <td class="text-right">{{round($prod['valor_dolar'],2,PHP_ROUND_HALF_UP)}}</td>
                 @endif
-                <td class="text-right">{{round($prod['valorizacion'],2,PHP_ROUND_HALF_UP)}}</td>
+                <td class="text-right">{{ number_format(round($prod['valorizacion'],2,PHP_ROUND_HALF_UP), 2) }}</td>
             </tr>
+            @if ($prod['series']!=='')
+            <tr>
+                <td @if ($salida->id_operacion == 27) colspan="7" @else colspan="6" @endif>
+                    <div class="space">{{$prod['series']}}</div>
+                </td>
+            </tr>
+            @endif
             @endforeach
         </tbody>
     </table>
