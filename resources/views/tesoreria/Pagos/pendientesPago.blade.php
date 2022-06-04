@@ -78,9 +78,8 @@ Registro de pagos
                                                 {{-- <th>Codigo SoftLink</th> --}}
                                                 <th>Nro. Doc.</th>
                                                 <th>Razon social del proveedor</th>
-                                                <th>Fecha emisión</th>
+                                                <th>Fecha envío a pago</th>
                                                 <th>Forma de Pago</th>
-                                                {{-- <th>Cta. Bancaria</th> --}}
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>

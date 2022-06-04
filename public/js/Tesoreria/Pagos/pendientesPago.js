@@ -224,7 +224,7 @@
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
                     'render': function (data, type, row) {
-                        return (row['fecha'] !== null ? (row['fecha']) : '');
+                        return (row['fecha_solicitud_pago'] !== null ? formatDateHour(row['fecha_solicitud_pago']) : '');
                     }, 'className': 'text-center', 'searchable': false
                 },
                 { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },
