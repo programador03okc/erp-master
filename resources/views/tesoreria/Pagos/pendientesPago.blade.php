@@ -43,13 +43,13 @@ Registro de pagos
                                                 <th>Grupo</th>
                                                 <th>Concepto</th>
                                                 <th>Elaborado por</th>
-                                                {{-- <th>Nro. Doc.</th> --}}
                                                 <th>Destinatario</th>
                                                 <th>Fecha Emisión</th>
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>
                                                 <th>Estado</th>
+                                                <th>Autorizado por</th>
                                                 <th style="width:80px;">Acción</th>
                                             </tr>
                                         </thead>
@@ -78,13 +78,13 @@ Registro de pagos
                                                 {{-- <th>Codigo SoftLink</th> --}}
                                                 <th>Nro. Doc.</th>
                                                 <th>Razon social del proveedor</th>
-                                                <th>Fecha emisión</th>
+                                                <th>Fecha envío a pago</th>
                                                 <th>Forma de Pago</th>
-                                                {{-- <th>Cta. Bancaria</th> --}}
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>
                                                 <th>Estado</th>
+                                                <th>Autorizado por</th>
                                                 <th style="width:80px;">Acción</th>
                                             </tr>
                                         </thead>

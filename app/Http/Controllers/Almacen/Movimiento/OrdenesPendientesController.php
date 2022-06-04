@@ -1924,6 +1924,44 @@ class OrdenesPendientesController extends Controller
             $tc = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_emision_doc]])
                 ->orderBy('fecha', 'DESC')->first();
 
+            $id_condicion_softlink = '';
+
+            if ($request->id_condicion == 1) {
+                $id_condicion_softlink = '02';
+            } else if ($request->id_condicion == 2) {
+                switch ($request->credito_dias) {
+                    case 60:
+                        $id_condicion_softlink = '03';
+                        break;
+                    case 20:
+                        $id_condicion_softlink = '23';
+                        break;
+                    case 30:
+                        $id_condicion_softlink = '01';
+                        break;
+                    case 45:
+                        $id_condicion_softlink = '22';
+                        break;
+                    case 15:
+                        $id_condicion_softlink = '06';
+                        break;
+                    case 7:
+                        $id_condicion_softlink = '05';
+                        break;
+                    case 3:
+                        $id_condicion_softlink = '14';
+                        break;
+                    case 40:
+                        $id_condicion_softlink = '25';
+                        break;
+                    case 35:
+                        $id_condicion_softlink = '24';
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             $id_doc = DB::table('almacen.doc_com')->insertGetId(
                 [
                     'serie' => strtoupper($request->serie_doc),
@@ -1938,14 +1976,9 @@ class OrdenesPendientesController extends Controller
                     'moneda' => $request->moneda,
                     'tipo_cambio' => $tc->venta,
                     'sub_total' => $request->sub_total,
-                    // 'total_descuento' => $request->total_descuento,
-                    // 'porcen_descuento' => $request->porcen_descuento,
-                    // 'total' => $request->importe,
+                    'id_condicion_softlink' => $id_condicion_softlink,
                     'total_igv' => $request->igv,
-                    // 'total_ant_igv' => $request->total_ant_igv,
                     'porcen_igv' => $request->porcentaje_igv,
-                    // 'porcen_anticipo' => $request->porcen_anticipo,
-                    // 'total_otros' => $request->total_otros,
                     'total_a_pagar' => round($request->total, 2),
                     'usuario' => $id_usuario,
                     'registrado_por' => $id_usuario,
