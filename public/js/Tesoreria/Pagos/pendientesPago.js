@@ -94,15 +94,16 @@
                 {
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
+                        var estadoAdd = '';
                         var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
                         var total = formatDecimal(row['monto_total']);
                         var por_pagar = (total - pagado);
                         if (por_pagar > 0 && por_pagar < total) {
-                            return '<span class="label label-danger">Saldo por pagar</span>';
-                        } else {
-                            return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
-                        }
-                    }
+                            estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
+                        }  
+                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span> <br>' + estadoAdd;
+
+                    },className: 'text-center'
                 },
                 {
                     'render':
@@ -235,15 +236,15 @@
                 {
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
+                        var estadoAdd = '';
                         var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
                         var total = formatDecimal(row['monto_total']);
                         var por_pagar = (total - pagado);
                         if (por_pagar > 0 && por_pagar < total) {
-                            return '<span class="label label-danger">Saldo por pagar</span>';
-                        } else {
-                            return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
+                            estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
                         }
-                    }
+                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span> <br>' + estadoAdd;
+                    }, className: 'text-center'
                 },
                 {
                     'render':
@@ -251,6 +252,34 @@
 
                             let observacionRequerimiento = row.requerimientos != null && row.requerimientos.length > 0 ? row.requerimientos.map(e => (e.observacion)).join(",") : '';
 
+                            let nombreDestinatario='';
+                            let cuentaDestinatario='';
+                            let nroDocumentoDestinatario='';
+                            let tipoCuentaDestinatario='';
+                            let cuentaCCIDestinatario='';
+                            let bancoDestinatario='';
+                            switch (row['id_tipo_destinatario_pago']) {
+                                case 1:
+                                        nombreDestinatario=row['nombre_completo_persona']??'';
+                                        nroDocumentoDestinatario=row['nro_documento_persona']??'';
+                                        tipoCuentaDestinatario=row['tipo_cuenta_persona']??'';
+                                        cuentaDestinatario=row['nro_cuenta_persona']??'';
+                                        cuentaCCIDestinatario=row['nro_cci_persona']??'';
+                                        bancoDestinatario=row['banco_persona']??'';
+
+                                    break;
+                                    case 2:
+                                        nombreDestinatario=encodeURIComponent(row['razon_social'])??'';
+                                        nroDocumentoDestinatario=row['nro_documento']??'';
+                                        cuentaDestinatario=row['nro_cuenta']??'';
+                                        tipoCuentaDestinatario=row['tipo_cuenta']??'';
+                                        cuentaCCIDestinatario=row['nro_cuenta_interbancaria']??'';
+                                        bancoDestinatario=row['banco_contribuyente']??'';
+                                    break;
+                            
+                                default:
+                                    break;
+                            }
                             return `<div class="btn-group" role="group">
                 ${(row['estado_pago'] == 8 && permisoEnviar == '1') ?
                                     `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip" 
@@ -269,12 +298,12 @@
                                     data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" 
                                     data-moneda="${row['simbolo']}" 
 
-                                    data-nrodoc="${row['nro_documento'] !== null ? row['nro_documento'] : row['persona'][0].nro_documento}"
-                                    data-prov="${encodeURIComponent(row['razon_social'] !== null ? ((row['razon_social']).toUpperCase()) : ((row['persona'][0].nombre_completo).toUpperCase()))}" 
-                                    data-cta="${row['nro_cuenta'] !== null ? row['nro_cuenta'] : row['nro_cuenta_persona']}" 
-                                    data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}" 
-                                    data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}" 
-                                    data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}" 
+                                    data-nrodoc="${nroDocumentoDestinatario}"
+                                    data-prov="${nombreDestinatario}"
+                                    data-cta="${cuentaDestinatario}" 
+                                    data-cci="${cuentaCCIDestinatario}" 
+                                    data-tpcta="${tipoCuentaDestinatario}" 
+                                    data-banco="${bancoDestinatario}" 
                                     data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     data-comentario-pago-logistica="${row['comentario_pago']}"
@@ -306,7 +335,7 @@
                     targets: 2
                 },
             ],
-            'order': [[12, "asc"]]
+            'order': [12, "asc"]
         });
 
     }
