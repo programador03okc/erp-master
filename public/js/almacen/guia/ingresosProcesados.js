@@ -206,7 +206,6 @@ function listarIngresos() {
             {
                 render: function (data, type, row) {
                     if (acceso == "1") {
-                        console.log(row["id_operacion"]);
                         return (
                             '<div style="display:flex;"><button type="button" class="detalle btn btn-primary btn-xs btn-flat " data-toggle="tooltip" ' +
                             'data-placement="bottom" title="Editar Ingreso" data-id="' + row["id_guia_com"] + '" data-cod="' + row["codigo"] + '">' +
