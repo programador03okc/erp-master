@@ -308,18 +308,18 @@ class OrdenesPendientesController extends Controller
                             req.estado != 7
                     )
                     inner join logistica.log_det_ord_compra as log on(
-                            log.id_detalle_requerimiento = req.id_detalle_requerimiento and
-                            log.estado != 7
+                            log.id_detalle_requerimiento = req.id_detalle_requerimiento
                     )
                     inner join almacen.guia_com_det as guia on(
-                            guia.id_oc_det = log.id_detalle_orden and
-                            guia.estado != 7
+                            guia.id_oc_det = log.id_detalle_orden
                     )
                     inner join almacen.mov_alm_det as ing on(
-                            ing.id_guia_com_det = guia.id_guia_com_det and
-                            ing.estado != 7
+                            ing.id_guia_com_det = guia.id_guia_com_det
                     )
                     where   ing.id_mov_alm = mov_alm.id_mov_alm and
+                            log.estado != 7
+                            guia.estado != 7 and
+                            ing.estado != 7 and
                             od.estado != 7 and
                             od.estado != 1) AS count_despachos_oc")
         )
