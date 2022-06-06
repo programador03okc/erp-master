@@ -221,7 +221,7 @@ function listarIngresos() {
                             //             data-placement="bottom" title="Anular Ingreso" data-id="${row["id_mov_alm"]}" 
                             //             data-guia="${row["id_guia_com"]}" data-oc="${row["id_orden_compra"]}">
                             //             <i class="fas fa-trash"></i></button>` : ""
-                            row["id_operacion"] == 21 ? ""
+                            (row["id_operacion"] == 21 || row["id_operacion"] == 18) ? ""
                                 : row["count_despachos_oc"] > 0 ? ""
                                     : row["count_facturas"] > 0 ? ""
                                         : `<button type="button" class="anular btn btn-danger btn-xs btn-flat " data-toggle="tooltip" 
