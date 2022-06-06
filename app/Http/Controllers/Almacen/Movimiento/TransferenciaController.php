@@ -449,7 +449,13 @@ class TransferenciaController extends Controller
                 //Anula ingreso
                 DB::table('almacen.mov_alm')
                     ->where('id_mov_alm', $request->id_mov_alm)
-                    ->update(['estado' => 7]);
+                    ->update([
+                        'estado' => 7,
+                        'fecha_anulacion' => new Carbon(),
+                        'usuario_anulacion' => $id_usuario,
+                        'comentario_anulacion' => $request->observacion,
+                        'id_motivo_anulacion' => $request->id_motivo_obs,
+                    ]);
                 //Anula el detalle
                 DB::table('almacen.mov_alm_det')
                     ->where('id_mov_alm', $request->id_mov_alm)
@@ -578,7 +584,13 @@ class TransferenciaController extends Controller
                     //Anula salida
                     DB::table('almacen.mov_alm')
                         ->where('id_mov_alm', $request->id_salida)
-                        ->update(['estado' => 7]);
+                        ->update([
+                            'estado' => 7,
+                            'fecha_anulacion' => new Carbon(),
+                            'usuario_anulacion' => $id_usuario,
+                            'comentario_anulacion' => $request->observacion_guia_ven,
+                            'id_motivo_anulacion' => $request->id_motivo_obs_ven,
+                        ]);
                     //Anula el detalle
                     DB::table('almacen.mov_alm_det')
                         ->where('id_mov_alm', $request->id_salida)
@@ -611,6 +623,13 @@ class TransferenciaController extends Controller
                         DB::table('almacen.alm_prod_serie')
                             ->where('id_guia_ven_det', '=', $det->id_guia_ven_det)
                             ->update(['id_guia_ven_det' => null]);
+
+                        DB::table('almacen.alm_reserva')
+                            ->where([
+                                ['id_guia_ven_det', '=', $det->id_guia_ven_det],
+                                ['estado', '=', 5]
+                            ])
+                            ->update(['estado' => 17]);
                     }
                     //Transferencia cambia estado elaborado
                     foreach ($transferencias as $tra) {
@@ -625,15 +644,12 @@ class TransferenciaController extends Controller
                             ->where('id_transferencia', $tra->id_transferencia)
                             ->update(['estado' => 1]);
 
-                        $transDetalle = DB::table('almacen.trans_detalle')
-                            ->where('id_transferencia', $tra->id_transferencia)
-                            ->get();
+                        // $transDetalle = DB::table('almacen.trans_detalle')
+                        //     ->where('id_transferencia', $tra->id_transferencia)
+                        //     ->get();
 
-                        foreach ($transDetalle as $tdet) {
-                            DB::table('almacen.alm_reserva')
-                                ->where('id_trans_detalle', $tdet->id_trans_detalle)
-                                ->update(['estado' => 17]);
-                        }
+                        // foreach ($transDetalle as $tdet) {
+                        // }
                         //Requerimiento regresa a Reservado
                         // DB::table('almacen.alm_req')
                         //     ->where('id_requerimiento', $tra->id_requerimiento)
@@ -1174,7 +1190,10 @@ class TransferenciaController extends Controller
                     //atiende la reserva
                     DB::table('almacen.alm_reserva')
                         ->where('id_trans_detalle', $det->id_trans_detalle)
-                        ->update(['estado' => 5]);
+                        ->update([
+                            'estado' => 5,
+                            'id_guia_ven_det' => $id_guia_ven_det
+                        ]);
 
                     foreach ($detalle_trans as $dt) {
 
