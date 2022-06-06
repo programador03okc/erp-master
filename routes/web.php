@@ -707,6 +707,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 				Route::get('reporte-requerimientos-bienes-servicios-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Logistica\RequerimientoController@reporteRequerimientosBienesServiciosExcel');
 				Route::get('listar-todo-archivos-adjuntos-requerimiento-logistico/{id}', 'Logistica\RequerimientoController@listarTodoArchivoAdjuntoRequerimientoLogistico');
+				Route::post('anular-adjunto-requerimiento-logístico-cabecera', 'Logistica\RequerimientoController@anularArchivoAdjuntoRequerimientoLogisticoCabecera');
+				Route::post('anular-adjunto-requerimiento-logístico-detalle', 'Logistica\RequerimientoController@anularArchivoAdjuntoRequerimientoLogisticoDetalle');
+
 				Route::get('listar-archivos-adjuntos-pago/{id}', 'Logistica\RequerimientoController@listarArchivoAdjuntoPago');
 				Route::get('listar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-compra', 'Logistica\RequerimientoController@guardarAdjuntosAdicionales');
@@ -775,6 +778,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('obtener-cuenta-contribuyente/{idContribuyente}', 'Tesoreria\RequerimientoPagoController@obtenerCuentaContribuyente');
 				Route::get('listar-todo-archivos-adjuntos-requerimiento-pago/{id}', 'Tesoreria\RequerimientoPagoController@listarTodoArchivoAdjuntoRequerimientoPago');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@guardarAdjuntosAdicionales');
+				Route::post('anular-adjunto-requerimiento-pago-cabecera', 'Tesoreria\RequerimientoPagoController@anularAdjuntoRequerimientoPagoCabecera');
+				Route::post('anular-adjunto-requerimiento-pago-detalle', 'Tesoreria\RequerimientoPagoController@anularAdjuntoRequerimientoPagoDetalle');
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {

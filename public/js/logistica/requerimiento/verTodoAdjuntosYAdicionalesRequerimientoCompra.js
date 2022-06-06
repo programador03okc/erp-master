@@ -10,6 +10,12 @@ $('#modal-ver-agregar-adjuntos-requerimiento-compra').on("change", "input.handle
 $('#modal-ver-agregar-adjuntos-requerimiento-compra').on("click", "button.handleClickEliminarArchivoCabeceraRequerimientoCompra", (e) => {
     eliminarAdjuntoRequerimientoCompraCabecera(e.currentTarget);
 });
+$('#modal-ver-agregar-adjuntos-requerimiento-compra').on("click", "button.handleClickAnularAdjuntoCabecera", (e) => {
+    anularAdjuntoCabecera(e.currentTarget);
+});
+$('#modal-ver-agregar-adjuntos-requerimiento-compra').on("click", "button.handleClickAnularAdjuntoDetalle", (e) => {
+    anularAdjuntoDetalle(e.currentTarget);
+});
 $('#modal-ver-agregar-adjuntos-requerimiento-compra').on("change", "select.handleChangeCategoriaAdjunto", (e) => {
     actualizarCategoriaDeAdjunto(e.currentTarget);
 });
@@ -95,6 +101,11 @@ function verAgregarAdjuntosRequerimiento(obj) {
 
     document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] input[name='id_requerimiento']").value =idRequerimiento;
     document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] span[id='codigo_requerimiento']").textContent =codigoRequerimiento;
+    cargarAdjuntosLogisticosYPago(idRequerimiento);
+
+}
+
+function cargarAdjuntosLogisticosYPago(idRequerimiento){
     if (idRequerimiento > 0) {
         limpiarTabla('adjuntosCabecera');
         limpiarTabla('adjuntosDetalle');
@@ -102,6 +113,11 @@ function verAgregarAdjuntosRequerimiento(obj) {
 
         obteneTodoAdjuntosRequerimiento(idRequerimiento).then((res) => {
             // console.log(res);
+            // usuario_propietario_requerimiento
+            let tieneAccesoParaEliminarAdjuntos=false;
+            if(res.id_usuario_propietario_requerimiento >0 && res.id_usuario_propietario_requerimiento == auth_user.id_usuario){
+                tieneAccesoParaEliminarAdjuntos= true;
+            }
             // llenar tabla cabecera
             let htmlCabecera = '';
             if (res.adjuntos_cabecera.length > 0) {
@@ -110,6 +126,9 @@ function verAgregarAdjuntosRequerimiento(obj) {
                         htmlCabecera += `<tr>
                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/bienes_servicios/cabecera/${element.archivo}" target="_blank">${element.archivo}</a></td>
                         <td style="text-align:left;">${element.categoria_adjunto.descripcion}</td>
+                        <td style="text-align:center;">
+                            <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoCabecera handleClickAnularAdjuntoCabecera" data-id-adjunto="${element.id_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos==true?'':'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                        </td>
                         </tr>`;
 
                     }
@@ -128,6 +147,9 @@ function verAgregarAdjuntosRequerimiento(obj) {
                     if (element.estado != 7) {
                         htmlDetalle += `<tr>
                                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/bienes_servicios/detalle/${element.archivo}" target="_blank">${element.archivo}</a></td>
+                                        <td style="text-align:center;">
+                                            <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoDetalle handleClickAnularAdjuntoDetalle" data-id-adjunto="${element.id_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos==true?'':'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                                        </td>
                                         </tr>`;
 
                     }
@@ -174,7 +196,6 @@ function verAgregarAdjuntosRequerimiento(obj) {
 
 
     }
-
 }
 
 
@@ -350,6 +371,127 @@ function eliminarAdjuntoRequerimientoCompraCabecera(obj){
         }
 
     }
+}
+
+function anularAdjuntoCabecera(obj){
+    // console.log(idAdjunto);
+    let idAdjunto=obj.dataset.idAdjunto;
+    if(idAdjunto>0){
+        $.ajax({
+            type: 'POST',
+            url: 'anular-adjunto-requerimiento-logístico-cabecera',
+            data: {id_adjunto:idAdjunto},
+            dataType: 'JSON',
+            beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra .modal-content').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+            success: (response) =>{
+                if (response.status =='success') {
+                    $('#modal-ver-agregar-adjuntos-requerimiento-compra .modal-content').LoadingOverlay("hide", true);
+
+                    obj.closest('tr').remove();
+                    Lobibox.notify('success', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+
+                } else {
+                    $('#modal-ver-agregar-adjuntos-requerimiento-compra .modal-content').LoadingOverlay("hide", true);
+                    console.log(response);
+                    Swal.fire(
+                        '',
+                        response.mensaje,
+                        'error'
+                    );
+                }
+            },
+            fail:  (jqXHR, textStatus, errorThrown) =>{
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra .modal-content').LoadingOverlay("hide", true);
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar anular los adjuntos, por favor vuelva a intentarlo',
+                    'error'
+                );
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    }else{
+        Swal.fire(
+            '',
+            'No existen un ID adjuntos para continuar con la acción',
+            'warning'
+        );
+    }
+}
+function anularAdjuntoDetalle(obj){
+    let idAdjunto=obj.dataset.idAdjunto;
+    if(idAdjunto>0){
+        $.ajax({
+            type: 'POST',
+            url: 'anular-adjunto-requerimiento-logístico-detalle',
+            data: {id_adjunto:idAdjunto},
+            dataType: 'JSON',
+            beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra .modal-content').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+            success: (response) =>{
+                if (response.status =='success') {
+                    $('#modal-ver-agregar-adjuntos-requerimiento-compra .modal-content').LoadingOverlay("hide", true);
+
+                    obj.closest('tr').remove();
+                    Lobibox.notify('success', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+
+                } else {
+                    $('#modal-ver-agregar-adjuntos-requerimiento-compra .modal-content').LoadingOverlay("hide", true);
+                    console.log(response);
+                    Swal.fire(
+                        '',
+                        response.mensaje,
+                        'error'
+                    );
+                }
+            },
+            fail:  (jqXHR, textStatus, errorThrown) =>{
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra .modal-content').LoadingOverlay("hide", true);
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar anular los adjuntos, por favor vuelva a intentarlo',
+                    'error'
+                );
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    }else{
+        Swal.fire(
+            '',
+            'No existen un ID adjuntos para continuar con la acción',
+            'warning'
+        );
+    }
+    
 }
 
 function guardarAdjuntos(){

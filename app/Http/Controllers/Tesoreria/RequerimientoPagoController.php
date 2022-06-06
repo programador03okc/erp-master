@@ -1044,6 +1044,9 @@ class RequerimientoPagoController extends Controller
 
     public function listarTodoArchivoAdjuntoRequerimientoPago($idRequerimientoPago){
 
+        $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
+        $idUsuarioPropietarioRequerimiento = $requerimientoPago->id_usuario ?? '';
+
         $detalleRequerimientoPagoList=RequerimientoPagoDetalle::where([["id_requerimiento_pago",$idRequerimientoPago],["id_estado","!=",7]])->get();
         $idDetalleRequerimientoPagoList=[];
         foreach ($detalleRequerimientoPagoList as $dr) {
@@ -1054,7 +1057,7 @@ class RequerimientoPagoController extends Controller
             $adjuntoDetalleList = RequerimientoPagoAdjuntoDetalle::whereIn("id_requerimiento_pago_detalle",$idDetalleRequerimientoPagoList)->where("id_estado","!=",7)->get();
         }
 
-        return ["adjuntos_cabecera"=>$ajuntosCabeceraList??[],"adjuntos_detalle"=>$adjuntoDetalleList??[]];
+        return ["adjuntos_cabecera"=>$ajuntosCabeceraList??[],"adjuntos_detalle"=>$adjuntoDetalleList??[],'id_usuario_propietario_requerimiento'=>$idUsuarioPropietarioRequerimiento];
     }
 
     function guardarAdjuntosAdicionales(Request $request){
@@ -1097,6 +1100,56 @@ class RequerimientoPagoController extends Controller
         return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al guardar los adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
     }
 
+    }
+
+    function anularAdjuntoRequerimientoPagoCabecera(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $estado_accion = '';
+            $adjunto = RequerimientoPagoAdjunto::find($request->id_adjunto);
+            if (isset($adjunto)) {
+                $adjunto->id_estado = 7;
+                $adjunto->save();
+                $estado_accion = 'success';
+                $mensaje = 'Adjuntos anulado';
+            } else {
+                $estado_accion = 'warning';
+                $mensaje = 'Hubo un problema y no se pudo anular el adjuntos';
+            }
+            DB::commit();
+
+            return response()->json(['status' => $estado_accion, 'mensaje' => $mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al anular el adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
+
+    function anularAdjuntoRequerimientoPagoDetalle(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $estado_accion = '';
+            $adjunto = RequerimientoPagoAdjuntoDetalle::find($request->id_adjunto);
+            if (isset($adjunto)) {
+                $adjunto->id_estado = 7;
+                $adjunto->save();
+                $estado_accion = 'success';
+                $mensaje = 'Adjuntos anulado';
+            } else {
+                $estado_accion = 'warning';
+                $mensaje = 'Hubo un problema y no se pudo anular el adjuntos';
+            }
+            DB::commit();
+
+            return response()->json(['status' => $estado_accion, 'mensaje' => $mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al anular el adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
     }
     
 }

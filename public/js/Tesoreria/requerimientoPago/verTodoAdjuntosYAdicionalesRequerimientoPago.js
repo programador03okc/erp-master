@@ -10,6 +10,12 @@ $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleCh
 $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("click", "button.handleClickEliminarArchivoCabeceraRequerimientoPago", (e) => {
     eliminarAdjuntoRequerimientoPagoCabecera(e.currentTarget);
 });
+$('#modal-ver-agregar-adjuntos-requerimiento-pago').on("click", "button.handleClickAnularAdjuntoPagoCabecera", (e) => {
+    anularAdjuntoPagoCabecera(e.currentTarget);
+});
+$('#modal-ver-agregar-adjuntos-requerimiento-pago').on("click", "button.handleClickAnularAdjuntoPagoDetalle", (e) => {
+    anularAdjuntoPagoDetalle(e.currentTarget);
+});
 $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "select.handleChangeCategoriaAdjunto", (e) => {
     actualizarCategoriaDeAdjunto(e.currentTarget);
 });
@@ -107,6 +113,10 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
         obteneTodoAdjuntosRequerimientoPago(idRequerimientoPago).then((res) => {
             // llenar tabla cabecera
             let htmlCabecera = '';
+            let tieneAccesoParaEliminarAdjuntos=false;
+            if(res.id_usuario_propietario_requerimiento >0 && res.id_usuario_propietario_requerimiento == auth_user.id_usuario){
+                tieneAccesoParaEliminarAdjuntos= true;
+            }
             if (res.adjuntos_cabecera.length > 0) {
                 (res.adjuntos_cabecera).forEach(element => {
                   
@@ -114,6 +124,9 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
                         htmlCabecera += `<tr>
                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/pago/cabecera/${element.archivo}" target="_blank">${element.archivo}</a></td>
                         <td style="text-align:left;">${element.categoria_adjunto.descripcion}</td>
+                        <td style="text-align:center;">
+                            <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoCabecera handleClickAnularAdjuntoPagoCabecera" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos==true?'':'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                        </td>
                         </tr>`;
 
                     }
@@ -128,6 +141,9 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
                     if (element.id_estado != 7) {
                         htmlDetalle += `<tr>
                                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/pago/detalle/${element.archivo}" target="_blank">${element.archivo}</a></td>
+                                        <td style="text-align:center;">
+                                        <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoDetalle handleClickAnularAdjuntoPagoDetalle" data-id-adjunto="${element.id_requerimiento_pago_detalle_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos==true?'':'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                                    </td>
                                         </tr>`;
 
                     }
@@ -315,6 +331,127 @@ function eliminarAdjuntoRequerimientoPagoCabecera(obj){
         }
 
     }
+}
+
+function anularAdjuntoPagoCabecera(obj){
+    let idAdjunto=obj.dataset.idAdjunto;
+    if(idAdjunto>0){
+        $.ajax({
+            type: 'POST',
+            url: 'anular-adjunto-requerimiento-pago-cabecera',
+            data: {id_adjunto:idAdjunto},
+            dataType: 'JSON',
+            beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+                $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+            success: (response) =>{
+                if (response.status =='success') {
+                    $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
+
+                    obj.closest('tr').remove();
+                    Lobibox.notify('success', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+
+                } else {
+                    $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
+                    console.log(response);
+                    Swal.fire(
+                        '',
+                        response.mensaje,
+                        'error'
+                    );
+                }
+            },
+            fail:  (jqXHR, textStatus, errorThrown) =>{
+                $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar anular los adjuntos, por favor vuelva a intentarlo',
+                    'error'
+                );
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    }else{
+        Swal.fire(
+            '',
+            'No existen un ID adjuntos para continuar con la acción',
+            'warning'
+        );
+    }
+}
+
+function anularAdjuntoPagoDetalle(obj){
+    let idAdjunto=obj.dataset.idAdjunto;
+    if(idAdjunto>0){
+        $.ajax({
+            type: 'POST',
+            url: 'anular-adjunto-requerimiento-pago-detalle',
+            data: {id_adjunto:idAdjunto},
+            dataType: 'JSON',
+            beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+                $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+            success: (response) =>{
+                if (response.status =='success') {
+                    $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
+
+                    obj.closest('tr').remove();
+                    Lobibox.notify('success', {
+                        title:false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+
+                } else {
+                    $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
+                    console.log(response);
+                    Swal.fire(
+                        '',
+                        response.mensaje,
+                        'error'
+                    );
+                }
+            },
+            fail:  (jqXHR, textStatus, errorThrown) =>{
+                $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar anular los adjuntos, por favor vuelva a intentarlo',
+                    'error'
+                );
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    }else{
+        Swal.fire(
+            '',
+            'No existen un ID adjuntos para continuar con la acción',
+            'warning'
+        );
+    }
+    
 }
 
 function guardarAdjuntos(){
