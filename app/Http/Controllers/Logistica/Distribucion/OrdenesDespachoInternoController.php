@@ -273,6 +273,7 @@ class OrdenesDespachoInternoController extends Controller
                     $detalles = DB::table('almacen.alm_det_req')
                         ->where([
                             ['id_requerimiento', '=', $request->id_requerimiento],
+                            ['id_tipo_item', '=', 1],
                             ['estado', '!=', 7]
                         ])
                         ->get();
