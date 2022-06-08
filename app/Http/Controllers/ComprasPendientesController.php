@@ -6,12 +6,16 @@ use App\Exports\reporteRequerimientosAtendidosExcel;
 use App\Exports\solicitudCotizacionExcel;
 use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
+use App\Http\Controllers\Almacen\Movimiento\SalidaPdfController;
 use App\Models\Almacen\Almacen;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\almacen\GuiaCompraDetalle;
 use App\Models\Almacen\ProductoUbicacion;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\Reserva;
+use App\Models\Almacen\Transferencia;
+use App\Models\almacen\TransferenciaDetalle;
+use App\Models\almacen\Transformacion;
 use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Comercial\CuadroCosto\CcAmFila;
@@ -851,13 +855,19 @@ class ComprasPendientesController extends Controller
                     $totalReservas++;
                     if($r->estado==1 ){
                         if($r->id_guia_com_det>0){
-                            $CantidadGuiaComDet++;
+                            if(GuiaCompraDetalle::find($r->id_guia_com_det)->estado !=7){
+                                $CantidadGuiaComDet++;
+                            }
                         }
                         if($r->id_trans_detalle>0){
-                            $CantidadTransDetalle++;
+                            if(TransferenciaDetalle::find($r->id_trans_detalle)->estado !=7){
+                                $CantidadTransDetalle++;
+                            }
                         }
                         if($r->id_transformado>0){
-                            $CantidadTransformado++;
+                            if(Transformacion::find($r->id_transformado)->estado != 7){
+                                $CantidadTransformado++;
+                            }
                         }
                         if($r->id_guia_com_det==null && $r->id_trans_detalle ==null && $r->id_transformado ==null){
                             $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
@@ -1385,8 +1395,14 @@ class ComprasPendientesController extends Controller
             $status = 0;
             $mensaje = '';
             $data = [];
+            $fechaAcual= new Carbon();
+
             if ($idProducto > 0) {
-                $data = ProductoUbicacion::select('alm_prod_ubi.id_almacen','alm_almacen.codigo','alm_almacen.descripcion','alm_prod_ubi.stock',
+                $ProductoUbicacionList = ProductoUbicacion::select(
+                'alm_prod_ubi.id_almacen',
+                'alm_almacen.codigo',
+                'alm_almacen.descripcion',
+                'alm_prod_ubi.stock',
                 DB::raw("(SELECT  SUM(alm_reserva.stock_comprometido) FROM almacen.alm_reserva
                 WHERE alm_reserva.id_producto = ".$idProducto."
                 AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen
@@ -1395,12 +1411,20 @@ class ComprasPendientesController extends Controller
                 ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
                 ->get();
                 
-                if(count($data)>0){
+                if(count($ProductoUbicacionList)>0){
                     $mensaje = 'OK';
                     $status=200;
+                    foreach ($ProductoUbicacionList as $d) {
+                        $data[]=[
+                            'id_almacen'=>$d->id_almacen,
+                            'descripcion'=>$d->descripcion,
+                            'codigo'=>$d->codigo,
+                            'stock'=>(new SalidaPdfController)->obtenerSaldo($idProducto,$d->id_almacen,($fechaAcual->year.'-01-01'), $fechaAcual),
+                            'cantidad_stock_comprometido'=>$d->cantidad_stock_comprometido
+                        ];
+                    }
                 }else{
                     $mensaje = 'Sin data para mostrar';
-
                 }
 
             } else {
@@ -1408,7 +1432,6 @@ class ComprasPendientesController extends Controller
                 $mensaje = 'El ID producto no es valido';
             }
             DB::commit();
-
 
             return response()->json(['status' => $status, 'mensaje' => $mensaje, 'data' => $data]);
         } catch (Exception $e) {
