@@ -427,113 +427,108 @@ class TransferenciaController extends Controller
                         'trans.id_requerimiento',
                         'trans.id_guia_com',
                         'trans.id_almacen_origen',
-                        'orden_despacho.id_od'
+                        // 'orden_despacho.id_od'
                     )
-                    ->leftJoin('almacen.orden_despacho', function ($join) {
-                        $join->on('orden_despacho.id_requerimiento', '=', 'trans.id_requerimiento');
-                        $join->where('orden_despacho.estado', '=', 1);
-                    })
+                    // ->leftJoin('almacen.orden_despacho', function ($join) {
+                    //     $join->on('orden_despacho.id_requerimiento', '=', 'trans.id_requerimiento');
+                    //     $join->where('orden_despacho.estado', '=', 1);
+                    // })
                     ->where([['trans.id_guia_com', '=', $ing->id_guia_com], ['trans.estado', '!=', 7]])
                     ->get();
 
-                $rollback = 0;
-                foreach ($transferencias as $t) {
-                    if ($t->id_od !== null) {
-                        $rollback++;
-                    }
+                // $rollback = 0;
+                // foreach ($transferencias as $t) {
+                //     if ($t->id_od !== null) {
+                //         $rollback++;
+                //     }
+                // }
+
+                // if ($rollback == 0) {
+
+                $id_usuario = Auth::user()->id_usuario;
+                //Anula ingreso
+                DB::table('almacen.mov_alm')
+                    ->where('id_mov_alm', $request->id_mov_alm)
+                    ->update([
+                        'estado' => 7,
+                        'fecha_anulacion' => new Carbon(),
+                        'usuario_anulacion' => $id_usuario,
+                        'comentario_anulacion' => $request->observacion,
+                        'id_motivo_anulacion' => $request->id_motivo_obs,
+                    ]);
+                //Anula el detalle
+                DB::table('almacen.mov_alm_det')
+                    ->where('id_mov_alm', $request->id_mov_alm)
+                    ->update(['estado' => 7]);
+                //Agrega motivo anulacion a la guia
+                DB::table('almacen.guia_com_obs')->insert(
+                    [
+                        'id_guia_com' => $request->id_guia_com,
+                        'observacion' => $request->observacion,
+                        'registrado_por' => $id_usuario,
+                        'id_motivo_anu' => $request->id_motivo_obs,
+                        'fecha_registro' => new Carbon() //date('Y-m-d H:i:s')
+                    ]
+                );
+                //Anula la Guia
+                DB::table('almacen.guia_com')
+                    ->where('id_guia', $request->id_guia_com)
+                    ->update(['estado' => 7]);
+                //Anula la Guia Detalle
+                DB::table('almacen.guia_com_det')
+                    ->where('id_guia_com', $request->id_guia_com)
+                    ->update(['estado' => 7]);
+
+                $detalle = DB::table('almacen.guia_com_det')
+                    ->select('guia_com_det.id_guia_com_det')
+                    ->where('id_guia_com', $request->id_guia_com)
+                    ->get();
+
+                foreach ($detalle as $det) {
+                    DB::table('almacen.alm_prod_serie')
+                        ->where('id_guia_com_det', $det->id_guia_com_det)
+                        ->update([
+                            'id_guia_com_det' => null,
+                            'estado' => 7
+                        ]);
+                    DB::table('almacen.alm_reserva')
+                        ->where('id_guia_com_det', $det->id_guia_com_det)
+                        ->update(['estado' => 7]);
                 }
+                //Transferencia cambia estado elaborado
+                foreach ($transferencias as $tra) {
+                    DB::table('almacen.trans')
+                        ->where('id_transferencia', $tra->id_transferencia)
+                        ->update([
+                            'estado' => 17,
+                            'id_guia_com' => null
+                        ]);
+                    //Transferencia Detalle cambia estado elaborado
+                    DB::table('almacen.trans_detalle')
+                        ->where('id_transferencia', $tra->id_transferencia)
+                        ->update(['estado' => 17]);
+                    //Requerimiento regresa a enviado
+                    // DB::table('almacen.alm_req')
+                    //     ->where('id_requerimiento', $tra->id_requerimiento)
+                    //     ->update(['estado' => 17]); //Enviado
 
-                if ($rollback == 0) {
+                    // DB::table('almacen.alm_det_req')
+                    //     ->where('id_requerimiento', $tra->id_requerimiento)
+                    //     ->update(['estado' => 17]); //Enviado
 
-                    $id_usuario = Auth::user()->id_usuario;
-                    //Anula ingreso
-                    DB::table('almacen.mov_alm')
-                        ->where('id_mov_alm', $request->id_mov_alm)
-                        ->update(['estado' => 7]);
-                    //Anula el detalle
-                    DB::table('almacen.mov_alm_det')
-                        ->where('id_mov_alm', $request->id_mov_alm)
-                        ->update(['estado' => 7]);
-                    //Agrega motivo anulacion a la guia
-                    DB::table('almacen.guia_com_obs')->insert(
-                        [
-                            'id_guia_com' => $request->id_guia_com,
-                            'observacion' => $request->observacion,
-                            'registrado_por' => $id_usuario,
-                            'id_motivo_anu' => $request->id_motivo_obs,
-                            'fecha_registro' => new Carbon() //date('Y-m-d H:i:s')
-                        ]
-                    );
-                    //Anula la Guia
-                    DB::table('almacen.guia_com')
-                        ->where('id_guia', $request->id_guia_com)
-                        ->update(['estado' => 7]);
-                    //Anula la Guia Detalle
-                    DB::table('almacen.guia_com_det')
-                        ->where('id_guia_com', $request->id_guia_com)
-                        ->update(['estado' => 7]);
-
-                    $detalle = DB::table('almacen.guia_com_det')
-                        ->select('guia_com_det.id_guia_com_det')
-                        ->where('id_guia_com', $request->id_guia_com)
-                        ->get();
-
-                    foreach ($detalle as $det) {
-                        DB::table('almacen.alm_prod_serie')
-                            ->where('id_guia_com_det', $det->id_guia_com_det)
-                            ->update([
-                                'id_guia_com_det' => null,
-                                'estado' => 7
-                            ]);
-                        DB::table('almacen.alm_reserva')
-                            ->where('id_guia_com_det', $det->id_guia_com_det)
-                            ->update(['estado' => 7]);
-                    }
-                    //Transferencia cambia estado elaborado
-                    foreach ($transferencias as $tra) {
-                        DB::table('almacen.trans')
-                            ->where('id_transferencia', $tra->id_transferencia)
-                            ->update([
-                                'estado' => 17,
-                                'id_guia_com' => null
-                            ]);
-                        //Transferencia Detalle cambia estado elaborado
-                        DB::table('almacen.trans_detalle')
-                            ->where('id_transferencia', $tra->id_transferencia)
-                            ->update(['estado' => 17]);
-                        //Requerimiento regresa a enviado
-                        // DB::table('almacen.alm_req')
-                        //     ->where('id_requerimiento', $tra->id_requerimiento)
-                        //     ->update(['estado' => 17]); //Enviado
-
-                        // DB::table('almacen.alm_det_req')
-                        //     ->where('id_requerimiento', $tra->id_requerimiento)
-                        //     ->update(['estado' => 17]); //Enviado
-                        $detalle = DB::table('almacen.trans_detalle')
-                            ->where('id_transferencia', $tra->id_transferencia)
-                            ->get();
-
-                        foreach ($detalle as $det) {
-                            DB::table('almacen.alm_reserva')
-                                ->where('id_trans_detalle', $det->id_trans_detalle)
-                                ->update([
-                                    'estado' => 17,
-                                ]);
-                        }
-
-                        //Agrega accion en requerimiento
-                        DB::table('almacen.alm_req_obs')
-                            ->insert([
-                                'id_requerimiento' => $tra->id_requerimiento,
-                                'accion' => 'INGRESO ANULADO',
-                                'descripcion' => 'Ingreso por Transferencia Anulado. ' . $request->id_motivo_obs . '. Requerimiento regresa a Enviado.',
-                                'id_usuario' => Auth::user()->id_usuario,
-                                'fecha_registro' => date('Y-m-d H:i:s') //Carbon
-                            ]);
-                    }
-                } else {
-                    $msj = 'No es posible anular. Ya se generó una Orden de Despacho.';
+                    //Agrega accion en requerimiento
+                    DB::table('almacen.alm_req_obs')
+                        ->insert([
+                            'id_requerimiento' => $tra->id_requerimiento,
+                            'accion' => 'INGRESO ANULADO',
+                            'descripcion' => 'Ingreso por Transferencia Anulado. ' . $request->id_motivo_obs . '. Requerimiento regresa a Enviado.',
+                            'id_usuario' => Auth::user()->id_usuario,
+                            'fecha_registro' => date('Y-m-d H:i:s') //Carbon
+                        ]);
                 }
+                // } else {
+                //     $msj = 'No es posible anular. Ya se generó una Orden de Despacho.';
+                // }
             } else {
                 $msj = 'No es posible anular. El ingreso ya fue revisado por el Jefe de Almacén.';
             }
@@ -589,7 +584,13 @@ class TransferenciaController extends Controller
                     //Anula salida
                     DB::table('almacen.mov_alm')
                         ->where('id_mov_alm', $request->id_salida)
-                        ->update(['estado' => 7]);
+                        ->update([
+                            'estado' => 7,
+                            'fecha_anulacion' => new Carbon(),
+                            'usuario_anulacion' => $id_usuario,
+                            'comentario_anulacion' => $request->observacion_guia_ven,
+                            'id_motivo_anulacion' => $request->id_motivo_obs_ven,
+                        ]);
                     //Anula el detalle
                     DB::table('almacen.mov_alm_det')
                         ->where('id_mov_alm', $request->id_salida)
@@ -622,6 +623,13 @@ class TransferenciaController extends Controller
                         DB::table('almacen.alm_prod_serie')
                             ->where('id_guia_ven_det', '=', $det->id_guia_ven_det)
                             ->update(['id_guia_ven_det' => null]);
+
+                        DB::table('almacen.alm_reserva')
+                            ->where([
+                                ['id_guia_ven_det', '=', $det->id_guia_ven_det],
+                                ['estado', '=', 5]
+                            ])
+                            ->update(['estado' => 17]);
                     }
                     //Transferencia cambia estado elaborado
                     foreach ($transferencias as $tra) {
@@ -636,15 +644,12 @@ class TransferenciaController extends Controller
                             ->where('id_transferencia', $tra->id_transferencia)
                             ->update(['estado' => 1]);
 
-                        $transDetalle = DB::table('almacen.trans_detalle')
-                            ->where('id_transferencia', $tra->id_transferencia)
-                            ->get();
+                        // $transDetalle = DB::table('almacen.trans_detalle')
+                        //     ->where('id_transferencia', $tra->id_transferencia)
+                        //     ->get();
 
-                        foreach ($transDetalle as $tdet) {
-                            DB::table('almacen.alm_reserva')
-                                ->where('id_trans_detalle', $tdet->id_trans_detalle)
-                                ->update(['estado' => 17]);
-                        }
+                        // foreach ($transDetalle as $tdet) {
+                        // }
                         //Requerimiento regresa a Reservado
                         // DB::table('almacen.alm_req')
                         //     ->where('id_requerimiento', $tra->id_requerimiento)
@@ -1185,7 +1190,10 @@ class TransferenciaController extends Controller
                     //atiende la reserva
                     DB::table('almacen.alm_reserva')
                         ->where('id_trans_detalle', $det->id_trans_detalle)
-                        ->update(['estado' => 5]);
+                        ->update([
+                            'estado' => 5,
+                            'id_guia_ven_det' => $id_guia_ven_det
+                        ]);
 
                     foreach ($detalle_trans as $dt) {
 
@@ -1684,7 +1692,11 @@ class TransferenciaController extends Controller
                                 //     ]);
                                 if ($item['id_detalle_requerimiento'] !== null) {
                                     DB::table('almacen.alm_reserva')
-                                        ->where('id_detalle_requerimiento', $item['id_detalle_requerimiento'])
+                                        ->where([
+                                            ['id_detalle_requerimiento', '=', $item['id_detalle_requerimiento']],
+                                            ['id_almacen_reserva', '=', $alm],
+                                            ['estado', '=', 1]
+                                        ])
                                         ->update([
                                             'estado' => 17,
                                             'id_trans_detalle' => $id_trans_detalle

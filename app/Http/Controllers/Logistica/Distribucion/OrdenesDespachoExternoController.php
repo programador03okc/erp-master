@@ -505,6 +505,7 @@ class OrdenesDespachoExternoController extends Controller
                         $detalle = DB::table('almacen.alm_det_req')
                             ->where([
                                 ['id_requerimiento', '=', $requerimiento->id_requerimiento],
+                                ['id_tipo_item', '=', 1],
                                 ['entrega_cliente', '=', true],
                                 ['estado', '!=', 7]
                             ])
@@ -513,6 +514,7 @@ class OrdenesDespachoExternoController extends Controller
                         $detalle = DB::table('almacen.alm_det_req')
                             ->where([
                                 ['id_requerimiento', '=', $requerimiento->id_requerimiento],
+                                ['id_tipo_item', '=', 1],
                                 ['estado', '!=', 7]
                             ])
                             ->get();
