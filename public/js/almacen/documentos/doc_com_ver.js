@@ -29,7 +29,9 @@ function documentosVer(id) {
                     element.numero}</td>
                     <th >Tipo de Cambio: S/ ${(element.tipo_cambio !== null ? element.tipo_cambio : '')}</td>
                     <th colSpan="2">Empresa-Sede: </th>
-                    <td colSpan="3">${element.sede_descripcion}</td>
+                    <td colSpan="2">${element.sede_descripcion}</td>
+                    <th colSpan="2">Fecha emisión: </th>
+                    <td colSpan="2">${formatDate(element.fecha_emision)}</td>
                 </tr>
                 <tr>
                     <th colSpan="2">Proveedor: </th>
