@@ -4,11 +4,11 @@ var tempObjectBtnCentroCostos;
 var tempIdRegisterActive;
 var tempCentroCostoSelected;
 
-var tempArchivoAdjuntoRequerimientoCabeceraList =[];
-var tempArchivoAdjuntoRequerimientoDetalleList =[];
-var objBotonAdjuntoRequerimientoDetalleSeleccionado ='';
+var tempArchivoAdjuntoRequerimientoCabeceraList = [];
+var tempArchivoAdjuntoRequerimientoDetalleList = [];
+var objBotonAdjuntoRequerimientoDetalleSeleccionado = '';
 class RequerimientoView {
-    constructor(requerimientoCtrl){
+    constructor(requerimientoCtrl) {
         this.requerimientoCtrl = requerimientoCtrl;
     }
     init() {
@@ -18,14 +18,14 @@ class RequerimientoView {
         // this.getTipoCambioCompra();
         let idRequerimiento = localStorage.getItem("idRequerimiento");
         // console.log(idRequerimiento);
-        if (idRequerimiento !== null){
+        if (idRequerimiento !== null) {
             this.cargarRequerimiento(idRequerimiento)
             localStorage.removeItem("idRequerimiento");
             vista_extendida();
         }
-        let idRequerimientoByURL =parseInt(location.search.split('id=')[1]);
+        let idRequerimientoByURL = parseInt(location.search.split('id=')[1]);
 
-        if(idRequerimientoByURL > 0){
+        if (idRequerimientoByURL > 0) {
             this.cargarRequerimiento(idRequerimientoByURL)
             vista_extendida();
         }
@@ -33,7 +33,7 @@ class RequerimientoView {
 
     }
 
-    initializeEventHandler(){
+    initializeEventHandler() {
         document.querySelector("button[class~='handleClickImprimirRequerimientoPdf']").addEventListener("click", this.imprimirRequerimientoPdf.bind(this), false);
 
         $('#form-requerimiento').on("click", "button.handleClickAdjuntarArchivoCabecera", (e) => {
@@ -43,7 +43,7 @@ class RequerimientoView {
         $('#modal-adjuntar-archivos-requerimiento').on("click", "button.handleClickEliminarArchivoCabeceraRequerimiento", (e) => {
             this.eliminarArchivoRequerimientoCabecera(e.currentTarget);
         });
-        
+
         document.querySelector("input[class~='handleChangeUpdateConcepto']").addEventListener("keyup", this.updateConcepto.bind(this), false);
         document.querySelector("select[class~='handleChangeUpdateMoneda']").addEventListener("change", this.changeMonedaSelect.bind(this), false);
         document.querySelector("select[class~='handleChangeOptEmpresa']").addEventListener("change", this.changeOptEmpresaSelect.bind(this), false);
@@ -55,72 +55,72 @@ class RequerimientoView {
         document.querySelector("select[class~='handleChangeTipoRequerimiento']").addEventListener("change", this.updateTipoRequerimiento.bind(this), false);
 
 
-        $('#form-requerimiento').on("click","button.handleClickAgregarProducto", ()=>{
+        $('#form-requerimiento').on("click", "button.handleClickAgregarProducto", () => {
             this.agregarFilaProducto();
         });
-        $('#form-requerimiento').on("click","button.handleClickAgregarServicio", ()=>{
+        $('#form-requerimiento').on("click", "button.handleClickAgregarServicio", () => {
             this.agregarFilaServicio();
         });
         // $('#form-requerimiento').on("change","select.handleChangeProyecto", (e)=>{
         //     this.changeProyecto(e);
         // });
 
-        $('#listaRequerimiento tbody').on("click","button.handleClickCargarRequerimiento", (e)=>{
+        $('#listaRequerimiento tbody').on("click", "button.handleClickCargarRequerimiento", (e) => {
             this.cargarRequerimiento(e.target.dataset.idRequerimiento);
         });
 
-        $('#modal-adjuntar-archivos-requerimiento').on("change","input.handleChangeAgregarAdjuntoRequerimiento", (e)=>{
+        $('#modal-adjuntar-archivos-requerimiento').on("change", "input.handleChangeAgregarAdjuntoRequerimiento", (e) => {
             this.agregarAdjuntoRequerimiento(e.currentTarget);
         });
 
-        $('#modal-adjuntar-archivos-detalle-requerimiento').on("change","input.handleChangeAgregarAdjuntoDetalle", (e)=>{
+        $('#modal-adjuntar-archivos-detalle-requerimiento').on("change", "input.handleChangeAgregarAdjuntoDetalle", (e) => {
             this.agregarAdjuntoRequerimientoPagoDetalle(e.currentTarget);
         });
         $('#modal-adjuntar-archivos-detalle-requerimiento').on("click", "button.handleClickEliminarArchivoRequerimientoDetalle", (e) => {
             this.eliminarArchivoRequerimientoDetalle(e.currentTarget);
         });
 
-        $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickCargarModalPartidas", (e)=>{
+        $('#ListaDetalleRequerimiento tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
             this.cargarModalPartidas(e);
         });
 
-        $('#modal-partidas').on("click","button.handleClickSelectPartida", (e)=>{
+        $('#modal-partidas').on("click", "button.handleClickSelectPartida", (e) => {
             this.selectPartida(e.currentTarget.dataset.idPartida);
         });
 
-        $('#modal-partidas').on("click","h5.handleClickapertura", (e)=>{
+        $('#modal-partidas').on("click", "h5.handleClickapertura", (e) => {
             this.apertura(e.currentTarget.dataset.idPresup);
             this.changeBtnIcon(e);
         });
 
-        $('#modal-centro-costos').on("click","h5.handleClickapertura", (e)=>{
+        $('#modal-centro-costos').on("click", "h5.handleClickapertura", (e) => {
             this.apertura(e.currentTarget.dataset.idPresup);
             this.changeBtnIcon(e);
         });
 
-        $('#modal-centro-costos').on("click","button.handleClickSelectCentroCosto", (e)=>{
-            this.selectCentroCosto(e.currentTarget.dataset.idCentroCosto,e.currentTarget.dataset.codigo,e.currentTarget.dataset.descripcionCentroCosto);
+        $('#modal-centro-costos').on("click", "button.handleClickSelectCentroCosto", (e) => {
+            this.selectCentroCosto(e.currentTarget.dataset.idCentroCosto, e.currentTarget.dataset.codigo, e.currentTarget.dataset.descripcionCentroCosto);
         });
-            
-        $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickCargarModalCentroCostos", (e)=>{
+
+        $('#ListaDetalleRequerimiento tbody').on("click", "button.handleClickCargarModalCentroCostos", (e) => {
             this.cargarModalCentroCostos(e);
         });
-        $('#ListaDetalleRequerimiento tbody').on("blur","textarea.handleBlurUpdateDescripcionItem", (e)=>{
+        $('#ListaDetalleRequerimiento tbody').on("blur", "textarea.handleBlurUpdateDescripcionItem", (e) => {
             this.updateDescripcionItem(e.target);
         });
-        $('#ListaDetalleRequerimiento tbody').on("blur","input.handleBurUpdateSubtotal", (e)=>{
+        $('#ListaDetalleRequerimiento tbody').on("blur", "input.handleBurUpdateSubtotal", (e) => {
             this.updateSubtotal(e.target);
         });
-        $('#ListaDetalleRequerimiento tbody').on("blur","input.handleBlurUpdateCantidadItem", (e)=>{
+        $('#ListaDetalleRequerimiento tbody').on("blur", "input.handleBlurUpdateCantidadItem", (e) => {
             this.updateCantidadItem(e.target);
         });
-        $('#ListaDetalleRequerimiento tbody').on("blur","input.handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida", ()=>{
+        $('#ListaDetalleRequerimiento tbody').on("blur", "input.handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida", () => {
             this.calcularPresupuestoUtilizadoYSaldoPorPartida();
         });
-        $('#ListaDetalleRequerimiento tbody').on("blur","input.handleBlurUpdatePrecioItem", (e)=>{
+        $('#ListaDetalleRequerimiento tbody').on("blur", "input.handleBlurUpdatePrecioItem", (e) => {
             this.updatePrecioItem(e.target);
         });
-        $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickAdjuntarArchivoItem", (e)=>{
+        $('#ListaDetalleRequerimiento tbody').on("click", "button.handleClickAdjuntarArchivoItem", (e) => {
             this.modalAdjuntarArchivosDetalle(e.currentTarget);
         });
 
@@ -131,17 +131,20 @@ class RequerimientoView {
             this.descargarArchivoItem(e.currentTarget);
         });
 
-        $('#ListaDetalleRequerimiento tbody').on("click","button.handleClickEliminarItem", (e)=>{
+        $('#ListaDetalleRequerimiento tbody').on("click", "button.handleClickEliminarItem", (e) => {
             this.eliminarItem(e);
         });
         $('#ListaDetalleRequerimiento').on("click", "input.handleClickIncluyeIGV", (e) => {
             this.actualizarValorIncluyeIGV(e.currentTarget);
         });
+        $('#ListaDetalleRequerimiento').on("click", "button.handleClickAsignarComoProductoTransformado", (e) => {
+            this.asignarComoProductoTransformado(e.currentTarget);
+        });
 
     }
 
-    editRequerimiento(){
-        if(parseInt(document.querySelector("input[name='id_requerimiento']").value) > 0){
+    editRequerimiento() {
+        if (parseInt(document.querySelector("input[name='id_requerimiento']").value) > 0) {
             $("#form-requerimiento .activation").attr('disabled', false);
             document.getElementsByName("btn-adjuntos-requerimiento")[0].removeAttribute('disabled');
 
@@ -155,7 +158,7 @@ class RequerimientoView {
             backdrop: 'true'
         });
 
-        this.construirTablaHistorialRequerimientosElaborados({'meOrAll':'ME','idEmpresa':'SIN_FILTRO','idSede':'SIN_FILTRO','idGrupo':'SIN_FILTRO','idDivision':'SIN_FILTRO','fechaRegistroDesde':'SIN_FILTRO','fechaRegistroHasta':'SIN_FILTRO','idEstado':'SIN_FILTRO'});
+        this.construirTablaHistorialRequerimientosElaborados({ 'meOrAll': 'ME', 'idEmpresa': 'SIN_FILTRO', 'idSede': 'SIN_FILTRO', 'idGrupo': 'SIN_FILTRO', 'idDivision': 'SIN_FILTRO', 'fechaRegistroDesde': 'SIN_FILTRO', 'fechaRegistroHasta': 'SIN_FILTRO', 'idEstado': 'SIN_FILTRO' });
         // this.requerimientoCtrl.getListadoElaborados().then((res)=> {
 
         // }).catch(function (err) {
@@ -173,14 +176,14 @@ class RequerimientoView {
             'language': vardataTables[0],
             'buttons': [],
             'order': [[10, 'desc']],
-             'serverSide': true,
+            'serverSide': true,
             'destroy': true,
             'ajax': {
                 'url': 'elaborados',
                 'type': 'POST',
-                'data':(parametros),
+                'data': (parametros),
                 beforeSend: data => {
-    
+
                     $("#listaRequerimiento").LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
@@ -190,37 +193,44 @@ class RequerimientoView {
             },
             'columns': [
                 { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
-                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
+                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center','render':function(data, type, row){
+                    if(row.tiene_transformacion==true){
+                        return '<i class="fas fa-random"></i> '+row.codigo;
+                    }else{
+                        return row.codigo;
+                    }
+                } },
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'fecha_entrega', 'name': 'fecha_entrega', 'className': 'text-center' },
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center' },
                 { 'data': 'grupo', 'name': 'adm_grupo.descripcion' },
                 { 'data': 'division', 'name': 'adm_flujo.nombre' },
-                {'render':
-                    function (data, type, row){
-                        switch (row['estado']) {
-                            case 1:
-                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 2:
-                                return '<span class="label label-success">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 3:
-                                return '<span class="label label-warning">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 5:
-                                return '<span class="label label-primary">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 7:
-                                return '<span class="label label-danger">' + row['estado_doc'] + '</span>';
-                                break;
-                            default:
-                                return '<span class="label label-default">' + row['estado_doc'] + '</span>';
-                                break;
+                {
+                    'render':
+                        function (data, type, row) {
+                            switch (row['estado']) {
+                                case 1:
+                                    return '<span class="label label-default">' + row['estado_doc'] + '</span>';
+                                    break;
+                                case 2:
+                                    return '<span class="label label-success">' + row['estado_doc'] + '</span>';
+                                    break;
+                                case 3:
+                                    return '<span class="label label-warning">' + row['estado_doc'] + '</span>';
+                                    break;
+                                case 5:
+                                    return '<span class="label label-primary">' + row['estado_doc'] + '</span>';
+                                    break;
+                                case 7:
+                                    return '<span class="label label-danger">' + row['estado_doc'] + '</span>';
+                                    break;
+                                default:
+                                    return '<span class="label label-default">' + row['estado_doc'] + '</span>';
+                                    break;
 
+                            }
                         }
-                    }
                 },
                 { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
                 { 'data': 'id_requerimiento' }
@@ -236,7 +246,7 @@ class RequerimientoView {
                     'render': function (data, type, row) {
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
-                        let btnSeleccionar = '<button type="button" class="btn btn-xs btn-success handleClickCargarRequerimiento" title="Seleccionar" data-id-requerimiento="'+row.id_requerimiento+'" >Seleccionar</button>';
+                        let btnSeleccionar = '<button type="button" class="btn btn-xs btn-success handleClickCargarRequerimiento" title="Seleccionar" data-id-requerimiento="' + row.id_requerimiento + '" >Seleccionar</button>';
                         return containerOpenBrackets + btnSeleccionar + containerCloseBrackets;
                     }, targets: 10
                 },
@@ -268,7 +278,7 @@ class RequerimientoView {
                 })
                 //Fin boton de busqueda
             },
-            "drawCallback": function( settings ) {
+            "drawCallback": function (settings) {
                 //Botón de búsqueda
                 $('#listaRequerimiento_filter input').prop('disabled', false);
                 $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
@@ -282,8 +292,8 @@ class RequerimientoView {
 
     cargarRequerimiento(idRequerimiento) {
         $('#modal-historial-requerimiento').modal('hide');
-        const objecto= this;
-        this.requerimientoCtrl.getHistorialRequerimiento(idRequerimiento).then((res)=> {
+        const objecto = this;
+        this.requerimientoCtrl.getHistorialRequerimiento(idRequerimiento).then((res) => {
             objecto.mostrarRequerimiento(res);
 
         }).catch(function (err) {
@@ -293,17 +303,17 @@ class RequerimientoView {
 
 
     mostrarRequerimiento(data) {
-        let hasDisabledInput='disabled';
-        tempArchivoAdjuntoRequerimientoCabeceraList=[];
-        tempArchivoAdjuntoRequerimientoDetalleList=[];
+        let hasDisabledInput = 'disabled';
+        tempArchivoAdjuntoRequerimientoCabeceraList = [];
+        tempArchivoAdjuntoRequerimientoDetalleList = [];
         if (data.hasOwnProperty('requerimiento')) {
-        
+
             this.RestablecerFormularioRequerimiento();
 
-            if(parseFloat(data.requerimiento[0].monto_igv)>0){
-                document.querySelector("input[name='incluye_igv']").checked=true;
-            }else{
-                document.querySelector("input[name='incluye_igv']").checked=false;
+            if (parseFloat(data.requerimiento[0].monto_igv) > 0) {
+                document.querySelector("input[name='incluye_igv']").checked = true;
+            } else {
+                document.querySelector("input[name='incluye_igv']").checked = false;
             }
             var btnImprimirRequerimiento = document.getElementsByName("btn-imprimir-requerimento-pdf");
             var btnAdjuntosRequerimiento = document.getElementsByName("btn-adjuntos-requerimiento");
@@ -316,12 +326,12 @@ class RequerimientoView {
             disabledControl(btnTrazabilidadRequerimiento, false);
 
             // construir select con todas la divisiones
-            let optionSelectDivisionHTML='';
-            this.requerimientoCtrl.getDivisiones().then((res)=> {
+            let optionSelectDivisionHTML = '';
+            this.requerimientoCtrl.getDivisiones().then((res) => {
                 res.forEach(element => {
-                        optionSelectDivisionHTML += `<option data-id-grupo="${element.grupo_id}" value="${element.id_division}">${element.descripcion}</option> `;
+                    optionSelectDivisionHTML += `<option data-id-grupo="${element.grupo_id}" value="${element.id_division}">${element.descripcion}</option> `;
                 });
-                document.querySelector("select[name='division']").innerHTML=optionSelectDivisionHTML;
+                document.querySelector("select[name='division']").innerHTML = optionSelectDivisionHTML;
                 this.mostrarCabeceraRequerimiento(data['requerimiento'][0]);
 
             }).catch(function (err) {
@@ -335,12 +345,12 @@ class RequerimientoView {
             // 
 
             if (data.hasOwnProperty('det_req')) {
-                if(data['requerimiento'][0].estado == 7 || data['requerimiento'][0].estado == 2){
+                if (data['requerimiento'][0].estado == 7 || data['requerimiento'][0].estado == 2) {
                     changeStateButton('cancelar'); //init.js
                     $("#form-requerimiento .activation").attr('disabled', true);
 
-                }else if(data['requerimiento'][0].estado ==1  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
-                    document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
+                } else if (data['requerimiento'][0].estado == 1 && data['requerimiento'][0].id_usuario == auth_user.id_usuario) {
+                    document.querySelector("form[id='form-requerimiento']").setAttribute('type', 'edition');
                     changeStateButton('historial'); //init.js
                     // allButtonAdjuntarNuevo.forEach(element => {
                     //     element.removeAttribute("disabled");
@@ -349,11 +359,11 @@ class RequerimientoView {
 
                     $("#form-requerimiento .activation").attr('disabled', true);
 
-                }else if((data['requerimiento'][0].estado ==1 || data['requerimiento'][0].estado ==3)  && data['requerimiento'][0].id_usuario == auth_user.id_usuario){
-                    hasDisabledInput='';
+                } else if ((data['requerimiento'][0].estado == 1 || data['requerimiento'][0].estado == 3) && data['requerimiento'][0].id_usuario == auth_user.id_usuario) {
+                    hasDisabledInput = '';
                     document.querySelector("div[id='group-historial-revisiones']").removeAttribute('hidden');
                     this.mostrarHistorialRevisionAprobacion(data['historial_aprobacion']);
-                    document.querySelector("form[id='form-requerimiento']").setAttribute('type','edition');
+                    document.querySelector("form[id='form-requerimiento']").setAttribute('type', 'edition');
                     changeStateButton('editar'); //init.js
                     disabledControl(btnAdjuntosRequerimiento, false);
 
@@ -365,8 +375,8 @@ class RequerimientoView {
 
 
 
-                }else{
-                    document.querySelector("div[id='group-historial-revisiones']").setAttribute('hidden',true);
+                } else {
+                    document.querySelector("div[id='group-historial-revisiones']").setAttribute('hidden', true);
 
                     // allButtonAdjuntarNuevo.forEach(element => {
                     //     element.setAttribute("disabled",true);
@@ -374,7 +384,7 @@ class RequerimientoView {
 
 
                 }
-                this.mostrarDetalleRequerimiento(data['det_req'],hasDisabledInput);
+                this.mostrarDetalleRequerimiento(data, hasDisabledInput);
             }
 
         } else {
@@ -384,43 +394,43 @@ class RequerimientoView {
                 'waning'
             );
         }
-        
+
         this.limpiarTabla('listaHistorialAprobacion');
         if (data.hasOwnProperty('historial_aprobacion')) {
-            if(data['historial_aprobacion'].length>0){
+            if (data['historial_aprobacion'].length > 0) {
                 console.log(data['historial_aprobacion']);
                 let html = '';
-                    for (let i = 0; i < data['historial_aprobacion'].length; i++) {
-                        html += `<tr>
+                for (let i = 0; i < data['historial_aprobacion'].length; i++) {
+                    html += `<tr>
                             <td style="text-align:center;">${data['historial_aprobacion'][i].nombre_corto ? data['historial_aprobacion'][i].nombre_corto : ''}</td>
-                            <td style="text-align:center;">${data['historial_aprobacion'][i].accion ? data['historial_aprobacion'][i].accion : ''}${data['historial_aprobacion'][i].tiene_sustento ==true ? ' (Tiene sustento)': ''}</td>
+                            <td style="text-align:center;">${data['historial_aprobacion'][i].accion ? data['historial_aprobacion'][i].accion : ''}${data['historial_aprobacion'][i].tiene_sustento == true ? ' (Tiene sustento)' : ''}</td>
                             <td style="text-align:left;">${data['historial_aprobacion'][i].detalle_observacion ? data['historial_aprobacion'][i].detalle_observacion : ''}</td>
                             <td style="text-align:center;">${data['historial_aprobacion'][i].fecha_vobo ? data['historial_aprobacion'][i].fecha_vobo : ''}</td>
                         </tr>`;
-                    }
+                }
                 document.querySelector("tbody[id='body_historial_aprobacion']").insertAdjacentHTML('beforeend', html)
             }
         }
     }
 
-    
+
     mostrarCabeceraRequerimiento(data) {
 
-        
+
         // console.log(auth_user);
         // document.querySelector("input[name='id_usuario_session']").value =data.
         document.querySelector("input[name='id_usuario_req']").value = data.id_usuario;
         document.querySelector("input[name='id_requerimiento']").value = data.id_requerimiento;
         document.querySelector("span[id='codigo_requerimiento']").textContent = data.codigo;
-        document.querySelector("input[name='id_cc']").value = data.id_cc??'';
-        document.querySelector("input[name='codigo_oportunidad']").value = data.codigo_oportunidad??'';
+        document.querySelector("input[name='id_cc']").value = data.id_cc ?? '';
+        document.querySelector("input[name='codigo_oportunidad']").value = data.codigo_oportunidad ?? '';
         document.querySelector("input[name='id_grupo']").value = data.id_grupo;
         document.querySelector("input[name='estado']").value = data.estado;
         document.querySelector("span[id='estado_doc']").textContent = data.estado_doc;
         document.querySelector("input[name='monto_subtotal']").value = data.monto_subtotal;
         document.querySelector("input[name='monto_igv']").value = data.monto_igv;
         document.querySelector("input[name='monto_total']").value = data.monto_total;
-        document.querySelector("span[id='nro_occ_softlink']").textContent = data.nro_occ_softlink !=null ?'OCC: '+data.nro_occ_softlink:'';
+        document.querySelector("span[id='nro_occ_softlink']").textContent = data.nro_occ_softlink != null ? 'OCC: ' + data.nro_occ_softlink : '';
         document.querySelector("input[name='fecha_requerimiento']").value = data.fecha_requerimiento;
         document.querySelector("input[name='concepto']").value = data.concepto;
         document.querySelector("select[name='moneda']").value = data.id_moneda;
@@ -428,7 +438,7 @@ class RequerimientoView {
         document.querySelector("select[name='prioridad']").value = data.id_prioridad;
         document.querySelector("select[name='rol_usuario']").value = data.id_rol;
         document.querySelector("select[name='empresa']").value = data.id_empresa;
-        this.getDataSelectSede(data.id_empresa,data.id_sede);
+        this.getDataSelectSede(data.id_empresa, data.id_sede);
         document.querySelector("select[name='sede']").value = data.id_sede;
         document.querySelector("input[name='fecha_entrega']").value = moment(data.fecha_entrega, "DD-MM-YYYY").format("YYYY-MM-DD");
         document.querySelector("select[name='division']").value = data.division_id;
@@ -461,14 +471,14 @@ class RequerimientoView {
         // document.querySelector("input[name='telefono_contacto']").value =data.
         // document.querySelector("input[name='direccion_contacto']").value =data.
         document.querySelector("textarea[name='observacion']").value = data.observacion;
-        tempArchivoAdjuntoRequerimientoCabeceraList=[];
+        tempArchivoAdjuntoRequerimientoCabeceraList = [];
         if ((data.adjuntos).length > 0) {
             (data.adjuntos).forEach(element => {
                 tempArchivoAdjuntoRequerimientoCabeceraList.push({
                     id: element.id_adjunto,
                     category: element.categoria_adjunto_id,
                     nameFile: element.archivo,
-                    action:'',
+                    action: '',
                     typeFile: null,
                     sizeFile: null,
                     file: []
@@ -478,18 +488,18 @@ class RequerimientoView {
             this.updateContadorTotalAdjuntosRequerimientoCabecera();
 
         }
-        let simboloMonedaPresupuestoUtilizado =document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo;
+        let simboloMonedaPresupuestoUtilizado = document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo;
         let allSelectorSimboloMoneda = document.getElementsByName("simboloMoneda");
-        if(allSelectorSimboloMoneda.length >0){
+        if (allSelectorSimboloMoneda.length > 0) {
             allSelectorSimboloMoneda.forEach(element => {
-                element.textContent=simboloMonedaPresupuestoUtilizado;
+                element.textContent = simboloMonedaPresupuestoUtilizado;
             });
         }
 
     }
 
 
-    mostrarHistorialRevisionAprobacion(data){
+    mostrarHistorialRevisionAprobacion(data) {
         this.limpiarTabla('listaHistorialRevision');
 
         let html = '';
@@ -497,7 +507,7 @@ class RequerimientoView {
             for (let i = 0; i < data.length; i++) {
                 html += `<tr>
                     <td style="text-align:center;">${data[i].nombre_corto ? data[i].nombre_corto : ''}</td>
-                    <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}${data[i].tiene_sustento ==true ? ' (Tiene sustento)': ''}</td>
+                    <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}${data[i].tiene_sustento == true ? ' (Tiene sustento)' : ''}</td>
                     <td style="text-align:left;">${data[i].detalle_observacion ? data[i].detalle_observacion : ''}</td>
                     <td style="text-align:center;">${data[i].fecha_vobo ? data[i].fecha_vobo : ''}</td>
                 </tr>`;
@@ -507,63 +517,65 @@ class RequerimientoView {
     }
 
 
-    mostrarDetalleRequerimiento(data,hasDisabledInput) {
-    //    console.log(hasDisabledInput);
-
+    mostrarDetalleRequerimiento(data, hasDisabledInput) {
+        let dataCabeceraRequerimiento =data['requerimiento'];
+        let dataDetalleRequerimiento=data['det_req'];
         this.limpiarTabla('ListaDetalleRequerimiento');
         vista_extendida();
 
-        for (let i = 0; i < data.length; i++) {
+        for (let i = 0; i < dataDetalleRequerimiento.length; i++) {
             // console.log(data);
-                let cantidadAdjuntos = data != null && data[i].adjuntos ? (data[i].adjuntos).filter((element, i) => element.estado != 7).length:0;
-                // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
-                let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
-                let indexUm=0;
-                
-                for (let j = 0; j < um.length; j++) {
-                    if(um[j].value== data[i].id_unidad_medida){
-                        indexUm=j;
-                    }
-                    
-                }
-                document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected","");
-                //  fin fix unidad medida
-                let idFila = data[i].id_detalle_requerimiento > 0 ? data[i].id_detalle_requerimiento : (this.makeId());
+            let cantidadAdjuntos = dataDetalleRequerimiento != null && dataDetalleRequerimiento[i].adjuntos ? (dataDetalleRequerimiento[i].adjuntos).filter((element, i) => element.estado != 7).length : 0;
+            // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de dataa
+            let um = document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
+            let indexUm = 0;
 
-                if (data[i].id_tipo_item == 1) { // producto
-                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${data[i].estado}" style="text-align:center; background-color:${data[i].estado ==7?'#f5e4e4':''}; ">
+            for (let j = 0; j < um.length; j++) {
+                if (um[j].value == dataDetalleRequerimiento[i].id_unidad_medida) {
+                    indexUm = j;
+                }
+
+            }
+            document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected", "");
+            //  fin fix unidad medida
+            let idFila = dataDetalleRequerimiento[i].id_detalle_requerimiento > 0 ? dataDetalleRequerimiento[i].id_detalle_requerimiento : (this.makeId());
+
+            if (dataDetalleRequerimiento[i].id_tipo_item == 1) { // producto
+                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${dataDetalleRequerimiento[i].estado}" style="text-align:center; background-color:${dataDetalleRequerimiento[i].estado == 7 ? '#f5e4e4' : ''}; ">
                 <td></td>
-                <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].descripcion_partida ?? '(NO SELECCIONADO)'}" >${data[i].codigo_partida ?? ''}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
+                <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${dataDetalleRequerimiento[i].descripcion_partida ?? '(NO SELECCIONADO)'}" >${dataDetalleRequerimiento[i].codigo_partida ?? ''}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
                     <div class="form-group">
-                        <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
+                        <input type="text" class="partida" name="idPartida[]" value="${dataDetalleRequerimiento[i].id_partida}" hidden>
                     </div>
                 </td>
-                <td><p class="descripcion-centro-costo" title="${data[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}">${data[i].codigo_centro_costo ?? '(NO SELECCIONADO)'} </p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
+                <td><p class="descripcion-centro-costo" title="${dataDetalleRequerimiento[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}">${dataDetalleRequerimiento[i].codigo_centro_costo ?? '(NO SELECCIONADO)'} </p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
                     <div class="form-group">
-                        <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
+                        <input type="text" class="centroCosto" name="idCentroCosto[]" value="${dataDetalleRequerimiento[i].id_centro_costo}" hidden>
                     </div>
                 </td>
                 <td>
-                    <input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${((data[i].part_number!=null && data[i].part_number.length >0) ? data[i].part_number: (data[i].producto_part_number != null? data[i].producto_part_number:''))}" ${hasDisabledInput}> ${data[i].tiene_transformacion == true?'<br><span class="badge badge-secondary">Transformado</span>':''}
-                    ${((data[i].codigo_producto!=null && data[i].codigo_producto.length >0) ? `<small> Código producto: ${ data[i].codigo_producto}</small>`: `<small> (Sin código de producto)</small>`)}
+                    <input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${((dataDetalleRequerimiento[i].part_number != null && dataDetalleRequerimiento[i].part_number.length > 0) ? dataDetalleRequerimiento[i].part_number : (dataDetalleRequerimiento[i].producto_part_number != null ? dataDetalleRequerimiento[i].producto_part_number : ''))}" ${hasDisabledInput}> ${dataDetalleRequerimiento[i].tiene_transformacion == true ? '<br><span class="badge badge-secondary conSinTransformacionText">Transformado</span>' : '<span class="badge badge-secondary conSinTransformacionText"></span>'}
+                    ${((dataDetalleRequerimiento[i].codigo_producto != null && dataDetalleRequerimiento[i].codigo_producto.length > 0) ? `<small> Código producto: ${dataDetalleRequerimiento[i].codigo_producto}</small>` : `<small> (Sin código de producto)</small>`)}
+                    <input type="number" class="conTransformacion" max="1" min="0" name="conTransformacion[]" value="${dataDetalleRequerimiento[i].tiene_transformacion==true?1:0}" hidden>
+
                     </td>
                 <td>
                     <div class="form-group">
-                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${((data[i].descripcion != null && data[i].descripcion >0 )?data[i].descripcion:(data[i].producto_descripcion !=null ?data[i].producto_descripcion:''))}"   ${hasDisabledInput} >${(data[i].descripcion != null ?data[i].descripcion:(data[i].producto_descripcion !=null ?data[i].producto_descripcion:''))}</textarea></td>
+                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${((dataDetalleRequerimiento[i].descripcion != null && dataDetalleRequerimiento[i].descripcion > 0) ? dataDetalleRequerimiento[i].descripcion : (dataDetalleRequerimiento[i].producto_descripcion != null ? dataDetalleRequerimiento[i].producto_descripcion : ''))}"   ${hasDisabledInput} >${(dataDetalleRequerimiento[i].descripcion != null ? dataDetalleRequerimiento[i].descripcion : (dataDetalleRequerimiento[i].producto_descripcion != null ? dataDetalleRequerimiento[i].producto_descripcion : ''))}</textarea></td>
                     </div>
-                <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}" ${hasDisabledInput} >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                <td><select name="unidad[]" class="form-control activation input-sm" value="${dataDetalleRequerimiento[i].id_unidad_medida}" ${hasDisabledInput} >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                 <td>
                     <div class="form-group">
-                        <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad??''}"   placeholder="Cantidad" ${hasDisabledInput}>
+                        <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${dataDetalleRequerimiento[i].cantidad ?? ''}"   placeholder="Cantidad" ${hasDisabledInput}>
                     </div>
                 </td>
                 <td>
                     <div class="form-group">
-                        <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario??''}" placeholder="Precio U." ${hasDisabledInput}>
+                        <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${dataDetalleRequerimiento[i].precio_unitario ?? ''}" placeholder="Precio U." ${hasDisabledInput}>
                     </div>
                 </td>  
                 <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-                <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo ??  ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo ?? ''}</textarea></td>
+                <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${dataDetalleRequerimiento[i].motivo ?? ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${dataDetalleRequerimiento[i].motivo ?? ''}</textarea></td>
                 <td>
                     <div class="btn-group" role="group">
                         <input type="hidden" class="tipoItem" name="tipoItem[]" value="1">
@@ -573,40 +585,41 @@ class RequerimientoView {
                             <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>    
                         </button> 
                         <button type="button" class="btn btn-danger btn-xs activation handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ${hasDisabledInput}><i class="fas fa-trash-alt"></i></button>
+                        <button type="button" class="btn ${dataDetalleRequerimiento[i].tiene_transformacion ==true?'btn-success':'btn-default'} btn-xs handleClickAsignarComoProductoTransformado" name="btnAsignarComoProductoTransformado[]" title="sin transformación" style="display:${dataCabeceraRequerimiento[0]['id_tipo_requerimiento']==6?'block':'none'};"><i class="fas fa-random"></i></button>
                     </div>
                 </td>
                 </tr>`);
-                } else { // servicio
-                    document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${data[i].estado}" style="text-align:center;  background-color:${data[i].estado ==7?'#f5e4e4':''};">
+            } else { // servicio
+                document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${dataDetalleRequerimiento[i].estado}" style="text-align:center;  background-color:${dataDetalleRequerimiento[i].estado == 7 ? '#f5e4e4' : ''};">
                     <td></td>
-                    <td><p class="descripcion-partida" data-id-partida="${data[i].id_partida}" data-presupuesto-total="${data[i].presupuesto_total_partida}" title="${data[i].descripcion_partida != null ? data[i].descripcion_partida : '(NO SELECCIONADO)'}" >${data[i].codigo_partida != null ? data[i].codigo_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
+                    <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${dataDetalleRequerimiento[i].descripcion_partida != null ? dataDetalleRequerimiento[i].descripcion_partida : '(NO SELECCIONADO)'}" >${dataDetalleRequerimiento[i].codigo_partida != null ? dataDetalleRequerimiento[i].codigo_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
                         <div class="form-group">
-                            <input type="text" class="partida" name="idPartida[]" value="${data[i].id_partida}" hidden>
+                            <input type="text" class="partida" name="idPartida[]" value="${dataDetalleRequerimiento[i].id_partida}" hidden>
                         </div>
                     </td>
-                    <td><p class="descripcion-centro-costo" title="${data[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}">${data[i].codigo_centro_costo ?? '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
+                    <td><p class="descripcion-centro-costo" title="${dataDetalleRequerimiento[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}">${dataDetalleRequerimiento[i].codigo_centro_costo ?? '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
                         <div class="form-group">
-                            <input type="text" class="centroCosto" name="idCentroCosto[]" value="${data[i].id_centro_costo}" hidden>
+                            <input type="text" class="centroCosto" name="idCentroCosto[]" value="${dataDetalleRequerimiento[i].id_centro_costo}" hidden>
                         </div>
                     </td>
                     <td>(Servicio)<input type="hidden" name="partNumber[]"></td>
                     <td>
                         <div class="form-group">
-                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${data[i].descripcion ?? ''}" ${hasDisabledInput} >${data[i].descripcion ?? ''}</textarea></td>
+                        <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${dataDetalleRequerimiento[i].descripcion ?? ''}" ${hasDisabledInput} >${dataDetalleRequerimiento[i].descripcion ?? ''}</textarea></td>
                         </div>
-                    <td><select name="unidad[]" class="form-control activation input-sm" value="${data[i].id_unidad_medida}"  ${hasDisabledInput}>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                    <td><select name="unidad[]" class="form-control activation input-sm" value="${dataDetalleRequerimiento[i].id_unidad_medida}"  ${hasDisabledInput}>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     <td>
                         <div class="form-group">
-                            <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${data[i].cantidad??''}"  placeholder="Cantidad" ${hasDisabledInput}>
+                            <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${dataDetalleRequerimiento[i].cantidad ?? ''}"  placeholder="Cantidad" ${hasDisabledInput}>
                         </div>
                     </td>
                     <td>
                         <div class="form-group">
-                            <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${data[i].precio_unitario??''}"  placeholder="Precio U." ${hasDisabledInput}>
+                            <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${dataDetalleRequerimiento[i].precio_unitario ?? ''}"  placeholder="Precio U." ${hasDisabledInput}>
                         </div>  
                     </td>
                     <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-                    <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${data[i].motivo ?? ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${data[i].motivo ?? ''}</textarea></td>
+                    <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${dataDetalleRequerimiento[i].motivo ?? ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${dataDetalleRequerimiento[i].motivo ?? ''}</textarea></td>
                     <td>
                         <div class="btn-group" role="group">
                             <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
@@ -619,15 +632,15 @@ class RequerimientoView {
                         </div>
                     </td>
                     </tr>`);
-                }
-            
+            }
+
         }
         this.updateContadorItem();
         this.autoUpdateSubtotal();
         this.calcularTotal();
         this.calcularPresupuestoUtilizadoYSaldoPorPartida();
-        tempArchivoAdjuntoRequerimientoDetalleList=[];
-        data.forEach(element => {
+        tempArchivoAdjuntoRequerimientoDetalleList = [];
+        dataDetalleRequerimiento.forEach(element => {
             if (element.adjuntos.length > 0) {
                 (element.adjuntos).forEach(adjunto => {
                     tempArchivoAdjuntoRequerimientoDetalleList.push({
@@ -647,15 +660,15 @@ class RequerimientoView {
 
     }
 
-    imprimirRequerimientoPdf(){
+    imprimirRequerimientoPdf() {
         var id = document.getElementsByName("id_requerimiento")[0].value;
-        window.open('imprimir-requerimiento-pdf/'+id+'/0');
-    
+        window.open('imprimir-requerimiento-pdf/' + id + '/0');
+
     }
 
     limpiarTabla(idElement) {
         let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
-        if(nodeTbody!=null){
+        if (nodeTbody != null) {
             while (nodeTbody.children.length > 0) {
                 nodeTbody.removeChild(nodeTbody.lastChild);
             }
@@ -664,11 +677,11 @@ class RequerimientoView {
     }
     // cabecera requerimiento
     changeMonedaSelect(e) {
-        let simboloMonedaPresupuestoUtilizado =document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo
+        let simboloMonedaPresupuestoUtilizado = document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo
         let allSelectorSimboloMoneda = document.getElementsByName("simboloMoneda");
-        if(allSelectorSimboloMoneda.length >0){
+        if (allSelectorSimboloMoneda.length > 0) {
             allSelectorSimboloMoneda.forEach(element => {
-                element.textContent=simboloMonedaPresupuestoUtilizado;
+                element.textContent = simboloMonedaPresupuestoUtilizado;
             });
         }
 
@@ -686,13 +699,13 @@ class RequerimientoView {
 
     changeOptEmpresaSelect(obj) {
         this.getDataSelectSede(obj.target.value);
- 
+
 
     }
 
-    getDataSelectSede(idEmpresa = null, idSede=null) {
+    getDataSelectSede(idEmpresa = null, idSede = null) {
         if (idEmpresa > 0) {
-            this.requerimientoCtrl.obtenerSede(idEmpresa).then((res)=> {
+            this.requerimientoCtrl.obtenerSede(idEmpresa).then((res) => {
                 this.llenarSelectSede(res, idSede);
                 this.cargarAlmacenes($('[name=sede]').val());
                 this.seleccionarAlmacen();
@@ -706,7 +719,7 @@ class RequerimientoView {
         return false;
     }
 
-    llenarSelectSede(array,idSede) {
+    llenarSelectSede(array, idSede) {
         // console.log(idSede);
         let selectElement = document.querySelector("div[id='input-group-sede'] select[name='sede']");
         if (selectElement.options.length > 0) {
@@ -721,8 +734,8 @@ class RequerimientoView {
             let option = document.createElement("option");
             option.text = element.descripcion;
             option.value = element.id_sede;
-            if (element.id_sede == idSede ) {
-                option.selected=true;
+            if (element.id_sede == idSede) {
+                option.selected = true;
 
             }
             option.setAttribute('data-ubigeo', element.id_ubigeo);
@@ -744,7 +757,7 @@ class RequerimientoView {
             for (i = L; i > 0; i--) {
                 if (selectAlmacen.options[i].dataset.idEmpresa == document.querySelector("select[id='empresa']").value) {
                     if ([4, 10, 11, 12, 13, 14].includes(parseInt(selectAlmacen.options[i].dataset.idSede)) == true) { ///default almacen lima
-                        selectAlmacen.options[i].selected=true;
+                        selectAlmacen.options[i].selected = true;
                     }
                 }
             }
@@ -771,22 +784,22 @@ class RequerimientoView {
     cargarAlmacenes(sede) {
         // console.log(sede);
         if (sede !== '') {
-            this.requerimientoCtrl.obtenerAlmacenes(sede).then((res)=> {
+            this.requerimientoCtrl.obtenerAlmacenes(sede).then((res) => {
                 // console.log(res);
                 let option = '';
-                if(res.length>0){
+                if (res.length > 0) {
                     for (let i = 0; i < res.length; i++) {
-                        if(res[i].estado !=7 && res[i].id_tipo_almacen ==1){
-                        option += '<option data-id-sede="' + res[i].id_sede + '" data-id-empresa="' + res[i].id_empresa + '" data-id-tipo-almacen="' + res[i].id_tipo_almacen + '" value="' + res[i].id_almacen + '" selected>' + res[i].codigo + ' - ' + res[i].descripcion + '</option>';
-                        break;
+                        if (res[i].estado != 7 && res[i].id_tipo_almacen == 1) {
+                            option += '<option data-id-sede="' + res[i].id_sede + '" data-id-empresa="' + res[i].id_empresa + '" data-id-tipo-almacen="' + res[i].id_tipo_almacen + '" value="' + res[i].id_almacen + '" selected>' + res[i].codigo + ' - ' + res[i].descripcion + '</option>';
+                            break;
                         }
                     }
-                }else{
+                } else {
                     Swal.fire(
                         '',
                         'La sede seleccionada no tiene un almacén origen, consultar con almacén',
                         'warning'
-                    );  
+                    );
                 }
                 $('[name=id_almacen]').html('<option value="0" disabled selected>Elija una opción</option>' + option);
             }).catch(function (err) {
@@ -846,7 +859,7 @@ class RequerimientoView {
     }
 
     updateConcepto(obj) {
-    
+
         if (obj.target.value.length > 0) {
             obj.target.closest('div').classList.remove("has-error");
             if (obj.target.closest("div").querySelector("span")) {
@@ -899,8 +912,8 @@ class RequerimientoView {
         }
     }
     updateDivision(obj) {
-        let currentIdGrupo= obj.target.options[obj.target.selectedIndex].dataset.idGrupo;
-        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value=currentIdGrupo;
+        let currentIdGrupo = obj.target.options[obj.target.selectedIndex].dataset.idGrupo;
+        document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = currentIdGrupo;
 
         if (obj.target.value > 0) {
             obj.target.closest('div').classList.remove("has-error");
@@ -920,8 +933,33 @@ class RequerimientoView {
         } else {
             obj.target.closest('div').classList.add("has-error");
         }
+
+        if (obj.target.value == 6) { // se seleccionó el tipo de requerimiento de "atención de garantías"
+            this.actualizarEstadoBotonProductoTransformado('ACTIVAR');
+        } else {
+            this.actualizarEstadoBotonProductoTransformado('DESACTIVAR');
+        }
     }
 
+    actualizarEstadoBotonProductoTransformado(opcion) {
+        let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
+        switch (opcion) {
+            case 'ACTIVAR':
+                for (let i = 0; i < tbodyChildren.length; i++) {
+                    tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']")?tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']").style.display="block":false;
+                }
+                break;
+
+            case 'DESACTIVAR':
+                for (let i = 0; i < tbodyChildren.length; i++) {
+                    tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']")?tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']").style.display="none":false;
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
 
     // detalle requerimiento
 
@@ -934,20 +972,20 @@ class RequerimientoView {
         return ID;
     }
 
-    agregarFilaProducto(){
-        
+    agregarFilaProducto() {
+
         vista_extendida();
-            let idFila = this.makeId();
-                // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
-                let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
-                let indexUm=0;
-                for (let i = 0; i < um.length; i++) {
-                    if(um[i].value== 1){
-                        indexUm=i;
-                    }   
-                }
-                document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected","");
-                //  fin fix unidad medida
+        let idFila = this.makeId();
+        // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
+        let um = document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
+        let indexUm = 0;
+        for (let i = 0; i < um.length; i++) {
+            if (um[i].value == 1) {
+                indexUm = i;
+            }
+        }
+        document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected", "");
+        //  fin fix unidad medida
 
         let tipoRequerimiento = document.querySelector("form[id='form-requerimiento'] select[name='tipo_requerimiento']").value;
         let idGrupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
@@ -964,7 +1002,12 @@ class RequerimientoView {
                 <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
             </div>
         </td>
-        <td><input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number"></td>
+        <td>
+            <input class="form-control input-sm" type="text" name="partNumber[]" placeholder="Part number">
+            <input type="number" class="conTransformacion" max="1" min="0" name="conTransformacion[]" value="0" hidden>
+            <br><span class="badge badge-secondary conSinTransformacionText"></span>
+
+        </td>
         <td>
             <div class="form-group">
                 <textarea class="form-control input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" ></textarea></td>
@@ -990,26 +1033,27 @@ class RequerimientoView {
                     <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
                 </button> 
                 <button type="button" class="btn btn-danger btn-xs handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar"  ><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="btn btn-default btn-xs handleClickAsignarComoProductoTransformado" name="btnAsignarComoProductoTransformado[]" title="sin transformación" style="display:${document.querySelector("select[name='tipo_requerimiento']").value==6?"block":"none"};"><i class="fas fa-random"></i></button>
             </div>
         </td>
         </tr>`);
 
         this.updateContadorItem();
     }
-    agregarFilaServicio(){
+    agregarFilaServicio() {
         vista_extendida();
-            let idFila = this.makeId();
+        let idFila = this.makeId();
 
-                // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
-                let um=document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
-                let indexUm=0;
-                for (let i = 0; i < um.length; i++) {
-                    if(um[i].value== 17){
-                        indexUm=i;
-                    }   
-                }
-                document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected","");
-                //  fin fix unidad medida
+        // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de data
+        let um = document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
+        let indexUm = 0;
+        for (let i = 0; i < um.length; i++) {
+            if (um[i].value == 17) {
+                indexUm = i;
+            }
+        }
+        document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected", "");
+        //  fin fix unidad medida
 
         document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
         <td></td>
@@ -1146,25 +1190,25 @@ class RequerimientoView {
     }
 
     calcularTotal() {
-        
+
         let TableTBody = document.querySelector("tbody[id='body_detalle_requerimiento']");
         let childrenTableTbody = TableTBody.children;
         let monto_subtotal = 0;
         for (let index = 0; index < childrenTableTbody.length; index++) {
-            if(childrenTableTbody[index].dataset.estado !=7){
+            if (childrenTableTbody[index].dataset.estado != 7) {
                 // console.log(childrenTableTbody[index]);
                 let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
                 let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
                 monto_subtotal += (cantidad * precioUnitario);
             }
         }
-        let monto_igv=0;
+        let monto_igv = 0;
 
         let incluyeIGV = document.querySelector("input[name='incluye_igv']").checked;
         if (incluyeIGV == true) {
-            monto_igv= monto_subtotal*0.18;
+            monto_igv = monto_subtotal * 0.18;
         }
-        let monto_total= monto_subtotal+monto_igv;
+        let monto_total = monto_subtotal + monto_igv;
         document.querySelector("label[name='monto_subtotal']").textContent = Util.formatoNumero(monto_subtotal, 2);
         document.querySelector("input[name='monto_subtotal']").value = monto_subtotal;
         document.querySelector("label[name='monto_igv']").textContent = Util.formatoNumero(monto_igv, 2);
@@ -1172,8 +1216,8 @@ class RequerimientoView {
         document.querySelector("label[name='monto_total']").textContent = Util.formatoNumero(monto_total, 2);
         document.querySelector("input[name='monto_total']").value = monto_total;
     }
-    
-    actualizarValorIncluyeIGV(){
+
+    actualizarValorIncluyeIGV() {
         this.calcularTotal();
         this.calcularPresupuestoUtilizadoYSaldoPorPartida();
 
@@ -1181,7 +1225,7 @@ class RequerimientoView {
 
     // partidas 
     cargarModalPartidas(obj) {
-    
+
         tempObjectBtnPartida = obj.target;
         let id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
         let id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
@@ -1234,16 +1278,16 @@ class RequerimientoView {
             `;
 
             data['titulos'].forEach(titulo => {
-                if(titulo.id_presup ==presupuesto.id_presup){
+                if (titulo.id_presup == presupuesto.id_presup) {
                     html += `
                     <tr id="com-${titulo.id_titulo}">
                         <td><strong>${titulo.codigo}</strong></td>
                         <td><strong>${titulo.descripcion}</strong></td>
                         <td class="right ${isVisible}"><strong>S/${Util.formatoNumero(titulo.total, 2)}</strong></td>
                     </tr> `;
-    
+
                     data['partidas'].forEach(partida => {
-                        if(partida.id_presup == presupuesto.id_presup){
+                        if (partida.id_presup == presupuesto.id_presup) {
                             if (titulo.codigo == partida.cod_padre) {
                                 html += `<tr id="par-${partida.id_partida}">
                                     <td style="width:15%; text-align:left;" name="codigo">${partida.codigo}</td>
@@ -1266,15 +1310,15 @@ class RequerimientoView {
         </div>`;
         });
         document.querySelector("div[id='listaPartidas']").innerHTML = html;
- 
 
- 
- 
+
+
+
 
         $('#modal-partidas div.modal-body').LoadingOverlay("hide", true);
- 
+
     }
-    
+
 
     apertura(idPresup) {
         // let idPresup = e.target.dataset.idPresup;
@@ -1285,12 +1329,12 @@ class RequerimientoView {
             $("#pres-" + idPresup + " ").removeClass('visible');
             $("#pres-" + idPresup + " ").addClass('oculto');
         }
- 
+
 
     }
 
     changeBtnIcon(obj) {
-        
+
         if (obj.currentTarget.children[0].className == 'fas fa-chevron-right') {
 
             obj.currentTarget.children[0].classList.replace('fa-chevron-right', 'fa-chevron-down')
@@ -1304,7 +1348,7 @@ class RequerimientoView {
         let codigo = $("#par-" + idPartida + " ").find("td[name=codigo]")[0].innerHTML;
         let descripcion = $("#par-" + idPartida + " ").find("td[name=descripcion]")[0].innerHTML;
         let presupuestoTotal = $("#par-" + idPartida + " ").find("td[name=importe_total]")[0].dataset.presupuestoTotal;
-        
+
         tempObjectBtnPartida.nextElementSibling.querySelector("input").value = idPartida;
         tempObjectBtnPartida.textContent = 'Cambiar';
 
@@ -1327,12 +1371,12 @@ class RequerimientoView {
         let subtotalItemList = [];
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
 
-        let idMonedaPresupuestoUtilizado= document.querySelector("select[name='moneda']").value;
-        let simboloMonedaPresupuestoUtilizado= document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo;
-        let actualTipoCambioCompra=document.querySelector("span[id='tipo_cambio_compra']").textContent;
+        let idMonedaPresupuestoUtilizado = document.querySelector("select[name='moneda']").value;
+        let simboloMonedaPresupuestoUtilizado = document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo;
+        let actualTipoCambioCompra = document.querySelector("span[id='tipo_cambio_compra']").textContent;
 
 
-        
+
         for (let index = 0; index < tbodyChildren.length; index++) {
             if (tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida > 0) {
                 if (!partidaAgregadas.includes(tbodyChildren[index].querySelector("p[class='descripcion-partida']").dataset.idPartida)) {
@@ -1349,10 +1393,10 @@ class RequerimientoView {
                         'saldo': 0
                     });
                 }
-                
+
                 let subtotal = (tbodyChildren[index].querySelector("input[class~='cantidad']").value > 0 ? tbodyChildren[index].querySelector("input[class~='cantidad']").value : 0) * (tbodyChildren[index].querySelector("input[class~='precio']").value > 0 ? tbodyChildren[index].querySelector("input[class~='precio']").value : 0);
-                if(document.querySelector("input[name='incluye_igv']").checked ==true){
-                    subtotal= (subtotal *0.18) + subtotal;
+                if (document.querySelector("input[name='incluye_igv']").checked == true) {
+                    subtotal = (subtotal * 0.18) + subtotal;
                 }
 
                 subtotalItemList.push({
@@ -1373,11 +1417,11 @@ class RequerimientoView {
         }
 
         for (let p = 0; p < tempPartidasActivas.length; p++) {
-            if(tempPartidasActivas[p].id_moneda_presupuesto_utilizado==2){ // moneda dolares
-                let alCambio=tempPartidasActivas[p].presupuesto_utilizado * actualTipoCambioCompra;
-                tempPartidasActivas[p].presupuesto_utilizado_al_cambio= alCambio;
+            if (tempPartidasActivas[p].id_moneda_presupuesto_utilizado == 2) { // moneda dolares
+                let alCambio = tempPartidasActivas[p].presupuesto_utilizado * actualTipoCambioCompra;
+                tempPartidasActivas[p].presupuesto_utilizado_al_cambio = alCambio;
                 tempPartidasActivas[p].saldo = tempPartidasActivas[p].presupuesto_total - (alCambio > 0 ? alCambio : 0);
-            }else{
+            } else {
                 tempPartidasActivas[p].saldo = tempPartidasActivas[p].presupuesto_total - (tempPartidasActivas[p].presupuesto_utilizado > 0 ? tempPartidasActivas[p].presupuesto_utilizado : 0);
 
             }
@@ -1396,19 +1440,19 @@ class RequerimientoView {
 
 
         let mensajeAlerta = '';
- 
+
         data.forEach(partida => {
             if (partida.saldo < 0) {
-                
+
                 mensajeAlerta += `La partida ${partida.codigo} - ${partida.descripcion} a excedido el presupuesto asignado, tiene un saldo actual de ${Util.formatoNumero(partida.saldo, 2)}. \n`
             }
         });
         if (mensajeAlerta.length > 0) {
 
             Lobibox.notify('info', {
-                title:false,
+                title: false,
                 size: 'normal',
-                width: 500,  
+                width: 500,
                 rounded: true,
                 sound: false,
                 delayIndicator: false,
@@ -1421,13 +1465,13 @@ class RequerimientoView {
 
     construirTablaPresupuestoUtilizadoYSaldoPorPartida(data) {
         this.limpiarTabla('listaPartidasActivas');
-        data.forEach(element => { 
+        data.forEach(element => {
 
             document.querySelector("tbody[id='body_partidas_activas']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                 <td>${element.codigo}</td>
                 <td>${element.descripcion}</td>
                 <td style="text-align:right;"><span>S/</span>${Util.formatoNumero(element.presupuesto_total, 2)}</td>
-                <td style="text-align:right;"><span class="simboloMoneda">${element.simbolo_moneda_presupuesto_utilizado}</span>${element.presupuesto_utilizado_al_cambio>0?(Util.formatoNumero(element.presupuesto_utilizado, 2)+' (S/'+Util.formatoNumero(element.presupuesto_utilizado_al_cambio, 2)+')'):(Util.formatoNumero(element.presupuesto_utilizado, 2))}</td>
+                <td style="text-align:right;"><span class="simboloMoneda">${element.simbolo_moneda_presupuesto_utilizado}</span>${element.presupuesto_utilizado_al_cambio > 0 ? (Util.formatoNumero(element.presupuesto_utilizado, 2) + ' (S/' + Util.formatoNumero(element.presupuesto_utilizado_al_cambio, 2) + ')') : (Util.formatoNumero(element.presupuesto_utilizado, 2))}</td>
                 <td style="text-align:right; color:${element.saldo >= 0 ? '#333' : '#dd4b39'}"><span>S/</span>${Util.formatoNumero(element.saldo, 2)}</td>
             </tr>`);
 
@@ -1448,7 +1492,7 @@ class RequerimientoView {
     listarCentroCostos() {
         this.limpiarTabla('listaCentroCosto');
 
-        this.requerimientoCtrl.obtenerCentroCostos().then( (res)=> {
+        this.requerimientoCtrl.obtenerCentroCostos().then((res) => {
             this.construirCentroCostos(res);
         }).catch(function (err) {
             console.log(err)
@@ -1497,7 +1541,7 @@ class RequerimientoView {
                                         <tr id="com-${hijo3.id_centro_costo}">
                                             <td>${hijo3.codigo}</td>
                                             <td>${hijo3.descripcion}</td>
-                                            <td style="width:5%; text-align:center;">${hijo3.seleccionable ?`<button class="btn btn-success btn-xs handleClickSelectCentroCosto" data-id-centro-costo="${hijo3.id_centro_costo}" data-codigo="${hijo3.codigo}" data-descripcion-centro-costo="${hijo3.descripcion}" >Seleccionar</button>`:'' }</td>
+                                            <td style="width:5%; text-align:center;">${hijo3.seleccionable ? `<button class="btn btn-success btn-xs handleClickSelectCentroCosto" data-id-centro-costo="${hijo3.id_centro_costo}" data-codigo="${hijo3.codigo}" data-descripcion-centro-costo="${hijo3.descripcion}" >Seleccionar</button>` : ''}</td>
                                         </tr> `;
                                     }
                                 }
@@ -1510,7 +1554,7 @@ class RequerimientoView {
                                                 <tr id="com-${hijo4.id_centro_costo}">
                                                     <td>${hijo4.codigo}</td>
                                                     <td>${hijo4.descripcion}</td>
-                                                    <td style="width:5%; text-align:center;">${hijo4.seleccionable?`<button class="btn btn-success btn-xs handleClickSelectCentroCosto" data-id-centro-costo="${hijo4.id_centro_costo}" data-codigo="${hijo4.codigo}" data-descripcion-centro-costo="${hijo4.descripcion}">Seleccionar</button>`:''}</td>
+                                                    <td style="width:5%; text-align:center;">${hijo4.seleccionable ? `<button class="btn btn-success btn-xs handleClickSelectCentroCosto" data-id-centro-costo="${hijo4.id_centro_costo}" data-codigo="${hijo4.codigo}" data-descripcion-centro-costo="${hijo4.descripcion}">Seleccionar</button>` : ''}</td>
                                                 </tr> `;
                                             }
                                         }
@@ -1532,8 +1576,8 @@ class RequerimientoView {
         });
         document.querySelector("div[name='centro-costos-panel']").innerHTML = html;
 
-    
- 
+
+
         $('#modal-centro-costos div.modal-body').LoadingOverlay("hide", true);
 
     }
@@ -1561,17 +1605,17 @@ class RequerimientoView {
     }
 
     //adjunto cabecera requerimiento 
- 
 
 
 
-    modalAdjuntarArchivosCabecera(obj) { 
+
+    modalAdjuntarArchivosCabecera(obj) {
         $('#modal-adjuntar-archivos-requerimiento').modal({
             show: true
         });
         $(":file").filestyle('clear');
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento'] div[id='group-action-upload-file']").classList.remove("oculto");
-        let idRequerimiento =  document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
+        let idRequerimiento = document.querySelector("form[id='form-requerimiento'] input[name='id_requerimiento']").value;
         this.listarAdjuntosDeCabecera(idRequerimiento);
     }
 
@@ -1592,26 +1636,26 @@ class RequerimientoView {
     }
 
 
-    listarAdjuntosDeCabecera(idRequerimiento){
+    listarAdjuntosDeCabecera(idRequerimiento) {
         if (idRequerimiento.length > 0) {
-        //     var regExp = /[a-zA-Z]/g; //expresión regular
-        //     if (regExp.test(idRequerimiento) == false) {
-        //             this.getAdjuntosRequerimientoCabecera(idRequerimiento).then((adjuntoList) => {
-        //                 tempArchivoAdjuntoRequerimientoCabeceraList = [];
-        //                 (adjuntoList).forEach(element => {
-        //                     tempArchivoAdjuntoRequerimientoCabeceraList.push({
-        //                         id: element.id_adjunto,
-        //                         category: element.categoria_adjunto_id,
-        //                         nameFile: element.archivo,
-        //                         action:'',
-        //                         file: []
-        //                     });
+            //     var regExp = /[a-zA-Z]/g; //expresión regular
+            //     if (regExp.test(idRequerimiento) == false) {
+            //             this.getAdjuntosRequerimientoCabecera(idRequerimiento).then((adjuntoList) => {
+            //                 tempArchivoAdjuntoRequerimientoCabeceraList = [];
+            //                 (adjuntoList).forEach(element => {
+            //                     tempArchivoAdjuntoRequerimientoCabeceraList.push({
+            //                         id: element.id_adjunto,
+            //                         category: element.categoria_adjunto_id,
+            //                         nameFile: element.archivo,
+            //                         action:'',
+            //                         file: []
+            //                     });
 
-        //                 });
-        //             }).catch(function (err) {
-        //                 console.log(err)
-        //             });
-        //     }
+            //                 });
+            //             }).catch(function (err) {
+            //                 console.log(err)
+            //             });
+            //     }
 
             this.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
                 this.construirTablaAdjuntosRequerimientoPagoCabecera(tempArchivoAdjuntoRequerimientoCabeceraList, categoriaAdjuntoList);
@@ -1623,7 +1667,7 @@ class RequerimientoView {
         }
     }
 
-    construirTablaAdjuntosRequerimientoPagoCabecera(adjuntoList, categoriaAdjuntoList, tipoModal=null) {
+    construirTablaAdjuntosRequerimientoPagoCabecera(adjuntoList, categoriaAdjuntoList, tipoModal = null) {
         this.limpiarTabla('listaArchivosRequerimiento');
         let html = '';
         let hasHiddenBtnEliminarArchivo = '';
@@ -1631,7 +1675,7 @@ class RequerimientoView {
         let estadoActual = document.querySelector("form[id='form-requerimiento'] input[name='estado']").value;
 
         if (estadoActual == 1 || estadoActual == 3 || estadoActual == '') {
-             if (document.querySelector("form[id='form-requerimiento'] input[name='id_usuario_req']").value == auth_user.id_usuario) { //usuario en sesion == usuario requerimiento
+            if (document.querySelector("form[id='form-requerimiento'] input[name='id_usuario_req']").value == auth_user.id_usuario) { //usuario en sesion == usuario requerimiento
                 hasHiddenBtnEliminarArchivo = '';
             } else {
                 hasHiddenBtnEliminarArchivo = 'oculto';
@@ -1753,12 +1797,12 @@ class RequerimientoView {
         document.querySelector("tbody[id='body_archivos_requerimiento']").insertAdjacentHTML('beforeend', html);
     }
 
-    updateContadorTotalAdjuntosRequerimientoCabecera(){
+    updateContadorTotalAdjuntosRequerimientoCabecera() {
         document.querySelector("span[name='cantidadAdjuntosCabeceraRequerimiento']").textContent = tempArchivoAdjuntoRequerimientoCabeceraList.filter((element, i) => element.action != 'ELIMINAR').length;
-        
+
 
     }
-    
+
     agregarAdjuntoRequerimiento(obj) {
         this.updateContadorTotalAdjuntosRequerimientoCabecera();
         if (obj.files != undefined && obj.files.length > 0) {
@@ -1802,14 +1846,14 @@ class RequerimientoView {
         }
     }
 
-    eliminarArchivoRequerimientoCabecera(obj){
+    eliminarArchivoRequerimientoCabecera(obj) {
         obj.closest("tr").remove();
-        
+
         var regExp = /[a-zA-Z]/g; //expresión regular
-        if((regExp.test(obj.dataset.id) == true)){
+        if ((regExp.test(obj.dataset.id) == true)) {
 
             tempArchivoAdjuntoRequerimientoCabeceraList = tempArchivoAdjuntoRequerimientoCabeceraList.filter((element, i) => element.id != obj.dataset.id);
-        }else{
+        } else {
             if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
                 let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.dataset.id);
                 tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ELIMINAR';
@@ -1858,30 +1902,30 @@ class RequerimientoView {
         }
     }
 
-    actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento(){
+    actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento() {
         // console.log(document.querySelector("input[name='estado']").value);
         switch (document.querySelector("input[name='estado']").value) {
             case '1':
-                if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
+                if (document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario) { //usuario en sesion == usuario requerimiento
                     document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
-                }else{
+                } else {
                     document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
                 }
                 break;
-        
+
             case '2':
                 document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
                 break;
-        
+
             case '3':
-                if(document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario){ //usuario en sesion == usuario requerimiento
+                if (document.querySelector("input[name='id_usuario_req']").value == auth_user.id_usuario) { //usuario en sesion == usuario requerimiento
                     document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
-                }else{
+                } else {
                     document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.add('oculto');
                 }
-                
+
                 break;
-        
+
             case '':
                 document.querySelector("div[id='modal-adjuntar-archivos-detalle-requerimiento'] div[id='group-action-upload-file']").classList.remove('oculto');
                 break;
@@ -1893,7 +1937,7 @@ class RequerimientoView {
     }
 
 
-    getAdjuntosRequerimientoDetalle(idDetalleRequerimiento){
+    getAdjuntosRequerimientoDetalle(idDetalleRequerimiento) {
         return new Promise(function (resolve, reject) {
             $.ajax({
                 type: 'GET',
@@ -1909,7 +1953,7 @@ class RequerimientoView {
         });
     }
 
-    construirTablaAdjuntosRequerimientoDetalle(adjuntoList , idDetalleRequerimiento=null) {
+    construirTablaAdjuntosRequerimientoDetalle(adjuntoList, idDetalleRequerimiento = null) {
         this.limpiarTabla('listaArchivos');
         let html = '';
         let hasDisableBtnEliminarArchivo = '';
@@ -1924,7 +1968,7 @@ class RequerimientoView {
         }
 
         adjuntoList.forEach(element => {
-            if(idDetalleRequerimiento.length>0 && idDetalleRequerimiento== element.id_detalle_requerimiento){
+            if (idDetalleRequerimiento.length > 0 && idDetalleRequerimiento == element.id_detalle_requerimiento) {
 
                 html += `<tr id="${element.id}" style="text-align:center">
             <td style="text-align:left;">${element.nameFile}</td>
@@ -1933,7 +1977,7 @@ class RequerimientoView {
                 if (Number.isInteger(element.id)) {
                     html += `<button type="button" class="btn btn-info btn-md handleClickDescargarArchivoRequerimientoDetalle" name="btnDescargarArchivoRequerimientoDetalle" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
                 }
-     
+
                 html += `<button type="button" class="btn btn-danger btn-md handleClickEliminarArchivoRequerimientoDetalle" name="btnEliminarArchivoRequerimientoDetalle" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>
 
                 </div>
@@ -1946,33 +1990,33 @@ class RequerimientoView {
 
 
     listarArchivosAdjuntosDetalle(idDetalleRequerimiento) {
-        
+
         if (idDetalleRequerimiento.length > 0) {
-        //     // this.limpiarTabla('listaArchivos');
-            
-        //     var regExp = /[a-zA-Z]/g; //expresión regular
-        //     if (regExp.test(idDetalleRequerimiento) == false) {
-        //         let tempArchivoAdjuntoRequerimientoDetalleList=[]
-        //         this.getAdjuntosRequerimientoDetalle(idDetalleRequerimiento).then((adjuntoList) => {
-        //             (adjuntoList).forEach(element => {
-        //                 if(element.id_estado !=7){ // omitir anulados
+            //     // this.limpiarTabla('listaArchivos');
 
-        //                     tempArchivoAdjuntoRequerimientoDetalleList.push({
-        //                     id: element.id_adjunto,
-        //                     id_detalle_requerimiento: element.id_detalle_requerimiento,
-        //                     nameFile: element.archivo,
-        //                     action: '',
-        //                     file: []
-        //                 });
-        //             }
-        //             });
-        //         }).catch(function (err) {
-        //             console.log(err)
-        //         })
-        //     }
+            //     var regExp = /[a-zA-Z]/g; //expresión regular
+            //     if (regExp.test(idDetalleRequerimiento) == false) {
+            //         let tempArchivoAdjuntoRequerimientoDetalleList=[]
+            //         this.getAdjuntosRequerimientoDetalle(idDetalleRequerimiento).then((adjuntoList) => {
+            //             (adjuntoList).forEach(element => {
+            //                 if(element.id_estado !=7){ // omitir anulados
 
-    
-            this.construirTablaAdjuntosRequerimientoDetalle(tempArchivoAdjuntoRequerimientoDetalleList,idDetalleRequerimiento);
+            //                     tempArchivoAdjuntoRequerimientoDetalleList.push({
+            //                     id: element.id_adjunto,
+            //                     id_detalle_requerimiento: element.id_detalle_requerimiento,
+            //                     nameFile: element.archivo,
+            //                     action: '',
+            //                     file: []
+            //                 });
+            //             }
+            //             });
+            //         }).catch(function (err) {
+            //             console.log(err)
+            //         })
+            //     }
+
+
+            this.construirTablaAdjuntosRequerimientoDetalle(tempArchivoAdjuntoRequerimientoDetalleList, idDetalleRequerimiento);
 
 
         }
@@ -1986,7 +2030,7 @@ class RequerimientoView {
                         id: this.makeId(),
                         id_detalle_requerimiento: objBotonAdjuntoRequerimientoDetalleSeleccionado.dataset.id,
                         nameFile: file.name,
-                        action:'GUARDAR',
+                        action: 'GUARDAR',
                         file: file
                     };
                     this.agregarRegistroEnTablaAdjuntoRequerimientoDetalle(payload);
@@ -2005,11 +2049,11 @@ class RequerimientoView {
     }
     updateContadorTotalAdjuntosRequerimientoDetalle() {
         if (typeof objBotonAdjuntoRequerimientoDetalleSeleccionado == 'object') {
-            objBotonAdjuntoRequerimientoDetalleSeleccionado.querySelector("span[name='cantidadAdjuntosItem']").textContent =tempArchivoAdjuntoRequerimientoDetalleList.filter((element, i) => (element.id_detalle_requerimiento==objBotonAdjuntoRequerimientoDetalleSeleccionado.dataset.id  && element.action != 'ELIMINAR')).length;
+            objBotonAdjuntoRequerimientoDetalleSeleccionado.querySelector("span[name='cantidadAdjuntosItem']").textContent = tempArchivoAdjuntoRequerimientoDetalleList.filter((element, i) => (element.id_detalle_requerimiento == objBotonAdjuntoRequerimientoDetalleSeleccionado.dataset.id && element.action != 'ELIMINAR')).length;
         }
 
     }
-    
+
 
     agregarRegistroEnTablaAdjuntoRequerimientoDetalle(payload) {
 
@@ -2027,14 +2071,14 @@ class RequerimientoView {
     }
 
 
-    eliminarArchivoRequerimientoDetalle(obj){
+    eliminarArchivoRequerimientoDetalle(obj) {
         obj.closest("tr").remove();
         // tempIdArchivoAdjuntoRequerimientoPagoDetalleToDeleteList.push(obj.dataset.id);
         var regExp = /[a-zA-Z]/g; //expresión regular
-        if((regExp.test(obj.dataset.id) == true)){
+        if ((regExp.test(obj.dataset.id) == true)) {
 
             tempArchivoAdjuntoRequerimientoDetalleList = tempArchivoAdjuntoRequerimientoDetalleList.filter((element, i) => element.id != obj.dataset.id);
-        }else{
+        } else {
             if (tempArchivoAdjuntoRequerimientoDetalleList.length > 0) {
                 let indice = tempArchivoAdjuntoRequerimientoDetalleList.findIndex(elemnt => elemnt.id == obj.dataset.id);
                 tempArchivoAdjuntoRequerimientoDetalleList[indice].action = 'ELIMINAR';
@@ -2201,11 +2245,11 @@ class RequerimientoView {
 
         if (continuar) {
             let formData = new FormData($('#form-requerimiento')[0]);
-         
+
             if (tempArchivoAdjuntoRequerimientoDetalleList.length > 0) {
-       
+
                 tempArchivoAdjuntoRequerimientoDetalleList.forEach(element => {
-                    if(element.action =='GUARDAR'){
+                    if (element.action == 'GUARDAR') {
                         formData.append(`archivoAdjuntoRequerimientoDetalleGuardar${element.id_detalle_requerimiento}[]`, element.file);
                     }
                 });
@@ -2214,14 +2258,14 @@ class RequerimientoView {
 
             if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
                 tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
-                    if(element.action =='GUARDAR'){
+                    if (element.action == 'GUARDAR') {
                         formData.append(`archivoAdjuntoRequerimiento${element.category}[]`, element.file);
                         formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
-                    }                    
+                    }
                 });
 
             }
-    
+
             formData.append(`archivoAdjuntoRequerimientoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoCabeceraList));
             formData.append(`archivoAdjuntoRequerimientoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoDetalleList));
 
@@ -2237,7 +2281,7 @@ class RequerimientoView {
                     processData: false,
                     contentType: false,
                     dataType: 'JSON',
-                    beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+                    beforeSend: (data) => { // Are not working with dataType:'jsonp'
 
                         // $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         var customElement = $("<div>", {
@@ -2258,12 +2302,12 @@ class RequerimientoView {
                             imageColor: "#3c8dbc"
                         });
                     },
-                    success: (response) =>{
+                    success: (response) => {
                         if (response.id_requerimiento > 0) {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
 
                             Lobibox.notify('success', {
-                                title:false,
+                                title: false,
                                 size: 'mini',
                                 rounded: true,
                                 sound: false,
@@ -2281,7 +2325,7 @@ class RequerimientoView {
                             );
                         }
                     },
-                    fail:  (jqXHR, textStatus, errorThrown) =>{
+                    fail: (jqXHR, textStatus, errorThrown) => {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
                         Swal.fire(
                             '',
@@ -2302,7 +2346,7 @@ class RequerimientoView {
                     processData: false,
                     contentType: false,
                     dataType: 'JSON',
-                    beforeSend:  (data)=> {
+                    beforeSend: (data) => {
                         var customElement = $("<div>", {
                             "css": {
                                 "font-size": "24px",
@@ -2321,11 +2365,11 @@ class RequerimientoView {
                             imageColor: "#3c8dbc"
                         });
                     },
-                    success: (response) =>{
+                    success: (response) => {
                         if (response.id_requerimiento > 0) {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
                             Lobibox.notify('success', {
-                                title:false,
+                                title: false,
                                 size: 'mini',
                                 rounded: true,
                                 sound: false,
@@ -2345,7 +2389,7 @@ class RequerimientoView {
                         }
                         changeStateButton('historial'); //init.js
                     },
-                    fail:   (jqXHR, textStatus, errorThrown)=> {
+                    fail: (jqXHR, textStatus, errorThrown) => {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
                         Swal.fire(
                             '',
@@ -2372,11 +2416,11 @@ class RequerimientoView {
         }
     }
 
-    anularRequerimiento(idRequerimiento){
-        if(idRequerimiento > 0){
+    anularRequerimiento(idRequerimiento) {
+        if (idRequerimiento > 0) {
             $.ajax({
                 type: 'PUT',
-                url: 'anular-requerimiento/'+idRequerimiento,
+                url: 'anular-requerimiento/' + idRequerimiento,
                 dataType: 'JSON',
                 beforeSend: function (data) {
                     var customElement = $("<div>", {
@@ -2389,7 +2433,7 @@ class RequerimientoView {
                         "class": "your-custom-class",
                         "text": "Anulando requerimiento..."
                     });
-    
+
                     $('#wrapper-okc').LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
@@ -2397,12 +2441,12 @@ class RequerimientoView {
                         imageColor: "#3c8dbc"
                     });
                 },
-                success: (response)=>{
+                success: (response) => {
                     // console.log(response);
                     $('#wrapper-okc').LoadingOverlay("hide", true);
-                    if(response.estado ==7){
+                    if (response.estado == 7) {
                         Lobibox.notify(response.tipo_mensaje, {
-                            title:false,
+                            title: false,
                             size: 'mini',
                             rounded: true,
                             sound: false,
@@ -2411,7 +2455,7 @@ class RequerimientoView {
                         });
                         // location.reload();
                         this.RestablecerFormularioRequerimiento();
-    
+
                     }
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {
@@ -2430,29 +2474,29 @@ class RequerimientoView {
     }
 
 
-    RestablecerFormularioRequerimiento(){
+    RestablecerFormularioRequerimiento() {
         $('#form-requerimiento')[0].reset();
-        document.querySelector("span[id='codigo_requerimiento']").textContent='';
-        document.querySelector("span[id='estado_doc']").textContent='';
-        document.querySelector("span[id='nro_occ_softlink']").textContent='';
-        document.querySelector("input[name='id_grupo']").value='';
-        document.querySelector("input[name='monto_subtotal']").value='';
-        document.querySelector("input[name='monto_igv']").value='';
-        document.querySelector("input[name='monto_total']").value='';
+        document.querySelector("span[id='codigo_requerimiento']").textContent = '';
+        document.querySelector("span[id='estado_doc']").textContent = '';
+        document.querySelector("span[id='nro_occ_softlink']").textContent = '';
+        document.querySelector("input[name='id_grupo']").value = '';
+        document.querySelector("input[name='monto_subtotal']").value = '';
+        document.querySelector("input[name='monto_igv']").value = '';
+        document.querySelector("input[name='monto_total']").value = '';
         this.limpiarTabla('ListaDetalleRequerimiento');
         this.limpiarTabla('listaArchivosRequerimiento');
         this.limpiarTabla('listaArchivos');
         this.limpiarTabla('listaPartidasActivas');
         this.limpiarMesajesValidacion();
         tempArchivoAdjuntoRequerimientoCabeceraList = [];
-        tempArchivoAdjuntoRequerimientoDetalleList=[];
-        objBotonAdjuntoRequerimientoDetalleSeleccionado='';
-        tempCentroCostoSelected=null;
-        tempIdRegisterActive=null
+        tempArchivoAdjuntoRequerimientoDetalleList = [];
+        objBotonAdjuntoRequerimientoDetalleSeleccionado = '';
+        tempCentroCostoSelected = null;
+        tempIdRegisterActive = null
         this.restaurarTotalMonedaDefault();
         this.calcularPresupuestoUtilizadoYSaldoPorPartida();
-        document.querySelector("div[id='group-historial-revisiones']").setAttribute("hidden",true);
-        document.querySelector("span[name='cantidadAdjuntosCabeceraRequerimiento']").textContent=0;
+        document.querySelector("div[id='group-historial-revisiones']").setAttribute("hidden", true);
+        document.querySelector("span[name='cantidadAdjuntosCabeceraRequerimiento']").textContent = 0;
         disabledControl(document.getElementsByName("btn-imprimir-requerimento-pdf"), true);
         // this.actualizarEstadoBotonAdjuntarNuevoCabeceraRequerimiento();
         this.actualizarEstadoBotonAdjuntarNuevoDetalleRequerimiento();
@@ -2463,15 +2507,15 @@ class RequerimientoView {
 
     }
 
-    limpiarMesajesValidacion(){
+    limpiarMesajesValidacion() {
         let allDivError = document.querySelectorAll("div[class='form-group has-error']");
-        let allSpanDanger =document.querySelectorAll("span[class~='text-danger']");
-        if(allDivError.length >0){
+        let allSpanDanger = document.querySelectorAll("span[class~='text-danger']");
+        if (allDivError.length > 0) {
             allDivError.forEach(element => {
                 element.classList.remove('has-error');
             });
         }
-        if(allSpanDanger.length >0){
+        if (allSpanDanger.length > 0) {
             allSpanDanger.forEach(element => {
                 element.remove();
             });
@@ -2479,20 +2523,38 @@ class RequerimientoView {
 
     }
 
-    restaurarTotalMonedaDefault(){
-        let allSelectorTotal= document.getElementsByName("monto_subtotal");
-        let simboloMonedaPresupuestoUtilizado =document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo
+    restaurarTotalMonedaDefault() {
+        let allSelectorTotal = document.getElementsByName("monto_subtotal");
+        let simboloMonedaPresupuestoUtilizado = document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo
         let allSelectorSimboloMoneda = document.getElementsByName("simboloMoneda");
-        if(allSelectorSimboloMoneda.length >0){
+        if (allSelectorSimboloMoneda.length > 0) {
             allSelectorSimboloMoneda.forEach(element => {
-                element.textContent=simboloMonedaPresupuestoUtilizado;
+                element.textContent = simboloMonedaPresupuestoUtilizado;
             });
         }
-        if(allSelectorTotal.length >0){
+        if (allSelectorTotal.length > 0) {
             allSelectorTotal.forEach(element => {
-                element.textContent='0.00';
+                element.textContent = '0.00';
             });
         }
     }
 
+    asignarComoProductoTransformado(obj){
+
+        let inputConTransformacion = obj.closest('tr').querySelector("input[name='conTransformacion[]']");
+        let conSinTransformacionText = obj.closest('tr').querySelector("span[class~='conSinTransformacionText']");
+        if(inputConTransformacion !=null && (inputConTransformacion.value== 0 || inputConTransformacion.value== '') ){
+            inputConTransformacion.value=1;
+            obj.classList.replace('btn-default','btn-success');
+            obj.setAttribute("title","Con transformación");
+            conSinTransformacionText.textContent="Transformado";
+        }else{
+            inputConTransformacion.value=0;
+            obj.classList.replace('btn-success','btn-default');
+            obj.setAttribute("title","Sin transformación");
+            conSinTransformacionText.textContent="";
+
+        }
+     
+    }
 }
