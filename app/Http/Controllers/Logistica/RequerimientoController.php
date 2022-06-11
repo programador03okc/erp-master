@@ -637,6 +637,15 @@ class RequerimientoController extends Controller
         DB::beginTransaction();
         try {
 
+            $count = count($request->descripcion);
+            $montoTotal = 0;
+            $cantidadItemConTransformacion=0;
+            for ($i = 0; $i < $count; $i++) {
+                if($request->conTransformacion[$i]==1){
+                    $cantidadItemConTransformacion++;
+                }
+            }
+
             $requerimiento = new Requerimiento();
             // $requerimiento->codigo =  Requerimiento::crearCodigo($request->tipo_requerimiento, $request->id_grupo);
             $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;
@@ -673,7 +682,7 @@ class RequerimientoController extends Controller
             $requerimiento->fecha_entrega = $request->fecha_entrega;
             $requerimiento->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
             $requerimiento->tipo_cuadro = $request->tipo_cuadro;
-            $requerimiento->tiene_transformacion = $request->tiene_transformacion ? $request->tiene_transformacion : false;
+            $requerimiento->tiene_transformacion = $cantidadItemConTransformacion>0?true:false;
             $requerimiento->fuente_id = $request->fuente;
             $requerimiento->fuente_det_id = $request->fuente_det;
             $requerimiento->division_id = $request->division;
@@ -684,8 +693,7 @@ class RequerimientoController extends Controller
             $requerimiento->adjuntoComprobanteBancario = $request->archivoAdjuntoRequerimiento3;
             $requerimiento->adjuntoComprobanteContable = $request->archivoAdjuntoRequerimiento4;
 
-            $count = count($request->descripcion);
-            $montoTotal = 0;
+
             for ($i = 0; $i < $count; $i++) {
                 if ($request->cantidad[$i] <= 0) {
                     return response()->json(['id_requerimiento' => 0, 'codigo' => '', 'mensaje' => 'La cantidad solicitada debe ser mayor a 0']);
@@ -703,7 +711,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = ($request->tiene_transformacion ? $request->tiene_transformacion : false);
+                $detalle->tiene_transformacion = $request->conTransformacion[$i]==1?true:false;
                 $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
@@ -966,6 +974,16 @@ class RequerimientoController extends Controller
     {
         // dd($request->all());
         // exit();  
+
+        $count = count($request->descripcion);
+
+        $cantidadItemConTransformacion=0;
+        for ($i = 0; $i < $count; $i++) {
+            if($request->conTransformacion[$i]==1){
+                $cantidadItemConTransformacion++;
+            }
+        }
+        
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
         $idEstadoActual = $requerimiento->estado;
 
@@ -1001,7 +1019,7 @@ class RequerimientoController extends Controller
         $requerimiento->fecha_entrega = $request->fecha_entrega;
         $requerimiento->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
         $requerimiento->tipo_cuadro = $request->tipo_cuadro;
-        $requerimiento->tiene_transformacion = $request->tiene_transformacion ? $request->tiene_transformacion : false;
+        $requerimiento->tiene_transformacion = $cantidadItemConTransformacion>0?true:false;
         $requerimiento->fuente_id = $request->fuente;
         $requerimiento->fuente_det_id = $request->fuente_det;
         // $requerimiento->para_stock_almacen = $request->para_stock_almacen;
@@ -1021,8 +1039,7 @@ class RequerimientoController extends Controller
 
         $todoDetalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $requerimiento->id_requerimiento)->get();
         $idDetalleRequerimientoProcesado = [];
-        $count = count($request->descripcion);
-
+ 
         for ($i = 0; $i < $count; $i++) {
             $id = $request->idRegister[$i];
             if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
@@ -1039,7 +1056,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = ($request->tiene_transformacion ? $request->tiene_transformacion : false);
+                $detalle->tiene_transformacion = $request->conTransformacion[$i]==1?true:false;
                 $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
@@ -1057,7 +1074,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = ($request->tiene_transformacion ? $request->tiene_transformacion : false);
+                $detalle->tiene_transformacion = $request->conTransformacion[$i]==1?true:false;
                 // $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
