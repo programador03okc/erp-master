@@ -43,7 +43,7 @@
                         return imagen;
                     }, 'className': 'text-center'
                 },
-                { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
+                { 'data': 'codigo_empresa', 'name': 'adm_empresa.codigo' },
                 // { 'data': 'codigo', 'name': 'requerimiento_pago.codigo', 'className': 'text-center' },
                 {
                     data: "codigo", name: "requerimiento_pago.codigo",
@@ -55,20 +55,9 @@
                     },
                     className: "text-center"
                 },
-                { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
+                // { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
                 { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' },
-                // {
-                //     'render': function (data, type, row) {
-                //         console.log(row['persona']);
-                //         return (row['persona'][0] !== undefined ? row['persona'][0].nro_documento : row['nro_documento']);
-                //     }, 'className': 'text-center', 'searchable': false
-                // },
-                // {
-                //     'render': function (data, type, row) {
-                //         return (row['persona'][0] !== undefined ? row['persona'][0].nombre_completo : row['razon_social']);
-                //     }, 'searchable': false
-                // },
                 { data: 'persona' },
                 {
                     'render': function (data, type, row) {
@@ -207,7 +196,7 @@
                     }, 'className': 'text-center'
                 },
                 { 'data': 'requerimientos', orderable: false, filterable: true },
-                { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
+                { 'data': 'codigo_empresa', 'name': 'adm_empresa.codigo' },
                 // { 'data': 'codigo' },
                 {
                     data: "codigo", name: "log_ord_compra.codigo",
@@ -220,7 +209,7 @@
                     className: "text-center"
                 },
                 // { 'data': 'codigo_softlink' },
-                { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
+                // { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
                     'data': 'fecha_solicitud_pago',
@@ -228,7 +217,7 @@
                         return (row['fecha_solicitud_pago'] !== null ? formatDateHour(row['fecha_solicitud_pago']) : '');
                     }, 'className': 'text-center', 'searchable': false
                 },
-                { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },
+                // { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },
                 // { 'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta' },
                 { 'data': 'simbolo', 'name': 'sis_moneda.simbolo', 'className': 'text-center' },
                 {

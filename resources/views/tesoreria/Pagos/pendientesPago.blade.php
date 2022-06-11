@@ -38,9 +38,9 @@ Registro de pagos
                                             <tr>
                                                 <th hidden>#</th>
                                                 <th>Prio.</th>
-                                                <th>Empresa</th>
+                                                <th>Emp.</th>
                                                 <th>Código</th>
-                                                <th>Grupo</th>
+                                                {{-- <th>Grupo</th> --}}
                                                 <th>Concepto</th>
                                                 <th>Elaborado por</th>
                                                 <th>Destinatario</th>
@@ -73,13 +73,13 @@ Registro de pagos
                                                 <th hidden></th>
                                                 <th>Prio.</th>
                                                 <th>Cod.Req.</th>
-                                                <th>Empresa</th>
+                                                <th>Emp.</th>
                                                 <th>Codigo</th>
                                                 {{-- <th>Codigo SoftLink</th> --}}
-                                                <th>Nro. Doc.</th>
+                                                {{-- <th>Nro. Doc.</th> --}}
                                                 <th>Razon social del proveedor</th>
                                                 <th>Fecha envío a pago</th>
-                                                <th>Forma de Pago</th>
+                                                {{-- <th>Forma de Pago</th> --}}
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>
