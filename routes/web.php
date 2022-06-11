@@ -1444,6 +1444,18 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('salidasProcesadasExcel', 'Almacen\Movimiento\SalidasPendientesController@salidasProcesadasExcel')->name('salidasProcesadasExcel');
 			});
 
+			Route::group(['as' => 'customizacion.', 'prefix' => 'customizacion'], function () {
+				//Pendientes de Salida
+				Route::get('index', 'Almacen\Movimiento\CustomizacionController@viewCustomizacion')->name('index');
+				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::post('listarProductosAlmacen', 'Almacen\Movimiento\SaldoProductoController@listarProductosAlmacen');
+				Route::post('guardar_materia', 'Almacen\Movimiento\TransformacionController@guardar_materia');
+				Route::post('guardarCustomizacion', 'Almacen\Movimiento\CustomizacionController@guardarCustomizacion');
+				Route::post('actualizarCustomizacion', 'Almacen\Movimiento\CustomizacionController@actualizarCustomizacion');
+				Route::get('listar_transformaciones/{tp}', 'Almacen\Movimiento\TransformacionController@listar_transformaciones');
+				Route::get('mostrarCustomizacion/{id}', 'Almacen\Movimiento\CustomizacionController@mostrarCustomizacion');
+			});
+
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
 				//Pendientes de Salida
 				Route::get('index', 'Almacen\Movimiento\ProrrateoCostosController@view_prorrateo_costos')->name('index');
@@ -1761,7 +1773,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Almacen\Movimiento\TransformacionController@view_transformacion')->name('index');
 				Route::post('guardar_transformacion', 'Almacen\Movimiento\TransformacionController@guardar_transformacion');
 				Route::post('update_transformacion', 'Almacen\Movimiento\TransformacionController@update_transformacion');
-				Route::get('listar_transformaciones', 'Almacen\Movimiento\TransformacionController@listar_transformaciones');
+				Route::get('listar_transformaciones/{tp}', 'Almacen\Movimiento\TransformacionController@listar_transformaciones');
 				Route::get('mostrar_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@mostrar_transformacion');
 				Route::get('anular_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@anular_transformacion');
 				Route::get('listar_materias/{id}', 'Almacen\Movimiento\TransformacionController@listar_materias');

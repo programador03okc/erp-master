@@ -250,6 +250,7 @@ class OrdenesDespachoInternoController extends Controller
                         ->insertGetId(
                             [
                                 'codigo' => $codTrans,
+                                'tipo' => "OT",
                                 'id_od' => $id_od,
                                 'id_cc' => $req->id_cc,
                                 'id_moneda' => 1,
