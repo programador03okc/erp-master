@@ -323,7 +323,7 @@ class TransformacionController extends Controller
             ->first();
 
         $cantidad = DB::table('almacen.transformacion')
-            ->where([['id_almacen', '=', $id_almacen], ['estado', '!=', 7], ['tipo', '=', "OT"]])
+            ->where([['id_almacen', '=', $id_almacen], ['tipo', '=', "OT"]])
             ->whereYear('fecha_transformacion', '=', $yyyy)
             ->get()->count();
 
