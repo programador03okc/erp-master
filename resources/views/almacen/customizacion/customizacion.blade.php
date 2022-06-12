@@ -42,7 +42,7 @@ Customización
                     </button>
 
                     <button type="button" class="btn btn-sm btn-danger anular-customizacion" data-toggle="tooltip" data-placement="bottom" 
-                        title="Anular customizacion" onClick="anularcustomizacion();">
+                        title="Anular customizacion" onClick="anularCustomizacion();">
                         <i class="fas fa-trash"></i> Anular
                     </button>
 
@@ -53,9 +53,9 @@ Customización
                     <button type="button" class="btn btn-sm btn-secondary cancelar" data-toggle="tooltip" data-placement="bottom" 
                         title="Cancelar" style="display: none;">
                             Cancelar</button>
-                            |
-                    <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="bottom" 
-                        title="Imprimir Customización" onClick="imprimirTransformacion();"><i class="fas fa-file-pdf"></i> Imprimir</button>
+                            
+                    {{-- <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="bottom" 
+                        title="Imprimir Customización" onClick="imprimirCustomizacion();"><i class="fas fa-file-pdf"></i> Imprimir</button> --}}
 
                 </div>
             </div>
@@ -103,7 +103,7 @@ Customización
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="col-sm-4 control-label">Fecha proceso: </label>
+                        <label class="col-sm-5 control-label">Fecha proceso: </label>
                         <div class="col-sm-7">
                             <input type="date" class="form-control edition limpiarCustomizacion" name="fecha_proceso"/>
                         </div>
@@ -111,6 +111,26 @@ Customización
                     <div class="col-md-4">
                         <label>Registrado por:</label>
                         <span id="nombre_registrado_por" class="limpiarTexto"></span>
+                    </div>
+                </div>
+                <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
+                    <div class="col-md-4">
+                        <label class="col-sm-4 control-label">Moneda: </label>
+                        <div class="col-sm-8">
+                            <select class="form-control js-example-basic-single edition limpiarCustomizacion" 
+                                name="id_moneda" required>
+                                <option value="">Elija una opción</option>
+                                @foreach ($monedas as $moneda)
+                                <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-sm-5 control-label">Tipo de cambio: </label>
+                        <div class="col-sm-7">
+                            <input type="number" class="form-control edition limpiarCustomizacion" name="tipo_cambio" step="0.0001"/>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -127,16 +147,21 @@ Customización
                                     <th width='40%'>Descripción</th>
                                     <th>Cant.</th>
                                     <th>Unid.</th>
+                                    <th>Cos.Prom</th>
                                     <th>Unit.</th>
                                     <th>Total</th>
                                     <th width='8%' style="padding:0px;">
                                         <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition" 
                                         id="addProductoBase" data-toggle="tooltip" data-placement="bottom" 
                                         title="Agregar Producto" onClick="agregarProductoBase();"></i>
+                                        <i class="fas fa-sync-alt icon-tabla boton add-new-sobrante edition" 
+                                        id="addProductoBase" data-toggle="tooltip" data-placement="bottom" 
+                                        title="Obtener el costo promedio actual" onClick="actualizarCostosBase();"></i>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
+                            <tfoot></tfoot>
                         </table>
                     </div>
                 </div>

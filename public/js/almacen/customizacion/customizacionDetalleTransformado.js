@@ -19,6 +19,7 @@ function agregar_producto_transformado(sel) {
 function mostrarProductoTransformado() {
     $("#listaProductoTransformado tbody").html('');
     var row = '';
+    var mon = $('[name=id_moneda]').val();
 
     items_transformado.forEach(sel => {
         row = `<tr>
@@ -28,10 +29,20 @@ function mostrarProductoTransformado() {
             <td><input type="number" class="form-control edition calcula" name="cantidad" id="cantidad" 
                 data-id="${sel.id_producto}" value="${sel.cantidad}"></td>
             <td>${sel.unid_med}</td>
-            <td><input type="number" class="form-control edition calcula" name="unitario" id="unitario" 
-                data-id="${sel.id_producto}" value="${sel.unitario}"></td>
-            <td><input type="number" class="form-control" name="total" readOnly id="total" 
-                data-id="${sel.id_producto}" value="${sel.total}"></td>
+            <td>
+                <div style="display:flex;">
+                    <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
+                    <input type="number" class="form-control edition calcula" name="unitario" id="unitario" 
+                    data-id="${sel.id_producto}" value="${sel.unitario}">
+                </div>
+            </td>
+            <td>
+                <div style="display:flex;">
+                    <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
+                    <input type="number" class="form-control" name="total" readOnly id="total" 
+                    data-id="${sel.id_producto}" value="${sel.total}">
+                </div>
+            </td>
             <td>
             <i class="fas fa-trash icon-tabla red boton delete" data-id="${sel.id_producto}"
                 data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
@@ -39,7 +50,6 @@ function mostrarProductoTransformado() {
         </tr>`;
     })
     $("#listaProductoTransformado tbody").html(row);
-    // $(".edition").attr('disabled', 'true');
 }
 
 function agregarProductoTransformado() {

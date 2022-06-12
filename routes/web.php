@@ -1452,8 +1452,11 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_materia', 'Almacen\Movimiento\TransformacionController@guardar_materia');
 				Route::post('guardarCustomizacion', 'Almacen\Movimiento\CustomizacionController@guardarCustomizacion');
 				Route::post('actualizarCustomizacion', 'Almacen\Movimiento\CustomizacionController@actualizarCustomizacion');
+				Route::get('anularCustomizacion/{id}', 'Almacen\Movimiento\CustomizacionController@anularCustomizacion');
 				Route::get('listar_transformaciones/{tp}', 'Almacen\Movimiento\TransformacionController@listar_transformaciones');
 				Route::get('mostrarCustomizacion/{id}', 'Almacen\Movimiento\CustomizacionController@mostrarCustomizacion');
+				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
+				Route::post('actualizarCostosBase', 'Almacen\Movimiento\CustomizacionController@actualizarCostosBase');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {

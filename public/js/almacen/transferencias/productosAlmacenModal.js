@@ -45,7 +45,8 @@ $(function () {
                 'part_number': data.part_number,
                 'codigo': data.codigo,
                 'descripcion': data.descripcion,
-                'unid_med': data.abreviatura
+                'unid_med': data.abreviatura,
+                'id_moneda': data.id_moneda
             }
             agregar_producto_materia(sel);
         }

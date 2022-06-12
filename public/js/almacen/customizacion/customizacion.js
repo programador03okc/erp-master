@@ -128,6 +128,7 @@ $("#form-customizacion").on("submit", function (e) {
                     'id_materia': element.id_materia,
                     'id_producto': element.id_producto,
                     'cantidad': element.cantidad,
+                    'costo_promedio': element.costo_promedio,
                     'unitario': element.unitario,
                     'total': element.total,
                     // 'series': element.series,
@@ -222,6 +223,8 @@ function mostrarCustomizacion(id) {
             console.log(response);
             $('[name=id_customizacion]').val(response.customizacion.id_transformacion);
             $('[name=id_almacen]').val(response.customizacion.id_almacen);
+            $('[name=id_moneda]').val(response.customizacion.id_moneda);
+            $('[name=tipo_cambio]').val(response.customizacion.tipo_cambio);
             $('[name=id_usuario]').val(response.customizacion.responsable);
             $('[name=fecha_proceso]').val(moment(response.customizacion.fecha_transformacion).format("YYYY-MM-DD"));
             $('[name=observacion]').val(response.customizacion.observacion);
@@ -241,16 +244,161 @@ function mostrarCustomizacion(id) {
             // $('#estado_doc').removeClass();
             // $('#estado_doc').addClass("label label-" + response.bootstrap_color);
 
-            // listar_materias(response.id_transformacion);
-            // listar_directos(response.id_transformacion);
-            // listar_indirectos(response.id_transformacion);
-            // listar_sobrantes(response.id_transformacion);
-            // listar_transformados(response.id_transformacion);
-
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function anularCustomizacion() {
+
+    Swal.fire({
+        title: "¿Está seguro que desea anular la customización?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Anular"
+    }).then(result => {
+
+        if (result.isConfirmed) {
+
+            let ids = $("[name=id_customizacion]").val();
+            $.ajax({
+                type: 'GET',
+                url: 'anularCustomizacion/' + ids,
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log(response);
+                    Lobibox.notify(response.tipo, {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+                    $("#codigo").text('');
+                    $(".limpiarCustomizacion").val("");
+                    $(".limpiarTexto").text("");
+
+                    $("#listaMateriasPrimas tbody").html("");
+                    $("#listaSobrantes tbody").html("");
+                    $("#listaProductoTransformado tbody").html("");
+
+                    items_base = [];
+                    items_sobrante = [];
+                    items_transformado = [];
+
+                    $("[name=modo]").val("");
+                    $("[name=id_customizacion]").val("");
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
+    });
+}
+
+
+$("[name=id_moneda]").on('change', function () {
+    console.log($('[name=id_moneda]').val());
+    mostrarProductosBase();
+    mostrarProductoSobrante();
+    mostrarProductoTransformado();
+});
+
+function actualizarCostosBase() {
+    let base = [];
+    let id_almacen = $('[name=id_almacen]').val();
+    let id_moneda = $('[name=id_moneda]').val();
+    let tipo_cambio = $('[name=tipo_cambio]').val();
+    let msj = 0;
+
+    if (id_moneda == '') {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Debe seleccionar una moneda.'
+        });
+        msj++;
+    }
+    if (tipo_cambio == '' || tipo_cambio == 0) {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Debe ingresar un tipo de cambio válido.'
+        });
+        msj++;
+    }
+
+    if (msj == 0) {
+        items_base.forEach(function (element) {
+            base.push({
+                'id_almacen': id_almacen,
+                'id_producto': element.id_producto,
+            });
+        });
+
+        var data = 'items_base=' + JSON.stringify(base);
+
+        $.ajax({
+            type: 'POST',
+            url: 'actualizarCostosBase',
+            data: data,
+            dataType: 'JSON',
+            success: function (response) {
+                console.log(response);
+                response.items_base.forEach(res => {
+                    items_base.forEach(function (element) {
+
+                        if (res.id_producto == element.id_producto) {
+                            element.costo_promedio = res.costo_promedio;
+
+                            if (id_moneda == element.id_moneda) {
+                                element.unitario = res.costo_promedio;
+                                element.total = element.cantidad * res.costo_promedio;
+                            } else {
+                                if (id_moneda == 1) {
+                                    element.unitario = res.costo_promedio * parseFloat(tipo_cambio);
+                                } else {
+                                    element.unitario = res.costo_promedio / parseFloat(tipo_cambio);
+                                }
+                                element.total = element.cantidad * element.unitario;
+                            }
+                        }
+                    });
+                });
+                mostrarProductosBase();
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
+}
+
+function imprimirCustomizacion() {
+    var id = $('[name=id_customizacion]').val();
+
+    if (id !== null && id !== '') {
+        window.open('imprimir_transformacion/' + id);
+    } else {
+        Swal.fire({
+            title: "Debe seleccionar una Customización!",
+            icon: "error",
+        });
+    }
 }

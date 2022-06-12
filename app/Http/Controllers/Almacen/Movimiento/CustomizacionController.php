@@ -6,6 +6,7 @@ use App\Http\Controllers\Almacen\Ubicacion\AlmacenController;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Presupuestos\Moneda;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,8 @@ class CustomizacionController extends Controller
         $empresas = GenericoAlmacenController::select_empresa();
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
-        return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades'));
+        $monedas = Moneda::where('estado', 1)->get();
+        return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
     }
 
     public function transformacion_nextId($fecha, $id_almacen)
@@ -31,7 +33,7 @@ class CustomizacionController extends Controller
             ->first();
 
         $cantidad = DB::table('almacen.transformacion')
-            ->where([['id_almacen', '=', $id_almacen], ['estado', '!=', 7], ['tipo', '=', "C"]])
+            ->where([['id_almacen', '=', $id_almacen], ['tipo', '=', "C"]])
             ->whereYear('fecha_transformacion', '=', $yyyy)
             ->get()->count();
 
@@ -67,6 +69,7 @@ class CustomizacionController extends Controller
             ->select(
                 'transfor_materia.id_materia',
                 'transfor_materia.id_producto',
+                'transfor_materia.costo_promedio',
                 'transfor_materia.cantidad',
                 'transfor_materia.valor_unitario as unitario',
                 'transfor_materia.valor_total as total',
@@ -150,6 +153,8 @@ class CustomizacionController extends Controller
                     'tipo' => "C",
                     'responsable' => $request->id_usuario,
                     'id_almacen' => $request->id_almacen,
+                    'id_moneda' => $request->id_moneda,
+                    'tipo_cambio' => $request->tipo_cambio,
                     'observacion' => $request->observacion,
                     // 'total_materias' => $request->total_materias,
                     // 'total_directos' => $request->total_directos,
@@ -172,6 +177,7 @@ class CustomizacionController extends Controller
                         'id_transformacion' => $id_transformacion,
                         'id_producto' => $item->id_producto,
                         'cantidad' => $item->cantidad,
+                        'costo_promedio' => $item->costo_promedio,
                         'valor_unitario' => $item->unitario,
                         'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
                         'estado' => 1,
@@ -240,6 +246,8 @@ class CustomizacionController extends Controller
                     'fecha_entrega' => $request->fecha_proceso,
                     'responsable' => $request->id_usuario,
                     'id_almacen' => $request->id_almacen,
+                    'id_moneda' => $request->id_moneda,
+                    'tipo_cambio' => $request->tipo_cambio,
                     'observacion' => $request->observacion,
                 ]);
 
@@ -252,6 +260,7 @@ class CustomizacionController extends Controller
                         ->where('id_materia', $item->id_materia)
                         ->update([
                             'cantidad' => $item->cantidad,
+                            'costo_promedio' => $item->costo_promedio,
                             'valor_unitario' => $item->unitario,
                             'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
                         ]);
@@ -261,6 +270,7 @@ class CustomizacionController extends Controller
                             'id_transformacion' => $request->id_customizacion,
                             'id_producto' => $item->id_producto,
                             'cantidad' => $item->cantidad,
+                            'costo_promedio' => $item->costo_promedio,
                             'valor_unitario' => $item->unitario,
                             'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
                             'estado' => 1,
@@ -334,6 +344,73 @@ class CustomizacionController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    public function actualizarCostosBase(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $items_base = json_decode($request->items_base);
+
+            foreach ($items_base as $item) {
+                $item->costo_promedio = (new SalidaPdfController())->obtenerCostoPromedioSalida($item->id_producto, $item->id_almacen, '2022-01-01', new Carbon());
+            }
+            $mensaje = 'Se actualizaron los costos correctamente';
+            $tipo = 'success';
+
+            DB::commit();
+            return response()->json(['items_base' => $items_base, 'tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al actualizar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    public function anularCustomizacion($id_transformacion)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+
+            $mov = DB::table('almacen.mov_alm')
+                ->where([
+                    ['id_transformacion', '=', $id_transformacion],
+                    ['estado', '=', 1]
+                ])
+                ->get();
+
+            //Si existe ingreso y salida relacionado
+            if (count($mov) > 0) {
+                $mensaje = 'No es posible anular. La customización ya fue finalizada.';
+                $tipo = 'warning';
+            } else {
+                DB::table('almacen.transformacion')
+                    ->where('id_transformacion', $id_transformacion)
+                    ->update(['estado' => 7]);
+
+                DB::table('almacen.transfor_materia')
+                    ->where('id_transformacion', $id_transformacion)
+                    ->update(['estado' => 7]);
+
+                DB::table('almacen.transfor_transformado')
+                    ->where('id_transformacion', $id_transformacion)
+                    ->update(['estado' => 7]);
+
+                DB::table('almacen.transfor_sobrante')
+                    ->where('id_transformacion', $id_transformacion)
+                    ->update(['estado' => 7]);
+
+                $mensaje = 'La customización se anuló correctamente.';
+                $tipo = 'success';
+            }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
     }
 }
