@@ -122,4 +122,5 @@ $('#listaMateriasPrimas tbody').on("change", ".calcula", function () {
     } else {
         $(this).parents("tr").find('input[name=total]').val(0);
     }
+    mostrarProductosBase();
 });
