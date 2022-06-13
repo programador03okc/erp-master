@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <h5>Total</h5>
-                            <input type="number" name="importe_total" class="form-control" required/>
+                            <input type="number" name="importe_total" class="form-control" step="0.01" required/>
                         </div>
                     </div>
                 </div>
