@@ -1918,6 +1918,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('revertirEnvio', 'Tesoreria\RegistroPagoController@revertirEnvio')->name('revertir-envio');
 				Route::get('verAdjuntos/{id}', 'Tesoreria\RegistroPagoController@verAdjuntos')->name('ver-adjuntos');
 				Route::get('verAdjuntosPago/{id}', 'Tesoreria\RegistroPagoController@verAdjuntosPago')->name('ver-adjuntos-pago');
+				Route::get('actualizarEstadoPago', 'Tesoreria\RegistroPagoController@actualizarEstadoPago')->name('actualizar-estados-pago');
 
 				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
 			});

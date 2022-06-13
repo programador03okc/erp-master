@@ -83,14 +83,14 @@
                 {
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
-                        var estadoAdd = '';
-                        var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
-                        var total = formatDecimal(row['monto_total']);
-                        var por_pagar = (total - pagado);
-                        if (por_pagar > 0 && por_pagar < total) {
-                            estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
-                        }
-                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span> <br>' + estadoAdd;
+                        // var estadoAdd = '';
+                        // var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
+                        // var total = formatDecimal(row['monto_total']);
+                        // var por_pagar = (total - pagado);
+                        // if (por_pagar > 0 && por_pagar < total) {
+                        //     estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
+                        // }
+                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
 
                     }, className: 'text-center'
                 },
@@ -126,7 +126,11 @@
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
                                         data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
                                         title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>`: ''}
-                                    ${permisoRegistrar == '1' ?
+                                    `
+                                    : ''
+                                }
+                                ${row['id_estado'] == 5 || row['id_estado'] == 9 ?
+                                    `${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                         data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" data-tipo="requerimiento"
                                         data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-moneda="${row['simbolo']}" 
@@ -236,14 +240,14 @@
                 {
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
-                        var estadoAdd = '';
-                        var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
-                        var total = formatDecimal(row['monto_total']);
-                        var por_pagar = (total - pagado);
-                        if (por_pagar > 0 && por_pagar < total) {
-                            estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
-                        }
-                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span> <br>' + estadoAdd;
+                        // var estadoAdd = '';
+                        // var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
+                        // var total = formatDecimal(row['monto_total']);
+                        // var por_pagar = (total - pagado);
+                        // if (por_pagar > 0 && por_pagar < total) {
+                        //     estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
+                        // }
+                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
                     }, className: 'text-center'
                 },
                 {
@@ -297,13 +301,16 @@
                                 title="Autorizar pago" >
                                 <i class="fas fa-share"></i></button>`: ''}
                             ${row['estado_pago'] == 5 ?
-                                    (`${permisoEnviar == '1' ?
+                                    `${permisoEnviar == '1' ?
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                     title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>` : ''}
-                                    
-                                ${permisoRegistrar == '1' ?
-                                            `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                    `
+                                    : ''}
+
+                                ${row['estado_pago'] == 5 || row['estado_pago'] == 9 ?
+                                    `${permisoRegistrar == '1' ?
+                                        `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
                                     data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" 
                                     data-moneda="${row['simbolo']}" 
@@ -318,7 +325,7 @@
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     data-comentario-pago-logistica="${row['comentario_pago']}"
                                     data-observacion-requerimiento="${observacionRequerimiento}"
-                                    title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`)
+                                    title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`
                                     : ''}
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
@@ -726,4 +733,28 @@ function verAdjuntosPago(id_pago) {
             console.log(errorThrown);
         });
     }
+}
+
+function actualizarEstadoPago() {
+
+    $.ajax({
+        type: 'GET',
+        url: 'actualizarEstadoPago',
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify('success', {
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response
+            });
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
 }

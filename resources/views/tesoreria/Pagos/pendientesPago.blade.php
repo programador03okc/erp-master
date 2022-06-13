@@ -19,7 +19,9 @@ Registro de pagos
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-                
+                @if (Auth::user()->id_usuario == 3)
+                <button id="btn_cerrar" class="btn btn-default" onClick="actualizarEstadoPago();">Actualizar estado con saldo</button>
+                @endif
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimiento de pagos</a></li>
                     <li class=""><a data-toggle="tab" href="#ordenes">Ordenes Compra/Servicio</a></li>
