@@ -520,6 +520,16 @@ class RequerimientoView {
     mostrarDetalleRequerimiento(data, hasDisabledInput) {
         let dataCabeceraRequerimiento =data['requerimiento'];
         let dataDetalleRequerimiento=data['det_req'];
+        if(dataCabeceraRequerimiento[0].id_tipo_requerimiento==6){
+            document.querySelector("div[id='input-group-incidencia']").removeAttribute("hidden");
+            document.querySelector("input[name='id_incidencia']").value=dataCabeceraRequerimiento[0].id_incidencia??'';
+            document.querySelector("input[name='codigo_incidencia']").value=dataCabeceraRequerimiento[0].codigo_incidencia??'';
+            document.querySelector("input[name='cliente_incidencia']").value=dataCabeceraRequerimiento[0].cliente_incidencia??'';
+
+        }else{
+            document.querySelector("div[id='input-group-incidencia']").setAttribute("hidden",true);
+        }
+
         this.limpiarTabla('ListaDetalleRequerimiento');
         vista_extendida();
 
@@ -936,8 +946,10 @@ class RequerimientoView {
 
         if (obj.target.value == 6) { // se seleccionó el tipo de requerimiento de "atención de garantías"
             this.actualizarEstadoBotonProductoTransformado('ACTIVAR');
+            document.querySelector("div[id='input-group-incidencia']").removeAttribute('hidden');
         } else {
             this.actualizarEstadoBotonProductoTransformado('DESACTIVAR');
+            document.querySelector("div[id='input-group-incidencia']").setAttribute('hidden',true);
         }
     }
 

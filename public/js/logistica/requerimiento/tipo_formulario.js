@@ -150,7 +150,8 @@ function mostrarTipoForm(tipo){
                 'input-group-cdp',
                 'input-group-fuente',
                 // 'input-group-para_stock_almacen',
-                'input-group-aprobante'
+                'input-group-aprobante',
+                'input-group-incidencia'
 
             ]);
             hiddeElement('mostrar','form-requerimiento',[
@@ -274,7 +275,8 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-fuente',
-                'input-group-cdp'
+                'input-group-cdp',
+                'input-group-incidencia'
             ]);
             hiddeElement('mostrar','form-requerimiento',[
                 'input-group-moneda',
