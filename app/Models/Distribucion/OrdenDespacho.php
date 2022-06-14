@@ -26,7 +26,7 @@ class OrdenDespacho extends Model
             ->where([
                 ['id_almacen', '=', $id_almacen],
                 ['aplica_cambios', '=', $aplica_cambios],
-                ['estado', '!=', 7],
+                // ['estado', '!=', 7],
                 // ['id_od', '<=', $id],
             ])
             ->get()->count();

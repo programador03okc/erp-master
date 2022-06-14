@@ -276,6 +276,7 @@ class TransformacionController extends Controller
 
         return response()->json($tc->venta);
     }
+
     public function mostrar_transformacion($id_transformacion)
     {
         $data = DB::table('almacen.transformacion')
@@ -286,6 +287,7 @@ class TransformacionController extends Controller
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'sis_usua.nombre_corto',
+                'registrado.nombre_corto as registrado_por_nombre',
                 'orden_despacho.codigo as cod_od',
                 'alm_almacen.descripcion as almacen_descripcion',
                 'alm_req.codigo as codigo_req',
@@ -304,6 +306,7 @@ class TransformacionController extends Controller
             ->leftjoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
             ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'transformacion.estado')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'transformacion.responsable')
+            ->leftjoin('configuracion.sis_usua as registrado', 'registrado.id_usuario', '=', 'transformacion.registrado_por')
             ->where('transformacion.id_transformacion', $id_transformacion)
             ->first();
 
@@ -320,7 +323,7 @@ class TransformacionController extends Controller
             ->first();
 
         $cantidad = DB::table('almacen.transformacion')
-            ->where([['id_almacen', '=', $id_almacen], ['estado', '!=', 7]])
+            ->where([['id_almacen', '=', $id_almacen], ['tipo', '=', "OT"]])
             ->whereYear('fecha_transformacion', '=', $yyyy)
             ->get()->count();
 
@@ -341,6 +344,7 @@ class TransformacionController extends Controller
                 'serie' => $request->serie,
                 'numero' => $request->numero,
                 'codigo' => $codigo,
+                'tipo' => "OT",
                 'responsable' => $request->responsable,
                 'id_empresa' => $request->id_empresa,
                 'id_almacen' => $request->id_almacen,
@@ -381,16 +385,15 @@ class TransformacionController extends Controller
     }
     public function guardar_materia(Request $request)
     {
-        $fecha = date('Y-m-d H:i:s');
         $id_materia = DB::table('almacen.transfor_materia')->insertGetId(
             [
                 'id_transformacion' => $request->id_transformacion,
                 'id_producto' => $request->id_producto,
                 'cantidad' => $request->cantidad,
                 'valor_unitario' => $request->valor_unitario,
-                'valor_total' => round($request->valor_total, 2, PHP_ROUND_HALF_UP),
+                'valor_total' => round($request->valor_total, 6, PHP_ROUND_HALF_UP),
                 'estado' => 1,
-                'fecha_registro' => $fecha,
+                'fecha_registro' => new Carbon(),
             ],
             'id_materia'
         );
@@ -901,7 +904,7 @@ class TransformacionController extends Controller
         return response()->json($rspta);
     }
 
-    public function listar_transformaciones()
+    public function listar_transformaciones($tipo)
     {
         $data = DB::table('almacen.transformacion')
             ->select(
@@ -924,7 +927,7 @@ class TransformacionController extends Controller
             ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'transformacion.estado')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
-            ->where([['transformacion.estado', '!=', 7]])
+            ->where([['transformacion.estado', '!=', 7], ['transformacion.tipo', '=', $tipo]])
             ->get();
         $output['data'] = $data;
         return response()->json($output);

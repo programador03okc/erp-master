@@ -52,6 +52,7 @@ class RegistroPagoController extends Controller
                 'adm_contri.nro_documento',
                 'adm_contri.razon_social',
                 'empresa.razon_social as razon_social_empresa',
+                'adm_empresa.codigo as codigo_empresa',
                 'sis_moneda.simbolo',
                 'sis_grupo.descripcion as grupo_descripcion',
                 'requerimiento_pago_estado.descripcion as estado_doc',
@@ -104,7 +105,7 @@ class RegistroPagoController extends Controller
             ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'requerimiento_pago.id_usuario')
             ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'requerimiento_pago.usuario_autorizacion')
-            ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8]);
+            ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9]);
         // ->where([['requerimiento_pago.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 1]]);
 
         return datatables($data)->filterColumn('persona', function ($query, $keyword) {
@@ -121,6 +122,7 @@ class RegistroPagoController extends Controller
             'adm_contri.razon_social',
             'adm_empresa.id_empresa',
             'empresa.razon_social as razon_social_empresa',
+            'adm_empresa.codigo as codigo_empresa',
             'requerimiento_pago_estado.descripcion as estado_doc',
             'requerimiento_pago_estado.bootstrap_color',
             'sis_moneda.simbolo',
@@ -164,7 +166,7 @@ class RegistroPagoController extends Controller
             ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
             ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'log_ord_compra.usuario_autorizacion')
             ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'log_ord_compra.id_prioridad_pago')
-            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6]);
+            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9]);
 
         // return datatables($data)
         //     ->addColumn('persona', function ($data) {
@@ -438,34 +440,30 @@ class RegistroPagoController extends Controller
                 }
             }
 
-            // $file = $request->file('adjunto');
-            // if (isset($file)) {
-            //     //obtenemos el nombre del archivo
-            //     $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-            //     $nombre = $request->codigo . '.' . $id_pago . '.' . $extension;
-            //     //indicamos que queremos guardar un nuevo archivo en el disco local
-            //     File::delete(public_path('tesoreria/pagos/' . $nombre));
-            //     Storage::disk('archivos')->put('tesoreria/pagos/' . $nombre, File::get($file));
-
-            //     DB::table('tesoreria.registro_pago')
-            //         ->where('id_pago', $id_pago)
-            //         ->update(['adjunto' => $nombre]);
-            // }
-
             if (floatval($request->total_pago) >= floatval(round($request->total, 2))) {
 
                 if ($request->id_oc !== null) {
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $request->id_oc)
                         ->update(['estado_pago' => 6]); //pagada
-                } else if ($request->id_doc_com !== null) {
-                    DB::table('almacen.doc_com')
-                        ->where('id_doc_com', $request->id_doc_com)
-                        ->update(['estado' => 9]); //procesado
+                    // } else if ($request->id_doc_com !== null) {
+                    //     DB::table('almacen.doc_com')
+                    //         ->where('id_doc_com', $request->id_doc_com)
+                    //         ->update(['estado' => 9]); //procesado
                 } else if ($request->id_requerimiento_pago !== null) {
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
                         ->update(['id_estado' => 6]); //pagada
+                }
+            } else {
+                if ($request->id_oc !== null) {
+                    DB::table('logistica.log_ord_compra')
+                        ->where('id_orden_compra', $request->id_oc)
+                        ->update(['estado_pago' => 9]); //con saldo
+                } else if ($request->id_requerimiento_pago !== null) {
+                    DB::table('tesoreria.requerimiento_pago')
+                        ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
+                        ->update(['id_estado' => 9]); //con saldo
                 }
             }
 
@@ -474,6 +472,54 @@ class RegistroPagoController extends Controller
         } catch (\PDOException $e) {
             DB::rollBack();
         }
+    }
+
+    function actualizarEstadoPago()
+    {
+
+        $nro_actualizados_req = 0;
+        $nro_actualizados_oc = 0;
+
+        $requerimientos = DB::table('tesoreria.requerimiento_pago')
+            ->select(
+                'requerimiento_pago.id_requerimiento_pago',
+                DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
+                    WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
+                    and registro_pago.estado != 7) AS suma_pagado")
+            )
+            ->where('id_estado', 5)
+            ->get();
+
+        foreach ($requerimientos as $req) {
+
+            if ($req->suma_pagado > 0) {
+                DB::table('tesoreria.requerimiento_pago')
+                    ->where('id_requerimiento_pago', $req->id_requerimiento_pago)
+                    ->update(['id_estado' => 9]);
+                $nro_actualizados_req++;
+            }
+        }
+
+        $ordenes = DB::table('logistica.log_ord_compra')
+            ->select(
+                'log_ord_compra.id_orden_compra',
+                DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
+                            WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
+                            and registro_pago.estado != 7) AS suma_pagado")
+            )
+            ->where('estado_pago', 5)
+            ->get();
+
+        foreach ($ordenes as $req) {
+
+            if ($req->suma_pagado > 0) {
+                DB::table('logistica.log_ord_compra')
+                    ->where('id_orden_compra', $req->id_orden_compra)
+                    ->update(['estado_pago' => 9]);
+                $nro_actualizados_oc++;
+            }
+        }
+        return response()->json("Se actualizaron " . $nro_actualizados_req . " requerimientos y " . $nro_actualizados_oc . " ordenes.");
     }
 
     function enviarAPago(Request $request)

@@ -33,7 +33,7 @@ Orden de Transformación
                     <span id="estado_doc"></span>
                 </div>
                 <div style="display:flex;padding-right: 0px;">
-                    <button type="button" class="btn btn-default btn-sm btn-flat" onClick="transformacionModal();" data-toggle="tooltip" data-placement="bottom" title="Ver Historial de Ordenes de Transformación">
+                    <button type="button" class="btn btn-default btn-sm btn-flat" onClick="transformacionModal('OT');" data-toggle="tooltip" data-placement="bottom" title="Ver Historial de Ordenes de Transformación">
                         <i class="fas fa-search"></i> Buscar</button>
                     <button type="button" class="btn btn-info btn-sm btn-flat" onClick="imprimirTransformacion();" data-toggle="tooltip" data-placement="bottom" title="Imprimir Transformación">
                         <i class="fas fa-print"></i> Imprimir</button>

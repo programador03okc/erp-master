@@ -19,7 +19,9 @@ Registro de pagos
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-                
+                @if (Auth::user()->id_usuario == 3)
+                <button id="btn_cerrar" class="btn btn-default" onClick="actualizarEstadoPago();">Actualizar estado con saldo</button>
+                @endif
                 <ul class="nav nav-tabs" id="myTab">
                     <li class="active"><a data-toggle="tab" href="#requerimientos">Requerimiento de pagos</a></li>
                     <li class=""><a data-toggle="tab" href="#ordenes">Ordenes Compra/Servicio</a></li>
@@ -38,9 +40,9 @@ Registro de pagos
                                             <tr>
                                                 <th hidden>#</th>
                                                 <th>Prio.</th>
-                                                <th>Empresa</th>
+                                                <th>Emp.</th>
                                                 <th>Código</th>
-                                                <th>Grupo</th>
+                                                {{-- <th>Grupo</th> --}}
                                                 <th>Concepto</th>
                                                 <th>Elaborado por</th>
                                                 <th>Destinatario</th>
@@ -73,13 +75,13 @@ Registro de pagos
                                                 <th hidden></th>
                                                 <th>Prio.</th>
                                                 <th>Cod.Req.</th>
-                                                <th>Empresa</th>
+                                                <th>Emp.</th>
                                                 <th>Codigo</th>
                                                 {{-- <th>Codigo SoftLink</th> --}}
-                                                <th>Nro. Doc.</th>
+                                                {{-- <th>Nro. Doc.</th> --}}
                                                 <th>Razon social del proveedor</th>
                                                 <th>Fecha envío a pago</th>
-                                                <th>Forma de Pago</th>
+                                                {{-- <th>Forma de Pago</th> --}}
                                                 <th>Mnd</th>
                                                 <th>Total</th>
                                                 <th>Saldo</th>

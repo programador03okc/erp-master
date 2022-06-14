@@ -43,7 +43,7 @@
                         return imagen;
                     }, 'className': 'text-center'
                 },
-                { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
+                { 'data': 'codigo_empresa', 'name': 'adm_empresa.codigo' },
                 // { 'data': 'codigo', 'name': 'requerimiento_pago.codigo', 'className': 'text-center' },
                 {
                     data: "codigo", name: "requerimiento_pago.codigo",
@@ -55,20 +55,9 @@
                     },
                     className: "text-center"
                 },
-                { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
+                // { 'data': 'grupo_descripcion', 'name': 'sis_grupo.descripcion' },
                 { 'data': 'concepto', 'name': 'requerimiento_pago.concepto' },
                 { 'data': 'nombre_corto', 'name': 'sis_usua.nombre_corto' },
-                // {
-                //     'render': function (data, type, row) {
-                //         console.log(row['persona']);
-                //         return (row['persona'][0] !== undefined ? row['persona'][0].nro_documento : row['nro_documento']);
-                //     }, 'className': 'text-center', 'searchable': false
-                // },
-                // {
-                //     'render': function (data, type, row) {
-                //         return (row['persona'][0] !== undefined ? row['persona'][0].nombre_completo : row['razon_social']);
-                //     }, 'searchable': false
-                // },
                 { data: 'persona' },
                 {
                     'render': function (data, type, row) {
@@ -94,14 +83,14 @@
                 {
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
-                        var estadoAdd = '';
-                        var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
-                        var total = formatDecimal(row['monto_total']);
-                        var por_pagar = (total - pagado);
-                        if (por_pagar > 0 && por_pagar < total) {
-                            estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
-                        }
-                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span> <br>' + estadoAdd;
+                        // var estadoAdd = '';
+                        // var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
+                        // var total = formatDecimal(row['monto_total']);
+                        // var por_pagar = (total - pagado);
+                        // if (por_pagar > 0 && por_pagar < total) {
+                        //     estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
+                        // }
+                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
 
                     }, className: 'text-center'
                 },
@@ -137,7 +126,11 @@
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
                                         data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
                                         title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>`: ''}
-                                    ${permisoRegistrar == '1' ?
+                                    `
+                                    : ''
+                                }
+                                ${row['id_estado'] == 5 || row['id_estado'] == 9 ?
+                                    `${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                         data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" data-tipo="requerimiento"
                                         data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-moneda="${row['simbolo']}" 
@@ -166,7 +159,7 @@
                 },
             ],
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
-            'order': [[12, "asc"], [0, "desc"]]
+            'order': [[11, "asc"], [0, "desc"]]
         });
 
     }
@@ -207,7 +200,7 @@
                     }, 'className': 'text-center'
                 },
                 { 'data': 'requerimientos', orderable: false, filterable: true },
-                { 'data': 'razon_social_empresa', 'name': 'empresa.razon_social' },
+                { 'data': 'codigo_empresa', 'name': 'adm_empresa.codigo' },
                 // { 'data': 'codigo' },
                 {
                     data: "codigo", name: "log_ord_compra.codigo",
@@ -220,7 +213,7 @@
                     className: "text-center"
                 },
                 // { 'data': 'codigo_softlink' },
-                { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
+                // { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento' },
                 { 'data': 'razon_social', 'name': 'adm_contri.razon_social' },
                 {
                     'data': 'fecha_solicitud_pago',
@@ -228,7 +221,7 @@
                         return (row['fecha_solicitud_pago'] !== null ? formatDateHour(row['fecha_solicitud_pago']) : '');
                     }, 'className': 'text-center', 'searchable': false
                 },
-                { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },
+                // { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },
                 // { 'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta' },
                 { 'data': 'simbolo', 'name': 'sis_moneda.simbolo', 'className': 'text-center' },
                 {
@@ -247,14 +240,14 @@
                 {
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
-                        var estadoAdd = '';
-                        var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
-                        var total = formatDecimal(row['monto_total']);
-                        var por_pagar = (total - pagado);
-                        if (por_pagar > 0 && por_pagar < total) {
-                            estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
-                        }
-                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span> <br>' + estadoAdd;
+                        // var estadoAdd = '';
+                        // var pagado = formatDecimal(row['suma_pagado'] !== null ? row['suma_pagado'] : 0);
+                        // var total = formatDecimal(row['monto_total']);
+                        // var por_pagar = (total - pagado);
+                        // if (por_pagar > 0 && por_pagar < total) {
+                        //     estadoAdd = '<span class="label label-danger">Saldo por pagar</span>';
+                        // }
+                        return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>';
                     }, className: 'text-center'
                 },
                 {
@@ -308,13 +301,16 @@
                                 title="Autorizar pago" >
                                 <i class="fas fa-share"></i></button>`: ''}
                             ${row['estado_pago'] == 5 ?
-                                    (`${permisoEnviar == '1' ?
+                                    `${permisoEnviar == '1' ?
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
                                     data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                     title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>` : ''}
-                                    
-                                ${permisoRegistrar == '1' ?
-                                            `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                    `
+                                    : ''}
+
+                                ${row['estado_pago'] == 5 || row['estado_pago'] == 9 ?
+                                    `${permisoRegistrar == '1' ?
+                                        `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
                                     data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" 
                                     data-moneda="${row['simbolo']}" 
@@ -329,7 +325,7 @@
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     data-comentario-pago-logistica="${row['comentario_pago']}"
                                     data-observacion-requerimiento="${observacionRequerimiento}"
-                                    title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`)
+                                    title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`
                                     : ''}
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?
                                     `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
@@ -356,7 +352,7 @@
                     targets: 2
                 },
             ],
-            'order': [[12, "asc"], [7, "asc"]]
+            'order': [[10, "asc"], [6, "asc"]]
         });
 
     }
@@ -737,4 +733,28 @@ function verAdjuntosPago(id_pago) {
             console.log(errorThrown);
         });
     }
+}
+
+function actualizarEstadoPago() {
+
+    $.ajax({
+        type: 'GET',
+        url: 'actualizarEstadoPago',
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify('success', {
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response
+            });
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
 }
