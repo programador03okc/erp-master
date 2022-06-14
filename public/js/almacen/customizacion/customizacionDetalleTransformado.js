@@ -9,9 +9,9 @@ function agregar_producto_transformado(sel) {
         'codigo': sel.codigo,
         'descripcion': sel.descripcion,
         'unid_med': sel.unid_med,
-        'cantidad': sel.cantidad,
-        'unitario': sel.unitario,
-        'total': sel.total,
+        'cantidad': 1,
+        'unitario': 0,
+        'total': 0,
     });
     mostrarProductoTransformado();
 }

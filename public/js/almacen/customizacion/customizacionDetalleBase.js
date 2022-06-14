@@ -35,7 +35,7 @@ function mostrarProductosBase() {
         <td><input type="number" class="form-control edition calcula" name="cantidad" id="cantidad" 
             data-id="${sel.id_producto}" value="${sel.cantidad}"></td>
         <td>${sel.unid_med}</td>
-        <td><span style="font-size: 17px;">${(sel.id_moneda == 1 ? 'S/' : '$') + sel.costo_promedio}</span></td>
+        <td><span style="font-size: 17px;text-align:right;">${(sel.id_moneda == 1 ? 'S/' : '$') + sel.costo_promedio}</span></td>
         <td>
             <div style="display:flex;">
                 <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
