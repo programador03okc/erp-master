@@ -20,8 +20,10 @@ function mostrarProductoTransformado() {
     $("#listaProductoTransformado tbody").html('');
     var row = '';
     var mon = $('[name=id_moneda]').val();
+    var totalSobrantesTransformados = 0;
 
     items_transformado.forEach(sel => {
+        totalSobrantesTransformados += parseFloat(sel.total);
         row = `<tr>
             <td>${sel.codigo}</td>
             <td>${sel.part_number !== null ? sel.part_number : ''}</td>
@@ -50,6 +52,15 @@ function mostrarProductoTransformado() {
         </tr>`;
     })
     $("#listaProductoTransformado tbody").html(row);
+
+    items_sobrante.forEach(sel => {
+        totalSobrantesTransformados += parseFloat(sel.total);
+    });
+
+    $("#totalSobrantesTransformados tbody").html(`<tr>
+        <td style="text-align:right; width:80%"><span style="font-size: 17px;">Total</span></td>
+        <td style="text-align:center"><span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$') + formatNumber.decimal(totalSobrantesTransformados, '', -2)}</span></td>
+    </tr>`);
 }
 
 function agregarProductoTransformado() {

@@ -3,21 +3,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title">Lista de Transformaciones</h3>
+                <h3 class="modal-title" id="nombre">Lista de Transformaciones</h3>
             </div>
             <div class="modal-body">
                 <table class="mytable table table-condensed table-bordered table-okc-view" 
                     id="listaTransformaciones">
-                    <thead>
-                        <tr>
-                            <th hidden>Id</th>
-                            <th>Código</th>
-                            <th>Oportunidad</th>
-                            <th>Requerimiento</th>
-                            <th>Guía Remisión</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
+                    <thead></thead>
                     <tbody style="font-size: 11px;"></tbody>
                 </table>
             </div>

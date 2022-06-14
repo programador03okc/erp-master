@@ -59,9 +59,9 @@ function mostrarProductosBase() {
     $("#listaMateriasPrimas tbody").html(row);
 
     var foot = `<tr>
-            <td colspan="7" style="text-align:right;">Total</td>
-            <td><span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$') + formatDecimalDigitos(total, 4)}</span></td>
-            <td></td>
+            <td colspan="7" style="text-align:right;"><span style="font-size: 17px;">Total</span></td>
+            <td colspan="2" style="text-align:center;"><span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')
+        + formatNumber.decimal(total, '', -2)}</span></td>
         </tr>`;
     $("#listaMateriasPrimas tfoot").html(foot);
     // $(".edition").attr('disabled', 'true');

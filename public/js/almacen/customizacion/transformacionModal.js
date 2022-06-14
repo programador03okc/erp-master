@@ -23,6 +23,16 @@ $(function () {
 
 function listarTransformaciones(tipo) {
     var vardataTables = funcDatatables();
+    $('#nombre').text("Lista de Transformaciones");
+    $('#listaTransformaciones thead').html(`<tr>
+        <th hidden>Id</th>
+        <th>Código</th>
+        <th>Oportunidad</th>
+        <th>Requerimiento</th>
+        <th>Guía Remisión</th>
+        <th>Estado</th>
+    </tr>`);
+
     $('#listaTransformaciones').dataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
@@ -51,10 +61,41 @@ function listarTransformaciones(tipo) {
     });
 }
 
+function listarCustomizaciones(tipo) {
+    var vardataTables = funcDatatables();
+    $('#nombre').text("Lista de Customizaciones");
+    $('#listaTransformaciones thead').html(`<tr>
+        <th hidden>Id</th>
+        <th>Código</th>
+        <th>Comentario</th>
+        <th>Almacén</th>
+    </tr>`);
+
+    $('#listaTransformaciones').dataTable({
+        'dom': vardataTables[1],
+        'buttons': vardataTables[2],
+        'language': vardataTables[0],
+        'ajax': 'listar_transformaciones/' + tipo,
+        'columns': [
+            { 'data': 'id_transformacion' },
+            { 'data': 'codigo' },
+            { 'data': 'observacion' },
+            { 'data': 'descripcion' },
+        ],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+        'order': [[0, "desc"]],
+    });
+}
+
 function transformacionModal(tipo) {
     $('#modal-transformacion').modal({
         show: true
     });
     clearDataTable();
-    listarTransformaciones(tipo);
+
+    if (tipo == 'OT') {
+        listarTransformaciones(tipo);
+    } else {
+        listarCustomizaciones(tipo);
+    }
 }

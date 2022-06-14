@@ -201,7 +201,7 @@ Customización
                                 <tr style="background: palegreen;">
                                     <th>Código</th>
                                     <th>Part Number</th>
-                                    <th width='40%'>Descripción</th>
+                                    <th width='30%'>Descripción</th>
                                     <th>Cant.</th>
                                     <th>Unid.</th>
                                     <th>Unit.</th>
@@ -216,6 +216,13 @@ Customización
                             <tbody></tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="totalSobrantesTransformados" width="100%">
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
             {{-- <div class="row">

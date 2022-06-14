@@ -360,20 +360,22 @@ function actualizarCostosBase() {
             dataType: 'JSON',
             success: function (response) {
                 console.log(response);
+                let costo_promedio = 0;
                 response.items_base.forEach(res => {
                     items_base.forEach(function (element) {
+                        costo_promedio = formatDecimalDigitos(parseFloat(res.costo_promedio), 4);
 
                         if (res.id_producto == element.id_producto) {
-                            element.costo_promedio = res.costo_promedio;
+                            element.costo_promedio = costo_promedio;
 
                             if (id_moneda == element.id_moneda) {
-                                element.unitario = res.costo_promedio;
-                                element.total = element.cantidad * res.costo_promedio;
+                                element.unitario = costo_promedio;
+                                element.total = element.cantidad * costo_promedio;
                             } else {
                                 if (id_moneda == 1) {
-                                    element.unitario = res.costo_promedio * parseFloat(tipo_cambio);
+                                    element.unitario = costo_promedio * parseFloat(tipo_cambio);
                                 } else {
-                                    element.unitario = res.costo_promedio / parseFloat(tipo_cambio);
+                                    element.unitario = costo_promedio / parseFloat(tipo_cambio);
                                 }
                                 element.total = element.cantidad * element.unitario;
                             }
