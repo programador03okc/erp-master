@@ -144,7 +144,7 @@ Customización
                                 <tr style="background: lightskyblue;">
                                     <th>Código</th>
                                     <th>Part Number</th>
-                                    <th width='40%'>Descripción</th>
+                                    <th width='30%'>Descripción</th>
                                     <th>Cant.</th>
                                     <th>Unid.</th>
                                     <th>Cos.Prom</th>
@@ -201,7 +201,7 @@ Customización
                                 <tr style="background: palegreen;">
                                     <th>Código</th>
                                     <th>Part Number</th>
-                                    <th width='30%'>Descripción</th>
+                                    <th width='40%'>Descripción</th>
                                     <th>Cant.</th>
                                     <th>Unid.</th>
                                     <th>Unit.</th>
