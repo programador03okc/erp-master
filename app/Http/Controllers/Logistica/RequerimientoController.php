@@ -988,7 +988,7 @@ class RequerimientoController extends Controller
 
         $cantidadItemConTransformacion=0;
         for ($i = 0; $i < $count; $i++) {
-            if($request->conTransformacion[$i]==1){
+            if(isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1){
                 $cantidadItemConTransformacion++;
             }
         }
@@ -1066,7 +1066,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = $request->conTransformacion[$i]==1?true:false;
+                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1)?true:false;
                 $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
@@ -1084,7 +1084,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = $request->conTransformacion[$i]==1?true:false;
+                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1)?true:false;
                 // $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
