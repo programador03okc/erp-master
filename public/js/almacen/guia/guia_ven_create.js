@@ -157,7 +157,7 @@ function mostrar_detalle() {
         <td>${element.almacen_reserva ?? ''}</td>
         <td>${element.suma_reservas !== null ? element.suma_reservas : ''}</td>
         <td>${element.cantidad_despachada}</td>
-        <td><input class="right cantidad" type="number" value="${element.cantidad}" min="1" name="cantidad" style="width:80px;"
+        <td><input class="right cantidad" type="number" value="${element.cantidad}" min="0.01" name="cantidad" style="width:80px;"
         step=".01" max="${element.cantidad}" data-id="${element.id_detalle_requerimiento}"/></td>
         <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
         <td>
