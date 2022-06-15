@@ -223,6 +223,7 @@ class RequerimientoController extends Controller
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
             ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
             ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id', '=', 'alm_req.id_cc')
+            ->leftJoin('cas.incidencia', 'incidencia.id_incidencia', '=', 'alm_req.id_incidencia')
 
 
             ->select(
@@ -294,6 +295,9 @@ class RequerimientoController extends Controller
                 'alm_req.division_id',
                 'division.descripcion as division',
                 'alm_req.trabajador_id',
+                'alm_req.id_incidencia',
+                'incidencia.codigo as codigo_incidencia',
+                'incidencia.cliente as cliente_incidencia',
                 DB::raw("concat(perso_asignado.nombres, ' ' ,perso_asignado.apellido_paterno, ' ' ,perso_asignado.apellido_materno)  AS nombre_trabajador"),
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
                 // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
@@ -346,6 +350,9 @@ class RequerimientoController extends Controller
                     'id_periodo' => $data->id_periodo,
                     'id_tipo_requerimiento' => $data->id_tipo_requerimiento,
                     'tipo_requerimiento' => $data->tp_req_descripcion,
+                    'id_incidencia' => $data->id_incidencia,
+                    'codigo_incidencia' => $data->codigo_incidencia,
+                    'cliente_incidencia' => $data->cliente_incidencia,
                     'id_usuario' => $data->id_usuario,
                     'persona' => $data->persona,
                     'usuario' => $data->usuario,
@@ -641,7 +648,7 @@ class RequerimientoController extends Controller
             $montoTotal = 0;
             $cantidadItemConTransformacion=0;
             for ($i = 0; $i < $count; $i++) {
-                if($request->conTransformacion[$i]==1){
+                if(isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1){
                     $cantidadItemConTransformacion++;
                 }
             }
@@ -687,11 +694,13 @@ class RequerimientoController extends Controller
             $requerimiento->fuente_det_id = $request->fuente_det;
             $requerimiento->division_id = $request->division;
             $requerimiento->trabajador_id = $request->id_trabajador;
+            $requerimiento->id_incidencia = isset($request->id_incidencia) && $request->id_incidencia!=null ? $request->id_incidencia : null;
             $requerimiento->save();
             $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimiento1;
             $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimiento2;
             $requerimiento->adjuntoComprobanteBancario = $request->archivoAdjuntoRequerimiento3;
             $requerimiento->adjuntoComprobanteContable = $request->archivoAdjuntoRequerimiento4;
+
 
 
             for ($i = 0; $i < $count; $i++) {
@@ -711,7 +720,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = $request->conTransformacion[$i]==1?true:false;
+                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1)?true:false;
                 $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
@@ -979,7 +988,7 @@ class RequerimientoController extends Controller
 
         $cantidadItemConTransformacion=0;
         for ($i = 0; $i < $count; $i++) {
-            if($request->conTransformacion[$i]==1){
+            if(isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1){
                 $cantidadItemConTransformacion++;
             }
         }
@@ -1028,6 +1037,7 @@ class RequerimientoController extends Controller
         if ($idEstadoActual == 3) {
             $requerimiento->estado = 1;
         }
+        $requerimiento->id_incidencia = $request->id_incidencia > 0 ? $request->id_incidencia : null;
         $requerimiento->save();
         $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1;
         $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2;
@@ -1056,7 +1066,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = $request->conTransformacion[$i]==1?true:false;
+                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1)?true:false;
                 $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
@@ -1074,7 +1084,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = $request->conTransformacion[$i]==1?true:false;
+                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1)?true:false;
                 // $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
@@ -3572,8 +3582,15 @@ class RequerimientoController extends Controller
                 <tr>
                     <td class="subtitle">Observación</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['observacion'] . '</td>
-                </tr>
+                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['observacion'] . '</td>';
+
+                    if($requerimiento['requerimiento'][0]['id_incidencia'] >0){
+                        $html .=  '<td class="subtitle verticalTop">Incidencia</td>
+                        <td class="subtitle verticalTop">:</td>
+                        <td>' . $requerimiento['requerimiento'][0]['codigo_incidencia'] . '</td>';
+                    } 
+
+                    $html .= '</tr>
                 </table>
                 <br>';
 

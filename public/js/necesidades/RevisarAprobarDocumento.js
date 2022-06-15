@@ -893,6 +893,13 @@ class RevisarAprobarDocumentoView {
         document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_igv']").textContent = $.number(data.monto_igv,2);
         document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_total']").textContent = $.number(data.monto_total,2);
 
+        if(data.id_incidencia>0){
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='incidencia']").textContent = data.codigo_incidencia;
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_incidencia']").classList.remove("oculto");
+        }else{
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_incidencia']").classList.add("oculto");
+
+        }
         if(data.id_cc>0){
             document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo_cdp']").textContent = data.codigo_oportunidad??'';
             document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.remove("oculto");

@@ -55,9 +55,12 @@
                                         </tr>
                                         <tr>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Observación</td>
-                                            <td id="observacion" style="width:95%;" colspan="7"></td>
+                                            <td id="observacion" style="width:80%;" colspan="5"></td>
                                         </tr>
-
+                                        <tr class="oculto" id="contenedor_incidencia">
+                                        <td style="width:5%; font-weight:bold; text-align:right;">Incidencia</td>
+                                            <td id="incidencia" style="width:5%;" colspan="7"></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

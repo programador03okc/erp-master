@@ -299,18 +299,40 @@ Crear / editar requerimiento
             </div>
         </div>
         
-        <div class="row" id="input-group-cdp">
-        <div class="col-md-12">
-                <h4 style="display:flex;justify-content: space-between;">Cuadro de presupuesto</h4>
+        <div class="row">
+            <div id="input-group-cdp">
+                <div class="col-md-6">
+                    <h4 style="display:flex;justify-content: space-between;">Cuadro de presupuesto</h4>
+                    <fieldset class="group-table">
+                        <div class="row">
+                            <div class="col-md-12">
+                            <h5>Código</h5>
+                            <div style="display:flex;">
+                                <input type="text" class="form-control oculto" name="id_cc">
+                                <input type="text" class="form-control" name="codigo_oportunidad" readonly>
+
+                                <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto activation" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP" disabled>
+                                    <i class=" fas fa-search"></i>
+                                </button>
+                            </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div id="input-group-incidencia" hidden>
+            <div class="col-md-6">
+                <h4 style="display:flex;justify-content: space-between;">Inicidencia</h4>
                 <fieldset class="group-table">
                     <div class="row">
-                        <div class="col-md-3">
-                        <h5>Código</h5>
+                        <div class="col-md-12">
+                        <h5>Código - Cliente</h5>
                         <div style="display:flex;">
-                            <input type="text" class="form-control oculto" name="id_cc">
-                            <input type="text" class="form-control" name="codigo_oportunidad" readonly>
-
-                            <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto activation" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP" disabled>
+                            <input type="text" class="form-control oculto" name="id_incidencia">
+                            <input type="text" class="form-control" name="codigo_incidencia" readonly>
+                            <input type="text" class="form-control" name="cliente_incidencia" readonly>
+                            <button type="button" class="btn-primary activation"  onClick="openIncidenciaModal();" title="Buscar incidencias" placeholder="Código incidencia" name="btnSearchInicidencia" disabled>
                                 <i class=" fas fa-search"></i>
                             </button>
                         </div>
@@ -319,6 +341,10 @@ Crear / editar requerimiento
                 </fieldset>
             </div>
         </div>
+
+        </div>
+
+
 
         <div class="row" id="input-group-proyecto">
             <div class="col-md-12">
@@ -640,6 +666,8 @@ Crear / editar requerimiento
         @endforeach
     </select>
 </div>
+@include('logistica.requerimientos.modal_lista_incidencias')
+
 <!-- @include('logistica.requerimientos.modal_buscar_stock_almacenes') -->
 @include('tesoreria.requerimiento_pago.modal_lista_cuadro_presupuesto')
 
@@ -728,6 +756,7 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modalCuadroPresupuesto.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/modalCuadroPresupuesto.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/incidenciasModal.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/incidenciasModal.js'))}}"></script>
 
 <script>
     var grupos = JSON.parse('{!!$grupos!!}');
