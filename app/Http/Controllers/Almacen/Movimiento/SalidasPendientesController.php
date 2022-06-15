@@ -490,9 +490,9 @@ class SalidasPendientesController extends Controller
             //   and ingreso.id_tp_mov = 1
             //   and ingreso.estado != 7) AS tiene_ingreso_transformacion")
         )
-            ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
-            ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
-            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'guia_ven.usuario')
+            ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
+            ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
+            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'mov_alm.usuario')
             ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')

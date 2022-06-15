@@ -137,7 +137,7 @@ function listarIngresos() {
                 data: "numero",
                 name: "guia_com.numero",
                 render: function (data, type, row) {
-                    return row["serie"] + "-" + row["numero"];
+                    return (row["serie"] ?? '') + "-" + (row["numero"] ?? '');
                 }
             },
             // { data: "nro_documento", name: "adm_contri.nro_documento" },

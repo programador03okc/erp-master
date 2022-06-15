@@ -328,8 +328,10 @@ function listarDespachosEntregados(permiso) {
                             } else {
                                 return '<span class="label label-primary">' + row['codigo_od'] + '</span>';
                             }
-                        } else {
+                        } else if (row['id_transferencia'] !== null) {
                             return '<span class="label label-success">Transferencia</span>';
+                        } else if (row['id_transformacion'] !== null) {
+                            return '<span class="label label-warning">Customización</span>';
                         }
                     }
             },
@@ -378,7 +380,7 @@ function listarDespachosEntregados(permiso) {
             {
                 data: 'numero', name: 'guia_ven.numero',
                 'render': function (data, type, row) {
-                    return row['serie'] + '-' + row['numero'];
+                    return (row['serie'] ?? '') + '-' + (row['numero'] ?? '');
                 }
             },
             { data: 'fecha_emision', className: "text-center" },

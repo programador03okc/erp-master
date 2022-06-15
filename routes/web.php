@@ -675,7 +675,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 				Route::post('lista-cuadro-presupuesto', 'Tesoreria\RequerimientoPagoController@listaCuadroPresupuesto');
 				Route::post('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
-
 			});
 
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
@@ -1459,6 +1458,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrarCustomizacion/{id}', 'Almacen\Movimiento\CustomizacionController@mostrarCustomizacion');
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 				Route::post('actualizarCostosBase', 'Almacen\Movimiento\CustomizacionController@actualizarCostosBase');
+				Route::get('procesarCustomizacion/{id}', 'Almacen\Movimiento\CustomizacionController@procesarCustomizacion');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {

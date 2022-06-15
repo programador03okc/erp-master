@@ -473,8 +473,6 @@ class CustomizacionController extends Controller
 
                 $bases = DB::table('almacen.transfor_materia')
                     ->select('transfor_materia.*')
-                    ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_materia.id_producto')
-                    ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
                     ->where([
                         ['transfor_materia.id_transformacion', '=', $id_transformacion],
                         ['transfor_materia.estado', '!=', 7]
@@ -491,7 +489,7 @@ class CustomizacionController extends Controller
                             'costo_promedio' => $item->valor_unitario,
                             'valorizacion' => $item->valor_total,
                             'usuario' => $id_usuario,
-                            // 'id_guia_ven_det' => $id_guia_ven_det,
+                            'id_materia' => $item->id_materia,
                             'estado' => 1,
                             'fecha_registro' => new Carbon(),
                         ],
@@ -526,8 +524,6 @@ class CustomizacionController extends Controller
 
                 $sobrantes = DB::table('almacen.transfor_sobrante')
                     ->select('transfor_sobrante.*')
-                    ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_sobrante.id_producto')
-                    ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
                     ->where([
                         ['transfor_sobrante.id_transformacion', '=', $id_transformacion],
                         ['transfor_sobrante.estado', '!=', 7]
@@ -544,7 +540,33 @@ class CustomizacionController extends Controller
                             'costo_promedio' => $item->valor_unitario,
                             'valorizacion' => $item->valor_total,
                             'usuario' => $id_usuario,
-                            // 'id_guia_ven_det' => $id_guia_ven_det,
+                            'id_sobrante' => $item->id_sobrante,
+                            'estado' => 1,
+                            'fecha_registro' => new Carbon(),
+                        ],
+                        'id_mov_alm_det'
+                    );
+                }
+
+                $transformados = DB::table('almacen.transfor_transformado')
+                    ->select('transfor_transformado.*')
+                    ->where([
+                        ['transfor_transformado.id_transformacion', '=', $id_transformacion],
+                        ['transfor_transformado.estado', '!=', 7]
+                    ])
+                    ->get();
+
+                foreach ($transformados as $item) {
+                    //Guardo los items del ingreso
+                    DB::table('almacen.mov_alm_det')->insertGetId(
+                        [
+                            'id_mov_alm' => $id_ingreso,
+                            'id_producto' => $item->id_producto,
+                            'cantidad' => $item->cantidad,
+                            'costo_promedio' => $item->valor_unitario,
+                            'valorizacion' => $item->valor_total,
+                            'usuario' => $id_usuario,
+                            'id_transformado' => $item->id_transformado,
                             'estado' => 1,
                             'fecha_registro' => new Carbon(),
                         ],

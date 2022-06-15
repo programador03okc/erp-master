@@ -54,6 +54,10 @@ Customización
                         title="Cancelar" style="display: none;">
                             Cancelar</button>
                             
+                    <button type="button" class="btn btn-sm btn-success procesar-customizacion" data-toggle="tooltip" data-placement="bottom" 
+                        title="Procesar customizacion" onClick="procesarCustomizacion();">
+                        <i class="fas fa-share"></i> Procesar
+                    </button>
                     {{-- <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="bottom" 
                         title="Imprimir Customización" onClick="imprimirCustomizacion();"><i class="fas fa-file-pdf"></i> Imprimir</button> --}}
 
@@ -131,6 +135,10 @@ Customización
                         <div class="col-sm-7">
                             <input type="number" class="form-control edition limpiarCustomizacion" name="tipo_cambio" step="0.0001"/>
                         </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Fecha registro:</label>
+                        <span id="fecha_registro" class="limpiarTexto"></span>
                     </div>
                 </div>
             </form>
