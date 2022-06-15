@@ -217,7 +217,8 @@ function mostrarListaItems() {
 
     totales.sub_total = sub_total;
     totales.igv = (totales.porcentaje_igv * sub_total / 100);
-    totales.total = sub_total + totales.igv;
+    totales.total_icbper = 0;
+    totales.total = sub_total + totales.igv + totales.total_icbper;
     totales.simbolo = $('select[name="moneda"] option:selected').data('sim');
 
     var html_foot = `<tr>
@@ -227,6 +228,10 @@ function mostrarListaItems() {
     <tr>
         <th colSpan="11" style="text-align:right">IGV ${totales.porcentaje_igv}% <label name="sim">${totales.simbolo}</label></th>
         <th style="text-align:right">${formatNumber.decimal(totales.igv, '', -2)}</th>
+    </tr>
+    <tr>
+        <th colSpan="11" style="text-align:right">ICBPER <label name="sim">${totales.simbolo}</label></th>
+        <th style="text-align:right">${formatNumber.decimal(totales.total_icbper, '', -2)}</th>
     </tr>
     <tr>
         <th colSpan="11" style="text-align:right"> Total <label name="sim">${totales.simbolo}</label></th>
