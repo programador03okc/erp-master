@@ -43,10 +43,13 @@ $(".nueva-customizacion").on('click', function () {
     $("[name=modo]").val("edicion");
     $("[name=id_customizacion]").val("");
 
-    $("[name=fecha_proceso]").val(fecha_actual());
+    var fecha = fecha_actual();
+
+    $("[name=fecha_proceso]").val(fecha);
     $("[name=id_usuario]").val(usuarioSession);
     $("#nombre_registrado_por").text(usuarioNombreSession);
 
+    obtenerTipoCambio(fecha);
 });
 
 $(".cancelar").on('click', function () {
@@ -310,6 +313,10 @@ function anularCustomizacion() {
     });
 }
 
+$("[name=fecha_proceso]").on('change', function () {
+    var fecha = $(this).val();
+    obtenerTipoCambio(fecha);
+});
 
 $("[name=id_moneda]").on('change', function () {
     console.log($('[name=id_moneda]').val());
@@ -446,6 +453,22 @@ function procesarCustomizacion() {
             }
         });
     }
+}
+
+function obtenerTipoCambio(fecha) {
+    $.ajax({
+        type: 'GET',
+        url: 'obtenerTipoCambio/' + fecha + '/' + 2,//
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            $("[name=tipo_cambio]").val(response.venta);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 function imprimirCustomizacion() {

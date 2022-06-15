@@ -7,6 +7,7 @@ use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Presupuestos\Moneda;
+use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,13 @@ class CustomizacionController extends Controller
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
         return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+    }
+
+    public function obtenerTipoCambio($fecha, $id_moneda)
+    {
+        $tipo_cambio = TipoCambio::where([['moneda', '=', $id_moneda], ['fecha', '<=', $fecha]])
+            ->orderBy('fecha', 'DESC')->first();
+        return response()->json($tipo_cambio);
     }
 
     public function transformacion_nextId($fecha, $id_almacen)

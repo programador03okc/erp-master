@@ -1459,6 +1459,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 				Route::post('actualizarCostosBase', 'Almacen\Movimiento\CustomizacionController@actualizarCostosBase');
 				Route::get('procesarCustomizacion/{id}', 'Almacen\Movimiento\CustomizacionController@procesarCustomizacion');
+				Route::get('obtenerTipoCambio/{fec}/{mon}', 'Almacen\Movimiento\CustomizacionController@obtenerTipoCambio');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
