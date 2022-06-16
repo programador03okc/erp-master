@@ -70,9 +70,9 @@
         font-size: 20px;
     }
 
-    table.bordered {
+    /*table.bordered {
         border-spacing: 0px;
-    }
+    }*/
 
     table.bordered th {
         border-top: 1px solid #cfcfcf;
@@ -208,7 +208,7 @@ use Carbon\Carbon;
             @if ($prod['series']!=='')
             <tr>
                 <td @if ($salida->id_operacion == 27) colspan="7" @else colspan="6" @endif>
-                    <div class="space">{{$prod['series']}}</div>
+                    <div>{{$prod['series']}}</div>
                 </td>
             </tr>
             @endif
