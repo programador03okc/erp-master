@@ -109,7 +109,7 @@ use Carbon\Carbon;
         border-bottom: 1px solid black;
         font-size: 22px;margin:0px; padding:0px;">Ingreso a Almacén</h4>
     <h4 class="text-center" style="margin:0px; padding:0px;border-bottom: 1px solid black;background-color: #acedf2;">
-        {{($ingreso->id_guia_com!==null?('Guía '.$ingreso->guia):
+        {{($ingreso->guia!=='-'?('Guía '.$ingreso->guia):
         ($ingreso->id_transformacion!==null?$ingreso->cod_transformacion:''))}}</h4>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$ingreso->cod_sunat}} - {{$ingreso->ope_descripcion}}</h5>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$ingreso->codigo}}</h5>
