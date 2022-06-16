@@ -70,9 +70,9 @@
         font-size: 20px;
     }
 
-    table.bordered {
+    /*table.bordered {
         border-spacing: 0px;
-    }
+    }*/
 
     table.bordered th {
         border-top: 1px solid #cfcfcf;
