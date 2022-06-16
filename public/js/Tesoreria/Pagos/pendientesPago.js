@@ -142,6 +142,7 @@
                                         data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}"
                                         data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
                                         data-motivo="${encodeURIComponent(row['concepto'])}"
+                                        data-observacion-requerimiento="${row['comentario']}"
                                         title="Registrar Pago"> 
                                     <i class="fas fa-hand-holding-usd"></i> </button>`
                                         : ''}`
