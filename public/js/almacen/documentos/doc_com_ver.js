@@ -118,6 +118,14 @@ function documentosVer(id) {
                 )}</th>
                 </tr>
                 <tr>
+                    <td colSpan="11" style="text-align:right">ICBPER</td>
+                    <th style="text-align:right">${formatNumber.decimal(
+                    element.total_icbper,
+                    element.simbolo,
+                    -2
+                )}</th>
+                </tr>
+                <tr>
                     <td colSpan="11" style="text-align:right">Total</td>
                     <th style="text-align:right">${formatNumber.decimal(
                     element.total_a_pagar,

@@ -24,10 +24,7 @@ class SalidaPdfController extends Controller
                 'tp_ope.descripcion as ope_descripcion',
                 DB::raw("(guia_ven.serie) || '-' || (guia_ven.numero) as guia"),
                 'trans.codigo as trans_codigo',
-                // 'trans.fecha_transferencia',
                 'alm_destino.descripcion as trans_almacen_destino',
-                // DB::raw("(cont_tp_doc.abreviatura) || '-' || (doc_ven.serie) || '-' || (doc_ven.numero) as doc"),
-                // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) as persona"),
                 'transformacion.codigo as cod_transformacion', //'transformacion.serie','transformacion.numero',
                 'transformacion.fecha_transformacion',
                 'guia_ven.fecha_emision as fecha_guia',
@@ -75,7 +72,10 @@ class SalidaPdfController extends Controller
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
             ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'mov_alm_det.id_guia_ven_det')
+            ->leftjoin('almacen.guia_ven_det', function ($join) {
+                $join->on('guia_ven_det.id_guia_ven_det', '=', 'mov_alm_det.id_guia_ven_det');
+                $join->where('guia_ven_det.estado', '!=', 7);
+            })
             ->leftjoin('almacen.doc_ven_det', function ($join) {
                 $join->on('doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det');
                 $join->where('doc_ven_det.estado', '!=', 7);

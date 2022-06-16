@@ -10,6 +10,7 @@
                 <th style="background-color: #cccccc;" width="15"><b>Código</b></th>
                 <th style="background-color: #cccccc;" width="15"><b>Código Softlink</b></th>
                 <th style="background-color: #cccccc;" width="20"><b>Part Number</b></th>
+                <th style="background-color: #cccccc;" width="20"><b>Categoría</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Descripción</b></th>
                 <th style="background-color: #cccccc;" width="8"><b>Moneda</b></th>
                 <th style="background-color: #cccccc;" width="15"><b>Valorizacion</b></th>
@@ -27,6 +28,7 @@
                 <td>{{ $item['codigo'] }}</td>
                 <td>{{ $item['cod_softlink'] }}</td>
                 <td>{{ $item['part_number'] }}</td>
+                <td>{{ $item['categoria'] }}</td>
                 <td>{{ $item['producto'] }}</td>
                 <td>{{ $item['simbolo'] }}</td>
                 <td>{{ $item['valorizacion'] }}</td>

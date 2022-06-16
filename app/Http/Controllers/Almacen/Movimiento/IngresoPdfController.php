@@ -64,6 +64,7 @@ class IngresoPdfController extends Controller
                 'alm_prod.codigo',
                 'alm_prod.part_number',
                 'alm_prod.descripcion',
+                'alm_prod.id_moneda',
                 'alm_und_medida.abreviatura',
                 // 'log_det_ord_compra.subtotal',
                 'log_det_ord_compra.precio as unitario',
@@ -79,7 +80,10 @@ class IngresoPdfController extends Controller
             )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
+            ->leftjoin('almacen.guia_com_det', function ($join) {
+                $join->on('guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det');
+                $join->where('guia_com_det.estado', '!=', 7);
+            })
             ->leftjoin('logistica.log_det_ord_compra', function ($join) {
                 $join->on('log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det');
                 $join->where('log_det_ord_compra.estado', '!=', 7);

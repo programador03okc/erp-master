@@ -92,7 +92,9 @@
         font-size: 22px;
     }
 </style>
-
+<?php
+use Carbon\Carbon;
+?>
 <body>
     <table width="100%" style="margin-bottom: 0px">
         <tr>
@@ -107,7 +109,8 @@
         border-bottom: 1px solid black;
         font-size: 22px;margin:0px; padding:0px;">Ingreso a Almacén</h4>
     <h4 class="text-center" style="margin:0px; padding:0px;border-bottom: 1px solid black;background-color: #acedf2;">
-        Guía {{$ingreso->guia}}</h4>
+        {{($ingreso->id_guia_com!==null?('Guía '.$ingreso->guia):
+        ($ingreso->id_transformacion!==null?$ingreso->cod_transformacion:''))}}</h4>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$ingreso->cod_sunat}} - {{$ingreso->ope_descripcion}}</h5>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$ingreso->codigo}}</h5>
 
@@ -124,7 +127,7 @@
             </tr>
             <tr>
                 <th style="width: 20%" class="text-right">Proveedor:</th>
-                <td style="width: 45%">{{$ingreso->nro_documento}} - {{$ingreso->razon_social}}</td>
+                <td style="width: 45%">{{$ingreso->id_guia_com!==null ? $ingreso->nro_documento : $ingreso->ruc_empresa}} - {{$ingreso->id_guia_com!==null ? $ingreso->razon_social : $ingreso->empresa_razon_social}}</td>
                 <th style="width: 25%" class="text-right">Fecha Emisión Guía:</th>
                 <td style="width: 35%">{{$ingreso->fecha_guia}}</td>
             </tr>
@@ -192,24 +195,24 @@
             @endphp
             @foreach ($detalle as $prod)
                 <?php
-                
-                $det_series = DB::table('almacen.alm_prod_serie')
-                    ->select('alm_prod_serie.serie')
-                    ->where([
-                        ['alm_prod_serie.id_prod', '=', $prod->id_producto],
-                        ['alm_prod_serie.id_guia_com_det', '=', $prod->id_guia_com_det],
-                        ['alm_prod_serie.estado', '!=', 7]
-                    ])
-                    ->get();
+                $det_series = [];
+
+                if ($prod->id_guia_com_det !==null){
+                    $det_series = DB::table('almacen.alm_prod_serie')
+                        ->select('alm_prod_serie.serie')
+                        ->where([
+                            ['alm_prod_serie.id_prod', '=', $prod->id_producto],
+                            ['alm_prod_serie.id_guia_com_det', '=', $prod->id_guia_com_det],
+                            ['alm_prod_serie.estado', '!=', 7]
+                        ])
+                        ->get();
+                }
 
                 $series_array = [];
                 $series = '';
 
                 if ($det_series!==null) {
                     foreach ($det_series as $s) {
-                        // if (!in_array($s->serie, $series_array)) {
-                        // array_push($series_array, $s->serie);
-                        // }
                         if ($series !== '') {
                             $series .= ', ' . $s->serie;
                         } else {
@@ -220,7 +223,7 @@
                 }
                 $unitario = ($prod->precio_unitario !== null
                                 ? $prod->precio_unitario
-                                : ($prod->unitario!==null?$prod->unitario:$prod->unitario_guia));
+                                : ($prod->unitario!==null?$prod->unitario:($prod->unitario_guia!==null?$prod->unitario_guia:($prod->costo_promedio))));
                 $valorizacion = ($unitario) * ($prod->cantidad);
 
                 // $unitario = ($prod->cantidad !== null
@@ -230,7 +233,9 @@
                 // $valorizacion = $prod->valorizacion;
 
                 $total += $valorizacion;
-                $moneda = $prod->moneda_doc!==null ? $prod->moneda_doc : ($prod->moneda_oc!==null?$prod->moneda_oc:'');
+                $moneda = $prod->moneda_doc!==null ? $prod->moneda_doc : 
+                    ($prod->moneda_oc!==null?$prod->moneda_oc :
+                        ($prod->id_moneda == 1 ? 'S/' : '$'));
 
                 $adic_valor = DB::table('almacen.guia_com_prorrateo_det')
                     ->where([['id_guia_com_det','=',$prod->id_guia_com_det],
@@ -264,7 +269,7 @@
         <tfoot>
             <tr>
                 <th class="text-right" colspan="7">{{$moneda}}</th>
-                <th class="text-right">{{$total}}</th>
+                <th class="text-right">{{number_format(round($total,2,PHP_ROUND_HALF_UP), 2)}}</th>
             </tr>
         </tfoot>
     </table>
@@ -276,6 +281,9 @@
         </p>
         <p style="text-align:right;font-size:10px;margin-bottom:0px;margin-top:0px;">
             {{'Fecha registro: ' . $fecha_registro . ' ' . $hora_registro }}
+            </p>
+        <p style="text-align:right;font-size:10px;margin-bottom:0px;margin-top:0px;">
+            {{'Fecha de impresión: ' . (new Carbon())->format('d-m-Y H:i:s') }}
             </p>
         <p style="text-align:right;font-size:10px;margin-top:0px;">
             <strong>{{config('global.nombreSistema') . ' '  . config('global.version')}}</strong>

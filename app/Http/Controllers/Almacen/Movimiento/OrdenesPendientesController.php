@@ -323,11 +323,11 @@ class OrdenesPendientesController extends Controller
                             od.estado != 7 and
                             od.estado != 1) AS count_despachos_oc")
         )
-            ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
+            ->leftJoin('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
             // ->leftJoin('almacen.trans', 'trans.id_transferencia', '=', 'mov_alm.id_transferencia')
-            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_com.id_almacen')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
             ->join('administracion.sis_sede as sede_guia', 'sede_guia.id_sede', '=', 'alm_almacen.id_sede')
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com.id_proveedor')
+            ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com.id_proveedor')
             ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'mov_alm.usuario')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
@@ -1978,6 +1978,7 @@ class OrdenesPendientesController extends Controller
                     'sub_total' => $request->sub_total,
                     'id_condicion_softlink' => $id_condicion_softlink,
                     'total_igv' => $request->igv,
+                    'total_icbper' => 0,
                     'porcen_igv' => $request->porcentaje_igv,
                     'total_a_pagar' => round($request->total, 2),
                     'usuario' => $id_usuario,
@@ -2103,6 +2104,7 @@ class OrdenesPendientesController extends Controller
                 'doc_com.total_a_pagar',
                 'doc_com.sub_total',
                 'doc_com.total_igv',
+                'doc_com.total_icbper',
                 'log_cdn_pago.descripcion as condicion_descripcion',
                 'sis_sede.descripcion as sede_descripcion',
                 'doc_com.credito_dias',

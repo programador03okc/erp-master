@@ -101,7 +101,9 @@
         font-size: 22px;
     }
 </style>
-
+<?php
+use Carbon\Carbon;
+?>
 <body>
     <table width="100%" style="margin-bottom: 0px">
         <tr>
@@ -116,7 +118,8 @@
         border-bottom: 1px solid black;
         font-size: 22px;margin:0px; padding:0px;">Salida de Almacén</h4>
     <h4 class="text-center" style="margin:0px; padding:0px;border-bottom: 1px solid black;background-color: #fce0a5;">
-        Guía {{$salida->guia}}</h4>
+        {{($salida->id_guia_com!==null?('Guía '.$salida->guia):
+        ($salida->id_transformacion!==null?$salida->cod_transformacion:''))}}</h4>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$salida->cod_sunat}} - {{$salida->ope_descripcion}}</h5>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$salida->codigo}}</h5>
 
@@ -133,7 +136,7 @@
             </tr>
             <tr>
                 <th style="width: 20%" class="text-right">Cliente:</th>
-                <td style="width: 45%">{{$salida->ruc_cliente}} - {{$salida->razon_social_cliente}}</td>
+                <td style="width: 45%">{{$salida->id_guia_ven!==null ? $salida->ruc_cliente : $salida->ruc_empresa}} - {{$salida->id_guia_ven!==null ? $salida->razon_social_cliente : $salida->empresa_razon_social}}</td>
                 <th style="width: 25%" class="text-right">Fecha Emisión Guía:</th>
                 <td style="width: 35%">{{$salida->fecha_guia}}</td>
             </tr>
@@ -221,6 +224,9 @@
         <p style="text-align:right;font-size:10px;margin-bottom:0px;margin-top:0px;">
             {{'Fecha registro: ' . $fecha_registro . ' ' . $hora_registro }}
         </p>
+        <p style="text-align:right;font-size:10px;margin-bottom:0px;margin-top:0px;">
+            {{'Fecha de impresión: ' . (new Carbon())->format('d-m-Y H:i:s') }}
+            </p>
         <p style="text-align:right;font-size:10px;margin-top:0px;">
             <strong>{{config('global.nombreSistema') . ' '  . config('global.version')}}</strong>
         </p>

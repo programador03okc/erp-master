@@ -7,6 +7,7 @@ use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Presupuestos\Moneda;
+use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,13 @@ class CustomizacionController extends Controller
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
         return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+    }
+
+    public function obtenerTipoCambio($fecha, $id_moneda)
+    {
+        $tipo_cambio = TipoCambio::where([['moneda', '=', $id_moneda], ['fecha', '<=', $fecha]])
+            ->orderBy('fecha', 'DESC')->first();
+        return response()->json($tipo_cambio);
     }
 
     public function transformacion_nextId($fecha, $id_almacen)
@@ -403,6 +411,178 @@ class CustomizacionController extends Controller
                     ->update(['estado' => 7]);
 
                 $mensaje = 'La customización se anuló correctamente.';
+                $tipo = 'success';
+            }
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+
+    public function procesarCustomizacion($id_transformacion)
+    {
+        try {
+            DB::beginTransaction();
+
+            $mensaje = '';
+            $tipo = '';
+
+            $transformacion = DB::table('almacen.transformacion')
+                ->where('id_transformacion', $id_transformacion)
+                ->first();
+
+            $mov = DB::table('almacen.mov_alm')
+                ->where([
+                    ['id_transformacion', '=', $id_transformacion],
+                    ['estado', '=', 1]
+                ])
+                ->get();
+
+            //Si existe ingreso y salida relacionado
+            if (count($mov) > 0) {
+                $mensaje = 'La customización ya fue procesada.';
+                $tipo = 'warning';
+            } else {
+                DB::table('almacen.transformacion')
+                    ->where('id_transformacion', $id_transformacion)
+                    ->update([
+                        'estado' => 10, //Culminado
+                        // 'fecha_transformacion' => new Carbon()
+                    ]);
+                //Genera el codigo de la salida
+                $codigo = GenericoAlmacenController::nextMovimiento(
+                    2, //salida
+                    $transformacion->fecha_transformacion,
+                    $transformacion->id_almacen
+                );
+                $operacion = 27; //SALIDA PARA SERVICIO DE PRODUCCION
+                $id_usuario = Auth::user()->id_usuario;
+
+                $id_salida = DB::table('almacen.mov_alm')->insertGetId(
+                    [
+                        'id_almacen' => $transformacion->id_almacen,
+                        'id_tp_mov' => 2, //Salidas
+                        'codigo' => $codigo,
+                        'fecha_emision' => $transformacion->fecha_transformacion,
+                        // 'id_guia_ven' => $id_guia_ven,
+                        'id_operacion' => $operacion,
+                        'id_transformacion' => $id_transformacion,
+                        'revisado' => 0,
+                        'usuario' => $id_usuario,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ],
+                    'id_mov_alm'
+                );
+
+                $bases = DB::table('almacen.transfor_materia')
+                    ->select('transfor_materia.*')
+                    ->where([
+                        ['transfor_materia.id_transformacion', '=', $id_transformacion],
+                        ['transfor_materia.estado', '!=', 7]
+                    ])
+                    ->get();
+
+                foreach ($bases as $item) {
+                    //Guardo los items de la salida
+                    DB::table('almacen.mov_alm_det')->insertGetId(
+                        [
+                            'id_mov_alm' => $id_salida,
+                            'id_producto' => $item->id_producto,
+                            'cantidad' => $item->cantidad,
+                            'costo_promedio' => $item->valor_unitario,
+                            'valorizacion' => $item->valor_total,
+                            'usuario' => $id_usuario,
+                            'id_materia' => $item->id_materia,
+                            'estado' => 1,
+                            'fecha_registro' => new Carbon(),
+                        ],
+                        'id_mov_alm_det'
+                    );
+                }
+
+                //Genera el codigo de ingreso
+                $codigo = GenericoAlmacenController::nextMovimiento(
+                    1, //ingreso
+                    $transformacion->fecha_transformacion,
+                    $transformacion->id_almacen
+                );
+                $operacion = 26; //INGRESO POR SERVICIO DE PRODUCCION
+
+                $id_ingreso = DB::table('almacen.mov_alm')->insertGetId(
+                    [
+                        'id_almacen' => $transformacion->id_almacen,
+                        'id_tp_mov' => 1, //ingreso
+                        'codigo' => $codigo,
+                        'fecha_emision' => $transformacion->fecha_transformacion,
+                        // 'id_guia_ven' => $id_guia_ven,
+                        'id_operacion' => $operacion,
+                        'id_transformacion' => $id_transformacion,
+                        'revisado' => 0,
+                        'usuario' => $id_usuario,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ],
+                    'id_mov_alm'
+                );
+
+                $sobrantes = DB::table('almacen.transfor_sobrante')
+                    ->select('transfor_sobrante.*')
+                    ->where([
+                        ['transfor_sobrante.id_transformacion', '=', $id_transformacion],
+                        ['transfor_sobrante.estado', '!=', 7]
+                    ])
+                    ->get();
+
+                foreach ($sobrantes as $item) {
+                    //Guardo los items del ingreso
+                    DB::table('almacen.mov_alm_det')->insertGetId(
+                        [
+                            'id_mov_alm' => $id_ingreso,
+                            'id_producto' => $item->id_producto,
+                            'cantidad' => $item->cantidad,
+                            'costo_promedio' => $item->valor_unitario,
+                            'valorizacion' => $item->valor_total,
+                            'usuario' => $id_usuario,
+                            'id_sobrante' => $item->id_sobrante,
+                            'estado' => 1,
+                            'fecha_registro' => new Carbon(),
+                        ],
+                        'id_mov_alm_det'
+                    );
+                }
+
+                $transformados = DB::table('almacen.transfor_transformado')
+                    ->select('transfor_transformado.*')
+                    ->where([
+                        ['transfor_transformado.id_transformacion', '=', $id_transformacion],
+                        ['transfor_transformado.estado', '!=', 7]
+                    ])
+                    ->get();
+
+                foreach ($transformados as $item) {
+                    //Guardo los items del ingreso
+                    DB::table('almacen.mov_alm_det')->insertGetId(
+                        [
+                            'id_mov_alm' => $id_ingreso,
+                            'id_producto' => $item->id_producto,
+                            'cantidad' => $item->cantidad,
+                            'costo_promedio' => $item->valor_unitario,
+                            'valorizacion' => $item->valor_total,
+                            'usuario' => $id_usuario,
+                            'id_transformado' => $item->id_transformado,
+                            'estado' => 1,
+                            'fecha_registro' => new Carbon(),
+                        ],
+                        'id_mov_alm_det'
+                    );
+                }
+
+                $mensaje = 'La customización se procesó correctamente.';
                 $tipo = 'success';
             }
 

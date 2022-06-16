@@ -25,6 +25,7 @@ $(".nueva-customizacion").on('click', function () {
     $(".nueva-customizacion").hide();
     $(".anular-customizacion").hide();
     $(".edit-customizacion").hide();
+    $(".procesar-customizacion").hide();
     $(".buscar-customizacion").hide();
 
     $("#codigo").text('');
@@ -42,10 +43,13 @@ $(".nueva-customizacion").on('click', function () {
     $("[name=modo]").val("edicion");
     $("[name=id_customizacion]").val("");
 
-    $("[name=fecha_proceso]").val(fecha_actual());
+    var fecha = fecha_actual();
+
+    $("[name=fecha_proceso]").val(fecha);
     $("[name=id_usuario]").val(usuarioSession);
     $("#nombre_registrado_por").text(usuarioNombreSession);
 
+    obtenerTipoCambio(fecha);
 });
 
 $(".cancelar").on('click', function () {
@@ -56,6 +60,7 @@ $(".cancelar").on('click', function () {
     $(".nueva-customizacion").show();
     $(".anular-customizacion").show();
     $(".edit-customizacion").show();
+    $(".procesar-customizacion").show();
     $(".buscar-customizacion").show();
 
     $("#codigo").text('');
@@ -86,6 +91,7 @@ $(".edit-customizacion").on('click', function () {
         $(".nueva-customizacion").hide();
         $(".anular-customizacion").hide();
         $(".edit-customizacion").hide();
+        $(".procesar-customizacion").hide();
         $(".buscar-customizacion").hide();
 
         $("[name=modo]").val("edicion");
@@ -199,6 +205,7 @@ function guardarCustomizacion(data) {
             $(".nueva-customizacion").show();
             $(".anular-customizacion").show();
             $(".edit-customizacion").show();
+            $(".procesar-customizacion").show();
             $(".buscar-customizacion").show();
 
             $("[name=modo]").val("");
@@ -231,7 +238,8 @@ function mostrarCustomizacion(id) {
 
             $('#codigo').text(response.customizacion.codigo);
             $('#nombre_registrado_por').text(response.customizacion.registrado_por_nombre);
-            // $('#serie-numero').text(response.serie !== null ? (response.serie + '-' + response.numero) : '');
+            $('#fecha_registro').text(response.customizacion.fecha_registro);
+
             items_base = response.bases;
             mostrarProductosBase();
             items_transformado = response.transformados;
@@ -305,6 +313,10 @@ function anularCustomizacion() {
     });
 }
 
+$("[name=fecha_proceso]").on('change', function () {
+    var fecha = $(this).val();
+    obtenerTipoCambio(fecha);
+});
 
 $("[name=id_moneda]").on('change', function () {
     console.log($('[name=id_moneda]').val());
@@ -390,6 +402,73 @@ function actualizarCostosBase() {
             console.log(errorThrown);
         });
     }
+}
+
+function procesarCustomizacion() {
+
+    let ids = $("[name=id_customizacion]").val();
+
+    if (ids == '') {
+        Lobibox.notify("warning", {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Debe seleccionar una customización.'
+        });
+    } else {
+        Swal.fire({
+            title: "¿Está seguro que desea procesar la customización?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00a65a",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sí, Procesar"
+        }).then(result => {
+
+            if (result.isConfirmed) {
+
+                $.ajax({
+                    type: 'GET',
+                    url: 'procesarCustomizacion/' + ids,
+                    dataType: 'JSON',
+                    success: function (response) {
+                        console.log(response);
+                        Lobibox.notify(response.tipo, {
+                            title: false,
+                            size: "mini",
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje
+                        });
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            }
+        });
+    }
+}
+
+function obtenerTipoCambio(fecha) {
+    $.ajax({
+        type: 'GET',
+        url: 'obtenerTipoCambio/' + fecha + '/' + 2,//
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            $("[name=tipo_cambio]").val(response.venta);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
 
 function imprimirCustomizacion() {
