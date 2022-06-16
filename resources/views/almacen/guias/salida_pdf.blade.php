@@ -208,7 +208,7 @@ use Carbon\Carbon;
             @if ($prod['series']!=='')
             <tr>
                 <td @if ($salida->id_operacion == 27) colspan="7" @else colspan="6" @endif>
-                    <div class="space">{{$prod['series']}}</div>
+                    <div>{{$prod['series']}}</div>
                 </td>
             </tr>
             @endif
