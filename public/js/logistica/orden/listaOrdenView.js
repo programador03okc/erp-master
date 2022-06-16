@@ -1638,7 +1638,7 @@ class ListaOrdenView {
                             let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id}">
                                                 <i class="fas fa-chevron-down"></i>
                                                 </button>`;
-                            let btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${([5, 6, 8].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}" 
+                            let btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}" 
                                 data-id-orden-compra="${row.id ?? ''}" 
                                 data-codigo-orden="${row.codigo ?? ''}" 
                                 data-id-proveedor="${row.id_proveedor ?? ''}" 
