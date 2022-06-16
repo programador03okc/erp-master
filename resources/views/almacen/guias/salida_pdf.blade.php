@@ -118,7 +118,7 @@ use Carbon\Carbon;
         border-bottom: 1px solid black;
         font-size: 22px;margin:0px; padding:0px;">Salida de Almacén</h4>
     <h4 class="text-center" style="margin:0px; padding:0px;border-bottom: 1px solid black;background-color: #fce0a5;">
-        {{($salida->id_guia_com!==null?('Guía '.$salida->guia):
+        {{($salida->id_guia_ven!==null?('Guía '.$salida->guia):
         ($salida->id_transformacion!==null?$salida->cod_transformacion:''))}}</h4>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$salida->cod_sunat}} - {{$salida->ope_descripcion}}</h5>
     <h5 class="text-center" style="margin:0px; padding:0px;">{{$salida->codigo}}</h5>
