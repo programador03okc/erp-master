@@ -138,12 +138,12 @@ class SalidaPdfController extends Controller
                             ['alm_prod_serie.estado', '!=', 7]
                         ])
                         ->get();
-                } else if ($det->id_base !== null) {
+                } else if ($det->id_materia !== null) {
                     $det_series = DB::table('almacen.alm_prod_serie')
                         ->select('alm_prod_serie.serie')
                         ->where([
                             ['alm_prod_serie.id_prod', '=', $det->id_producto],
-                            ['alm_prod_serie.id_base', '=', $det->id_base],
+                            ['alm_prod_serie.id_base', '=', $det->id_materia],
                             ['alm_prod_serie.estado', '!=', 7]
                         ])
                         ->get();
