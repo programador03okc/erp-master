@@ -137,7 +137,8 @@ $("#form-customizacion").on("submit", function (e) {
                     'costo_promedio': element.costo_promedio,
                     'unitario': element.unitario,
                     'total': element.total,
-                    // 'series': element.series,
+                    'estado': element.estado,
+                    'series': element.series,
                 });
             });
 
@@ -146,9 +147,11 @@ $("#form-customizacion").on("submit", function (e) {
                     'id_transformado': element.id_transformado,
                     'id_producto': element.id_producto,
                     'cantidad': element.cantidad,
+                    'id_moneda': element.id_moneda,
                     'unitario': element.unitario,
                     'total': element.total,
-                    // 'series': element.series,
+                    'estado': element.estado,
+                    'series': element.series,
                 });
             });
 
@@ -156,10 +159,12 @@ $("#form-customizacion").on("submit", function (e) {
                 sobrante.push({
                     'id_sobrante': element.id_sobrante,
                     'id_producto': element.id_producto,
+                    'id_moneda': element.id_moneda,
                     'cantidad': element.cantidad,
                     'unitario': element.unitario,
                     'total': element.total,
-                    // 'series': element.series,
+                    'estado': element.estado,
+                    'series': element.series,
                 });
             });
 

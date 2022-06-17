@@ -101,6 +101,7 @@ class VentasInternasController extends Controller
                         'id_condicion_softlink' => $id_condicion_softlink,
                         'sub_total' => $doc_ven->sub_total,
                         'total_igv' => $doc_ven->total_igv,
+                        'total_icbper' => 0,
                         'porcen_igv' => $doc_ven->porcen_igv,
                         'total_a_pagar' => $doc_ven->total_a_pagar,
                         'usuario' => $doc_ven->usuario,

@@ -29,7 +29,8 @@ function agrega_series(id_oc_det) {
     $('[name=id_oc_det]').val(id_oc_det);
     $('[name=id_detalle_transformacion]').val('');
     $('[name=id_trans_detalle]').val('');
-    $('[name=id_producto]').val('');
+    $('[name=id_producto_sobrante]').val('');
+    $('[name=id_producto_transformado]').val('');
     $('[name=serie_prod]').val('');
     $('.cabecera').show();
 }
@@ -61,7 +62,8 @@ function agrega_series_transformacion(id) {
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val(id);
     $('[name=id_trans_detalle]').val('');
-    $('[name=id_producto]').val('');
+    $('[name=id_producto_sobrante]').val('');
+    $('[name=id_producto_transformado]').val('');
     $('[name=serie_prod]').val('');
     $('.cabecera').show();
 }
@@ -91,7 +93,8 @@ function agrega_series_producto(id) {
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val('');
     $('[name=id_trans_detalle]').val('');
-    $('[name=id_producto]').val(id);
+    $('[name=id_producto_sobrante]').val(id);
+    $('[name=id_producto_transformado]').val('');
     $('[name=serie_prod]').val('');
     $('.cabecera').show();
 }
@@ -122,50 +125,89 @@ function agrega_series_guia(id_guia_com_det, cantidad, id_producto, id_almacen) 
     $('[name=id_detalle_transformacion]').val('');
     $('[name=id_trans_detalle]').val('');
     $('[name=id_producto]').val(id_producto);
+    $('[name=id_producto_sobrante]').val('');
+    $('[name=id_producto_transformado]').val('');
     $('[name=id_almacen_detalle]').val(id_almacen);
     $('[name=serie_prod]').val('');
     $('[name=edit]').val('false');
     $('.cabecera').show();
 }
 
-// function agrega_series_transferencia(id_trans_detalle, cantidad){
-//     $('#modal-guia_com_barras').modal({
-//         show: true
-//     });
-//     $('#listaBarras tbody').html('');
-//     json_series = [];
+function agrega_series_sobrante(id, cantidad) {
+    console.log('agrega_series_sobrante' + id);
+    $('#modal-guia_com_barras').modal({
+        show: true
+    });
+    $('#listaBarras tbody').html('');
+    json_series = [];
 
-//     var json = listaDetalle.find(element => element.id_trans_detalle == id_trans_detalle);
-//     console.log(json);
+    var json = items_sobrante.find(element => element.id_producto == id);
+    console.log(json);
 
-//     if (json !== null){
-//         if (json.series.length > 0){
-//             json.series.forEach(element => {
-//                 json_series.push(element.serie);
-//             });
-//             cargar_series();
-//         }
-//     }
+    if (json !== null) {
 
-//     cant_items = cantidad;
+        if (json.series.length > 0) {
+            var nuevaSeries = [];
+            json.series.forEach(serie => {
+                nuevaSeries.push(serie.serie);
+            });
+            json_series = nuevaSeries;
+            cargar_series();
+        }
+    }
 
-//     $('[name=id_guia_com_det]').val('');
-//     $('[name=id_oc_det]').val('');
-//     $('[name=id_trans_detalle]').val(id_trans_detalle);
-//     $('[name=id_detalle_transformacion]').val('');
-//     $('[name=id_producto]').val('');
-//     $('[name=id_almacen_detalle]').val('');
-//     $('[name=serie_prod]').val('');
-//     $('[name=edit]').val('false');
-//     $('.cabecera').show();
-// }
+    cant_items = cantidad;
+
+    $('[name=id_guia_com_det]').val('');
+    $('[name=id_oc_det]').val('');
+    $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_trans_detalle]').val('');
+    $('[name=id_producto_sobrante]').val(id);
+    $('[name=id_producto_transformado]').val('');
+    $('[name=serie_prod]').val('');
+    $('.cabecera').show();
+}
+
+function agrega_series_transformado(id, cantidad) {
+    console.log('agrega_series_transformado' + id);
+    $('#modal-guia_com_barras').modal({
+        show: true
+    });
+    $('#listaBarras tbody').html('');
+    json_series = [];
+
+    var json = items_transformado.find(element => element.id_producto == id);
+    console.log(json);
+
+    if (json !== null) {
+
+        if (json.series.length > 0) {
+            var nuevaSeries = [];
+            json.series.forEach(serie => {
+                nuevaSeries.push(serie.serie);
+            });
+            json_series = nuevaSeries;
+            cargar_series();
+        }
+    }
+
+    cant_items = cantidad;
+
+    $('[name=id_guia_com_det]').val('');
+    $('[name=id_oc_det]').val('');
+    $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_trans_detalle]').val('');
+    $('[name=id_producto_sobrante]').val('');
+    $('[name=id_producto_transformado]').val(id);
+    $('[name=serie_prod]').val('');
+    $('.cabecera').show();
+}
 
 function cargar_series() {
     var tr = '';
     var i = 1;
 
     json_series.forEach(serie => {
-        console.log(serie.serie);
         tr += `<tr id="reg-${serie}">
             <td hidden>0</td>
             <td class="numero">${i}</td>
@@ -174,7 +216,6 @@ function cargar_series() {
         </tr>`;
         i++;
     });
-    console.log(tr);
     $('#listaBarras tbody').html(tr);
     $('[name=serie_prod]').focus();
 }
@@ -253,11 +294,11 @@ function eliminar_serie(serie) {
     });
 }
 
-function guardar_series() {
+function guardar_series_compra() {
     var id_guia_com_det = $('[name=id_guia_com_det]').val();
     var id_oc_det = $('[name=id_oc_det]').val();
-    // var id_trans_detalle = $('[name=id_trans_detalle]').val();
-    // var id_producto = $('[name=id_producto]').val();
+    var id_sobrante = $('[name=id_producto_sobrante]').val();
+    var id_transformado = $('[name=id_producto_transformado]').val();
     var id_detalle_transformacion = $('[name=id_detalle_transformacion]').val();
     var edit = $('[name=edit]').val();
 
@@ -283,33 +324,42 @@ function guardar_series() {
         mostrar_detalle_transformacion();
         $('#modal-guia_com_barras').modal('hide');
     }
-    // else if (id_trans_detalle !== ''){
-    //     var json = listaDetalle.find(element => element.id_trans_detalle == id_trans_detalle);
-    //     console.log(json);
-    //     if (json !== null){
-    //         let array_series = [];
-    //         json_series.forEach(serie => {
-    //             array_series.push({
-    //                 'serie':serie
-    //             })
-    //         });
-    //         json.series = array_series;
-    //     }
-    //     console.log(json);
-    //     console.log(listaDetalle);
-    //     mostrarDetalleTransferencia();
-    //     $('#modal-guia_com_barras').modal('hide');
-    // }
-    // else if (id_producto !== ''){
-    //     var json = oc_det_seleccionadas.find(element => element.id_producto == id_producto);
+    else if (id_sobrante !== '') {
+        var json = items_sobrante.find(element => element.id_producto == id_sobrante);
 
-    //     if (json !== null){
-    //         json.series = json_series;
-    //     }
-    //     console.log(json);
-    //     console.log(oc_det_seleccionadas);
-    //     mostrar_ordenes_seleccionadas();
-    // }
+        if (json !== null) {
+            var nuevaSeries = [];
+            json_series.forEach(serie => {
+                nuevaSeries.push({
+                    'id_prod_serie': 0,
+                    'serie': serie
+                });
+            });
+            json.series = nuevaSeries;
+        }
+        console.log(json);
+        console.log(items_sobrante);
+        mostrarProductoSobrante();
+        $('#modal-guia_com_barras').modal('hide');
+    }
+    else if (id_transformado !== '') {
+        var json = items_transformado.find(element => element.id_producto == id_transformado);
+
+        if (json !== null) {
+            var nuevaSeries = [];
+            json_series.forEach(serie => {
+                nuevaSeries.push({
+                    'id_prod_serie': 0,
+                    'serie': serie
+                });
+            });
+            json.series = nuevaSeries;
+        }
+        console.log(json);
+        console.log(items_transformado);
+        mostrarProductoTransformado();
+        $('#modal-guia_com_barras').modal('hide');
+    }
     else if (id_guia_com_det !== '' && edit == 'true') {
         let series = [];
         let repetidos = 0;

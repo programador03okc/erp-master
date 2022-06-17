@@ -1182,6 +1182,7 @@ class SalidasPendientesController extends Controller
                 ['alm_prod_serie.id_prod', '=', $id_producto],
                 ['alm_prod_serie.id_almacen', '=', $id_almacen],
                 ['alm_prod_serie.id_guia_ven_det', '=', null],
+                ['alm_prod_serie.id_base', '=', null],
                 ['alm_prod_serie.estado', '=', 1]
             ])
             ->get();

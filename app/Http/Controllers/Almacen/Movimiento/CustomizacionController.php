@@ -61,19 +61,16 @@ class CustomizacionController extends Controller
                 'adm_estado_doc.bootstrap_color',
                 'sis_usua.nombre_corto',
                 'registrado.nombre_corto as registrado_por_nombre',
-                // 'orden_despacho.codigo as cod_od',
                 'alm_almacen.descripcion as almacen_descripcion',
             )
-            // ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'transformacion.id_od')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
-            // ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftjoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'transformacion.estado')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'transformacion.responsable')
             ->leftjoin('configuracion.sis_usua as registrado', 'registrado.id_usuario', '=', 'transformacion.registrado_por')
             ->where('transformacion.id_transformacion', $id_transformacion)
             ->first();
 
-        $bases = DB::table('almacen.transfor_materia')
+        $listaBases = DB::table('almacen.transfor_materia')
             ->select(
                 'transfor_materia.id_materia',
                 'transfor_materia.id_producto',
@@ -81,9 +78,11 @@ class CustomizacionController extends Controller
                 'transfor_materia.cantidad',
                 'transfor_materia.valor_unitario as unitario',
                 'transfor_materia.valor_total as total',
+                'transfor_materia.estado',
                 'alm_prod.codigo',
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
+                'alm_prod.id_moneda',
                 'alm_und_medida.abreviatura as unid_med',
                 'alm_prod.series',
             )
@@ -95,16 +94,50 @@ class CustomizacionController extends Controller
             ])
             ->get();
 
-        $sobrantes = DB::table('almacen.transfor_sobrante')
+        $bases = [];
+
+        foreach ($listaBases as $b) {
+            $series = DB::table('almacen.alm_prod_serie')
+                ->select('alm_prod_serie.*')
+                ->where([
+                    ['alm_prod_serie.id_base', '=', $b->id_materia],
+                    ['alm_prod_serie.estado', '!=', 7]
+                ])
+                ->get();
+
+            array_push(
+                $bases,
+                [
+                    'id_materia' => $b->id_materia,
+                    'id_producto' => $b->id_producto,
+                    'costo_promedio' => $b->costo_promedio,
+                    'cantidad' => $b->cantidad,
+                    'id_moneda' => $b->id_moneda,
+                    'unitario' => $b->unitario,
+                    'total' => $b->total,
+                    'estado' => $b->estado,
+                    'codigo' => $b->codigo,
+                    'descripcion' => $b->descripcion,
+                    'part_number' => $b->part_number,
+                    'unid_med' => $b->unid_med,
+                    'control_series' => $b->series,
+                    'series' => $series,
+                ]
+            );
+        }
+
+        $listaSobrantes = DB::table('almacen.transfor_sobrante')
             ->select(
                 'transfor_sobrante.id_sobrante',
                 'transfor_sobrante.id_producto',
                 'transfor_sobrante.cantidad',
                 'transfor_sobrante.valor_unitario as unitario',
                 'transfor_sobrante.valor_total as total',
+                'transfor_sobrante.estado',
                 'alm_prod.codigo',
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
+                'alm_prod.id_moneda',
                 'alm_und_medida.abreviatura as unid_med',
                 'alm_prod.series',
             )
@@ -116,16 +149,49 @@ class CustomizacionController extends Controller
             ])
             ->get();
 
-        $transformados = DB::table('almacen.transfor_transformado')
+        $sobrantes = [];
+
+        foreach ($listaSobrantes as $b) {
+            $series = DB::table('almacen.alm_prod_serie')
+                ->select('alm_prod_serie.*')
+                ->where([
+                    ['alm_prod_serie.id_sobrante', '=', $b->id_sobrante],
+                    ['alm_prod_serie.estado', '!=', 7]
+                ])
+                ->get();
+
+            array_push(
+                $sobrantes,
+                [
+                    'id_sobrante' => $b->id_sobrante,
+                    'id_producto' => $b->id_producto,
+                    'cantidad' => $b->cantidad,
+                    'id_moneda' => $b->id_moneda,
+                    'unitario' => $b->unitario,
+                    'total' => $b->total,
+                    'estado' => $b->estado,
+                    'codigo' => $b->codigo,
+                    'descripcion' => $b->descripcion,
+                    'part_number' => $b->part_number,
+                    'unid_med' => $b->unid_med,
+                    'control_series' => $b->series,
+                    'series' => $series,
+                ]
+            );
+        }
+
+        $listaTransformados = DB::table('almacen.transfor_transformado')
             ->select(
                 'transfor_transformado.id_transformado',
                 'transfor_transformado.id_producto',
                 'transfor_transformado.cantidad',
                 'transfor_transformado.valor_unitario as unitario',
                 'transfor_transformado.valor_total as total',
+                'transfor_transformado.estado',
                 'alm_prod.codigo',
                 'alm_prod.descripcion',
                 'alm_prod.part_number',
+                'alm_prod.id_moneda',
                 'alm_und_medida.abreviatura as unid_med',
                 'alm_prod.series',
             )
@@ -137,6 +203,36 @@ class CustomizacionController extends Controller
             ])
             ->get();
 
+        $transformados = [];
+
+        foreach ($listaTransformados as $b) {
+            $series = DB::table('almacen.alm_prod_serie')
+                ->select('alm_prod_serie.*')
+                ->where([
+                    ['alm_prod_serie.id_transformado', '=', $b->id_transformado],
+                    ['alm_prod_serie.estado', '!=', 7]
+                ])
+                ->get();
+
+            array_push(
+                $transformados,
+                [
+                    'id_transformado' => $b->id_transformado,
+                    'id_producto' => $b->id_producto,
+                    'cantidad' => $b->cantidad,
+                    'id_moneda' => $b->id_moneda,
+                    'unitario' => $b->unitario,
+                    'total' => $b->total,
+                    'estado' => $b->estado,
+                    'codigo' => $b->codigo,
+                    'descripcion' => $b->descripcion,
+                    'part_number' => $b->part_number,
+                    'unid_med' => $b->unid_med,
+                    'control_series' => $b->series,
+                    'series' => $series,
+                ]
+            );
+        }
         return response()->json(['customizacion' => $data, 'bases' => $bases, 'sobrantes' => $sobrantes, 'transformados' => $transformados]);
     }
 
@@ -164,12 +260,6 @@ class CustomizacionController extends Controller
                     'id_moneda' => $request->id_moneda,
                     'tipo_cambio' => $request->tipo_cambio,
                     'observacion' => $request->observacion,
-                    // 'total_materias' => $request->total_materias,
-                    // 'total_directos' => $request->total_directos,
-                    // 'costo_primo' => $request->costo_primo,
-                    // 'total_indirectos' => $request->total_indirectos,
-                    // 'total_sobrantes' => $request->total_sobrantes,
-                    // 'costo_transformacion' => $request->costo_transformacion,
                     'registrado_por' => $usuario->id_usuario,
                     'estado' => 1,
                     'fecha_registro' => new Carbon(),
@@ -180,7 +270,7 @@ class CustomizacionController extends Controller
             $items_base = json_decode($request->items_base);
 
             foreach ($items_base as $item) {
-                DB::table('almacen.transfor_materia')->insert(
+                $id_materia = DB::table('almacen.transfor_materia')->insertGetId(
                     [
                         'id_transformacion' => $id_transformacion,
                         'id_producto' => $item->id_producto,
@@ -190,14 +280,23 @@ class CustomizacionController extends Controller
                         'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
                         'estado' => 1,
                         'fecha_registro' => new Carbon(),
-                    ]
+                    ],
+                    'id_materia'
                 );
+                if ($item->series !== null && $item->series !== []) {
+                    //agrega series
+                    foreach ($item->series as $serie) {
+                        DB::table('almacen.alm_prod_serie')
+                            ->where('id_prod_serie', $serie->id_prod_serie)
+                            ->update(['id_base' => $id_materia]);
+                    }
+                }
             }
 
             $items_transformado = json_decode($request->items_transformado);
 
             foreach ($items_transformado as $item) {
-                DB::table('almacen.transfor_transformado')->insert(
+                $id_transformado = DB::table('almacen.transfor_transformado')->insertGetId(
                     [
                         'id_transformacion' => $id_transformacion,
                         'id_producto' => $item->id_producto,
@@ -206,14 +305,31 @@ class CustomizacionController extends Controller
                         'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
                         'estado' => 1,
                         'fecha_registro' => new Carbon(),
-                    ]
+                    ],
+                    'id_transformado'
                 );
+
+                if ($item->series !== null && $item->series !== []) {
+                    //agrega series
+                    foreach ($item->series as $serie) {
+                        DB::table('almacen.alm_prod_serie')->insert(
+                            [
+                                'id_prod' => $item->id_producto,
+                                'id_almacen' => $request->id_almacen,
+                                'serie' => $serie->serie,
+                                'estado' => 1,
+                                'fecha_registro' => new Carbon(),
+                                'id_transformado' => $id_transformado
+                            ]
+                        );
+                    }
+                }
             }
 
             $items_sobrante = json_decode($request->items_sobrante);
 
             foreach ($items_sobrante as $item) {
-                DB::table('almacen.transfor_sobrante')->insert(
+                $id_sobrante = DB::table('almacen.transfor_sobrante')->insertGetId(
                     [
                         'id_transformacion' => $id_transformacion,
                         'id_producto' => $item->id_producto,
@@ -222,8 +338,25 @@ class CustomizacionController extends Controller
                         'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
                         'estado' => 1,
                         'fecha_registro' => new Carbon(),
-                    ]
+                    ],
+                    'id_sobrante'
                 );
+
+                if ($item->series !== null && $item->series !== []) {
+                    //agrega series
+                    foreach ($item->series as $serie) {
+                        DB::table('almacen.alm_prod_serie')->insert(
+                            [
+                                'id_prod' => $item->id_producto,
+                                'id_almacen' => $request->id_almacen,
+                                'serie' => $serie->serie,
+                                'estado' => 1,
+                                'fecha_registro' => new Carbon(),
+                                'id_sobrante' => $id_sobrante
+                            ]
+                        );
+                    }
+                }
             }
 
             $customizacion = DB::table('almacen.transformacion')->where('id_transformacion', $id_transformacion)->first();
@@ -264,16 +397,42 @@ class CustomizacionController extends Controller
             foreach ($items_base as $item) {
 
                 if ($item->id_materia > 0) {
-                    DB::table('almacen.transfor_materia')
-                        ->where('id_materia', $item->id_materia)
-                        ->update([
-                            'cantidad' => $item->cantidad,
-                            'costo_promedio' => $item->costo_promedio,
-                            'valor_unitario' => $item->unitario,
-                            'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
-                        ]);
+
+                    if ($item->estado == 7) {
+                        DB::table('almacen.transfor_materia')
+                            ->where('id_materia', $item->id_materia)
+                            ->update(['estado' => 7]);
+
+                        //elimina las series del id_base
+                        DB::table('almacen.alm_prod_serie')
+                            ->where('id_base', $item->id_materia)
+                            ->update(['id_base' => null]);
+                    } else {
+                        DB::table('almacen.transfor_materia')
+                            ->where('id_materia', $item->id_materia)
+                            ->update([
+                                'cantidad' => $item->cantidad,
+                                'costo_promedio' => $item->costo_promedio,
+                                'valor_unitario' => $item->unitario,
+                                'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
+                            ]);
+
+                        if ($item->series !== null && $item->series !== []) {
+                            //elimina las series del id_base
+                            DB::table('almacen.alm_prod_serie')
+                                ->where('id_base', $item->id_materia)
+                                ->update(['id_base' => null]);
+
+                            //agrega series
+                            foreach ($item->series as $serie) {
+                                DB::table('almacen.alm_prod_serie')
+                                    ->where('id_prod_serie', $serie->id_prod_serie)
+                                    ->update(['id_base' => $item->id_materia]);
+                            }
+                        }
+                    }
                 } else {
-                    DB::table('almacen.transfor_materia')->insert(
+                    $id_materia = DB::table('almacen.transfor_materia')->insertGetId(
                         [
                             'id_transformacion' => $request->id_customizacion,
                             'id_producto' => $item->id_producto,
@@ -283,8 +442,20 @@ class CustomizacionController extends Controller
                             'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
                             'estado' => 1,
                             'fecha_registro' => new Carbon(),
-                        ]
+                        ],
+                        'id_materia'
                     );
+
+                    if ($item->series !== null && $item->series !== []) {
+                        //agrega series
+                        foreach ($item->series as $serie) {
+                            if ($serie->estado == 1) {
+                                DB::table('almacen.alm_prod_serie')
+                                    ->where('id_prod_serie', $serie->id_prod_serie)
+                                    ->update(['id_base' => $id_materia]);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -293,15 +464,48 @@ class CustomizacionController extends Controller
             foreach ($items_transformado as $item) {
 
                 if ($item->id_transformado > 0) {
-                    DB::table('almacen.transfor_transformado')
-                        ->where('id_transformado', $item->id_transformado)
-                        ->update([
-                            'cantidad' => $item->cantidad,
-                            'valor_unitario' => $item->unitario,
-                            'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
-                        ]);
+
+                    if ($item->estado == 7) {
+                        DB::table('almacen.transfor_transformado')
+                            ->where('id_transformado', $item->id_transformado)
+                            ->update(['estado' => 7]);
+
+                        //elimina las series del id_base
+                        DB::table('almacen.alm_prod_serie')
+                            ->where('id_transformado', $item->id_transformado)
+                            ->update(['estado' => 7]);
+                    } else {
+                        DB::table('almacen.transfor_transformado')
+                            ->where('id_transformado', $item->id_transformado)
+                            ->update([
+                                'cantidad' => $item->cantidad,
+                                'valor_unitario' => $item->unitario,
+                                'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
+                            ]);
+
+                        if ($item->series !== null && $item->series !== []) {
+                            //elimina las series del id_base
+                            DB::table('almacen.alm_prod_serie')
+                                ->where('id_transformado', $item->id_transformado)
+                                ->update(['estado' => 7]);
+
+                            //agrega series
+                            foreach ($item->series as $serie) {
+                                DB::table('almacen.alm_prod_serie')->insert(
+                                    [
+                                        'id_prod' => $item->id_producto,
+                                        'id_almacen' => $request->id_almacen,
+                                        'serie' => $serie->serie,
+                                        'estado' => 1,
+                                        'fecha_registro' => new Carbon(),
+                                        'id_transformado' => $item->id_transformado
+                                    ]
+                                );
+                            }
+                        }
+                    }
                 } else {
-                    DB::table('almacen.transfor_transformado')->insert(
+                    $id_transformado = DB::table('almacen.transfor_transformado')->insertGetId(
                         [
                             'id_transformacion' => $request->id_customizacion,
                             'id_producto' => $item->id_producto,
@@ -310,8 +514,25 @@ class CustomizacionController extends Controller
                             'valor_total' => round($item->total, 6, PHP_ROUND_HALF_UP),
                             'estado' => 1,
                             'fecha_registro' => new Carbon(),
-                        ]
+                        ],
+                        'id_transformado'
                     );
+
+                    if ($item->series !== null && $item->series !== []) {
+                        //agrega series
+                        foreach ($item->series as $serie) {
+                            DB::table('almacen.alm_prod_serie')->insert(
+                                [
+                                    'id_prod' => $item->id_producto,
+                                    'id_almacen' => $request->id_almacen,
+                                    'serie' => $serie->serie,
+                                    'estado' => 1,
+                                    'fecha_registro' => new Carbon(),
+                                    'id_transformado' => $id_transformado
+                                ]
+                            );
+                        }
+                    }
                 }
             }
 
@@ -422,7 +643,6 @@ class CustomizacionController extends Controller
         }
     }
 
-
     public function procesarCustomizacion($id_transformacion)
     {
         try {
@@ -488,6 +708,7 @@ class CustomizacionController extends Controller
                     ->get();
 
                 foreach ($bases as $item) {
+
                     //Guardo los items de la salida
                     DB::table('almacen.mov_alm_det')->insertGetId(
                         [
@@ -531,7 +752,8 @@ class CustomizacionController extends Controller
                 );
 
                 $sobrantes = DB::table('almacen.transfor_sobrante')
-                    ->select('transfor_sobrante.*')
+                    ->select('transfor_sobrante.*', 'alm_prod.id_moneda')
+                    ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_sobrante.id_producto')
                     ->where([
                         ['transfor_sobrante.id_transformacion', '=', $id_transformacion],
                         ['transfor_sobrante.estado', '!=', 7]
@@ -539,14 +761,25 @@ class CustomizacionController extends Controller
                     ->get();
 
                 foreach ($sobrantes as $item) {
+                    $unitario = 0;
+
+                    if ($item->id_moneda == $transformacion->id_moneda) {
+                        $unitario = floatval($item->valor_unitario);
+                    } else {
+                        if ($item->id_moneda == 1) { //soles
+                            $unitario = floatval($item->valor_unitario) * floatval($transformacion->tipo_cambio);
+                        } else { //dolares
+                            $unitario = floatval($item->valor_unitario) / floatval($transformacion->tipo_cambio);
+                        }
+                    }
                     //Guardo los items del ingreso
                     DB::table('almacen.mov_alm_det')->insertGetId(
                         [
                             'id_mov_alm' => $id_ingreso,
                             'id_producto' => $item->id_producto,
                             'cantidad' => $item->cantidad,
-                            'costo_promedio' => $item->valor_unitario,
-                            'valorizacion' => $item->valor_total,
+                            'costo_promedio' => $unitario,
+                            'valorizacion' => ($unitario * floatval($item->cantidad)),
                             'usuario' => $id_usuario,
                             'id_sobrante' => $item->id_sobrante,
                             'estado' => 1,
@@ -557,7 +790,8 @@ class CustomizacionController extends Controller
                 }
 
                 $transformados = DB::table('almacen.transfor_transformado')
-                    ->select('transfor_transformado.*')
+                    ->select('transfor_transformado.*', 'alm_prod.id_moneda')
+                    ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_transformado.id_producto')
                     ->where([
                         ['transfor_transformado.id_transformacion', '=', $id_transformacion],
                         ['transfor_transformado.estado', '!=', 7]
@@ -565,14 +799,25 @@ class CustomizacionController extends Controller
                     ->get();
 
                 foreach ($transformados as $item) {
+                    $unitario = 0;
+
+                    if ($item->id_moneda == $transformacion->id_moneda) {
+                        $unitario = floatval($item->valor_unitario);
+                    } else {
+                        if ($item->id_moneda == 1) { //soles
+                            $unitario = floatval($item->valor_unitario) * floatval($transformacion->tipo_cambio);
+                        } else { //dolares
+                            $unitario = floatval($item->valor_unitario) / floatval($transformacion->tipo_cambio);
+                        }
+                    }
                     //Guardo los items del ingreso
                     DB::table('almacen.mov_alm_det')->insertGetId(
                         [
                             'id_mov_alm' => $id_ingreso,
                             'id_producto' => $item->id_producto,
                             'cantidad' => $item->cantidad,
-                            'costo_promedio' => $item->valor_unitario,
-                            'valorizacion' => $item->valor_total,
+                            'costo_promedio' => $unitario,
+                            'valorizacion' => ($unitario * floatval($item->cantidad)),
                             'usuario' => $id_usuario,
                             'id_transformado' => $item->id_transformado,
                             'estado' => 1,
@@ -587,7 +832,7 @@ class CustomizacionController extends Controller
             }
 
             DB::commit();
-            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje, 'id_ingreso' => $id_ingreso, 'id_salida' => $id_salida]);
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);

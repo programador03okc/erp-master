@@ -14,6 +14,8 @@ $(function () {
             'part_number': data.part_number,
             'codigo': data.codigo,
             'descripcion': data.descripcion,
+            'id_moneda': data.id_moneda,
+            'control_series': data.series,
             'unid_med': data.abreviatura
         }
         if (origen == 'transformado') {

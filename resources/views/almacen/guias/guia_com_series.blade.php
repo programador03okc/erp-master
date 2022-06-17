@@ -11,6 +11,8 @@
                 <input type="text" class="oculto" name="id_oc_det" />
                 <input type="text" class="oculto" name="id_trans_detalle" />
                 <input type="text" class="oculto" name="id_producto" />
+                <input type="text" class="oculto" name="id_producto_sobrante" />
+                <input type="text" class="oculto" name="id_producto_transformado" />
                 <input type="text" class="oculto" name="id_detalle_transformacion" />
                 <input type="text" class="oculto" name="id_almacen_detalle" />
                 <input type="text" class="oculto" name="edit" />
@@ -62,7 +64,7 @@
             </div>
             <div class="modal-footer">
                 <label id="mid_barra" style="display: none;"></label>
-                <button class="btn btn-sm btn-success" onClick="guardar_series();">Guardar</button>
+                <button class="btn btn-sm btn-success" onClick="guardar_series_compra();">Guardar</button>
             </div>
         </div>
     </div>

@@ -9,7 +9,11 @@ function agregarCustomizacionSobrante(sel) {
         'part_number': sel.part_number,
         'codigo': sel.codigo,
         'descripcion': sel.descripcion,
+        'id_moneda': sel.id_moneda,
         'unid_med': sel.unid_med,
+        'control_series': sel.control_series,
+        'series': [],
+        'estado': 1,
         'cantidad': 1,
         'unitario': 0,
         'total': 0,
@@ -24,33 +28,44 @@ function mostrarProductoSobrante() {
     var totalSobrantesTransformados = 0;
 
     items_sobrante.forEach(sel => {
-        totalSobrantesTransformados += parseFloat(sel.total);
-        row = `<tr>
-            <td>${sel.codigo}</td>
-            <td>${sel.part_number !== null ? sel.part_number : ''}</td>
-            <td>${sel.descripcion}</td>
-            <td><input type="number" class="form-control edition calcula" name="cantidad" id="cantidad" 
-                data-id="${sel.id_producto}" value="${sel.cantidad}"></td>
-            <td>${sel.unid_med}</td>
-            <td>
-                <div style="display:flex;">
-                    <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
-                    <input type="number" class="form-control edition calcula" name="unitario" id="unitario" 
-                    data-id="${sel.id_producto}" value="${sel.unitario}">
-                </div>
-            </td>
-            <td>
-                <div style="display:flex;">
-                    <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
-                    <input type="number" class="form-control" name="total" readOnly id="total" 
-                    data-id="${sel.id_producto}" value="${sel.total}">
-                </div>
-            </td>
-            <td>
-            <i class="fas fa-trash icon-tabla red boton delete" data-id="${sel.id_producto}"
-                data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
-            </td>
-        </tr>`;
+        if (sel.estado == 1) {
+            html_ser = '';
+            sel.series.forEach(function (serie) {
+                html_ser += (html_ser == '' ? '' : ', ') + serie.serie;
+            });
+
+            totalSobrantesTransformados += parseFloat(sel.total);
+            row += `<tr>
+                <td>${sel.codigo}</td>
+                <td>${sel.part_number !== null ? sel.part_number : ''}</td>
+                <td>${sel.descripcion + ' <br><strong>' + html_ser + '</strong>'}</td>
+                <td><input type="number" class="form-control edition calcula" name="cantidad" id="cantidad" 
+                    data-id="${sel.id_producto}" value="${sel.cantidad}"></td>
+                <td>${sel.unid_med}</td>
+                <td>
+                    <div style="display:flex;">
+                        <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
+                        <input type="number" class="form-control edition calcula" name="unitario" id="unitario" 
+                        data-id="${sel.id_producto}" value="${sel.unitario}">
+                    </div>
+                </td>
+                <td>
+                    <div style="display:flex;">
+                        <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
+                        <input type="number" class="form-control" name="total" readOnly id="total" 
+                        data-id="${sel.id_producto}" value="${sel.total}">
+                    </div>
+                </td>
+                <td>
+                <i class="fas fa-trash icon-tabla red boton delete" data-id="${sel.id_producto}"
+                    data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
+                    ${sel.control_series ?
+                    `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+                            onClick="agrega_series_sobrante(${sel.id_producto},${sel.cantidad});"></i>`
+                    : ''}
+                </td>
+            </tr>`;
+        }
     })
     $("#listaSobrantes tbody").html(row);
 
@@ -92,10 +107,19 @@ $('#listaSobrantes tbody').on("click", ".delete", function () {
     if (anula) {
         let id_producto = $(this).data('id');
         if (id_producto !== '') {
-            let index = items_sobrante.findIndex(function (item, i) {
-                return item.id_producto == id_producto;
+
+            let item = items_sobrante.find(element => {
+                return element.id_producto == id_producto;
             });
-            items_sobrante.splice(index, 1);
+
+            if (item.id_sobrante == 0) {
+                let index = items_sobrante.findIndex(function (item, i) {
+                    return item.id_producto == id_producto;
+                });
+                items_sobrante.splice(index, 1);
+            } else {
+                item.estado = 7;
+            }
         }
         $(this).parents("tr").remove();
     }

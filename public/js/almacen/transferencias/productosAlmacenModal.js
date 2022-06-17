@@ -46,6 +46,7 @@ $(function () {
                 'codigo': data.codigo,
                 'descripcion': data.descripcion,
                 'unid_med': data.abreviatura,
+                'control_series': data.series,
                 'id_moneda': data.id_moneda
             }
             agregar_producto_materia(sel);

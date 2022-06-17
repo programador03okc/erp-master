@@ -1,11 +1,11 @@
-let json_series = [];
+let json_series_ven = [];
 
 function open_series(id_producto, id_od_detalle, cantidad, id_almacen) {
     $("#modal-guia_ven_series").modal({
         show: true
     });
     listarSeries(id_producto, id_almacen);
-    json_series = [];
+    json_series_ven = [];
     $("[name=id_od_detalle]").val(id_od_detalle);
     $("[name=id_trans_detalle]").val("");
     $("[name=id_producto]").val(id_producto);
@@ -20,13 +20,32 @@ function open_series_transferencia(id_trans_detalle, id_producto, cantidad, id_a
 
     let item = listaDetalle.find(element => element.id_trans_detalle == id_trans_detalle);
     if (item !== undefined) {
-        json_series = item.series;
+        json_series_ven = item.series;
     }
     listarSeries(id_producto, id_almacen);
 
     $("[name=id_od_detalle]").val("");
     $("[name=id_trans_detalle]").val(id_trans_detalle);
     $("[name=id_producto]").val(id_producto);
+    $("[name=cant_items]").val(cantidad);
+    $("[name=seleccionar_todos]").prop("checked", false);
+}
+
+function open_series_base(id_producto, cantidad, id_almacen) {
+    $("#modal-guia_ven_series").modal({
+        show: true
+    });
+
+    let item = items_base.find(element => element.id_producto == id_producto);
+    if (item !== undefined) {
+        json_series_ven = item.series;
+    }
+    listarSeries(id_producto, id_almacen);
+
+    $("[name=id_od_detalle]").val("");
+    $("[name=id_trans_detalle]").val('');
+    $("[name=id_producto]").val('');
+    $("[name=id_producto_base]").val(id_producto);
     $("[name=cant_items]").val(cantidad);
     $("[name=seleccionar_todos]").prop("checked", false);
 }
@@ -44,7 +63,7 @@ function listarSeries(id_producto, id_almacen) {
             var value = "";
 
             response.forEach(element => {
-                value = json_series.find(
+                value = json_series_ven.find(
                     item => item.serie == element.serie && item.estado == 1
                 );
 
@@ -83,16 +102,16 @@ function guardar_series() {
         obj = { serie: serie, id_prod_serie: id_prod_serie, estado: 1 };
 
         series_chk.push(obj);
-        value = json_series.find(item => item.serie == obj.serie);
+        value = json_series_ven.find(item => item.serie == obj.serie);
         //agrego las series nuevas
         if (value == undefined) {
-            json_series.push(obj);
+            json_series_ven.push(obj);
         }
     });
 
     let val = "";
 
-    json_series.forEach(element => {
+    json_series_ven.forEach(element => {
         val = series_chk.find(item => item.serie == element.serie);
         //anulo las que se deschekearon
         val == undefined ? (element.estado = 7) : (element.estado = 1);
@@ -100,12 +119,13 @@ function guardar_series() {
 
     var id_od_detalle = $("[name=id_od_detalle]").val();
     var id_trans_detalle = $("[name=id_trans_detalle]").val();
+    var id_base = $("[name=id_producto_base]").val();
     var cant = $("[name=cant_items]").val();
 
     var rspta = false;
     var count_series = 0;
 
-    json_series.forEach(item => {
+    json_series_ven.forEach(item => {
         if (item.estado == 1)
             count_series++
     });
@@ -146,7 +166,7 @@ function guardar_series() {
         );
 
         if (json !== null) {
-            json.series = json_series;
+            json.series = json_series_ven;
         }
         console.log(json);
         console.log(detalle);
@@ -158,9 +178,18 @@ function guardar_series() {
         );
 
         if (json !== null) {
-            json.series = json_series;
+            json.series = json_series_ven;
         }
         mostrarDetalleTransferencia();
+        $("#modal-guia_ven_series").modal("hide");
+    }
+    else if (rspta && id_base !== "") {
+        var json = items_base.find(element => element.id_producto == id_base);
+
+        if (json !== null) {
+            json.series = json_series_ven;
+        }
+        mostrarProductosBase();
         $("#modal-guia_ven_series").modal("hide");
     }
 }

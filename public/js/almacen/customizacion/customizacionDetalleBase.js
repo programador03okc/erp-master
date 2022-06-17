@@ -11,10 +11,13 @@ function agregar_producto_materia(sel) {
         'descripcion': sel.descripcion,
         'unid_med': sel.unid_med,
         'id_moneda': sel.id_moneda,
+        'control_series': sel.control_series,
+        'series': [],
         'costo_promedio': 0,
         'cantidad': 1,
         'unitario': 0,
         'total': 0,
+        'estado': 1,
     });
     mostrarProductosBase();
 }
@@ -22,39 +25,54 @@ function agregar_producto_materia(sel) {
 function mostrarProductosBase() {
     var row = '';
     var mon = $('[name=id_moneda]').val();
+    var id_almacen = $('[name=id_almacen]').val();
     var total = 0;
     $("#listaMateriasPrimas tbody").html('');
     console.log(items_base);
 
     items_base.forEach(sel => {
-        total += parseFloat(sel.total);
-        row += `<tr>
-        <td>${sel.codigo}</td>
-        <td>${sel.part_number !== null ? sel.part_number : ''}</td>
-        <td>${sel.descripcion}</td>
-        <td><input type="number" class="form-control edition calcula" name="cantidad" id="cantidad" 
-            data-id="${sel.id_producto}" value="${sel.cantidad}"></td>
-        <td>${sel.unid_med}</td>
-        <td><span style="font-size: 17px;text-align:right;">${(sel.id_moneda == 1 ? 'S/' : '$') + sel.costo_promedio}</span></td>
-        <td>
-            <div style="display:flex;">
-                <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
-                <input type="number" class="form-control edition calcula" name="unitario" id="unitario" step="0.0001"
-                data-id="${sel.id_producto}" value="${formatDecimalDigitos(sel.unitario, 4)}">
-            </div>
-        </td>
-        <td>
-            <div style="display:flex;">
-                <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
-                <input type="number" class="form-control" name="total" readOnly id="total" step="0.0001"
-                data-id="${sel.id_producto}" value="${formatDecimalDigitos(sel.total, 4)}">
-            </div>
-        </td>
-        <td>
-        <i class="fas fa-trash icon-tabla red boton edition delete" data-id="${sel.id_producto}"
-            data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
-        </td>
-    </tr>`;
+        if (sel.estado == 1) {
+            html_ser = '';
+            if (sel.series !== undefined) {
+                sel.series.forEach(ser => {
+                    if (ser.estado == 1) {
+                        html_ser += (html_ser == '' ? '' : ', ') + ser.serie;
+                    }
+                });
+            }
+            total += parseFloat(sel.total);
+            row += `<tr>
+                <td>${sel.codigo}</td>
+                <td>${sel.part_number !== null ? sel.part_number : ''}</td>
+                <td>${sel.descripcion + ' <br><strong>' + html_ser + '</strong>'}</td>
+                <td><input type="number" class="form-control edition calcula" name="cantidad" id="cantidad" 
+                    data-id="${sel.id_producto}" value="${sel.cantidad}"></td>
+                <td>${sel.unid_med}</td>
+                <td><span style="font-size: 17px;text-align:right;">${(sel.id_moneda == 1 ? 'S/' : '$') + sel.costo_promedio}</span></td>
+                <td>
+                    <div style="display:flex;">
+                        <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
+                        <input type="number" class="form-control edition calcula" name="unitario" id="unitario" step="0.0001"
+                        data-id="${sel.id_producto}" value="${formatDecimalDigitos(sel.unitario, 4)}">
+                    </div>
+                </td>
+                <td>
+                    <div style="display:flex;">
+                        <span style="font-size: 17px;">${(mon == 1 ? 'S/' : '$')}</span>
+                        <input type="number" class="form-control" name="total" readOnly id="total" step="0.0001"
+                        data-id="${sel.id_producto}" value="${formatDecimalDigitos(sel.total, 4)}">
+                    </div>
+                </td>
+                <td>
+                <i class="fas fa-trash icon-tabla red boton edition delete" data-id="${sel.id_producto}"
+                    data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
+                    ${sel.control_series ?
+                    `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+                            onClick="open_series_base(${sel.id_producto}, ${sel.cantidad}, ${id_almacen})"></i>`
+                    : ''}
+                </td>
+            </tr>`;
+        }
     });
     $("#listaMateriasPrimas tbody").html(row);
 
@@ -96,10 +114,19 @@ $('#listaMateriasPrimas tbody').on("click", ".delete", function () {
     if (anula) {
         let id_producto = $(this).data('id');
         if (id_producto !== '') {
-            let index = items_base.findIndex(function (item, i) {
-                return item.id_producto == id_producto;
+
+            let item = items_base.find(element => {
+                return element.id_producto == id_producto;
             });
-            items_base.splice(index, 1);
+
+            if (item.id_materia == 0) {
+                let index = items_base.findIndex(function (item, i) {
+                    return item.id_producto == id_producto;
+                });
+                items_base.splice(index, 1);
+            } else {
+                item.estado = 7;
+            }
         }
         $(this).parents("tr").remove();
     }

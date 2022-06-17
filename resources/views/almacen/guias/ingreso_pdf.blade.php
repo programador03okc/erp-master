@@ -206,6 +206,26 @@ use Carbon\Carbon;
                             ['alm_prod_serie.estado', '!=', 7]
                         ])
                         ->get();
+                } 
+                else if ($prod->id_sobrante !==null){
+                    $det_series = DB::table('almacen.alm_prod_serie')
+                        ->select('alm_prod_serie.serie')
+                        ->where([
+                            ['alm_prod_serie.id_prod', '=', $prod->id_producto],
+                            ['alm_prod_serie.id_sobrante', '=', $prod->id_sobrante],
+                            ['alm_prod_serie.estado', '!=', 7]
+                        ])
+                        ->get();
+                }
+                else if ($prod->id_transformado !==null){
+                    $det_series = DB::table('almacen.alm_prod_serie')
+                        ->select('alm_prod_serie.serie')
+                        ->where([
+                            ['alm_prod_serie.id_prod', '=', $prod->id_producto],
+                            ['alm_prod_serie.id_transformado', '=', $prod->id_transformado],
+                            ['alm_prod_serie.estado', '!=', 7]
+                        ])
+                        ->get();
                 }
 
                 $series_array = [];

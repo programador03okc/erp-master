@@ -203,7 +203,7 @@ use Carbon\Carbon;
                 <td>{{$prod['descripcion']}}</td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
-                <td class="text-right">{{$prod['simbolo']}}</td>
+                <td class="text-center">{{$prod['simbolo']}}</td>
                 <td class="text-right">{{round($prod['costo_promedio'],2,PHP_ROUND_HALF_UP)}}</td>
                 @if($salida->id_operacion == 27)
                     <td class="text-right">{{round($prod['valor_dolar'],2,PHP_ROUND_HALF_UP)}}</td>

@@ -19,6 +19,7 @@ class SaldoProductoController extends Controller
                 'alm_prod.cod_softlink',
                 'alm_prod.part_number',
                 'alm_prod.descripcion',
+                'alm_prod.series',
                 'alm_und_medida.abreviatura',
                 // 'sis_moneda.simbolo',
                 'alm_prod.id_moneda',

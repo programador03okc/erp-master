@@ -282,6 +282,8 @@ Customización
 @include('almacen.customizacion.transformacionProcesar')
 @include('almacen.customizacion.productoCatalogoModal')
 @include('almacen.transferencias.productosAlmacenModal')
+@include('almacen.guias.guia_com_series')
+@include('almacen.guias.guia_ven_series')
 @endsection
 
 @section('scripts')
@@ -304,6 +306,8 @@ Customización
 <script src="{{ asset('js/almacen/customizacion/customizacionDetalleBase.js')}}?v={{filemtime(public_path('js/almacen/customizacion/customizacionDetalleBase.js'))}}"></script>
 <script src="{{ asset('js/almacen/customizacion/customizacionDetalleSobrante.js')}}?v={{filemtime(public_path('js/almacen/customizacion/customizacionDetalleSobrante.js'))}}"></script>
 <script src="{{ asset('js/almacen/customizacion/customizacionDetalleTransformado.js')}}?v={{filemtime(public_path('js/almacen/customizacion/customizacionDetalleTransformado.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_com_det_series.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_series.js'))}}"></script>
 
 <script>
     $(document).ready(function() {
