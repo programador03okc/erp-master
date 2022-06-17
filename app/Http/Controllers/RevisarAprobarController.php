@@ -653,7 +653,7 @@ class RevisarAprobarController extends Controller{
             // tieneRolConSiguienteAprobacion = $request->tieneRolConSiguienteAprobacion;
             // idOperacion = $request->idOperacion;
             // $aprobarSinImportarOrden = $request->aprobarSinImportarOrden;
-            $nombreCompletoUsuarioRevisaAprueba = Usuario::find($request->idUsuarioAprobante)->nombre_corto;
+            $nombreCompletoUsuarioRevisaAprueba = Usuario::withTrashed()->find($request->idUsuarioAprobante)->nombre_corto;
             $nombreAccion='';
             if ($request->accion == 1) {
                 $nombreAccion='Aprobado';
@@ -686,7 +686,7 @@ class RevisarAprobarController extends Controller{
 
             }
 
-            $nombreCompletoUsuarioPropietarioDelDocumento = Usuario::find($request->idUsuarioPropietarioDocumento)->nombre_corto;
+            // $nombreCompletoUsuarioPropietarioDelDocumento = Usuario::find($request->idUsuarioPropietarioDocumento)->nombre_corto;
             //  ======= inicio tipo requerimiento b/s =======
 
             if($request->idTipoDocumento ==1){ 
@@ -804,9 +804,9 @@ class RevisarAprobarController extends Controller{
                     $correoDestinatario[] = config('global.correoDebug2');
                 } else {
                     if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
-                        $correoDestinatario[] = Usuario::find($requerimiento->id_usuario)->email;
+                        $correoDestinatario[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
                     }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
-                        $correoDestinatario[] = Usuario::find($requerimientoPago->id_usuario)->email;
+                        $correoDestinatario[] = Usuario::withTrashed()->find($requerimientoPago->id_usuario)->email;
                     }
 
                 }

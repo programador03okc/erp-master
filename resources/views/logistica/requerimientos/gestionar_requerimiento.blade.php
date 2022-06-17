@@ -33,6 +33,7 @@ Crear / editar requerimiento
 @section('content')
 <div class="page-main" type="requerimiento">
     <form id="form-requerimiento" type="register" enctype="multipart/form-data" form="formulario">
+        @csrf
         <input type="text" class="oculto" name="id_usuario_session">
         <input type="text" class="oculto" name="id_usuario_req">
         <input type="text" class="oculto" name="id_requerimiento" primary="ids">
