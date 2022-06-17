@@ -591,13 +591,15 @@ class OrdenView {
         for (let i = 0; i < data.length; i++) {
             if (data[i].id_tipo_item == 1) { // producto
                 if (data[i].id_producto > 0) {
+                    // <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : '')} input-sm unidadMedida" data-valor="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${data[i].estado == 7 ? 'danger textRedStrikeHover' : ''};">
                         <td class="text-center">${data[i].codigo_requerimiento ? data[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[i].id_detalle_orden ? data[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[i].id_detalle_requerimiento ? data[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
                         <td class="text-center">${data[i].codigo_producto ? data[i].codigo_producto : ''} </td>
                         <td class="text-center">${data[i].codigo_softlink ? data[i].codigo_softlink : ''} </td>
                         <td class="text-center">${data[i].part_number ? data[i].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)}"></td>
                         <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion != null ? data[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion)}</textarea></td>
-                        <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : '')} input-sm unidadMedida" data-valor="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${data[i].id_unidad_medida}">${(data[i].unidad_medida? data[i].unidad_medida : 'sin und.')}</p></td>
+
                         <td>${(data[i].cantidad ? data[i].cantidad : '')}</td>
                         <td>${(data[i].cantidad_atendido_almacen ? data[i].cantidad_atendido_almacen : '')}</td>
                         <td>${(data[i].cantidad_atendido_orden ? data[i].cantidad_atendido_orden : '')}</td>
@@ -1074,13 +1076,18 @@ class OrdenView {
 
     agregarProducto(data, tipo) { // tipo puede ser OBSEQUIO, DETALLE_REQUERIMIENTO
         vista_extendida();
+        // <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : '')} input-sm unidadMedida" data-valor="${data[0].id_unidad_medida}"  >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+        console.log(data);
         document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
         <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
         <td class="text-center">${data[0].codigo_producto ? data[0].codigo_producto : ''} </td>
         <td class="text-center">${data[0].codigo_softlink ? data[0].codigo_softlink : ''} </td>
         <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)}"> </td>
         <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion ? data[0].descripcion : ''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion)} "></td>
-        <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : '')} input-sm unidadMedida" data-valor="${data[0].id_unidad_medida}"  >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+        <td>
+        <input type="hidden"  name="unidad[]" value="${data[0].id_unidad_medida}">
+            <p name="unidad[]" class="form-control-static unidadMedida" data-valor="${data[0].id_unidad_medida}">${(data[0].unidad_medida ? data[0].unidad_medida : 'sin und.')}</p></td>
+
         <td>${(data[0].cantidad ? data[0].cantidad : '')}</td>
         <td>${(data[0].cantidad_atendido_almacen ? data[0].cantidad_atendido_almacen : '')}</td>
         <td>${(data[0].cantidad_atendido_orden ? data[0].cantidad_atendido_orden : '')}</td>
@@ -1434,7 +1441,7 @@ class OrdenView {
                             'subtotal': $.number(parseFloat(element.precio_unitario * element.cantidad), 2),
                             'producto_regalo': false,
                             'tiene_transformacion': element.tiene_transformacion,
-                            'unidad_medida': element.unidad_medida.descripcion
+                            'unidad_medida': element.unidad_medida.abreviatura
                         }], 'DETALLE_REQUERIMIENTO');
 
                     } else {
@@ -2075,13 +2082,14 @@ class OrdenView {
 
             if (detalle[i].tipo_item_id == 1) { // producto
                 if (detalle[i].id_producto > 0) { // TO-DO  falta mostrar cantidad_atendido_almacen y cantidad_atendido_orden
+                    // <td><select name="unidad[]" class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : '')} input-sm unidadMedida" data-valor="${detalle[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${detalle[i].estado == 7 ? 'danger textRedStrikeHover' : ''}">
                         <td class="text-center">${detalle[i].codigo_requerimiento ? detalle[i].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${detalle[i].id_detalle_orden ? detalle[i].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${detalle[i].id_detalle_requerimiento ? detalle[i].id_detalle_requerimiento : ''}">  <input type="hidden"  name="idTipoItem[]" value="1"></td>
                         <td class="text-center">${detalle[i].producto.codigo ? detalle[i].producto.codigo : ''} </td>
                         <td class="text-center">${detalle[i].producto.cod_softlink ? detalle[i].producto.cod_softlink : ''} </td>
                         <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
                         <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)}</textarea></td>
-                        <td><select name="unidad[]" class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : '')} input-sm unidadMedida" data-valor="${detalle[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].id_unidad_medida}">${(detalle[i].unidad_medida ? detalle[i].unidad_medida : 'sin und.')}</p></td>
                         <td>${(detalle[i].detalle_requerimiento ? detalle[i].detalle_requerimiento.cantidad : '')}</td>
                         <td>${(cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : '')}</td> 
                         <td>${(cantidad_atendido_orden > 0 ? cantidad_atendido_orden : '')}</td>
