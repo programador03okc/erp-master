@@ -7,6 +7,11 @@
 </head>
 
 <style>
+
+    @page {
+        margin-left: 25px;
+        margin-right: 25px;
+    }
     * {
         font-family: "DejaVu Sans";
         font-size: 10px;
@@ -70,9 +75,9 @@
         font-size: 20px;
     }
 
-    /*table.bordered {
+    table.bordered {
         border-spacing: 0px;
-    }*/
+    }
 
     table.bordered th {
         border-top: 1px solid #cfcfcf;
@@ -178,16 +183,16 @@ use Carbon\Carbon;
         <thead>
             <tr>
                 <th class="text-center cabecera-producto" style="width: 7%">Código</th>
-                <th class="text-center cabecera-producto" style="width: 10%">Part Number</th>
+                <th class="text-center cabecera-producto" style="width: 15%">Part Number</th>
                 <th class="text-center cabecera-producto">Descripción del producto</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Cant.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Und.</th>
                 <th class="text-center cabecera-producto" style="width: 5%">Mnd.</th>
-                <th class="text-center cabecera-producto" style="width: 5%">Unit.</th>
+                <th class="text-center cabecera-producto" style="width: 8%">Unit.</th>
                 @if($salida->id_operacion == 27)
-                <th class="text-center cabecera-producto" style="width: 5%">Unit.$</th>
+                <th class="text-center cabecera-producto" style="width: 8%">Unit.$</th>
                 @endif
-                <th class="text-center cabecera-producto" style="width: 5%">Total</th>
+                <th class="text-center cabecera-producto" style="width: 8%">Total</th>
             </tr>
         </thead>
         <tbody>
