@@ -612,7 +612,7 @@ class CustomizacionController extends Controller
 
             //Si existe ingreso y salida relacionado
             if (count($mov) > 0) {
-                $mensaje = 'No es posible anular. La customización ya fue finalizada.';
+                $mensaje = 'No es posible anular. La customización ya fue procesada.';
                 $tipo = 'warning';
             } else {
                 DB::table('almacen.transformacion')
@@ -650,6 +650,8 @@ class CustomizacionController extends Controller
 
             $mensaje = '';
             $tipo = '';
+            $id_ingreso = null;
+            $id_salida = null;
 
             $transformacion = DB::table('almacen.transformacion')
                 ->where('id_transformacion', $id_transformacion)
@@ -837,5 +839,25 @@ class CustomizacionController extends Controller
             DB::rollBack();
             return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
+    }
+
+    function validarEdicion($id_transformacion)
+    {
+        $mov = DB::table('almacen.mov_alm')
+            ->where([
+                ['id_transformacion', '=', $id_transformacion],
+                ['estado', '=', 1]
+            ])
+            ->get();
+
+        //Si existe ingreso y salida relacionado
+        if (count($mov) > 0) {
+            $mensaje = 'La customización ya fue procesada.';
+            $tipo = 'warning';
+        } else {
+            $mensaje = 'Ok';
+            $tipo = 'success';
+        }
+        return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
     }
 }

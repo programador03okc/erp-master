@@ -129,9 +129,10 @@ function guardar_series() {
         if (item.estado == 1)
             count_series++
     });
+    console.log(count_series);
+    console.log(cant);
 
     if (count_series == 0) {
-
         Swal.fire({
             title: "¿Está seguro que desea quitar las series?",
             icon: "info",
@@ -160,37 +161,40 @@ function guardar_series() {
         });
     }
 
-    if (rspta && id_od_detalle !== "") {
-        var json = detalle.find(
-            element => element.id_od_detalle == id_od_detalle
-        );
+    console.log(rspta);
+    if (rspta == true) {
+        if (id_od_detalle !== "") {
+            var json = detalle.find(
+                element => element.id_od_detalle == id_od_detalle
+            );
 
-        if (json !== null) {
-            json.series = json_series_ven;
-        }
-        console.log(json);
-        console.log(detalle);
-        mostrar_detalle();
-        $("#modal-guia_ven_series").modal("hide");
-    } else if (rspta && id_trans_detalle !== "") {
-        var json = listaDetalle.find(
-            element => element.id_trans_detalle == id_trans_detalle
-        );
+            if (json !== null) {
+                json.series = json_series_ven;
+            }
+            console.log(json);
+            console.log(detalle);
+            mostrar_detalle();
+            $("#modal-guia_ven_series").modal("hide");
+        } else if (id_trans_detalle !== "") {
+            var json = listaDetalle.find(
+                element => element.id_trans_detalle == id_trans_detalle
+            );
 
-        if (json !== null) {
-            json.series = json_series_ven;
+            if (json !== null) {
+                json.series = json_series_ven;
+            }
+            mostrarDetalleTransferencia();
+            $("#modal-guia_ven_series").modal("hide");
         }
-        mostrarDetalleTransferencia();
-        $("#modal-guia_ven_series").modal("hide");
-    }
-    else if (rspta && id_base !== "") {
-        var json = items_base.find(element => element.id_producto == id_base);
+        else if (id_base !== "") {
+            var json = items_base.find(element => element.id_producto == id_base);
 
-        if (json !== null) {
-            json.series = json_series_ven;
+            if (json !== null) {
+                json.series = json_series_ven;
+            }
+            mostrarProductosBase();
+            $("#modal-guia_ven_series").modal("hide");
         }
-        mostrarProductosBase();
-        $("#modal-guia_ven_series").modal("hide");
     }
 }
 

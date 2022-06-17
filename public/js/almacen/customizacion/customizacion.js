@@ -85,16 +85,40 @@ $(".edit-customizacion").on('click', function () {
     var id = $('[name=id_customizacion]').val();
 
     if (id !== '') {
-        $(".edition").removeAttr("disabled");
-        $(".guardar-customizacion").show();
-        $(".cancelar").show();
-        $(".nueva-customizacion").hide();
-        $(".anular-customizacion").hide();
-        $(".edit-customizacion").hide();
-        $(".procesar-customizacion").hide();
-        $(".buscar-customizacion").hide();
+        $.ajax({
+            type: 'GET',
+            url: 'validarEdicion/' + id,
+            dataType: 'JSON',
+            success: function (response) {
+                console.log(response);
+                if (response.tipo == 'success') {
 
-        $("[name=modo]").val("edicion");
+                    $(".edition").removeAttr("disabled");
+                    $(".guardar-customizacion").show();
+                    $(".cancelar").show();
+                    $(".nueva-customizacion").hide();
+                    $(".anular-customizacion").hide();
+                    $(".edit-customizacion").hide();
+                    $(".procesar-customizacion").hide();
+                    $(".buscar-customizacion").hide();
+
+                    $("[name=modo]").val("edicion");
+                } else {
+                    Lobibox.notify(response.tipo, {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+                }
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
 
     } else {
         Lobibox.notify('warning', {
@@ -294,20 +318,23 @@ function anularCustomizacion() {
                         delayIndicator: false,
                         msg: response.mensaje
                     });
-                    $("#codigo").text('');
-                    $(".limpiarCustomizacion").val("");
-                    $(".limpiarTexto").text("");
 
-                    $("#listaMateriasPrimas tbody").html("");
-                    $("#listaSobrantes tbody").html("");
-                    $("#listaProductoTransformado tbody").html("");
+                    if (response.tipo == 'success') {
+                        $("#codigo").text('');
+                        $(".limpiarCustomizacion").val("");
+                        $(".limpiarTexto").text("");
 
-                    items_base = [];
-                    items_sobrante = [];
-                    items_transformado = [];
+                        $("#listaMateriasPrimas tbody").html("");
+                        $("#listaSobrantes tbody").html("");
+                        $("#listaProductoTransformado tbody").html("");
 
-                    $("[name=modo]").val("");
-                    $("[name=id_customizacion]").val("");
+                        items_base = [];
+                        items_sobrante = [];
+                        items_transformado = [];
+
+                        $("[name=modo]").val("");
+                        $("[name=id_customizacion]").val("");
+                    }
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
