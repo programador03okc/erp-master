@@ -8,6 +8,8 @@ $(function () {
     $(".edition").attr('disabled', 'true');
     $(".guardar-customizacion").hide();
     $(".edit-customizacion").show();
+    $('.imprimir-ingreso').hide();
+    $('.imprimir-salida').hide();
 
     var id_customizacion = localStorage.getItem("id_customizacion");
 
@@ -27,6 +29,8 @@ $(".nueva-customizacion").on('click', function () {
     $(".edit-customizacion").hide();
     $(".procesar-customizacion").hide();
     $(".buscar-customizacion").hide();
+    $('.imprimir-ingreso').hide();
+    $('.imprimir-salida').hide();
 
     $("#codigo").text('');
     $(".limpiarCustomizacion").val("");
@@ -249,7 +253,7 @@ function guardarCustomizacion(data) {
         console.log(errorThrown);
     });
 }
-
+//obs: si se cambia el almacen debe borrarse los items
 function mostrarCustomizacion(id) {
     $.ajax({
         type: 'GET',
@@ -264,10 +268,24 @@ function mostrarCustomizacion(id) {
             $('[name=id_usuario]').val(response.customizacion.responsable);
             $('[name=fecha_proceso]').val(moment(response.customizacion.fecha_transformacion).format("YYYY-MM-DD"));
             $('[name=observacion]').val(response.customizacion.observacion);
+            $('[name=id_ingreso]').val(response.id_ingreso);
+            $('[name=id_salida]').val(response.id_salida);
 
             $('#codigo').text(response.customizacion.codigo);
             $('#nombre_registrado_por').text(response.customizacion.registrado_por_nombre);
             $('#fecha_registro').text(response.customizacion.fecha_registro);
+
+            if (response.id_ingreso == 0) {
+                $('.imprimir-ingreso').hide();
+            } else {
+                $('.imprimir-ingreso').show();
+            }
+
+            if (response.id_salida == 0) {
+                $('.imprimir-salida').hide();
+            } else {
+                $('.imprimir-salida').show();
+            }
 
             items_base = response.bases;
             mostrarProductosBase();
@@ -476,6 +494,13 @@ function procesarCustomizacion() {
                             delayIndicator: false,
                             msg: response.mensaje
                         });
+
+                        if (response.tipo == 'success') {
+                            $('[name=id_ingreso]').val(response.id_ingreso);
+                            $('[name=id_salida]').val(response.id_salida);
+                            imprimirIngreso();
+                            imprimirSalida();
+                        }
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
@@ -503,14 +528,27 @@ function obtenerTipoCambio(fecha) {
     });
 }
 
-function imprimirCustomizacion() {
-    var id = $('[name=id_customizacion]').val();
+function imprimirIngreso() {
+    var id = $('[name=id_ingreso]').val();
 
     if (id !== null && id !== '') {
-        window.open('imprimir_transformacion/' + id);
+        window.open("imprimir_ingreso/" + id);
     } else {
         Swal.fire({
-            title: "Debe seleccionar una Customización!",
+            title: "No existe un ingreso activo relacionado!",
+            icon: "error",
+        });
+    }
+}
+
+function imprimirSalida() {
+    var id = $('[name=id_salida]').val();
+
+    if (id !== null && id !== '') {
+        window.open("imprimir_salida/" + id);
+    } else {
+        Swal.fire({
+            title: "No existe una salida activa relacionada!",
             icon: "error",
         });
     }

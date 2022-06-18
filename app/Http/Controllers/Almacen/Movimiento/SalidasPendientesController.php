@@ -601,35 +601,30 @@ class SalidasPendientesController extends Controller
                                 }
                             }
                         }
-
-                        // if ($od->id_requerimiento !== null) {
-                        //     //Requerimiento regresa a por despachar
-                        //     DB::table('almacen.alm_req')
-                        //         ->where('id_requerimiento', $od->id_requerimiento)
-                        //         ->update(['estado' => 29]); //por despachar
-
-                        //     DB::table('almacen.alm_det_req')
-                        //         ->where('id_requerimiento', $od->id_requerimiento)
-                        //         ->update(['estado' => 29]); //por despachar
-                        //     //Agrega accion en requerimiento
-                        //     DB::table('almacen.alm_req_obs')
-                        //         ->insert([
-                        //             'id_requerimiento' => $od->id_requerimiento,
-                        //             'accion' => 'SALIDA ANULADA',
-                        //             'descripcion' => 'Requerimiento regresa a Reservado',
-                        //             'id_usuario' => $id_usuario,
-                        //             'fecha_registro' => date('Y-m-d H:i:s')
-                        //         ]);
-                        // }
-                        $msj = 'Se anuló correctamente la salida.';
+                        $msj = 'La salida fue anulada con éxito.';
                         $tipo = 'success';
                     } else {
                         $msj = 'La Orden de Despacho ya está con ' . $od->estado_doc;
                         $tipo = 'warning';
                     }
                 } else {
-                    $msj = 'No existe una orden de despacho enlazada';
-                    $tipo = 'warning';
+                    //Anula salida
+                    DB::table('almacen.mov_alm')
+                        ->where('id_mov_alm', $request->id_salida)
+                        ->update([
+                            'estado' => 7,
+                            'fecha_anulacion' => new Carbon(),
+                            'usuario_anulacion' => $id_usuario,
+                            'comentario_anulacion' => $request->observacion_guia_ven,
+                            'id_motivo_anulacion' => $request->id_motivo_obs_ven,
+                        ]);
+                    //Anula el detalle
+                    DB::table('almacen.mov_alm_det')
+                        ->where('id_mov_alm', $request->id_salida)
+                        ->update(['estado' => 7]);
+
+                    $msj = 'La salida fue anulada con éxito.';
+                    $tipo = 'success';
                 }
             } else {
                 $msj = 'La salida ya fue revisada por el Jefe de Almacén';

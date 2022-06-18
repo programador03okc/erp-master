@@ -58,8 +58,12 @@ Customización
                         title="Procesar customizacion" onClick="procesarCustomizacion();">
                         <i class="fas fa-share"></i> Procesar
                     </button>
-                    {{-- <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="bottom" 
-                        title="Imprimir Customización" onClick="imprimirCustomizacion();"><i class="fas fa-file-pdf"></i> Imprimir</button> --}}
+
+                    <button type="button" class="btn btn-sm btn-default imprimir-ingreso" data-toggle="tooltip" data-placement="bottom" 
+                        title="Imprimir Ingreso" onClick="imprimirIngreso();"><i class="fas fa-file-pdf"></i> Ingreso</button>
+
+                    <button type="button" class="btn btn-sm btn-default imprimir-salida" data-toggle="tooltip" data-placement="bottom" 
+                        title="Imprimir Salida" onClick="imprimirSalida();"><i class="fas fa-file-pdf"></i> Salida</button>
 
                 </div>
             </div>
@@ -69,6 +73,8 @@ Customización
                     <div class="col-md-12">
                         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                         <input type="hidden" name="id_customizacion" primary="ids">
+                        <input type="hidden" name="id_ingreso">
+                        <input type="hidden" name="id_salida">
 
                         <div class="row">
                             <div class="col-md-4">

@@ -1577,24 +1577,27 @@ class OrdenesPendientesController extends Controller
 
             $ing = DB::table('almacen.mov_alm')
                 ->select('mov_alm.*', 'guia_com.serie', 'guia_com.numero')
-                ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
+                ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
                 ->where('id_mov_alm', $request->id_mov_alm)
                 ->first();
 
             //si el ingreso no esta revisado
             if ($ing->revisado == 0) {
-                //Revisa si existen prorrateos
-                $prorrateos_count = DB::table('almacen.guia_com_prorrateo_det')
-                    ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'guia_com_prorrateo_det.id_guia_com_det')
-                    ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
-                    ->where([
-                        ['guia_com.id_guia', '=', $ing->id_guia_com],
-                        ['guia_com_prorrateo_det.estado', '!=', 7]
-                    ])
-                    ->get()->count();
+                $prorrateos_count = 0;
+
+                if ($ing->id_guia_com !== null) {
+                    //Revisa si existen prorrateos
+                    $prorrateos_count = DB::table('almacen.guia_com_prorrateo_det')
+                        ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'guia_com_prorrateo_det.id_guia_com_det')
+                        ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+                        ->where([
+                            ['guia_com.id_guia', '=', $ing->id_guia_com],
+                            ['guia_com_prorrateo_det.estado', '!=', 7]
+                        ])
+                        ->get()->count();
+                }
 
                 if ($prorrateos_count == 0) {
-
                     //Verifica si ya tiene transferencia u orden de despacho
                     $detalle = DB::table('almacen.mov_alm_det')
                         ->select(
@@ -1610,13 +1613,9 @@ class OrdenesPendientesController extends Controller
                             // 'orden_despacho.id_od',
                             'guia_com_det.id_transformado'
                         )
-                        ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
+                        ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
                         ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
                         ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-                        // ->leftJoin('almacen.orden_despacho', function ($join) {
-                        //     $join->on('orden_despacho.id_requerimiento', '=', 'alm_det_req.id_requerimiento');
-                        //     $join->where('orden_despacho.estado', '!=', 7);
-                        // })
                         ->leftJoin('almacen.trans_detalle', function ($join) {
                             $join->on('trans_detalle.id_requerimiento_detalle', '=', 'alm_det_req.id_detalle_requerimiento');
                             $join->where('trans_detalle.estado', '!=', 7);
@@ -1649,24 +1648,27 @@ class OrdenesPendientesController extends Controller
                             DB::table('almacen.mov_alm_det')
                                 ->where('id_mov_alm', $request->id_mov_alm)
                                 ->update(['estado' => 7]);
-                            //Agrega motivo anulacion a la guia
-                            DB::table('almacen.guia_com_obs')->insert(
-                                [
-                                    'id_guia_com' => $request->id_guia_com,
-                                    'observacion' => $request->observacion,
-                                    'registrado_por' => $id_usuario,
-                                    'id_motivo_anu' => $request->id_motivo_obs,
-                                    'fecha_registro' => date('Y-m-d H:i:s')
-                                ]
-                            );
-                            //Anula la Guia
-                            DB::table('almacen.guia_com')
-                                ->where('id_guia', $request->id_guia_com)
-                                ->update(['estado' => 7]);
-                            //Anula la Guia Detalle
-                            DB::table('almacen.guia_com_det')
-                                ->where('id_guia_com', $request->id_guia_com)
-                                ->update(['estado' => 7]);
+
+                            if ($request->id_guia_com !== null) {
+                                //Agrega motivo anulacion a la guia
+                                DB::table('almacen.guia_com_obs')->insert(
+                                    [
+                                        'id_guia_com' => $request->id_guia_com,
+                                        'observacion' => $request->observacion,
+                                        'registrado_por' => $id_usuario,
+                                        'id_motivo_anu' => $request->id_motivo_obs,
+                                        'fecha_registro' => date('Y-m-d H:i:s')
+                                    ]
+                                );
+                                //Anula la Guia
+                                DB::table('almacen.guia_com')
+                                    ->where('id_guia', $request->id_guia_com)
+                                    ->update(['estado' => 7]);
+                                //Anula la Guia Detalle
+                                DB::table('almacen.guia_com_det')
+                                    ->where('id_guia_com', $request->id_guia_com)
+                                    ->update(['estado' => 7]);
+                            }
 
                             if ($ing->id_transformacion !== null) {
                                 DB::table('almacen.transformacion')
