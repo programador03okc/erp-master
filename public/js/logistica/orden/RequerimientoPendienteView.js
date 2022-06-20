@@ -791,7 +791,7 @@ class RequerimientoPendienteView {
             let trs = document.querySelector("table[id='listaRequerimientosPendientes'] tbody").children;
 
             for (let index = 1; index < trs.length; index++) {
-                console.log(reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']"))));
+                // console.log(reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']"))));
                 if (trs[index].querySelector("input[type='checkbox']") ? reqTrueList.includes(parseInt(trs[index].querySelector("input[type='checkbox']").dataset.idRequerimiento)) : false) {
                     trs[index].querySelector("input[type='checkbox']").checked = true;
                 }

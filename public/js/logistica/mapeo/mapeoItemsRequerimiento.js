@@ -9,6 +9,28 @@ function limpiarTabla(idElement) {
     }
 }
 
+$('#detalleItemsRequerimiento tbody').on("blur", "input.handleBlurUpdateCantidadItem", (e) => {
+    updateCantidadItem(e.currentTarget);
+});
+
+function updateCantidadItem(obj){
+
+    if(typeof ( detalle.find(element => element.id_detalle_requerimiento == obj.dataset.id))=='object' && detalle.find(element => element.id_detalle_requerimiento == obj.dataset.id).hasOwnProperty('cantidad') ){
+
+        detalle.find(element => element.id_detalle_requerimiento == obj.dataset.id).cantidad=parseFloat(obj.value);
+        prod= detalle.find(element => element.id_detalle_requerimiento == obj.dataset.id);
+        // console.log(prod);
+    }else{
+        Swal.fire(
+            '',
+            'Hubo un problema al actualizar la cantidad del item, vuelva a cargar la página F5 y vuelva a intentar',
+            'error'
+        );
+ 
+    }
+
+}
+
 function listarItemsRequerimientoMapeo(id_requerimiento) {
     limpiarTabla('detalleItemsRequerimiento');
     detalle = [];
@@ -27,6 +49,7 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
         success: function (response) {
             response.forEach(element => {
                 if (element.id_tipo_item == 1) {
+                    // console.log(element);
                     detalle.push({
                         'id_detalle_requerimiento': element.id_detalle_requerimiento,
                         'id_producto': element.id_producto,
@@ -43,6 +66,8 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
                         'id_categoria': null,
                         'id_clasif': null,
                         'id_subcategoria': null,
+                        'id_moneda': element.id_moneda,
+                        'id_unidad_medida': element.id_unidad_medida,
                         'estado': element.estado
                     });
                 }
@@ -66,7 +91,17 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
 function mostrar_detalle() {
     var html = '';
     var i = 1;
+    // console.log(detalle);
+    detalle.sort();
     console.log(detalle);
+    let idDetalleRequerimientoConDescomposicionList=[];
+    detalle.forEach(element=> {
+        if(!idDetalleRequerimientoConDescomposicionList.includes(element.id_detalle_requerimiento_origen)){
+            idDetalleRequerimientoConDescomposicionList.push(element.id_detalle_requerimiento_origen);
+        }
+    });
+    
+
     detalle.forEach(element => {
         var pn = element.part_number ?? '';
         var dsc = encodeURIComponent(element.descripcion);
@@ -87,6 +122,7 @@ function mostrar_detalle() {
             `+ decodeURIComponent(dsc) + `
             </a>`;
         }
+        console.log(element);
         html += `<tr ${element.estado == 7 ? 'class="bg-danger"' : ''}>
             <td>${i}</td>
             <td>${(element.codigo !== null && element.codigo !== '') ? element.codigo :
@@ -94,17 +130,38 @@ function mostrar_detalle() {
             <td>${element.cod_softlink??''}</td>
             <td>`+ link_pn + (element.tiene_transformacion ? ' <span class="badge badge-secondary">Transformado</span> ' : '') + `</td>
             <td>`+ link_des + `</td>
-            <td>${element.cantidad !== null ? element.cantidad : ''}</td>
+            <td name="tdCantidad">
+            ${((element.id_detalle_requerimiento_origen !=undefined && element.id_detalle_requerimiento_origen >0) || (idDetalleRequerimientoConDescomposicionList.includes(element.id_detalle_requerimiento))) ? `<input type="number" class="form-control handleBlurUpdateCantidadItem" name="cantidad" step="0.1" max="${element.cantidad_original??0}" value="${element.cantidad}" data-id="${element.id_detalle_requerimiento}" data-id-detalle-requerimiento-origen="${element.id_detalle_requerimiento_origen}" >` : (element.cantidad !== null ? element.cantidad : '')}
+                
+            </td>
             <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
             <td>${element.descripcion_moneda !== null ? element.descripcion_moneda : ''}</td>
             <td style="display:flex;">
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="asignar btn btn-xs btn-info boton" data-toggle="tooltip" 
-                    data-placement="bottom" data-partnumber="${element.part_number_requerimiento}" 
-                    data-desc="${encodeURIComponent(element.descripcion_requerimiento)}" data-id="${element.id_detalle_requerimiento}"
+                    data-placement="bottom" data-partnumber="${element.part_number_requerimiento??element.part_number}" 
+                    data-desc="${encodeURIComponent(element.descripcion_requerimiento??element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
                     title="Asignar producto" >
                     <i class="fas fa-angle-double-right"></i>
                 </button>`;
+                var regExp = /[a-zA-Z]/g; //expresión regular
+                if ((regExp.test(element.id_detalle_requerimiento) != true)) {
+                    html += `
+                        <button type="button" title="Duplicar para descomponer producto" 
+                        data-id="${element.id_detalle_requerimiento}" 
+                        data-id-producto="${element.id_producto}" 
+                        data-codigo="${element.codigo !=null?element.codigo:''}" 
+                        data-partnumber="${element.part_number_requerimiento}" 
+                        data-desc="${encodeURIComponent(element.descripcion_requerimiento)}" 
+                        data-cantidad="${element.cantidad}" 
+                        data-id-unidad-medida="${element.id_unidad_medida}" 
+                        data-unidad-medida="${element.abreviatura}" 
+                        data-id-moneda="${element.id_moneda}" 
+                        data-moneda="${element.descripcion_moneda}" 
+                        data-tiene-transformacion="${element.tiene_transformacion}" 
+                        class="duplicarParaDescomponer btn-xs btn btn-warning"><i class="fas fa-clone"></i></button>
+                    `;
+                }
         if (element.estado == 7) {
             html += `
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
@@ -129,7 +186,6 @@ function mostrar_detalle() {
                 `;
 
         }
-
         html += `</td>
         </tr>`;
         i++;
@@ -146,6 +202,18 @@ $('#detalleItemsRequerimiento tbody').on("click", "button.asignar", function () 
     openAsignarProducto(partnumber, desc, id, 0);
 });
 
+$('#detalleItemsRequerimiento tbody').on("click", "button.duplicarParaDescomponer", function (e) {
+    var id = $(this).data('id');
+    // var cod = $(this).data('codigo');
+    // var partnumber = $(this).data('partnumber');
+    // var desc = $(this).data('desc');
+    // var cant = $(this).data('cantidad');
+    // var unid = $(this).data('unidad');
+    // var mone = $(this).data('moneda');
+    // var trans = $(this).data('tieneTransformacion');
+    // duplicarParaDescomponerProducto(id,cod,partnumber, decodeURIComponent(desc),cant,unid,mone,trans, e.currentTarget);
+    duplicarParaDescomponerProducto(id, e.currentTarget);
+});
 $('#detalleItemsRequerimiento tbody').on("click", "button.anular", function (e) {
     var partnumber = $(this).data('partnumber');
     var desc = $(this).data('desc');
@@ -158,9 +226,33 @@ $('#detalleItemsRequerimiento tbody').on("click", "button.restablecer", function
 });
 
 function anularProducto(partnumber, desc, id, obj) {
+
     detalle.forEach((element, index) => {
         if (element.id_detalle_requerimiento == id) {
             detalle[index].estado = 7;
+            var regExp = /[a-zA-Z]/g; //expresión regular
+            if ((regExp.test(element.id_detalle_requerimiento) == true)) {
+                obj.closest('tr').remove();
+                detalle.splice(index,1);
+            }else{
+                obj.closest("tr").classList.add('bg-danger');
+                obj.closest("td").querySelector("button[class~='anular']").classList.add("oculto")
+            
+                let tdBotoneraAccionMapeo = obj.closest("td");
+                if (tdBotoneraAccionMapeo.querySelector("button[class~='restablecer']") == null) {
+                    let buttonRestablecerItem = document.createElement("button");
+                    buttonRestablecerItem.type = "button";
+                    buttonRestablecerItem.dataset.id = id;
+                    buttonRestablecerItem.title = "Restablecer";
+                    buttonRestablecerItem.className = "restablecer btn-xs btn btn-primary";
+                    buttonRestablecerItem.innerHTML = "<i class='fas fa-undo'></i>";
+             
+                    tdBotoneraAccionMapeo.appendChild(buttonRestablecerItem);
+                } else {
+                    obj.closest("td").querySelector("button[class~='restablecer']").classList.remove("oculto")
+            
+                }
+            }
             Lobibox.notify('success', {
                 title: false,
                 size: 'mini',
@@ -171,46 +263,7 @@ function anularProducto(partnumber, desc, id, obj) {
             });
         }
     });
-    obj.closest("tr").classList.add('bg-danger');
-    obj.closest("td").querySelector("button[class~='anular']").classList.add("oculto")
 
-    let tdBotoneraAccionMapeo = obj.closest("td");
-    if (tdBotoneraAccionMapeo.querySelector("button[class~='restablecer']") == null) {
-        let buttonRestablecerItem = document.createElement("button");
-        buttonRestablecerItem.type = "button";
-        buttonRestablecerItem.dataset.id = id;
-        buttonRestablecerItem.title = "Restablecer";
-        buttonRestablecerItem.className = "restablecer btn-xs btn btn-primary";
-        buttonRestablecerItem.innerHTML = "<i class='fas fa-undo'></i>";
-        // buttonRestablecerItem.addEventListener('click', function(){
-        //     restablecerItemAnulado(id,obj);
-        // });
-        // buttonRestablecerItem.addEventListener('click', function () {
-
-        //     detalle.forEach((element, index) => {
-        //         if (element.id_detalle_requerimiento == id) {
-        //             detalle[index].estado = 1;
-        //             Lobibox.notify('info', {
-        //                 title: false,
-        //                 size: 'mini',
-        //                 rounded: true,
-        //                 sound: false,
-        //                 delayIndicator: false,
-        //                 msg: `Item restablecido`
-        //             });
-        //         }
-        //     });
-
-        //     obj.closest("td").querySelector("button[class~='anular']").classList.remove("oculto")
-        //     obj.closest("td").querySelector("button[class~='restablecer']").classList.add("oculto")
-        //     obj.closest("tr").classList.remove('bg-danger');
-
-        // }, false);
-        tdBotoneraAccionMapeo.appendChild(buttonRestablecerItem);
-    } else {
-        obj.closest("td").querySelector("button[class~='restablecer']").classList.remove("oculto")
-
-    }
 
 }
 
@@ -236,7 +289,7 @@ function restablecerItemAnulado(id, obj) {
 }
 
 function openAsignarProducto(partnumber, desc, id, type) {
-
+    console.log(partnumber, desc, id, type);
     $('#part_number').text(partnumber);
     $('#descripcion_producto').text(decodeURIComponent(desc));
     $('[name=id_detalle_requerimiento]').val(id);
@@ -279,6 +332,7 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
 
                 lista.push({
                     'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                    'id_detalle_requerimiento_origen': element.id_detalle_requerimiento_origen,
                     'id_producto': element.id_producto,
                     'part_number': (element.id_producto !== null ? '' : element.part_number),
                     'descripcion': (element.id_producto !== null ? '' : element.descripcion),
@@ -390,14 +444,22 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
                     }else{
                         $("#modal-mapeoItemsRequerimiento .modal-dialog").LoadingOverlay("hide", true);
                         console.log(response);
-                        Lobibox.notify('warning', {
-                            title: false,
-                            size: 'large',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: response.mensaje
-                        });
+                        if(response.response=='warning'){
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                'warning'
+                            );
+                        }else{
+                            Lobibox.notify('warning', {
+                                title: false,
+                                size: 'large',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: response.mensaje
+                            });
+                        }
 
                     }
                 }
@@ -417,3 +479,70 @@ $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
         }
     })
 });
+function makeId() {
+    let ID = "";
+    let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for (var i = 0; i < 12; i++) {
+        ID += characters.charAt(Math.floor(Math.random() * 36));
+    }
+    return ID;
+}
+
+function duplicarParaDescomponerProducto(id, obj){
+    let newIdTemporal= makeId();
+    indexProductoOrigen= detalle.findIndex(element => element.id_detalle_requerimiento == id);
+    detalle[indexProductoOrigen].cantidad_original=detalle[indexProductoOrigen].cantidad;
+    detalle.splice((indexProductoOrigen+1), 0, {
+        'id_detalle_requerimiento':newIdTemporal,
+        'id_detalle_requerimiento_origen':id,
+        'id_producto' : parseInt(obj.dataset.idProducto)>0?parseInt(obj.dataset.idProducto):null,
+        'codigo' : obj.dataset.codigo,
+        'part_number' : (obj.dataset.partnumber).length>0?obj.dataset.partnumber:null,
+        'cantidad' :0,
+        'cantidad_original':detalle[indexProductoOrigen].cantidad_original,
+        'descripcion' : decodeURIComponent(obj.dataset.desc),
+        'id_categoria' : null,
+        'id_subcategoria' : null,
+        'id_clasif' : null,
+        'id_unidad_medida' : parseInt(obj.dataset.idUnidadMedida)>0?parseInt(obj.dataset.idUnidadMedida):null,
+        'abreviatura' : obj.dataset.unidadMedida,
+        'series' : null,
+        'id_moneda' : parseInt(obj.dataset.idMoneda)??null,
+        'descripcion_moneda' : obj.dataset.moneda,
+        'estado' :1,
+        'tiene_transformacion' : obj.dataset.tieneTransformacion ==true?true:null
+        });
+
+    // poner tambien un input para cantidad en el item que se quier clonar 
+    obj.closest('tr').querySelector("td[name='tdCantidad']").innerHTML=`<input type="number" class="form-control handleBlurUpdateCantidadItem" step="0.1" name="cantidad" max="${detalle[indexProductoOrigen].cantidad_original}" data-id="${id}" value="${detalle[indexProductoOrigen].cantidad}"   >`;
+    //poner linea clonada
+    obj.closest('tr').insertAdjacentHTML('afterend', `<tr>
+    <td></td>
+    <td>${obj.dataset.codigo}</td>
+    <td></td>
+    <td>${obj.dataset.partnumber} ${obj.dataset.tieneTransformacion==true?'<span class="badge badge-secondary">Transformado</span>':''}</td>
+    <td>${decodeURIComponent(obj.dataset.desc)}</td>
+    <td name="tdCantidad"> <input type="number" class="form-control handleBlurUpdateCantidadItem" step="0.1" name="cantidad" max="${obj.dataset.cantidad}" data-id="${newIdTemporal}" data-id-detalle-requerimiento-origen="${id}" value="0" ></td>
+    <td>${obj.dataset.unidadMedida}</td>
+    <td>${obj.dataset.moneda}</td>
+    <td>
+        <button type="button" style="padding-left:8px;padding-right:7px;" 
+        class="asignar btn btn-xs btn-info boton" data-toggle="tooltip" 
+        data-placement="bottom" data-partnumber="${obj.dataset.partnumber}" 
+        data-desc="${obj.dataset.desc}" data-id="${newIdTemporal}"
+        title="Asignar producto" >
+        <i class="fas fa-angle-double-right"></i>
+        </button>
+
+        <button type="button" style="padding-left:8px;padding-right:7px;" 
+        class="anular btn btn-xs btn-danger boton" data-toggle="tooltip" 
+        data-placement="bottom" data-partnumber="${obj.dataset.partnumber}" 
+        data-desc="${obj.dataset.desc}" data-id="${newIdTemporal}"
+        title="Anular" >
+        <i class="fas fa-times"></i>
+    </button>
+    </td>
+    </tr>
+    `);
+
+}

@@ -69,7 +69,9 @@ Route::group(['as' => 'api-consulta.', 'prefix' => 'api-consulta'], function () 
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
-
+	
+	Route::get('duplicar-requerimiento-pago/{idRequerimientoPago}/{idEstado}', 'Tesoreria\RequerimientoPagoController@duplicarRequerimientoPago');
+	
 	Route::group(['as' => 'mgcp.', 'prefix' => 'mgcp'], function () {
 		Route::name('cuadro-costos.')->prefix('cuadro-costos')->middleware('auth')->group(function () {
 			Route::get('detalles/{id?}', 'CuadroCostoController@detalles')->name('detalles');

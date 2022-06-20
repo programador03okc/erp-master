@@ -1151,5 +1151,61 @@ class RequerimientoPagoController extends Controller
             return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al anular el adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
-    
+
+    public function duplicarRequerimientoPago($id,$idEstado){
+        DB::beginTransaction();
+        try {
+
+        $data=[];
+        $status='';
+        $msj='';
+        
+        if($id>0){
+            $requerimientoPago= RequerimientoPago::find($id);
+            $nuevoRequerimientoPago= $requerimientoPago->replicate();
+            $nuevoRequerimientoPago->fecha_registro = Carbon::now();
+            $nuevoRequerimientoPago->codigo=null;
+            $nuevoRequerimientoPago->id_estado=$idEstado;
+            $nuevoRequerimientoPago->save();
+
+            $RequerimientoPagoDetalle= RequerimientoPagoDetalle::where('id_requerimiento_pago',$id)->get();
+            foreach ($RequerimientoPagoDetalle as $d) {
+                $detReqPago= RequerimientoPagoDetalle::find($d->id_requerimiento_pago_detalle);
+                $nuevoRequerimientoPagoDetalle= $detReqPago->replicate();
+                $nuevoRequerimientoPagoDetalle->id_requerimiento_pago = $nuevoRequerimientoPago->id_requerimiento_pago;
+                $nuevoRequerimientoPagoDetalle->fecha_registro = Carbon::now();
+                $nuevoRequerimientoPagoDetalle->id_estado=$idEstado;
+                $nuevoRequerimientoPagoDetalle->save();
+            }
+
+            $status='success';
+            $msj='requerimiento de pago duplicado';
+            $data=['id_requerimiento_pago'=>$nuevoRequerimientoPago->id_requerimiento_pago,'det'=>$RequerimientoPagoDetalle];
+
+
+        }else{
+            $status='warning';
+            $msj='Id enviado no es valido';
+        }
+
+        DB::commit();
+
+        $codigo = RequerimientoPago::crearCodigo($nuevoRequerimientoPago->id_grupo, $nuevoRequerimientoPago->id_requerimiento_pago);
+        $rp = RequerimientoPago::find($nuevoRequerimientoPago->id_requerimiento_pago);
+        $rp->codigo = $codigo;
+        $rp->save();
+
+        $documento = new Documento();
+        $documento->id_tp_documento = 11; // requerimiento pago
+        $documento->codigo_doc = $codigo;
+        $documento->id_doc = $nuevoRequerimientoPago->id_requerimiento_pago;
+        $documento->save();
+ 
+        return ['data'=>$data,'status'=>$status,'mensaje'=>$msj];
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['data' => [],'status'=>$status, 'mensaje' => 'Hubo un problema al intentar duplicar el requerimiento de pago. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
 }
