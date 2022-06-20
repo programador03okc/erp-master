@@ -161,6 +161,7 @@ $("#form-customizacion").on("submit", function (e) {
             let transformado = [];
             let sobrante = [];
             let falta_series = 0;
+            let count_series = 0;
 
             items_base.forEach(function (element) {
 
