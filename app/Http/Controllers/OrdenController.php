@@ -2595,7 +2595,7 @@ class OrdenController extends Controller
                     $detalle->id_producto = ($request->idProducto[$i] ? $request->idProducto[$i] : null);
                     $detalle->id_detalle_requerimiento = $request->idDetalleRequerimiento[$i] ? $request->idDetalleRequerimiento[$i] : null;
                     $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
-                    $detalle->id_unidad_medida = $request->unidad[$i];
+                    $detalle->id_unidad_medida = isset($request->unidad[$i])?$request->unidad[$i]:null;
                     $detalle->precio = $request->precioUnitario[$i];
                     // $detalle->descripcion_adicional = (isset($request->descripcion[$i]) && $request->descripcion[$i] != null) ? trim(strtoupper($request->descripcion[$i])) : null;
                     $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
