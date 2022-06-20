@@ -410,18 +410,20 @@ function listarDespachosEntregados(permiso) {
                 'render': function (data, type, row) {
                     if (permiso == '1') {
                         return `<div style="display:flex;">
-                                <button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip" 
-                                data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>
+                                ${row['id_guia_ven'] == null && row['id_transformacion'] !== null ? '' :
+                                `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip" 
+                                    data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                    data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>
 
-                                ${row['estado_od'] == 21 || row['estado_od'] == 1 ?
+                                    <button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip" 
+                                    data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
+                                    <i class="fas fa-print"></i></button>`}
+
+                                ${(row['id_guia_ven'] == null && row['id_transformacion'] !== null)
+                                || row['estado_od'] == 21 || row['estado_od'] == 1 ?
                                 `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
                                     data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                     data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>` : ''}
-                                
-                                <button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip" 
-                                data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
-                                <i class="fas fa-print"></i></button>
                             </div>`;
                     } else {
                         return '';

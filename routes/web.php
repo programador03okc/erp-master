@@ -1462,6 +1462,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('obtenerTipoCambio/{fec}/{mon}', 'Almacen\Movimiento\CustomizacionController@obtenerTipoCambio');
 				Route::get('listarSeriesGuiaVen/{id}/{alm}', 'Almacen\Movimiento\SalidasPendientesController@listarSeriesGuiaVen');
 				Route::get('validarEdicion/{id}', 'Almacen\Movimiento\CustomizacionController@validarEdicion');
+				Route::get('imprimir_ingreso/{id}', 'Almacen\Movimiento\IngresoPdfController@imprimir_ingreso');
+				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
