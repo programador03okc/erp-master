@@ -4742,13 +4742,13 @@ class AlmacenController extends Controller
                 'mov_alm.codigo',
                 DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
                 'tp_doc_com.cod_sunat as cod_sunat_doc_com',
-                'tp_ope_com.cod_sunat as cod_sunat_ope_com',
-                'tp_ope_com.descripcion as des_ope_com',
+                // 'tp_ope_com.cod_sunat as cod_sunat_ope_com',
+                // 'tp_ope_com.descripcion as des_ope_com',
                 DB::raw("(tp_doc_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
                 // 'tp_doc_ven.descripcion as des_doc_ven',
                 'tp_doc_ven.cod_sunat as cod_sunat_doc_ven',
-                'tp_ope_ven.cod_sunat as cod_sunat_ope_ven',
-                'tp_ope_ven.descripcion as des_ope_ven',
+                'tp_ope.cod_sunat as cod_sunat_operacion',
+                'tp_ope.descripcion as des_operacion',
                 'adm_contri.razon_social',
                 'trans.codigo as codigo_transferencia',
                 'transformacion.codigo as codigo_transformacion',
@@ -4766,12 +4766,12 @@ class AlmacenController extends Controller
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftjoin('almacen.tp_doc_almacen as tp_doc_guia_com', 'tp_doc_guia_com.id_tp_doc_almacen', '=', 'guia_com.id_tp_doc_almacen')
             ->leftjoin('contabilidad.cont_tp_doc as tp_doc_com', 'tp_doc_com.id_tp_doc', '=', 'tp_doc_guia_com.id_tp_doc')
-            ->leftjoin('almacen.tp_ope as tp_ope_com', 'tp_ope_com.id_operacion', '=', 'mov_alm.id_operacion')
+            ->leftjoin('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
             ->leftjoin('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'mov_alm_det.id_guia_ven_det')
             ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
             ->leftjoin('almacen.tp_doc_almacen as tp_doc_guia_ven', 'tp_doc_guia_ven.id_tp_doc_almacen', '=', 'guia_ven.id_tp_doc_almacen')
             ->leftjoin('contabilidad.cont_tp_doc as tp_doc_ven', 'tp_doc_ven.id_tp_doc', '=', 'tp_doc_guia_ven.id_tp_doc')
-            ->leftjoin('almacen.tp_ope as tp_ope_ven', 'tp_ope_ven.id_operacion', '=', 'guia_ven.id_operacion')
+            // ->leftjoin('almacen.tp_ope as tp_ope_ven', 'tp_ope_ven.id_operacion', '=', 'guia_ven.id_operacion')
             ->where([
                 ['mov_alm_det.id_producto', '=', $id_producto],
                 ['mov_alm.fecha_emision', '>=', $finicio],
@@ -4827,8 +4827,8 @@ class AlmacenController extends Controller
                         <td class="text-right" style="background:#d8fcfc;">0</td>
                         <td class="text-right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
                         <td class="text-right" style="background:#d8fcfc;">' . number_format($costo_promedio, 4, ".", ",") . '</td>
-                        <td>' . ($d->cod_sunat_ope_com !== null ? $d->cod_sunat_ope_com : '') . '</td>
-                        <td>' . $d->des_ope_com . '</td>
+                        <td>' . ($d->cod_sunat_operacion !== null ? $d->cod_sunat_operacion : '') . '</td>
+                        <td>' . $d->des_operacion . '</td>
                         <td>' . $d->codigo_transferencia . '</td>
                         <td>' . $d->codigo_transformacion . '</td>
                     </tr>';
@@ -4847,8 +4847,8 @@ class AlmacenController extends Controller
                         <td class="text-right" style="background:#d8fcfc;">' . number_format($valor_salida, 2, ".", ",") . '</td>
                         <td class="text-right" style="background:#d8fcfc;">' . number_format($saldo_valor, 2, ".", ",") . '</td>
                         <td class="text-right" style="background:#d8fcfc;">' . number_format($costo_promedio, 4, ".", ",") . '</td>
-                        <td>' . $d->cod_sunat_ope_ven . '</td>
-                        <td>' . $d->des_ope_ven . '</td>
+                        <td>' . $d->cod_sunat_operacion . '</td>
+                        <td>' . $d->des_operacion . '</td>
                         <td>' . $d->codigo_transferencia . '</td>
                         <td>' . $d->codigo_transformacion . '</td>
                     </tr>';
