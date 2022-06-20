@@ -165,7 +165,13 @@ $("#form-customizacion").on("submit", function (e) {
             items_base.forEach(function (element) {
 
                 if (element.control_series) {
-                    if (parseInt(element.cantidad) == element.series.length) {
+                    count_series = 0;
+                    element.series.forEach(function (base) {
+                        if (base.estado == 1) {
+                            count_series++;
+                        }
+                    });
+                    if (parseInt(element.cantidad) == count_series) {
                         base.push({
                             'id_materia': element.id_materia,
                             'id_producto': element.id_producto,
@@ -196,7 +202,13 @@ $("#form-customizacion").on("submit", function (e) {
             items_transformado.forEach(function (element) {
 
                 if (element.control_series) {
-                    if (parseInt(element.cantidad) == element.series.length) {
+                    count_series = 0;
+                    element.series.forEach(function (base) {
+                        if (base.estado == 1) {
+                            count_series++;
+                        }
+                    });
+                    if (parseInt(element.cantidad) == count_series) {
                         transformado.push({
                             'id_transformado': element.id_transformado,
                             'id_producto': element.id_producto,
@@ -227,7 +239,13 @@ $("#form-customizacion").on("submit", function (e) {
             items_sobrante.forEach(function (element) {
 
                 if (element.control_series) {
-                    if (parseInt(element.cantidad) == element.series.length) {
+                    count_series = 0;
+                    element.series.forEach(function (base) {
+                        if (base.estado == 1) {
+                            count_series++;
+                        }
+                    });
+                    if (parseInt(element.cantidad) == count_series) {
                         sobrante.push({
                             'id_sobrante': element.id_sobrante,
                             'id_producto': element.id_producto,
