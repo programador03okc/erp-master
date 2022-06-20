@@ -205,8 +205,12 @@ $("#form-customizacion").on("submit", function (e) {
                 if (element.control_series) {
                     count_series = 0;
                     element.series.forEach(function (base) {
-                        if (base.estado == 1) {
+                        if (base.estado == undefined) {
                             count_series++;
+                        } else {
+                            if (base.estado == 1) {
+                                count_series++;
+                            }
                         }
                     });
                     if (parseInt(element.cantidad) == count_series) {
@@ -242,8 +246,12 @@ $("#form-customizacion").on("submit", function (e) {
                 if (element.control_series) {
                     count_series = 0;
                     element.series.forEach(function (base) {
-                        if (base.estado == 1) {
+                        if (base.estado == undefined) {
                             count_series++;
+                        } else {
+                            if (base.estado == 1) {
+                                count_series++;
+                            }
                         }
                     });
                     if (parseInt(element.cantidad) == count_series) {
