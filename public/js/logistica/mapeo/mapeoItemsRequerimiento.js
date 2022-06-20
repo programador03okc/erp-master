@@ -122,6 +122,7 @@ function mostrar_detalle() {
             `+ decodeURIComponent(dsc) + `
             </a>`;
         }
+        console.log(element);
         html += `<tr ${element.estado == 7 ? 'class="bg-danger"' : ''}>
             <td>${i}</td>
             <td>${(element.codigo !== null && element.codigo !== '') ? element.codigo :
@@ -138,8 +139,8 @@ function mostrar_detalle() {
             <td style="display:flex;">
                 <button type="button" style="padding-left:8px;padding-right:7px;" 
                     class="asignar btn btn-xs btn-info boton" data-toggle="tooltip" 
-                    data-placement="bottom" data-partnumber="${element.part_number_requerimiento}" 
-                    data-desc="${encodeURIComponent(element.descripcion_requerimiento)}" data-id="${element.id_detalle_requerimiento}"
+                    data-placement="bottom" data-partnumber="${element.part_number_requerimiento??element.part_number}" 
+                    data-desc="${encodeURIComponent(element.descripcion_requerimiento??element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
                     title="Asignar producto" >
                     <i class="fas fa-angle-double-right"></i>
                 </button>`;
@@ -288,7 +289,7 @@ function restablecerItemAnulado(id, obj) {
 }
 
 function openAsignarProducto(partnumber, desc, id, type) {
-
+    console.log(partnumber, desc, id, type);
     $('#part_number').text(partnumber);
     $('#descripcion_producto').text(decodeURIComponent(desc));
     $('[name=id_detalle_requerimiento]').val(id);
