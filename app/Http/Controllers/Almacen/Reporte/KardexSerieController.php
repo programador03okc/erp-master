@@ -62,13 +62,32 @@ class KardexSerieController extends Controller
                 'contri_cliente.razon_social as razon_social_cliente',
                 'contri_prove.razon_social as razon_social_prove',
                 'alm_com.descripcion as almacen_compra',
-                'alm_ven.descripcion as almacen_venta',
                 'ope_com.descripcion as operacion_compra',
+                'alm_ven.descripcion as almacen_venta',
                 'ope_ven.descripcion as operacion_venta',
                 'responsable_com.nombre_corto as responsable_compra',
                 'responsable_ven.nombre_corto as responsable_venta',
                 'ingreso.codigo as ingreso_codigo',
                 'salida.codigo as salida_codigo',
+
+                'alm_base.descripcion as almacen_customizacion',
+                'ope_cus.descripcion as operacion_customizacion',
+                'ingreso_cus.codigo as ingreso_codigo_customizacion',
+                'transformacion.codigo as codigo_customizacion',
+                'ingreso_cus.fecha_emision as fecha_ingreso_customizacion',
+
+                'alm_sobrante.descripcion as almacen_sobrante',
+                'ope_sobrante.descripcion as operacion_sobrante',
+                'ingreso_sob.codigo as ingreso_codigo_sobrante',
+                'custom_sobrante.codigo as codigo_sobrante',
+                'ingreso_sob.fecha_emision as fecha_ingreso_sobrante',
+
+                'alm_transformado.descripcion as almacen_transformado',
+                'ope_transformado.descripcion as operacion_transformado',
+                'ingreso_transformado.codigo as ingreso_codigo_transformado',
+                'custom_transformado.codigo as codigo_transformado',
+                'ingreso_sob.fecha_emision as fecha_ingreso_transformado',
+
                 DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
                 DB::raw("(tp_doc_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
                 DB::raw("(cont_tp_doc.abreviatura) || '-' || (doc_com.serie) || '-' || (doc_com.numero) as doc_com")
@@ -99,12 +118,32 @@ class KardexSerieController extends Controller
             ->leftjoin('almacen.mov_alm_det as det_ingreso', 'det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
             ->leftjoin('almacen.mov_alm as ingreso', 'ingreso.id_mov_alm', '=', 'det_ingreso.id_mov_alm')
 
+            ->leftjoin('almacen.transfor_materia', 'transfor_materia.id_materia', '=', 'alm_prod_serie.id_base')
+            ->leftjoin('almacen.mov_alm_det', 'mov_alm_det.id_materia', '=', 'transfor_materia.id_materia')
+            ->leftjoin('almacen.mov_alm as ingreso_cus', 'ingreso_cus.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_materia.id_transformacion')
+            ->leftjoin('almacen.alm_almacen as alm_base', 'alm_base.id_almacen', '=', 'transformacion.id_almacen')
+            ->leftjoin('almacen.tp_ope as ope_cus', 'ope_cus.id_operacion', '=', 'ingreso_cus.id_operacion')
+
+            ->leftjoin('almacen.transfor_sobrante', 'transfor_sobrante.id_sobrante', '=', 'alm_prod_serie.id_sobrante')
+            ->leftjoin('almacen.mov_alm_det as mov_det_sobrante', 'mov_det_sobrante.id_sobrante', '=', 'transfor_sobrante.id_sobrante')
+            ->leftjoin('almacen.mov_alm as ingreso_sob', 'ingreso_sob.id_mov_alm', '=', 'mov_det_sobrante.id_mov_alm')
+            ->leftjoin('almacen.transformacion as custom_sobrante', 'custom_sobrante.id_transformacion', '=', 'transfor_sobrante.id_transformacion')
+            ->leftjoin('almacen.alm_almacen as alm_sobrante', 'alm_sobrante.id_almacen', '=', 'custom_sobrante.id_almacen')
+            ->leftjoin('almacen.tp_ope as ope_sobrante', 'ope_sobrante.id_operacion', '=', 'ingreso_sob.id_operacion')
+
+            ->leftjoin('almacen.transfor_transformado', 'transfor_transformado.id_transformado', '=', 'alm_prod_serie.id_transformado')
+            ->leftjoin('almacen.mov_alm_det as mov_det_transformado', 'mov_det_transformado.id_transformado', '=', 'transfor_transformado.id_transformado')
+            ->leftjoin('almacen.mov_alm as ingreso_transformado', 'ingreso_transformado.id_mov_alm', '=', 'mov_det_transformado.id_mov_alm')
+            ->leftjoin('almacen.transformacion as custom_transformado', 'custom_transformado.id_transformacion', '=', 'transfor_transformado.id_transformacion')
+            ->leftjoin('almacen.alm_almacen as alm_transformado', 'alm_transformado.id_almacen', '=', 'custom_transformado.id_almacen')
+            ->leftjoin('almacen.tp_ope as ope_transformado', 'ope_transformado.id_operacion', '=', 'ingreso_transformado.id_operacion')
+
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
 
             ->where([
                 ['alm_prod_serie.serie', '=', $serie],
                 ['alm_prod_serie.id_prod', '=', $id_prod],
-                // ['alm_prod.estado', '=', 1],
                 ['alm_prod_serie.estado', '=', 1],
             ])
             ->orderBy('alm_prod_serie.fecha_registro')

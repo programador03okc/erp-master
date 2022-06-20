@@ -66,6 +66,8 @@ $(".cancelar").on('click', function () {
     $(".edit-customizacion").show();
     $(".procesar-customizacion").show();
     $(".buscar-customizacion").show();
+    $('.imprimir-ingreso').hide();
+    $('.imprimir-salida').hide();
 
     $("#codigo").text('');
     $(".limpiarCustomizacion").val("");
@@ -105,6 +107,8 @@ $(".edit-customizacion").on('click', function () {
                     $(".edit-customizacion").hide();
                     $(".procesar-customizacion").hide();
                     $(".buscar-customizacion").hide();
+                    $('.imprimir-ingreso').hide();
+                    $('.imprimir-salida').hide();
 
                     $("[name=modo]").val("edicion");
                 } else {
@@ -156,51 +160,110 @@ $("#form-customizacion").on("submit", function (e) {
             let base = [];
             let transformado = [];
             let sobrante = [];
+            let falta_series = 0;
 
             items_base.forEach(function (element) {
-                base.push({
-                    'id_materia': element.id_materia,
-                    'id_producto': element.id_producto,
-                    'cantidad': element.cantidad,
-                    'costo_promedio': element.costo_promedio,
-                    'unitario': element.unitario,
-                    'total': element.total,
-                    'estado': element.estado,
-                    'series': element.series,
-                });
+
+                if (element.control_series) {
+                    if (parseInt(element.cantidad) == element.series.length) {
+                        base.push({
+                            'id_materia': element.id_materia,
+                            'id_producto': element.id_producto,
+                            'cantidad': element.cantidad,
+                            'costo_promedio': element.costo_promedio,
+                            'unitario': element.unitario,
+                            'total': element.total,
+                            'estado': element.estado,
+                            'series': element.series,
+                        });
+                    } else {
+                        falta_series++;
+                    }
+                } else {
+                    base.push({
+                        'id_materia': element.id_materia,
+                        'id_producto': element.id_producto,
+                        'cantidad': element.cantidad,
+                        'costo_promedio': element.costo_promedio,
+                        'unitario': element.unitario,
+                        'total': element.total,
+                        'estado': element.estado,
+                        'series': element.series,
+                    });
+                }
             });
 
             items_transformado.forEach(function (element) {
-                transformado.push({
-                    'id_transformado': element.id_transformado,
-                    'id_producto': element.id_producto,
-                    'cantidad': element.cantidad,
-                    'id_moneda': element.id_moneda,
-                    'unitario': element.unitario,
-                    'total': element.total,
-                    'estado': element.estado,
-                    'series': element.series,
-                });
+
+                if (element.control_series) {
+                    if (parseInt(element.cantidad) == element.series.length) {
+                        transformado.push({
+                            'id_transformado': element.id_transformado,
+                            'id_producto': element.id_producto,
+                            'cantidad': element.cantidad,
+                            'id_moneda': element.id_moneda,
+                            'unitario': element.unitario,
+                            'total': element.total,
+                            'estado': element.estado,
+                            'series': element.series,
+                        });
+                    } else {
+                        falta_series++;
+                    }
+                } else {
+                    transformado.push({
+                        'id_transformado': element.id_transformado,
+                        'id_producto': element.id_producto,
+                        'cantidad': element.cantidad,
+                        'id_moneda': element.id_moneda,
+                        'unitario': element.unitario,
+                        'total': element.total,
+                        'estado': element.estado,
+                        'series': element.series,
+                    });
+                }
             });
 
             items_sobrante.forEach(function (element) {
-                sobrante.push({
-                    'id_sobrante': element.id_sobrante,
-                    'id_producto': element.id_producto,
-                    'id_moneda': element.id_moneda,
-                    'cantidad': element.cantidad,
-                    'unitario': element.unitario,
-                    'total': element.total,
-                    'estado': element.estado,
-                    'series': element.series,
-                });
+
+                if (element.control_series) {
+                    if (parseInt(element.cantidad) == element.series.length) {
+                        sobrante.push({
+                            'id_sobrante': element.id_sobrante,
+                            'id_producto': element.id_producto,
+                            'id_moneda': element.id_moneda,
+                            'cantidad': element.cantidad,
+                            'unitario': element.unitario,
+                            'total': element.total,
+                            'estado': element.estado,
+                            'series': element.series,
+                        });
+                    } else {
+                        falta_series++;
+                    }
+                } else {
+                    sobrante.push({
+                        'id_sobrante': element.id_sobrante,
+                        'id_producto': element.id_producto,
+                        'id_moneda': element.id_moneda,
+                        'cantidad': element.cantidad,
+                        'unitario': element.unitario,
+                        'total': element.total,
+                        'estado': element.estado,
+                        'series': element.series,
+                    });
+                }
             });
 
-            data += '&items_base=' + JSON.stringify(base) +
-                '&items_sobrante=' + JSON.stringify(sobrante) +
-                '&items_transformado=' + JSON.stringify(transformado);
-            console.log(data);
-            guardarCustomizacion(data);
+            if (falta_series > 0) {
+                Swal.fire("Aún le falta agregar series a " + falta_series + " producto(s).", "", "warning");
+            } else {
+                data += '&items_base=' + JSON.stringify(base) +
+                    '&items_sobrante=' + JSON.stringify(sobrante) +
+                    '&items_transformado=' + JSON.stringify(transformado);
+                console.log(data);
+                guardarCustomizacion(data);
+            }
         }
     });
 });
@@ -240,6 +303,8 @@ function guardarCustomizacion(data) {
             $(".edit-customizacion").show();
             $(".procesar-customizacion").show();
             $(".buscar-customizacion").show();
+            $('.imprimir-ingreso').hide();
+            $('.imprimir-salida').hide();
 
             $("[name=modo]").val("");
             $("[name=id_customizacion]").val(response.customizacion.id_transformacion);
@@ -341,6 +406,8 @@ function anularCustomizacion() {
                         $("#codigo").text('');
                         $(".limpiarCustomizacion").val("");
                         $(".limpiarTexto").text("");
+                        $('.imprimir-ingreso').hide();
+                        $('.imprimir-salida').hide();
 
                         $("#listaMateriasPrimas tbody").html("");
                         $("#listaSobrantes tbody").html("");
@@ -496,6 +563,9 @@ function procesarCustomizacion() {
                         });
 
                         if (response.tipo == 'success') {
+                            $('.imprimir-ingreso').show();
+                            $('.imprimir-salida').show();
+
                             $('[name=id_ingreso]').val(response.id_ingreso);
                             $('[name=id_salida]').val(response.id_salida);
                             imprimirIngreso();
@@ -515,7 +585,7 @@ function procesarCustomizacion() {
 function obtenerTipoCambio(fecha) {
     $.ajax({
         type: 'GET',
-        url: 'obtenerTipoCambio/' + fecha + '/' + 2,//
+        url: 'obtenerTipoCambio/' + fecha + '/' + 2,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);

@@ -76,10 +76,35 @@ function listar_kardex_serie(serie, id_prod) {
                 <td>${element.responsable_compra ?? ''}</td>
                 </tr>`: ''}
                 ${element.id_guia_com_det == null ?
+                        (element.codigo_sobrante !== null ?
+                            `<tr>
+                    <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
+                    <td>${element.ingreso_codigo_sobrante ?? ''}</td>
+                    <td>${element.almacen_sobrante ?? ''}</td>
+                    <td>${element.fecha_ingreso_sobrante ?? ''}</td>
+                    <td>${element.codigo_sobrante ?? ''}</td>
+                    <td></td>
+                    <td>${element.razon_social_prove ?? ''}</td>
+                    <td>${element.operacion_sobrante ?? ''}</td>
+                    <td>${element.responsable_compra ?? ''}</td>
+                    </tr>`:
+                            (element.codigo_transformado !== null ?
+                                `<tr>
+                <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
+                <td>${element.ingreso_codigo_transformado ?? ''}</td>
+                <td>${element.almacen_transformado ?? ''}</td>
+                <td>${element.fecha_ingreso_transformado ?? ''}</td>
+                <td>${element.codigo_transformado ?? ''}</td>
+                <td></td>
+                <td>${element.razon_social_prove ?? ''}</td>
+                <td>${element.operacion_transformado ?? ''}</td>
+                <td>${element.responsable_compra ?? ''}</td>
+                </tr>`: '')
+                        ) :
                         `<tr>
                 <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
                 <td colSpan="8">STOCK INICIAL</td>
-                </tr>`: ''}
+                </tr>`}
                 ${element.id_guia_ven_det !== null ?
                         `<tr>
                 <td><span class="ver label label-danger" data-id="${element.id_prod}" >S</span></td>
@@ -91,7 +116,19 @@ function listar_kardex_serie(serie, id_prod) {
                 <td>${element.razon_social_cliente ?? ''}</td>
                 <td>${element.operacion_venta ?? ''}</td>
                 <td>${element.responsable_venta ?? ''}</td>
-                </tr>` : ''}
+                </tr>`
+                        : (element.codigo_customizacion !== null ?
+                            `<tr>
+            <td><span class="ver label label-danger" data-id="${element.id_prod}" >S</span></td>
+            <td>${element.ingreso_codigo_customizacion ?? ''}</td>
+            <td>${element.almacen_customizacion ?? ''}</td>
+            <td>${element.fecha_ingreso_customizacion ?? ''}</td>
+            <td>${element.codigo_customizacion ?? ''}</td>
+            <td></td>
+            <td>${element.razon_social_prove ?? ''}</td>
+            <td>${element.operacion_customizacion ?? ''}</td>
+            <td>${element.responsable_compra ?? ''}</td>
+            </tr>`: '')}
                 `;
             });
             $('#listaMovimientosSerie tbody').html(html);

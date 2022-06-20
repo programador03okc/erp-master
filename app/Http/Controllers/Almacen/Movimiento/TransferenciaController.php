@@ -226,8 +226,6 @@ class TransferenciaController extends Controller
                 'alm_destino.descripcion as alm_destino_descripcion',
                 'sede_origen.id_empresa as id_empresa_origen',
                 'sede_destino.id_empresa as id_empresa_destino',
-                // 'usu_origen.nombre_corto as nombre_origen',
-                // 'usu_destino.nombre_corto as nombre_destino',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'ingreso.id_mov_alm as id_ingreso',
@@ -251,12 +249,30 @@ class TransferenciaController extends Controller
             ->join('administracion.sis_sede as sede_origen', 'sede_origen.id_sede', '=', 'alm_origen.id_sede')
             ->join('administracion.sis_sede as sede_destino', 'sede_destino.id_sede', '=', 'alm_destino.id_sede')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'trans.estado')
-            ->join('almacen.guia_ven_det', 'guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle')
-            ->leftJoin('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
-            ->leftJoin('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc')
-            ->join('almacen.guia_com_det', 'guia_com_det.id_trans_detalle', '=', 'trans_detalle.id_trans_detalle')
-            ->leftJoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-            ->leftJoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
+            ->join('almacen.guia_ven_det', function ($join) {
+                $join->on('guia_ven_det.id_trans_det', '=', 'trans_detalle.id_trans_detalle');
+                $join->where('guia_ven_det.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.doc_ven_det', function ($join) {
+                $join->on('doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det');
+                $join->where('doc_ven_det.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.doc_ven', function ($join) {
+                $join->on('doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc');
+                $join->where('doc_ven.estado', '!=', 7);
+            })
+            ->join('almacen.guia_com_det', function ($join) {
+                $join->on('guia_com_det.id_trans_detalle', '=', 'trans_detalle.id_trans_detalle');
+                $join->where('guia_com_det.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.doc_com_det', function ($join) {
+                $join->on('doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
+                $join->where('doc_com_det.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.doc_com', function ($join) {
+                $join->on('doc_com.id_doc_com', '=', 'doc_com_det.id_doc');
+                $join->where('doc_com.estado', '!=', 7);
+            })
             ->whereIn('trans.id_almacen_destino', $array_almacen)
             ->where([
                 ['trans.estado', '=', 14],
