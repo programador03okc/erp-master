@@ -2082,7 +2082,7 @@ class OrdenView {
                     }
                 });
             }
-
+            console.log(detalle);
             if (detalle[i].tipo_item_id == 1) { // producto
                 if (detalle[i].id_producto > 0) { // TO-DO  falta mostrar cantidad_atendido_almacen y cantidad_atendido_orden
                     // <td><select name="unidad[]" class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : '')} input-sm unidadMedida" data-valor="${detalle[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
@@ -2092,7 +2092,7 @@ class OrdenView {
                         <td class="text-center">${detalle[i].producto.cod_softlink ? detalle[i].producto.cod_softlink : ''} </td>
                         <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
                         <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)}</textarea></td>
-                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].id_unidad_medida}">${(detalle[i].unidad_medida ? detalle[i].unidad_medida : 'sin und.')}</p>
+                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].id_unidad_medida}">${(detalle[i].unidad_medida ? detalle[i].unidad_medida.abreviatura : 'sin und.')}</p>
                         <input type="hidden"  name="unidad[]" value="${detalle[i].id_unidad_medida}">
 
                         </td>
