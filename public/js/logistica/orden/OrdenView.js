@@ -598,7 +598,10 @@ class OrdenView {
                         <td class="text-center">${data[i].codigo_softlink ? data[i].codigo_softlink : ''} </td>
                         <td class="text-center">${data[i].part_number ? data[i].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)}"></td>
                         <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion != null ? data[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion)}</textarea></td>
-                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${data[i].id_unidad_medida}">${(data[i].unidad_medida? data[i].unidad_medida : 'sin und.')}</p></td>
+                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${data[i].id_unidad_medida}">${(data[i].unidad_medida? data[i].unidad_medida : 'sin und.')}</p>
+                            <input type="hidden"  name="unidad[]" value="${data[i].id_unidad_medida}">
+
+                        </td>
 
                         <td>${(data[i].cantidad ? data[i].cantidad : '')}</td>
                         <td>${(data[i].cantidad_atendido_almacen ? data[i].cantidad_atendido_almacen : '')}</td>
@@ -2089,7 +2092,10 @@ class OrdenView {
                         <td class="text-center">${detalle[i].producto.cod_softlink ? detalle[i].producto.cod_softlink : ''} </td>
                         <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
                         <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)}</textarea></td>
-                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].id_unidad_medida}">${(detalle[i].unidad_medida ? detalle[i].unidad_medida : 'sin und.')}</p></td>
+                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].id_unidad_medida}">${(detalle[i].unidad_medida ? detalle[i].unidad_medida : 'sin und.')}</p>
+                        <input type="hidden"  name="unidad[]" value="${detalle[i].id_unidad_medida}">
+
+                        </td>
                         <td>${(detalle[i].detalle_requerimiento ? detalle[i].detalle_requerimiento.cantidad : '')}</td>
                         <td>${(cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : '')}</td> 
                         <td>${(cantidad_atendido_orden > 0 ? cantidad_atendido_orden : '')}</td>
