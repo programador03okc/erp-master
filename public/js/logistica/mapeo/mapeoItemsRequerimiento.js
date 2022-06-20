@@ -225,13 +225,32 @@ $('#detalleItemsRequerimiento tbody').on("click", "button.restablecer", function
 });
 
 function anularProducto(partnumber, desc, id, obj) {
+
     detalle.forEach((element, index) => {
         if (element.id_detalle_requerimiento == id) {
             detalle[index].estado = 7;
             var regExp = /[a-zA-Z]/g; //expresión regular
             if ((regExp.test(element.id_detalle_requerimiento) == true)) {
                 obj.closest('tr').remove();
-                detalle.splice(2, index);
+                detalle.splice(index,1);
+            }else{
+                obj.closest("tr").classList.add('bg-danger');
+                obj.closest("td").querySelector("button[class~='anular']").classList.add("oculto")
+            
+                let tdBotoneraAccionMapeo = obj.closest("td");
+                if (tdBotoneraAccionMapeo.querySelector("button[class~='restablecer']") == null) {
+                    let buttonRestablecerItem = document.createElement("button");
+                    buttonRestablecerItem.type = "button";
+                    buttonRestablecerItem.dataset.id = id;
+                    buttonRestablecerItem.title = "Restablecer";
+                    buttonRestablecerItem.className = "restablecer btn-xs btn btn-primary";
+                    buttonRestablecerItem.innerHTML = "<i class='fas fa-undo'></i>";
+             
+                    tdBotoneraAccionMapeo.appendChild(buttonRestablecerItem);
+                } else {
+                    obj.closest("td").querySelector("button[class~='restablecer']").classList.remove("oculto")
+            
+                }
             }
             Lobibox.notify('success', {
                 title: false,
@@ -243,46 +262,7 @@ function anularProducto(partnumber, desc, id, obj) {
             });
         }
     });
-    obj.closest("tr").classList.add('bg-danger');
-    obj.closest("td").querySelector("button[class~='anular']").classList.add("oculto")
 
-    let tdBotoneraAccionMapeo = obj.closest("td");
-    if (tdBotoneraAccionMapeo.querySelector("button[class~='restablecer']") == null) {
-        let buttonRestablecerItem = document.createElement("button");
-        buttonRestablecerItem.type = "button";
-        buttonRestablecerItem.dataset.id = id;
-        buttonRestablecerItem.title = "Restablecer";
-        buttonRestablecerItem.className = "restablecer btn-xs btn btn-primary";
-        buttonRestablecerItem.innerHTML = "<i class='fas fa-undo'></i>";
-        // buttonRestablecerItem.addEventListener('click', function(){
-        //     restablecerItemAnulado(id,obj);
-        // });
-        // buttonRestablecerItem.addEventListener('click', function () {
-
-        //     detalle.forEach((element, index) => {
-        //         if (element.id_detalle_requerimiento == id) {
-        //             detalle[index].estado = 1;
-        //             Lobibox.notify('info', {
-        //                 title: false,
-        //                 size: 'mini',
-        //                 rounded: true,
-        //                 sound: false,
-        //                 delayIndicator: false,
-        //                 msg: `Item restablecido`
-        //             });
-        //         }
-        //     });
-
-        //     obj.closest("td").querySelector("button[class~='anular']").classList.remove("oculto")
-        //     obj.closest("td").querySelector("button[class~='restablecer']").classList.add("oculto")
-        //     obj.closest("tr").classList.remove('bg-danger');
-
-        // }, false);
-        tdBotoneraAccionMapeo.appendChild(buttonRestablecerItem);
-    } else {
-        obj.closest("td").querySelector("button[class~='restablecer']").classList.remove("oculto")
-
-    }
 
 }
 

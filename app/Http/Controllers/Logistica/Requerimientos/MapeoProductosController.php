@@ -7,10 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\AlmacenController;
 use App\Http\Controllers\Migraciones\MigrateRequerimientoSoftLinkController;
 use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Producto;
 use App\Models\Almacen\Requerimiento;
+use App\Models\Rrhh\Persona;
+use Dotenv\Regex\Success;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Debugbar;
 
 class MapeoProductosController extends Controller
 {
@@ -93,7 +97,7 @@ class MapeoProductosController extends Controller
                 }
 
                 $cantidadOrigenDeProducto=DetalleRequerimiento::find($idOrigen)->cantidad;
-                if(($sumCantidadProductoDescompuesto+$cantidadNuevaProductoOriginalParaDescomponer) > $cantidadOrigenDeProducto ){
+                if((($sumCantidadProductoDescompuesto+$cantidadNuevaProductoOriginalParaDescomponer) > $cantidadOrigenDeProducto)|| (($sumCantidadProductoDescompuesto+$cantidadNuevaProductoOriginalParaDescomponer) < $cantidadOrigenDeProducto) ){
                     $cantidadSuperiorACantidadOrigen++;
                 }
             }
@@ -105,6 +109,123 @@ class MapeoProductosController extends Controller
             return true;
         }
 
+    }
+
+    public function crearProducto($partNumber=null,$descripcion,$idUnidadMedida,$idMoneda,$series=null, $idCategoria=null,$idSubcategoria=null,$idClasif=null){
+
+        $data=[];
+        $status='error';
+        $mensaje='';
+
+        if($descripcion!=null && $idUnidadMedida>0 && $idMoneda>0 ){
+            $producto = new Producto();
+            $producto->part_number=$partNumber;
+            $producto->id_categoria=$idCategoria;
+            $producto->id_subcategoria=$idSubcategoria;
+            $producto->id_clasif=$idClasif;
+            $producto->descripcion=mb_convert_encoding((strtoupper($descripcion)), 'UTF-8', 'UTF-8');
+            $producto->id_unidad_medida=$idUnidadMedida;
+            $producto->id_moneda=$idMoneda;
+            $producto->series=$series;
+            $producto->id_usuario=Auth::user()->id_usuario??null;
+            $producto->estado=1;
+            $producto->fecha_registro=date('Y-m-d H:i:s');
+            $producto->save();
+
+            $codigo = AlmacenController::leftZero(7, $producto->id_producto);
+
+            $productoCreado = Producto::find($producto->id_producto);
+            $productoCreado->codigo=$codigo;
+            $productoCreado->save();
+
+            if($producto->id_producto>0){
+                $data=['id_producto'=>$productoCreado->id_producto];
+                $status="success";
+                $mensaje="Producto creado";
+            }else{
+                $status="warning";
+                $mensaje="Hubo un problema para crear el producto";
+
+            }
+        }else{
+            $status="warning";
+            $mensaje="Es necesario que se complete minimamente una descripción, unidad de medida y moneda para guardar un producto"; 
+        }
+    
+        return ['data'=>$data,'status'=>$status,'mensaje'=>$mensaje];
+
+    }
+
+    public function actualizarIdProductoDetalleRequerimiento($idDetalleRequerimiento, $nuevoIdProducto){
+
+        $status='error';
+        $mensaje='';
+
+        if(!preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $idDetalleRequerimiento) >=1){ // id que contenga solo numeros
+
+            $detalle = DetalleRequerimiento::find($idDetalleRequerimiento);
+            $detalle->id_producto =$nuevoIdProducto;
+            $detalle->save();
+
+            $status='success';
+            $mensaje='Id producto actualizado';
+
+        }else{
+            $status='warning';
+            $mensaje='El ID detalle del requerimiento no es valido para actualizar';
+        }
+
+        return ['status'=>$status,'mensaje'=>$mensaje];
+    }
+
+    public function duplicarDetalleRequerimiento($idDetalleRequerimiento, $nuevaCantidad=null, $nuevoIdProducto=null){
+
+        $data=[];
+        $status='error';
+        $mensaje='';
+        if($idDetalleRequerimiento >0){
+            $detalleOrigen= DetalleRequerimiento::find($idDetalleRequerimiento);
+    
+            if($nuevaCantidad ==null){
+                $nuevaCantidad= $detalleOrigen->cantidad;
+            }
+    
+            $duplicaDetalleRequerimiento= DB::table('almacen.alm_det_req')->insertGetId(
+                [
+                    'id_requerimiento' => $detalleOrigen->id_requerimiento,
+                    'part_number' => $detalleOrigen->part_number,
+                    'id_producto' => $nuevoIdProducto,
+                    'cantidad' => $nuevaCantidad,
+                    'descripcion' => $detalleOrigen->descripcion,
+                    'id_unidad_medida' => $detalleOrigen->id_unidad_medida,
+                    'id_moneda' => $detalleOrigen->id_moneda,
+                    'estado' => 1,
+                    'id_cc_am_filas' => $detalleOrigen->id_cc_am_filas,
+                    'id_tipo_item' => $detalleOrigen->id_tipo_item,
+                    'tiene_transformacion' => $detalleOrigen->tiene_transformacion,
+                    'proveedor_id' => $detalleOrigen->proveedor_id,
+                    'partida' => $detalleOrigen->partida,
+                    'centro_costo_id' => $detalleOrigen->centro_costo_id,
+                    'precio_unitario' => $detalleOrigen->precio_unitario,
+                    'subtotal' => $detalleOrigen->subtotal,
+                    'motivo' => $detalleOrigen->motivo,
+                    'fecha_registro' => date('Y-m-d H:i:s')
+                ],
+                    'id_detalle_requerimiento'
+                );
+            
+                if($duplicaDetalleRequerimiento>0){
+                    $status='success';
+                    $data=['id_detalle_requerimiento'=>$duplicaDetalleRequerimiento];
+                    $mensaje='Item duplicado';
+                }
+
+        }else{
+            $status='warning';
+            $mensaje='El id enviado para duplicar debe ser mayor a cero';
+        }
+        
+        return ['data'=>$data,'status'=>$status,'mensaje'=>$mensaje];
     }
 
     public function guardar_mapeo_productos(Request $request)
@@ -122,7 +243,7 @@ class MapeoProductosController extends Controller
             $validacionDescomposicion =$this->esValidaLaCantidadDeProductoDuplicadosConCantidadOrigen($request->detalle);
             if($validacionDescomposicion==false){
                 return response()->json(['response' => 'warning','status_migracion_occ'=>null,
-                'mensaje'=>'la cantidad total del producto original más (+) cantidad de producto descompuesto no puede superar la cantidad original',
+                'mensaje'=>'la cantidad total del producto original más (+) cantidad de producto descompuesto debe ser igual a la cantidad original',
                 'estado_requerimiento'=>null,'cantidad_items_mapeados'=>0,'cantidad_total_items'=>0]);
             }
 
@@ -135,75 +256,30 @@ class MapeoProductosController extends Controller
                     $cantidadAnulado++;
                 }   
 
-                if( isset($det['id_detalle_requerimiento_origen']) && $det['id_detalle_requerimiento_origen'] >0){
-
-                    $detalleOrigen= DetalleRequerimiento::find($det['id_detalle_requerimiento_origen']);
-                    $idDetalleRequerimientoOrigenList[]=$detalleOrigen->id_detalle_requerimiento;
-
-                    DB::table('almacen.alm_det_req')->insertGetId(
-                        [
-                            'id_requerimiento' => $detalleOrigen->id_requerimiento,
-                            'part_number' => $det['part_number']??null,
-                            'id_producto' => $det['id_producto']??null,
-                            'cantidad' => $det['cantidad'],
-                            // 'descripcion' => mb_convert_encoding((strtoupper($det['descripcion'])), 'UTF-8', 'UTF-8'),
-                            'descripcion' => $det['descripcion'],
-                            'id_unidad_medida' => $det['id_unidad_medida'],
-                            'id_moneda' => $detalleOrigen->id_unidad_medida,
-                            'estado' => 1,
-                            'id_cc_am_filas' => $detalleOrigen->id_cc_am_filas,
-                            'id_tipo_item' => $detalleOrigen->id_tipo_item,
-                            'tiene_transformacion' => $detalleOrigen->tiene_transformacion,
-                            'proveedor_id' => $detalleOrigen->proveedor_id,
-                            'partida' => $detalleOrigen->partida,
-                            'centro_costo_id' => $detalleOrigen->centro_costo_id,
-                            'precio_unitario' => $detalleOrigen->precio_unitario,
-                            'subtotal' => $detalleOrigen->subtotal,
-                            'motivo' => $detalleOrigen->motivo,
-                            'fecha_registro' => date('Y-m-d H:i:s')
-                        ],
-                            'id_detalle_requerimiento'
-                        );
+                if( isset($det['id_detalle_requerimiento_origen']) && $det['id_detalle_requerimiento_origen'] >0){ // si es un item duplicado se duplicara y evalua si debe crear id producto para luego asignar
+                    $detalleRequerimientoDuplicado = $this->duplicarDetalleRequerimiento($det['id_detalle_requerimiento_origen'],$det['cantidad'],$det['id_producto']);
+                    if($detalleRequerimientoDuplicado['status']=='success'){
+                        $idDetalleRequerimientoOrigenList[]=$det['id_detalle_requerimiento_origen']; // para posterior actualizar la cantidad  de detalle requerimiento original
+                        if (($det['id_categoria'] !== null && $det['id_subcategoria'] !== null && $det['id_clasif'] !== null && $det['id_producto'] == null && $det['estado'] != 7)){
+                            $nuevoProducto= $this->crearProducto($det['part_number'],$det['descripcion'],$det['id_unidad_medida'],$det['id_moneda'],$det['series'],$det['id_categoria'],$det['id_subcategoria'],$det['id_clasif']);
+                            $this->actualizarIdProductoDetalleRequerimiento($detalleRequerimientoDuplicado['data']['id_detalle_requerimiento'],$nuevoProducto['data']['id_producto']);
+                        }
+                    }
 
                 }
 
-                if (($det['id_producto'] !== null && $det['estado'] != 7)){
-                    if(!preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $det['id_detalle_requerimiento']) >=1){
-                        DB::table('almacen.alm_det_req')
-                        ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
-                        ->update(['id_producto'=>$det['id_producto']]);
+                if (($det['id_producto'] !== null && $det['estado'] != 7)){ // actualizará  id produdcto solo si pre existe el detalle requerimiento y evalua si debe crear id producto para luego asignar
+                    if(!preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $det['id_detalle_requerimiento']) >=1){ // si es un item normal con id numérico >0
+                        $this->actualizarIdProductoDetalleRequerimiento($det['id_detalle_requerimiento'],$det['id_producto']);
                     }
-                } 
-
-                else if (($det['id_categoria'] !== null && $det['id_subcategoria'] !== null
-                        && $det['id_clasif'] !== null && $det['id_producto'] == null && $det['estado'] != 7)){
-                    $id_producto = DB::table('almacen.alm_prod')->insertGetId(
-                        [
-                            'part_number' => $det['part_number'],
-                            'id_categoria' => $det['id_categoria'],
-                            'id_subcategoria' => $det['id_subcategoria'],
-                            'id_clasif' => $det['id_clasif'],
-                            'descripcion' => mb_convert_encoding((strtoupper($det['descripcion'])), 'UTF-8', 'UTF-8'),
-                            'id_unidad_medida' => $det['id_unidad_medida'],
-                            'id_moneda' => $det['id_moneda'],
-                            'series' => $det['series'],
-                            'id_usuario' => $id_usuario,
-                            'estado' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s')
-                        ],
-                            'id_producto'
-                        );
-                    $codigo = AlmacenController::leftZero(7, $id_producto);
-    
-                    DB::table('almacen.alm_prod')
-                    ->where('id_producto',$id_producto)
-                    ->update(['codigo'=>$codigo]);
-
-                    DB::table('almacen.alm_det_req')
-                    ->where('id_detalle_requerimiento',$det['id_detalle_requerimiento'])
-                    ->update(['id_producto'=>$id_producto]);
+                }else if (($det['id_categoria'] !== null && $det['id_subcategoria'] !== null && $det['id_clasif'] !== null && $det['id_producto'] == null && $det['estado'] != 7)){
+                    if(!preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $det['id_detalle_requerimiento']) >=1){ //si es un item normal con id numérico >0
+                        $nuevoProducto= $this->crearProducto($det['part_number'],$det['descripcion'],$det['id_unidad_medida'],$det['id_moneda'],$det['series'],$det['id_categoria'],$det['id_subcategoria'],$det['id_clasif']);
+                        $this->actualizarIdProductoDetalleRequerimiento($det['id_detalle_requerimiento'],$nuevoProducto['data']['id_producto']);
+                    }
                 }
             }
+            Debugbar::info($idDetalleRequerimientoOrigenList);
 
             if(count($idDetalleRequerimientoOrigenList)>0){
                 foreach ($request->detalle as $det) {
