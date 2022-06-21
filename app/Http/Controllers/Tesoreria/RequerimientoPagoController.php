@@ -1185,7 +1185,7 @@ class RequerimientoPagoController extends Controller
 
         DB::commit();
 
-        $nuevoCodigo = RequerimientoPago::crearCodigo($nuevoRequerimientoPago->id_grupo, $nuevoRequerimientoPago->id_requerimiento_pago);
+        $nuevoCodigo = RequerimientoPago::crearCodigo($requerimientoPago->id_grupo, $requerimientoPago->id_requerimiento_pago);
         $rp = RequerimientoPago::find($nuevoRequerimientoPago->id_requerimiento_pago);
         $rp->codigo = $requerimientoPago->codigo;
         $rp->save();
@@ -1212,5 +1212,10 @@ class RequerimientoPagoController extends Controller
             DB::rollBack();
             return response()->json(['data' => [],'status'=>$status, 'mensaje' => 'Hubo un problema al intentar duplicar el requerimiento de pago. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
+    }
+
+    public function getCodigoRequerimientoPago($grupo,$idReq){
+        return RequerimientoPago::crearCodigo($grupo, $idReq);
+
     }
 }
