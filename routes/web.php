@@ -70,7 +70,7 @@ Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
 	
-	Route::get('duplicar-requerimiento-pago/{idRequerimientoPago}/{idEstado}', 'Tesoreria\RequerimientoPagoController@duplicarRequerimientoPago');
+	Route::get('duplicar-requerimiento-pago-y-actualizar-codigo/{idRequerimientoPago}/{idEstado}', 'Tesoreria\RequerimientoPagoController@duplicarRequerimientoPagoYActualizarCodigo');
 	
 	Route::group(['as' => 'mgcp.', 'prefix' => 'mgcp'], function () {
 		Route::name('cuadro-costos.')->prefix('cuadro-costos')->middleware('auth')->group(function () {

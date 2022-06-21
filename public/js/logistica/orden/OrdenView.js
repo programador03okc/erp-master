@@ -597,7 +597,9 @@ class OrdenView {
                         <td class="text-center">${data[i].codigo_producto ? data[i].codigo_producto : ''} </td>
                         <td class="text-center">${data[i].codigo_softlink ? data[i].codigo_softlink : ''} </td>
                         <td class="text-center">${data[i].part_number ? data[i].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[i].id_producto ? data[i].id_producto : data[i].id_producto)}"></td>
-                        <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion != null ? data[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion)}</textarea></td>
+                        <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion != null ? data[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(data[i].descripcion_producto ? data[i].descripcion_producto : data[i].descripcion)}</textarea>
+                            <textarea class="form-control activation" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;">${(data[i].descripcion_complementaria ? data[i].descripcion_complementaria :'')}</textarea>
+                        </td>
                         <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${data[i].id_unidad_medida}">${(data[i].unidad_medida? data[i].unidad_medida : 'sin und.')}</p>
                             <input type="hidden"  name="unidad[]" value="${data[i].id_unidad_medida}">
 
@@ -630,7 +632,9 @@ class OrdenView {
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(data[i].descripcion ? data[i].descripcion : '')}" style="width:100%;height: 60px;overflow: scroll;"> ${(data[i].descripcion ? data[i].descripcion : '')}</textarea> </td>
+                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(data[i].descripcion ? data[i].descripcion : '')}" style="width:100%;height: 60px;overflow: scroll;"> ${(data[i].descripcion ? data[i].descripcion : '')}</textarea> 
+                    <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;">${(data[i].descripcion_complementaria ? data[i].descripcion_complementaria : '')}</textarea>
+                    </td>
                     <td><select name="unidad[]" class="form-control input-sm" value="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     <td>${(data[i].cantidad ? data[i].cantidad : '')}</td>
                     <td></td>
@@ -1086,7 +1090,9 @@ class OrdenView {
         <td class="text-center">${data[0].codigo_producto ? data[0].codigo_producto : ''} </td>
         <td class="text-center">${data[0].codigo_softlink ? data[0].codigo_softlink : ''} </td>
         <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)}"> </td>
-        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion ? data[0].descripcion : ''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion)} "></td>
+        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion ? data[0].descripcion : ''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion)}">
+            <textarea class="form-control activation" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;"></textarea>
+        </td>
         <td>
         <input type="hidden"  name="unidad[]" value="${data[0].id_unidad_medida}">
             <p name="unidad[]" class="form-control-static unidadMedida" data-valor="${data[0].id_unidad_medida}">${(data[0].unidad_medida ? data[0].unidad_medida : 'sin und.')}</p></td>
@@ -1134,7 +1140,9 @@ class OrdenView {
         <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
         <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
         <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-        <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="" style="width:100%;height: 60px;overflow: scroll;"> </textarea>  </td>
+        <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="" style="width:100%;height: 60px;overflow: scroll;"> </textarea>  
+            <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;"></textarea>
+        </td>
         <td>Servicio<input type="hidden"  name="unidad[]" value="38"></td>
         <td></td>
         <td></td>
@@ -2091,7 +2099,9 @@ class OrdenView {
                         <td class="text-center">${detalle[i].producto.codigo ? detalle[i].producto.codigo : ''} </td>
                         <td class="text-center">${detalle[i].producto.cod_softlink ? detalle[i].producto.cod_softlink : ''} </td>
                         <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
-                        <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)}</textarea></td>
+                        <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)}</textarea>
+                            <textarea class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;" disabled>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
+                        </td>
                         <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].id_unidad_medida}">${(detalle[i].unidad_medida ? detalle[i].unidad_medida.abreviatura : 'sin und.')}</p>
                         <input type="hidden"  name="unidad[]" value="${detalle[i].id_unidad_medida}">
 
@@ -2123,7 +2133,9 @@ class OrdenView {
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden" value=""></td>
                     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}" style="width:100%;height: 60px;overflow: scroll;"> ${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}</textarea> </td>
+                    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}" style="width:100%;height: 60px;overflow: scroll;"> ${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}</textarea> 
+                        <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;" disabled>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
+                    </td>
                     <td><select name="unidad[]" class="form-control  input-sm" value="${detalle[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                     <td>${(detalle[i].cantidad ? detalle[i].cantidad : '')}</td>
                     <td></td>

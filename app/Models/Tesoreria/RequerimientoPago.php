@@ -122,15 +122,15 @@ class RequerimientoPago extends Model
         }
         if ($idGrupo == 4) {
             $documento .= 'G';
-            $num = RequerimientoPago::obtenerCantidadRegistros(4, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
+            $num = RequerimientoPago::obtenerCantidadRegistros(4, $idRequerimientoPago); //tipo: BS, grupo: Gerencia
         }
         if ($idGrupo == 5) {
             $documento .= 'CI';
-            $num = RequerimientoPago::obtenerCantidadRegistros(5, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
+            $num = RequerimientoPago::obtenerCantidadRegistros(5, $idRequerimientoPago); //tipo: BS, grupo: Control Interno
         }
         if ($idGrupo == 6) {
             $documento .= 'MK';
-            $num = RequerimientoPago::obtenerCantidadRegistros(6, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
+            $num = RequerimientoPago::obtenerCantidadRegistros(6, $idRequerimientoPago); //tipo: BS, grupo: Marketing
         }
         $yy = date('y', strtotime("now"));
         $correlativo = sprintf('%04d', $num);
