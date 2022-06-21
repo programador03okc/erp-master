@@ -202,34 +202,17 @@ $('#detalleOrdenSeleccionadas tbody').on("change", ".unitario", function () {
     console.log('unitario: ' + unitario);
 
     series_transformacion.forEach(element => {
-        // if (tipo == 'sobrante') {
-        //     if (element.id_producto == id) {
-        //         element.valor_unitario = unitario;
-        //         element.valor_total = (unitario * parseFloat(element.cantidad));
-        //     }
-        // } else {
         if (element.id == id) {
             element.valor_unitario = unitario;
             element.valor_total = (unitario * parseFloat(element.cantidad));
         }
-        // }
     });
     console.log(series_transformacion);
     mostrar_detalle_transformacion();
 });
 
 $("[name=moneda_transformacion]").on('change', function () {
-    // let tipo = $(this).data('tipo');
-    // let id = $(this).data('id');
-    // let moneda = parseFloat($(this).val());
     console.log($('[name=id_moneda]').val());
-
-    // series_transformacion.forEach(element => {
-    //     if (element.id == id) {
-    //         element.id_moneda = moneda;
-    //     }
-    // });
-    // console.log(series_transformacion);
     mostrar_detalle_transformacion();
 });
 

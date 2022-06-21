@@ -24,7 +24,7 @@ function open_guia_create(data, $fila) {
     $('.agregarSobrante').hide();
     $('[name=comentario]').val('');
 
-    if (data.id_tp_documento == 12) {
+    if (data.id_tp_documento == 12) { // orden de importación
         $('#titulo').text('Ingresar Hoja de Importación');
         $('[name=id_operacion]').val(18);
         $('[name=nombre_operacion]').val('IMPORTACIÓN');
@@ -360,7 +360,7 @@ function guardar_guia_create(data) {
 
     $.ajax({
         type: 'POST',
-        url: 'guardar_guia_com_oc',
+        url: 'guardar_guia_com_oc',// para ordenes y transformaciones
         data: data,
         dataType: 'JSON',
         success: function (response) {

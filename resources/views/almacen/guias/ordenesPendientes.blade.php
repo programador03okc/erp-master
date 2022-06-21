@@ -177,11 +177,12 @@ Atención de Ingresos
 
 <script src="{{ asset('js/almacen/guia/ordenesPendientes.js?')}}?v={{filemtime(public_path('js/almacen/guia/ordenesPendientes.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js?')}}?v={{filemtime(public_path('js/almacen/guia/transformacionesPendientes.js'))}}"></script>
-
 <script src="{{ asset('js/almacen/guia/ingresosProcesados.js')}}?v={{filemtime(public_path('js/almacen/guia/ingresosProcesados.js'))}}"></script>
+
 <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}?v={{filemtime(public_path('js/almacen/guia/ordenes_ver_detalle.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/movimientoDetalle.js')}}?v={{filemtime(public_path('js/almacen/guia/movimientoDetalle.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_create.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_com_create.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/guia_com_create_transformacion.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_com_create_transformacion.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_com_cambio.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_com_cambio.js'))}}"></script>
 
 <script src="{{ asset('js/almacen/guia/guia_com_det_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_com_det_series.js'))}}"></script>
@@ -194,7 +195,6 @@ Atención de Ingresos
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}?v={{filemtime(public_path('js/logistica/mapeo/mapeoAsignarProducto.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_transformacion_mapeo.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_transformacion_mapeo.js'))}}"></script>
-<script src="{{ asset('js/almacen/guia/guia_com_create_transformacion.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_com_create_transformacion.js'))}}"></script>
 
 <script>
     $(document).ready(function() {
