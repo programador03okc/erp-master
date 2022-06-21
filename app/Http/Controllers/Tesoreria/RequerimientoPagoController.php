@@ -1214,8 +1214,4 @@ class RequerimientoPagoController extends Controller
         }
     }
 
-    public function getCodigoRequerimientoPago($grupo,$idReq){
-        return RequerimientoPago::crearCodigo($grupo, $idReq);
-
-    }
 }
