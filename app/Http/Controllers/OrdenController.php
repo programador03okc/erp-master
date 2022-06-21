@@ -1648,6 +1648,7 @@ class OrdenController extends Controller
                 'log_det_ord_compra.id_producto',
                 'log_det_ord_compra.lugar_despacho',
                 'log_det_ord_compra.descripcion_adicional',
+                'log_det_ord_compra.descripcion_complementaria',
                 'log_det_ord_compra.cantidad',
                 'log_det_ord_compra.precio',
                 'log_det_ord_compra.id_unidad_medida',
@@ -1771,6 +1772,7 @@ class OrdenController extends Controller
                     'descripcion_producto' => $data->descripcion_producto,
                     'part_number' => $data->part_number,
                     'descripcion_adicional' => $data->descripcion_adicional,
+                    'descripcion_complementaria' => $data->descripcion_complementaria,
                     'cantidad' => $data->cantidad,
                     'id_unidad_medida' => $data->id_unidad_medida,
                     'unidad_medida' => $data->unidad_medida,
@@ -2045,9 +2047,9 @@ class OrdenController extends Controller
             $html .= '<td>' . $data['part_number'] . '</td>';
             if ($data['id_producto'] >0 && strlen($data['descripcion_producto']) > 0) {
 
-                $html .= '<td>' . ($data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_adicional']) . '</td>';
+                $html .= '<td>' . ($data['descripcion_producto'] ? $data['descripcion_producto'] : $data['descripcion_adicional']) .' '.($data['descripcion_complementaria'] ? $data['descripcion_complementaria'] : ''). '</td>';
             } else {
-                $html .= '<td>' . ($data['descripcion_adicional'] ? $data['descripcion_adicional'] : $data['descripcion_adicional']) . '</td>';
+                $html .= '<td>' . ($data['descripcion_adicional'] ? $data['descripcion_adicional'] : $data['descripcion_adicional']) .' '.($data['descripcion_complementaria'] ? $data['descripcion_complementaria'] : ''). '</td>';
             }
             $html .= '<td>' . $data['unidad_medida'] . '</td>';
             $html .= '<td style="text-align:center">' . $data['cantidad'] . '</td>';
@@ -2599,6 +2601,7 @@ class OrdenController extends Controller
                     $detalle->precio = $request->precioUnitario[$i];
                     // $detalle->descripcion_adicional = (isset($request->descripcion[$i]) && $request->descripcion[$i] != null) ? trim(strtoupper($request->descripcion[$i])) : null;
                     $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
+                    $detalle->descripcion_complementaria = ($request->descripcionComplementaria[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcionComplementaria[$i]))) : null;
                     $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
                     $detalle->tipo_item_id = $request->idTipoItem[$i];
                     $detalle->estado = 1;
@@ -3076,6 +3079,7 @@ class OrdenController extends Controller
                                 $detalle->id_unidad_medida = $request->unidad[$i];
                                 $detalle->precio = $request->precioUnitario[$i];
                                 $detalle->descripcion_adicional = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
+                                $detalle->descripcion_complementaria = ($request->descripcionComplementaria[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcionComplementaria[$i]))) : null;
                                 $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
                                 $detalle->tipo_item_id = $request->idTipoItem[$i];
                                 $detalle->estado = 1;
@@ -3096,6 +3100,7 @@ class OrdenController extends Controller
                                     $detalle->id_unidad_medida = $request->unidad[$i];
                                     $detalle->precio = $request->precioUnitario[$i];
                                     $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
+                                    $detalle->descripcion_complementaria = ($request->descripcionComplementaria[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcionComplementaria[$i]))) : null;
                                     $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
                                     $detalle->tipo_item_id = $request->idTipoItem[$i];
                                     $detalle->save();

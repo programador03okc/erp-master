@@ -1152,7 +1152,7 @@ class RequerimientoPagoController extends Controller
         }
     }
 
-    public function duplicarRequerimientoPago($id,$idEstado){
+    public function duplicarRequerimientoPagoYActualizarCodigo($id,$idEstado){
         DB::beginTransaction();
         try {
 
@@ -1164,7 +1164,6 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago= RequerimientoPago::find($id);
             $nuevoRequerimientoPago= $requerimientoPago->replicate();
             $nuevoRequerimientoPago->fecha_registro = Carbon::now();
-            $nuevoRequerimientoPago->codigo=null;
             $nuevoRequerimientoPago->id_estado=$idEstado;
             $nuevoRequerimientoPago->save();
 
@@ -1180,7 +1179,26 @@ class RequerimientoPagoController extends Controller
 
             $status='success';
             $msj='requerimiento de pago duplicado';
-            $data=['id_requerimiento_pago'=>$nuevoRequerimientoPago->id_requerimiento_pago,'det'=>$RequerimientoPagoDetalle];
+            $data=['id_requerimiento_pago'=>$nuevoRequerimientoPago->id_requerimiento_pago];
+
+
+
+        DB::commit();
+
+        $nuevoCodigo = RequerimientoPago::crearCodigo($nuevoRequerimientoPago->id_grupo, $nuevoRequerimientoPago->id_requerimiento_pago);
+        $rp = RequerimientoPago::find($nuevoRequerimientoPago->id_requerimiento_pago);
+        $rp->codigo = $requerimientoPago->codigo;
+        $rp->save();
+
+        $documento = new Documento();
+        $documento->id_tp_documento = 11; // requerimiento pago
+        $documento->codigo_doc = $requerimientoPago->codigo;
+        $documento->id_doc = $nuevoRequerimientoPago->id_requerimiento_pago;
+        $documento->save();
+
+        $requerimientoPago= RequerimientoPago::find($id);
+        $requerimientoPago->codigo=$nuevoCodigo;
+        $requerimientoPago->save();
 
 
         }else{
@@ -1188,19 +1206,6 @@ class RequerimientoPagoController extends Controller
             $msj='Id enviado no es valido';
         }
 
-        DB::commit();
-
-        $codigo = RequerimientoPago::crearCodigo($nuevoRequerimientoPago->id_grupo, $nuevoRequerimientoPago->id_requerimiento_pago);
-        $rp = RequerimientoPago::find($nuevoRequerimientoPago->id_requerimiento_pago);
-        $rp->codigo = $codigo;
-        $rp->save();
-
-        $documento = new Documento();
-        $documento->id_tp_documento = 11; // requerimiento pago
-        $documento->codigo_doc = $codigo;
-        $documento->id_doc = $nuevoRequerimientoPago->id_requerimiento_pago;
-        $documento->save();
- 
         return ['data'=>$data,'status'=>$status,'mensaje'=>$msj];
 
         } catch (Exception $e) {
