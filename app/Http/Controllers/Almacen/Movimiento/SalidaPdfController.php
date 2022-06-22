@@ -163,6 +163,17 @@ class SalidaPdfController extends Controller
                     }
                 }
 
+                $totalLen = strlen($det->part_number);
+                $limite = 15;
+                $textoFinal = '';
+
+                if ($totalLen >= $limite) {
+                    $newTexto = substr($det->part_number, 0, $limite);
+                    $textoFinal = substr($det->part_number, 0, $limite) . '<br>' . substr($det->part_number, $limite, $totalLen);
+                } else {
+                    $textoFinal = substr($det->part_number, 0, $totalLen);
+                }
+
                 array_push(
                     $detalle,
                     [
@@ -172,7 +183,7 @@ class SalidaPdfController extends Controller
                         'costo_promedio' => $costo_promedio,
                         'valorizacion' => ($costo_promedio * $det->cantidad),
                         'codigo' => $det->codigo,
-                        'part_number' => $det->part_number,
+                        'part_number' => $textoFinal, //$det->part_number,
                         'descripcion' => $det->descripcion,
                         'abreviatura' => $det->abreviatura,
                         'simbolo' => $det->simbolo,
@@ -297,5 +308,17 @@ class SalidaPdfController extends Controller
             // }
         }
         return $saldo;
+    }
+
+    public function separarTexto($texto, $limite)
+    {
+        $totalLen = strlen($texto);
+        if ($totalLen >= $limite) {
+            $newTexto = substr($texto, 0, $limite);
+            $textoFinal = substr($texto, 0, $limite) . '<br>' . substr($texto, $limite, $totalLen);
+        } else {
+            $textoFinal = substr($texto, 0, $totalLen);
+        }
+        return $textoFinal;
     }
 }
