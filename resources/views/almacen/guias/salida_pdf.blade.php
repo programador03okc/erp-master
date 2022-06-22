@@ -179,7 +179,7 @@ use Carbon\Carbon;
         <h4 style="font-size: 14px;">Lista de productos</h4>
     </div>
     
-    <table class="bordered">
+    <table class="bordered" style="page-break-after:always;">
         <thead>
             <tr>
                 <th class="text-center cabecera-producto" style="width: 7%">Código</th>
@@ -198,9 +198,9 @@ use Carbon\Carbon;
         <tbody>
             @foreach ($detalle as $prod)
             <tr>
-                <td class="text-center" @if ($prod['series']!=='') rowspan="2" @endif>{{$prod['codigo']}}</td>
-                <td class="text-center" @if ($prod['series']!=='') rowspan="2" @endif>{{$prod['part_number']}}</td>
-                <td>{{$prod['descripcion']}}</td>
+                <td class="text-center">{{$prod['codigo']}}</td>
+                <td class="text-center"><div>{{$prod['part_number']}}</div></td>
+                <td><div>{{$prod['descripcion']}}</div></td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
                 <td class="text-center">{{$prod['abreviatura']}}</td>
                 <td class="text-center">{{$prod['simbolo']}}</td>
@@ -212,7 +212,8 @@ use Carbon\Carbon;
             </tr>
             @if ($prod['series']!=='')
             <tr>
-                <td @if ($salida->id_operacion == 27) colspan="7" @else colspan="6" @endif>
+                <td></td>
+                <td @if ($salida->id_operacion == 27) colspan="8" @else colspan="7" @endif>
                     <div>{{$prod['series']}}</div>
                 </td>
             </tr>

@@ -163,18 +163,6 @@ class SalidaPdfController extends Controller
                     }
                 }
 
-                $totalLen = strlen($det->part_number);
-                $limite = 10;
-                $textoFinal = '';
-
-                if ($totalLen >= $limite) {
-                    $newTexto = substr($det->part_number, 0, $limite);
-                    $textoFinal = substr($det->part_number, 0, $limite) . '
-                    ' . substr($det->part_number, $limite, $totalLen);
-                } else {
-                    $textoFinal = substr($det->part_number, 0, $totalLen);
-                }
-
                 array_push(
                     $detalle,
                     [
@@ -184,7 +172,7 @@ class SalidaPdfController extends Controller
                         'costo_promedio' => $costo_promedio,
                         'valorizacion' => ($costo_promedio * $det->cantidad),
                         'codigo' => $det->codigo,
-                        'part_number' => $textoFinal, //$det->part_number,
+                        'part_number' => $det->part_number,
                         'descripcion' => $det->descripcion,
                         'abreviatura' => $det->abreviatura,
                         'simbolo' => $det->simbolo,
