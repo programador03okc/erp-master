@@ -62,10 +62,16 @@ function listar_kardex_serie(serie, id_prod) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
+            console.log(element.id_guia_com_det == null && element.codigo_sobrante == null && element.codigo_transformado == null);
             var html = '';
             response.forEach(element => {
-                html += `${element.id_guia_com_det !== null ?
+                html += `${(element.id_guia_com_det == null && element.codigo_sobrante == null && element.codigo_transformado == null) ?
                     `<tr>
+                <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
+                <td colSpan="8">STOCK INICIAL</td>
+                </tr>`: ''}
+                ${element.id_guia_com_det !== null ?
+                        `<tr>
                 <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
                 <td>${element.ingreso_codigo ?? ''}</td>
                 <td>${element.almacen_compra ?? ''}</td>
@@ -76,11 +82,6 @@ function listar_kardex_serie(serie, id_prod) {
                 <td>${element.operacion_compra ?? ''}</td>
                 <td>${element.responsable_compra ?? ''}</td>
                 </tr>`: ''}
-                ${element.id_guia_com_det == null && element.codigo_sobrante == null && element.codigo_transformado == null ?
-                        `<tr>
-                    <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
-                    <td colSpan="8">STOCK INICIAL</td>
-                    </tr>`: ''}
                 ${element.id_guia_com_det == null && element.codigo_sobrante !== null ?
                         `<tr>
                     <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
