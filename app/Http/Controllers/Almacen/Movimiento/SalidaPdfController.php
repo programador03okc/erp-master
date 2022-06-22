@@ -164,7 +164,7 @@ class SalidaPdfController extends Controller
                 }
 
                 $totalLen = strlen($det->part_number);
-                $limite = 15;
+                $limite = 14;
                 $textoFinal = '';
 
                 if ($totalLen >= $limite) {
