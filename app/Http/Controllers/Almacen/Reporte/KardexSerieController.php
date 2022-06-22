@@ -139,7 +139,7 @@ class KardexSerieController extends Controller
 
             ->leftjoin('almacen.transfor_sobrante', 'transfor_sobrante.id_sobrante', '=', 'alm_prod_serie.id_sobrante')
             // ->leftjoin('almacen.mov_alm_det as mov_det_sobrante', 'mov_det_sobrante.id_sobrante', '=', 'transfor_sobrante.id_sobrante')
-            ->leftjoin('almacen.mov_alm_det as mov_det_sobrante', function ($join) {
+            ->join('almacen.mov_alm_det as mov_det_sobrante', function ($join) {
                 $join->on('mov_det_sobrante.id_sobrante', '=', 'transfor_sobrante.id_sobrante');
                 $join->where('mov_det_sobrante.estado', '!=', 7);
             })
@@ -150,7 +150,7 @@ class KardexSerieController extends Controller
 
             ->leftjoin('almacen.transfor_transformado', 'transfor_transformado.id_transformado', '=', 'alm_prod_serie.id_transformado')
             // ->leftjoin('almacen.mov_alm_det as mov_det_transformado', 'mov_det_transformado.id_transformado', '=', 'transfor_transformado.id_transformado')
-            ->leftjoin('almacen.mov_alm_det as mov_det_transformado', function ($join) {
+            ->join('almacen.mov_alm_det as mov_det_transformado', function ($join) {
                 $join->on('mov_det_transformado.id_transformado', '=', 'transfor_transformado.id_transformado');
                 $join->where('mov_det_transformado.estado', '!=', 7);
             })
