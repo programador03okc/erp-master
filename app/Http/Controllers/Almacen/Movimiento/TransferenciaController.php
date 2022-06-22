@@ -401,7 +401,10 @@ class TransferenciaController extends Controller
                 //es transferencia por requerimiento?
                 if ($det->id_requerimiento !== null) {
                     DB::table('almacen.alm_reserva')
-                        ->where('id_trans_detalle', $det->id_trans_detalle)
+                        ->where([
+                            ['id_trans_detalle', '=', $det->id_trans_detalle],
+                            ['estado', '=', 17]
+                        ])
                         ->update([
                             'estado' => 1
                         ]);
