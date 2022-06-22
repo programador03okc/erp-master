@@ -106,10 +106,19 @@ $('#listaProductoTransformado tbody').on("click", ".delete", function () {
     if (anula) {
         let id_producto = $(this).data('id');
         if (id_producto !== '') {
-            let index = items_transformado.findIndex(function (item, i) {
-                return item.id_producto == id_producto;
+            let item = items_transformado.find(element => {
+                return element.id_producto == id_producto;
             });
-            items_transformado.splice(index, 1);
+
+            if (item.id_transformado == 0) {
+                let index = items_transformado.findIndex(function (item, i) {
+                    return item.id_producto == id_producto;
+                });
+                items_transformado.splice(index, 1);
+            } else {
+                item.estado = 7;
+            }
+
         }
         $(this).parents("tr").remove();
         mostrarProductoTransformado();

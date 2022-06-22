@@ -165,7 +165,7 @@ $("#form-customizacion").on("submit", function (e) {
 
             items_base.forEach(function (element) {
 
-                if (element.control_series) {
+                if (element.control_series && element.estado !== 7) {
                     count_series = 0;
                     element.series.forEach(function (base) {
                         if (base.estado == 1) {
@@ -202,7 +202,7 @@ $("#form-customizacion").on("submit", function (e) {
 
             items_transformado.forEach(function (element) {
 
-                if (element.control_series) {
+                if (element.control_series && element.estado !== 7) {
                     count_series = 0;
                     element.series.forEach(function (base) {
                         if (base.estado == undefined) {
@@ -243,7 +243,7 @@ $("#form-customizacion").on("submit", function (e) {
 
             items_sobrante.forEach(function (element) {
 
-                if (element.control_series) {
+                if (element.control_series && element.estado !== 7) {
                     count_series = 0;
                     element.series.forEach(function (base) {
                         if (base.estado == undefined) {
