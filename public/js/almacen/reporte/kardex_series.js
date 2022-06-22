@@ -76,9 +76,13 @@ function listar_kardex_serie(serie, id_prod) {
                 <td>${element.operacion_compra ?? ''}</td>
                 <td>${element.responsable_compra ?? ''}</td>
                 </tr>`: ''}
-                ${element.id_guia_com_det == null ?
-                        (element.codigo_sobrante !== null ?
-                            `<tr>
+                ${element.id_guia_com_det == null && element.codigo_sobrante == null && element.codigo_transformado == null ?
+                        `<tr>
+                    <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
+                    <td colSpan="8">STOCK INICIAL</td>
+                    </tr>`: ''}
+                ${element.id_guia_com_det == null && element.codigo_sobrante !== null ?
+                        `<tr>
                     <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
                     <td>${element.ingreso_codigo_sobrante ?? ''}</td>
                     <td>${element.almacen_sobrante ?? ''}</td>
@@ -88,24 +92,19 @@ function listar_kardex_serie(serie, id_prod) {
                     <td>${element.razon_social_prove ?? ''}</td>
                     <td>${element.operacion_sobrante ?? ''}</td>
                     <td>${element.responsable_compra ?? ''}</td>
-                    </tr>`:
-                            (element.codigo_transformado !== null ?
-                                `<tr>
-                <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
-                <td>${element.ingreso_codigo_transformado ?? ''}</td>
-                <td>${element.almacen_transformado ?? ''}</td>
-                <td>${element.fecha_ingreso_transformado ?? ''}</td>
-                <td>${element.codigo_transformado ?? ''}</td>
-                <td></td>
-                <td>${element.razon_social_prove ?? ''}</td>
-                <td>${element.operacion_transformado ?? ''}</td>
-                <td>${element.responsable_compra ?? ''}</td>
-                </tr>`: '')
-                        ) :
+                    </tr>` : ''}
+                ${element.id_guia_com_det == null && element.codigo_transformado !== null ?
                         `<tr>
-                <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
-                <td colSpan="8">STOCK INICIAL</td>
-                </tr>`}
+                    <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
+                    <td>${element.ingreso_codigo_transformado ?? ''}</td>
+                    <td>${element.almacen_transformado ?? ''}</td>
+                    <td>${element.fecha_ingreso_transformado ?? ''}</td>
+                    <td>${element.codigo_transformado ?? ''}</td>
+                    <td></td>
+                    <td>${element.razon_social_prove ?? ''}</td>
+                    <td>${element.operacion_transformado ?? ''}</td>
+                    <td>${element.responsable_compra ?? ''}</td>
+                    </tr>` : ''}
                 ${element.id_guia_ven_det !== null ?
                         `<tr>
                 <td><span class="ver label label-danger" data-id="${element.id_prod}" >S</span></td>
