@@ -1298,6 +1298,7 @@ class SalidasPendientesController extends Controller
                         'serie' => $request->salida_serie,
                         'numero' => $request->salida_numero,
                         'comentario' => $request->salida_comentario,
+                        'id_operacion' => $request->id_operacion_salida,
                         'fecha_emision' => $request->salida_fecha_emision,
                         'fecha_almacen' => $request->salida_fecha_almacen,
                         'punto_partida' => $request->salida_punto_partida,
@@ -1316,15 +1317,21 @@ class SalidasPendientesController extends Controller
                 ]
             );
 
+            DB::table('almacen.mov_alm')
+                ->where('id_mov_alm', $request->id_mov_alm)
+                ->update([
+                    'fecha_emision' => $request->salida_fecha_almacen,
+                    'id_operacion' => $request->id_operacion_salida
+                ]);
             $productos_en_negativo = '';
 
             if ($salida->fecha_almacen !== $request->salida_fecha_almacen) {
-                DB::table('almacen.mov_alm')
-                    ->where([
-                        ['id_guia_ven', '=', $request->id_guia_ven],
-                        ['estado', '!=', 7]
-                    ])
-                    ->update(['fecha_emision' => $request->salida_fecha_almacen]);
+                // DB::table('almacen.mov_alm')
+                //     ->where('id_mov_alm', $request->id_mov_alm)
+                //     ->update([
+                //         'fecha_emision' => $request->salida_fecha_almacen,
+                //         'id_operacion' => $request->id_operacion_salida
+                //     ]);
 
                 //Validacion por cambio de fecha
                 if ($request->salida_fecha_almacen > $salida->fecha_almacen) {
