@@ -101,7 +101,11 @@ class KardexSerieController extends Controller
             ->leftjoin('almacen.alm_almacen as alm_ven', 'alm_ven.id_almacen', '=', 'guia_ven.id_almacen')
             ->leftjoin('almacen.tp_ope as ope_ven', 'ope_ven.id_operacion', '=', 'guia_ven.id_operacion')
             ->leftjoin('configuracion.sis_usua as responsable_ven', 'responsable_ven.id_usuario', '=', 'guia_ven.usuario')
-            ->leftjoin('almacen.mov_alm_det as det_salida', 'det_salida.id_guia_ven_det', '=', 'alm_prod_serie.id_guia_ven_det')
+            // ->leftjoin('almacen.mov_alm_det as det_salida', 'det_salida.id_guia_ven_det', '=', 'alm_prod_serie.id_guia_ven_det')
+            ->leftJoin('almacen.mov_alm_det as det_salida', function ($join) {
+                $join->on('det_salida.id_guia_ven_det', '=', 'alm_prod_serie.id_guia_ven_det');
+                $join->where('det_salida.estado', '!=', 7);
+            })
             ->leftjoin('almacen.mov_alm as salida', 'salida.id_mov_alm', '=', 'det_salida.id_mov_alm')
 
             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
@@ -115,25 +119,41 @@ class KardexSerieController extends Controller
             ->leftjoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
             ->leftjoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
             ->leftjoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
-            ->leftjoin('almacen.mov_alm_det as det_ingreso', 'det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
+            // ->leftjoin('almacen.mov_alm_det as det_ingreso', 'det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
+            ->leftJoin('almacen.mov_alm_det as det_ingreso', function ($join) {
+                $join->on('det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det');
+                $join->where('det_ingreso.estado', '!=', 7);
+            })
             ->leftjoin('almacen.mov_alm as ingreso', 'ingreso.id_mov_alm', '=', 'det_ingreso.id_mov_alm')
 
             ->leftjoin('almacen.transfor_materia', 'transfor_materia.id_materia', '=', 'alm_prod_serie.id_base')
-            ->leftjoin('almacen.mov_alm_det', 'mov_alm_det.id_materia', '=', 'transfor_materia.id_materia')
+            // ->leftjoin('almacen.mov_alm_det', 'mov_alm_det.id_materia', '=', 'transfor_materia.id_materia')
+            ->leftJoin('almacen.mov_alm_det', function ($join) {
+                $join->on('mov_alm_det.id_materia', '=', 'transfor_materia.id_materia');
+                $join->where('mov_alm_det.estado', '!=', 7);
+            })
             ->leftjoin('almacen.mov_alm as ingreso_cus', 'ingreso_cus.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
             ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_materia.id_transformacion')
             ->leftjoin('almacen.alm_almacen as alm_base', 'alm_base.id_almacen', '=', 'transformacion.id_almacen')
             ->leftjoin('almacen.tp_ope as ope_cus', 'ope_cus.id_operacion', '=', 'ingreso_cus.id_operacion')
 
             ->leftjoin('almacen.transfor_sobrante', 'transfor_sobrante.id_sobrante', '=', 'alm_prod_serie.id_sobrante')
-            ->leftjoin('almacen.mov_alm_det as mov_det_sobrante', 'mov_det_sobrante.id_sobrante', '=', 'transfor_sobrante.id_sobrante')
+            // ->leftjoin('almacen.mov_alm_det as mov_det_sobrante', 'mov_det_sobrante.id_sobrante', '=', 'transfor_sobrante.id_sobrante')
+            ->leftJoin('almacen.mov_alm_det as mov_det_sobrante', function ($join) {
+                $join->on('mov_det_sobrante.id_sobrante', '=', 'transfor_sobrante.id_sobrante');
+                $join->where('mov_det_sobrante.estado', '!=', 7);
+            })
             ->leftjoin('almacen.mov_alm as ingreso_sob', 'ingreso_sob.id_mov_alm', '=', 'mov_det_sobrante.id_mov_alm')
             ->leftjoin('almacen.transformacion as custom_sobrante', 'custom_sobrante.id_transformacion', '=', 'transfor_sobrante.id_transformacion')
             ->leftjoin('almacen.alm_almacen as alm_sobrante', 'alm_sobrante.id_almacen', '=', 'custom_sobrante.id_almacen')
             ->leftjoin('almacen.tp_ope as ope_sobrante', 'ope_sobrante.id_operacion', '=', 'ingreso_sob.id_operacion')
 
             ->leftjoin('almacen.transfor_transformado', 'transfor_transformado.id_transformado', '=', 'alm_prod_serie.id_transformado')
-            ->leftjoin('almacen.mov_alm_det as mov_det_transformado', 'mov_det_transformado.id_transformado', '=', 'transfor_transformado.id_transformado')
+            // ->leftjoin('almacen.mov_alm_det as mov_det_transformado', 'mov_det_transformado.id_transformado', '=', 'transfor_transformado.id_transformado')
+            ->leftJoin('almacen.mov_alm_det as mov_det_transformado', function ($join) {
+                $join->on('mov_det_transformado.id_transformado', '=', 'transfor_transformado.id_transformado');
+                $join->where('mov_det_transformado.estado', '!=', 7);
+            })
             ->leftjoin('almacen.mov_alm as ingreso_transformado', 'ingreso_transformado.id_mov_alm', '=', 'mov_det_transformado.id_mov_alm')
             ->leftjoin('almacen.transformacion as custom_transformado', 'custom_transformado.id_transformacion', '=', 'transfor_transformado.id_transformacion')
             ->leftjoin('almacen.alm_almacen as alm_transformado', 'alm_transformado.id_almacen', '=', 'custom_transformado.id_almacen')
