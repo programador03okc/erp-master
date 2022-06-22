@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
+use Carbon\Carbon;
 
 class PendientesFacturacionController extends Controller
 {
@@ -449,17 +450,37 @@ class PendientesFacturacionController extends Controller
         return response()->json(['docs' => $docs, 'detalles' => $detalles]);
     }
 
-    public function anular_doc_ven($id_doc)
+    public function anular_doc_ven(Request $request)
     {
-        $update = DB::table('almacen.doc_ven')
-            ->where('doc_ven.id_doc_ven', $id_doc)
-            ->update(['estado' => 7]);
+        try {
+            DB::beginTransaction();
+            $id_usuario = Auth::user()->id_usuario;
 
-        $update = DB::table('almacen.doc_ven_det')
-            ->where('doc_ven_det.id_doc', $id_doc)
-            ->update(['estado' => 7]);
+            DB::table('almacen.doc_ven')
+                ->where('doc_ven.id_doc_ven', $request->id_doc_ven_anula)
+                ->update([
+                    'estado' => 7,
+                    'fecha_anulacion' => new Carbon(),
+                    'usuario_anulacion' => $id_usuario,
+                    'comentario_anulacion' => $request->observacion,
+                ]);
 
-        return response()->json($update);
+            DB::table('almacen.doc_ven_det')
+                ->where('doc_ven_det.id_doc', $request->id_doc_ven_anula)
+                ->update(['estado' => 7]);
+
+            $msj = 'success';
+            $tipo = 'Se anuló correctamente el documento.';
+
+            DB::commit();
+            return response()->json([
+                'tipo' => $tipo,
+                'mensaje' => $msj, 200
+            ]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al anular la salida. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
     }
 
     public function obtenerArchivosOc(Request $request)

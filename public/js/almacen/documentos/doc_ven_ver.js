@@ -10,7 +10,7 @@ function verDocumentoVenta(id, origen) {
         type: "GET",
         url: "documentos_ver/" + id,
         dataType: "JSON",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             let html = "";
 
@@ -19,19 +19,18 @@ function verDocumentoVenta(id, origen) {
                 <tr>
                     <td colSpan="14">
                         <button type="button" class="btn btn-danger btn-xs " data-toggle="tooltip" 
-                        data-placement="bottom" title="Anular Documento" onClick="anularDocVenta(${
-                            element.id_doc_ven
-                        });">
+                        data-placement="bottom" title="Anular Documento" onClick="anularDocVenta(${element.id_doc_ven
+                    });">
                         <i class="fas fa-trash"></i> Anular Documento</button>
                     </td>
                 </tr>
                 <tr>
                     <th colSpan="2">Documento: </th>
                     <td colSpan="2">${element.tp_doc +
-                        " " +
-                        element.serie +
-                        "-" +
-                        element.numero}</td>
+                    " " +
+                    element.serie +
+                    "-" +
+                    element.numero}</td>
                     <th></td>
                     <th colSpan="2">Empresa: </th>
                     <td colSpan="2">${element.empresa_razon_social}</td>
@@ -45,17 +44,17 @@ function verDocumentoVenta(id, origen) {
                         : "") + element.razon_social}</td>
                     <th colSpan="2">Importe: </th>
                     <td colSpan="2">${formatNumber.decimal(
-                        element.total_a_pagar,
-                        element.simbolo,
-                        -2
-                    )}</td>
+                            element.total_a_pagar,
+                            element.simbolo,
+                            -2
+                        )}</td>
                     <th colSpan="2">Condición: </th>
                     <td colSpan="3">${(element.condicion_descripcion !== null
                         ? element.condicion_descripcion
                         : "") +
-                        (element.credito_dias !== null
-                            ? " " + element.credito_dias + " días"
-                            : "")}</td>
+                    (element.credito_dias !== null
+                        ? " " + element.credito_dias + " días"
+                        : "")}</td>
                 </tr>
                 <tr><td colSpan="12"></td></tr>
                 <tr style="background-color: Gainsboro;">
@@ -81,21 +80,18 @@ function verDocumentoVenta(id, origen) {
                 detalles.forEach(item => {
                     html += `<tr>
                         <td>${i}</td>
-                        <td>${
-                            item.serie !== null
-                                ? item.serie + "-" + item.numero
-                                : item.codigo_req !== null
+                        <td>${item.serie !== null
+                            ? item.serie + "-" + item.numero
+                            : item.codigo_req !== null
                                 ? item.codigo_req
                                 : ""
                         }</td>
                         <td>${item.codigo !== null ? item.codigo : ""}</td>
-                        <td>${
-                            item.part_number !== null ? item.part_number : ""
+                        <td>${item.part_number !== null ? item.part_number : ""
                         }</td>
-                        <td>${
-                            item.descripcion !== null
-                                ? item.descripcion
-                                : item.servicio_descripcion
+                        <td>${item.descripcion !== null
+                            ? item.descripcion
+                            : item.servicio_descripcion
                         }</td>
                         <td class="text-right">${item.cantidad}</td>
                         <td>${item.abreviatura}</td>
@@ -114,32 +110,32 @@ function verDocumentoVenta(id, origen) {
                 html += `<tr>
                     <td colSpan="11" class="text-right">SubTotal</td>
                     <th class="text-right">${formatNumber.decimal(
-                        element.sub_total,
-                        element.simbolo,
-                        -2
-                    )}</th>
+                    element.sub_total,
+                    element.simbolo,
+                    -2
+                )}</th>
                 </tr>
                 <tr>
                     <td colSpan="11" class="text-right">IGV</td>
                     <th class="text-right">${formatNumber.decimal(
-                        element.total_igv,
-                        element.simbolo,
-                        -2
-                    )}</th>
+                    element.total_igv,
+                    element.simbolo,
+                    -2
+                )}</th>
                 </tr>
                 <tr>
                     <td colSpan="11" class="text-right">Total</td>
                     <th class="text-right">${formatNumber.decimal(
-                        element.total_a_pagar,
-                        element.simbolo,
-                        -2
-                    )}</th>
+                    element.total_a_pagar,
+                    element.simbolo,
+                    -2
+                )}</th>
                 </tr>
                 <tr><td colSpan="12"></td></tr>`;
             });
             $("#documentos tbody").html(html);
         }
-    }).fail(function(jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
@@ -147,31 +143,59 @@ function verDocumentoVenta(id, origen) {
 }
 
 function anularDocVenta(id) {
-    let rspta = confirm(
-        "¿Está seguro que desea anular éste documento de venta?"
-    );
-
-    if (rspta) {
-        $.ajax({
-            type: "GET",
-            url: "anular_doc_ven/" + id,
-            dataType: "JSON",
-            success: function(response) {
-                console.log(response);
-                alert("Se anuló correctamente el documento.");
-                $("#modal-doc_ven_ver").modal("hide");
-                let facturacion = new Facturacion();
-
-                if (origenVer == "guia") {
-                    facturacion.listarGuias();
-                } else if (origenVer == "requerimiento") {
-                    facturacion.listarRequerimientos();
-                }
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
+    Swal.fire({
+        title: "¿Está seguro que desea anular éste documento de venta?",
+        // text: "",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Guardar"
+    }).then(result => {
+        if (result.isConfirmed) {
+            $("#modal-doc_ven_anula").modal({
+                show: true
+            });
+            $("[name=id_doc_ven_anula]").val(id);
+        }
+    });
 }
+
+$("#form-AnulaDocVen").on("submit", function (e) {
+    console.log("submit");
+    e.preventDefault();
+    var data = $(this).serialize();
+    console.log(data);
+
+    $.ajax({
+        type: "POST",
+        url: "anular_doc_ven",
+        data: data,
+        dataType: "JSON",
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+            $("#modal-doc_ven_anula").modal("hide");
+            $("#modal-doc_ven_ver").modal("hide");
+            let facturacion = new Facturacion();
+
+            if (origenVer == "guia") {
+                facturacion.listarGuias();
+            } else if (origenVer == "requerimiento") {
+                facturacion.listarRequerimientos();
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});

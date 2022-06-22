@@ -131,6 +131,7 @@ Facturación
 
 @include('tesoreria.facturacion.doc_ven_create')
 @include('tesoreria.facturacion.doc_ven_ver')
+@include('tesoreria.facturacion.doc_ven_anula')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 
 @endsection
