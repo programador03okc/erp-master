@@ -112,6 +112,7 @@ $('#listaProductoTransformado tbody').on("click", ".delete", function () {
             items_transformado.splice(index, 1);
         }
         $(this).parents("tr").remove();
+        mostrarProductoTransformado();
     }
 });
 // Calcula total

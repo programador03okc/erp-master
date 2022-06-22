@@ -129,6 +129,7 @@ $('#listaMateriasPrimas tbody').on("click", ".delete", function () {
             }
         }
         $(this).parents("tr").remove();
+        mostrarProductosBase();
     }
 });
 // Calcula total

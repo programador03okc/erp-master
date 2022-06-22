@@ -122,6 +122,7 @@ $('#listaSobrantes tbody').on("click", ".delete", function () {
             }
         }
         $(this).parents("tr").remove();
+        mostrarProductoSobrante();
     }
 });
 
