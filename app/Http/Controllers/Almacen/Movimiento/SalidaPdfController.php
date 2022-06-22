@@ -162,6 +162,7 @@ class SalidaPdfController extends Controller
                         }
                     }
                 }
+                $det->part_number = "lsdhfj-fdg-edgbhrtfdehb-dghfdhgf-fghnbgf";
 
                 array_push(
                     $detalle,

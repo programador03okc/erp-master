@@ -198,7 +198,7 @@ use Carbon\Carbon;
         <tbody>
             @foreach ($detalle as $prod)
             <tr>
-                <td class="text-center">{{$prod['codigo']}}</td>
+                <td class="text-center" @if ($prod['series']!=='') rowspan="2" @endif>{{$prod['codigo']}}</td>
                 <td class="text-center"><div>{{$prod['part_number']}}</div></td>
                 <td><div>{{$prod['descripcion']}}</div></td>
                 <td class="text-center">{{$prod['cantidad']}}</td>
@@ -212,7 +212,6 @@ use Carbon\Carbon;
             </tr>
             @if ($prod['series']!=='')
             <tr>
-                <td></td>
                 <td @if ($salida->id_operacion == 27) colspan="8" @else colspan="7" @endif>
                     <div>{{$prod['series']}}</div>
                 </td>
