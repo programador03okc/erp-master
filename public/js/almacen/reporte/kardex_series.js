@@ -62,9 +62,9 @@ function listar_kardex_serie(serie, id_prod) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            console.log(element.id_guia_com_det == null && element.codigo_sobrante == null && element.codigo_transformado == null);
             var html = '';
             response.forEach(element => {
+                console.log(element.id_guia_com_det == null && element.codigo_sobrante == null && element.codigo_transformado == null);
                 html += `${(element.id_guia_com_det == null && element.codigo_sobrante == null && element.codigo_transformado == null) ?
                     `<tr>
                 <td><span class="ver label label-success" data-id="${element.id_prod}" >I</span></td>
