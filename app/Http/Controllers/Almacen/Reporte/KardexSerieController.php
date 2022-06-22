@@ -119,11 +119,11 @@ class KardexSerieController extends Controller
             ->leftjoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
             ->leftjoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
             ->leftjoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
-            ->leftjoin('almacen.mov_alm_det as det_ingreso', 'det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
-            // ->leftJoin('almacen.mov_alm_det as det_ingreso', function ($join) {
-            //     $join->on('det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det');
-            //     $join->where('det_ingreso.estado', '!=', 7);
-            // })
+            // ->leftjoin('almacen.mov_alm_det as det_ingreso', 'det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
+            ->leftJoin('almacen.mov_alm_det as det_ingreso', function ($join) {
+                $join->on('det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det');
+                $join->where('det_ingreso.estado', '!=', 7);
+            })
             ->leftjoin('almacen.mov_alm as ingreso', 'ingreso.id_mov_alm', '=', 'det_ingreso.id_mov_alm')
 
             ->leftjoin('almacen.transfor_materia', 'transfor_materia.id_materia', '=', 'alm_prod_serie.id_base')

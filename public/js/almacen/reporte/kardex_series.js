@@ -55,6 +55,7 @@ $('#listaKardexSeries tbody').on("click", "tr", function () {
 });
 
 function listar_kardex_serie(serie, id_prod) {
+    console.log(serie + '/' + id_prod);
     $.ajax({
         type: 'GET',
         url: 'listar_kardex_serie/' + serie + '/' + id_prod,
