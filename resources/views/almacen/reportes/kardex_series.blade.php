@@ -92,7 +92,8 @@ Búsqueda sensitiva de Series
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
-    <script src="{{ asset('js/almacen/reporte/kardex_series.js')}}"></script>
+    <script src="{{ asset('js/almacen/reporte/kardex_series.js')}}?v={{filemtime(public_path('js/almacen/reporte/kardex_series.js'))}}"></script>
+
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
