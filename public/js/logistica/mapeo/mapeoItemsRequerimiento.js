@@ -68,6 +68,8 @@ function listarItemsRequerimientoMapeo(id_requerimiento) {
                         'id_subcategoria': null,
                         'id_moneda': element.id_moneda,
                         'id_unidad_medida': element.id_unidad_medida,
+                        'ordenes_compra': element.ordenes_compra,
+                        'reserva': element.reserva,
                         'estado': element.estado
                     });
                 }
@@ -103,6 +105,8 @@ function mostrar_detalle() {
     
 
     detalle.forEach(element => {
+        let cantidadRervas=0;
+        let cantidadOrdenes=0;
         var pn = element.part_number ?? '';
         var dsc = encodeURIComponent(element.descripcion);
         var link_pn = '';
@@ -122,7 +126,7 @@ function mostrar_detalle() {
             `+ decodeURIComponent(dsc) + `
             </a>`;
         }
-        console.log(element);
+        // console.log(element);
         html += `<tr ${element.estado == 7 ? 'class="bg-danger"' : ''}>
             <td>${i}</td>
             <td>${(element.codigo !== null && element.codigo !== '') ? element.codigo :
@@ -145,22 +149,40 @@ function mostrar_detalle() {
                     <i class="fas fa-angle-double-right"></i>
                 </button>`;
                 var regExp = /[a-zA-Z]/g; //expresión regular
+         
                 if ((regExp.test(element.id_detalle_requerimiento) != true)) {
-                    html += `
-                        <button type="button" title="Duplicar para descomponer producto" 
-                        data-id="${element.id_detalle_requerimiento}" 
-                        data-id-producto="${element.id_producto}" 
-                        data-codigo="${element.codigo !=null?element.codigo:''}" 
-                        data-partnumber="${element.part_number_requerimiento}" 
-                        data-desc="${encodeURIComponent(element.descripcion_requerimiento)}" 
-                        data-cantidad="${element.cantidad}" 
-                        data-id-unidad-medida="${element.id_unidad_medida}" 
-                        data-unidad-medida="${element.abreviatura}" 
-                        data-id-moneda="${element.id_moneda}" 
-                        data-moneda="${element.descripcion_moneda}" 
-                        data-tiene-transformacion="${element.tiene_transformacion}" 
-                        class="duplicarParaDescomponer btn-xs btn btn-warning"><i class="fas fa-clone"></i></button>
-                    `;
+                    cantidadRervas = (element.reserva).filter(function(item){
+                        if (item.estado != 7) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }).length;
+
+                    cantidadOrdenes = (element.ordenes_compra).filter(function(item){
+                        if (item.estado != 7) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }).length;
+                        html += `
+                            <button type="button" title="Duplicar para descomponer producto" 
+                            data-id="${element.id_detalle_requerimiento}" 
+                            data-id-producto="${element.id_producto}" 
+                            data-codigo="${element.codigo !=null?element.codigo:''}" 
+                            data-partnumber="${element.part_number_requerimiento}" 
+                            data-desc="${encodeURIComponent(element.descripcion_requerimiento)}" 
+                            data-cantidad="${element.cantidad}" 
+                            data-id-unidad-medida="${element.id_unidad_medida}" 
+                            data-unidad-medida="${element.abreviatura}" 
+                            data-id-moneda="${element.id_moneda}" 
+                            data-moneda="${element.descripcion_moneda}" 
+                            data-tiene-transformacion="${element.tiene_transformacion}" 
+                            class="duplicarParaDescomponer btn-xs btn btn-warning" title="${(cantidadRervas > 0 || cantidadOrdenes >0)?'No se puede descomponer si tiene atención':'Descomponer'}" ${(cantidadRervas > 0 || cantidadOrdenes >0)?'disabled':''}><i class="fas fa-clone"></i></button>
+                        `;
+
+                
                 }
         if (element.estado == 7) {
             html += `

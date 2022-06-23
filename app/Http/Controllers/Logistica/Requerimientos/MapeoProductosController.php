@@ -54,14 +54,16 @@ class MapeoProductosController extends Controller
 
     public function itemsRequerimiento($id)
     {
-        $detalles = DB::table('almacen.alm_det_req')
-            ->select('alm_det_req.*','alm_prod.codigo','alm_prod.cod_softlink','alm_prod.part_number as part_number_prod',
+        $detalles = DetalleRequerimiento::with(['reserva' => function ($q) {
+            $q->where([['alm_reserva.estado', '!=', 7]]);
+        }])
+        ->select('alm_det_req.*','alm_prod.codigo','alm_prod.cod_softlink','alm_prod.part_number as part_number_prod',
             'alm_prod.descripcion as descripcion_prod','alm_und_medida.abreviatura', 'sis_moneda.descripcion AS descripcion_moneda')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->where([['alm_det_req.id_requerimiento','=',$id],
-                     ['alm_det_req.estado','!=',7]])
+                    ['alm_det_req.estado','!=',7]])
             ->get();
 
         return response()->json($detalles);
