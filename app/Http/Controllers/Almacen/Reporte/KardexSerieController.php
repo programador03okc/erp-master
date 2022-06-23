@@ -53,7 +53,6 @@ class KardexSerieController extends Controller
 
     public function listar_kardex_serie($serie, $id_prod)
     {
-
         $data = DB::table('almacen.alm_prod_serie')
             ->select(
                 'alm_prod_serie.*',
@@ -75,24 +74,26 @@ class KardexSerieController extends Controller
                 'ingreso_cus.codigo as ingreso_codigo_customizacion',
                 'transformacion.codigo as codigo_customizacion',
                 'ingreso_cus.fecha_emision as fecha_ingreso_customizacion',
+                'mov_det_base.id_mov_alm_det as id_mov_alm_det_base',
 
                 'alm_sobrante.descripcion as almacen_sobrante',
                 'ope_sobrante.descripcion as operacion_sobrante',
                 'ingreso_sob.codigo as ingreso_codigo_sobrante',
                 'custom_sobrante.codigo as codigo_sobrante',
                 'ingreso_sob.fecha_emision as fecha_ingreso_sobrante',
+                'mov_det_sobrante.id_mov_alm_det as id_mov_alm_det_sobrante',
 
                 'alm_transformado.descripcion as almacen_transformado',
                 'ope_transformado.descripcion as operacion_transformado',
                 'ingreso_transformado.codigo as ingreso_codigo_transformado',
                 'custom_transformado.codigo as codigo_transformado',
-                'ingreso_sob.fecha_emision as fecha_ingreso_transformado',
+                'ingreso_transformado.fecha_emision as fecha_ingreso_transformado',
+                'mov_det_transformado.id_mov_alm_det as id_mov_alm_det_transformado',
 
                 DB::raw("(tp_doc_com.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com"),
                 DB::raw("(tp_doc_ven.abreviatura) || '-' || (guia_ven.serie) || '-' || (guia_ven.numero) as guia_ven"),
                 DB::raw("(cont_tp_doc.abreviatura) || '-' || (doc_com.serie) || '-' || (doc_com.numero) as doc_com")
             )
-
             ->leftjoin('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'alm_prod_serie.id_guia_ven_det')
             ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
@@ -119,27 +120,24 @@ class KardexSerieController extends Controller
             ->leftjoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
             ->leftjoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
             ->leftjoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
-            // ->leftjoin('almacen.mov_alm_det as det_ingreso', 'det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
             ->leftJoin('almacen.mov_alm_det as det_ingreso', function ($join) {
                 $join->on('det_ingreso.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det');
                 $join->where('det_ingreso.estado', '!=', 7);
             })
             ->leftjoin('almacen.mov_alm as ingreso', 'ingreso.id_mov_alm', '=', 'det_ingreso.id_mov_alm')
-
+            //item base
             ->leftjoin('almacen.transfor_materia', 'transfor_materia.id_materia', '=', 'alm_prod_serie.id_base')
-            // ->leftjoin('almacen.mov_alm_det', 'mov_alm_det.id_materia', '=', 'transfor_materia.id_materia')
-            ->leftjoin('almacen.mov_alm_det', function ($join) {
-                $join->on('mov_alm_det.id_materia', '=', 'transfor_materia.id_materia');
-                $join->where('mov_alm_det.estado', '!=', 7);
+            ->leftjoin('almacen.mov_alm_det as mov_det_base', function ($join) {
+                $join->on('mov_det_base.id_materia', '=', 'transfor_materia.id_materia');
+                $join->where('mov_det_base.estado', '!=', 7);
             })
             ->leftjoin('almacen.mov_alm as ingreso_cus', 'ingreso_cus.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
             ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_materia.id_transformacion')
             ->leftjoin('almacen.alm_almacen as alm_base', 'alm_base.id_almacen', '=', 'transformacion.id_almacen')
             ->leftjoin('almacen.tp_ope as ope_cus', 'ope_cus.id_operacion', '=', 'ingreso_cus.id_operacion')
-
+            //item sobrante
             ->leftjoin('almacen.transfor_sobrante', 'transfor_sobrante.id_sobrante', '=', 'alm_prod_serie.id_sobrante')
-            // ->leftjoin('almacen.mov_alm_det as mov_det_sobrante', 'mov_det_sobrante.id_sobrante', '=', 'transfor_sobrante.id_sobrante')
-            ->join('almacen.mov_alm_det as mov_det_sobrante', function ($join) {
+            ->leftjoin('almacen.mov_alm_det as mov_det_sobrante', function ($join) {
                 $join->on('mov_det_sobrante.id_sobrante', '=', 'transfor_sobrante.id_sobrante');
                 $join->where('mov_det_sobrante.estado', '!=', 7);
             })
@@ -147,10 +145,9 @@ class KardexSerieController extends Controller
             ->leftjoin('almacen.transformacion as custom_sobrante', 'custom_sobrante.id_transformacion', '=', 'transfor_sobrante.id_transformacion')
             ->leftjoin('almacen.alm_almacen as alm_sobrante', 'alm_sobrante.id_almacen', '=', 'custom_sobrante.id_almacen')
             ->leftjoin('almacen.tp_ope as ope_sobrante', 'ope_sobrante.id_operacion', '=', 'ingreso_sob.id_operacion')
-
+            //item transformado
             ->leftjoin('almacen.transfor_transformado', 'transfor_transformado.id_transformado', '=', 'alm_prod_serie.id_transformado')
-            // ->leftjoin('almacen.mov_alm_det as mov_det_transformado', 'mov_det_transformado.id_transformado', '=', 'transfor_transformado.id_transformado')
-            ->join('almacen.mov_alm_det as mov_det_transformado', function ($join) {
+            ->leftjoin('almacen.mov_alm_det as mov_det_transformado', function ($join) {
                 $join->on('mov_det_transformado.id_transformado', '=', 'transfor_transformado.id_transformado');
                 $join->where('mov_det_transformado.estado', '!=', 7);
             })
