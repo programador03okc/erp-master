@@ -131,7 +131,7 @@ class KardexSerieController extends Controller
                 $join->on('mov_det_base.id_materia', '=', 'transfor_materia.id_materia');
                 $join->where('mov_det_base.estado', '!=', 7);
             })
-            ->leftjoin('almacen.mov_alm as ingreso_cus', 'ingreso_cus.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            ->leftjoin('almacen.mov_alm as ingreso_cus', 'ingreso_cus.id_mov_alm', '=', 'mov_det_base.id_mov_alm')
             ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_materia.id_transformacion')
             ->leftjoin('almacen.alm_almacen as alm_base', 'alm_base.id_almacen', '=', 'transformacion.id_almacen')
             ->leftjoin('almacen.tp_ope as ope_cus', 'ope_cus.id_operacion', '=', 'ingreso_cus.id_operacion')
