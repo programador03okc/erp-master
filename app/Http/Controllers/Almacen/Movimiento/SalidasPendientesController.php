@@ -485,6 +485,7 @@ class SalidasPendientesController extends Controller
             'oc_propias_view.codigo_oportunidad',
             'oc_propias_view.id as id_oc_propia',
             'oc_propias_view.tipo',
+            'usua_anula.nombre_corto as usuario_anulacion_nombre'
             // DB::raw("(SELECT ingreso.codigo FROM almacen.mov_alm as ingreso
             // where ingreso.id_transformacion = mov_alm.id_transformacion
             //   and ingreso.id_tp_mov = 1
@@ -499,8 +500,10 @@ class SalidasPendientesController extends Controller
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->leftjoin('configuracion.sis_usua as usua_anula', 'usua_anula.id_usuario', '=', 'mov_alm.usuario_anulacion')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
-            ->where([['mov_alm.estado', '!=', '7'], ['mov_alm.id_tp_mov', '=', 2]]);
+            ->where([['mov_alm.id_tp_mov', '=', 2]]);
+        // ->where([['mov_alm.estado', '!=', '7'], ['mov_alm.id_tp_mov', '=', 2]]);
         return $data;
     }
 
@@ -790,8 +793,8 @@ class SalidasPendientesController extends Controller
                 ['alm_det_req.estado', '!=', 7],
             ]);
 
-        if ($aplica_cambios == 'si') {
-            if ($requerimiento->id_tipo_requerimiento == 1) {
+        if ($aplica_cambios == 'si') { //DEspacho interno
+            if ($requerimiento->id_tipo_requerimiento == 1) { //mgcp
                 $lista = $data->where([
                     ['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))],
                     ['alm_det_req.entrega_cliente', '=', false]
@@ -801,7 +804,7 @@ class SalidasPendientesController extends Controller
                 $lista = $data->where([['alm_det_req.tiene_transformacion', '=', ($aplica_cambios == 'si' ? false : ($tiene_transformacion == 'si' ? true : false))]])
                     ->distinct()->get();
             }
-        } else {
+        } else { //DEspacho externo
             // $valor = $requerimiento->id_tipo_requerimiento == 1 ? true : null;
             if ($requerimiento->id_tipo_requerimiento == 1) {
                 $lista = $data->where([['alm_det_req.entrega_cliente', '=', true]])

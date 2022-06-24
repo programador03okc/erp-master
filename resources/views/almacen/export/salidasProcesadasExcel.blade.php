@@ -20,6 +20,7 @@
                 <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Facturas</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Requerimientos</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Estado</b></th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,7 @@
                 <td>{{$d->comprobantes_venta}}</td>
                 <td>{{$d->comprobantes_venta_concat}}</td>
                 <td>{{$d->codigo_requerimiento}}</td>
+                <td>{{$d->estado==7?"Anulado":"Activo"}}</td>
             </tr>
             @endforeach
         </tbody>

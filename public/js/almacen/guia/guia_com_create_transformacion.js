@@ -146,7 +146,7 @@ function mostrar_detalle_transformacion() {
                 (element.cod_prod == '' ? '<label>(por crear)</label>'
                     : `<a href="#" class="verProducto" data-id="${element.id_producto}" >${element.cod_prod}</a>`)
                 : '<label class="subtitulo_red">(sin mapear)</label>'}</td>
-            <td>${element.part_number !== null ? element.part_number : ''}</td>
+            <td>${(element.part_number !== null || element.part_number !== 'null') ? element.part_number : ''}</td>
             <td>${element.descripcion + ' <br><strong>' + html_ser + '</strong>'}</td>
             <td class="text-right">${element.tipo == 'sobrante' ?
                 `<input type="number" class="form-control cantidad" style="width:120px;text-align: right;" data-idprod="${element.id_producto}" step="0.001" 

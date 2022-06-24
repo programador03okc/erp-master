@@ -59,6 +59,7 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
             var msj = '';
 
             response.forEach(element => {
+                //cantidad (requerimiento)  cantidad_despachada (cantidad atendidas q tienen salida)
                 despacho = (element.cantidad - (element.cantidad_despachada ?? 0));
 
                 // var cantidad_despacho = 0;
