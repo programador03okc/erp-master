@@ -82,7 +82,7 @@ class Aprobacion extends Model
         
         $fechaUltimaObservacion='';
         if($ultimaObservacion){
-            $fechaUltimaObservacion = $ultimaObservacion->fecha_vobo;
+            $fechaUltimaObservacion = Carbon::parse($ultimaObservacion->fecha_vobo);
         }
 
         $cantidadAprobaciones = Aprobacion::select(
@@ -90,7 +90,8 @@ class Aprobacion extends Model
                 ->where('id_doc_aprob', '=', $id_doc_aprobacion)
                 ->whereIn('id_vobo',[1,5])
                 ->when((strlen($fechaUltimaObservacion) > 0), function ($query)  use ($fechaUltimaObservacion) {
-                    return $query->whereRaw('adm_aprobacion.fecha_vobo >=  TIMESTAMP \'' . $fechaUltimaObservacion.'\'');
+                    // return $query->whereRaw('adm_aprobacion.fecha_vobo >=  TIMESTAMP \'' . $fechaUltimaObservacion.'\'');
+                    return $query->where('adm_aprobacion.fecha_vobo','>=',$fechaUltimaObservacion);
                 })
                 ->count();
         return $cantidadAprobaciones;
