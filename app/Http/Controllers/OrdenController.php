@@ -982,7 +982,7 @@ class OrdenController extends Controller
     }
     public function listaOrdenesElaboradas(Request $request){
 
-        $ordenes = OrdenesView::where('id_estado','>=',1);       
+        $ordenes = OrdenesView::where([['id_estado','>=',1],['id_tp_documento','!=',13]]);       
         // return datatables($ordenes)
         // ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
         //     $query->whereHas('data_requerimiento.codigo_requerimiento', function ($q) use ($keyword) {
@@ -1008,7 +1008,7 @@ class OrdenController extends Controller
 
     public function listaItemsOrdenesElaboradas(Request $request){
 
-        $itemsOrdenes = ItemsOrdenesView::where('id_estado','>=',1);       
+        $itemsOrdenes = ItemsOrdenesView::where([['id_estado','>=',1],['id_tp_documento','!=',13]]);       
         return datatables($itemsOrdenes)
 
         ->toJson();
@@ -1321,7 +1321,8 @@ class OrdenController extends Controller
             ->leftjoin('logistica.log_ord_compra_pago', 'log_ord_compra_pago.id_orden_compra', '=', 'log_ord_compra.id_orden_compra')
             ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
             ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
-            ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto');
+            ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto')
+            ->where('log_ord_compra.id_tp_documento','!=',13); // no mostrar orden de devolución
         return datatables($ordenes)
             ->filterColumn('log_ord_compra.fecha', function ($query, $keyword) {
                 try {
@@ -2538,6 +2539,7 @@ class OrdenController extends Controller
         try {
             DB::beginTransaction();
             $idOrden = '';
+            $idTipoDocumento = '';
             $codigoOrden = '';
             $actualizarEstados = [];
 
@@ -2617,6 +2619,7 @@ class OrdenController extends Controller
                 }
 
                 $idOrden = $orden->id_orden_compra;
+                $idTipoDocumento = $orden->id_tp_documento;
                 $codigoOrden = $orden->codigo;
 
                 DB::commit();
@@ -2635,6 +2638,7 @@ class OrdenController extends Controller
 
                 return response()->json([
                     'id_orden_compra' => $idOrden,
+                    'id_tp_documento' => $idTipoDocumento,
                     'codigo' => $codigoOrden,
                     'mensaje' =>  'OK',
                     'tipo_estado' => 'success',
@@ -2648,6 +2652,7 @@ class OrdenController extends Controller
                 return response()->json([
                     'id_orden_compra' => null,
                     'codigo' => null,
+                    'id_tp_documento' => null,
                     'mensaje' => 'No puede guardar la orden, existe un requerimiento vinculado con estado "En pausa" o "Por regularizar"',
                     'tipo_estado' => 'warning',
                     'lista_estado_requerimiento' => null,
@@ -2656,7 +2661,7 @@ class OrdenController extends Controller
             }
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => $idOrden, 'codigo' => $codigoOrden, 'tipo_estado' => 'error', 'lista_finalizados' => ($actualizarEstados != null ? $actualizarEstados['lista_finalizados'] : []), 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => $idOrden, 'id_tp_documento'=>$idTipoDocumento ,'codigo' => $codigoOrden, 'tipo_estado' => 'error', 'lista_finalizados' => ($actualizarEstados != null ? $actualizarEstados['lista_finalizados'] : []), 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
@@ -3115,6 +3120,7 @@ class OrdenController extends Controller
                     $data = [
                         'id_orden_compra' => $orden->id_orden_compra,
                         'codigo' => $orden->codigo,
+                        'id_tp_documento' => $orden->id_tp_documento,
                         'tipo_estado' => 'success',
                         'mensaje' => 'Orden actualizada'
                         // 'mensaje' => $ValidarOrdenSoftlink['mensaje']
@@ -3182,7 +3188,7 @@ class OrdenController extends Controller
             }
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'error',  'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => 0, 'codigo' => '','id_tp_documento'=>'', 'tipo_estado' => 'error',  'mensaje' => 'Hubo un problema al actualizar la orden. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 

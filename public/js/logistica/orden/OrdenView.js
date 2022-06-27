@@ -1708,8 +1708,14 @@ class OrdenView {
                             document.querySelector("span[name='codigo_orden_interno']").textContent = response.codigo;
                             document.querySelector("input[name='id_orden']").value = response.id_orden_compra;
                             document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
-                            document.querySelector("button[name='btn-migrar-orden-softlink']").removeAttribute("disabled");
-                            document.querySelector("button[name='btn-relacionar-a-oc-softlink']").removeAttribute("disabled");
+                            if(response.id_tp_documento != 13){ // no sea orden de devolución
+                                document.querySelector("button[name='btn-migrar-orden-softlink']").removeAttribute("disabled");
+                                document.querySelector("button[name='btn-relacionar-a-oc-softlink']").removeAttribute("disabled");
+                            }else{
+                                document.querySelector("button[name='btn-migrar-orden-softlink']").setAttribute("disabled",true);
+                                document.querySelector("button[name='btn-relacionar-a-oc-softlink']").setAttribute("disabled",true);
+
+                            }
 
                             // finalidados
                             if (response.lista_finalizados.length > 0) {
@@ -2062,8 +2068,14 @@ class OrdenView {
         document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value = data.observacion ? data.observacion : '';
 
         document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
-        document.querySelector("button[name='btn-migrar-orden-softlink']").removeAttribute("disabled");
-        document.querySelector("button[name='btn-relacionar-a-oc-softlink']").removeAttribute("disabled");
+        if(data.id_tp_documento != 13){ // no sea orden de devolución
+            document.querySelector("button[name='btn-migrar-orden-softlink']").removeAttribute("disabled");
+            document.querySelector("button[name='btn-relacionar-a-oc-softlink']").removeAttribute("disabled");
+        }else{
+            document.querySelector("button[name='btn-migrar-orden-softlink']").setAttribute("disabled",true);
+            document.querySelector("button[name='btn-relacionar-a-oc-softlink']").setAttribute("disabled",true);
+
+        }
 
 
         // construir detalle 
