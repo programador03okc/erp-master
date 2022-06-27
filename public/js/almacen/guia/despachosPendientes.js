@@ -397,7 +397,7 @@ function listarDespachosEntregados(permiso) {
                 'render': function (data, type, row) {
                     return (row['codigo'] !== null ?
                         ('<label class="lbl-codigo" title="Abrir Salida" onClick="abrir_salida(' + row['id_mov_alm'] + ')">' + row['codigo'] + '</label>')
-                        : '');
+                        : '') + (row['estado'] == 7 ? 'Anulada' : '');
                 }
             },
             { 'data': 'operacion', 'name': 'tp_ope.descripcion' },
@@ -409,22 +409,30 @@ function listarDespachosEntregados(permiso) {
             {
                 'render': function (data, type, row) {
                     if (permiso == '1') {
-                        return `<div style="display:flex;">
-                                ${row['id_guia_ven'] == null && row['id_transformacion'] !== null ? '' :
-                                `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip" 
-                                    data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                    data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>
-
-                                    <button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip" 
-                                    data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
-                                    <i class="fas fa-print"></i></button>`}
-
-                                ${(row['id_guia_ven'] == null && row['id_transformacion'] !== null)
-                                || row['estado_od'] == 21 || row['estado_od'] == 1 ?
-                                `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
-                                    data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                    data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>` : ''}
-                            </div>`;
+                        if (row['estado'] !== 7) {
+                            return `<div style="display:flex;">
+                                    ${row['id_guia_ven'] == null && row['id_transformacion'] !== null ? '' :
+                                    `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip" 
+                                        data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                        data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>
+    
+                                        <button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip" 
+                                        data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
+                                        <i class="fas fa-print"></i></button>`}
+    
+                                    ${(row['id_guia_ven'] == null && row['id_transformacion'] !== null)
+                                    || row['estado_od'] == 21 || row['estado_od'] == 1 ?
+                                    `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
+                                        data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                        data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>` : ''}
+                                </div>`;
+                        } else {
+                            return `<button type="button" class="anulacion btn btn-default btn-flat boton" data-toggle="tooltip" 
+                                data-placement="bottom" title="Ver datos de la Anulación" data-id="${row['id_mov_alm']}" 
+                                data-fecha="${row['fecha_anulacion']}" data-comentario="${row['comentario_anulacion']}" 
+                                data-usuario="${row['usuario_anulacion_nombre']}" 
+                                ><i class="fas fa-eye"></i></button>`;
+                        }
                     } else {
                         return '';
                     }
@@ -433,6 +441,18 @@ function listarDespachosEntregados(permiso) {
         ],
     });
 }
+
+$("#despachosEntregados tbody").on("click", "button.anulacion", function (e) {
+    var id = $(this).data("id");
+    var fec = $(this).data("fecha");
+    var com = $(this).data("comentario");
+    var usu = $(this).data("usuario");
+    Swal.fire({
+        title: `Anulado por ` + usu + ` el ` + formatDateHour(fec),
+        text: 'Motivo: ' + com,
+        icon: "info",
+    });
+});
 
 $("#despachosEntregados tbody").on("click", "a.archivos", function (e) {
     $(e.preventDefault());
