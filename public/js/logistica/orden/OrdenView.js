@@ -2115,7 +2115,7 @@ class OrdenView {
                         <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)}</textarea>
                             <textarea class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;" disabled>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
                         </td>
-                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].producto.id_unidad_medida}">${(detalle[i].producto.unidad_medida ? detalle[i].producto.unidad_medida.abreviatura : 'sin und.')}</p>
+                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].producto.id_unidad_medida}">${(detalle[i].producto  !=null && detalle[i].producto.unidad_medida!=null ? detalle[i].producto.unidad_medida.abreviatura : 'sin und.')}</p>
                         <input type="hidden"  name="unidad[]" value="${detalle[i].producto.id_unidad_medida}">
 
                         </td>

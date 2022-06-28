@@ -1438,7 +1438,7 @@ class OrdenController extends Controller
             ->leftJoin('contabilidad.sis_identi as identi_aut_2', 'identi_aut_2.id_doc_identidad', '=', 'pers_aut_2.id_documento_identidad')
             ->with(['detalle.detalleRequerimiento.reserva', 'detalle.guia_compra_detalle' => function ($q) {
                 $q->where('guia_com_det.estado', '!=', 7);
-            }, 'detalle.producto', 'detalle.unidad_medida', 'detalle.estado_orden'])
+            }, 'detalle.producto.unidadMedida', 'detalle.unidad_medida', 'detalle.estado_orden'])
             ->where([
                 ['log_ord_compra.id_orden_compra', '=', $id_orden]
             ])
