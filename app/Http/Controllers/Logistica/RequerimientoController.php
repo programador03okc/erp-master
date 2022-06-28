@@ -3617,7 +3617,9 @@ class RequerimientoController extends Controller
         $simbolMonedaRequerimiento = $this->consult_moneda($requerimiento['requerimiento'][0]['id_moneda'])->simbolo;
 
         foreach ($requerimiento['det_req'] as $key => $data) {
+            if($data['estado']!=7){
 
+        
             $html .= '<tr>';
             $html .= '<td width="10%">' . $data['codigo_centro_costo'] . '</td>';
             $html .= '<td width="12%" style="word-wrap: break-word">' . ($data['id_tipo_item'] == 1 ? ($data['producto_part_number'] ? $data['producto_part_number'] : $data['part_number']) : '(Servicio)') . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
@@ -3628,6 +3630,7 @@ class RequerimientoController extends Controller
             $html .= '<td width="8%" class="right" style="text-align:right;">' . $simbolMonedaRequerimiento . number_format($data['cantidad'] * $data['precio_unitario'], 2) . '</td>';
             $html .= '</tr>';
             $total = $total + ($data['cantidad'] * $data['precio_unitario']);
+            }
         }
         $html .= '
             <tr>
