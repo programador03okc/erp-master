@@ -485,7 +485,7 @@ class RequerimientoController extends Controller
                     'alm_prod.descripcion AS alm_prod_descripcion',
                     'alm_prod.part_number AS alm_prod_part_number',
                     'alm_prod.id_unidad_medida AS alm_prod_id_unidad_medida',
-                    'unidad_medida_producto.id_unidad_medida AS alm_prod_unidad_medida',
+                    'unidad_medida_producto.abreviatura AS alm_prod_unidad_medida',
                     'alm_det_req.tiene_transformacion',
                     'alm_det_req.proveedor_id',
                     'adm_contri.razon_social as proveedor_razon_social',
