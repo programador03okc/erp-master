@@ -446,9 +446,11 @@ class CustomizacionController extends Controller
 
                             //agrega series
                             foreach ($item->series as $serie) {
-                                DB::table('almacen.alm_prod_serie')
-                                    ->where('id_prod_serie', $serie->id_prod_serie)
-                                    ->update(['id_base' => $item->id_materia]);
+                                if ($serie->estado == 1) {
+                                    DB::table('almacen.alm_prod_serie')
+                                        ->where('id_prod_serie', $serie->id_prod_serie)
+                                        ->update(['id_base' => $item->id_materia]);
+                                }
                             }
                         }
                     }
@@ -512,6 +514,7 @@ class CustomizacionController extends Controller
 
                             //agrega series
                             foreach ($item->series as $serie) {
+                                // if ($serie->estado == 1) {
                                 DB::table('almacen.alm_prod_serie')->insert(
                                     [
                                         'id_prod' => $item->id_producto,
@@ -522,6 +525,7 @@ class CustomizacionController extends Controller
                                         'id_transformado' => $item->id_transformado
                                     ]
                                 );
+                                // }
                             }
                         }
                     }
@@ -542,6 +546,7 @@ class CustomizacionController extends Controller
                     if ($item->series !== null && $item->series !== []) {
                         //agrega series
                         foreach ($item->series as $serie) {
+                            // if ($serie->estado == 1) {
                             DB::table('almacen.alm_prod_serie')->insert(
                                 [
                                     'id_prod' => $item->id_producto,
@@ -552,6 +557,7 @@ class CustomizacionController extends Controller
                                     'id_transformado' => $id_transformado
                                 ]
                             );
+                            // }
                         }
                     }
                 }
@@ -588,6 +594,7 @@ class CustomizacionController extends Controller
 
                             //agrega series
                             foreach ($item->series as $serie) {
+                                // if ($serie->estado == 1) {
                                 DB::table('almacen.alm_prod_serie')->insert(
                                     [
                                         'id_prod' => $item->id_producto,
@@ -598,6 +605,7 @@ class CustomizacionController extends Controller
                                         'id_sobrante' => $item->id_sobrante
                                     ]
                                 );
+                                // }
                             }
                         }
                     }
@@ -616,6 +624,7 @@ class CustomizacionController extends Controller
                     if ($item->series !== null && $item->series !== []) {
                         //agrega series
                         foreach ($item->series as $serie) {
+                            // if ($serie->estado == 1) {
                             DB::table('almacen.alm_prod_serie')->insert(
                                 [
                                     'id_prod' => $item->id_producto,
@@ -626,6 +635,7 @@ class CustomizacionController extends Controller
                                     'id_sobrante' => $item->id_sobrante
                                 ]
                             );
+                            // }
                         }
                     }
                 }
@@ -691,13 +701,46 @@ class CustomizacionController extends Controller
                     ->where('id_transformacion', $id_transformacion)
                     ->update(['estado' => 7]);
 
+                $bases = DB::table('almacen.transfor_materia')
+                    ->where('id_transformacion', $id_transformacion)
+                    ->get();
+
+                foreach ($bases as $trans) {
+                    //elimina las series del id_base
+                    DB::table('almacen.alm_prod_serie')
+                        ->where('id_base', $trans->id_materia)
+                        ->update(['id_base' => null]);
+                }
+
                 DB::table('almacen.transfor_transformado')
                     ->where('id_transformacion', $id_transformacion)
                     ->update(['estado' => 7]);
 
+                $transformaciones = DB::table('almacen.transfor_transformado')
+                    ->where('id_transformacion', $id_transformacion)
+                    ->get();
+
+                foreach ($transformaciones as $trans) {
+                    //elimina las series del id_base
+                    DB::table('almacen.alm_prod_serie')
+                        ->where('id_transformado', $trans->id_transformado)
+                        ->update(['estado' => 7]);
+                }
+
                 DB::table('almacen.transfor_sobrante')
                     ->where('id_transformacion', $id_transformacion)
                     ->update(['estado' => 7]);
+
+                $sobrantes = DB::table('almacen.transfor_sobrante')
+                    ->where('id_transformacion', $id_transformacion)
+                    ->get();
+
+                foreach ($sobrantes as $sob) {
+                    //elimina las series del id_base
+                    DB::table('almacen.alm_prod_serie')
+                        ->where('id_sobrante', $sob->id_sobrante)
+                        ->update(['estado' => 7]);
+                }
 
                 $mensaje = 'La customización se anuló correctamente.';
                 $tipo = 'success';

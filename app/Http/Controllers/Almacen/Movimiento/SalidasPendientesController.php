@@ -1171,16 +1171,26 @@ class SalidasPendientesController extends Controller
         $series = DB::table('almacen.alm_prod_serie')
             ->select(
                 'alm_prod_serie.*',
+                'transformacion.codigo as codigo_customizacion',
                 DB::raw("(tp_doc_almacen.abreviatura) || '-' || (guia_com.serie) || '-' || (guia_com.numero) as guia_com")
             )
             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
             ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->leftjoin('almacen.tp_doc_almacen', 'tp_doc_almacen.id_tp_doc_almacen', '=', 'guia_com.id_tp_doc_almacen')
+            ->leftjoin('almacen.transfor_materia', function ($join) {
+                $join->on('transfor_materia.id_materia', '=', 'alm_prod_serie.id_base');
+                $join->where('transfor_materia.estado', '!=', 7);
+            })
+            ->leftjoin('almacen.mov_alm_det', function ($join) {
+                $join->on('mov_alm_det.id_materia', '=', 'transfor_materia.id_materia');
+                $join->where('mov_alm_det.estado', '!=', 7);
+            })
+            ->leftjoin('almacen.transformacion', 'transformacion.id_transformacion', '=', 'transfor_materia.id_transformacion')
             ->where([
                 ['alm_prod_serie.id_prod', '=', $id_producto],
                 ['alm_prod_serie.id_almacen', '=', $id_almacen],
                 ['alm_prod_serie.id_guia_ven_det', '=', null],
-                ['alm_prod_serie.id_base', '=', null],
+                ['mov_alm_det.id_materia', '=', null],
                 ['alm_prod_serie.estado', '=', 1]
             ])
             ->get();
