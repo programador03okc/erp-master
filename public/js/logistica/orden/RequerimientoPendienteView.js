@@ -631,12 +631,12 @@ class RequerimientoPendienteView {
                                     btnCrearOrdenServicio = '<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '" disabled >OS</button>';
 
                                 } else {
-                                    if (row.id_tipo_requerimiento == 4) { //tipo de compras para stock
-                                        btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="El requerimiento es de tipo compras para stock" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
+                                    // if (row.id_tipo_requerimiento == 4) { //tipo de compras para stock
+                                        // btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="El requerimiento es de tipo compras para stock" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
 
-                                    } else {
+                                    // } else {
                                         btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
-                                    }
+                                    // }
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  >OC</button>';
                                     if (row.id_tipo_requerimiento != 1)// diferentes a; tipo Atención inmediata (MGCP)
                                         btnGestionarEstadoRequerimiento = '<button type="button" class="btn btn-danger btn-xs handleClickGestionarEstadoRequerimiento" name="btnCrearGestionarEstadoRequerimiento" title="Ajuste de necesidad de requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-estado-requerimiento="' + row.estado_doc + '"> <i class="fas fa-crop-alt"></i></button>';
@@ -951,12 +951,12 @@ class RequerimientoPendienteView {
                                     btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '" disabled><i class="fas fa-dolly fa-sm"></i></button>';
 
                                 } else {
-                                    if (row.id_tipo_requerimiento == 4) { //tipo de compras para stock
-                                        btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="El requerimiento es de tipo compras para stock"  disabled><i class="fas fa-dolly fa-sm"></i></button>';
+                                    // if (row.id_tipo_requerimiento == 4) { //tipo de compras para stock
+                                        // btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="El requerimiento es de tipo compras para stock"  disabled><i class="fas fa-dolly fa-sm"></i></button>';
 
-                                    } else {
+                                    // } else {
                                         btnAtenderAlmacen = '<button type="button" class="btn btn-primary btn-xs handleClickAtenderConAlmacen" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '"><i class="fas fa-dolly fa-sm"></i></button>';
-                                    }
+                                    // }
 
                                 }
                             }
