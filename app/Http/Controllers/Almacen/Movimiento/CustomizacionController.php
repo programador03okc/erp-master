@@ -307,9 +307,11 @@ class CustomizacionController extends Controller
                 if ($item->series !== null && $item->series !== []) {
                     //agrega series
                     foreach ($item->series as $serie) {
-                        DB::table('almacen.alm_prod_serie')
-                            ->where('id_prod_serie', $serie->id_prod_serie)
-                            ->update(['id_base' => $id_materia]);
+                        if ($serie->estado == 1) {
+                            DB::table('almacen.alm_prod_serie')
+                                ->where('id_prod_serie', $serie->id_prod_serie)
+                                ->update(['id_base' => $id_materia]);
+                        }
                     }
                 }
             }
