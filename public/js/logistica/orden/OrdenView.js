@@ -412,13 +412,13 @@ class OrdenView {
                                         'descripcion': det.descripcion,
                                         'estado': det.estado.id_estado_doc,
                                         'fecha_registro': det.fecha_registro,
-                                        'id_unidad_medida': det.id_unidad_medida,
+                                        'id_unidad_medida': det.producto != null ? det.producto.id_unidad_medida : det.id_unidad_medida,
                                         'lugar_entrega': det.lugar_entrega,
                                         'observacion': det.observacion,
                                         'precio_unitario': det.precio_unitario,
                                         'stock_comprometido': cantidad_atendido_almacen,
                                         'subtotal': det.subtotal,
-                                        'unidad_medida': det.unidad_medida.abreviatura
+                                        'unidad_medida': det.producto!=null && det.producto.unidad_medida !=null ?det.producto.unidad_medida.abreviatura:det.unidad_medida
                                     }
                                 );
                             }
@@ -587,6 +587,7 @@ class OrdenView {
     listarDetalleOrdeRequerimiento(data) {
         this.limpiarTabla('listaDetalleOrden');
         vista_extendida();
+        // console.log(data);
 
         for (let i = 0; i < data.length; i++) {
             if (data[i].id_tipo_item == 1) { // producto
@@ -2114,8 +2115,8 @@ class OrdenView {
                         <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)}</textarea>
                             <textarea class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;" disabled>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
                         </td>
-                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].id_unidad_medida}">${(detalle[i].unidad_medida ? detalle[i].unidad_medida.abreviatura : 'sin und.')}</p>
-                        <input type="hidden"  name="unidad[]" value="${detalle[i].id_unidad_medida}">
+                        <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].producto.id_unidad_medida}">${(detalle[i].producto.unidad_medida ? detalle[i].producto.unidad_medida.abreviatura : 'sin und.')}</p>
+                        <input type="hidden"  name="unidad[]" value="${detalle[i].producto.id_unidad_medida}">
 
                         </td>
                         <td>${(detalle[i].detalle_requerimiento ? detalle[i].detalle_requerimiento.cantidad : '')}</td>

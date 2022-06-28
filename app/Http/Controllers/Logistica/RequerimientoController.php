@@ -169,10 +169,13 @@ class RequerimientoController extends Controller
             'alm_prod.codigo as producto_codigo',
             'alm_prod.cod_softlink as producto_codigo_softlink',
             'alm_prod.part_number as producto_part_number',
-            'alm_und_medida.abreviatura'
+            'alm_prod.id_unidad_medida as producto_id_unidad_medida',
+            'alm_und_medida.abreviatura',
+            'unidad_medida_prod.abreviatura as unidad_medida_producto'
         )
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
+            ->leftJoin('almacen.alm_und_medida as unidad_medida_prod', 'unidad_medida_prod.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_det_req.estado')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_req.id_moneda')
@@ -418,6 +421,7 @@ class RequerimientoController extends Controller
             $alm_det_req = DetalleRequerimiento::leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
                 ->leftJoin('almacen.alm_prod', 'alm_det_req.id_producto', '=', 'alm_prod.id_producto')
                 ->leftJoin('almacen.alm_item', 'alm_item.id_producto', '=', 'alm_prod.id_producto')
+                ->leftJoin('almacen.alm_und_medida as unidad_medida_producto', 'unidad_medida_producto.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
                 ->leftJoin('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
                 ->leftJoin('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
                 // ->leftJoin('almacen.alm_almacen', 'alm_det_req.id_almacen_reserva', '=', 'alm_almacen.id_almacen')
@@ -480,6 +484,8 @@ class RequerimientoController extends Controller
                     'alm_det_req.part_number',
                     'alm_prod.descripcion AS alm_prod_descripcion',
                     'alm_prod.part_number AS alm_prod_part_number',
+                    'alm_prod.id_unidad_medida AS alm_prod_id_unidad_medida',
+                    'unidad_medida_producto.id_unidad_medida AS alm_prod_unidad_medida',
                     'alm_det_req.tiene_transformacion',
                     'alm_det_req.proveedor_id',
                     'adm_contri.razon_social as proveedor_razon_social',
@@ -539,8 +545,8 @@ class RequerimientoController extends Controller
                         'subcategoria'              => $data->subcategoria,
                         'cantidad'                  => $data->cantidad,
                         'suma_transferencias'       => $data->suma_transferencias,
-                        'id_unidad_medida'          => $data->id_unidad_medida,
-                        'unidad_medida'             => $data->unidad_medida,
+                        'id_unidad_medida'          => $data->alm_prod_id_unidad_medida != null ?$data->alm_prod_id_unidad_medida : $data->id_unidad_medida,
+                        'unidad_medida'             => $data->alm_prod_unidad_medida!=null ? $data->alm_prod_unidad_medida: $data->unidad_medida,
                         'precio_unitario'           => $data->precio_unitario,
                         'subtotal'                  => $data->subtotal,
                         'descripcion_adicional'     => $data->descripcion_adicional,

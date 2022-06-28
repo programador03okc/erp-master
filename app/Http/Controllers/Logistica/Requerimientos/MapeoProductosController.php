@@ -113,6 +113,14 @@ class MapeoProductosController extends Controller
 
     }
 
+    public function actualizarUnidadMedidaDetalleRequerimiento($idDetalleRequerimiento,$nuevoIdProducto){
+        $producto= Producto::find($nuevoIdProducto);
+
+        $detalle= DetalleRequerimiento::find($idDetalleRequerimiento);
+        $detalle->id_unidad_medida=($producto->id_unidad_medida!=null && $producto->id_unidad_medida )>0?$producto->id_unidad_medida:null;
+        $detalle->save();
+    }
+
     public function crearProducto($partNumber=null,$descripcion,$idUnidadMedida,$idMoneda,$series=null, $idCategoria=null,$idSubcategoria=null,$idClasif=null){
 
         $data=[];
@@ -169,6 +177,7 @@ class MapeoProductosController extends Controller
             $detalle->id_producto =$nuevoIdProducto;
             $detalle->save();
 
+            $this->actualizarUnidadMedidaDetalleRequerimiento($idDetalleRequerimiento,$nuevoIdProducto);
             $status='success';
             $mensaje='Id producto actualizado';
 

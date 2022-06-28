@@ -537,7 +537,7 @@ class OrdenController extends Controller
             'detalle' => function ($q) {
                 $q->whereNotIn('alm_det_req.estado', [7, 5, 28]);
             }, 'detalle.estado',
-            'detalle.producto',
+            'detalle.producto.unidadMedida',
             'detalle.unidadMedida',
             'detalle.reserva' => function ($q) {
                 $q->where('alm_reserva.estado', '=', 1);
