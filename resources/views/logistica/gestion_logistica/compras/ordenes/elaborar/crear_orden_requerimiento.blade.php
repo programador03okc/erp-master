@@ -49,7 +49,10 @@ Orden de compra / servicio
                                 @if($tp->descripcion == 'Orden de Compra')
                                 <option value="{{$tp->id_tp_documento}}" selected>{{$tp->descripcion}}</option>
                                 @else
-                                <option value="{{$tp->id_tp_documento}}">{{$tp->descripcion}}</option>
+                                @if((!in_array(Auth::user()->id_usuario,[17,27,3,1,77]) && $tp->id_tp_documento == 13))
+                                @else
+                                <option value="{{$tp->id_tp_documento}}"  >{{$tp->descripcion}}</option>
+                                @endif
                                 @endif
                                 @endforeach
                             </select>
@@ -303,9 +306,9 @@ Orden de compra / servicio
                             <h6>Item's de requerimiento</h6>
                         </legend>
                         <div class="btn-group" role="group" aria-label="...">
-                        @if((in_array(Auth::user()->id_usuario,[14,5,122,17,3,27,1,77])))
+                        <!-- @if((in_array(Auth::user()->id_usuario,[14,5,122,17,3,27,1,77])))
                             <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar producto"><i class="fas fa-plus"></i> Productos</button>
-                        @endif
+                        @endif -->
                             <button type="button" class="btn btn-xs btn-info activation handleClickCatalogoProductosObsequioModal" id="btnAgregarProductoObsequio" data-toggle="tooltip" data-placement="bottom" title="Agregar producto para obsequio"><i class="fas fa-plus"></i> Productos para obsequio</button>
                             <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btnAgregarServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar servicio"><i class="fas fa-plus"></i> Servicio</button>
                             <button type="button" class="btn btn-xs btn-default activation handleClickVincularRequerimientoAOrdenModal" id="btnAgregarVinculoRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Agregar items de otro requerimiento" disabled><i class="fas fa-plus"></i> Vincular otro requerimiento
