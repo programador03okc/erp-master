@@ -914,8 +914,6 @@ class OrdenView {
                         function (data, type, row) {
                             switch (tipo) {
                                 case 'OBSEQUIOS':
-                                    if (row.id_unidad_medida == 1) {
-
                                         let btnProductoObsequioSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio" 
                                     data-id-producto="${row.id_producto}"
                                     data-codigo="${row.codigo}"
@@ -929,9 +927,6 @@ class OrdenView {
                                         // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
                                         return btnProductoObsequioSeleccionar;
 
-                                    } else {
-                                        return '';
-                                    }
                                     break;
                                 case 'PRODUCTOS':
 
