@@ -1044,7 +1044,7 @@ class TransferenciaController extends Controller
                 ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
                 ->where('id_almacen', $request->id_almacen_origen)
                 ->first();
-
+            //Tipo de operacion: transferencia entre almacenes o una Venta interna
             $operacion = ($destino_emp->id_empresa == $origen_emp->id_empresa ? $operacion_transferencia : $operacion_venta);
 
             $trans_sel = null;
@@ -1058,34 +1058,9 @@ class TransferenciaController extends Controller
                     'alm_prod.id_unidad_medida',
                     'alm_prod.codigo',
                     'alm_prod.descripcion'
-                    // 'guia_com_det.id_guia_com_det',
-                    // 'guia_oc.id_guia_com_det as id_guia_oc_det'
-                    // DB::raw('CASE WHEN mov_alm_det.cantidad=0 THEN 0 
-                    // ELSE (mov_alm_det.valorizacion / mov_alm_det.cantidad) END as unitario'),
-                    // DB::raw('(mov_oc.valorizacion / mov_oc.cantidad) as unitario_oc')
                 )
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'trans_detalle.id_producto');
-            // ->leftJoin('almacen.guia_com_det', function ($join) {
-            //     $join->on('guia_com_det.id_guia_com_det', '=', 'trans_detalle.id_guia_com_det');
-            //     $join->where('guia_com_det.estado', '!=', 7);
-            // })
-            // ->leftJoin('almacen.mov_alm_det', function ($join) {
-            //     $join->on('mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
-            //     $join->where('mov_alm_det.estado', '!=', 7);
-            // })
-            // ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'trans_detalle.id_requerimiento_detalle')
-            // ->leftJoin('logistica.log_det_ord_compra', function ($join) {
-            //     $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
-            //     $join->where('log_det_ord_compra.estado', '!=', 7);
-            // })
-            // ->leftJoin('almacen.guia_com_det as guia_oc', function ($join) {
-            //     $join->on('guia_oc.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
-            //     $join->where('guia_oc.estado', '!=', 7);
-            // })
-            // ->leftJoin('almacen.mov_alm_det as mov_oc', function ($join) {
-            //     $join->on('mov_oc.id_guia_com_det', '=', 'guia_oc.id_guia_com_det');
-            //     $join->where('mov_oc.estado', '!=', 7);
-            // });
+
             if ($trans_sel !== null) {
                 $detalle = $query->whereIn('trans_detalle.id_transferencia', $trans_sel)->get();
             } else {
@@ -1246,11 +1221,6 @@ class TransferenciaController extends Controller
                     );
                     //Actualizo los saldos del producto
                     OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen_origen);
-                    //Actualiza estado requerimiento_detalle: enviado -> X REVISAR
-                    // DB::table('almacen.alm_det_req')
-                    //     ->where('id_detalle_requerimiento', $det->id_requerimiento_detalle)
-                    //     ->update(['estado' => 17]); //enviado
-
                 }
 
                 $reqs = [];
