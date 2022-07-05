@@ -157,7 +157,7 @@ class VentasInternasController extends Controller
                         "aplica_cambios" => false,
                         "registrado_por" => $id_usuario,
                         "fecha_registro" => $fecha,
-                        "estado" => 9,
+                        "estado" => 9, //Procesada
                         "id_sede" => $detalle->first()->id_sede,
                         "id_almacen" => $detalle->first()->id_almacen,
                         "hora_despacho" => $fecha,
