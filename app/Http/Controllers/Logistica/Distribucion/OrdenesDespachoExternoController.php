@@ -428,13 +428,13 @@ class OrdenesDespachoExternoController extends Controller
 
                 $correos[] = $usuario->email;
             } else if ($requerimiento !== null) {
-                $usuario = Usuario::find($requerimiento->id_usuario)->email;
+                $usuario = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
 
                 $correos[] = $usuario->email;
             }
             // $correos[] = Usuario::find($requerimiento->id_usuario)->email;
             foreach ($idUsuarios as $id) {
-                $correos[] = Usuario::find($id)->email;
+                $correos[] = Usuario::withTrashed()->find($id)->email;
             }
         }
 
@@ -828,9 +828,9 @@ class OrdenesDespachoExternoController extends Controller
                 $correos[] = config('global.correoDebug1');
             } else {
                 $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
-                $correos[] = Usuario::find($requerimiento->id_usuario)->email;
+                $correos[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
                 foreach ($idUsuarios as $id) {
-                    $correos[] = Usuario::find($id)->email;
+                    $correos[] = Usuario::withTrashed()->find($id)->email;
                 }
             }
 
