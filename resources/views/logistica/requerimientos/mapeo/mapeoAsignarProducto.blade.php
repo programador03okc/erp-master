@@ -46,6 +46,7 @@
                                                                 <th>Cód. producto</th>
                                                                 <th>Cód. Soflink</th>
                                                                 <th>PartNumber</th>
+                                                                <th>Und.</th>
                                                                 <th>Marca</th>
                                                                 <th style="width: 70%;">Descripción</th>
                                                                 <th style="width: 5%;">Moneda</th>
@@ -66,6 +67,7 @@
                                                                 <th style="width: 5%">Cód. producto</th>
                                                                 <th style="width: 5%">Cód. Soflink</th>
                                                                 <th style="width: 5%">PartNumber</th>
+                                                                <th style="width: 5%">Und.</th>
                                                                 <th style="width: 5%">Marca</th>
                                                                 <th style="width: 70%;">Descripción</th>
                                                                 <th style="width: 5%;">Moneda</th>

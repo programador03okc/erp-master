@@ -28,6 +28,11 @@ function open_guia_create(data, $fila) {
         $('#titulo').text('Ingresar Hoja de Importación');
         $('[name=id_operacion]').val(18);
         $('[name=nombre_operacion]').val('IMPORTACIÓN');
+    } else 
+    if (data.id_tp_documento == 13) { // orden de devolución
+        $('#titulo').text('Ingresar Hoja de Devolución');
+        $('[name=id_operacion]').val(24);// INGRESO POR DEVOLUCIÓN DEL CLIENTE
+        $('[name=nombre_operacion]').val('INGRESO POR DEVOLUCIÓN DEL CLIENTE');
     } else {
         $('#titulo').text('Ingresar Guía de Compra');
     }

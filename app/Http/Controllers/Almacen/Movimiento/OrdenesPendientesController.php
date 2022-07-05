@@ -215,7 +215,7 @@ class OrdenesPendientesController extends Controller
                 ['log_ord_compra.estado', '!=', 7],
                 ['log_ord_compra.en_almacen', '=', false]
             ])
-            ->whereIn('log_ord_compra.id_tp_documento', [2, 12])
+            ->whereIn('log_ord_compra.id_tp_documento', [2, 12,13]) //orden de compra, orden de importacion , orden de devolución
             ->whereDate('log_ord_compra.fecha', '>=', (new Carbon($request->ordenes_fecha_inicio))->format('Y-m-d'))
             ->whereDate('log_ord_compra.fecha', '<=', (new Carbon($request->ordenes_fecha_fin))->format('Y-m-d'));
         // whereBetween('created_at', ['2018/11/10 12:00', '2018/11/11 10:30'])
@@ -332,7 +332,7 @@ class OrdenesPendientesController extends Controller
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'mov_alm.usuario')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
             ->where([['mov_alm.estado', '!=', 7], ['mov_alm.id_tp_mov', '=', 1]])
-            ->whereIn('mov_alm.id_operacion', [2, 26, 18, 21]);
+            ->whereIn('mov_alm.id_operacion', [2, 26, 18, 21,24]);
 
         $array_sedes = [];
         if ($request->ingreso_fecha_inicio !== null) {

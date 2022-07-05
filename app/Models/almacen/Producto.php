@@ -16,4 +16,8 @@ class Producto extends Model
     public function moneda(){
         return $this->hasOne('App\Models\Configuracion\Moneda','id_moneda','id_moneda');
     }
+    public function unidadMedida()
+    {
+        return $this->hasone('App\Models\Almacen\UnidadMedida', 'id_unidad_medida', 'id_unidad_medida');
+    }
 }

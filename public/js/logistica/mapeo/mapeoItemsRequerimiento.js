@@ -311,7 +311,7 @@ function restablecerItemAnulado(id, obj) {
 }
 
 function openAsignarProducto(partnumber, desc, id, type) {
-    console.log(partnumber, desc, id, type);
+    // console.log(partnumber, desc, id, type);
     $('#part_number').text(partnumber);
     $('#descripcion_producto').text(decodeURIComponent(desc));
     $('[name=id_detalle_requerimiento]').val(id);

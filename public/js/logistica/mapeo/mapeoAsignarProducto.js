@@ -26,6 +26,7 @@ function listarProductosCatalogo() {
             { 'data': 'codigo', 'name': 'alm_prod.codigo' },
             { 'data': 'cod_softlink', 'name': 'alm_prod.cod_softlink' },
             { 'data': 'part_number', 'name': 'alm_prod.part_number' },
+            { 'data': 'abreviatura', 'name': 'alm_und_medida.abreviatura' },
             { 'data': 'marca', 'name': 'alm_subcat.descripcion' },
             { 'data': 'descripcion', 'name': 'alm_prod.descripcion' },
             { 'data': 'descripcion_moneda', 'name': 'sis_moneda.descripcion' },
@@ -37,8 +38,9 @@ function listarProductosCatalogo() {
             { 'aTargets': [2], 'className': "text-center", 'sWidth': '5%' },
             { 'aTargets': [3], 'className': "text-center", 'sWidth': '5%' },
             { 'aTargets': [4], 'className': "text-center", 'sWidth': '5%' },
-            { 'aTargets': [5], 'className': "text-left", 'sWidth': '70%' },
-            { 'aTargets': [6], 'className': "text-center", 'sWidth': '5%' },
+            { 'aTargets': [5], 'className': "text-center", 'sWidth': '5%' },
+            { 'aTargets': [6], 'className': "text-left", 'sWidth': '70%' },
+            { 'aTargets': [7], 'className': "text-center", 'sWidth': '5%' },
             {
                 'render':
                     function (data, type, row) {
@@ -51,7 +53,7 @@ function listarProductosCatalogo() {
                                 <i class="fas fa-check"></i>
                             </button>
                         `;
-                    }, 'aTargets': 7, 'className': "text-center", 'sWidth': '5%'
+                    }, 'aTargets': 8, 'className': "text-center", 'sWidth': '5%'
             }
         ],
         initComplete: function (settings, json) {
@@ -123,6 +125,7 @@ function listarSugeridos(data) {
                     <td>${element.codigo ?? ''}</td>
                     <td>${element.cod_softlink ?? ''}</td>
                     <td>${element.part_number ?? ''}</td>
+                    <td>${element.abreviatura ?? ''}</td>
                     <td>${element.marca ?? ''}</td>
                     <td>${element.descripcion ?? ''}</td>
                     <td>${element.descripcion_moneda ?? ''}</td>
@@ -175,6 +178,7 @@ function selectProductoAsignado(obj) {
         det.codigo = codigo;
         det.cod_softlink = cod_softlink;
         det.part_number = partnumber;
+        det.abreviatura = abreviatura;
         det.descripcion = decodeURIComponent(descripcion);
         $('#modal-mapeoAsignarProducto').modal('hide');
         mostrar_detalle();
