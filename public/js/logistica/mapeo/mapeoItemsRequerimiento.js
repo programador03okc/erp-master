@@ -95,7 +95,7 @@ function mostrar_detalle() {
     var i = 1;
     // console.log(detalle);
     detalle.sort();
-    console.log(detalle);
+    // console.log(detalle);
     let idDetalleRequerimientoConDescomposicionList=[];
     detalle.forEach(element=> {
         if(!idDetalleRequerimientoConDescomposicionList.includes(element.id_detalle_requerimiento_origen)){
@@ -111,6 +111,25 @@ function mostrar_detalle() {
         var dsc = encodeURIComponent(element.descripcion);
         var link_pn = '';
         var link_des = '';
+
+        var regExp = /[a-zA-Z]/g; //expresión regular
+         
+        if ((regExp.test(element.id_detalle_requerimiento) != true)) {
+            cantidadRervas = (element.reserva).filter(function(item){
+                if (item.estado != 7) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }).length;
+
+            cantidadOrdenes = (element.ordenes_compra).filter(function(item){
+                if (item.estado != 7) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }).length;
 
         if (pn !== null) {
             link_pn = `
@@ -145,27 +164,10 @@ function mostrar_detalle() {
                     class="asignar btn btn-xs btn-info boton" data-toggle="tooltip" 
                     data-placement="bottom" data-partnumber="${element.part_number_requerimiento??element.part_number}" 
                     data-desc="${encodeURIComponent(element.descripcion_requerimiento??element.descripcion)}" data-id="${element.id_detalle_requerimiento}"
-                    title="Asignar producto" >
+                    title="${(cantidadRervas > 0 || cantidadOrdenes >0)?'No se puede asignar si tiene atención':'Asignar producto'}"  ${(cantidadRervas > 0 || cantidadOrdenes >0)?'disabled':''} >
                     <i class="fas fa-angle-double-right"></i>
                 </button>`;
-                var regExp = /[a-zA-Z]/g; //expresión regular
-         
-                if ((regExp.test(element.id_detalle_requerimiento) != true)) {
-                    cantidadRervas = (element.reserva).filter(function(item){
-                        if (item.estado != 7) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }).length;
 
-                    cantidadOrdenes = (element.ordenes_compra).filter(function(item){
-                        if (item.estado != 7) {
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }).length;
                         html += `
                             <button type="button" title="Duplicar para descomponer producto" 
                             data-id="${element.id_detalle_requerimiento}" 

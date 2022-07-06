@@ -3652,7 +3652,7 @@ class OrdenController extends Controller
                             foreach ($idUsuariosAlAnularOrden as $id) {
                                 if( Usuario::find($id)!=null){
                                     if(Usuario::find($id)->email!=null){
-                                        $correosAnulaciónOrden[] =Usuario::find($id)->email;
+                                        $correosAnulaciónOrden[] =Usuario::withTrashed()->find($id)->email;
                                     }
                                 }
                                     
@@ -3660,7 +3660,7 @@ class OrdenController extends Controller
                             foreach ($id_usuario_list as $idUsu) {
                                 if(Usuario::find($idUsu)!=null){
                                     if(Usuario::find($idUsu)->email!=null){
-                                        $correosAnulaciónOrden[] = Usuario::find($idUsu)->email; // usuario dueño del requerimiento(s)
+                                        $correosAnulaciónOrden[] = Usuario::withTrashed()->find($idUsu)->email; // usuario dueño del requerimiento(s)
                                     }
                                 }
                             }
@@ -4096,12 +4096,12 @@ class OrdenController extends Controller
                             }
                             $idUsuarios = Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
                             foreach ($idUsuarios as $id) {
-                                $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
+                                $correosOrdenServicioTransformacion[] = Usuario::withTrashed()->find($id)->email;
                             }
 
                             //$correoUsuarioEnSession=Auth::user()->email;
                             $correoFinalizacionCuadroPresupuesto[] = Auth::user()->email;
-                            $correoFinalizacionCuadroPresupuesto[] = Usuario::find($requerimiento->id_usuario)->email;
+                            $correoFinalizacionCuadroPresupuesto[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
                         }
 
                         Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payloadCuadroPresupuestoFinalizado, Auth::user()->nombre_corto));
