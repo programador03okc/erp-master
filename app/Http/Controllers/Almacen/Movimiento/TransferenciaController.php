@@ -780,7 +780,7 @@ class TransferenciaController extends Controller
                     'numero' => $guia_ven->numero,
                     'id_proveedor' => ($id_proveedor !== null ? $id_proveedor : null),
                     'fecha_emision' => $guia_ven->fecha_emision,
-                    'fecha_almacen' => $request->fecha_almacen,
+                    'fecha_almacen' => $request->fecha_almacen_recibir,
                     'id_almacen' => $request->id_almacen_destino,
                     'comentario' => $request->comentario_recibir,
                     // 'id_motivo' => $guia_ven->id_motivo,
