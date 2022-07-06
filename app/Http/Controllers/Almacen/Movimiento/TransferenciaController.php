@@ -804,7 +804,7 @@ class TransferenciaController extends Controller
 
             $codigo = GenericoAlmacenController::nextMovimiento(
                 1,
-                $request->fecha_almacen,
+                $request->fecha_almacen_recibir,
                 $request->id_almacen_destino
             );
 
@@ -813,7 +813,7 @@ class TransferenciaController extends Controller
                     'id_almacen' => $request->id_almacen_destino,
                     'id_tp_mov' => 1, //Ingresos
                     'codigo' => $codigo,
-                    'fecha_emision' => $request->fecha_almacen,
+                    'fecha_emision' => $request->fecha_almacen_recibir,
                     'id_guia_com' => $id_guia_com,
                     'id_operacion' => $ope, //entrada por transferencia entre almacenes
                     'id_transferencia' => $request->id_transferencia,
