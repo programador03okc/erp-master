@@ -73,22 +73,14 @@ class OrdenCtrl{
        
     }
 
-    obtenerDetalleRequerimientos(id){
-        return ordenModel.obtenerDetalleRequerimientos(id);
-    }
-
-    obtenerDetalleRequerimientos(idRequerimiento){
-        return ordenModel.obtenerDetalleRequerimientos(idRequerimiento);
-    }
-
     anularOrden(id,sustento){
         return ordenModel.anularOrden(id,sustento);
 
     }
 
-    obtenerRequerimiento(id){
-        return ordenModel.obtenerRequerimiento(id);
-    }
+    // obtenerRequerimiento(id){
+    //     return ordenModel.obtenerRequerimiento(id);
+    // }
 
 
 }

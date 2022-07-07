@@ -902,9 +902,10 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('mostrar-orden/{id_orden?}', 'OrdenController@mostrarOrden');
 						Route::post('anular', 'OrdenController@anularOrden')->name('anular');
 						Route::get('tipo-cambio-compra/{fecha}', 'Almacen\Reporte\SaldosController@tipo_cambio_compra');
-						Route::post('requerimientos-pendientes', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
+						// Route::post('requerimientos-pendientes', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 						Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
 						Route::get('requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento')->name('requerimientos');
+						Route::post('listarRequerimientoLogisticosView', 'Logistica\RequerimientoController@listarRequerimientoLogisticosView');
 						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');

@@ -77,10 +77,7 @@ $(document).ready(function () {
 					nuevo_equi_sol();
 				}
 				else if (page == 'crear-orden-requerimiento') {
-					const ordenModel = new OrdenModel();
-					const ordenController = new OrdenCtrl(ordenModel);
-					const ordenView = new OrdenView(ordenController);
-					ordenView.nuevaOrden();
+					nuevaOrden();
 					// document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
 
 

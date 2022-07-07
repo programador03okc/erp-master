@@ -72,7 +72,7 @@ class OrdenView {
         }
     }
 
-    initializeEventHandler() {
+    initializeEventHandler() { //used
 
         $('#modal-proveedores').on("click", "button.handleClickCrearProveedor", () => {
             this.irACrearProveedor();
@@ -119,9 +119,6 @@ class OrdenView {
         $('#form-crear-orden-requerimiento').on("click", "button.handleClickAgregarServicio", () => {
             this.agregarServicio();
         });
-        $('#form-crear-orden-requerimiento').on("click", "button.handleClickVincularRequerimientoAOrdenModal", () => {
-            this.vincularRequerimientoAOrdenModal();
-        });
         $('#listaCatalogoProductos tbody').on("click", "button.handleClickSelectProducto", (e) => {
             this.selectProducto(e.currentTarget);
         });
@@ -151,11 +148,7 @@ class OrdenView {
         $('#listaOrdenesElaboradas tbody').on("click", "button.handleClickSelectOrden", (e) => {
             this.selectOrden(e.currentTarget.dataset.idOrden);
         });
-
-        $('#listaRequerimientosParaVincular tbody').on("click", "button.handleClickVerDetalleRequerimientoModalVincularRequerimiento", (e) => {
-            this.verDetalleRequerimientoModalVincularRequerimiento(e.currentTarget);
-        });
-        $('#listaRequerimientosParaVincular tbody').on("click", "button.handleClickVincularRequerimiento", (e) => {
+        $('#listaRequerimientosParaVincular tbody').on("click", "button.handleClickVincularRequerimiento", (e) => { //old
             this.vincularRequerimiento(e.currentTarget);
         });
     }
@@ -350,7 +343,7 @@ class OrdenView {
 
     }
 
-    obtenerRequerimiento(reqTrueList, tipoOrden) {
+    obtenerRequerimiento(reqTrueList, tipoOrden) { // used
         this.limpiarTabla('listaDetalleOrden');
         let idTipoItem = 0;
         let idTipoOrden = 0;
@@ -452,7 +445,7 @@ class OrdenView {
         // sessionStorage.removeItem('tipoOrden');
     }
 
-    getTipoCambioCompra() {
+    getTipoCambioCompra() { //old
 
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -664,14 +657,14 @@ class OrdenView {
 
     }
 
-    autoUpdateSubtotal() {
+    autoUpdateSubtotal() { // use
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_orden']").children;
         for (let i = 0; i < tbodyChildren.length; i++) {
             this.updateSubtotal(tbodyChildren[i]);
         }
     }
 
-    updateSubtotal(obj) {
+    updateSubtotal(obj) {//used
         let tr = obj.closest("tr");
         // let isGift = (tr.querySelector("input[class~='precio']").dataset.productoRegalo);
         let cantidad = parseFloat(tr.querySelector("input[class~='cantidad_a_comprar']").value);
@@ -700,7 +693,7 @@ class OrdenView {
 
     }
 
-    calcularMontosTotales() {
+    calcularMontosTotales() { //used
         let TableTBody = document.querySelector("tbody[id='body_detalle_orden']");
         let childrenTableTbody = TableTBody.children;
 
@@ -742,7 +735,7 @@ class OrdenView {
     }
 
 
-    updateSimboloMoneda() {
+    updateSimboloMoneda() { //used
         let simboloMonedaPresupuestoUtilizado = document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda;
         let allSelectorSimboloMoneda = document.getElementsByName("simboloMoneda");
         if (allSelectorSimboloMoneda.length > 0) {
@@ -1067,7 +1060,7 @@ class OrdenView {
 
     }
 
-    UpdateSelectUnidadMedida() {
+    UpdateSelectUnidadMedida() { //used
         const AllTrTbodyListaDetalleOrden = document.querySelectorAll("table[id='listaDetalleOrden'] tbody tr");
         AllTrTbodyListaDetalleOrden.forEach(fila => {
             if (fila.querySelector("select[class~='unidadMedida']")) {
@@ -1162,7 +1155,7 @@ class OrdenView {
     }
 
 
-    makeId() {
+    makeId() { //used
         let ID = "";
         let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         for (var i = 0; i < 12; i++) {
@@ -1173,223 +1166,7 @@ class OrdenView {
 
 
 
-    vincularRequerimientoAOrdenModal() {
-        $('#modal-vincular-requerimiento-orden').modal({
-            show: true,
-            backdrop: 'true',
-            keyboard: true
-
-        });
-
-        this.ConstruirlistarRequerimientosPendientesParaVincularConOrden();
-
-
-    }
-
-    ConstruirlistarRequerimientosPendientesParaVincularConOrden() {
-        tablaListaRequerimientosParaVincular = $('#listaRequerimientosParaVincular').DataTable({
-            'dom': 'Bfrtip',
-            'language': vardataTables[0],
-            'order': [[9, 'desc']],
-            'serverSide': true,
-            'processing': false,
-            'destroy': true,
-            'ajax': {
-                'url': 'requerimientos-pendientes',
-                'type': 'POST',
-                'data': { 'idEmpresa': 'SIN_FILTRO', 'idSede': 'SIN_FILTRO', 'fechaRegistroDesde': 'SIN_FILTRO', 'fechaRegistroHasta': 'SIN_FILTRO', 'reserva': 'SIN_FILTRO', 'orden': 'SIN_FILTRO' },
-                beforeSend: data => {
-
-                    $("#listaRequerimientosParaVincular").LoadingOverlay("show", {
-                        imageAutoResize: true,
-                        progress: true,
-                        imageColor: "#3c8dbc"
-                    });
-                }
-
-            },
-            'columns': [
-                { 'data': 'codigo', 'name': 'alm_req.codigo', 'className': 'text-center' },
-                { 'data': 'concepto', 'name': 'alm_req.concepto', 'className': 'text-left' },
-                { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
-                { 'data': 'tipo_req_desc', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
-                { 'data': 'moneda', 'name': 'sis_moneda.descripcion', 'className': 'text-center' },
-                { 'data': 'cliente_razon_social', 'name': 'contri_cliente.razon_social', 'className': 'text-left' },
-                { 'data': 'empresa_sede', 'name': 'sis_sede.descripcion', 'className': 'text-center' },
-                { 'data': 'cc_solicitado_por', 'name': 'cc_view.name', 'className': 'text-center' },
-                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc', 'className': 'text-center' },
-                { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', "searchable": false }
-
-            ],
-            'initComplete': function () {
-                //Boton de busqueda
-                const $filter = $('#listaRequerimientosParaVincular_filter');
-                const $input = $filter.find('input');
-                $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
-                $input.off();
-                $input.on('keyup', (e) => {
-                    if (e.key == 'Enter') {
-                        $('#btnBuscar').trigger('click');
-                    }
-                });
-                $('#btnBuscar').on('click', (e) => {
-                    tablaListaRequerimientosParaVincular.search($input.val()).draw();
-                })
-                //Fin boton de busqueda
-            },
-            "drawCallback": function (settings) {
-                //Botón de búsqueda
-                $('#listaRequerimientosParaVincular_filter input').prop('disabled', false);
-                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
-                $('#listaRequerimientosParaVincular_filter input').trigger('focus');
-                //fin botón búsqueda
-                if (tablaListaRequerimientosParaVincular.rows().data().length == 0) {
-                    Lobibox.notify('info', {
-                        title: false,
-                        size: 'mini',
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: `No se encontro data disponible para mostrar`
-                    });
-                }
-                //Botón de búsqueda
-                $('#listaRequerimientosParaVincular_filter input').prop('disabled', false);
-                $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);
-                $('#listaRequerimientosParaVincular_filter input').trigger('focus');
-                //fin botón búsqueda
-                $("#listaRequerimientosParaVincular").LoadingOverlay("hide", true);
-            },
-            'columnDefs': [
-                { 'aTargets': [0], 'className': "text-left", 'sWidth': '7%' },
-                { 'aTargets': [1], 'className': "text-left", 'sWidth': '30%' },
-                { 'aTargets': [2], 'className': "text-center", 'sWidth': '4%' },
-                { 'aTargets': [3], 'className': "text-center", 'sWidth': '4%' },
-                { 'aTargets': [4], 'className': "text-center", 'sWidth': '5%' },
-                { 'aTargets': [5], 'className': "text-left", 'sWidth': '8%' },
-                { 'aTargets': [6], 'className': "text-center", 'sWidth': '4%' },
-                { 'aTargets': [7], 'className': "text-center", 'sWidth': '4%' },
-                { 'aTargets': [8], 'className': "text-center", 'sWidth': '4%' },
-                {
-                    'render':
-                        function (data, type, row) {
-                            let containerOpenBrackets = `<div class="btn-group" role="group" style="display: flex;flex-direction: row;flex-wrap: nowrap;">`;
-                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-default boton handleClickVerDetalleRequerimientoModalVincularRequerimiento" data-id-requerimiento="${row.id_requerimiento}"  data-toggle="tooltip" data-placement="bottom" title="Ver detalle requerimiento" data-id="${row.id_orden_compra}"> <i class="fas fa-chevron-down fa-sm"></i> </button>`;
-                            let btnSeleccionar = `<button type="button" class="ver-detalle btn btn-${row.count_pendientes > 0 ? 'default' : 'success'} boton handleClickVincularRequerimiento" data-toggle="tooltip" data-placement="bottom" title="${(row.estado == 38 || row.estado == 39 ? 'Este requerimiento tiene un estado por regularizar / en pausa' : 'Seleccionar')}" data-id-requerimiento="${row.id_requerimiento}" data-id="${row.id_orden_compra}" ${(row.estado == 38 || row.estado == 39 ? 'disabled' : '')}> Seleccionar </button>`;
-                            let containerCloseBrackets = `</div>`;
-                            let infoPorMapear = `<small class="text-${row.count_pendientes > 0 ? 'danger' : 'success'}">${row.count_pendientes > 0 ? ('Mapeos pendientes: ' + row.count_pendientes) : ''}</small>
-                        `;
-                            return (containerOpenBrackets + btnVerDetalle + btnSeleccionar + containerCloseBrackets + infoPorMapear);
-                        }, targets: 9, className: "text-center", sWidth: '10%'
-                }
-            ]
-
-        });
-
-    }
-
-
-    verDetalleRequerimientoModalVincularRequerimiento(obj) {
-        let tr = obj.closest('tr');
-        var row = tablaListaRequerimientosParaVincular.row(tr);
-        var id = obj.dataset.idRequerimiento;
-        if (row.child.isShown()) {
-            //  This row is already open - close it
-            row.child.hide();
-            tr.classList.remove('shown');
-        }
-        else {
-            // Open this row
-            //    row.child( format(iTableCounter, id) ).show();
-            this.buildFormatModalVincularRequerimiento(iTableCounter, id, row);
-            tr.classList.add('shown');
-            // try datatable stuff
-            oInnerTable = $('#listaRequerimientosParaVincular_' + iTableCounter).dataTable({
-                //    data: sections, 
-                autoWidth: true,
-                deferRender: true,
-                info: false,
-                lengthChange: false,
-                ordering: false,
-                paging: false,
-                scrollX: false,
-                scrollY: false,
-                searching: false,
-                columns: [
-                ]
-            });
-            iTableCounter = iTableCounter + 1;
-        }
-    }
-
-    buildFormatModalVincularRequerimiento(table_id, id, row) {
-        this.ordenCtrl.obtenerDetalleRequerimientos(id).then((res) => {
-            this.construirDetalleRequerimientoModalVincularRequerimiento(table_id, row, res);
-        }).catch(function (err) {
-            console.log(err)
-        })
-    }
-
-    construirDetalleRequerimientoModalVincularRequerimiento(table_id, row, response) {
-        var html = '';
-        if (response.length > 0) {
-            response.forEach((element) => {
-                if (element.tiene_transformacion == false) {
-                    let cantidad_atendido_almacen = 0;
-                    if (element.reserva.length > 0) {
-                        (element.reserva).forEach(reserva => {
-                            if (reserva.estado == 1) {
-                                cantidad_atendido_almacen += parseFloat(reserva.stock_comprometido);
-                            }
-                        });
-                    }
-
-                    html += `<tr>
-                        <td style="border: none; text-align:center;">${(element.producto_part_number != null ? element.producto_part_number : '')}</td>
-                        <td style="border: none; text-align:center;">${(element.producto_codigo != null ? element.producto_codigo : '')}</td>
-                        <td style="border: none; text-align:center;">${(element.producto_codigo_softlink != null ? element.producto_codigo_softlink : '')}</td>
-                        <td style="border: none; text-align:left;">${element.producto_descripcion != null ? element.producto_descripcion : (element.descripcion ? element.descripcion : '')}</td>
-                        <td style="border: none; text-align:center;">${element.abreviatura != null ? element.abreviatura : ''}</td>
-                        <td style="border: none; text-align:center;">${element.cantidad > 0 ? element.cantidad : ''}</td>
-                        <td style="border: none; text-align:center;">${element.precio_unitario > 0 ? element.precio_unitario : ''}</td>
-                        <td style="border: none; text-align:center;">${parseFloat(element.subtotal) > 0 ? $.number(element.subtotal, 2) : $.number((element.cantidad * element.precio_unitario), 2)}</td>
-                        <td style="border: none; text-align:center;">${element.motivo != null ? element.motivo : ''}</td>
-                        <td style="border: none; text-align:center;">${cantidad_atendido_almacen != null ? cantidad_atendido_almacen : ''}</td>
-                        <td style="border: none; text-align:center;">${element.estado_doc != null ? element.estado_doc : ''}</td>
-                        </tr>`;
-                }
-            });
-            var tabla = `<table class="table table-condensed table-bordered" 
-                id="detalle_${table_id}">
-                <thead style="color: black;background-color: #c7cacc;">
-                    <tr>
-                        <th style="border: none; text-align:center;">Part number</th>
-                        <th style="border: none; text-align:center;">Código Producto</th>
-                        <th style="border: none; text-align:center;">Código Softlink</th>
-                        <th style="border: none; text-align:center;">Descripcion</th>
-                        <th style="border: none; text-align:center;">Unidad medida</th>
-                        <th style="border: none; text-align:center;">cantidad</th>
-                        <th style="border: none; text-align:center;">precio_unitario</th>
-                        <th style="border: none; text-align:center;">subtotal</th>
-                        <th style="border: none; text-align:center;">motivo</th>
-                        <th style="border: none; text-align:center;">Stock comprometido</th>
-                        <th style="border: none; text-align:center;">Estado</th>
-                    </tr>
-                </thead>
-                <tbody style="background: #e7e8ea;">${html}</tbody>
-                </table>`;
-        } else {
-            var tabla = `<table class="table table-sm" style="border: none;" 
-                id="detalle_${table_id}">
-                <tbody>
-                    <tr><td>No hay registros para mostrar</td></tr>
-                </tbody>
-                </table>`;
-        }
-        row.child(tabla).show();
-    }
-
-    vincularRequerimiento(obj) {
+    vincularRequerimiento(obj) { ///old
         obj.setAttribute("disabled", true);
         let idRequerimiento = obj.dataset.idRequerimiento;
         let i = 0;
@@ -1967,7 +1744,7 @@ class OrdenView {
         $('#modal-ordenes-elaboradas').modal('hide');
     }
 
-    mostrarOrden(id) {
+    mostrarOrden(id) { //used
         $.ajax({
             type: 'GET',
             url: 'mostrar-orden/' + id,
