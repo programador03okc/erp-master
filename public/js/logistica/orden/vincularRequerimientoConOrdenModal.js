@@ -432,53 +432,56 @@ function agregarProducto(data, tipo) {
     vista_extendida();
     // <td><select name="unidad[]" class="form-control ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : '')} input-sm unidadMedida" data-valor="${data[0].id_unidad_medida}"  >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
     console.log(data);
-    document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
-    <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
-    <td class="text-center">${data[0].codigo_producto ? data[0].codigo_producto : ''} </td>
-    <td class="text-center">${data[0].codigo_softlink ? data[0].codigo_softlink : ''} </td>
-    <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)}"> </td>
-    <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion ? data[0].descripcion : ''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion)}">
-        <textarea class="form-control activation" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;"></textarea>
-    </td>
-    <td>
-    <input type="hidden"  name="unidad[]" value="${data[0].id_unidad_medida}">
-        <p name="unidad[]" class="form-control-static unidadMedida" data-valor="${data[0].id_unidad_medida}">${(data[0].unidad_medida ? data[0].unidad_medida : 'sin und.')}</p></td>
-
-    <td>${(data[0].cantidad ? data[0].cantidad : '')}</td>
-    <td>${(data[0].cantidad_atendido_almacen ? data[0].cantidad_atendido_almacen : '')}</td>
-    <td>${(data[0].cantidad_atendido_orden ? data[0].cantidad_atendido_orden : '')}</td>
-    <td>
-        <input class="form-control cantidad_a_comprar input-sm text-right ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[0].cantidad_a_comprar ? data[0].cantidad_a_comprar : ''}" >
-    </td>
-    <td>
-        <div class="input-group">
-            <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
-            <input class="form-control precio input-sm text-right ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[0].producto_regalo ? data[0].producto_regalo : false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[0].precio_unitario ? data[0].precio_unitario : 0}" >
-        </div>
-    </td>
-    <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
-    <td>
-        <button type="button" class="btn btn-danger btn-sm ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" >
-        <i class="fas fa-trash fa-sm"></i>
-        </button>
-    </td>
- </tr>`);
-
-    autoUpdateSubtotal();
-    UpdateSelectUnidadMedida();
-    if (data.length > 0 && tipo == 'OBSEQUIO') {
-        Lobibox.notify('success', {
-            title: false,
-            size: 'mini',
-            rounded: true,
-            sound: false,
-            delayIndicator: false,
-            msg: 'Producto para obsequio agregado'
-        });
-
+    if(data.length>0){
+        document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
+        <td class="text-center">${data[0].codigo_requerimiento ? data[0].codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${data[0].id_detalle_orden ? data[0].id_detalle_orden : this.makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${data[0].id_detalle_requerimiento ? data[0].id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="1"> </td>
+        <td class="text-center">${data[0].codigo_producto ? data[0].codigo_producto : ''} </td>
+        <td class="text-center">${data[0].codigo_softlink ? data[0].codigo_softlink : ''} </td>
+        <td class="text-center">${data[0].part_number ? data[0].part_number : ''} <input type="hidden"  name="idProducto[]" value="${(data[0].id_producto ? data[0].id_producto : data[0].id_producto)}"> </td>
+        <td class="text-left">${(data[0].descripcion_producto ? data[0].descripcion_producto : (data[0].descripcion ? data[0].descripcion : ''))}  <input type="hidden"  name="descripcion[]" value="${(data[0].descripcion_producto ? data[0].descripcion_producto : data[0].descripcion)}">
+            <textarea class="form-control activation" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;"></textarea>
+        </td>
+        <td>
+        <input type="hidden"  name="unidad[]" value="${data[0].id_unidad_medida}">
+            <p name="unidad[]" class="form-control-static unidadMedida" data-valor="${data[0].id_unidad_medida}">${(data[0].unidad_medida ? data[0].unidad_medida : 'sin und.')}</p></td>
+    
+        <td>${(data[0].cantidad ? data[0].cantidad : '')}</td>
+        <td>${(data[0].cantidad_atendido_almacen ? data[0].cantidad_atendido_almacen : '')}</td>
+        <td>${(data[0].cantidad_atendido_orden ? data[0].cantidad_atendido_orden : '')}</td>
+        <td>
+            <input class="form-control cantidad_a_comprar input-sm text-right ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${data[0].cantidad_a_comprar ? data[0].cantidad_a_comprar : ''}" >
+        </td>
+        <td>
+            <div class="input-group">
+                <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                <input class="form-control precio input-sm text-right ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(data[0].producto_regalo ? data[0].producto_regalo : false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${data[0].precio_unitario ? data[0].precio_unitario : 0}" >
+            </div>
+        </td>
+        <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm ${(data[0].estado_guia_com_det > 0 && data[0].estado_guia_com_det != 7 ? '' : 'activation')} handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" >
+            <i class="fas fa-trash fa-sm"></i>
+            </button>
+        </td>
+     </tr>`);
+    
+        autoUpdateSubtotal();
+        UpdateSelectUnidadMedida();
+        if (data.length > 0 && tipo == 'OBSEQUIO') {
+            Lobibox.notify('success', {
+                title: false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Producto para obsequio agregado'
+            });
+    
+        }
+    
+        $('.modal').modal('hide');
     }
 
-    $('.modal').modal('hide');
 }
 
 // fin func boton vincular requerimiento 
