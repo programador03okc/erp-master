@@ -477,6 +477,8 @@ function agregarProducto(data, tipo) {
         });
 
     }
+
+    $('.modal').modal('hide');
 }
 
 // fin func boton vincular requerimiento 
