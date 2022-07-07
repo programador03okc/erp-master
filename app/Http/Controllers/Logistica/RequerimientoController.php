@@ -3998,8 +3998,8 @@ class RequerimientoController extends Controller
             return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al anular el adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
-    function listarRequerimientoLogisticosView(Request $request){
-        $lista = RequerimientoLogisticoView::where('id_estado','!=',7);
+    function listarRequerimientoLogisticosParaVincularView(Request $request){
+        $lista = RequerimientoLogisticoView::whereNotIn('id_estado',[1,7]);
         return datatables($lista)->toJson();
     }
 

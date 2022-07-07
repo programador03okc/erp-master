@@ -905,7 +905,7 @@ Route::group(['middleware' => ['auth']], function () {
 						// Route::post('requerimientos-pendientes', 'ComprasPendientesController@listarRequerimientosPendientes')->name('requerimientos-pendientes');
 						Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
 						Route::get('requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento')->name('requerimientos');
-						Route::post('listarRequerimientoLogisticosView', 'Logistica\RequerimientoController@listarRequerimientoLogisticosView');
+						Route::post('listarRequerimientoLogisticosParaVincularView', 'Logistica\RequerimientoController@listarRequerimientoLogisticosParaVincularView');
 						Route::get('listar-cuentas-bancarias-proveedor/{idProveedor?}', 'OrdenController@listarCuentasBancariasProveedor')->name('listar-cuentas-bancarias-proveedor');
 						Route::post('guardar-cuenta-bancaria-proveedor', 'OrdenController@guardarCuentaBancariaProveedor');
 						Route::get('migrarOrdenCompra/{id}', 'Migraciones\MigrateOrdenSoftLinkController@migrarOrdenCompra');

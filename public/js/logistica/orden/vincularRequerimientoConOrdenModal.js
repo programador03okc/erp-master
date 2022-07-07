@@ -74,7 +74,7 @@ function construirListarRequerimientosPendientesParaVincularConOrden() {
         'processing': false,
         'destroy': true,
         'ajax': {
-            'url': 'listarRequerimientoLogisticosView',
+            'url': 'listarRequerimientoLogisticosParaVincularView',
             'type': 'POST',
             beforeSend: data => {
 
@@ -479,7 +479,6 @@ function agregarProducto(data, tipo) {
     
         }
     
-        $('.modal').modal('hide');
     }
 
 }
@@ -547,8 +546,8 @@ function construirListaItemsRequerimientoParaVincular(data) {
             // if (data[i].id_producto > 0) {
             // <td><select name="unidad[]" class="form-control ${(data[i].estado_guia_com_det > 0 && data[i].estado_guia_com_det != 7 ? '' : '')} input-sm unidadMedida" data-valor="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
             document.querySelector("table[id='listaItemsRequerimientoParaVincular'] tbody").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${data[i].estado == 7 ? 'danger textRedStrikeHover' : ''};">
-                <td class="text-center"><input type="checkbox" class="handleCheckControlCheckParaAgregarItemParaVincular" name="seleccionarItemParaVincular" data-id-detalle-requerimiento="${data[i].id_detalle_requerimiento}" ${(data[i].estado == 38 || data[i].estado == 39 ? 'disabled' : '')}></td>
-                <td class="text-center">${data[i].part_number ? data[i].part_number : ''}</td>
+                <td class="text-center"><input type="checkbox" class="handleCheckControlCheckParaAgregarItemParaVincular" data-id-tipo-item="1" name="seleccionarItemParaVincular" data-id-detalle-requerimiento="${data[i].id_detalle_requerimiento}" ${(data[i].estado == 38 || data[i].estado == 39 ? 'disabled' : '')}></td>
+                <td class="text-center">${data[i].part_number ? data[i].part_number : ''} ${data[i].tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''}</td>
                 <td class="text-center">${data[i].codigo_producto ? data[i].codigo_producto : ''} </td>
                 <td class="text-center">${data[i].codigo_softlink ? data[i].codigo_softlink : ''} </td>
                 <td class="text-left">${(data[i].descripcion_producto ? data[i].descripcion_producto : (data[i].descripcion != null ? data[i].descripcion : ''))} </td>
@@ -570,7 +569,7 @@ function construirListaItemsRequerimientoParaVincular(data) {
             // }
         } else { //servicio
             document.querySelector("table[id='listaItemsRequerimientoParaVincular'] tbody").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${data[i].estado == 7 ? 'danger textRedStrikeHover' : ''};">
-            <td class="text-center"><input type="checkbox" class="handleCheckControlCheckParaAgregarItemParaVincular" data-id-detalle-requerimiento="${data[i].id_detalle_requerimiento}" name="seleccionarItemParaVincular" ${(data[i].estado == 38 || data[i].estado == 39 ? 'disabled' : '')}></td>
+            <td class="text-center"><input type="checkbox" class="handleCheckControlCheckParaAgregarItemParaVincular" data-id-tipo-item="2" data-id-detalle-requerimiento="${data[i].id_detalle_requerimiento}" name="seleccionarItemParaVincular" ${(data[i].estado == 38 || data[i].estado == 39 ? 'disabled' : '')}></td>
             <td class="text-center">(Servicio)</td>
             <td class="text-center">${data[i].codigo_producto ? data[i].codigo_producto : ''} </td>
             <td class="text-center">${data[i].codigo_softlink ? data[i].codigo_softlink : ''} </td>
@@ -704,11 +703,10 @@ function agregarItemADetalleOrden(){
         let cantidadItemSinMapear = 0;
         obtenerRequerimientoPorID(idRequerimiento).then((res) => {
             loadHeadRequerimiento([res], 2);
-    
             (res.detalle).forEach((element) => {
                 if (listaImteSeleccionadosParaVincular.includes(element.id_detalle_requerimiento)) {
                     // if (element.id_producto > 0 && (![5, 28, 7].includes(element.id_estado))) {
-                    if (element.id_producto > 0 && (![7].includes(element.id_estado))) {
+                    if (element.id_tipo_item==1 && element.id_producto > 0 && (![7].includes(element.id_estado))) {
                         i++;
     
                         let cantidad_atendido_almacen = 0;
@@ -762,12 +760,56 @@ function agregarItemADetalleOrden(){
                     } else {
                         cantidadItemSinMapear++;
                     }
+
+                    // servicios
+                    if(element.id_tipo_item==2){
+                        i++;
+                        // let cantidad_atendido_orden = 0;
+                        // if (element.ordenes_compra.length > 0) {
+                        //     (element.ordenes_compra).forEach(orden => {
+                        //         cantidad_atendido_orden += parseFloat(orden.cantidad);
+                        //     });
+                        // }
+                        // let cantidad_a_comprar = parseFloat(element.cantidad > 0 ? element.cantidad : 0) - parseFloat(cantidad_atendido_almacen) - parseFloat(cantidad_atendido_orden);
+                        // // console.log(element);
+                    
+                        document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;" class="${element.estado == 7 ? 'danger textRedStrikeHover' : ''};">
+                        <td>${element.codigo_requerimiento ? element.codigo_requerimiento : ''} <input type="hidden"  name="idRegister[]" value="${element.id_detalle_orden ? element.id_detalle_orden : this.makeId()}"><input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value="${element.id_detalle_requerimiento ? element.id_detalle_requerimiento : ''}"> <input type="hidden"  name="idTipoItem[]" value="2"></td>
+                        <td>(No aplica) <input type="hidden" value=""></td>
+                        <td>(No aplica) <input type="hidden" value=""></td>
+                        <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
+                        <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(element.descripcion ? element.descripcion : '')}" style="width:100%;height: 60px;overflow: scroll;"> ${(element.descripcion ? element.descripcion : '')}</textarea> 
+                        <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;overflow: scroll;">${(element.descripcion_complementaria ? element.descripcion_complementaria : '')}</textarea>
+                        </td>
+                        <td><select name="unidad[]" class="form-control input-sm" value="${element.id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                        <td>${(element.cantidad ? element.cantidad : '')}</td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <input class="form-control cantidad_a_comprar input-sm text-right activation handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${element.cantidad_a_comprar ? element.cantidad_a_comprar : ''}">
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
+                                <input class="form-control precio input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${element.precio_unitario ? element.precio_unitario : 0}" >
+                            </div>
+                        </td>
+                        <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm activation handleClickOpenModalEliminarItemOrden" name="btnOpenModalEliminarItemOrden" title="Eliminar Item" disabled>
+                            <i class="fas fa-trash fa-sm"></i>
+                            </button>
+                        </td>
+                    </tr>`);
+                    
+                    }
                 }
             });
     
             if (i > 0) {
                 estadoVinculoRequerimiento({ 'mensaje': `Se agregó ${i} Item(s) a la orden`, 'estado': '200' })
-    
+                $('.modal').modal('hide');
+
             } else {
                 if (cantidadItemSinMapear > 0) {
                     estadoVinculoRequerimiento({ 'mensaje': `No se puede agregar item(s) a la orden, tiene ${cantidadItemSinMapear} items sin mapear`, 'estado': '204' })
