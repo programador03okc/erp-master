@@ -69,9 +69,9 @@ Route::group(['as' => 'api-consulta.', 'prefix' => 'api-consulta'], function () 
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
-	
+
 	Route::get('duplicar-requerimiento-pago-y-actualizar-codigo/{idRequerimientoPago}/{idEstado}', 'Tesoreria\RequerimientoPagoController@duplicarRequerimientoPagoYActualizarCodigo');
-	
+
 	Route::group(['as' => 'mgcp.', 'prefix' => 'mgcp'], function () {
 		Route::name('cuadro-costos.')->prefix('cuadro-costos')->middleware('auth')->group(function () {
 			Route::get('detalles/{id?}', 'CuadroCostoController@detalles')->name('detalles');
@@ -1445,6 +1445,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('seriesVentaExcel/{id}', 'Almacen\Movimiento\SalidasPendientesController@seriesVentaExcel');
 				Route::post('salidasPendientesExcel', 'Almacen\Movimiento\SalidasPendientesController@salidasPendientesExcel')->name('salidasPendientesExcel');
 				Route::post('salidasProcesadasExcel', 'Almacen\Movimiento\SalidasPendientesController@salidasProcesadasExcel')->name('salidasProcesadasExcel');
+
+				Route::get('actualizaItemsODE/{id}', 'Almacen\Movimiento\SalidasPendientesController@actualizaItemsODE');
+				Route::get('actualizaItemsODI/{id}', 'Almacen\Movimiento\SalidasPendientesController@actualizaItemsODI');
 			});
 
 			Route::group(['as' => 'customizacion.', 'prefix' => 'customizacion'], function () {

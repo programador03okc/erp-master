@@ -1538,4 +1538,186 @@ class SalidasPendientesController extends Controller
             $data->get(),
         ), 'Salidas Procesadas al ' . new Carbon() . '.xlsx');
     }
+
+    public function actualizaItemsODE($id_requerimiento)
+    {
+        try {
+            DB::beginTransaction();
+
+            $insertados = 0;
+            $requerimiento = DB::table('almacen.alm_req')
+                ->where('id_requerimiento', $id_requerimiento)
+                ->first();
+
+            $ode = DB::table('almacen.orden_despacho')
+                ->where([
+                    ['id_requerimiento', '=', $id_requerimiento],
+                    ['aplica_cambios', '=', false],
+                    ['estado', '!=', 7]
+                ])
+                ->first();
+
+            if ($requerimiento->id_tipo_requerimiento == 1) {
+
+                $detalle = DB::table('almacen.alm_det_req')
+                    ->where([
+                        ['id_requerimiento', '=', $id_requerimiento],
+                        ['id_tipo_item', '=', 1],
+                        ['entrega_cliente', '=', true],
+                        ['estado', '!=', 7]
+                    ])
+                    ->get();
+            } else {
+                $detalle = DB::table('almacen.alm_det_req')
+                    ->where([
+                        ['id_requerimiento', '=', $id_requerimiento],
+                        ['id_tipo_item', '=', 1],
+                        ['estado', '!=', 7]
+                    ])
+                    ->get();
+            }
+
+            foreach ($detalle as $d) {
+                $det = DB::table('almacen.orden_despacho_det')
+                    ->where([
+                        ['id_detalle_requerimiento', '=', $d->id_detalle_requerimiento],
+                        ['id_od', '=', $ode->id_od],
+                        ['estado', '!=', 7]
+                    ])
+                    ->first();
+
+                if ($det == null) {
+                    DB::table('almacen.orden_despacho_det')
+                        ->insert([
+                            'id_od' => $ode->id_od,
+                            'id_detalle_requerimiento' => $d->id_detalle_requerimiento,
+                            'cantidad' => $d->cantidad,
+                            'transformado' => $d->tiene_transformacion,
+                            'estado' => 1,
+                            'fecha_registro' => new Carbon()
+                        ]);
+                    $insertados++;
+                }
+
+                DB::table('almacen.alm_det_req')
+                    ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
+                    ->update(['estado' => 23]); //despacho externo
+            }
+            DB::commit();
+            return response()->json("Se insertaron " . $insertados . " items");
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json('Algo salió mal. Inténtelo nuevamente.');
+        }
+    }
+
+    public function actualizaItemsODI($id_requerimiento)
+    {
+        try {
+            DB::beginTransaction();
+
+            $insertados = 0;
+
+            $odi = DB::table('almacen.orden_despacho')
+                ->where([
+                    ['id_requerimiento', '=', $id_requerimiento],
+                    ['aplica_cambios', '=', true],
+                    ['estado', '!=', 7]
+                ])
+                ->first();
+
+            if ($odi !== null) {
+
+                $transformacion = DB::table('almacen.transformacion')
+                    ->where([
+                        ['id_od', '=', $odi->id_od],
+                        ['estado', '!=', 7]
+                    ])
+                    ->first();
+
+                $detalles = DB::table('almacen.alm_det_req')
+                    ->where([
+                        ['id_requerimiento', '=', $id_requerimiento],
+                        ['id_tipo_item', '=', 1],
+                        ['estado', '!=', 7]
+                    ])
+                    ->get();
+
+                foreach ($detalles as $i) {
+                    $det = DB::table('almacen.orden_despacho_det')
+                        ->where([
+                            ['id_detalle_requerimiento', '=', $i->id_detalle_requerimiento],
+                            ['id_od', '=', $odi->id_od],
+                            ['estado', '!=', 7]
+                        ])
+                        ->first();
+
+                    if ($det == null) {
+                        $id_od_detalle = DB::table('almacen.orden_despacho_det')
+                            ->insertGetId(
+                                [
+                                    'id_od' => $odi->id_od,
+                                    'id_detalle_requerimiento' => $i->id_detalle_requerimiento,
+                                    'cantidad' => $i->cantidad,
+                                    'transformado' => $i->tiene_transformacion,
+                                    'estado' => 1,
+                                    'fecha_registro' => new Carbon()
+                                ],
+                                'id_od_detalle'
+                            );
+                        $insertados++;
+                    } else {
+                        $id_od_detalle = $det->id_od_detalle;
+                    }
+
+                    if ($i->tiene_transformacion && $i->entrega_cliente) {
+                        $transformado = DB::table('almacen.transfor_transformado')
+                            ->where([
+                                ['id_od_detalle', '=', $id_od_detalle],
+                                ['estado', '!=', 7]
+                            ])
+                            ->first();
+
+                        if ($transformado == null) {
+                            DB::table('almacen.transfor_transformado')
+                                ->insert([
+                                    'id_transformacion' => $transformacion->id_transformacion,
+                                    'id_od_detalle' => $id_od_detalle,
+                                    'cantidad' => $i->cantidad,
+                                    'valor_unitario' => 0,
+                                    'valor_total' => 0,
+                                    'estado' => 1,
+                                    'fecha_registro' => new Carbon()
+                                ]);
+                        }
+                    } else if ($i->tiene_transformacion == false && $i->entrega_cliente == false) {
+                        $materia = DB::table('almacen.transfor_materia')
+                            ->where([
+                                ['id_od_detalle', '=', $id_od_detalle],
+                                ['estado', '!=', 7]
+                            ])
+                            ->first();
+
+                        if ($materia == null) {
+                            DB::table('almacen.transfor_materia')
+                                ->insert([
+                                    'id_transformacion' => $transformacion->id_transformacion,
+                                    'id_od_detalle' => $id_od_detalle,
+                                    'cantidad' => $i->cantidad,
+                                    'valor_unitario' => 0,
+                                    'valor_total' => 0,
+                                    'estado' => 1,
+                                    'fecha_registro' => new Carbon()
+                                ]);
+                        }
+                    }
+                }
+            }
+            DB::commit();
+            return response()->json("Se insertaron " . $insertados . " items");
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json('Algo salió mal. Inténtelo nuevamente.');
+        }
+    }
 }
