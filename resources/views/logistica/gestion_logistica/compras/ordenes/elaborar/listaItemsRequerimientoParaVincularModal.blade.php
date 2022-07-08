@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-listaItemsRequerimientoParaVincular" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width: 90%;">
+    <div class="modal-dialog" style="width: 95%;">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -22,8 +22,7 @@
                                         <th style="width: 8%; text-align:center;">Unidad medida</th>
                                         <th style="width: 5%; text-align:center;">Cantidad.</th>
                                         <th style="width: 8%; text-align:center;">Precio unitario</th>
-                                        <th style="width: 5%; text-align:center;">Reserva almacén</th>
-                                        <th style="width: 5%; text-align:center;">Reserva Orden</th>
+                                        <th style="width: 5%; text-align:center;">Movimientos almacén</th>
                                         <th style="width: 5%; text-align:center;">Estado</th>
                                     </tr>
                                 </thead>

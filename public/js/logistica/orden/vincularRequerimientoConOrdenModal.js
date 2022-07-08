@@ -525,22 +525,27 @@ function construirListaItemsRequerimientoParaVincular(data) {
     limpiarTabla('listaItemsRequerimientoParaVincular');
 
     for (let i = 0; i < data.length; i++) {
+        let movimintosAlmacen='';
+        movimintosAlmacen= data[i]['movimiento_ingresos_almacen'].map(item =>
+            item.codigo
+        ).join(', ')+ '<br>'+data[i]['movimiento_salidas_almacen'].map(item =>
+            item.codigo
+        ).join(', ')
+        // let stockComprometido = 0;
+        // (data[i].reserva).forEach(reserva => {
+        //     if (reserva.estado != 7) {
+        //         stockComprometido += parseFloat(reserva.stock_comprometido);
+        //     }
+        // });
 
-        let stockComprometido = 0;
-        (data[i].reserva).forEach(reserva => {
-            if (reserva.estado != 7) {
-                stockComprometido += parseFloat(reserva.stock_comprometido);
-            }
-        });
-
-        let atencionOrden = 0;
-        let objOrdenList = [];
-        (data[i].ordenes_compra).forEach(orden => { // TODO: no incluir anulados
-            if (orden.estado != 7) {
-                atencionOrden += parseFloat(orden.cantidad);
-                objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
-            }
-        });
+        // let atencionOrden = 0;
+        // let objOrdenList = [];
+        // (data[i].ordenes_compra).forEach(orden => { // TODO: no incluir anulados
+        //     if (orden.estado != 7) {
+        //         atencionOrden += parseFloat(orden.cantidad);
+        //         objOrdenList.push({ 'id_orden': orden.id_orden_compra, 'codigo': orden.codigo });
+        //     }
+        // });
 
         if (data[i].id_tipo_item == 1) { // producto
             // if (data[i].id_producto > 0) {
@@ -554,8 +559,7 @@ function construirListaItemsRequerimientoParaVincular(data) {
                 <td class="text-center">${data[i].abreviatura ? data[i].abreviatura : ''} </td>
                 <td class="text-center">${data[i].cantidad ? data[i].cantidad : ''} </td>
                 <td class="text-center">${data[i].moneda_simbolo ? data[i].moneda_simbolo : ''} ${data[i].precio_unitario ? $.number(data[i].precio_unitario, 2) : ''} </td>
-                <td>${stockComprometido != null && stockComprometido > 0 ? stockComprometido : '0'}</td>
-                <td>${atencionOrden != null && atencionOrden > 0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${data[i].codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)} style="cursor:pointer;" >${atencionOrden}</span>` : '0'}</td>
+                <td class="text-primary">${movimintosAlmacen??''}</td>
                 <td class="text-center">
                     <ul class="list-unstyled">
                         <li>${data[i].estado_doc ? '<strong>'+data[i].estado_doc+'</strong>' : ''}</li>
@@ -578,7 +582,6 @@ function construirListaItemsRequerimientoParaVincular(data) {
             <td class="text-center">${data[i].cantidad ? data[i].cantidad : ''} </td>
             <td class="text-center">${data[i].moneda_simbolo ? data[i].moneda_simbolo : ''} ${data[i].precio_unitario ? $.number(data[i].precio_unitario, 2) : ''} </td>
             <td></td>
-            <td>${atencionOrden != null && atencionOrden > 0 ? `<span class="label label-info handleClickModalVerOrdenDeRequerimiento" data-codigo-requerimiento="${data[i].codigo_requerimiento}" data-orden=${JSON.stringify(objOrdenList)} style="cursor:pointer;" >${atencionOrden}</span>` : '0'}</td>
             <td class="text-center">
                 <ul class="list-unstyled">
                     <li>${data[i].estado_doc ? '<strong>'+data[i].estado_doc+'</strong>' : ''}</li>
