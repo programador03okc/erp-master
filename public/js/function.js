@@ -121,10 +121,7 @@ function openModal(type, active) {
 
             break;
         case "crear-orden-requerimiento":
-            const ordenModel = new OrdenModel();
-            const ordenController = new OrdenCtrl(ordenModel);
-            const ordenView = new OrdenView(ordenController);
-            ordenView.ordenesElaboradasModal();
+            ordenesElaboradasModal();
             break;
 
         /* administracion */
@@ -443,10 +440,7 @@ function eventRegister(type, data, action, frm_active) {
 
             break;
         case "crear-orden-requerimiento":
-            const ordenModel = new OrdenModel();
-            const ordenController = new OrdenCtrl(ordenModel);
-            const ordenView = new OrdenView(ordenController);
-            ordenView.save_orden(data, action);
+            save_orden(data, action);
 
             break;
         case "proveedores":
@@ -723,10 +717,7 @@ function anularRegister(type, ids, active) {
             requerimientoView.anularRequerimiento(ids);
             break;
         case "crear-orden-requerimiento":
-            const ordenModel = new OrdenModel();
-            const ordenController = new OrdenCtrl(ordenModel);
-            const ordenView = new OrdenView(ordenController);
-            ordenView.anularOrden(ids);
+            anularOrden(ids);
             break;
         //Tesoreria
         case "tesoreria_solicitudes":

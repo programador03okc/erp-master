@@ -38,6 +38,7 @@ use App\Models\Almacen\AdjuntoDetalleRequerimiento;
 use App\Models\Almacen\AdjuntoRequerimiento;
 use App\Models\Almacen\Almacen;
 use App\Models\Almacen\Producto;
+use App\Models\Almacen\RequerimientoLogisticoView;
 use App\Models\Almacen\Transferencia;
 use App\Models\Configuracion\Grupo;
 use App\Models\Logistica\Orden;
@@ -3997,4 +3998,9 @@ class RequerimientoController extends Controller
             return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al anular el adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
+    function listarRequerimientoLogisticosParaVincularView(Request $request){
+        $lista = RequerimientoLogisticoView::whereNotIn('id_estado',[1,7]);
+        return datatables($lista)->toJson();
+    }
+
 }

@@ -17,24 +17,7 @@ class OrdenModel {
             });  
     }
     // modal listar items catalogo
- 
 
-
-    obtenerDetalleRequerimientos(id){
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                type: 'GET',
-                url:`detalle-requerimiento/${id}`,
-                dataType: 'JSON',
-                success(response) {
-                    resolve(response);
-                },
-                error: function(err) {
-                reject(err)
-                }
-                });
-            });
-    }
     anularOrden(id,sustento){
         return new Promise(function(resolve, reject) {
             $.ajax({
@@ -60,21 +43,21 @@ class OrdenModel {
             });
     }
 
-    obtenerRequerimiento(id){
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                type: 'GET',
-                url:`requerimiento/${id}`,
-                dataType: 'JSON',
-                success(response) {
-                    resolve(response);
-                },
-                error: function(err) {
-                reject(err)
-                }
-                });
-            });
-    }
+    // obtenerRequerimiento(id){
+    //     return new Promise(function(resolve, reject) {
+    //         $.ajax({
+    //             type: 'GET',
+    //             url:`requerimiento/${id}`,
+    //             dataType: 'JSON',
+    //             success(response) {
+    //                 resolve(response);
+    //             },
+    //             error: function(err) {
+    //             reject(err)
+    //             }
+    //             });
+    //         });
+    // }
 
 }
 

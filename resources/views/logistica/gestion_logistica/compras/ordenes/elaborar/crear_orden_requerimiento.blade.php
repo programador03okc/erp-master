@@ -306,12 +306,12 @@ Orden de compra / servicio
                             <h6>Item's de requerimiento</h6>
                         </legend>
                         <div class="btn-group" role="group" aria-label="...">
-                        @if((in_array(Auth::user()->id_usuario,[3,27,1,77])))
+                        @if((in_array(Auth::user()->id_usuario,[3,17,27,1,77])))
                             <button type="button" class="btn btn-xs btn-success activation handleClickCatalogoProductosModal" id="btnAgregarProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar producto"><i class="fas fa-plus"></i> Productos</button>
                         @endif
                             <button type="button" class="btn btn-xs btn-info activation handleClickCatalogoProductosObsequioModal" id="btnAgregarProductoObsequio" data-toggle="tooltip" data-placement="bottom" title="Agregar producto para obsequio"><i class="fas fa-plus"></i> Productos para obsequio</button>
                             <button type="button" class="btn btn-xs btn-primary activation handleClickAgregarServicio" id="btnAgregarServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar servicio"><i class="fas fa-plus"></i> Servicio</button>
-                            <button type="button" class="btn btn-xs btn-default activation handleClickVincularRequerimientoAOrdenModal" id="btnAgregarVinculoRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Agregar items de otro requerimiento" disabled><i class="fas fa-plus"></i> Vincular otro requerimiento
+                            <button type="button" class="btn btn-xs btn-default activation handleClickVincularRequerimientoAOrdenModalOLD" onClick="openVincularRequerimientoConOrden();" id="btnAgregarVinculoRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Agregar items de otro requerimiento" disabled><i class="fas fa-plus"></i> Vincular otro requerimiento
                             </button>
                         </div>
                         <table class="table table-striped table-condensed table-bordered" id="listaDetalleOrden" width="100%">
@@ -397,7 +397,9 @@ Orden de compra / servicio
 </div>
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_lista_oc_softlink')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_estado_cuadro_presupuesto')
-@include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_vincular_requerimiento_orden')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.vincularRequerimientoConOrdenModal')
+@include('logistica.gestion_logistica.compras.ordenes.elaborar.listaItemsRequerimientoParaVincularModal')
+@include('logistica.gestion_logistica.compras.pendientes.modal_ver_orden_de_requerimiento')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_catalogo_items')
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_ordenes_elaboradas')
 @include('logistica.gestion_logistica.proveedores.modal_cuentas_bancarias_proveedor')
@@ -409,7 +411,7 @@ Orden de compra / servicio
 @include('logistica.gestion_logistica.compras.ordenes.elaborar.modal_trabajadores')
 
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_cuadro_costos')
-@include('logistica.requerimientos.modal_vincular_item_requerimiento')
+@include('logistica.requerimientos.modal_vincular_item_requerimiento') <!--revisar uso -->
 @endsection
 
 @section('scripts')
@@ -426,21 +428,14 @@ Orden de compra / servicio
 <script src="{{('/js/logistica/proveedores/proveedorContactoModal.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/proveedorContactoModal.js'))}}"></script>
 <script src="{{('/js/logistica/orden/trabajadorModal.js')}}?v={{filemtime(public_path('/js/logistica/orden/trabajadorModal.js'))}}"></script>
 <script src="{{ asset('js/publico/consulta_sunat.js')}}?v={{filemtime(public_path('js/publico/consulta_sunat.js'))}}"></script>
-<script src="{{('/js/logistica/orden/OrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenModel.js'))}}"></script>
-<script src="{{('/js/logistica/orden/OrdenView.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenView.js'))}}"></script>
-<script src="{{('/js/logistica/orden/OrdenController.js')}}?v={{filemtime(public_path('/js/logistica/orden/OrdenController.js'))}}"></script>
+<script src="{{('/js/logistica/orden/orden.js')}}?v={{filemtime(public_path('/js/logistica/orden/orden.js'))}}"></script>
 <script src="{{('/js/logistica/orden/relacionarOcSoftlink.js')}}?v={{filemtime(public_path('/js/logistica/orden/relacionarOcSoftlink.js'))}}"></script>
+<script src="{{('/js/logistica/orden/vincularRequerimientoConOrdenModal.js')}}?v={{filemtime(public_path('/js/logistica/orden/vincularRequerimientoConOrdenModal.js'))}}"></script>
 
 
 <script>
     window.onload = function() {
         seleccionarMenu(window.location);
-
-        const ordenModel = new OrdenModel();
-        const ordenController = new OrdenCtrl(ordenModel);
-        const ordenView = new OrdenView(ordenController);
-        ordenView.init();
-        ordenView.initializeEventHandler();
     };
 </script>
 @endsection
