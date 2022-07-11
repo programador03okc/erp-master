@@ -357,7 +357,7 @@ class ListarRequerimientoView {
             },
             'columns': [
                 { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'visible': false },
-                { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center','visible': false },
+                { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center', 'visible': false },
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
@@ -371,7 +371,7 @@ class ListarRequerimientoView {
                 { 'data': 'monto_total', 'name': 'monto_total', 'defaultContent': '', 'className': 'text-right' },
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
-                { 'data': 'id_requerimiento' ,'visible': false }
+                { 'data': 'id_requerimiento', 'visible': false }
             ],
             'columnDefs': [
 
@@ -499,7 +499,7 @@ class ListarRequerimientoView {
                     $tablaListaRequerimientosElaborados.search($input.val()).draw();
                 })
                 //Fin boton de busqueda
- 
+
                 $('#ListaRequerimientosElaborados tbody').on("click", "label.handleClickAbrirOrdenPDF", function (e) {
                     that.abrirOrdenPDF(e.currentTarget.dataset.idOrdenCompra);
                 });
@@ -637,33 +637,33 @@ class ListarRequerimientoView {
         document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='observacion']").textContent = data.observacion;
         document.querySelector("div[id='modal-requerimiento'] span[name='simboloMoneda']").textContent = data.simbolo_moneda;
 
-        if(data.id_incidencia>0){
+        if (data.id_incidencia > 0) {
             document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='incidencia']").textContent = data.codigo_incidencia;
             document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_incidencia']").classList.remove("oculto");
-        }else{
+        } else {
             document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_incidencia']").classList.add("oculto");
 
         }
-        
-        let selectorSpanSimboloMoneda =document.querySelectorAll("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] span[name='simbolo_moneda']")
-        selectorSpanSimboloMoneda.forEach(element => {
-            element.textContent=data.simbolo_moneda;
-        });
-        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_subtotal']").textContent =$.number(data.monto_subtotal,2);
-        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_igv']").textContent = $.number(data.monto_igv,2);
-        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_total']").textContent = $.number(data.monto_total,2);
 
-        if(data.id_cc>0){
-            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo_cdp']").textContent = data.codigo_oportunidad??'';
+        let selectorSpanSimboloMoneda = document.querySelectorAll("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] span[name='simbolo_moneda']")
+        selectorSpanSimboloMoneda.forEach(element => {
+            element.textContent = data.simbolo_moneda;
+        });
+        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_subtotal']").textContent = $.number(data.monto_subtotal, 2);
+        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_igv']").textContent = $.number(data.monto_igv, 2);
+        document.querySelector("div[id='modal-requerimiento'] table[id='listaDetalleRequerimientoModal'] label[name='monto_total']").textContent = $.number(data.monto_total, 2);
+
+        if (data.id_cc > 0) {
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='codigo_cdp']").textContent = data.codigo_oportunidad ?? '';
             document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.remove("oculto");
-        }else{
+        } else {
             document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.add("oculto");
 
         }
-        if(data.id_proyecto>0){
-            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='proyecto_presupuesto']").textContent = data.descripcion_proyecto??'';
+        if (data.id_proyecto > 0) {
+            document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] td[id='proyecto_presupuesto']").textContent = data.descripcion_proyecto ?? '';
             document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.remove("oculto");
-        }else{
+        } else {
             document.querySelector("div[id='modal-requerimiento'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.add("oculto");
 
         }
@@ -770,25 +770,26 @@ class ListarRequerimientoView {
         let html = '';
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
-                let cantidadAdjuntosItem = 0;
-                cantidadAdjuntosItem = data[i].adjuntos.length;
-                if (cantidadAdjuntosItem > 0) {
-                    (data[i].adjuntos).forEach(element => {
-                        if (element.estado == 1) {
-                            tempArchivoAdjuntoItemList.push(
-                                {
-                                    id: element.id_adjunto,
-                                    idRegister: element.id_detalle_requerimiento,
-                                    nameFile: element.archivo,
-                                    dateFile: element.fecha_registro,
-                                    estado: element.estado
-                                }
-                            );
-                        }
+                if (data[i].estado != 7) {
+                    let cantidadAdjuntosItem = 0;
+                    cantidadAdjuntosItem = data[i].adjuntos.length;
+                    if (cantidadAdjuntosItem > 0) {
+                        (data[i].adjuntos).forEach(element => {
+                            if (element.estado == 1) {
+                                tempArchivoAdjuntoItemList.push(
+                                    {
+                                        id: element.id_adjunto,
+                                        idRegister: element.id_detalle_requerimiento,
+                                        nameFile: element.archivo,
+                                        dateFile: element.fecha_registro,
+                                        estado: element.estado
+                                    }
+                                );
+                            }
 
-                    });
-                }
-                document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
+                        });
+                    }
+                    document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
                 <td>${i + 1}</td>
                 <td>${data[i].codigo_partida ? data[i].codigo_partida : ''}</td>
                 <td>${data[i].codigo_centro_costo ? data[i].codigo_centro_costo : ''}</td>
@@ -805,8 +806,8 @@ class ListarRequerimientoView {
                 </td>
             </tr>`);
 
-                document.querySelector("a[class='handleClickVerAdjuntosItem" + i + "']") ? document.querySelector("a[class~='handleClickVerAdjuntosItem" + i + "']").addEventListener("click", this.verAdjuntosItem.bind(this, data[i].id_detalle_requerimiento), false) : false;
-
+                    document.querySelector("a[class='handleClickVerAdjuntosItem" + i + "']") ? document.querySelector("a[class~='handleClickVerAdjuntosItem" + i + "']").addEventListener("click", this.verAdjuntosItem.bind(this, data[i].id_detalle_requerimiento), false) : false;
+                }
 
             }
 
@@ -870,7 +871,7 @@ class ListarRequerimientoView {
     //         console.log(err)
     //     })
     // }
-    abrirOrdenPDF(idOrden){
+    abrirOrdenPDF(idOrden) {
         console.log(idOrden);
         let url = `/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${idOrden}`;
         var win = window.open(url, "_blank");

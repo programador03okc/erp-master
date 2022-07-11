@@ -14,7 +14,7 @@ class DetalleRequerimiento extends Model
     protected $table = 'almacen.alm_det_req';
     protected $primaryKey = 'id_detalle_requerimiento';
     public $timestamps = false;
-    protected $appends = ['codigo_requerimiento', 'ordenes_compra', 'facturas', 'proveedor_seleccionado'];
+    protected $appends = ['codigo_requerimiento', 'ordenes_compra', 'facturas', 'proveedor_seleccionado','movimiento_ingresos_almacen','movimiento_salidas_almacen'];
 
     public function getPartNumberAttribute()
     {
@@ -42,6 +42,38 @@ class DetalleRequerimiento extends Model
 
         // return $keyed;
         return $ordenes;
+    }
+
+    public function getMovimientoIngresosAlmacenAttribute()
+    {
+        $dataIngresos = MovimientoDetalle::leftJoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', 'mov_alm_det.id_guia_com_det')
+        ->leftJoin('almacen.mov_alm', 'mov_alm.id_mov_alm', 'mov_alm_det.id_mov_alm')
+        ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', 'guia_com_det.id_oc_det')
+        ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', 'log_det_ord_compra.id_orden_compra')
+        ->join('almacen.alm_det_req', 'log_det_ord_compra.id_detalle_requerimiento', 'alm_det_req.id_detalle_requerimiento')
+        ->where([
+            ['alm_det_req.id_detalle_requerimiento', $this->attributes['id_detalle_requerimiento']],
+            ['mov_alm.estado', '!=', 7],
+            ['log_ord_compra.estado', '!=', 7]
+        ])
+        ->select(['mov_alm.id_mov_alm', 'mov_alm.codigo','mov_alm.fecha_emision'])->distinct()->get();
+        
+        return $dataIngresos;
+    }
+    public function getMovimientoSalidasAlmacenAttribute()
+    {
+        $dataSalidas = MovimientoDetalle::leftJoin('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', 'mov_alm_det.id_guia_ven_det')
+        ->leftJoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', 'guia_ven_det.id_od_det')
+        ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', 'orden_despacho_det.id_detalle_requerimiento')
+        ->leftJoin('almacen.mov_alm', 'mov_alm.id_mov_alm', 'mov_alm_det.id_mov_alm')
+        ->where([
+            ['alm_det_req.id_detalle_requerimiento', $this->attributes['id_detalle_requerimiento']],
+            ['mov_alm.estado', '!=', 7],
+            ['orden_despacho_det.estado', '!=', 7]
+        ])
+        ->select(['mov_alm.id_mov_alm', 'mov_alm.codigo','mov_alm.fecha_emision'])->distinct()->get();
+        
+        return $dataSalidas;
     }
     // public function getGuiasIngresoAttribute(){
 
