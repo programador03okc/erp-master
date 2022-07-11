@@ -1614,7 +1614,7 @@ class SalidasPendientesController extends Controller
             return response()->json(['tipo' => $tipo, 'mensaje' => $msj, 200]);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['tipo' => 'danger', 'msj' => 'Algo salió mal. Inténtelo nuevamente.', 200]);
+            return response()->json(['tipo' => 'danger', 'mensaje' => 'Algo salió mal. Inténtelo nuevamente.', 200]);
         }
     }
 
@@ -1733,7 +1733,7 @@ class SalidasPendientesController extends Controller
             return response()->json(['tipo' => $tipo, 'mensaje' => $msj, 200]);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json(['tipo' => 'danger', 'msj' => 'Algo salió mal. Inténtelo nuevamente.', 200]);
+            return response()->json(['tipo' => 'danger', 'mensaje' => 'Algo salió mal. Inténtelo nuevamente.', 200]);
         }
     }
 }

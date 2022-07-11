@@ -238,7 +238,7 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
         <tbody>
             <?php
             $movimientos = CcFilaMovimientoTransformacion::join('almacen.alm_det_req','alm_det_req.id_cc_am_filas','=','cc_fila_movimientos_transformacion.id_fila_ingresa')
-->join('almacen.alm_prod','alm_prod.id_producto','=','alm_det_req.id_producto')
+->leftJoin('almacen.alm_prod','alm_prod.id_producto','=','alm_det_req.id_producto')
 ->select('cc_fila_movimientos_transformacion.*','alm_prod.codigo as codigo_agile','alm_prod.cod_softlink',
 'alm_prod.part_number','alm_prod.descripcion as producto_descripcion_agile')
             ->where('cc_fila_movimientos_transformacion.id_fila_base', $fila->id)
@@ -246,14 +246,14 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
             ?>
             @if ($movimientos->count()==0)
             <tr>
-                <td class="text-center" colspan="3">Sin datos de ingresos y salidas</td>
+                <td class="text-center" colspan="5">Sin datos de ingresos y salidas</td>
             </tr>
             @endif
             @foreach ($movimientos as $movimiento)
             <tr>
-                <td>{{$movimiento->id_fila_ingresa!==null ? $movimiento->codigo_agile : ''}}</td>
-                <td>{{$movimiento->id_fila_ingresa!==null ? $movimiento->cod_softlink : ''}}</td>
-                <td>{{$movimiento->id_fila_ingresa!==null ? $movimiento->producto_descripcion_agile : ''}}</td>
+                <td>{{$movimiento->id_fila_ingresa!==null ? ($movimiento->codigo_agile!==null?$movimiento->codigo_agile:'') : ''}}</td>
+                <td>{{$movimiento->id_fila_ingresa!==null ? ($movimiento->cod_softlink!==null?$movimiento->cod_softlink:'') : ''}}</td>
+                <td>{{$movimiento->id_fila_ingresa!==null ? ($movimiento->producto_descripcion_agile!==null?$movimiento->producto_descripcion_agile:'') : ''}}</td>
                 <td>{{$movimiento->sale}}</td>
                 <td>{{$movimiento->comentario}}</td>
             </tr>
