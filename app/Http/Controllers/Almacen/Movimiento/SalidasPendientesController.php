@@ -1603,11 +1603,18 @@ class SalidasPendientesController extends Controller
                     ->where('id_detalle_requerimiento', $d->id_detalle_requerimiento)
                     ->update(['estado' => 23]); //despacho externo
             }
+            if ($insertados > 0) {
+                $tipo = "success";
+                $msj = "Se insertaron " . $insertados . " items";
+            } else {
+                $tipo = "warning";
+                $msj = "No se actualizaron items.";
+            }
             DB::commit();
-            return response()->json("Se insertaron " . $insertados . " items");
+            return response()->json(['tipo' => $tipo, 'mensaje' => $msj, 200]);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json('Algo salió mal. Inténtelo nuevamente.');
+            return response()->json(['tipo' => 'danger', 'msj' => 'Algo salió mal. Inténtelo nuevamente.', 200]);
         }
     }
 
@@ -1617,6 +1624,8 @@ class SalidasPendientesController extends Controller
             DB::beginTransaction();
 
             $insertados = 0;
+            $tipo = '';
+            $msj = '';
 
             $odi = DB::table('almacen.orden_despacho')
                 ->where([
@@ -1712,12 +1721,19 @@ class SalidasPendientesController extends Controller
                         }
                     }
                 }
+                if ($insertados > 0) {
+                    $tipo = "success";
+                    $msj = "Se insertaron " . $insertados . " items";
+                } else {
+                    $tipo = "warning";
+                    $msj = "No se actualizaron items.";
+                }
             }
             DB::commit();
-            return response()->json("Se insertaron " . $insertados . " items");
+            return response()->json(['tipo' => $tipo, 'mensaje' => $msj, 200]);
         } catch (\PDOException $e) {
             DB::rollBack();
-            return response()->json('Algo salió mal. Inténtelo nuevamente.');
+            return response()->json(['tipo' => 'danger', 'msj' => 'Algo salió mal. Inténtelo nuevamente.', 200]);
         }
     }
 }

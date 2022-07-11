@@ -30,8 +30,12 @@ function open_guia_create(data) {
     $('[name=serie]').val('');
     $('[name=numero]').val('');
     $('[name=comentario]').val('');
-    // $('#serie').text('');
-    // $('#numero').text('');
+
+    if (data.aplica_cambios) {
+        actualizarItemsODI(data.id_requerimiento);
+    } else {
+        actualizarItemsODE(data.id_requerimiento);
+    }
     detalle = [];
     listarDetalleOrdenDespacho(data.id_requerimiento, data.id_od, (data.aplica_cambios ? 'si' : 'no'), (data.tiene_transformacion ? 'si' : 'no'));
     // cargar_almacenes(data.id_sede, 'id_almacen');
@@ -362,6 +366,7 @@ function guardarGuiaVenta(data) {
         console.log(errorThrown);
     });
 }
+
 function ceros_numero_ven(numero) {
     if (numero == 'numero') {
         var num = $('[name=numero]').val();
@@ -371,4 +376,54 @@ function ceros_numero_ven(numero) {
         var num = $('[name=serie]').val();
         $('[name=serie]').val(leftZero(4, num));
     }
+}
+
+function actualizarItemsODI(id_requerimiento) {
+    $.ajax({
+        type: 'GET',
+        url: 'actualizaItemsODI/' + id_requerimiento,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            if (response.tipo == 'success') {
+                Lobibox.notify(response.tipo, {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: response.mensaje
+                });
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
+function actualizarItemsODE(id_requerimiento) {
+    $.ajax({
+        type: 'GET',
+        url: 'actualizaItemsODE/' + id_requerimiento,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            if (response.tipo == 'success') {
+                Lobibox.notify(response.tipo, {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: response.mensaje
+                });
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }
