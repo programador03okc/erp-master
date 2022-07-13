@@ -237,7 +237,7 @@ $ordenCompra = $oportunidad->ordenCompraPropia;
         </thead>
         <tbody>
             <?php
-            $movimientos = CcFilaMovimientoTransformacion::join('almacen.alm_det_req','alm_det_req.id_cc_am_filas','=','cc_fila_movimientos_transformacion.id_fila_ingresa')
+            $movimientos = CcFilaMovimientoTransformacion::leftjoin('almacen.alm_det_req','alm_det_req.id_cc_am_filas','=','cc_fila_movimientos_transformacion.id_fila_ingresa')
 ->leftJoin('almacen.alm_prod','alm_prod.id_producto','=','alm_det_req.id_producto')
 ->select('cc_fila_movimientos_transformacion.*','alm_prod.codigo as codigo_agile','alm_prod.cod_softlink',
 'alm_prod.part_number','alm_prod.descripcion as producto_descripcion_agile')
