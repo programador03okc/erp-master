@@ -318,7 +318,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'propuestas.', 'prefix' => 'propuestas'], function () {
 
 			Route::group(['as' => 'propuestas-cliente.', 'prefix' => 'propuestas-cliente'], function () {
-				//Propuesta Cliente				
+				//Propuesta Cliente
 				Route::get('index', 'ProyectosController@view_propuesta')->name('index');
 				Route::get('listar_propuestas', 'ProyectosController@listar_propuestas');
 				Route::get('mostrar_propuesta/{id}', 'ProyectosController@mostrar_propuesta');
@@ -752,6 +752,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'pago.', 'prefix' => 'pago'], function () {
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewListaRequerimientoPago')->name('index');
+                Route::get('listado-requerimientos-pagos-export-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Tesoreria\RequerimientoPagoController@listadoRequerimientoPagoExportExcel');
 				Route::post('lista-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@listarRequerimientoPago')->name('lista-requerimiento-pago');
 				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');
 				// Route::get('detalle-requerimiento-pago/{id?}', 'Tesoreria\RequerimientoPagoController@listarDetalleRequerimientoPago')->name('detalle-requerimiento-pago');
@@ -926,14 +927,14 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 						Route::get('facturas/{id_orden}', 'OrdenController@obtenerFacturas');
-						//nivel cabecera 
+						//nivel cabecera
 						// Route::post('listar-ordenes', 'OrdenController@listarOrdenes');
 						Route::post('lista-ordenes-elaboradas', 'OrdenController@listaOrdenesElaboradas');
 						Route::get('detalle-orden/{id_orden}', 'OrdenController@detalleOrden');
 						Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 						// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 						Route::get('verSession', 'LogisticaController@verSession');
-						// Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden'); 
+						// Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden');
 						Route::get('exportar-lista-ordenes-elaboradas-nivel-cabecera-excel', 'OrdenController@exportListaOrdenesNivelCabeceraExcel');
 						Route::get('exportar-lista-ordenes-elaboradas-nivel-detalle-excel', 'OrdenController@exportListaOrdenesNivelDetalleExcel');
 
@@ -955,9 +956,9 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('obtener-destinatario-por-nro-documento', 'Tesoreria\RequerimientoPagoController@obtenerDestinatarioPorNumeroDeDocumento');
 						Route::post('obtener-destinatario-por-nombre', 'Tesoreria\RequerimientoPagoController@obtenerDestinatarioPorNombre');
 
-						// Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden'); 
+						// Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden');
 						// Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');
-						// Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago'); 
+						// Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago');
 					});
 				});
 			});
@@ -1532,8 +1533,8 @@ Route::group(['middleware' => ['auth']], function () {
 			// Route::get('mostrar_doc_com/{id?}', 'ComprobanteCompraController@mostrar_doc_com');
 			// Route::get('guardar_doc_items_guia/{id?}/{id_doc?}', 'ComprobanteCompraController@guardar_doc_items_guia');
 			// Route::get('mostrar_doc_detalle/{id?}', 'ComprobanteCompraController@mostrar_doc_detalle');
-			// Route::get('actualiza_totales_doc/{por?}/{id?}/{fec?}', 'ComprobanteCompraController@actualiza_totales_doc'); 
-			// Route::get('listar_ordenes_sin_comprobante/{id_proveedor?}', 'ComprobanteCompraController@listar_ordenes_sin_comprobante'); 
+			// Route::get('actualiza_totales_doc/{por?}/{id?}/{fec?}', 'ComprobanteCompraController@actualiza_totales_doc');
+			// Route::get('listar_ordenes_sin_comprobante/{id_proveedor?}', 'ComprobanteCompraController@listar_ordenes_sin_comprobante');
 			// Route::post('guardar_doc_com_det_orden/{id_doc?}', 'ComprobanteCompraController@guardar_doc_com_det_orden');
 			// Route::get('listar_doc_com_orden/{id_doc?}', 'ComprobanteCompraController@listar_doc_com_orden');
 			// Route::get('getOrdenByDetOrden/{id_det_orden?}', 'ComprobanteCompraController@getOrdenByDetOrden');
@@ -2134,7 +2135,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('solicitudes_subtipos/{tipo_id}', 'Tesoreria\AjaxController@getSolicitudesSubTipos')->name('sol_subtipos');
 		Route::get('solicitudes', 'Tesoreria\AjaxController@getSolicitudes')->name('solicitudes');
 
-		
+
 		Route::get('presupuesto/{area_id}', 'Tesoreria\AjaxController@getPresupuesto')->name('presupuesto');
 	});
 */
@@ -2389,8 +2390,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('logistica/denegar_documento', 'LogisticaController@denegar_requerimiento');
 	Route::get('get_flujo_aprobacion/{req}/{doc}', 'LogisticaController@get_flujo_aprobacion');
 	Route::post('logistica/guardar_sustento', 'LogisticaController@guardar_sustento');
-	// Route::post('logistica/aceptar_sustento', 'LogisticaController@aceptar_sustento'); 
-	// Route::get('verUsuario', 'EquipoController@verUsuario'); 
+	// Route::post('logistica/aceptar_sustento', 'LogisticaController@aceptar_sustento');
+	// Route::get('verUsuario', 'EquipoController@verUsuario');
 
 	Route::get('logistica/get_cuadro_costos_comercial', 'LogisticaController@get_cuadro_costos_comercial');
 

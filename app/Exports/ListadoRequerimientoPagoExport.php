@@ -2,15 +2,20 @@
 
 namespace App\Exports;
 
-use App\Http\Controllers\Logistica\RequerimientoController;
-use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
-use Carbon\Carbon;
+use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Tesoreria\RequerimientoPagoController;
 
-class reporteRequerimientosBienesServiciosExcel implements FromView
+class ListadoRequerimientoPagoExport implements FromView
 {
-
-
+    /**
+    * @return \Illuminate\Support\Collection
+    */
+    // public function collection()
+    // {
+    //     //
+    // }
     public function __construct(string $meOrAll, string $idEmpresa,string $idSede,string $idGrupo,string $idDivision, string $fechaRegistroDesde, string $fechaRegistroHasta, string $idEstado)
     {
         $this->meOrAll = $meOrAll;
@@ -22,7 +27,6 @@ class reporteRequerimientosBienesServiciosExcel implements FromView
         $this->fechaRegistroHasta = $fechaRegistroHasta;
         $this->idEstado = $idEstado;
     }
-
     public function view(): View{
         $meOrAll= $this->meOrAll;
         $idEmpresa= $this->idEmpresa;
@@ -32,7 +36,8 @@ class reporteRequerimientosBienesServiciosExcel implements FromView
         $fechaRegistroDesde = $this->fechaRegistroDesde;
         $fechaRegistroHasta = $this->fechaRegistroHasta;
         $idEstado = $this->idEstado;
-        $requerimientos = (new RequerimientoController)->obtenerRequerimientosElaborados($meOrAll,$idEmpresa,$idSede,$idGrupo,$idDivision,$fechaRegistroDesde,$fechaRegistroHasta,$idEstado)->orderBy('fecha_registro','desc')->get();
+        $requerimientos = (new RequerimientoPagoController)->obtenerRequerimientosElaborados($meOrAll,$idEmpresa,$idSede,$idGrupo,$idDivision,$fechaRegistroDesde,$fechaRegistroHasta,$idEstado)->orderBy('fecha_registro','desc')->get();
+
         $data=[];
         foreach($requerimientos as $element){
 
@@ -41,8 +46,8 @@ class reporteRequerimientosBienesServiciosExcel implements FromView
                 'codigo'=> $element->codigo,
                 'concepto'=> $element->concepto,
                 'fecha_registro'=> $element->fecha_registro,
-                'fecha_entrega'=> $element->fecha_entrega,
-                'tipo_requerimiento'=> $element->tipo_requerimiento,
+                // 'fecha_entrega'=> $element->fecha_entrega,
+                'tipo_requerimiento'=> $element->descripcion_requerimiento_pago_tipo,
                 'razon_social'=> $element->descripcion_empresa_sede,
                 'grupo'=> $element->grupo,
                 'division'=> $element->division,
@@ -50,15 +55,14 @@ class reporteRequerimientosBienesServiciosExcel implements FromView
                 'simbolo_moneda'=> $element->simbolo_moneda,
                 'monto_total'=> number_format($element->monto_total,2),
                 'observacion'=> $element->observacion,
-                'nombre_usuario'=> $element->nombre_usuario,
+                'nombre_usuario'=> $element->usuario_nombre_corto,
                 'observacion'=> $element->observacion,
                 'estado_doc'=> $element->nombre_estado
 
             ];
         }
-        return view('necesidades.reportes.view_requerimientos_bienes_servicios_export', [
+        return view('necesidades.reportes.listado_requerimiento_pago_export_excel', [
             'requerimientos' => $data
         ]);
     }
-
 }

@@ -63,7 +63,7 @@ class ListarRequerimientoPagoView {
                         cancelButtonColor: '#d33',
                         cancelButtonText: 'cancelar',
                         confirmButtonText: 'Si, cerrar'
-            
+
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $('#modal-requerimiento-pago').modal('hide');
@@ -71,11 +71,11 @@ class ListarRequerimientoPagoView {
                         }
                     })
                 }
-                
+
             }
         };
 
-  
+
         $('#modal-requerimiento-pago').on("change", "select.handleChangeOptEmpresa", (e) => {
             this.changeOptEmpresaSelect(e.currentTarget);
         });
@@ -235,6 +235,269 @@ class ListarRequerimientoPagoView {
             obj.currentTarget.children[0].classList.replace('fa-chevron-down', 'fa-chevron-right')
         }
     }
+    //para abrir el modal
+    abrirModalFiltrosRequerimientosElaborados() {
+        $('#modal-filtro-requerimientos-elaborados').modal({
+            show: true,
+            backdrop: 'static'
+        });
+    }
+    initializeEventHandler() {
+        // document.querySelector("button[class~='handleClickImprimirRequerimientoPdf']").addEventListener("click", this.imprimirRequerimientoPdf.bind(this), false);
+
+        $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeUpdateValorFiltroRequerimientosElaborados", (e) => {
+            this.updateValorFiltroRequerimientosElaborados();
+        });
+
+        $('#modal-filtro-requerimientos-elaborados').on("click", "input[type=checkbox]", (e) => {
+            this.estadoCheckFiltroRequerimientosElaborados(e);
+        });
+
+        $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeFiltroEmpresa", (e) => {
+            this.getDataSelectSede(e.currentTarget.value);
+        });
+        $('#modal-filtro-requerimientos-elaborados').on("change", "select.handleChangeFiltroGrupo", (e) => {
+            this.getDataSelectDivision(e.currentTarget.value);
+        });
+        $('#ListaRequerimientosElaborados').on("click", "button.handleClickImprimirRequerimientoPdf", (e) => {
+            this.imprimirRequerimientoPdf(e.currentTarget);
+        });
+        $('#modal-adjuntar-archivos-requerimiento').on("click", "button.handleClickDescargarArchivoRequerimientoCabecera", (e) => {
+            this.descargarArchivoRequerimiento(e.currentTarget);
+        });
+        $('#modal-adjuntar-archivos-detalle-requerimiento').on("click", "button.handleClickDescargarArchivoRequerimientoDetalle", (e) => {
+            this.descargarArchivoItem(e.currentTarget);
+        });
+
+
+
+        $('#modal-filtro-requerimientos-elaborados').on('hidden.bs.modal', () => {
+            this.updateValorFiltroRequerimientosElaborados();
+
+            if (this.updateContadorFiltroRequerimientosElaborados() == 0) {
+                this.mostrarListaRequerimientoPago('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+            } else {
+
+                this.mostrarListaRequerimientoPago(this.ActualParametroAllOrMe, this.ActualParametroEmpresa, this.ActualParametroSede, this.ActualParametroGrupo, this.ActualParametroDivision, this.ActualParametroFechaDesde, this.ActualParametroFechaHasta, this.ActualParametroEstado);
+
+            }
+
+
+
+        });
+
+    }
+
+
+    estadoCheckFiltroRequerimientosElaborados(e) {
+        const modalFiltrosRequerimientosElaborados = document.querySelector("div[id='modal-filtro-requerimientos-elaborados']");
+        switch (e.currentTarget.getAttribute('name')) {
+            case 'chkElaborado':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='elaborado']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='elaborado']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkEmpresa':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='empresa']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='empresa']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkSede':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='sede']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='sede']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkGrupo':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='grupo']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='grupo']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkDivision':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='division']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='division']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkFechaRegistro':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly")
+                    modalFiltrosRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
+                    modalFiltrosRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkEstado':
+                if (e.currentTarget.checked == true) {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='estado']").removeAttribute("readOnly")
+                } else {
+                    modalFiltrosRequerimientosElaborados.querySelector("select[name='estado']").setAttribute("readOnly", true)
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    getDataSelectSede(idEmpresa) {
+
+        if (idEmpresa > 0) {
+            this.requerimientoCtrl.obtenerSede(idEmpresa).then((res) => {
+                this.llenarSelectFiltroSede(res);
+            }).catch(function (err) {
+                console.log(err)
+            })
+        } else {
+            let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-elaborados'] select[name='sede']");
+            if (selectElement.options.length > 0) {
+                let i, L = selectElement.options.length - 1;
+                for (i = L; i >= 0; i--) {
+                    selectElement.remove(i);
+                }
+                let option = document.createElement("option");
+
+                option.value = 'SIN_FILTRO';
+                option.text = '-----------------';
+                selectElement.add(option);
+            }
+        }
+        return false;
+    }
+
+    llenarSelectFiltroSede(array) {
+        let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-elaborados'] select[name='sede']");
+        if (selectElement.options.length > 0) {
+            let i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+        }
+        array.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_sede;
+            option.setAttribute('data-ubigeo', element.id_ubigeo);
+            option.setAttribute('data-name-ubigeo', element.ubigeo_descripcion);
+            if (element.codigo == 'LIMA' || element.codigo == 'Lima') { // default sede lima
+                option.selected = true;
+
+            }
+
+            selectElement.add(option);
+        });
+
+    }
+
+    getDataSelectDivision(idGrupo) {
+
+        if (idGrupo > 0) {
+            this.requerimientoCtrl.getListaDivisionesDeGrupo(idGrupo).then((res) => {
+                this.llenarSelectFiltroDivision(res);
+            }).catch(function (err) {
+                console.log(err)
+            })
+        } else {
+            let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-elaborados'] select[name='division']");
+            if (selectElement.options.length > 0) {
+                let i, L = selectElement.options.length - 1;
+                for (i = L; i >= 0; i--) {
+                    selectElement.remove(i);
+                }
+                let option = document.createElement("option");
+
+                option.value = 'SIN_FILTRO';
+                option.text = '-----------------';
+                selectElement.add(option);
+            }
+        }
+        return false;
+    }
+
+
+    llenarSelectFiltroDivision(array) {
+        // console.log(array);
+        let selectElement = document.querySelector("div[id='modal-filtro-requerimientos-elaborados'] select[name='division']");
+        if (selectElement.options.length > 0) {
+            let i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+        }
+        array.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_division;
+            selectElement.add(option);
+        });
+    }
+
+
+    updateValorFiltroRequerimientosElaborados() {
+        const modalRequerimientosElaborados = document.querySelector("div[id='modal-filtro-requerimientos-elaborados']");
+        if (modalRequerimientosElaborados.querySelector("select[name='elaborado']").getAttribute("readonly") == null) {
+            this.ActualParametroAllOrMe = modalRequerimientosElaborados.querySelector("select[name='elaborado']").value;
+        }
+        if (modalRequerimientosElaborados.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
+            this.ActualParametroEmpresa = modalRequerimientosElaborados.querySelector("select[name='empresa']").value;
+        }
+        if (modalRequerimientosElaborados.querySelector("select[name='sede']").getAttribute("readonly") == null) {
+            this.ActualParametroSede = modalRequerimientosElaborados.querySelector("select[name='sede']").value;
+        }
+        if (modalRequerimientosElaborados.querySelector("select[name='grupo']").getAttribute("readonly") == null) {
+            this.ActualParametroGrupo = modalRequerimientosElaborados.querySelector("select[name='grupo']").value;
+        }
+        if (modalRequerimientosElaborados.querySelector("select[name='division']").getAttribute("readonly") == null) {
+            this.ActualParametroDivision = modalRequerimientosElaborados.querySelector("select[name='division']").value;
+        }
+        if (modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaDesde = modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalRequerimientosElaborados.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
+        }
+        if (modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
+            this.ActualParametroFechaHasta = modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalRequerimientosElaborados.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
+        }
+        if (modalRequerimientosElaborados.querySelector("select[name='estado']").getAttribute("readonly") == null) {
+            this.ActualParametroEstado = modalRequerimientosElaborados.querySelector("select[name='estado']").value;
+        }
+    }
+
+    updateContadorFiltroRequerimientosElaborados() {
+
+        let contadorCheckActivo = 0;
+        const allCheckBoxFiltroRequerimientosElaborados = document.querySelectorAll("div[id='modal-filtro-requerimientos-elaborados'] input[type='checkbox']");
+        allCheckBoxFiltroRequerimientosElaborados.forEach(element => {
+            if (element.checked == true) {
+                contadorCheckActivo++;
+            }
+        });
+        document.querySelector("button[id='btnFiltrosListaRequerimientosElaborados'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo
+        return contadorCheckActivo;
+    }
+    imprimirRequerimientoPdf(obj) {
+        if (obj.dataset.idRequerimiento > 0) {
+            window.open('imprimir-requerimiento-pdf/' + obj.dataset.idRequerimiento + '/0');
+
+        }
+
+    }
+    handleChangeFiltroListado() {
+        this.mostrarListaRequerimientoPago(document.querySelector("select[name='mostrar_me_all']").value, document.querySelector("select[name='id_empresa_select']").value, document.querySelector("select[name='id_sede_select']").value, document.querySelector("select[name='id_grupo_select']").value, document.querySelector("select[name='division_select']").value, document.querySelector("select[name='id_prioridad_select']").value);
+
+    }
+
+    descargarListaRequerimientosElaboradosExcel() {
+        window.open(`listado-requerimientos-pagos-export-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
+
+    }
 
     mostrarListaRequerimientoPago(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
         // console.log(meOrAll,idEmpresa,idSede,idGrupo,idDivision,fechaRegistroDesde,fechaRegistroHasta,idEstado);
@@ -261,10 +524,21 @@ class ListarRequerimientoPagoView {
                     text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                     attr: {
                         id: 'btnFiltrosListaRequerimientosElaborados',
-                        disabled: true
+                        disabled: false
                     },
                     action: () => {
-                        // this.abrirModalFiltrosRequerimientosElaborados();
+                        this.abrirModalFiltrosRequerimientosElaborados();
+
+                    },
+                    className: 'btn-default btn-sm'
+                },
+                {
+                    text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                    attr: {
+                        id: 'btnDescargarListaRequerimientosElaboradosExcel'
+                    },
+                    action: () => {
+                        this.descargarListaRequerimientosElaboradosExcel();
 
                     },
                     className: 'btn-default btn-sm'
@@ -656,10 +930,10 @@ class ListarRequerimientoPagoView {
         let cantidadAdjuntos = data != null && data.adjunto ? (data.adjunto).filter((element, i) => element.id_estado != 7).length : 0;
         console.log(data);
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
-        <td>    
+        <td>
             <input type="hidden"  class="idEstado" name="idEstado[]" value="${data != null && data.id_estado}">
             <p class="descripcion-partida" title="${(data != null && data.partida != null ? data.partida.descripcion : '(NO SELECCIONADO)')}">${(data != null && data.partida != null ? data.partida.codigo : '(NO SELECCIONADO)')}</p>
-            <button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
+            <button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button>
             <div class="form-group">
                 <h5></h5>
                 <input type="text" class="partida" name="idPartida[]" value="${(data != null && data.partida != null ? data.partida.id_partida : '')}" hidden>
@@ -667,7 +941,7 @@ class ListarRequerimientoPagoView {
         </td>
         <td>
             <p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : data != null && data.centro_costo != null ? data.centro_costo.descripcion : '(NO SELECCIONADO)'}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : (data != null && data.centro_costo != null ? data.centro_costo.codigo : '(NO SELECCIONADO)')}</p>
-            <button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${data != null && data.centro_costo != null ? data.centro_costo.codigo : ''}" >Seleccionar</button> 
+            <button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${data != null && data.centro_costo != null ? data.centro_costo.codigo : ''}" >Seleccionar</button>
             <div class="form-group">
                 <h5></h5>
                 <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : (data != null && data.centro_costo != null ? data.centro_costo.id_centro_costo : '')}" hidden>
@@ -699,7 +973,7 @@ class ListarRequerimientoPagoView {
                 <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
                 <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoDetalle" data-id="${idFila}" name="btnAdjuntarArchivoItem" title="Adjuntos" >
                     <i class="fas fa-paperclip"></i>
-                    <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>    
+                    <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>
                 </button>
                 <button type="button" class="btn btn-danger btn-xs handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ><i class="fas fa-trash-alt"></i></button>
             </div>
@@ -860,15 +1134,15 @@ class ListarRequerimientoPagoView {
         let html = '';
         let isVisible = '';
         data['presupuesto'].forEach(presupuesto => {
-            html += ` 
+            html += `
             <div id='${presupuesto.codigo}' class="panel panel-primary" style="width:100%; overflow: auto;">
                 <h5 class="panel-heading handleClickapertura" data-id-presup="${presupuesto.id_presup}" style="margin: 0; cursor: pointer;">
                 <i class="fas fa-chevron-right"></i>
-                    &nbsp; ${presupuesto.descripcion} 
+                    &nbsp; ${presupuesto.descripcion}
                 </h5>
                 <div id="pres-${presupuesto.id_presup}" class="oculto" style="width:100%;">
                     <table class="table table-bordered table-condensed partidas" id="listaPartidas" width="100%" style="font-size:0.9em">
-                        <tbody> 
+                        <tbody>
             `;
 
             data['titulos'].forEach(titulo => {
@@ -879,7 +1153,7 @@ class ListarRequerimientoPagoView {
                         <td><strong>${titulo.descripcion}</strong></td>
                         <td class="right ${isVisible}"><strong>S/${Util.formatoNumero(titulo.total, 2)}</strong></td>
                     </tr> `;
-    
+
                     data['partidas'].forEach(partida => {
                         if(partida.id_presup == presupuesto.id_presup){
                             if (titulo.codigo == partida.cod_padre) {
@@ -995,7 +1269,7 @@ class ListarRequerimientoPagoView {
                 <div id='${index}' class="panel panel-primary" style="width:100%; overflow: auto;">
                 <h5 class="panel-heading handleClickapertura" style="margin: 0; cursor: pointer;" data-id-presup="${index}">
                 <i class="fas fa-chevron-right"></i>
-                    &nbsp; ${padre.descripcion} 
+                    &nbsp; ${padre.descripcion}
                 </h5>
                 <div id="pres-${index}" class="oculto" style="width:100%;">
                     <table class="table table-bordered table-condensed partidas" id='listaCentroCosto' width="" style="font-size:0.9em">
@@ -1419,9 +1693,9 @@ class ListarRequerimientoPagoView {
                             formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileGuardar${element.category}[]`, element.file);
                         }
                         // //? actualizar adjuntos, actualmente no se actualizan archivos por otros
-                        // else if(element.action == 'ACTUALIZAR'){             
-                        //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileActualizar${element.category}[]`, element.file);                            
-                        // //? eliminar adjuntos, actualmente no se elimina en disco 
+                        // else if(element.action == 'ACTUALIZAR'){
+                        //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileActualizar${element.category}[]`, element.file);
+                        // //? eliminar adjuntos, actualmente no se elimina en disco
                         // }else if(element.action =='ELIMINAR'){
                         //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileEliminar${element.category}[]`, element.file);
                         // }
@@ -1812,7 +2086,7 @@ class ListarRequerimientoPagoView {
                 <td style="text-align:right;">${data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : ''}${Util.formatoNumero(data.detalle[i].precio_unitario, 2)}</td>
                 <td style="text-align:right;">${data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : ''}${(data.detalle[i].subtotal ? Util.formatoNumero(data.detalle[i].subtotal, 2) : (Util.formatoNumero((data.detalle[i].cantidad * data.detalle[i].precio_unitario), 2)))}</td>
                 <td style="text-align:center;">${data.detalle[i].estado != null ? data.detalle[i].estado.estado_doc : ''}</td>
-                <td style="text-align: center;"> 
+                <td style="text-align: center;">
                 ${cantidadAdjuntosItem > 0 ? '<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickAdjuntarArchivoDetalle" data-tipo-modal="lectura" data-id="' + data.detalle[i].id_requerimiento_pago_detalle + '" >Ver (<span>' + cantidadAdjuntosItem + '</span>)</a>' : '-'}
                 </td>
                 </tr>`);
@@ -1978,7 +2252,7 @@ class ListarRequerimientoPagoView {
         if (data.id_grupo > 0) {
             this.construirOptSelectDivision(data.id_grupo, data.id_division);
         }
-      
+
         if(data.id_grupo ==2){
             document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.remove("oculto");
 
@@ -2151,7 +2425,7 @@ class ListarRequerimientoPagoView {
         $('#modal-adjuntar-archivos-requerimiento-pago').modal({
             show: true
         });
-        
+
         if (idRequerimientoPago > 0) {
             var regExp = /[a-zA-Z]/g; //expresión regular
 
@@ -2185,7 +2459,7 @@ class ListarRequerimientoPagoView {
         }
     }
 
-   
+
 
     getAdjuntosRequerimientoPagoCabecera(idRequerimientoPago) {
         return new Promise(function (resolve, reject) {
@@ -2464,9 +2738,9 @@ class ListarRequerimientoPagoView {
                 if (Number.isInteger(element.id)) {
                     html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoRequerimientoPagoDetalle" name="btnDescargarArchivoRequerimientoPagoDetalle" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
                 }
-                
 
-                 
+
+
                 html += `
             </div>
         </td>
@@ -2570,10 +2844,10 @@ class ListarRequerimientoPagoView {
                 if (Number.isInteger(element.id)) {
                     html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoRequerimientoPagoDetalle" name="btnDescargarArchivoRequerimientoPagoDetalle" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
                 }
-                
+
 
                     html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoRequerimientoPagoDetalle ${hasDisableBtnEliminarArchivo}" name="btnEliminarArchivoRequerimientoPagoDetalle" title="Eliminar" data-id="${element.id}"  ><i class="fas fa-trash-alt"></i></button>`;
-                
+
                 html += `
             </div>
         </td>
@@ -2723,7 +2997,7 @@ class ListarRequerimientoPagoView {
                 show: true
             });
             document.querySelector("div[id='modal-info-adicional-cuenta-seleccionada'] div[class='modal-body']").insertAdjacentHTML('beforeend', `<div>
-            
+
             <dl>
                 <dt>Banco</dt>
                 <dd>${selectCuenta.options[(selectCuenta.selectedIndex)].dataset.banco}</dd>
@@ -2812,12 +3086,12 @@ class ListarRequerimientoPagoView {
                                 }
                                 (response.data[0].cuenta_persona).forEach(element => {
                                     document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
-                                        <option 
-                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
-                                            data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}" 
-                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
-                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
-                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
+                                        <option
+                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                                            data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}"
+                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
                                             value="${element.id_cuenta_bancaria}"
                                             >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}</option>
                                         `);
@@ -2840,12 +3114,12 @@ class ListarRequerimientoPagoView {
                                 }
                                 (response.data[0].cuenta_contribuyente).forEach(element => {
                                     document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
-                                        <option 
-                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
-                                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
-                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
-                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
-                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
+                                        <option
+                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}"
+                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
                                             value="${element.id_cuenta_contribuyente}"
                                             >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}</option>
                                         `);
@@ -2940,7 +3214,7 @@ class ListarRequerimientoPagoView {
         data.forEach(element => {
             if (idTipoDestinatario == 1) {
                 document.querySelector("div[id='modal-requerimiento-pago'] table[id='listaDestinatariosEncontrados']").insertAdjacentHTML('beforeend', `
-                <tr class="handleClickSeleccionarDestinatario" style="cursor:pointer;" 
+                <tr class="handleClickSeleccionarDestinatario" style="cursor:pointer;"
                 data-id-persona="${element.id_persona != null ? element.id_persona : ''}"
                 data-id-contribuyente="${element.id_contribuyente != null ? element.id_contribuyente : ''}"
                 data-tipo-documento-identidad="${element.tipo_documento_identidad != null ? element.tipo_documento_identidad.descripcion : ''}"

@@ -65,13 +65,13 @@ Listado de requerimientos de pago
     </select>
 </div>
 
-
 @include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_lista_cuadro_presupuesto')
 
 @include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_centro_costos')
+@include('logistica.requerimientos.modal_filtros_listado de requerimientos de pago')
 
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago_detalle')
@@ -125,7 +125,7 @@ Listado de requerimientos de pago
     });
 
     var tieneAccionCrearRequerimientoPago = '{{Auth::user()->tieneAccion(142) }}';
-  
+
     // window.onload = function() {
     //     listarRequerimientoView.mostrar('ALL');
     // };

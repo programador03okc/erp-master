@@ -26,7 +26,7 @@ class ListarRequerimientoView {
     //         this.construirTablaListadoRequerimientosElaborados(res['data']);
     //     }).catch(function (err) {
     //         console.log(err)
-    //         // SWEETALERT 
+    //         // SWEETALERT
     //     })
 
     // }
@@ -801,7 +801,7 @@ class ListarRequerimientoView {
                 <td style="text-align:right;">${simboloMoneda}${(data[i].subtotal ? Util.formatoNumero(data[i].subtotal, 2) : (Util.formatoNumero((data[i].cantidad * data[i].precio_unitario), 2)))}</td>
                 <td>${data[i].motivo != null ? data[i].motivo : ''}</td>
                 <td>${data[i].estado_doc != null ? data[i].estado_doc : ''}</td>
-                <td style="text-align: center;"> 
+                <td style="text-align: center;">
                     ${cantidadAdjuntosItem > 0 ? '<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickVerAdjuntosItem' + i + '" >Ver (<span name="cantidadAdjuntosItem">' + cantidadAdjuntosItem + '</span>)</a>' : '-'}
                 </td>
             </tr>`);
@@ -997,7 +997,7 @@ class ListarRequerimientoView {
     //         tr.classList.add('shown');
     //         // try datatable stuff
     //         oInnerTable = $('#ListaRequerimientosElaborados_' + iTableCounter).dataTable({
-    //             //    data: sections, 
+    //             //    data: sections,
     //             autoWidth: true,
     //             deferRender: true,
     //             info: false,
@@ -1051,7 +1051,7 @@ class ListarRequerimientoView {
     //                     </tr>`;
     //                 // }
     //             });
-    //             var tabla = `<table class="table table-condensed table-bordered" 
+    //             var tabla = `<table class="table table-condensed table-bordered"
     //             id="detalle_${table_id}">
     //             <thead style="color: black;background-color: #c7cacc;">
     //                 <tr>
@@ -1069,7 +1069,7 @@ class ListarRequerimientoView {
     //             <tbody style="background: #e7e8ea;">${html}</tbody>
     //             </table>`;
     //     }else{
-    //         var tabla = `<table class="table table-sm" style="border: none;" 
+    //         var tabla = `<table class="table table-sm" style="border: none;"
     //             id="detalle_${table_id}">
     //             <tbody>
     //                 <tr><td>No hay registros para mostrar</td></tr>
