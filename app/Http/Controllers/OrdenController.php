@@ -38,6 +38,7 @@ use App\Models\Comercial\CuadroCosto\CcAmFila;
 
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
+use App\Models\Configuracion\Notificacion;
 use App\Models\Configuracion\Usuario;
 use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\Contribuyente;
@@ -2643,8 +2644,6 @@ class OrdenController extends Controller
                 //     $statusMigracionSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
                 // }
 
-
-
                 return response()->json([
                     'id_orden_compra' => $idOrden,
                     'id_tp_documento' => $idTipoDocumento,
@@ -4049,8 +4048,10 @@ class OrdenController extends Controller
             $idCuadroPresupuestoFinalizadoList = [];
             $codigoOportunidad = [];
             $payloadCuadroPresupuestoFinalizado = [];
+            $idUsuarios = [];
             $tipoStatus = "";
             $mensaje = "";
+            $mensajeNotificacion = "";
 
             if ($idOrden > 0) {
                 $detalleOrden = OrdenCompraDetalle::where('id_orden_compra', $idOrden)->get();
@@ -4113,7 +4114,11 @@ class OrdenController extends Controller
                             $correoFinalizacionCuadroPresupuesto[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
                         }
 
-                        Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payloadCuadroPresupuestoFinalizado, Auth::user()->nombre_corto));
+                        //Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payloadCuadroPresupuestoFinalizado, Auth::user()->nombre_corto));
+                        /**
+                         * ENVIAR NOTIFICACION DE FINALIZACION
+                         */
+                    
                         $tipoStatus = "success";
                         $mensaje = "La notificación fue enviada";
 

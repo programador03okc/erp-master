@@ -7,12 +7,14 @@ use App\Mail\EmailOrdenServicioOrdenTransformacion;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\almacen\Transformacion;
+use App\Models\Configuracion\Notificacion;
 use App\Models\Configuracion\Usuario;
 use App\Models\mgcp\CuadroCosto\CcAmFila;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use App\Models\mgcp\OrdenCompra\Propia\AcuerdoMarco\OrdenCompraAm;
 use App\Models\mgcp\OrdenCompra\Propia\OrdenCompraPropiaView;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -115,6 +117,7 @@ class CuadroPresupuestoHelper
  
             $correosOrdenServicioTransformacion = [];
             $correoFinalizacionCuadroPresupuesto=[];
+            $usuariosFinalizacionCDP = [];
 
             if (config('app.debug')) {
                 $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
@@ -130,11 +133,15 @@ class CuadroPresupuestoHelper
                 }
 
                 //$correoUsuarioEnSession=Auth::user()->email;
-                $correoFinalizacionCuadroPresupuesto[]=Auth::user()->email;
-                $correoFinalizacionCuadroPresupuesto[]=Usuario::find($requerimiento->id_usuario)->email;
+                $correoFinalizacionCuadroPresupuesto[] = Auth::user()->email;
+                $correoFinalizacionCuadroPresupuesto[] = Usuario::find($requerimiento->id_usuario)->email;
+                $usuariosFinalizacionCDP[] = Auth::user()->id;
+                $usuariosFinalizacionCDP[] = $requerimiento->id_usuario;
             }
             
-            Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad,$payload,Auth::user()->nombre_corto));
+            //Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payload, Auth::user()->nombre_corto));
+
+            NotificacionHelper::notificacionFinalizacionCuadro('OKC20202', 1, $payload);
 
 
             foreach ($payload as $pl) { // enviar orde servicio / transformacion a multiples usuarios
@@ -148,10 +155,11 @@ class CuadroPresupuestoHelper
                 $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
                 $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
 
-                Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
+                //Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
+                /**
+                 * CREAR NOTIFICACION CON LA URL DE LA HOJA DE TRANSFORMACION
+                 */
             }
-
-
         }
     }
 }

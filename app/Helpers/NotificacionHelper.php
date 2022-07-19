@@ -2,7 +2,9 @@
 
 namespace App\Helpers;
 
+use App\Models\Configuracion\Notificacion;
 use App\Models\Configuracion\SMTPAuthentication;
+use Carbon\Carbon;
 use Swift_Mailer;
 use Swift_Message;
 use Swift_Preferences;
@@ -45,6 +47,34 @@ class NotificacionHelper{
         }else{ 
             $msg= 'Error, no existe configuración de correo para la empresa seleccionada';
         }
-      
     }
+
+    static public function notificacionFinalizacionCuadro($oportunidades, $usuarios, $data)
+    {
+        $idUsuarios = [];
+        $mensajeNotificacion = 'Se ha finalizado eL CDP <strong>'. implode(",", $oportunidades).'</strong>';
+
+        // foreach ($usuarios as $clave => $usuario) {
+        //     if (!in_array($idUsuarios, $usuario)) {
+        //         array_push($idUsuarios, $usuario);
+    
+                // foreach ($data as $lista) {
+                //     $mensajeNotificacion .= '<li>Oportunidad : '.$lista['cuadro_presupuesto']->oportunidad->oportunidad.'</li>
+                //     <li>Responsable : '.$lista['cuadro_presupuesto']->oportunidad->responsable->name.'</li>
+                //     <li>Fecha Limite : '.$lista['cuadro_presupuesto']->oportunidad->fecha_limite.'</li>
+                //     <li>Cliente : '.$lista['cuadro_presupuesto']->oportunidad->entidad->nombre.'</li>
+                //     <li>Tipo de negocio : '.$lista['cuadro_presupuesto']->oportunidad->tipoNegocio->tipo.'</li>
+                //     <br>';
+                // }
+    
+                $notificacion = new Notificacion();
+                    $notificacion->id_usuario = $usuarios;
+                    $notificacion->mensaje = $mensajeNotificacion;
+                    $notificacion->fecha = new Carbon();
+                    $notificacion->url = '';
+                    $notificacion->leido = 0;
+                $notificacion->save();
+            }
+    //     }
+    // }
 }
