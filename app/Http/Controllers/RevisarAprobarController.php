@@ -555,7 +555,7 @@ class RevisarAprobarController extends Controller{
         // Debugbar::info($usuariosList);
         if (count($usuariosList) > 0) {
             if (config('app.debug')) {
-                $correoUsuarioList[] = config('global.correoDebug2');
+                $correoUsuarioList[] = config('global.correoDebug1');
             }else{
                 foreach ($usuariosList as $idUsuario) {
                     $correoUsuarioList[] = Usuario::find($idUsuario)->email;
@@ -801,7 +801,7 @@ class RevisarAprobarController extends Controller{
                 $correoDestinatario = [];
 
                 if (config('app.debug')) {
-                    $correoDestinatario[] = config('global.correoDebug2');
+                    $correoDestinatario[] = config('global.correoDebug1');
                 } else {
                     if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
                         $correoDestinatario[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;

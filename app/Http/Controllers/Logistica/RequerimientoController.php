@@ -776,7 +776,7 @@ class RequerimientoController extends Controller
 
             //     foreach ($idUsuariosList as $idUsuario) {
             //         if (config('app.debug')) {
-            //             $correoUsuario = config('global.correoDebug2');
+            //             $correoUsuario = config('global.correoDebug1');
             //         }else{
             //             $correoUsuario = Usuario::find($idUsuario)->email;
             //         }
@@ -848,7 +848,7 @@ class RequerimientoController extends Controller
         // Debugbar::info($usuariosList);
         if (count($usuariosList) > 0) {
             if (config('app.debug')) {
-                $correoUsuarioList[] = config('global.correoDebug2');
+                $correoUsuarioList[] = config('global.correoDebug1');
             } else {
                 foreach ($usuariosList as $idUsuario) {
                     $correoUsuarioList[] = Usuario::find($idUsuario)->email;
@@ -1001,8 +1001,14 @@ class RequerimientoController extends Controller
         }
         
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
-        $idEstadoActual = $requerimiento->estado;
+        if ($requerimiento->estado == 3) { // si el estado actual es observado
+            if($requerimiento->monto_total >$request->monto_total){
+                $requerimiento->estado = 1; // elaborado
+            }else{
+                $requerimiento->estado = 2; // aprobado
 
+            }
+        }
         $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;
         $requerimiento->id_usuario = Auth::user()->id_usuario;
         $requerimiento->id_rol = $request->id_rol;
@@ -1041,9 +1047,7 @@ class RequerimientoController extends Controller
         // $requerimiento->para_stock_almacen = $request->para_stock_almacen;
         $requerimiento->division_id = $request->division;
         $requerimiento->trabajador_id = $request->id_trabajador;
-        if ($idEstadoActual == 3) {
-            $requerimiento->estado = 1;
-        }
+
         $requerimiento->id_incidencia = $request->id_incidencia > 0 ? $request->id_incidencia : null;
         $requerimiento->save();
         $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1;
@@ -1174,7 +1178,7 @@ class RequerimientoController extends Controller
 
         $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
 
-        if ($idEstadoActual == 3) {
+        if ($requerimiento->estado == 3) {
             $trazabilidad = new Trazabilidad();
             $trazabilidad->id_requerimiento = $request->id_requerimiento;
             $trazabilidad->id_usuario = Auth::user()->id_usuario;
@@ -1210,7 +1214,7 @@ class RequerimientoController extends Controller
 
             //     $usuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
             //     if (config('app.debug')) {
-            //         $correoUsuario = config('global.correoDebug2');
+            //         $correoUsuario = config('global.correoDebug1');
             //         if (!empty($correoUsuario)) {
             //             $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
             //         }

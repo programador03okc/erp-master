@@ -4,6 +4,8 @@ namespace App\Models\Almacen;
 
 use App\Helpers\CuadroPresupuestoHelper;
 use App\Http\Controllers\OrdenController;
+use App\Models\Administracion\Aprobacion;
+use App\Models\Administracion\Documento;
 use App\Models\Administracion\Estado;
 use App\Models\Configuracion\Usuario;
 use App\Models\Logistica\OrdenCompraDetalle;
@@ -18,7 +20,7 @@ class Requerimiento extends Model
 {
     protected $table = 'almacen.alm_req';
     protected $primaryKey = 'id_requerimiento';
-    protected $appends = ['termometro', 'nombre_estado', 'nombre_completo_usuario', 'ordenes_compra','reserva', 'cantidad_tipo_producto', 'cantidad_tipo_servicio','cantidad_adjuntos_activos'];
+    protected $appends = ['termometro', 'nombre_estado', 'nombre_completo_usuario', 'ordenes_compra','reserva', 'cantidad_tipo_producto', 'cantidad_tipo_servicio','cantidad_adjuntos_activos','historial_aprobacion'];
     public $timestamps = false;
 
     // public function getMontoTotalAttribute(){
@@ -400,6 +402,32 @@ class Requerimiento extends Model
         return ['estado_actual'=>$estadoActual,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
 
     }
+
+    public function getHistorialAprobacionAttribute()
+    {
+        $historialAprobaciones=[];
+        $documento= Documento::where([["id_doc",$this->attributes['id_requerimiento']], ['id_tp_documento',1]])->first();
+        if(isset($documento->id_doc_aprob) && $documento->id_doc_aprob >0){
+            $historialAprobaciones= Aprobacion::leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'adm_aprobacion.id_usuario')
+            ->leftJoin('administracion.adm_vobo', 'adm_vobo.id_vobo', '=', 'adm_aprobacion.id_vobo')
+            ->leftJoin('administracion.adm_flujo', 'adm_flujo.id_flujo', '=', 'adm_aprobacion.id_flujo')
+            ->where("adm_aprobacion.id_doc_aprob",$documento->id_doc_aprob)
+            ->select('adm_aprobacion.*',
+                'adm_vobo.descripcion as descripcion_vobo',
+                'adm_flujo.nombre as nombre_flujo',
+                'sis_usua.nombre_corto as nombre_usuario_aprobador'
+                )
+            ->get();
+        }
+         if(isset($historialAprobaciones) && count($historialAprobaciones)>0){
+            return $historialAprobaciones;
+
+         }else{
+            return [];
+         }
+
+    }
+
 
     public function detalle()
     {

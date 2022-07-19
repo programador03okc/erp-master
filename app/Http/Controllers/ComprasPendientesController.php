@@ -7,9 +7,14 @@ use App\Exports\solicitudCotizacionExcel;
 use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use App\Http\Controllers\Almacen\Movimiento\SalidaPdfController;
+use App\Models\Administracion\Aprobacion;
+use App\Models\Administracion\Documento;
+use App\Models\Administracion\Flujo;
+use App\Models\Administracion\Operacion;
 use App\Models\Almacen\Almacen;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\almacen\GuiaCompraDetalle;
+use App\Models\Almacen\Producto;
 use App\Models\Almacen\ProductoUbicacion;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\Reserva;
@@ -1536,6 +1541,128 @@ class ComprasPendientesController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['tipo_estado' => $tipoEstado ,'mensaje' => 'Hubo un problema al intentar actualizar. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
+
+    public function limpiarMapeoDeDocumento($idDocAprob){
+        $documento = Documento::where([['id_doc_aprob',$idDocAprob]])->first();
+        if($documento->id_tp_documento==1){
+            $detalle = DetalleRequerimiento::where('id_requerimiento',$documento->id_doc)->get();
+            foreach ($detalle as $value) {
+                $det = DetalleRequerimiento::find($value->id_detalle_requerimiento);
+                
+                $cantidadDetalleConProducto = DetalleRequerimiento::where([['id_producto',$det->id_producto],['id_requerimiento','!=',$det->id_requerimiento]])->count();
+                $cantiadReservaConProd = Reserva::where('id_producto',$det->id_producto)->count();
+                if($cantidadDetalleConProducto==0 && $cantiadReservaConProd==0){
+                    $prod=Producto::find($det->id_producto);
+                    $prod->estado=7;
+                    $prod->save();
+                }
+
+                
+                $det->id_producto= null;
+                $det->save();
+            }
+        }
+    }
+
+    public function obtenerIdDocumento($tipoDocumento,$idReq){
+        $result = [];
+        
+        $documento = Documento::where([['id_doc',$idReq],['id_tp_documento',$tipoDocumento]])->first();
+
+        if( !empty($documento)){
+            $result =[ 
+                'id'=> $documento->id_doc_aprob,
+                'mensaje'=>'Id encontrado',
+                'estado'=>'success'
+        ];
+            
+        }else{
+            $result =[ 
+            'id'=>0,
+            'mensaje'=>'No se encontro el id',
+            'estado'=>'error'
+        ];
+
+        }
+
+        return $result;
+    
+    }
+
+    public function guardarObservacionLogistica(Request $request){
+        DB::beginTransaction();
+        try {
+            $mensaje = '';
+            $tipoEstado = '';
+
+            $allRol = Auth::user()->getAllRol();
+            $idRolUsuarioList = [];
+            foreach ($allRol as  $rol) {
+                $idRolUsuarioList[] = $rol->id_rol;
+            }
+
+            if(in_array(4,$idRolUsuarioList)==true){ //usuario en sesion tiene rol logistica?
+                if(intval($request->id_requerimiento) >0){
+                    $documento = $this->obtenerIdDocumento(1,$request->id_requerimiento);
+                    $requerimiento = Requerimiento::find($request->id_requerimiento);
+                    // $operaciones = Operacion::getOperacion(1, $requerimiento->id_tipo_requerimiento, $requerimiento->id_grupo, $requerimiento->division_id, $requerimiento->id_prioridad, $requerimiento->id_moneda, $requerimiento->monto_total, null,[]);
+                    // $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
+                    if($request->id_observacion_logisica >0){
+                        $aprobacion = Aprobacion::find($request->id_observacion_logisica);
+                        $aprobacion->id_flujo = null;
+                        $aprobacion->id_doc_aprob = $documento['id'];
+                        $aprobacion->id_usuario = Auth::user()->id_usuario;
+                        $aprobacion->id_vobo = 3; // observar
+                        $aprobacion->fecha_vobo = new Carbon();
+                        $aprobacion->detalle_observacion = $request->sustento??null; // comentario
+                        $aprobacion->id_rol = 4;
+                        $aprobacion->tiene_sustento = false;
+                        $aprobacion->save();
+
+                    }else{
+                        $aprobacion = new Aprobacion();
+                        $aprobacion->id_flujo = null;
+                        $aprobacion->id_doc_aprob = $documento['id'];
+                        $aprobacion->id_usuario = Auth::user()->id_usuario;
+                        $aprobacion->id_vobo = 3; // observar
+                        $aprobacion->fecha_vobo = new Carbon();
+                        $aprobacion->detalle_observacion = $request->sustento??null; // comentario
+                        $aprobacion->id_rol = 4;
+                        $aprobacion->tiene_sustento = false;
+                        $aprobacion->save();
+                    }
+
+                    if($aprobacion->id_aprobacion >0){
+                        $mensaje='Requerimiento logístico observado';
+                        $requerimiento->estado=3;
+                        $requerimiento->save();
+                        $this->limpiarMapeoDeDocumento($documento['id']);
+                        $tipoEstado = 'success';
+
+                    }else{
+                        $mensaje='Lo sentimos, no se pudo guardar la observación';
+                    }
+                        
+                    
+    
+                }else {
+                    $tipoEstado = 'error';
+                    $mensaje = "El ID enviado no es valido, que no fue posible guardar la observación";
+                }
+            }else{
+                $tipoEstado = 'warning';
+                $mensaje = "Solo usuarios de rol logistico puede realizar esta acción";
+
+            }
+
+            DB::commit();
+
+            return response()->json(['estado'=>$tipoEstado,  'mensaje'=>$mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['estado'=>$tipoEstado, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
 }

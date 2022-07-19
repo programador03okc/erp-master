@@ -82,6 +82,9 @@ class RequerimientoPendienteView {
             // var data = $('#listaRequerimientosPendientes').DataTable().row($(this).parents("tr")).data();
             this.verDetalleRequerimiento(e.currentTarget);
         });
+        $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickObservarRequerimientoLogistico", (e) => {
+            this.observarRequerimientoLogistico(e.currentTarget);
+        });
         $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickVerDetalleRequerimiento", (e) => {
             this.verDetalleRequerimientoAtendidos(e.currentTarget);
         });
@@ -128,7 +131,7 @@ class RequerimientoPendienteView {
         $('#modal-gestionar-estado-requerimiento').on("blur", "input.handleBlurUpdateValorNuevaCantidad", (e) => {
             this.updateValorNuevaCantidad(e.currentTarget);
         });
-        $('#modal-gestionar-estado-requerimiento').on("click", "button.handleClickActualizarGestionEstadoRequerimiento", () => {
+    $('#modal-gestionar-estado-requerimiento').on("click", "button.handleClickActualizarGestionEstadoRequerimiento", () => {
             this.actualizarGestionEstadoRequerimiento();
         });
         $('#listaRequerimientosPendientes tbody').on("click", "button.handleClickCrearOrdenServicioPorRequerimiento", (e) => {
@@ -594,6 +597,15 @@ class RequerimientoPendienteView {
                 {
                     'render': function (data, type, row) {
                         // if(permisoCrearOrdenPorRequerimiento == '1') {
+                        let observacionLogisticaSinSustento='';
+                        let idObservacionLogistica=0;
+                                (row.historial_aprobacion).forEach(element => {
+                                    if(element.id_vobo ==3 && element.id_rol ==4 && element.tiene_sustento ==false){
+                                        observacionLogisticaSinSustento=element.detalle_observacion??'';
+                                        idObservacionLogistica=element.id_aprobacion??0;
+                                    }
+                                });
+                        
                         let tieneTransformacion = row.tiene_transformacion;
                         let cantidadItemBase = row.cantidad_items_base;
                         if (tieneTransformacion == true && cantidadItemBase == 0) {
@@ -616,6 +628,7 @@ class RequerimientoPendienteView {
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
                             let btnGestionarEstadoRequerimiento = '';
+                            let btnObservarRequerimientoLogistico = '<button type="button" class="btn btn-warning btn-xs handleClickObservarRequerimientoLogistico" name="btnObservarRequerimientoLogistico" title="Observar requerimiento" data-codigo-requerimiento="' + row.codigo + '" data-id-requerimiento="' + row.id_requerimiento + '"  data-observacion-logistica-sin-sustento="'+observacionLogisticaSinSustento+'" data-id-observacion-logistica="'+idObservacionLogistica+'" ><i class="fas fa-exclamation-circle"></i></button>';
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  >OS</button>';
                             let btnExportarExcel = '<button type="button" class="btn btn-default btn-xs handleClickSolicitudCotizacionExcel" name="btnSolicitudCotizacionExcel" title="Solicitud cotización excel" data-id-requerimiento="' + row.id_requerimiento + '" style="color:green;" ><i class="far fa-file-excel"></i></button>';
                             // if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
@@ -640,6 +653,7 @@ class RequerimientoPendienteView {
                                     btnCrearOrdenCompra = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenCompraPorRequerimiento" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  >OC</button>';
                                     if (row.id_tipo_requerimiento != 1)// diferentes a; tipo Atención inmediata (MGCP)
                                         btnGestionarEstadoRequerimiento = '<button type="button" class="btn btn-danger btn-xs handleClickGestionarEstadoRequerimiento" name="btnCrearGestionarEstadoRequerimiento" title="Ajuste de necesidad de requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-estado-requerimiento="' + row.estado_doc + '"> <i class="fas fa-crop-alt"></i></button>';
+
                                 }
                             }
 
@@ -654,9 +668,9 @@ class RequerimientoPendienteView {
                             let botones = '';
 
                             if (row.estado == 1 || row.estado == 3 || row.estado == 4 || row.estado == 12) {
-                                botones = openDiv + btnVerDetalleRequerimiento + btnExportarExcel + closeDiv;
+                                botones = openDiv + btnVerDetalleRequerimiento + (row.id_tipo_requerimiento != 1 ?btnObservarRequerimientoLogistico:'') +btnExportarExcel + closeDiv;
                             } else {
-                                botones = openDiv + btnVerDetalleRequerimiento + btnExportarExcel + btnAtenderAlmacen + btnMapearProductos +
+                                botones = openDiv + btnVerDetalleRequerimiento + (row.id_tipo_requerimiento != 1 ?btnObservarRequerimientoLogistico:'') +btnExportarExcel + btnAtenderAlmacen + btnMapearProductos +
                                     btnCrearOrdenCompra + btnVercuadroCostos + btnVerAdjuntosModal + btnGestionarEstadoRequerimiento;
 
                                 if (row.cantidad_tipo_servicio > 0) {
@@ -3567,4 +3581,118 @@ class RequerimientoPendienteView {
     //     }
 
     // }
+    obtenerTabActivo(){
+        let allTab= document.querySelector("ul[class='nav nav-tabs']").children;
+        for (let index = 0; index < allTab.length; index++) {
+            if(allTab[index].classList.contains("active")==true){
+                return allTab[index].classList[0];
+            }  
+        }
+    }
+
+    observarRequerimientoLogistico(obj) {
+        let payload={
+            'id_requerimiento':parseInt(obj.dataset.idRequerimiento),
+            'codigo_requerimiento':(obj.dataset.codigoRequerimiento).toString(),
+            'id_observacion_logisica':parseInt(obj.dataset.idObservacionLogistica)??0
+        }
+ 
+        if (payload.id_requerimiento > 0) {
+            Swal.fire({
+                title: `Esta seguro que desea observar el requerimiento logístico: ${payload.codigo_requerimiento}`,
+                text: "No podra revertir esta acción, Se solicitará un sustento.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, Observar'
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // inicio  sustento
+                    let sustentoAnularOrden = '';
+                    Swal.fire({
+                        title: 'Sustente el motivo de la observación',
+                        input: 'textarea',
+                        inputAttributes: {
+                            autocapitalize: 'off',
+                        },
+                        inputValue: obj.dataset.observacionLogisticaSinSustento??'',
+                        showCancelButton: true,
+                        confirmButtonText: 'Registrar',
+
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            payload.sustento = (result.value).toString();
+                            this.guardarObservacionLogistica(payload).then((res) => {
+                                if (res.estado == 'success') {
+                                    Lobibox.notify('success', {
+                                        title: false,
+                                        size: 'mini',
+                                        rounded: true,
+                                        sound: false,
+                                        delayIndicator: false,
+                                        msg: res.mensaje
+                                    });
+                                    
+                                    if(this.obtenerTabActivo() =='handleClickTabRequerimientosPendientes'){
+                                        this.tabRequerimientosPendientes();
+                                        
+                                    }else if(this.obtenerTabActivo()=='handleClickTabRequerimientosAtendidos'){
+                                        this.tabRequerimientosAtendidos();
+                                    }
+                                } else {
+                                    Swal.fire(
+                                        'Error en el servidor',
+                                        res.mensaje,
+                                        res.estado
+                                    );
+                                }
+
+                            });
+                        }
+                    })
+                    // fin susntento
+                }
+            })
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un problema al intentar encontrar el ID requerimiento del documento seleccionado, actualice el listado y vuelva a intentarlo',
+                'error'
+            );
+        }
+    }
+
+    guardarObservacionLogistica(payload) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'POST',
+                url: 'guardar-observacion-logistica',
+                dataType: 'JSON',
+                data: payload,
+                beforeSend: function (data) {
+
+                    $("[class='tab-content']").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success(response) {
+                    resolve(response);
+                    $("[class='tab-content']").LoadingOverlay("hide", true);
+
+                },
+                fail: function (jqXHR, textStatus, errorThrown) {
+                    $("[class='tab-content']").LoadingOverlay("hide", true);
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        });
+    }
 }

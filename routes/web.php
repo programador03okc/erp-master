@@ -876,6 +876,9 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('almacenes-con-stock-disponible/{idProducto}', 'ComprasPendientesController@mostrarAlmacenesConStockDisponible');
 					Route::post('actualizar-tipo-item-detalle-requerimiento', 'ComprasPendientesController@actualizarTipoItemDetalleRequerimiento');
 					Route::post('actualizar-ajuste-estado-requerimiento', 'ComprasPendientesController@actualizarAjusteEstadoRequerimiento');
+
+					Route::post('guardar-observacion-logistica', 'ComprasPendientesController@guardarObservacionLogistica');
+
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {

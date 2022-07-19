@@ -1321,7 +1321,7 @@ class RevisarAprobarDocumentoView {
         if (validarCargaUtil.length == 0) {
             Swal.fire({
                 title: `Esta seguro que desea observar el ${payload.tipoDocumento}: ${payload.codigo}`,
-                text: "No podra revertir esta acción, Se solicitará un sustente.",
+                text: "No podra revertir esta acción, Se solicitará un sustento.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
