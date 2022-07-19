@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tesoreria;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use App\Exports\ListadoRequerimientoPagoExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ProyectosController;
 use App\Models\Administracion\Aprobacion;
@@ -12,6 +13,7 @@ use App\Models\Administracion\Documento;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
+use App\Models\Administracion\Estado;
 use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Configuracion\Grupo;
@@ -44,6 +46,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Debugbar;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class RequerimientoPagoController extends Controller
 {
@@ -73,6 +76,8 @@ class RequerimientoPagoController extends Controller
         $idUsuario = Auth::user()->id_usuario;
         $nombreUsuario = Auth::user()->trabajador->postulante->persona->nombre_completo;
 
+        $estados = Estado::mostrar();
+
         return view(
             'tesoreria/requerimiento_pago/lista',
             compact(
@@ -92,7 +97,8 @@ class RequerimientoPagoController extends Controller
                 'tiposDestinatario',
                 'idUsuario',
                 'idTrabajador',
-                'nombreUsuario'
+                'nombreUsuario',
+                'estados'
             )
         );
     }
@@ -162,8 +168,8 @@ class RequerimientoPagoController extends Controller
                 'adm_contri.nro_documento as empresa_nro_documento',
                 'sis_identi.descripcion as empresa_tipo_documento',
                 'sis_usua.nombre_corto as usuario_nombre_corto',
-                DB::raw("(SELECT COUNT(registro_pago.id_pago) 
-                FROM tesoreria.registro_pago 
+                DB::raw("(SELECT COUNT(registro_pago.id_pago)
+                FROM tesoreria.registro_pago
                 WHERE  registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago AND registro_pago.adjunto IS NOT NULL AND
                 registro_pago.estado != 7) AS cantidad_adjuntos_pago")
             )
@@ -451,7 +457,7 @@ class RequerimientoPagoController extends Controller
                 $aprobacion->tiene_sustento = true;
                 $aprobacion->save();
 
-                // TODO:  enviaar notificación al usuario aprobante, asunto => se levanto la observación 
+                // TODO:  enviaar notificación al usuario aprobante, asunto => se levanto la observación
             }
             $requerimientoPago->monto_total = $request->monto_total;
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
@@ -469,7 +475,7 @@ class RequerimientoPagoController extends Controller
             // $requerimientoPago->adjuntoOrdenesActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar2;
             // $requerimientoPago->adjuntoComprobanteBancarioActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar3;
             // $requerimientoPago->adjuntoComprobanteContableActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar4;
-            // //? eliminar adjuntos, actualmente no se elimina en disco 
+            // //? eliminar adjuntos, actualmente no se elimina en disco
             // $requerimientoPago->adjuntoOtrosAdjuntosEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar1;
             // $requerimientoPago->adjuntoOrdenesEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar2;
             // $requerimientoPago->adjuntoComprobanteBancarioEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar3;
@@ -501,7 +507,7 @@ class RequerimientoPagoController extends Controller
                     $detalleArray[] = $detalle;
                 } else { // es un id solo de numerico => actualiza
                     if ($request->idEstado[$i] == 7) {
-                        if (is_numeric($id)) { // si es un numero 
+                        if (is_numeric($id)) { // si es un numero
                             $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $id)->first();
                             $detalle->id_estado = 7;
                             $detalle->save();
@@ -542,7 +548,7 @@ class RequerimientoPagoController extends Controller
             }
 
 
-            // adjuntos cabecera - actualizar, anular adjuntos en tabla 
+            // adjuntos cabecera - actualizar, anular adjuntos en tabla
             $archivoAdjuntoRequerimientoPagoObject = json_decode($request->archivoAdjuntoRequerimientoPagoObject);
             if (count($archivoAdjuntoRequerimientoPagoObject) > 0) {
                 foreach ($archivoAdjuntoRequerimientoPagoObject as $ar) {
@@ -582,7 +588,7 @@ class RequerimientoPagoController extends Controller
 
 
 
-            // adjuntos detalle -anular adjuntos en tabla 
+            // adjuntos detalle -anular adjuntos en tabla
             $archivoAdjuntoRequerimientoPagoDetalleObject = json_decode($request->archivoAdjuntoRequerimientoPagoDetalleObject);
             if (count($archivoAdjuntoRequerimientoPagoDetalleObject) > 0) {
                 foreach ($archivoAdjuntoRequerimientoPagoDetalleObject as $ar) {
@@ -627,7 +633,7 @@ class RequerimientoPagoController extends Controller
                     $requerimientoPago->id_estado = 7;
                     $requerimientoPago->save();
 
-                    // anular detalle requerimiento pago 
+                    // anular detalle requerimiento pago
                     foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
                         $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $detalleRequerimientoPago->id_requerimiento_pago_detalle)->first();
                         $detalle->id_estado = 7;
@@ -806,7 +812,7 @@ class RequerimientoPagoController extends Controller
         $destinatario = [];
         $tipo_estado = '';
         $mensaje = '';
-        
+
 
         if ($idTipoDestinatario == 1) { // tipo persona
             $destinatario = Persona::with("tipoDocumentoIdentidad", "cuentaPersona.banco.contribuyente", "cuentaPersona.tipoCuenta", "cuentaPersona.moneda")
@@ -1064,7 +1070,7 @@ class RequerimientoPagoController extends Controller
         DB::beginTransaction();
         try {
         $requerimientoPago = RequerimientoPago::where("id_requerimiento_pago", $request->id_requerimiento_pago)->first();
- 
+
         $adjuntoOtrosAdjuntosLength = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar1 != null ? count($request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar1) : 0;
         $adjuntoOrdenesLength = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar2 != null ? count($request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar2) : 0;
         $adjuntoComprobanteContableLength = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar3 != null ? count($request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar3) : 0;
@@ -1090,7 +1096,7 @@ class RequerimientoPagoController extends Controller
         }else{
             $mensaje = 'Hubo un problema y no se pudo guardo los adjuntos';
             $estado_accion='warning';
-            
+
         }
             DB::commit();
 
@@ -1159,7 +1165,7 @@ class RequerimientoPagoController extends Controller
         $data=[];
         $status='';
         $msj='';
-        
+
         if($id>0){
             $requerimientoPago= RequerimientoPago::find($id);
             $nuevoRequerimientoPago= $requerimientoPago->replicate();
@@ -1212,6 +1218,94 @@ class RequerimientoPagoController extends Controller
             DB::rollBack();
             return response()->json(['data' => [],'status'=>$status, 'mensaje' => 'Hubo un problema al intentar duplicar el requerimiento de pago. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
+    }
+    public function listadoRequerimientoPagoExportExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
+    {
+        # code...
+        return Excel::download(new ListadoRequerimientoPagoExport($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado), 'listado_requerimiento_pago.xlsx');;
+    }
+    public function obtenerRequerimientosElaborados($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
+    {
+        # code...
+        $GrupoDeUsuarioEnSesionList = Auth::user()->getAllGrupo();
+        $idGrupoDeUsuarioEnSesionList = [];
+        foreach ($GrupoDeUsuarioEnSesionList as $grupo) {
+            $idGrupoDeUsuarioEnSesionList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
+        }
+        $data = RequerimientoPago::with('detalle')
+            ->leftJoin('tesoreria.requerimiento_pago_tipo', 'requerimiento_pago_tipo.id_requerimiento_pago_tipo', '=', 'requerimiento_pago.id_requerimiento_pago_tipo')
+            ->leftJoin('administracion.adm_estado_doc', 'requerimiento_pago.id_estado', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.adm_prioridad', 'requerimiento_pago.id_prioridad', '=', 'adm_prioridad.id_prioridad')
+            ->leftJoin('configuracion.sis_grupo', 'requerimiento_pago.id_grupo', '=', 'sis_grupo.id_grupo')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
+            ->leftJoin('configuracion.sis_moneda', 'requerimiento_pago.id_moneda', '=', 'sis_moneda.id_moneda')
+            ->leftJoin('administracion.adm_periodo', 'adm_periodo.id_periodo', '=', 'requerimiento_pago.id_periodo')
+            ->leftJoin('administracion.adm_empresa', 'requerimiento_pago.id_empresa', '=', 'adm_empresa.id_empresa')
+            ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
+            ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'requerimiento_pago.id_usuario')
+            ->leftJoin('administracion.division', 'division.id_division', '=', 'requerimiento_pago.id_division')
+            ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'requerimiento_pago.id_proyecto')
+
+            ->select(
+                'adm_estado_doc.estado_doc',
+                'requerimiento_pago.*',
+                'requerimiento_pago_tipo.descripcion as descripcion_requerimiento_pago_tipo',
+                'sis_moneda.descripcion as descripcion_moneda',
+                'sis_moneda.simbolo as simbolo_moneda',
+                'adm_periodo.descripcion as periodo',
+                'adm_prioridad.descripcion as prioridad',
+                'sis_grupo.descripcion as grupo',
+                'sis_sede.codigo as sede',
+                'sis_sede.descripcion as descripcion_empresa_sede',
+                'division.descripcion as division',
+                'proy_proyecto.descripcion AS descripcion_proyecto',
+                'adm_contri.razon_social as empresa_razon_social',
+                'adm_contri.nro_documento as empresa_nro_documento',
+                'sis_identi.descripcion as empresa_tipo_documento',
+                'sis_usua.nombre_corto as usuario_nombre_corto',
+                DB::raw("(SELECT COUNT(registro_pago.id_pago)
+                FROM tesoreria.registro_pago
+                WHERE  registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago AND registro_pago.adjunto IS NOT NULL AND
+                registro_pago.estado != 7) AS cantidad_adjuntos_pago")
+            )
+            ->when(($meOrAll === 'ME'), function ($query) {
+                $idUsuario = Auth::user()->id_usuario;
+                return $query->whereRaw('requerimiento_pago.id_usuario = ' . $idUsuario);
+            })
+            ->when(($meOrAll === 'ALL'), function ($query) {
+                return $query->whereRaw('requerimiento_pago.id_usuario > 0');
+            })
+            ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
+                return $query->whereRaw('requerimiento_pago.id_empresa = ' . $idEmpresa);
+            })
+            ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
+                return $query->whereRaw('requerimiento_pago.id_sede = ' . $idSede);
+            })
+            ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
+                return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
+            })
+            ->when((intval($idDivision) > 0), function ($query)  use ($idDivision) {
+                return $query->whereRaw('requerimiento_pago.division_id = ' . $idDivision);
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+                return $query->where('requerimiento_pago.fecha_registro', '>=', $fechaRegistroDesde);
+            })
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+                return $query->where('requerimiento_pago.fecha_registro', '<=', $fechaRegistroHasta);
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+                return $query->whereBetween('requerimiento_pago.fecha_registro', [$fechaRegistroDesde, $fechaRegistroHasta]);
+            })
+
+            ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
+                return $query->whereRaw('requerimiento_pago.id_estado = ' . $idEstado);
+            })
+
+            ->whereIn('requerimiento_pago.id_grupo', $idGrupoDeUsuarioEnSesionList);
+
+        return $data;
+
     }
 
 }
