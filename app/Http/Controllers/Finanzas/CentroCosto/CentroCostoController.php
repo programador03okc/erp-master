@@ -120,18 +120,11 @@ class CentroCostoController extends Controller
 
         $codigo = $request->codigo;
 
-        if (Str::contains($codigo, '.')) {
+        $nivel = $this->contarUnCaracter($codigo);
 
-            $cod_padre = substr($codigo, 0, (strlen($codigo) - 3));
-
-            $cc_padre = CentroCosto::where('codigo', $cod_padre)->first();
-            $id_padre = ($cc_padre !== null ? $cc_padre->id_centro_costo : null);
-
-            $nivel = 2;
-        } else {
-            $id_padre = null;
-            $nivel = 1;
-        }
+        $cod_padre = substr($codigo, 0, (strlen($codigo) - 3));
+        $cc_padre = CentroCosto::where('codigo', $cod_padre)->first();
+        $id_padre = ($cc_padre !== null ? $cc_padre->id_centro_costo : null);
 
         $cc->codigo = trim($codigo);
         $cc->descripcion = strtoupper(trim($request->descripcion));
@@ -152,4 +145,11 @@ class CentroCostoController extends Controller
 
         return response()->json($cc);
     }
+
+
+    function contarUnCaracter($texto)
+    {
+        return substr_count($texto, ".") + 1;
+    }
+
 }
