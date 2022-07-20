@@ -1005,7 +1005,7 @@ class RequerimientoController extends Controller
             if($requerimiento->monto_total >$request->monto_total){
                 $requerimiento->estado = 1; // elaborado
             }else{
-                $requerimiento->estado = 2; // aprobado
+                $requerimiento->estado = $requerimiento->estado_anterior??1;
 
             }
         }

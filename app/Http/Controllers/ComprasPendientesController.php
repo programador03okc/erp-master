@@ -1607,6 +1607,10 @@ class ComprasPendientesController extends Controller
                 if(intval($request->id_requerimiento) >0){
                     $documento = $this->obtenerIdDocumento(1,$request->id_requerimiento);
                     $requerimiento = Requerimiento::find($request->id_requerimiento);
+                    if( $requerimiento->estado !=3){
+                        $requerimiento->estado_anterior = $requerimiento->estado;
+                    }
+
                     // $operaciones = Operacion::getOperacion(1, $requerimiento->id_tipo_requerimiento, $requerimiento->id_grupo, $requerimiento->division_id, $requerimiento->id_prioridad, $requerimiento->id_moneda, $requerimiento->monto_total, null,[]);
                     // $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
                     if($request->id_observacion_logisica >0){
