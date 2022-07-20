@@ -55,6 +55,8 @@ $('#listaContactos tbody').on("click", "button.seleccionar", function () {
         $("[name=ubigeo_contacto]").val(contacto.departamento !== null ? (contacto.departamento + '-' + contacto.provincia + '-' + contacto.distrito) : '');
         $(".horario_contacto").text(contacto.horario);
         $(".email_contacto").text(contacto.email);
+        $("[name=horario_contacto]").val(contacto.horario);
+        $("[name=email_contacto]").val(contacto.email);
     }
 });
 

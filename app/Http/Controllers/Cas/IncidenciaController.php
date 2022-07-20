@@ -135,8 +135,8 @@ class IncidenciaController extends Controller
                 // 'adm_ctb_contac.telefono',
                 // 'adm_ctb_contac.cargo',
                 // 'adm_ctb_contac.direccion',
-                // 'adm_ctb_contac.horario',
-                // 'adm_ctb_contac.email',
+                'adm_ctb_contac.horario',
+                'adm_ctb_contac.email',
                 'oportunidades.codigo_oportunidad',
                 'oc_propias_view.id_entidad',
                 DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
@@ -150,7 +150,7 @@ class IncidenciaController extends Controller
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'incidencia.id_empresa')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
-            // ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
+            ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
             ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'incidencia.id_ubigeo_contacto')
             ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
             ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')

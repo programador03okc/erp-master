@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\StringHelper;
+use App\Models\Configuracion\SisUsua;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,6 @@ class ConfiguracionController extends Controller{
     function view_usuario(){
         $modulos = $this->select_modulos();
         $roles=$this->lista_roles();
-
         return view('configuracion/usuarios', compact('modulos','roles'));
     }
 
@@ -48,10 +48,10 @@ class ConfiguracionController extends Controller{
         return view('configuracion/configuracion_socket');
     }
 
-    
- 
+
+
     function view_docuemtos(){ return view('configuracion/flujo_aprobacion/documentos');}
-    function view_gestionar_flujos(){ 
+    function view_gestionar_flujos(){
         $grupoFlujo = $this->grupoFlujo();
         return view('configuracion/flujo_aprobacion/gestionar_flujos',compact('grupoFlujo'));}
     function view_historial_aprobaciones(){ return view('configuracion/flujo_aprobacion/historial_aprobaciones');}
@@ -94,7 +94,7 @@ class ConfiguracionController extends Controller{
             'adm_contri.razon_social as razon_social_empresa',
             'sis_sede.id_sede',
             'sis_sede.codigo as codigo_sede'
-            
+
             )
             ->join('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'adm_operacion.id_tp_documento')
             ->leftJoin('administracion.adm_area', 'adm_area.id_area', '=', 'adm_operacion.id_area')
@@ -102,7 +102,7 @@ class ConfiguracionController extends Controller{
             ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'adm_grupo.id_sede')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-        
+
         ->where([
             ['adm_operacion.id_operacion', '=', $id],
             ['adm_operacion.estado', '=', 1]
@@ -214,15 +214,15 @@ class ConfiguracionController extends Controller{
         ->update([
             'estado' => 7
         ]);
-        
+
         if($update >0){
             $status='ACTUALIZADO';
         }else{
             $status='NO_ACTUALIZADO';
         }
-    
+
         return  response()->json($status);
-    } 
+    }
 
     public function revokeOperacion($id_operacion){
         $status='';
@@ -230,16 +230,16 @@ class ConfiguracionController extends Controller{
         ->update([
             'estado' => 7
         ]);
-        
+
         if($update >0){
             $status='ACTUALIZADO';
         }else{
             $status='NO_ACTUALIZADO';
         }
-    
+
         return  response()->json($status);
-    } 
-        
+    }
+
 
 /* COMBOBOX - SELECT */
     public function select_doc_idendidad(){
@@ -355,9 +355,9 @@ class ConfiguracionController extends Controller{
         $p1 = StringHelper::encode5t(addslashes($request->pass_old));
         $p2 = StringHelper::encode5t(addslashes($request->pass_new));
         $user = Auth::user()->id_usuario;
-        
+
         $sql = DB::table('configuracion.sis_usua')->where([['clave', '=', $p1], ['id_usuario', '=', $user], ['estado', '=', 1]])->first();
-        
+
         if ($sql !== null) {
             $data = DB::table('configuracion.sis_usua')->where('id_usuario', $sql->id_usuario)->update(['clave'  => $p2]);
             $rpta = $data;
@@ -382,7 +382,7 @@ class ConfiguracionController extends Controller{
     public function mostrar_modulos_edit($value){
         $html = '';
         $data = DB::table('configuracion.sis_modulo')->where([['id_padre', '=', 0], ['estado', '=', 1]])->orderBy('codigo', 'asc')->get();
-        
+
         foreach ($data as $row){
             $id = $row->id_modulo;
             $desc = $row->descripcion;
@@ -397,7 +397,7 @@ class ConfiguracionController extends Controller{
     public function mostrar_modulos_combo(){
         $html = '';
         $data = DB::table('configuracion.sis_modulo')->where([['id_padre', '=', 0], ['estado', '=', 1]])->orderBy('codigo', 'asc')->get();
-        
+
         foreach ($data as $row){
             $id = $row->id_modulo;
             $desc = $row->descripcion;
@@ -443,7 +443,7 @@ class ConfiguracionController extends Controller{
                 $code2 = $this->leftZero(2, $count);
                 $code = $code1.'.'.$code2;
             }
-    
+
             $data = DB::table('configuracion.sis_modulo')->where('id_modulo', $id)
             ->update([
                 'codigo'    => $code
@@ -456,7 +456,7 @@ class ConfiguracionController extends Controller{
     public function actualizar_modulo(Request $request){
         $tipo = $request->tipo_mod;
         $padre = (empty($request->padre_mod)) ? 0 : $request->padre_mod;
-        
+
         $data = DB::table('configuracion.sis_modulo')->where('id_modulo', $request->id_modulo)
         ->update([
             'tipo_modulo'   => $tipo,
@@ -612,7 +612,7 @@ class ConfiguracionController extends Controller{
 
         $rrhh_perso = DB::table('configuracion.sis_usua')
         ->select(
-            'rrhh_perso.id_persona' 
+            'rrhh_perso.id_persona'
         )
         ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
         ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
@@ -673,7 +673,7 @@ class ConfiguracionController extends Controller{
             ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
             ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
             ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
-    
+
             ->where('sis_usua.id_usuario', '=', $id)
             ->orderBy('sis_usua.id_usuario', 'asc')
             ->get();
@@ -718,11 +718,11 @@ class ConfiguracionController extends Controller{
             ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
             ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
             ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
-    
+
             ->where([['sis_usua.estado', '!=', 7]])
             ->orderBy('sis_usua.id_usuario', 'asc')
             ->get();
-            
+
             $output=['data'=>$data];
             return $output;
     }
@@ -743,7 +743,7 @@ class ConfiguracionController extends Controller{
                     'clave'             => StringHelper::encode5t($request->clave),
                     'estado'            => 1,
                     'fecha_registro'    => date('Y-m-d H:i:s')
-                    
+
                 ],
                 'id_usuario'
             );
@@ -775,7 +775,7 @@ public function mostrar_nota_lanzamiento($id_nota){
                 ])
         ->orderBy('nota_lanzamiento.id_nota_lanzamiento', 'asc')
         ->get();
-    
+
         return response()->json($data->first());
 
 }
@@ -819,7 +819,7 @@ public function updateNotaLanzamiento(Request $request){
         'version_actual' => $version_actual,
         'fecha_nota_lanzamiento' => $fecha_nota_lanzamiento
     ]);
-    
+
     if($update >0){
         $status='ACTUALIZADO';
     }else{
@@ -841,7 +841,7 @@ public function updateDetalleNotaLanzamiento(Request $request){
         'descripcion' => $descripcion,
         'fecha_detalle_nota_lanzamiento' => $fecha_detalle_nota_lanzamiento
     ]);
-    
+
     if($update >0){
         $status='ACTUALIZADO';
     }else{
@@ -865,7 +865,7 @@ public function guardarNotaLanzamiento(Request $request){
         'estado' => 1
     ],'id_nota_lanzamiento'
     );
-    
+
     if($guardar >0){
         $status='GUARDADO';
     }else{
@@ -879,7 +879,7 @@ public function eliminarNotaLanzamiento($id){
     $eliminar = DB::table('configuracion.nota_lanzamiento')
     ->where('id_nota_lanzamiento',$id)
     ->delete();
-    
+
     if($eliminar >0){
         $status='ELIMINADO';
     }else{
@@ -893,7 +893,7 @@ public function eliminarDetalleNotaLanzamiento($id){
     $eliminar = DB::table('configuracion.detalle_nota_lanzamiento')
     ->where('id_detalle_nota_lanzamiento',$id)
     ->delete();
-    
+
     if($eliminar >0){
         $status='ELIMINADO';
     }else{
@@ -929,7 +929,7 @@ public function mostrarVersionActual(){
         ->orderBy('id_estado_doc', 'asc')->get();
         $output['data'] = $data;
         return response()->json($output);
-    }    
+    }
     public function mostrar_documento_id($id){
         $sql = DB::table('administracion.adm_estado_doc')
         ->where('id_estado_doc', $id)->get();
@@ -1052,7 +1052,7 @@ public function mostrar_flujos($id_grupo_flujo=null,$id_flujo=null){
     ->get();
     $output['data']=$data;
     return response()->json($output);
-} 
+}
 
 public function mostrar_operaciones($id_operacion=null){
     $option=[['adm_operacion.estado', '=', 1]];
@@ -1088,10 +1088,10 @@ public function mostrar_operaciones($id_operacion=null){
     ->get();
     $output['data']=$data;
     return response()->json($output);
-}    
+}
 
 public function updateFlujo(Request $request){
-    
+
     $flujo= $request->all();
     $id_flujo = $flujo['id_flujo'];
     $nombre_flujo = $flujo['nombre_flujo'];
@@ -1111,7 +1111,7 @@ public function updateFlujo(Request $request){
         'estado' => $estado,
         'id_grupo_flujo' => $grupo_flujo
     ]);
-    
+
     if($update >0){
         $status='ACTUALIZADO';
     }else{
@@ -1122,7 +1122,7 @@ public function updateFlujo(Request $request){
 }
 
 public function updateOperacion(Request $request){
-    
+
     $flujo= $request->all();
     $id_operacion = $flujo['id_operacion'];
     $operacion_descripcion = $flujo['operacion_descripcion'];
@@ -1142,7 +1142,7 @@ public function updateOperacion(Request $request){
         'id_area' => $area,
         'estado' => $estado
     ]);
-    
+
     if($update >0){
         $status='ACTUALIZADO';
     }else{
@@ -1189,7 +1189,7 @@ public function mostrarGrupoCriterioByIdFlujo($id_flujo =null){
 
     $sql_detalle_grupo = DB::table('administracion.adm_detalle_grupo_criterios')
     ->select(
-        'adm_detalle_grupo_criterios.*'     
+        'adm_detalle_grupo_criterios.*'
     )
     ->where($option)
     ->orderBy('adm_detalle_grupo_criterios.id_detalle_grupo_criterios', 'asc')
@@ -1203,7 +1203,7 @@ public function mostrarGrupoCriterioByIdFlujo($id_flujo =null){
 
     $sql_grupo = DB::table('administracion.adm_grupo_criterios')
     ->select(
-        'adm_grupo_criterios.*'     
+        'adm_grupo_criterios.*'
     )
     ->whereIn('adm_grupo_criterios.id_grupo_criterios',$id_grupo_criterio_list)
     ->orderBy('adm_grupo_criterios.id_grupo_criterios', 'asc')
@@ -1225,7 +1225,7 @@ public function mostrarCriterio($id_flujo,$id_grupo_criterio){
 
     $sql_detalle_grupo = DB::table('administracion.adm_detalle_grupo_criterios')
     ->select(
-        'adm_detalle_grupo_criterios.*'     
+        'adm_detalle_grupo_criterios.*'
     )
     ->where($option)
     ->orderBy('adm_detalle_grupo_criterios.id_detalle_grupo_criterios', 'asc')
@@ -1238,7 +1238,7 @@ public function mostrarCriterio($id_flujo,$id_grupo_criterio){
 
 
 public function updateCriterioMonto(Request $request){
-    
+
     $criterio_monto= $request->all();
     $id_criterio_monto = $criterio_monto['id_criterio_monto'];
     $descripcion_monto = $criterio_monto['descripcion_monto'];
@@ -1272,7 +1272,7 @@ public function updateCriterioMonto(Request $request){
         ]);
     }
 
-    
+
     if($update >0){
         $status='ACTUALIZADO';
     }else{
@@ -1314,7 +1314,7 @@ public function saveCriterioMonto(Request $request){
 
     return  response()->json($status);
 
-    
+
 }
 
 public function mostrarCriterioPrioridad($id_criterio_prioridad){
@@ -1337,7 +1337,7 @@ public function mostrarCriterioPrioridad($id_criterio_prioridad){
 }
 
 public function updateCriterioPrioridad(Request $request){
-    
+
     $criterio_prioridad= $request->all();
     $id_criterio_prioridad = $criterio_prioridad['id_criterio_prioridad'];
     $descripcion_prioridad = $criterio_prioridad['descripcion_prioridad'];
@@ -1359,7 +1359,7 @@ public function updateCriterioPrioridad(Request $request){
         ]);
     }
 
-    
+
     if($update >0){
         $status='ACTUALIZADO';
     }else{
@@ -1392,7 +1392,7 @@ public function saveCriterioPrioridad(Request $request){
         $status='NO_GUARDADO';
     }
 
-    return  response()->json($status);    
+    return  response()->json($status);
 }
 
 
@@ -1634,7 +1634,7 @@ public function anular_configuracion_socket($id){
 		}
 		return $zeros.$number;
     }
-    
+
 
     public function get_estado_doc($nombreEstadoDoc){
         $estado_doc =  DB::table('administracion.adm_estado_doc')
@@ -1713,7 +1713,7 @@ public function anular_configuracion_socket($id){
         foreach ($sis_accion_rol as $data){
             $idAccionRol[]=$data->id_accion;
         }
-        
+
 
         $sis_modulo = DB::table('configuracion.sis_modulo')
         ->select('sis_modulo.*')
@@ -1758,7 +1758,7 @@ public function anular_configuracion_socket($id){
                 foreach($arbol_sub_modulo as $key_asm => $asm){
                     if($sm['id_sub_modulo'] == $asm['id_padre']){
                         $arbol_modulo[$key_am]['sub_modulo'][$key_sm]['sub_modulo_hijo'][]= $asm ;
-                    } 
+                    }
 
                 }
             }
@@ -1769,7 +1769,7 @@ public function anular_configuracion_socket($id){
         ->where([['estado', '=', 1]])
         ->orderBy('descripcion', 'asc')
         ->get();
-    
+
 
 
         foreach($arbol_modulo as $key_am => $am){
@@ -1784,8 +1784,8 @@ public function anular_configuracion_socket($id){
                                     'descripcion'=>$sa->descripcion,
                                     'accion'=>[]
                                     ] ;
-                            } 
-    
+                            }
+
                         }
                     }
 
@@ -1823,7 +1823,7 @@ public function anular_configuracion_socket($id){
                                                 'permiso'=> false
                                                 ] ;
                                         }
-                                    } 
+                                    }
                                 }
                             }
                         }
@@ -1859,7 +1859,7 @@ public function anular_configuracion_socket($id){
         if ($count_accesos > 0) {
             for ($i = 0; $i < $count_accesos; $i++) {
                 if(in_array($accesos[$i]['id_accion'],$id_accion_rol_usuario_actual_list)==true){
-                    //actualizar 
+                    //actualizar
                     $update = DB::table('configuracion.sis_accion_rol')->where([['id_accion', $accesos[$i]['id_accion']],['id_rol',$id_rol]])
                     ->update([
                         'estado' => $accesos[$i]['valor']=='true'?1:0
@@ -1873,13 +1873,13 @@ public function anular_configuracion_socket($id){
                             'id_rol'    => $id_rol,
                             'id_accion' => $accesos[$i]['id_accion'],
                             'estado'    => $accesos[$i]['valor']=='true'?1:0
-                            
+
                         ],
                         'id_accion_rol'
                     );
                     if($id_accion_rol>0){
                         $status=200;
-                        
+
                     }else{
                         $status=204;
                     }
@@ -1892,3 +1892,4 @@ public function anular_configuracion_socket($id){
         return response()->json($output);
     }
 }
+
