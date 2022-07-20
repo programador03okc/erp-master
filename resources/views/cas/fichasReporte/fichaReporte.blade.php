@@ -32,11 +32,11 @@ Gestión de incidencias
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <form id="formFiltrosIncidencias" method="POST" target="_blank" 
+                    <form id="formFiltrosIncidencias" method="POST" target="_blank"
                     action="{{route('cas.garantias.fichas.incidenciasExcel')}}">
                         @csrf()
                     </form>
-                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                    <table class="mytable table table-condensed table-bordered table-okc-view"
                         id="listaIncidencias" style="width:100%;">
                         <thead>
                             <tr>
@@ -65,7 +65,7 @@ Gestión de incidencias
             </div>
         </div>
         <div class="box-footer">
-            
+
         </div>
     </div>
 </div>

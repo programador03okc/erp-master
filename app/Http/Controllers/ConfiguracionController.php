@@ -698,32 +698,51 @@ class ConfiguracionController extends Controller{
 
 
     public function mostrar_usuarios(){
-        $data = DB::table('configuracion.sis_usua')
-            ->select(
-                'sis_usua.id_usuario',
-                'sis_usua.nombre_corto',
-                'sis_usua.usuario',
-                'sis_usua.clave',
-                'sis_usua.fecha_registro',
-                'sis_usua.estado',
-                'sis_acceso.id_acceso',
-                'usuario_rol.id_rol',
-                'sis_rol.descripcion as rol',
-                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo_usuario"),
-                'rrhh_perso.email'
-                    )
-                    ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
-                    ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
-                    ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
-            ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
-            ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
-            ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
+        $response = DB::table('configuracion.sis_usua')
+        ->select(
+            'sis_usua.id_usuario',
+            'sis_usua.nombre_corto',
+            'sis_usua.usuario',
+            'sis_usua.clave',
+            'sis_usua.fecha_registro',
+            'sis_usua.estado',
+            'sis_usua.email',
+            // 'usuario_rol.id_rol',
+            // 'sis_rol.descripcion as rol',
 
-            ->where([['sis_usua.estado', '!=', 7]])
-            ->orderBy('sis_usua.id_usuario', 'asc')
-            ->get();
+        )
+        // ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
+        // ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
+        ->groupBy('sis_usua.id_usuario')
+        ->get();
 
-            $output=['data'=>$data];
+
+        // $data = DB::table('configuracion.sis_usua')
+        //     ->select(
+        //         'sis_usua.id_usuario',
+        //         'sis_usua.nombre_corto',
+        //         'sis_usua.usuario',
+        //         'sis_usua.clave',
+        //         'sis_usua.fecha_registro',
+        //         'sis_usua.estado',
+        //         'sis_acceso.id_acceso',
+        //         'usuario_rol.id_rol',
+        //         'sis_rol.descripcion as rol',
+        //         DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo_usuario"),
+        //         'rrhh_perso.email'
+        //             )
+        //             ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
+        //             ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
+        //             ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
+        //     ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+        //     ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
+        //     ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
+
+        //     ->where([['sis_usua.estado', '!=', 7]])
+        //     ->orderBy('sis_usua.id_usuario', 'asc')
+        //     ->get();
+
+            $output=['data'=>$response];
             return $output;
     }
 

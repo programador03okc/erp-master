@@ -25,7 +25,7 @@
                             <th>Usuario</th>
                             <th>Clave</th>
                             <th>Email</th>
-                            <th>Rol</th>
+                            {{-- <th>Rol</th> --}}
                             <th>Fecha Registro</th>
                             <th width="15%">Acción</th>
                         </tr>
