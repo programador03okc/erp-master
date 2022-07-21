@@ -1938,6 +1938,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('actualizarEstadoPago', 'Tesoreria\RegistroPagoController@actualizarEstadoPago')->name('actualizar-estados-pago');
 
 				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
+
+                Route::get('reistro-pagos-exportar-excel', 'Tesoreria\RegistroPagoController@registroPagosExportarExcel');
+                Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
+
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {

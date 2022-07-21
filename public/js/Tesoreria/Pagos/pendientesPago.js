@@ -107,23 +107,23 @@
                 {
                     'render':
                         function (data, type, row) {
-                            // <button type="button" class="autorizar btn btn-default boton" data-toggle="tooltip" 
+                            // <button type="button" class="autorizar btn btn-default boton" data-toggle="tooltip"
                             //     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
                             //     title="Ver requerimiento de pago"> <i class="fas fa-eye"></i></button>
                             return `<div class="btn-group" role="group">
 
-                            <button type="button" class="adjuntos btn btn-${(row['count_adjunto_cabecera'] + row['count_adjunto_detalle']) == 0 ? 'default' : 'warning'} boton" 
-                                data-toggle="tooltip" data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-codigo="${row['codigo']}" 
+                            <button type="button" class="adjuntos btn btn-${(row['count_adjunto_cabecera'] + row['count_adjunto_detalle']) == 0 ? 'default' : 'warning'} boton"
+                                data-toggle="tooltip" data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-codigo="${row['codigo']}"
                                 title="Ver adjuntos"><i class="fas fa-paperclip"></i></button>
 
                             ${(row['id_estado'] == 2 && permisoEnviar == '1') ?
-                                    `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip" 
+                                    `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
                                 title="Autorizar pago"> <i class="fas fa-share"></i></button>`
                                     : ''}
                             ${row['id_estado'] == 5 ?
                                     `${permisoEnviar == '1' ?
-                                        `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
+                                        `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip"
                                         data-placement="bottom" data-id="${row['id_requerimiento_pago']}" data-tipo="requerimiento"
                                         title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>`: ''}
                                     `
@@ -131,29 +131,29 @@
                                 }
                                 ${row['id_estado'] == 5 || row['id_estado'] == 9 ?
                                     `${permisoRegistrar == '1' ?
-                                        `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                        `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom"
                                         data-id="${row['id_requerimiento_pago']}" data-cod="${row['codigo']}" data-tipo="requerimiento"
-                                        data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-moneda="${row['simbolo']}" 
+                                        data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" data-moneda="${row['simbolo']}"
                                         data-nrodoc="${row['nro_documento'] !== null ? row['nro_documento'] : (row['dni_persona'] !== undefined ? row['dni_persona'] : '')}"
-                                        data-prov="${encodeURIComponent(row['razon_social'] !== null ? row['razon_social'] : (row['persona'] !== undefined ? row['persona'] : ''))}" 
-                                        data-cta="${row['nro_cuenta'] !== null ? row['nro_cuenta'] : row['nro_cuenta_persona']}" 
-                                        data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}" 
-                                        data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}" 
+                                        data-prov="${encodeURIComponent(row['razon_social'] !== null ? row['razon_social'] : (row['persona'] !== undefined ? row['persona'] : ''))}"
+                                        data-cta="${row['nro_cuenta'] !== null ? row['nro_cuenta'] : row['nro_cuenta_persona']}"
+                                        data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}"
+                                        data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}"
                                         data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}"
                                         data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
                                         data-motivo="${encodeURIComponent(row['concepto'])}"
                                         data-observacion-requerimiento="${row['comentario']}"
-                                        title="Registrar Pago"> 
+                                        title="Registrar Pago">
                                     <i class="fas fa-hand-holding-usd"></i> </button>`
                                         : ''}`
                                     : ''
                                 }
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?
-                                    `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                                    `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip"
                                     data-placement="bottom" data-id="${row['id_requerimiento_pago']}" title="Ver detalle de los pagos" >
                                     <i class="fas fa-chevron-down"></i></button>`: ''
                                 }
-                                
+
                             </div> `;
 
                         }
@@ -297,13 +297,13 @@
                             }
                             return `<div class="btn-group" role="group">
                 ${(row['estado_pago'] == 8 && permisoEnviar == '1') ?
-                                    `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip" 
+                                    `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                 title="Autorizar pago" >
                                 <i class="fas fa-share"></i></button>`: ''}
                             ${row['estado_pago'] == 5 ?
                                     `${permisoEnviar == '1' ?
-                                        `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip" 
+                                        `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip"
                                     data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                     title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>` : ''}
                                     `
@@ -311,17 +311,17 @@
 
                                 ${row['estado_pago'] == 5 || row['estado_pago'] == 9 ?
                                     `${permisoRegistrar == '1' ?
-                                        `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                        `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom"
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
-                                    data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}" 
-                                    data-moneda="${row['simbolo']}" 
+                                    data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}"
+                                    data-moneda="${row['simbolo']}"
 
                                     data-nrodoc="${nroDocumentoDestinatario}"
                                     data-prov="${nombreDestinatario}"
-                                    data-cta="${cuentaDestinatario}" 
-                                    data-cci="${cuentaCCIDestinatario}" 
-                                    data-tpcta="${tipoCuentaDestinatario}" 
-                                    data-banco="${bancoDestinatario}" 
+                                    data-cta="${cuentaDestinatario}"
+                                    data-cci="${cuentaCCIDestinatario}"
+                                    data-tpcta="${tipoCuentaDestinatario}"
+                                    data-banco="${bancoDestinatario}"
                                     data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     data-comentario-pago-logistica="${row['comentario_pago']}"
@@ -329,7 +329,7 @@
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`
                                     : ''}
                             ${row['suma_pagado'] > 0 && permisoVer == '1' ?
-                                    `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                                    `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" title="Ver detalle de los pagos" >
                                 <i class="fas fa-chevron-down"></i></button>`
                                     : ''}
@@ -345,7 +345,7 @@
                         // console.log(row.requerimientos);
                         var text = '';
                         row.requerimientos.forEach(element => {
-                            text += `<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}" 
+                            text += `<a href="/necesidades/requerimiento/elaboracion/index?id=${element.id_requerimiento}"
                             target="_blank" title="Abrir Requerimiento">${element.codigo}</a>`;
                         });
                         return text;
@@ -401,15 +401,15 @@
                         function (data, type, row) {
                             return `<div class="btn-group" role="group">
                             ${row['estado'] == 1 ?
-                                    `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom" 
+                                    `<button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom"
                                     data-id="${row['id_doc_com']}" data-cod="${row['serie'] + '-' + row['numero']}" data-tipo="comprobante"
                                     data-total="${row['total_a_pagar']}" data-pago="${row['suma_pagado']}" data-nrodoc="${row['nro_documento']}"
-                                    data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}" 
-                                    data-cta="${row['nro_cuenta']}" title="Registrar Pago"> 
+                                    data-moneda="${row['simbolo']}" data-prov="${encodeURIComponent(row['razon_social'])}"
+                                    data-cta="${row['nro_cuenta']}" title="Registrar Pago">
                                     <i class="fas fa-hand-holding-usd"></i> </button>`: ''
                                 }
                             ${row['suma_pagado'] > 0 ?
-                                    `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                                    `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip"
                                     data-placement="bottom" data-id="${row['id_doc_com']}" title="Ver detalle de los pagos" >
                                     <i class="fas fa-chevron-down"></i></button>`: ''
                                 }
@@ -552,7 +552,7 @@ $('#listaOrdenes tbody').on('click', 'td button.detalle', function () {
         formatPagos(iTableCounter, id, row, "orden");
         tr.addClass('shown');
         oInnerTable = $('#listaOrdenes_' + iTableCounter).dataTable({
-            //    data: sections, 
+            //    data: sections,
             autoWidth: true,
             deferRender: true,
             info: false,
@@ -585,7 +585,7 @@ $('#listaComprobantes tbody').on('click', 'td button.detalle', function () {
         formatPagos(iTableCounter, id, row, "comprobante");
         tr.addClass('shown');
         oInnerTableComp = $('#listaComprobantes_' + iTableCounterComp).dataTable({
-            //    data: sections, 
+            //    data: sections,
             autoWidth: true,
             deferRender: true,
             info: false,
@@ -619,7 +619,7 @@ $('#listaRequerimientos tbody').on('click', 'td button.detalle', function () {
         formatPagos(iTableCounter, id, row, "requerimiento");
         tr.addClass('shown');
         oInnerTableReq = $('#listaRequerimientos_' + iTableCounterReq).dataTable({
-            //    data: sections, 
+            //    data: sections,
             autoWidth: true,
             deferRender: true,
             info: false,
@@ -659,7 +659,7 @@ function formatPagos(table_id, id, row, tipo) {
                         '<td style="border: none; text-align: center">' + element.nombre_corto + '</td>' +
                         '<td style="border: none; text-align: center">' + formatDateHour(element.fecha_registro) + '</td>' +
                         '<td style="border: none; text-align: center">' +
-                        `<button type = "button" class= "btn btn-danger boton" data - toggle="tooltip" 
+                        `<button type = "button" class= "btn btn-danger boton" data - toggle="tooltip"
                             data - placement="bottom" data - row="${row}"
                             onClick = "anularPago(${element.id_pago},'${tipo}')" title = "Anular pago">
         <i class="fas fa-trash"></i></button` +
@@ -667,7 +667,7 @@ function formatPagos(table_id, id, row, tipo) {
                         '</tr>';
                     i++;
                 });
-                var tabla = `<table class= "table table-sm" style = "border: none;" 
+                var tabla = `<table class= "table table-sm" style = "border: none;"
                 id = "detalle_${table_id}" >
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
@@ -687,7 +687,7 @@ function formatPagos(table_id, id, row, tipo) {
                 </table> `;
             }
             else {
-                var tabla = `<table class= "table table-sm" style = "border: none;" 
+                var tabla = `<table class= "table table-sm" style = "border: none;"
                 id = "detalle_${table_id}" >
             <tbody>
                 <tr><td>No hay registros para mostrar</td></tr>
@@ -759,3 +759,4 @@ function actualizarEstadoPago() {
     });
 
 }
+
