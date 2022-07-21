@@ -14,14 +14,24 @@ function listar_guia_detalle(id_guia) {
                 let id = null;
                 var unitario = 0;
                 var valor_compra = 0;
+                var fecha_emision = '';
+                var precio_unitario = '';
+                var moneda = '';
+                var simbolo = '';
+                var tipo_cambio = 0;
 
                 response.forEach(element => {
                     id = guias_detalle.find(guia => guia.id_guia_com_det == element.id_guia_com_det);
 
                     if (id == undefined || id == null) {
-                        unitario = parseFloat(element.precio_unitario !== null
-                            ? element.precio_unitario
-                            : element.unitario);
+
+                        fecha_emision = element.fecha_emision !== null ? element.fecha_emision : element.fecha_orden;
+                        precio_unitario = element.precio_unitario !== null ? element.precio_unitario : element.unitario_orden;
+                        moneda = element.fecha_emision !== null ? element.moneda : element.moneda_orden;
+                        simbolo = element.fecha_emision !== null ? element.simbolo : element.simbolo_orden;
+                        tipo_cambio = element.fecha_emision !== null ? element.tipo_cambio_doc : element.tipo_cambio_orden;
+
+                        unitario = parseFloat(precio_unitario);
                         valor_compra = ((unitario * parseFloat(element.cantidad)) + parseFloat(element.unitario_adicional));
 
                         guias_detalle.push({
@@ -33,18 +43,18 @@ function listar_guia_detalle(id_guia) {
                             'codigo': element.codigo,
                             'part_number': element.part_number,
                             'descripcion': element.descripcion,
-                            'simbolo': element.simbolo,
+                            'simbolo': simbolo,
                             'cantidad': element.cantidad,
                             'abreviatura': element.abreviatura,
-                            'fecha_emision': element.fecha_emision,
-                            'tipo_cambio': element.tipo_cambio,
+                            'fecha_emision': fecha_emision,
+                            'tipo_cambio': tipo_cambio,
                             'valor_compra': valor_compra,
-                            'valor_compra_soles': (element.moneda !== 1
-                                ? (valor_compra * parseFloat(element.tipo_cambio))
+                            'valor_compra_soles': (moneda !== 1
+                                ? (valor_compra * parseFloat(tipo_cambio))
                                 : (valor_compra)),
                             'adicional_valor': 0,
                             'adicional_peso': 0,
-                            'total': (parseFloat(element.precio_unitario !== null ? element.precio_unitario : element.unitario) * parseFloat(element.cantidad)),
+                            'total': (parseFloat(precio_unitario) * parseFloat(element.cantidad)),
                             'peso': 0,
                             'estado': 1,
                         });

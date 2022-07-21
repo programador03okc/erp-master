@@ -102,27 +102,43 @@ class ProrrateoCostosController extends Controller
                 'guia_com.numero',
                 'mov_alm_det.id_mov_alm_det',
                 'sis_moneda.simbolo',
+                'moneda_orden.simbolo as simbolo_orden',
                 'doc_com.fecha_emision',
                 'doc_com.moneda',
                 'doc_com_det.precio_unitario',
+                'log_ord_compra.fecha as fecha_orden',
+                'log_ord_compra.id_moneda as moneda_orden',
+                'log_det_ord_compra.precio as unitario_orden',
                 DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
                         WHERE tc.fecha <= doc_com.fecha_emision
                           AND tc.moneda = doc_com.moneda
-                          LIMIT 1) AS tipo_cambio")
+                          LIMIT 1) AS tipo_cambio_doc"),
+                DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
+                        WHERE tc.fecha <= log_ord_compra.fecha
+                          AND tc.moneda = log_ord_compra.id_moneda
+                          LIMIT 1) AS tipo_cambio_orden")
+
             )
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->join('almacen.mov_alm_det', 'mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-            // ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-            ->join('almacen.doc_com_det', function ($join) {
+            ->leftjoin('almacen.doc_com_det', function ($join) {
                 $join->on('doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
                 $join->where('doc_com_det.estado', '!=', 7);
             })
-            // ->join('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
-            ->join('almacen.doc_com', function ($join) {
+            ->leftjoin('almacen.doc_com', function ($join) {
                 $join->on('doc_com.id_doc_com', '=', 'doc_com_det.id_doc');
                 $join->where('doc_com.estado', '!=', 7);
             })
-            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+            ->leftjoin('logistica.log_det_ord_compra', function ($join) {
+                $join->on('log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det');
+                $join->where('log_det_ord_compra.estado', '!=', 7);
+            })
+            ->leftjoin('logistica.log_ord_compra', function ($join) {
+                $join->on('log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra');
+                $join->where('log_ord_compra.estado', '!=', 7);
+            })
+            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+            ->leftjoin('configuracion.sis_moneda as moneda_orden', 'moneda_orden.id_moneda', '=', 'log_ord_compra.id_moneda')
             // ->join('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
