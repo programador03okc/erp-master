@@ -1541,32 +1541,33 @@ class ListaOrdenView {
             },
             'columns': [
                 {
-                    'data': 'codigo',
+                    'data': 'codigo','className': 'text-center',
                     render: function (data, type, row) {
                         return `<label class="lbl-codigo handleClickAbrirOrden" title="Ir a orden" data-id-orden="${row.id}">${row.codigo}</label>`;
                     }
                 },
                 { 'data': 'codigo_softlink', 'name': 'codigo_softlink' },
                 {
-                'data': 'data_requerimiento',
-                render: function (data, type, row) {
-                    if (data != null && data.length > 0) {
-                        return (data).map(e => (`<a href="/necesidades/requerimiento/elaboracion/index?id=${e.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${e.codigo_requerimiento}</a>`)).join(",");
-                    } else {
-                        return 'Sin Código';
-                    }
-                }
+                'data': 'data_codigo_requerimiento','className': 'text-center', 'defaultContent':""
+                // render: function (data, type, row) {
+                    // if (data != null && data.length > 0) {
+                    //     return (data).map(e => (`<a href="/necesidades/requerimiento/elaboracion/index?id=${e.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${e.codigo_requerimiento}</a>`)).join(",");
+                    // } else {
+                    //     return 'Sin Código';
+                    // }
+                // }
             },
                 {
-                    'data': 'data_requerimiento',"searchable": false,
-                    render: function (data) {
-                        if (data != null && data.length > 0) {
+                    'data': 'data_codigo_oportunidad','className': 'text-center', 'defaultContent':""
+                    // render: function (data) {
+                        // if (data != null && data.length > 0) {
                             
-                            return data.map(e => e.id_cc >0 ?(e.cc_codigo_oportunidad):'').join(",");
-                        } else {
-                            return 'Sin Código';
-                        }
-                    }
+                        //     return data.map(e => e.id_cc >0 ?(e.cc_codigo_oportunidad):'').join(",");
+                        // } else {
+                        //     return 'Sin Código';
+                        // }
+ 
+                    // }
                 },
                 { 'data': 'descripcion_sede_empresa', 'name': 'descripcion_sede_empresa','className': 'text-center' },
                 { 'data': 'simbolo_moneda', 'name': 'simbolo_moneda','className': 'text-center' },
@@ -1576,14 +1577,16 @@ class ListaOrdenView {
                         return row.fecha_llegada !=null?(row.fecha_llegada + " / " + row.dias_restantes+' días'):'';
                     }
                 },
-                { 'data': 'data_requerimiento', 'className': 'text-center', 'searchable': false,
-                    render: function (data) {
-                        if (data != null && data.length > 0) {
-                            return data.map(e => (e.atencion_logistica)).join(", ");
-                        } else {
-                            return 'Sin determinar';
-                        }
-                    }
+                { 'data': 'data_atencion_logistica', 'className': 'text-center', 'searchable': false, 'defaultContent':"Sin determinar"
+                    // render: function (data) {
+                    //     if (data != null && data.length > 0) {
+                    //         return data.map(e => (e.atencion_logistica)).join(", ");
+                    //     } else {
+                    //         return 'Sin determinar';
+                    //     }
+ 
+                    
+                    // }
                 },
                 { 'data': 'razon_social_proveedor',
                     render: function (data, type, row) {
@@ -1603,15 +1606,16 @@ class ListaOrdenView {
                     }
                 },
                 {
-                    'data': 'data_requerimiento','searchable': false,
-                    render: function (data) {
-                        if (data != null && data.length > 0) {
+                    'data': 'data_importe_oportunidad', 'defaultContent':"-"
+                    // render: function (data) {
+                        // if (data != null && data.length > 0) {
                             
-                            return data.map(e => e.id_cc >0 ?(e.cc_moneda_oportunidad=='s'?('S/'+$.number(e.cc_importe_oportunidad,2)):('$'+$.number(e.cc_importe_oportunidad,2))):'').join(",");
-                        } else {
-                            return 'Sin Código';
-                        }
-                    }
+                        //     return data.map(e => e.id_cc >0 ?(e.cc_moneda_oportunidad=='s'?('S/'+$.number(e.cc_importe_oportunidad,2)):('$'+$.number(e.cc_importe_oportunidad,2))):'').join(",");
+                        // } else {
+                        //     return 'Sin Código';
+                        // }
+
+                    // }
                 },
                 {
                     'searchable': false,'render':

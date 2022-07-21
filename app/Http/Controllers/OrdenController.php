@@ -998,10 +998,10 @@ class OrdenController extends Controller
         //     }
         //     return $payload;
         // })
-        ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
-            $query->whereJsonContains('data_requerimiento', ['codigo_requerimiento'=> $keyword]);
+        // ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
+        //     $query->whereJsonContains('data_requerimiento', ['codigo_requerimiento'=> $keyword]);
             
-        })
+        // })
         // ->rawColumns(['codigo_requerimiento'])
         ->toJson();
 
@@ -4294,38 +4294,24 @@ class OrdenController extends Controller
             ->get();
 
         foreach ($ord_compra as $d) {
-            
-            $codigoRequerimientoList=[];
-            $codigoCDPList=[];
-            $tiempoAtencionLogistica=[];
-            $importeTotalCDPList=[];
-            $dataRequerimiento =$d['data_requerimiento'];
-            if( count((array)$dataRequerimiento )){
-                foreach ($dataRequerimiento as $key => $r)
-                {
-                    $codigoRequerimientoList[] = $r['codigo_requerimiento'];
-                    $codigoCDPList[] = $r['cc_codigo_oportunidad'];
-                    $importeTotalCDPList[] = $r['cc_importe_oportunidad'];
-                }
-            }
 
             $data[] = [
                 'codigo' => $d['codigo'] ?? '',
                 'tipo_orden' => $d['descripcion_tp_documento'] ?? '',
                 'codigo_softlink' => $d['codigo_softlink'] ?? '',
-                'codigo_requerimiento' => implode(",",$codigoRequerimientoList),
-                'codigo_cdp' => implode(",",$codigoCDPList),
+                'codigo_requerimiento' => $d['data_codigo_requerimiento']??'',
+                'codigo_cdp' => $d['data_codigo_oportunidad']??'',
                 'descripcion_sede_empresa' => $d['descripcion_sede_empresa'] ?? '',
                 'descripcion_moneda' => $d['descripcion_moneda'] ?? '',
                 'fecha_emision' => $d['fecha_emision'] ?? '',
                 'fecha_llegada' => $d['fecha_llegada'] ?? '',
-                'tiempo_atencion_logistica' => $tiempoAtencionLogistica ?? '',
+                'tiempo_atencion_logistica' => $d['data_atencion_logistica'] ?? '',
                 'fecha_ultimo_ingreso_almacen' => $d['fecha_ultimo_ingreso_almacen'] ?? '',
                 'razon_social_proveedor' => $d['razon_social_proveedor'] ?? '',
                 'estado_orden' => $d['descripcion_estado'] ?? '',
                 'estado_pago' => $d['descripcion_estado_pago'] ?? '',
                 'monto_total' => $d['monto_total'] ?? '',
-                'monto_total_cdp' => $importeTotalCDPList ?? ''
+                'monto_total_cdp' =>  $d['data_importe_oportunidad'] ?? ''
             ];
         }
 
