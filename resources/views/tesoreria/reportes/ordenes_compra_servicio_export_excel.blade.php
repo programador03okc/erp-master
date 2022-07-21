@@ -19,7 +19,12 @@
         @foreach ($requerimientos as $requerimiento)
         <tr>
             <td>{{ $requerimiento->prioridad }}</td>
-            <td>{{ $requerimiento->requerimientos[0]["codigo"] }}</td>
+            <td>
+                @foreach ($requerimiento->requerimientos as $key => $value)
+                    {{$value->codigo}}
+
+                @endforeach
+            </td>
             <td>{{ $requerimiento->codigo_empresa }}</td>
             <td>{{ $requerimiento->codigo }}</td>
             <td>{{ $requerimiento->razon_social }}</td>
