@@ -22,11 +22,13 @@
                 <button id="btn_actualizar_proveedores" class="btn btn-default" onClick="actualizarProveedores();">Actualizar Proveedores</button>
                 <button id="btn_actualizar_items" class="btn btn-default" onClick="migrarItemsComprobantesSoftlink();">Actualizar Items</button>
                 <button id="btn_migrar_comprobantes" class="btn btn-success" onClick="migrarComprobantesSoftlink();">Migrar a Softlink</button>
+
+                <a class="btn btn-success" href="lista-comprobantes-pago-export-excel"><i class="fas fa-file-excel"></i> Exportar Excel</a>
                 @endif
                 <div class="row">
                     <div class="col-sm-12">
                         <!-- <caption>Requerimientos: Registrados | Aprobados</caption> -->
-                        <table class="mytable table table-hover table-condensed table-bordered table-okc-view" 
+                        <table class="mytable table table-hover table-condensed table-bordered table-okc-view"
                             id="listaComprobantesCompra" width="100%">
                             <thead>
                                 <tr>

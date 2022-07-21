@@ -1545,6 +1545,9 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('actualizarProveedorComprobantes', 'Migraciones\MigrateFacturasSoftlinkController@actualizarProveedorComprobantes');
 			Route::get('migrarComprobantesSoftlink', 'Migraciones\MigrateFacturasSoftlinkController@migrarComprobantesSoftlink');
 			Route::get('migrarItemsComprobantesSoftlink', 'Migraciones\MigrateFacturasSoftlinkController@migrarItemsComprobantesSoftlink');
+
+            Route::get('lista-comprobantes-pago-export-excel', 'ComprobanteCompraController@exportListaComprobantesPagos')->name('lista.comprobante.pago.export.excel');
+
 		});
 
 		Route::group(['as' => 'transferencias.', 'prefix' => 'transferencias'], function () {
