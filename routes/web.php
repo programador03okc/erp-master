@@ -1486,6 +1486,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardarProrrateo', 'Almacen\Movimiento\ProrrateoCostosController@guardarProrrateo');
 				Route::post('updateProrrateo', 'Almacen\Movimiento\ProrrateoCostosController@updateProrrateo');
 				Route::get('anular_prorrateo/{id}', 'Almacen\Movimiento\ProrrateoCostosController@anular_prorrateo');
+				Route::post('guardarProveedor', 'Almacen\Movimiento\ProrrateoCostosController@guardarProveedor');
 			});
 
 			Route::group(['as' => 'reservas.', 'prefix' => 'reservas'], function () {

@@ -573,4 +573,77 @@ class ProrrateoCostosController extends Controller
             'moneda' => $moneda
         ]);
     }
+
+    public function guardarProveedor(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $array = [];
+
+            $contribuyente = DB::table('contabilidad.adm_contri')
+                ->where('nro_documento', trim($request->nro_documento))
+                ->first();
+
+            if ($contribuyente !== null) {
+                $proveedor = DB::table('logistica.log_prove')
+                    ->where('id_contribuyente', $contribuyente->id_contribuyente)
+                    ->first();
+
+                if ($proveedor !== null) {
+                    $array = array(
+                        'tipo' => 'warning',
+                        'mensaje' => 'Ya existe el RUC ingresado.',
+                    );
+                } else {
+                    DB::table('logistica.log_prove')
+                        ->insert([
+                            'id_contribuyente' => $contribuyente->id_contribuyente,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                        ]);
+                    $array = array(
+                        'tipo' => 'success',
+                        'mensaje' => 'Se guardó correctamente',
+                    );
+                }
+            } else {
+                $id_contribuyente = DB::table('contabilidad.adm_contri')
+                    ->insertGetId(
+                        [
+                            'nro_documento' => trim($request->nro_documento),
+                            'razon_social' => strtoupper(trim($request->razon_social)),
+                            'telefono' => trim($request->telefono),
+                            'direccion_fiscal' => trim($request->direccion_fiscal),
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1,
+                            'transportista' => false
+                        ],
+                        'id_contribuyente'
+                    );
+
+                DB::table('logistica.log_prove')
+                    ->insert([
+                        'id_contribuyente' => $id_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => date('Y-m-d H:i:s'),
+                    ]);
+
+                $array = array(
+                    'tipo' => 'success',
+                    'mensaje' => 'Se guardó correctamente',
+                );
+            }
+            DB::commit();
+            return response()->json($array);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(
+                array(
+                    'tipo' => 'error',
+                    'mensaje' => 'Hubo un problema. Por favor intente de nuevo',
+                    'error' => $e->getMessage()
+                )
+            );
+        }
+    }
 }

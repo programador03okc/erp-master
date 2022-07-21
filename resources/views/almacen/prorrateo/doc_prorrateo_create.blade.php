@@ -34,7 +34,7 @@
                                 <button type="button" class="input-group-text" id="basic-addon1" onClick="proveedorModal();">
                                     <i class="fa fa-search"></i>
                                 </button>
-                                <button type="button" class="btn-primary" title="Agregar Proveedor" onClick="agregar_proveedor();">
+                                <button type="button" class="btn-primary" title="Agregar Proveedor" onClick="agregarProveedor();">
                                     <i class="fas fa-plus"></i></button>
                             </div>
                         </div>

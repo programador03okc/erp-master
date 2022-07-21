@@ -195,7 +195,7 @@ Prorrateo de Costos
 </div>
 @include('almacen.prorrateo.doc_prorrateo_create')
 @include('logistica.cotizaciones.proveedorModal')
-@include('logistica.cotizaciones.add_proveedor')
+@include('almacen.prorrateo.agregarProveedor')
 @include('almacen.guias.guia_compraModal')
 @include('almacen.prorrateo.doc_prorrateoModal')
 
@@ -211,7 +211,7 @@ Prorrateo de Costos
     <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_create.js')}}"></script>
     <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_detalle.js')}}"></script>
     <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
-    <script src="{{ asset('js/logistica/add_proveedor.js')}}"></script>
+    <script src="{{ asset('js/almacen/prorrateo/agregarProveedor.js')}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script>
     <script src="{{ asset('js/almacen/prorrateo/doc_prorrateoModal.js')}}"></script>
 
