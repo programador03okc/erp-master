@@ -990,6 +990,7 @@ class RequerimientoController extends Controller
     {
         // dd($request->all());
         // exit();  
+        $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
 
         $count = count($request->descripcion);
 
@@ -1002,12 +1003,26 @@ class RequerimientoController extends Controller
         
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
         if ($requerimiento->estado == 3) { // si el estado actual es observado
-            if($requerimiento->monto_total >$request->monto_total){
-                $requerimiento->estado = 1; // elaborado
+            if($request->monto_total < $requerimiento->monto_total){
+                $requerimiento->estado = $requerimiento->estado_anterior;
             }else{
-                $requerimiento->estado = $requerimiento->estado_anterior??1;
-
+                $requerimiento->estado = 1; // elaborado
             }
+
+            $trazabilidad = new Trazabilidad();
+            $trazabilidad->id_requerimiento = $request->id_requerimiento;
+            $trazabilidad->id_usuario = Auth::user()->id_usuario;
+            $trazabilidad->accion = 'SUSTENTADO';
+            $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
+            $trazabilidad->fecha_registro = new Carbon();
+            $trazabilidad->save();
+
+            $idDocumento = Documento::getIdDocAprob($request->id_requerimiento, 1);
+            $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
+            $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
+            $aprobacion->tiene_sustento = true;
+            $aprobacion->save();
+
         }
         $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;
         $requerimiento->id_usuario = Auth::user()->id_usuario;
@@ -1176,22 +1191,9 @@ class RequerimientoController extends Controller
             }
         }
 
-        $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
 
-        if ($requerimiento->estado == 3) {
-            $trazabilidad = new Trazabilidad();
-            $trazabilidad->id_requerimiento = $request->id_requerimiento;
-            $trazabilidad->id_usuario = Auth::user()->id_usuario;
-            $trazabilidad->accion = 'SUSTENTADO';
-            $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
-            $trazabilidad->fecha_registro = new Carbon();
-            $trazabilidad->save();
+        // if ($requerimiento->estado == 3) {
 
-            $idDocumento = Documento::getIdDocAprob($request->id_requerimiento, 1);
-            $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
-            $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
-            $aprobacion->tiene_sustento = true;
-            $aprobacion->save();
 
             // TODO:  enviar notificación al usuario aprobante, asuto => se levanto la observación 
             // $idRolPrimerAprobante = 0;
@@ -1228,7 +1230,7 @@ class RequerimientoController extends Controller
 
             //     }
             // }
-        }
+        // }
 
 
         return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'codigo' => $requerimiento->codigo]);
