@@ -532,21 +532,26 @@ class RequerimientoView {
 
         this.limpiarTabla('ListaDetalleRequerimiento');
         vista_extendida();
-
+        console.log(dataDetalleRequerimiento);
         for (let i = 0; i < dataDetalleRequerimiento.length; i++) {
             // console.log(data);
             let cantidadAdjuntos = dataDetalleRequerimiento != null && dataDetalleRequerimiento[i].adjuntos ? (dataDetalleRequerimiento[i].adjuntos).filter((element, i) => element.estado != 7).length : 0;
             // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de dataa
-            let um = document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
-            let indexUm = 0;
 
-            for (let j = 0; j < um.length; j++) {
-                if (um[j].value == dataDetalleRequerimiento[i].id_unidad_medida) {
-                    indexUm = j;
+            let objOptionSelectUnidad = document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
+            let newOptionUnidadMedida='';
+            for (let j = 0; j < objOptionSelectUnidad.length; j++) {
+                if (objOptionSelectUnidad[j].value == dataDetalleRequerimiento[i].id_unidad_medida) {
+                    newOptionUnidadMedida+= `<option value="${objOptionSelectUnidad[j].value}" selected>${objOptionSelectUnidad[j].textContent}</option>`;
+                }else{
+                    newOptionUnidadMedida+= `<option value="${objOptionSelectUnidad[j].value}">${objOptionSelectUnidad[j].textContent}</option>`;
+
                 }
 
             }
-            document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected", "");
+            // console.log(newOptionUnidadMedida);
+            // document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option')[indexUm].setAttribute("selected", "");
+            // console.log(objOptionSelectUnidad);
             //  fin fix unidad medida
             let idFila = dataDetalleRequerimiento[i].id_detalle_requerimiento > 0 ? dataDetalleRequerimiento[i].id_detalle_requerimiento : (this.makeId());
 
@@ -573,7 +578,7 @@ class RequerimientoView {
                     <div class="form-group">
                         <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${((dataDetalleRequerimiento[i].descripcion != null && dataDetalleRequerimiento[i].descripcion > 0) ? dataDetalleRequerimiento[i].descripcion : (dataDetalleRequerimiento[i].producto_descripcion != null ? dataDetalleRequerimiento[i].producto_descripcion : ''))}"   ${hasDisabledInput} >${(dataDetalleRequerimiento[i].descripcion != null ? dataDetalleRequerimiento[i].descripcion : (dataDetalleRequerimiento[i].producto_descripcion != null ? dataDetalleRequerimiento[i].producto_descripcion : ''))}</textarea></td>
                     </div>
-                <td><select name="unidad[]" class="form-control activation input-sm" value="${dataDetalleRequerimiento[i].id_unidad_medida}" ${hasDisabledInput} >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                <td><select name="unidad[]" class="form-control activation input-sm" value="${dataDetalleRequerimiento[i].id_unidad_medida}" ${hasDisabledInput} >${newOptionUnidadMedida}</select></td>
                 <td>
                     <div class="form-group">
                         <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${dataDetalleRequerimiento[i].cantidad ?? ''}"   placeholder="Cantidad" ${hasDisabledInput}>
@@ -617,7 +622,7 @@ class RequerimientoView {
                         <div class="form-group">
                         <textarea class="form-control activation input-sm descripcion handleBlurUpdateDescripcionItem" name="descripcion[]" placeholder="Descripción" value="${dataDetalleRequerimiento[i].descripcion ?? ''}" ${hasDisabledInput} >${dataDetalleRequerimiento[i].descripcion ?? ''}</textarea></td>
                         </div>
-                    <td><select name="unidad[]" class="form-control activation input-sm" value="${dataDetalleRequerimiento[i].id_unidad_medida}"  ${hasDisabledInput}>${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
+                    <td><select name="unidad[]" class="form-control activation input-sm" value="${dataDetalleRequerimiento[i].id_unidad_medida}"  ${hasDisabledInput}>${newOptionUnidadMedida}</select></td>
                     <td>
                         <div class="form-group">
                             <input class="form-control activation input-sm cantidad text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="1" name="cantidad[]"  value="${dataDetalleRequerimiento[i].cantidad ?? ''}"  placeholder="Cantidad" ${hasDisabledInput}>
