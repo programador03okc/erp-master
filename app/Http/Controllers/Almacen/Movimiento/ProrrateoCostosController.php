@@ -197,7 +197,7 @@ class ProrrateoCostosController extends Controller
                         'tipo_cambio' => $det->tipo_cambio,
                         'sub_total' => $det->total,
                         'total_descuento' => 0,
-                        'total' => $det->total,
+                        // 'total' => $det->total,
                         'total_igv' => 0,
                         'total_a_pagar' => $det->total,
                         'usuario' => $id_usuario,
@@ -245,10 +245,14 @@ class ProrrateoCostosController extends Controller
             }
 
             DB::commit();
-            return response()->json($id_prorrateo);
+            return response()->json([
+                'tipo' => "success",
+                'mensaje' => "Se guardó correctamente el prorrateo.", 200
+            ]);
         } catch (\PDOException $e) {
             // Woopsy
             DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al procesar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
     }
 

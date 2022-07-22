@@ -207,14 +207,14 @@ Prorrateo de Costos
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo.js')}}"></script>
-    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_create.js')}}"></script>
-    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_detalle.js')}}"></script>
-    <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
-    <script src="{{ asset('js/almacen/prorrateo/agregarProveedor.js')}}"></script>
-    <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}"></script>
-    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateoModal.js')}}"></script>
-
+    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo.js')}}?v={{filemtime(public_path('js/almacen/prorrateo/doc_prorrateo.js'))}}"></script>
+    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_create.js')}}?v={{filemtime(public_path('js/almacen/prorrateo/doc_prorrateo_create.js'))}}"></script>
+    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateo_detalle.js')}}?v={{filemtime(public_path('js/almacen/prorrateo/doc_prorrateo_detalle.js'))}}"></script>
+    <script src="{{ asset('js/logistica/proveedorModal.js')}}?v={{filemtime(public_path('js/logistica/proveedorModal.js'))}}"></script>
+    <script src="{{ asset('js/almacen/prorrateo/agregarProveedor.js')}}?v={{filemtime(public_path('js/almacen/prorrateo/agregarProveedor.js'))}}"></script>
+    <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_compraModal.js'))}}"></script>
+    <script src="{{ asset('js/almacen/prorrateo/doc_prorrateoModal.js')}}?v={{filemtime(public_path('js/almacen/prorrateo/doc_prorrateoModal.js'))}}"></script>
+    
     <script>
         vista_extendida();
     </script>
