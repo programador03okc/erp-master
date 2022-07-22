@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ListaComprobanteCompra;
 use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 use Dompdf\Dompdf;
 use PDF;
@@ -245,7 +247,7 @@ class ComprobanteCompraController extends Controller
                 <td>' . $guia->fecha_guia . '</td>
                 <td>' . $guia->razon_social . '</td>
                 <td>' . $guia->des_operacion . '</td>
-                <td><i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
+                <td><i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom"
                     title="Anular Guia" onClick="anular_guia(' . $guia->id_guia_com . ',' . $guia->id_doc_com_guia . ');"></i>
                 </td>
             </tr>';
@@ -293,24 +295,24 @@ class ComprobanteCompraController extends Controller
     //             <td>'.$det->guia.'</td>
     //             <td>'.$det->codigo.'</td>
     //             <td>'.$det->descripcion.'</td>
-    //             <td><input type="number" class="input-data right" name="cantidad" 
-    //                 value="'.$det->cantidad.'" onChange="calcula_total('.$det->id_doc_det.');" 
+    //             <td><input type="number" class="input-data right" name="cantidad"
+    //                 value="'.$det->cantidad.'" onChange="calcula_total('.$det->id_doc_det.');"
     //                 disabled="true"/>
     //             </td>
     //             <td>'.$det->abreviatura.'</td>
-    //             <td><input type="number" class="input-data right" name="precio_unitario" 
-    //                 value="'.$det->precio_unitario.'" onChange="calcula_total('.$det->id_doc_det.');" 
+    //             <td><input type="number" class="input-data right" name="precio_unitario"
+    //                 value="'.$det->precio_unitario.'" onChange="calcula_total('.$det->id_doc_det.');"
     //                 disabled="true"/>
     //             </td>
-    //             <td><input type="number" class="input-data right" name="porcen_dscto" 
-    //                 value="'.$det->porcen_dscto.'" onChange="calcula_dscto('.$det->id_doc_det.');" 
+    //             <td><input type="number" class="input-data right" name="porcen_dscto"
+    //                 value="'.$det->porcen_dscto.'" onChange="calcula_dscto('.$det->id_doc_det.');"
     //                 disabled="true"/>
     //             </td>
-    //             <td><input type="number" class="input-data right" name="total_dscto" 
-    //                 value="'.$det->total_dscto.'" onChange="calcula_total('.$det->id_doc_det.');" 
+    //             <td><input type="number" class="input-data right" name="total_dscto"
+    //                 value="'.$det->total_dscto.'" onChange="calcula_total('.$det->id_doc_det.');"
     //                 disabled="true"/>
     //             </td>
-    //             <td><input type="number" class="input-data right" name="precio_total" 
+    //             <td><input type="number" class="input-data right" name="precio_total"
     //                 value="'.$det->precio_total.'" disabled="true"/>
     //             </td>
     //             <td style="display:flex;">
@@ -1064,5 +1066,40 @@ class ComprobanteCompraController extends Controller
             ->update(['estado' => 8]);
 
         return response()->json($doc);
+    }
+    public function exportListaComprobantesPagos()
+    {
+
+        return Excel::download(new ListaComprobanteCompra, 'lista_comprobante_compra.xlsx');
+
+    }
+    public function obtenerReporteComprobantes()
+    {
+        # code...
+        return  DB::table('almacen.doc_com')
+            ->select(
+                'doc_com.*',
+                'adm_contri.nro_documento',
+                'adm_contri.razon_social',
+                'empresa.razon_social as razon_social_empresa',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
+                'sis_moneda.simbolo',
+                // 'log_cdn_pago.descripcion AS condicion_pago',
+                'condicion_softlink.descripcion AS condicion_pago',
+                'cont_tp_doc.descripcion as tipo_documento'
+            )
+            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'doc_com.id_proveedor')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'doc_com.estado')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'doc_com.id_sede')
+            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->leftJoin('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+            ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')
+            ->leftJoin('logistica.condicion_softlink', 'condicion_softlink.id_condicion_softlink', '=', 'doc_com.id_condicion_softlink')
+            ->leftJoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
+            ->where('doc_com.estado', '!=', 7);
+
     }
 }

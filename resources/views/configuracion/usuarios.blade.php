@@ -25,7 +25,7 @@
                             <th>Usuario</th>
                             <th>Clave</th>
                             <th>Email</th>
-                            <th>Rol</th>
+                            {{-- <th>Rol</th> --}}
                             <th>Fecha Registro</th>
                             <th width="15%">Acción</th>
                         </tr>
@@ -61,7 +61,7 @@
                             </div> -->
                             <div style="display:flex;">
                                 <input class="oculto" name="id_trabajador"/>
-                                <input type="text" class="form-control activation" name="nombre_trabajador" placeholder="Seleccione un trabajador..." 
+                                <input type="text" class="form-control activation" name="nombre_trabajador" placeholder="Seleccione un trabajador..."
                                     aria-describedby="basic-addon1" disabled>
                                 <button type="button" class="input-group-text activation btn-primary" id="basic-addon1" onClick="trabajadorModal();">
                                     <i class="fa fa-search"></i>
@@ -177,7 +177,7 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-    
+
     <script src="{{('/js/configuracion/usuario.js')}}"></script>
     <script src="{{('/js/configuracion/modal_asignar_accesos.js')}}"></script>
     <script src="{{ asset('js/proyectos/residentes/trabajadorModal.js')}}"></script>

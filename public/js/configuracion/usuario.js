@@ -11,7 +11,7 @@ $(function(){
             {'data': 'id_usuario'},
             {'render':
             function (data, type, row, meta){
-                return (row['nombre_completo_usuario']);
+                return (row['nombre_corto']);
             }
             },
             {'data': 'usuario'},
@@ -21,22 +21,22 @@ $(function(){
             }
             },
             {'data': 'email'},
-            {'render':
-            function (data, type, row, meta){
-                return row['rol']?row['rol']:'';
-            }
-            },
+            // {'render':
+            // function (data, type, row, meta){
+            //     return row['rol']?row['rol']:'';
+            // }
+            // },
             {'data': 'fecha_registro'},
             {'render':
                 function (data, type, row, meta){
                     return (`<div class="d-flex">
-                            <button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip" 
+                            <button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Editar" onclick="editarUsuario(${row['id_usuario']});">
                                 <i class="fas fa-edit"></i></button>
-                            <button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip" 
+                            <button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Asignar Accesos" onclick="accesoUsuario(${row['id_usuario']});">
                                 <i class="fas fa-user-tag"></i></button>
-                            <button type="button" class="btn bg-red btn-flat botonList" data-toggle="tooltip" 
+                            <button type="button" class="btn bg-red btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Anular" onclick="anularUsuario(${row['id_usuario']});">
                                 <i class="fas fa-trash-alt"></i></button>
                             </div>`
@@ -156,7 +156,7 @@ function getPerfilUsuario(id){
             url:'/configuracion/usuario/perfil' +'/'+id,
             dataType: 'JSON',
             success(response) {
-                resolve(response) // Resolve promise and go to then() 
+                resolve(response) // Resolve promise and go to then()
             },
             error: function(err) {
             reject(err) // Reject the promise and go to catch()
@@ -225,7 +225,7 @@ function addObjAccesoUsuario(id_accion,valor){
 
 function anularUsuario(id){
     var rspta = confirm('¿Está seguro que desea anular éste usuario?');
-    
+
     if (rspta){
         $.ajax({
             type: 'GET',
@@ -250,7 +250,7 @@ function getPasswordUserDecode(id){
             url: '/configuracion/usuario/password-user-decode/'+id,
             dataType: 'JSON',
             success(response) {
-                resolve(response) // Resolve promise and go to then() 
+                resolve(response) // Resolve promise and go to then()
             },
             error: function(err) {
             reject(err) // Reject the promise and go to catch()

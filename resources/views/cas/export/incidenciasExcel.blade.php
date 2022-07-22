@@ -14,7 +14,7 @@
                 <th style="background-color: #cccccc;" width="18"><b>Estado</b></th>
                 <th style="background-color: #cccccc;" width="30"><b>Empresa</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Cliente</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Concepto</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Nro Orden</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Factura</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Quien reporto</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Contacto</b></th>

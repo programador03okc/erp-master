@@ -9,12 +9,20 @@ class Facturacion {
         var vardataTables = funcDatatables();
         let botonesGuia = [];
         // if (valor_permiso == '1') {
-        botonesGuia.push({
-            text: 'Ingresar Factura',
-            action: function () {
-                open_doc_ven_create_guias_seleccionadas();
-            }, className: 'btn-success'
-        });
+        botonesGuia.push(
+            {
+                text: 'Ingresar Factura',
+                action: function () {
+                    open_doc_ven_create_guias_seleccionadas();
+                }, className: 'btn-success'
+            },
+            {
+                text: 'Exportar a Excel',
+                action: function () {
+                    listadoVentasInternasExportarExcel();
+                }, className: 'btn-primary'
+            }
+        );
         // }
         // console.time();
         tableGuias = $("#listaGuias").DataTable({
@@ -66,15 +74,15 @@ class Facturacion {
                         console.log(row);
                         return `<div style="display: flex;">
                         ${parseInt(row["items_restantes"]) > 0
-                                ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
-                            data-placement="bottom" title="Generar Factura" 
+                                ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip"
+                            data-placement="bottom" title="Generar Factura"
                             data-guia="${row["id_guia_ven"]}"
                             data-doc="${row["id_doc_ven"]}">
                             <i class="fas fa-plus"></i></button>`
                                 : ""
                             }
                         ${parseInt(row["count_facturas"]) > 0
-                                ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" 
+                                ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row["id_guia_ven"]}" title="Ver Detalle" >
                                 <i class="fas fa-chevron-down"></i></button>`
                                 : ""
@@ -151,9 +159,17 @@ class Facturacion {
     listarRequerimientos() {
         var vardataTables = funcDatatables();
         // console.time();
+
         tableRequerimientos = $("#listaRequerimientos").DataTable({
             dom: vardataTables[1],
-            buttons: [],
+            buttons: [
+                {
+                    text: 'Exportar a Excel',
+                    action: function () {
+                        listadoVentasExternasExportarExcel();
+                    }, className: 'btn-primary'
+                }
+            ],
             language: vardataTables[0],
             destroy: true,
             pageLength: 20,
@@ -206,15 +222,15 @@ class Facturacion {
                         console.log(row["items_restantes"]);
                         return `<div style="display: flex;">
                             ${(parseInt(row["items_restantes"]) - parseInt(row["count_facturas"])) > 0
-                                ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip" 
-                            data-placement="bottom" title="Generar Factura" 
+                                ? `<button type="button" class="doc btn btn-success btn-xs btn-flat" data-toggle="tooltip"
+                            data-placement="bottom" title="Generar Factura"
                             data-req="${row["id_requerimiento"]}"
                             data-doc="${row["id_doc_ven"]}">
                             <i class="fas fa-plus"></i></button>`
                                 : ""
                             }
                             ${parseInt(row["count_facturas"]) > 0
-                                ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip" 
+                                ? `<button type="button" class="detalle btn btn-primary btn-xs btn-flat" data-toggle="tooltip"
                                     data-placement="bottom" data-id="${row["id_requerimiento"]}" title="Ver Detalle" >
                                     <i class="fas fa-chevron-down"></i></button>`
                                 : ""
@@ -246,3 +262,7 @@ $("#listaRequerimientos tbody").on("click", "a.archivos", function (e) {
 
     obtenerArchivosMgcp(id, tipo);
 });
+function listadoVentasInternasExportarExcel() {
+    window.open(`listado-ventas-internas-exportar-excel`);
+}
+function listadoVentasExternasExportarExcel() { window.open(`listado-ventas-externas-exportar-excel`); }

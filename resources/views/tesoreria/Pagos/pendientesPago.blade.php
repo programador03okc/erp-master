@@ -31,10 +31,11 @@ Registro de pagos
 
                     <div id="requerimientos" class="tab-pane fade in active">
                         <br>
+                        <a class="btn btn-success" href="reistro-pagos-exportar-excel" >Exportar a Excel</a>
                         <form id="form-requerimientos" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                    <table class="mytable table table-condensed table-bordered table-okc-view"
                                         id="listaRequerimientos">
                                         <thead>
                                             <tr>
@@ -64,11 +65,12 @@ Registro de pagos
 
                     <div id="ordenes" class="tab-pane fade ">
                         <br>
+                        <a class="btn btn-success" href="ordenes-compra-servicio-exportar-excel" >Exportar a Excel</a>
                         <form id="form-ordenes" type="register">
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                    <table class="mytable table table-condensed table-bordered table-okc-view"
                                         id="listaOrdenes">
                                         <thead>
                                             <tr>
@@ -103,7 +105,7 @@ Registro de pagos
                         <form id="form-comprobantes" type="register">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                                    <table class="mytable table table-condensed table-bordered table-okc-view"
                                         id="listaComprobantes">
                                         <thead>
                                             <tr>

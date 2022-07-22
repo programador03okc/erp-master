@@ -37,15 +37,15 @@ function listar_doc_compra() {
                 render: function (data, type, row) {
                     return `<div class="btn-group" role="group">
                                 ${row['estado'] == 1 ?
-                            `<button type="button" class="ver_doc btn btn-info btn-xs" data-toggle="tooltip" 
+                            `<button type="button" class="ver_doc btn btn-info btn-xs" data-toggle="tooltip"
                                     data-placement="bottom" title="Ver Comprobante" data-doc="${row['id_doc_com']}">
                                     <i class="fas fa-file-medical"></i></button>
                                 `: ''}
-                                <button type="button" style="padding-left:8px;padding-right:7px;" class="enviar btn btn-warning btn-xs" data-toggle="tooltip" 
+                                <button type="button" style="padding-left:8px;padding-right:7px;" class="enviar btn btn-warning btn-xs" data-toggle="tooltip"
                                     data-placement="bottom" data-id="${row['id_doc_com']}" title="Enviar a softlink" >
                                     <i class="fas fa-share"></i></button>
                             </div>`;
-                    // <button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-warning btn-xs" data-toggle="tooltip" 
+                    // <button type="button" style="padding-left:8px;padding-right:7px;" class="pago btn btn-warning btn-xs" data-toggle="tooltip"
                     // data-placement="bottom" data-id="${row['id_doc_com']}" data-cod="${row['serie']+'-'+row['numero']}" title="Mandar A Pago" >
                     // <i class="fas fa-hand-holding-usd"></i></button>
                 }
@@ -234,3 +234,4 @@ function anularComprobanteCompra(obj) {
     let id_doc_com = obj.dataset.idDocCom;
     anular_doc_compra(id_doc_com);
 }
+

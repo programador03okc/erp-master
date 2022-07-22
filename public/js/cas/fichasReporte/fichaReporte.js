@@ -27,7 +27,7 @@ function listarIncidencias() {
                 'data': 'codigo',
                 render: function (data, type, row) {
                     return (
-                        `<button type="button" class="detalle btn btn-primary btn-xs" data-toggle="tooltip" 
+                        `<button type="button" class="detalle btn btn-primary btn-xs" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row['id_incidencia']}" title="Ver fichas reporte" >
                             <i class="fas fa-chevron-down"></i>
                         </button>
@@ -58,8 +58,8 @@ function listarIncidencias() {
                         return '';
                     } else {
                         return (
-                            `<a href="#" class="contacto" 
-                            data-nombre="${row["nombre_contacto"]}" 
+                            `<a href="#" class="contacto"
+                            data-nombre="${row["nombre_contacto"]}"
                             data-cargo="${row["cargo_contacto"]}"
                             data-telefono="${row["telefono_contacto"]}"
                             data-direccion="${row["direccion_contacto"]}"
@@ -91,15 +91,15 @@ function listarIncidencias() {
                         if (row['estado'] == 1 || row['estado'] == 2) {
                             return `
                             <div class="btn-group" role="group">
-                                <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip" 
+                                <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row['id_incidencia']}" title="Agregar ficha de atención" >
                                 <i class="fas fa-plus"></i></button>
-    
-                                <button type="button" class="cerrar btn btn-primary boton" data-toggle="tooltip" 
+
+                                <button type="button" class="cerrar btn btn-primary boton" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row['id_incidencia']}" title="Cerrar incidencia" >
                                 <i class="fas fa-calendar-check"></i></button>
-    
-                                <button type="button" class="cancelar btn btn-danger boton" data-toggle="tooltip" 
+
+                                <button type="button" class="cancelar btn btn-danger boton" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row['id_incidencia']}" title="Cancelar incidencia" >
                                 <i class="fas fa-ban"></i></button>
                             </div>`;
