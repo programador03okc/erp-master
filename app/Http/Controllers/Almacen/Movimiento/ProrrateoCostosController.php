@@ -102,27 +102,43 @@ class ProrrateoCostosController extends Controller
                 'guia_com.numero',
                 'mov_alm_det.id_mov_alm_det',
                 'sis_moneda.simbolo',
+                'moneda_orden.simbolo as simbolo_orden',
                 'doc_com.fecha_emision',
                 'doc_com.moneda',
                 'doc_com_det.precio_unitario',
+                'log_ord_compra.fecha as fecha_orden',
+                'log_ord_compra.id_moneda as moneda_orden',
+                'log_det_ord_compra.precio as unitario_orden',
                 DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
                         WHERE tc.fecha <= doc_com.fecha_emision
                           AND tc.moneda = doc_com.moneda
-                          LIMIT 1) AS tipo_cambio")
+                          LIMIT 1) AS tipo_cambio_doc"),
+                DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
+                        WHERE tc.fecha <= log_ord_compra.fecha
+                          AND tc.moneda = log_ord_compra.id_moneda
+                          LIMIT 1) AS tipo_cambio_orden")
+
             )
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
             ->join('almacen.mov_alm_det', 'mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-            // ->join('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-            ->join('almacen.doc_com_det', function ($join) {
+            ->leftjoin('almacen.doc_com_det', function ($join) {
                 $join->on('doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
                 $join->where('doc_com_det.estado', '!=', 7);
             })
-            // ->join('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
-            ->join('almacen.doc_com', function ($join) {
+            ->leftjoin('almacen.doc_com', function ($join) {
                 $join->on('doc_com.id_doc_com', '=', 'doc_com_det.id_doc');
                 $join->where('doc_com.estado', '!=', 7);
             })
-            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+            ->leftjoin('logistica.log_det_ord_compra', function ($join) {
+                $join->on('log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det');
+                $join->where('log_det_ord_compra.estado', '!=', 7);
+            })
+            ->leftjoin('logistica.log_ord_compra', function ($join) {
+                $join->on('log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra');
+                $join->where('log_ord_compra.estado', '!=', 7);
+            })
+            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+            ->leftjoin('configuracion.sis_moneda as moneda_orden', 'moneda_orden.id_moneda', '=', 'log_ord_compra.id_moneda')
             // ->join('almacen.mov_alm_det','mov_alm_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
             ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
@@ -556,5 +572,78 @@ class ProrrateoCostosController extends Controller
             'total_items' => round($total_items, 3, PHP_ROUND_HALF_UP),
             'moneda' => $moneda
         ]);
+    }
+
+    public function guardarProveedor(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $array = [];
+
+            $contribuyente = DB::table('contabilidad.adm_contri')
+                ->where('nro_documento', trim($request->nro_documento))
+                ->first();
+
+            if ($contribuyente !== null) {
+                $proveedor = DB::table('logistica.log_prove')
+                    ->where('id_contribuyente', $contribuyente->id_contribuyente)
+                    ->first();
+
+                if ($proveedor !== null) {
+                    $array = array(
+                        'tipo' => 'warning',
+                        'mensaje' => 'Ya existe el RUC ingresado.',
+                    );
+                } else {
+                    DB::table('logistica.log_prove')
+                        ->insert([
+                            'id_contribuyente' => $contribuyente->id_contribuyente,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                        ]);
+                    $array = array(
+                        'tipo' => 'success',
+                        'mensaje' => 'Se guardó correctamente',
+                    );
+                }
+            } else {
+                $id_contribuyente = DB::table('contabilidad.adm_contri')
+                    ->insertGetId(
+                        [
+                            'nro_documento' => trim($request->nro_documento),
+                            'razon_social' => strtoupper(trim($request->razon_social)),
+                            'telefono' => trim($request->telefono),
+                            'direccion_fiscal' => trim($request->direccion_fiscal),
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1,
+                            'transportista' => false
+                        ],
+                        'id_contribuyente'
+                    );
+
+                DB::table('logistica.log_prove')
+                    ->insert([
+                        'id_contribuyente' => $id_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => date('Y-m-d H:i:s'),
+                    ]);
+
+                $array = array(
+                    'tipo' => 'success',
+                    'mensaje' => 'Se guardó correctamente',
+                );
+            }
+            DB::commit();
+            return response()->json($array);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(
+                array(
+                    'tipo' => 'error',
+                    'mensaje' => 'Hubo un problema. Por favor intente de nuevo',
+                    'error' => $e->getMessage()
+                )
+            );
+        }
     }
 }
