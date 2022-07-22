@@ -2017,6 +2017,8 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('arbol-acceso/{id_rol}', 'ConfiguracionController@arbol_modulos')->name('arbol-acceso');
 		Route::put('actualizar-accesos-usuario', 'ConfiguracionController@actualizar_accesos_usuario');
 
+        Route::get('usuarios/asignar', 'ConfiguracionController@usuarioAsignar');
+
 		Route::group(['as' => 'usuario.', 'prefix' => 'usuario'], function () {
 			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');
 			Route::get('perfil/{id}', 'ConfiguracionController@getPerfil')->name('get-perfil');

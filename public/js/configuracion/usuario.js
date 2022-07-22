@@ -34,6 +34,9 @@ $(function(){
                                 data-placement="bottom" title="Editar" onclick="editarUsuario(${row['id_usuario']});">
                                 <i class="fas fa-edit"></i></button>
                             <button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip"
+                                 title="Asignar Accesos" data-id="${row['id_usuario']}" data-action="view-modulos">
+                                <i class="fas fa-user-tag"></i></button>
+                            <button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Asignar Accesos" onclick="accesoUsuario(${row['id_usuario']});">
                                 <i class="fas fa-user-tag"></i></button>
                             <button type="button" class="btn bg-red btn-flat botonList" data-toggle="tooltip"
@@ -50,6 +53,7 @@ $(function(){
         ]
     });
     resizeSide();
+// del boton
 
     /* Seleccionar valor del DataTable */
     $('#listaTrabajadorUser tbody').on('click', 'tr', function(){
@@ -422,3 +426,9 @@ function guardarAcceso(){
     });
     return false;
 }
+$(document).on('click','[data-action="view-modulos"]',function () {
+    var id_usuario = $(this).attr('data-id');
+    localStorage.setItem("id_usuario",id_usuario);
+    console.log(id_usuario);
+    // window.open(`reporte-requerimientos-bienes-servicios-excel/${this.ActualParametroAllOrMe}`);
+});
