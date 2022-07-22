@@ -137,13 +137,13 @@ function save_prorrateo(data, action) {
         success: function (response) {
             console.log(response);
             if (baseUrl == 'guardarProrrateo') {
-                Lobibox.notify("success", {
+                Lobibox.notify(response.tipo, {
                     title: false,
                     size: "mini",
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
-                    msg: 'Se guardó correctamente el prorrateo.'
+                    msg: response.mensaje
                 });
             } else {
                 Lobibox.notify("success", {
