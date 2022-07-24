@@ -516,7 +516,7 @@ class RequerimientoController extends Controller
                     ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
 
                 ])
-                ->orderBy('alm_item.id_item', 'asc')
+                ->orderBy('alm_det_req.id_detalle_requerimiento', 'asc')
                 ->get();
 
 
