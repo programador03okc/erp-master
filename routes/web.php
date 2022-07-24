@@ -1479,7 +1479,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('mostrar_prorrateo/{id}', 'Almacen\Movimiento\ProrrateoCostosController@mostrar_prorrateo');
 				Route::get('mostrar_proveedores', 'LogisticaController@mostrar_proveedores');
 				Route::get('guardar_tipo_prorrateo/{nombre}', 'Almacen\Movimiento\ProrrateoCostosController@guardar_tipo_prorrateo');
-				Route::get('tipo_cambio_promedio/{fecha}/{mnd}', 'Almacen\Movimiento\OrdenesPendientesController@tipo_cambio_promedio');
+				Route::get('obtenerTipoCambio/{fec}/{mon}', 'Almacen\Movimiento\CustomizacionController@obtenerTipoCambio');
 				Route::get('listar_guias_compra', 'Almacen\Movimiento\ProrrateoCostosController@listar_guias_compra');
 				Route::get('listar_docs_prorrateo/{id}', 'Almacen\Movimiento\ProrrateoCostosController@listar_docs_prorrateo');
 				Route::get('listar_guia_detalle/{id}', 'Almacen\Movimiento\ProrrateoCostosController@listar_guia_detalle');

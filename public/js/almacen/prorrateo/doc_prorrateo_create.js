@@ -216,31 +216,23 @@ function anular_documento(id_doc_com) {
 
 function getTipoCambio() {
     var fecha = $('[name=doc_fecha_emision]').val();
-    var mnd = $('[name=doc_id_moneda]').val();
     var sub_total = $('[name=sub_total]').val();
-    console.log(fecha);
-    console.log(mnd);
-    console.log(sub_total);
 
-    if (fecha !== null && fecha !== '' &&
-        mnd !== null && mnd !== '' && mnd !== '1') {
-        console.log('ajax');
+    if (fecha !== null && fecha !== '') {
         $.ajax({
             type: 'GET',
-            headers: { 'X-CSRF-TOKEN': token },
-            url: 'tipo_cambio_promedio/' + fecha + '/' + mnd,
+            url: 'obtenerTipoCambio/' + fecha + '/' + 2,
             dataType: 'JSON',
             success: function (response) {
                 console.log(response);
-                $('[name=tipo_cambio]').val(response);
+                $("[name=tipo_cambio]").val(response.venta);
 
-                var tcambio = parseFloat(response);
+                var tcambio = parseFloat(response.venta);
                 var imp = formatDecimal(parseFloat(sub_total) * tcambio);
 
                 $('[name=importe]').val(imp);
                 $('[name=importe_aplicado]').val(imp);
             }
-
         }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);
