@@ -509,7 +509,7 @@ class PendientesFacturacionController extends Controller
     }
     public function obtenerListadoVentasInternasExport()
     {
-        return DB::table('almacen.guia_ven')
+        return DB::table('almacen.guia_ven', 'almacen.alm_req')
             ->select(
                 'guia_ven.*',
                 'adm_contri.nro_documento',
@@ -521,6 +521,7 @@ class PendientesFacturacionController extends Controller
                 'sis_sede.descripcion as sede_descripcion',
                 'sis_sede.id_empresa',
                 'trans.codigo as codigo_trans',
+                'alm_req.id_requerimiento',
 
                 DB::raw("(SELECT count(guia.id_guia_ven_det) FROM almacen.guia_ven_det AS guia
                     LEFT JOIN almacen.doc_ven_det AS doc
@@ -597,5 +598,75 @@ class PendientesFacturacionController extends Controller
         ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
         ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
         ->where('alm_req.enviar_facturacion', true);
+    }
+    public function obtenerListadoVentasInternasDetallesExport($requerimientos)
+    {
+        // $data_guia = [];
+        // foreach ($requerimientos as $key => $value) {
+
+            $data = DB::table('almacen.guia_ven')
+            ->select(
+                'doc_ven.*',
+                'guia_ven.id_guia_ven',
+                'alm_req.id_requerimiento',
+                DB::raw("(cont_tp_doc.abreviatura) || ' ' || (doc_ven.serie) || '-' || (doc_ven.numero) as serie_numero"),
+                'empresa.razon_social as empresa_razon_social',
+                'adm_contri.nro_documento',
+                'adm_contri.razon_social',
+                'sis_moneda.simbolo',
+                'sis_usua.nombre_corto',
+                'log_cdn_pago.descripcion as condicion'
+            )
+            ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven', '=', 'guia_ven.id_guia_ven')
+            ->join('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
+            ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'doc_ven.id_empresa')
+            ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'doc_ven.id_cliente')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_ven.moneda')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'doc_ven.usuario')
+            ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_ven.id_tp_doc')
+            ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_ven.id_condicion')
+
+            ->leftJoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'doc_ven_det.id_detalle_requerimiento')
+            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+
+            ->where('guia_ven.id_guia_ven', $requerimientos )
+            ->where([['doc_ven.estado', '!=', 7]])
+            ->distinct()
+            ->get();
+            // array_push($data_guia,$data);
+        // }
+
+
+        return $data;
+    }
+    public function obtenerListadoVentasExternasDetalleExport($id_requerimiento)
+    {
+        return DB::table('almacen.alm_req')
+            ->select(
+                'doc_ven.*',
+                'alm_req.id_requerimiento',
+                DB::raw("(cont_tp_doc.abreviatura) || ' ' || (doc_ven.serie) || '-' || (doc_ven.numero) as serie_numero"),
+                'empresa.razon_social as empresa_razon_social',
+                'adm_contri.razon_social',
+                'sis_moneda.simbolo',
+                'sis_usua.nombre_corto',
+                'log_cdn_pago.descripcion as condicion'
+            )
+            ->join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            ->join('almacen.doc_ven_det', 'doc_ven_det.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+            ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'doc_ven.id_empresa')
+            ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'doc_ven.id_cliente')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_ven.moneda')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'doc_ven.usuario')
+            ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_ven.id_tp_doc')
+            ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_ven.id_condicion')
+            ->where([['alm_req.id_requerimiento', '=', $id_requerimiento], ['doc_ven.estado', '!=', 7]])
+            ->distinct()->get();
     }
 }

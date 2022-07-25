@@ -13,7 +13,7 @@
             <th>Grupo</th>
             <th>División</th>
             <th>Proyecto/presupuesto</th>
-            {{-- <th>Moneda</th> --}}
+            <th>Moneda</th>
             <th>Monto Total</th>
             {{-- <th>Observacion</th> --}}
             <th>Creado por</th>
@@ -35,8 +35,8 @@
             <td>{{ $requerimiento["grupo"] }}</td>
             <td>{{ $requerimiento["division"] }}</td>
             <td>{{ $requerimiento["descripcion_proyecto"] }}</td>
-            {{-- <td>{{$requerimiento["simbolo_moneda"]}}</td> --}}
-            <td>{{ $requerimiento["simbolo_moneda"].' '.$requerimiento["monto_total"] }}</td>
+            <td>{{$requerimiento["simbolo_moneda"]}}</td>
+            <td>{{ $requerimiento["monto_total"] }}</td>
             {{-- <td>{{ $requerimiento["observacion"] }}</td> --}}
             <td>{{ $requerimiento["nombre_usuario"] }}</td>
             <td>{{ $requerimiento["estado_doc"] }}</td>
