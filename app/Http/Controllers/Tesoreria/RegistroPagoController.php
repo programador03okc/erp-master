@@ -835,4 +835,54 @@ class RegistroPagoController extends Controller
             ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'log_ord_compra.id_prioridad_pago')
             ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9]);
     }
+    public function obtenerRegistroPagosDetalle($id)
+    {
+        $detalles = DB::table('tesoreria.registro_pago')
+            ->select(
+                'registro_pago.*',
+                'sis_usua.nombre_corto',
+                'sis_moneda.simbolo',
+                'adm_contri.razon_social as razon_social_empresa',
+                'adm_cta_contri.nro_cuenta',
+                DB::raw("(SELECT count(adjunto) FROM tesoreria.registro_pago_adjuntos
+                      WHERE registro_pago_adjuntos.id_pago = registro_pago.id_pago
+                        and registro_pago_adjuntos.estado != 7) AS count_adjuntos")
+            )
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
+            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'registro_pago.id_empresa')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'registro_pago.id_cuenta_origen');
+
+        $query = $detalles->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'registro_pago.id_requerimiento_pago')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
+            ->where([['registro_pago.id_requerimiento_pago', '=', $id], ['registro_pago.estado', '!=', 7]])
+            ->get();
+
+        return $query;
+    }
+    public function obtenerOrdenesCompraServicioDetalle($id_orden_compra)
+    {
+        $detalles = DB::table('tesoreria.registro_pago')
+            ->select(
+                'registro_pago.*',
+                'sis_usua.nombre_corto',
+                'sis_moneda.simbolo',
+                'adm_contri.razon_social as razon_social_empresa',
+                'adm_cta_contri.nro_cuenta',
+                'log_ord_compra.id_orden_compra',
+                DB::raw("(SELECT count(adjunto) FROM tesoreria.registro_pago_adjuntos
+                    WHERE registro_pago_adjuntos.id_pago = registro_pago.id_pago
+                        and registro_pago_adjuntos.estado != 7) AS count_adjuntos")
+            )
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
+            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'registro_pago.id_empresa')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'registro_pago.id_cuenta_origen');
+
+        $query = $detalles->leftJoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'registro_pago.id_oc')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+            ->where([['registro_pago.id_oc', '=', $id_orden_compra], ['registro_pago.estado', '!=', 7]])
+            ->get();
+        return $query;
+    }
 }
