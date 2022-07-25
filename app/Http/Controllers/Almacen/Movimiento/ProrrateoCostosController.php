@@ -182,24 +182,24 @@ class ProrrateoCostosController extends Controller
                 'id_prorrateo'
             );
 
-            $documentos = json_decode($request->documentos);
+            // $documentos = json_decode($request->documentos);
 
-            foreach ($documentos as $det) {
+            foreach ($request->documentos as $det) {
 
                 $id_doc = DB::table('almacen.doc_com')->insertGetId(
                     [
-                        'serie' => $det->serie,
-                        'numero' => $det->numero,
-                        'id_tp_doc' => $det->id_tp_documento,
-                        'id_proveedor' => $det->id_proveedor,
-                        'moneda' => $det->id_moneda,
-                        'fecha_emision' => $det->fecha_emision,
-                        'tipo_cambio' => $det->tipo_cambio,
-                        'sub_total' => $det->total,
+                        'serie' => $det['serie'],
+                        'numero' => $det['numero'],
+                        'id_tp_doc' => $det['id_tp_documento'],
+                        'id_proveedor' => $det['id_proveedor'],
+                        'moneda' => $det['id_moneda'],
+                        'fecha_emision' => $det['fecha_emision'],
+                        'tipo_cambio' => $det['tipo_cambio'],
+                        'sub_total' => $det['total'],
                         'total_descuento' => 0,
-                        // 'total' => $det->total,
+                        // 'total' => $det['total'],
                         'total_igv' => 0,
-                        'total_a_pagar' => $det->total,
+                        'total_a_pagar' => $det['total'],
                         'usuario' => $id_usuario,
                         'registrado_por' => $id_usuario,
                         'estado' => 1,
@@ -211,11 +211,11 @@ class ProrrateoCostosController extends Controller
                 DB::table('almacen.guia_com_prorrateo_doc')->insert(
                     [
                         'id_prorrateo' => $id_prorrateo,
-                        'id_tp_doc_prorrateo' => $det->id_tp_prorrateo,
+                        'id_tp_doc_prorrateo' => $det['id_tp_prorrateo'],
                         'id_doc_com' => $id_doc,
-                        'importe_soles' => $det->importe,
-                        'importe_aplicado' => $det->importe_aplicado,
-                        'id_tipo_prorrateo' => $det->id_tipo_prorrateo,
+                        'importe_soles' => $det['importe'],
+                        'importe_aplicado' => $det['importe_aplicado'],
+                        'id_tipo_prorrateo' => $det['id_tipo_prorrateo'],
                         'estado' => 1,
                         'registrado_por' => $id_usuario,
                         'fecha_registro' => date('Y-m-d H:i:s')
@@ -223,25 +223,25 @@ class ProrrateoCostosController extends Controller
                 );
             }
 
-            $detalles = json_decode($request->guias_detalle);
+            // $detalles = json_decode($request->guias_detalle);
 
-            foreach ($detalles as $det) {
+            foreach ($request->detalleGuias as $det) {
                 DB::table('almacen.guia_com_prorrateo_det')->insert(
                     [
                         'id_prorrateo' => $id_prorrateo,
-                        'id_guia_com_det' => $det->id_guia_com_det,
-                        'valor_compra_soles' => $det->valor_compra_soles,
-                        'adicional_valor' => $det->adicional_valor,
-                        'adicional_peso' => $det->adicional_peso,
-                        'peso' => $det->peso,
+                        'id_guia_com_det' => $det['id_guia_com_det'],
+                        'valor_compra_soles' => $det['valor_compra_soles'],
+                        'adicional_valor' => $det['adicional_valor'],
+                        'adicional_peso' => $det['adicional_peso'],
+                        'peso' => $det['peso'],
                         'estado' => 1,
                         'fecha_registro' => date('Y-m-d H:i:s')
                     ]
                 );
 
                 DB::table('almacen.mov_alm_det')
-                    ->where('id_mov_alm_det', $det->id_mov_alm_det)
-                    ->update(['valorizacion' => (floatval($det->valor_compra_soles) + floatval($det->adicional_valor) + floatval($det->adicional_peso))]);
+                    ->where('id_mov_alm_det', $det['id_mov_alm_det'])
+                    ->update(['valorizacion' => (floatval($det['valor_compra_soles']) + floatval($det['adicional_valor']) + floatval($det['adicional_peso']))]);
             }
 
             DB::commit();

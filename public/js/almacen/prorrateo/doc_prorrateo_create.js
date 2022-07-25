@@ -103,14 +103,38 @@ $('[name=doc_fecha_emision]').on("change", function () {
 function calculaImporte() {
     var tcambio = $('[name=tipo_cambio]').val();
     var sub_total = $('[name=sub_total]').val();
+    var id_moneda_global = $('[name=id_moneda_global]').val();
+    var id_moneda_doc = $('[name=doc_id_moneda]').val();
 
-    if (tcambio !== '' && tcambio !== '0' && tcambio !== 1) {
-        var imp = formatDecimal(parseFloat(sub_total) * tcambio);
-        $('[name=importe]').val(imp);
-        $('[name=importe_aplicado]').val(imp);
+    if (id_moneda_global == id_moneda_doc) {
+        if (tcambio !== '' && tcambio !== '0' && tcambio !== 1) {
+            var imp = formatDecimal(parseFloat(sub_total) * parseFloat(tcambio));
+            $('[name=importe]').val(imp);
+            $('[name=importe_aplicado]').val(imp);
+        } else {
+            $('[name=importe]').val(sub_total);
+            $('[name=importe_aplicado]').val(sub_total);
+        }
     } else {
-        $('[name=importe]').val(sub_total);
-        $('[name=importe_aplicado]').val(sub_total);
+        if (id_moneda_global == 1) {//soles
+            if (tcambio !== '' && tcambio !== '0' && tcambio !== 1) {
+                var imp = formatDecimal(parseFloat(sub_total) * parseFloat(tcambio));
+                $('[name=importe]').val(imp);
+                $('[name=importe_aplicado]').val(imp);
+            } else {
+                $('[name=importe]').val(sub_total);
+                $('[name=importe_aplicado]').val(sub_total);
+            }
+        } else {//dolares
+            if (tcambio !== '' && tcambio !== '0' && tcambio !== 1) {
+                var imp = formatDecimal(parseFloat(sub_total) / parseFloat(tcambio));
+                $('[name=importe]').val(imp);
+                $('[name=importe_aplicado]').val(imp);
+            } else {
+                $('[name=importe]').val(sub_total);
+                $('[name=importe_aplicado]').val(sub_total);
+            }
+        }
     }
 }
 
@@ -216,31 +240,23 @@ function anular_documento(id_doc_com) {
 
 function getTipoCambio() {
     var fecha = $('[name=doc_fecha_emision]').val();
-    var mnd = $('[name=doc_id_moneda]').val();
     var sub_total = $('[name=sub_total]').val();
-    console.log(fecha);
-    console.log(mnd);
-    console.log(sub_total);
 
-    if (fecha !== null && fecha !== '' &&
-        mnd !== null && mnd !== '' && mnd !== '1') {
-        console.log('ajax');
+    if (fecha !== null && fecha !== '') {
         $.ajax({
             type: 'GET',
-            headers: { 'X-CSRF-TOKEN': token },
-            url: 'tipo_cambio_promedio/' + fecha + '/' + mnd,
+            url: 'obtenerTipoCambio/' + fecha + '/' + 2,
             dataType: 'JSON',
             success: function (response) {
                 console.log(response);
-                $('[name=tipo_cambio]').val(response);
+                $("[name=tipo_cambio]").val(response.venta);
 
-                var tcambio = parseFloat(response);
+                var tcambio = parseFloat(response.venta);
                 var imp = formatDecimal(parseFloat(sub_total) * tcambio);
 
                 $('[name=importe]').val(imp);
                 $('[name=importe_aplicado]').val(imp);
             }
-
         }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
             console.log(textStatus);

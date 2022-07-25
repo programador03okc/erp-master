@@ -132,7 +132,11 @@ function save_prorrateo(data, action) {
     $.ajax({
         type: 'POST',
         url: baseUrl,
-        data: data,
+        data: {
+            id_prorrateo: id,
+            documentos: documentos,
+            detalleGuias: guias_detalle
+        },
         dataType: 'JSON',
         success: function (response) {
             console.log(response);

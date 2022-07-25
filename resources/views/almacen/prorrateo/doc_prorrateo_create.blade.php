@@ -86,7 +86,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <h5>Importe en Soles<label id="abreviatura"></label></h5>
+                            <h5 id="valor">Importe</h5>
                             <input type="number" name="importe" class="form-control" step="0.0001" readOnly required/>
                         </div>
                         <div class="col-md-3">
