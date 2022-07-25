@@ -103,14 +103,38 @@ $('[name=doc_fecha_emision]').on("change", function () {
 function calculaImporte() {
     var tcambio = $('[name=tipo_cambio]').val();
     var sub_total = $('[name=sub_total]').val();
+    var id_moneda_global = $('[name=id_moneda_global]').val();
+    var id_moneda_doc = $('[name=doc_id_moneda]').val();
 
-    if (tcambio !== '' && tcambio !== '0' && tcambio !== 1) {
-        var imp = formatDecimal(parseFloat(sub_total) * tcambio);
-        $('[name=importe]').val(imp);
-        $('[name=importe_aplicado]').val(imp);
+    if (id_moneda_global == id_moneda_doc) {
+        if (tcambio !== '' && tcambio !== '0' && tcambio !== 1) {
+            var imp = formatDecimal(parseFloat(sub_total) * parseFloat(tcambio));
+            $('[name=importe]').val(imp);
+            $('[name=importe_aplicado]').val(imp);
+        } else {
+            $('[name=importe]').val(sub_total);
+            $('[name=importe_aplicado]').val(sub_total);
+        }
     } else {
-        $('[name=importe]').val(sub_total);
-        $('[name=importe_aplicado]').val(sub_total);
+        if (id_moneda_global == 1) {//soles
+            if (tcambio !== '' && tcambio !== '0' && tcambio !== 1) {
+                var imp = formatDecimal(parseFloat(sub_total) * parseFloat(tcambio));
+                $('[name=importe]').val(imp);
+                $('[name=importe_aplicado]').val(imp);
+            } else {
+                $('[name=importe]').val(sub_total);
+                $('[name=importe_aplicado]').val(sub_total);
+            }
+        } else {//dolares
+            if (tcambio !== '' && tcambio !== '0' && tcambio !== 1) {
+                var imp = formatDecimal(parseFloat(sub_total) / parseFloat(tcambio));
+                $('[name=importe]').val(imp);
+                $('[name=importe_aplicado]').val(imp);
+            } else {
+                $('[name=importe]').val(sub_total);
+                $('[name=importe_aplicado]').val(sub_total);
+            }
+        }
     }
 }
 

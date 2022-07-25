@@ -19,6 +19,7 @@ function listar_guia_detalle(id_guia) {
                 var moneda = '';
                 var simbolo = '';
                 var tipo_cambio = 0;
+                var id_moneda_global = $('[name=id_moneda_global]').val();
 
                 response.forEach(element => {
                     id = guias_detalle.find(guia => guia.id_guia_com_det == element.id_guia_com_det);
@@ -33,6 +34,16 @@ function listar_guia_detalle(id_guia) {
 
                         unitario = parseFloat(precio_unitario);
                         valor_compra = ((unitario * parseFloat(element.cantidad)) + parseFloat(element.unitario_adicional));
+
+                        if (id_moneda_global == moneda) {
+                            valor_compra_soles = valor_compra;
+                        } else {
+                            if (id_moneda_global == 1) {//soles
+                                valor_compra_soles = valor_compra * parseFloat(tipo_cambio);
+                            } else {//dolares
+                                valor_compra_soles = valor_compra / parseFloat(tipo_cambio);
+                            }
+                        }
 
                         guias_detalle.push({
                             'id_prorrateo_det': 0,
@@ -49,9 +60,7 @@ function listar_guia_detalle(id_guia) {
                             'fecha_emision': fecha_emision,
                             'tipo_cambio': tipo_cambio,
                             'valor_compra': valor_compra,
-                            'valor_compra_soles': (moneda !== 1
-                                ? (valor_compra * parseFloat(tipo_cambio))
-                                : (valor_compra)),
+                            'valor_compra_soles': valor_compra_soles,
                             'adicional_valor': 0,
                             'adicional_peso': 0,
                             'total': (parseFloat(precio_unitario) * parseFloat(element.cantidad)),
@@ -168,10 +177,11 @@ function mostrar_guias_detalle() {
     });
 
     $('#listaGuiaDetalleProrrateo tbody').html(html);
+    var id_moneda_global = $('[name=id_moneda_global]').val();
 
     $('[name=total_ingreso]').val(formatDecimalDigitos(suma_total, 3));
     $('#moneda').text(moneda);
-    $('#soles').text('S/');
+    $('#soles').text(id_moneda_global == 1 ? "S/" : "$");
     $('#total_valor_compra').text(formatDecimalDigitos(total_valor_compra, 3));
     $('#total_valor').text(formatDecimalDigitos(total_valor, 3));
     $('#total_peso').text(formatDecimalDigitos(total_peso, 3));
@@ -195,6 +205,10 @@ $('#listaGuiaDetalleProrrateo tbody').on("change", ".peso", function () {
     });
     console.log(guias_detalle);
     mostrar_guias_detalle();
+});
+
+$('[name=id_moneda_global]').on("change", function () {
+    $('#valor').text(this.value == 1 ? "Valor Soles" : "Valor Dólares");
 });
 
 function anular_item(id_guia_com_det) {

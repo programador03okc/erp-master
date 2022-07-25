@@ -38,20 +38,19 @@ Prorrateo de Costos
                             <!-- <div class="panel panel-default">
                                 <div class="panel-heading">Ingreso(s) por Compra</div> -->
 
-                                    <!-- <div class="row">
+                                    <div class="row">
                                         <div class="col-md-2"><h5>Seleccione la Moneda </h5></div>
                                         <div class="col-md-2">
                                             <div style="display:flex;">
-                                                <select class="form-control" name="id_moneda" required>
-                                                    <option value="0" selected disabled>Elija una opción</option>
+                                                <select class="form-control activation" name="id_moneda_global" required>
+                                                    <option value="" selected disabled>Elija una opción</option>
                                                     @foreach ($monedas as $mn)
                                                         <option value="{{$mn->id_moneda}}">{{$mn->descripcion}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
-                                    </div> -->
-                                        
+                                    </div>
 
                                     <h4 style="display:flex;justify-content: space-between;">Ingreso(s) por Compra 
                                         <div>
@@ -75,7 +74,7 @@ Prorrateo de Costos
                                                 <th>Mnd.</th>
                                                 <th>Valor Compra</th>
                                                 <th>Tipo Cambio</th>
-                                                <th>Valor Soles S/</th>
+                                                <th style="background-color: rgb(30, 139, 255);"><span id="valor">Valor</span></th>
                                                 <th>Peso Volumen</th>
                                                 <th>Adicional Valor</th>
                                                 <th>Adicional Peso</th>
