@@ -73,9 +73,9 @@ function mostrar_prorrateo(id_prorrateo) {
             mostrar_documentos();
 
             response['detalles'].forEach(element => {
-                var unitario = parseFloat(element.precio_unitario !== null
-                    ? element.precio_unitario
-                    : element.unitario);
+                // var unitario = parseFloat(element.precio_unitario !== null
+                //     ? element.precio_unitario
+                //     : element.unitario);
 
                 guias_detalle.push({
                     'id_prorrateo_det': element.id_prorrateo_det,
@@ -89,12 +89,10 @@ function mostrar_prorrateo(id_prorrateo) {
                     'simbolo': element.simbolo,
                     'cantidad': element.cantidad,
                     'abreviatura': element.abreviatura,
-                    'fecha_emision': element.fecha_emision,
-                    'tipo_cambio': element.tipo_cambio,
-                    'valor_compra': (unitario * parseFloat(element.cantidad)),
-                    'valor_compra_soles': (element.moneda !== 1
-                        ? (unitario * parseFloat(element.cantidad) * parseFloat(element.tipo_cambio))
-                        : (unitario * parseFloat(element.cantidad))),
+                    'fecha_emision': (element.fecha_emision !== null ? element.fecha_emision : element.fecha_orden),
+                    'tipo_cambio': (element.fecha_emision !== null ? element.tipo_cambio_doc : element.tipo_cambio_orden),
+                    'valor_compra': ((element.precio_unitario !== null ? element.precio_unitario : element.unitario_orden) * parseFloat(element.cantidad)),
+                    'valor_compra_soles': element.valor_compra_soles,
                     'adicional_valor': element.adicional_valor,
                     'adicional_peso': element.adicional_peso,
                     'peso': element.peso,
@@ -123,9 +121,11 @@ function save_prorrateo(data, action) {
         baseUrl = 'updateProrrateo';
     }
     var id = $('[name=id_prorrateo]').val();
+    var id_moneda_global = $('[name=id_moneda_global]').val();
     console.log(baseUrl);
 
     data = 'id_prorrateo=' + id +
+        '&id_moneda_global=' + id_moneda_global +
         '&documentos=' + JSON.stringify(documentos) +
         '&guias_detalle=' + JSON.stringify(guias_detalle);
     console.log(data);
@@ -134,6 +134,7 @@ function save_prorrateo(data, action) {
         url: baseUrl,
         data: {
             id_prorrateo: id,
+            id_moneda_global: id_moneda_global,
             documentos: documentos,
             detalleGuias: guias_detalle
         },
