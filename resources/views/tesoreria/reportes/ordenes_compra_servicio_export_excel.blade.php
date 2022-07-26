@@ -46,20 +46,14 @@
             <td>{{ $requerimiento->estado_doc }}</td>
             <td>{{ $requerimiento->nombre_autorizado!='' ? $requerimiento->nombre_autorizado.' el '.date("d-m-Y", strtotime($requerimiento->fecha_autorizacion)) : '' }}</td>
 
-            @foreach ($requerimientosDetalle as $item)
-                @if ($item->id_orden_compra == $requerimiento->id_orden_compra)
-                    <th>{{ date("d-m-Y", strtotime($item->fecha_pago)) }}</th>
-                    <th>{{$item->razon_social_empresa}}</th>
-                    <th>{{$item->nro_cuenta}}</th>
-                    <th>{{$item->observacion}}</th>
-                    <th>{{$item->simbolo}}</th>
-                    <th>{{ round($item->total_pago, 2) }}</th>
-                    <th>{{$item->nombre_corto}}</th>
-                    <th>{{ date("d-m-Y h:i", strtotime($item->fecha_registro)) }}</th>
-                @endif
-            @endforeach
-
-
+            <th>{{ date("d-m-Y", strtotime($requerimiento->fecha_pago)) }}</th>
+            <th>{{$requerimiento->razon_social_empresa}}</th>
+            <th>{{$requerimiento->nro_cuenta}}</th>
+            <th>{{$requerimiento->observacion}}</th>
+            <th>{{$requerimiento->simbolo}}</th>
+            <th>{{ round($requerimiento->total_pago, 2) }}</th>
+            <th>{{$requerimiento->nombre_corto}}</th>
+            <th>{{ date("d-m-Y h:i", strtotime($requerimiento->fecha_registro)) }}</th>
         </tr>
         @endforeach
     </tbody>

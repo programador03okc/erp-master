@@ -38,20 +38,15 @@
             <td>{{ $requerimiento->nro_orden }}</td>
             <td>{{ $requerimiento->codigo_oportunidad }}</td>
 
-            @foreach ($requerimientosDetalle as $item)
-            @if ($requerimiento->id_requerimiento == $item->id_requerimiento)
-                <th>{{ $item->id_requerimiento }}</th>
-                <th>{{ $item->serie_numero }}</th>
-                <th>{{ $item->empresa_razon_social }}</th>
-                <th>{{ date("d-m-Y", strtotime($item->fecha_emision)) }}</th>
-                <th>{{ $item->razon_social }}</th>
-                <th>{{ $item->simbolo }}</th>
-                <th>{{ round($item->total_a_pagar, 2) }}</th>
-                <th>{{ $item->nombre_corto }}</th>
-                <th>{{ $item->condicion.''.($item->condicion !== null ? ' '.$item->credito_dias.'días' : '' )  }}</th>
-            @endif
-
-            @endforeach
+                <th>{{ $requerimiento->id_requerimiento }}</th>
+                <th>{{ $requerimiento->serie_numero }}</th>
+                <th>{{ $requerimiento->empresa_razon_social }}</th>
+                <th>{{ date("d-m-Y", strtotime($requerimiento->fecha_emision)) }}</th>
+                <th>{{ $requerimiento->razon_social }}</th>
+                <th>{{ $requerimiento->simbolo }}</th>
+                <th>{{ round($requerimiento->total_a_pagar, 2) }}</th>
+                <th>{{ $requerimiento->nombre_corto }}</th>
+                <th>{{ $requerimiento->condicion  }}</th>
         </tr>
         @endforeach
     </tbody>

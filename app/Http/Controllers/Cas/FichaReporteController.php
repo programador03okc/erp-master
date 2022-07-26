@@ -83,8 +83,6 @@ class FichaReporteController extends Controller
         $fecha = new Carbon();
         return Excel::download(new IncidenciasExport(
             $data,
-            // $request->fecha_inicio,
-            // $request->fecha_fin
         ), 'Reporte de incidencias al ' . $fecha . '.xlsx');
     }
 
@@ -353,5 +351,13 @@ class FichaReporteController extends Controller
         return $pdf->download($incidencia->codigo . '.pdf');
 
         // return response()->json(['incidencia' => $incidencia, 'productos' => $productos, 'reporte' => $reporte]);
+    }
+    public function obtenerListadoGestionincidenciasDetalleExport($id_incidencia)
+    {
+        $lista = IncidenciaReporte::with('usuario', 'adjuntos')->where([
+            ['id_incidencia', '=', $id_incidencia], ['estado', '!=', 7]
+        ])->get();
+
+        return $lista;
     }
 }

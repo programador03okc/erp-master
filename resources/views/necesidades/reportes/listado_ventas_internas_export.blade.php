@@ -24,26 +24,26 @@
         @foreach ($requerimientos as $requerimiento)
 
         <tr>
-            <td>{{ $requerimiento->serie.'-'.$requerimiento->numero }}</td>
+            <td>{{ $requerimiento->serie }}</td>
             <td>{{ date("d-m-Y", strtotime($requerimiento->fecha_emision)) }}</td>
             <td>{{ $requerimiento->sede_descripcion }}</td>
             <td>{{ $requerimiento->razon_social }}</td>
             <td>{{ $requerimiento->nombre_corto_trans }}</td>
             <td>{{ $requerimiento->codigo_trans }}</td>
 
-            @foreach ($requerimientoDetaller as $item)
-                @if ($requerimiento->id_guia_ven == $item->id_guia_ven)
-                    <th>{{ $item->id_requerimiento }}</th>
-                    <th>{{ $item->serie_numero }}</th>
-                    <th>{{ $item->empresa_razon_social }}</th>
-                    <th>{{ date("d-m-Y", strtotime($item->fecha_emision)) }}</th>
-                    <th>{{ $item->razon_social }}</th>
-                    <th>{{ $item->simbolo }}</th>
-                    <th>{{ round($item->total_a_pagar, 2) }}</th>
-                    <th>{{ $item->nombre_corto }}</th>
-                    <th>{{ $item->condicion.' '.$item->credito_dias.' días' }}</th>
-                @endif
-            @endforeach
+            {{-- @foreach ($requerimientoDetaller as $item)
+                @if ($requerimiento->id_guia_ven == $item->id_guia_ven) --}}
+                    <th>{{ $requerimiento->id_requerimiento }}</th>
+                    <th>{{ $requerimiento->serie_numero }}</th>
+                    <th>{{ $requerimiento->empresa_razon_social }}</th>
+                    <th>{{ date("d-m-Y", strtotime($requerimiento->fecha_emision)) }}</th>
+                    <th>{{ $requerimiento->razon_social }}</th>
+                    <th>{{ $requerimiento->simbolo }}</th>
+                    <th>{{ round($requerimiento->total_a_pagar, 2) }}</th>
+                    <th>{{ $requerimiento->nombre_corto }}</th>
+                    <th>{{ $requerimiento->condicion }}</th>
+                {{-- @endif
+            @endforeach --}}
         </tr>
 
         @endforeach
