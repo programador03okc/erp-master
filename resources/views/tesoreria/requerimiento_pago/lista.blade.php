@@ -115,12 +115,13 @@ Listado de requerimientos de pago
 
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        console.log('initializeEventHandlerListaRequerimientoPago');
 
         const listarRequerimientoPagoView = new ListarRequerimientoPagoView();
 
         listarRequerimientoPagoView.mostrarListaRequerimientoPago('ALL');
 
-        listarRequerimientoPagoView.initializeEventHandler();
+        listarRequerimientoPagoView.initializeEventHandlerListaRequerimientoPago();
 
     });
 

@@ -36,10 +36,8 @@ class ListarRequerimientoPagoView {
 
         }
     }
-    initializeEventHandler() {
-
+    initializeEventHandlerListaRequerimientoPago() {
         this.checkStatusBtnGuardar();
-
         $('#ListaRequerimientoPago tbody').on("click", "button.handleClickVerEnVistaRapidaRequerimientoPago", (e) => {
             this.verEnVistaRapidaRequerimientoPago(e.currentTarget);
         });
