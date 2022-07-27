@@ -42,6 +42,7 @@ class ListarRequerimientoPagoView {
 
         $('#ListaRequerimientoPago tbody').on("click", "button.handleClickVerEnVistaRapidaRequerimientoPago", (e) => {
             this.verEnVistaRapidaRequerimientoPago(e.currentTarget);
+            // console.log('dd');
         });
 
         document.onkeydown = function(evt) {
@@ -242,6 +243,7 @@ class ListarRequerimientoPagoView {
             backdrop: 'static'
         });
     }
+    /*
     initializeEventHandler() {
         // document.querySelector("button[class~='handleClickImprimirRequerimientoPdf']").addEventListener("click", this.imprimirRequerimientoPdf.bind(this), false);
 
@@ -287,7 +289,7 @@ class ListarRequerimientoPagoView {
         });
 
     }
-
+*/
 
     estadoCheckFiltroRequerimientosElaborados(e) {
         const modalFiltrosRequerimientosElaborados = document.querySelector("div[id='modal-filtro-requerimientos-elaborados']");
