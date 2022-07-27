@@ -108,7 +108,7 @@ function calculaImporte() {
 
     if (id_moneda_global == id_moneda_doc) {
         if (tcambio !== '' && tcambio !== '0' && tcambio !== 1) {
-            var imp = formatDecimal(parseFloat(sub_total) * parseFloat(tcambio));
+            var imp = formatDecimal(parseFloat(sub_total));
             $('[name=importe]').val(imp);
             $('[name=importe_aplicado]').val(imp);
         } else {

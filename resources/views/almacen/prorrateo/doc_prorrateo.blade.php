@@ -79,6 +79,7 @@ Prorrateo de Costos
                                                 <th>Adicional Valor</th>
                                                 <th>Adicional Peso</th>
                                                 <th>Importe Prorrateado</th>
+                                                <th style="background-color: rgb(30, 139, 255);">Importe en kardex</th>
                                                 <th>
                                                     <!-- <i class="fas fa-plus-square icon-tabla green boton " 
                                                         data-toggle="tooltip" data-placement="bottom" 

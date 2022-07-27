@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tesoreria\TipoCambio;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -97,9 +99,11 @@ class ProrrateoCostosController extends Controller
                 'alm_prod.codigo',
                 'alm_prod.part_number',
                 'alm_prod.descripcion',
+                'alm_prod.id_moneda as moneda_producto',
                 'alm_und_medida.abreviatura',
                 'guia_com.serie',
                 'guia_com.numero',
+                'guia_com.fecha_almacen',
                 'mov_alm_det.id_mov_alm_det',
                 'sis_moneda.simbolo',
                 'moneda_orden.simbolo as simbolo_orden',
@@ -109,14 +113,18 @@ class ProrrateoCostosController extends Controller
                 'log_ord_compra.fecha as fecha_orden',
                 'log_ord_compra.id_moneda as moneda_orden',
                 'log_det_ord_compra.precio as unitario_orden',
-                DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
+                DB::raw("(SELECT tc.venta FROM contabilidad.cont_tp_cambio AS tc
                         WHERE tc.fecha <= doc_com.fecha_emision
                           AND tc.moneda = doc_com.moneda
                           LIMIT 1) AS tipo_cambio_doc"),
-                DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
+                DB::raw("(SELECT tc.venta FROM contabilidad.cont_tp_cambio AS tc
                         WHERE tc.fecha <= log_ord_compra.fecha
                           AND tc.moneda = log_ord_compra.id_moneda
-                          LIMIT 1) AS tipo_cambio_orden")
+                          LIMIT 1) AS tipo_cambio_orden"),
+                DB::raw("(SELECT tc.venta FROM contabilidad.cont_tp_cambio AS tc
+                          WHERE tc.fecha <= guia_com.fecha_almacen
+                            AND tc.moneda = 2 
+                            LIMIT 1) AS tipo_cambio_ingreso")
 
             )
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
@@ -238,10 +246,32 @@ class ProrrateoCostosController extends Controller
                         'fecha_registro' => date('Y-m-d H:i:s')
                     ]
                 );
+                //convertir a la moneda del producto kardex
+                // $producto = DB::table('almacen.guia_com_det')
+                //     ->select('alm_prod.id_moneda', 'guia_com.fecha_almacen')
+                //     ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
+                //     ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+                //     ->where('id_guia_com_det', $det['id_guia_com_det'])
+                //     ->first();
 
+                // $valorizacion = floatval($det['total']);
+                // $nueva_valorizacion = 0;
+
+                // if ($request->id_moneda_global == $producto->id_moneda) {
+                //     $nueva_valorizacion = $valorizacion;
+                // } else {
+                //     $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $producto->fecha_almacen]])
+                //         ->orderBy('fecha', 'DESC')->first();
+
+                //     if ($producto->id_moneda == 1) { //soles
+                //         $nueva_valorizacion = $valorizacion * floatval($tipo_cambio->venta);
+                //     } else { //dolares
+                //         $nueva_valorizacion = $valorizacion / floatval($tipo_cambio->venta);
+                //     }
+                // }
                 DB::table('almacen.mov_alm_det')
                     ->where('id_mov_alm_det', $det['id_mov_alm_det'])
-                    ->update(['valorizacion' => (floatval($det['valor_compra_soles']) + floatval($det['adicional_valor']) + floatval($det['adicional_peso']))]);
+                    ->update(['valorizacion' => $det['valor_ingreso']]);
             }
 
             DB::commit();
@@ -259,130 +289,176 @@ class ProrrateoCostosController extends Controller
     public function updateProrrateo(Request $request)
     {
 
-        try {
-            DB::beginTransaction();
+        // try {
+        //     DB::beginTransaction();
 
-            $id_usuario = Auth::user()->id_usuario;
-            $documentos = json_decode($request->documentos);
+        $id_usuario = Auth::user()->id_usuario;
+        // $documentos = json_decode($request->documentos);
 
-            foreach ($documentos as $det) {
+        foreach ($request->documentos as $det) {
 
-                if ($det->id_prorrateo_doc !== 0) {
+            if ($det['id_prorrateo_doc'] !== 0) {
 
-                    DB::table('almacen.guia_com_prorrateo_doc')
-                        ->where('id_prorrateo_doc', $det->id_prorrateo_doc)
-                        ->update([
-                            'id_tp_doc_prorrateo' => $det->id_tp_prorrateo,
-                            'importe_soles' => $det->importe,
-                            'importe_aplicado' => $det->importe_aplicado,
-                            'id_tipo_prorrateo' => $det->id_tipo_prorrateo,
-                            'estado' => $det->estado,
-                        ]);
+                DB::table('almacen.guia_com_prorrateo_doc')
+                    ->where('id_prorrateo_doc', $det['id_prorrateo_doc'])
+                    ->update([
+                        'id_tp_doc_prorrateo' => $det['id_tp_prorrateo'],
+                        'importe_soles' => $det['importe'],
+                        'importe_aplicado' => $det['importe_aplicado'],
+                        'id_tipo_prorrateo' => $det['id_tipo_prorrateo'],
+                        'estado' => $det['estado'],
+                    ]);
 
-                    DB::table('almacen.doc_com')->where('id_doc_com', $det->id_doc_com)
-                        ->update([
-                            'serie' => $det->serie,
-                            'numero' => $det->numero,
-                            'id_tp_doc' => $det->id_tp_documento,
-                            'id_proveedor' => $det->id_proveedor,
-                            'moneda' => $det->id_moneda,
-                            'fecha_emision' => $det->fecha_emision,
-                            'tipo_cambio' => $det->tipo_cambio,
-                            'sub_total' => $det->total,
-                            'total' => $det->total,
-                            'total_a_pagar' => $det->total,
-                        ]);
-                } else {
-                    $id_doc = DB::table('almacen.doc_com')->insertGetId(
-                        [
-                            'serie' => $det->serie,
-                            'numero' => $det->numero,
-                            'id_tp_doc' => $det->id_tp_documento,
-                            'id_proveedor' => $det->id_proveedor,
-                            'moneda' => $det->id_moneda,
-                            'fecha_emision' => $det->fecha_emision,
-                            'tipo_cambio' => $det->tipo_cambio,
-                            'sub_total' => $det->total,
-                            'total_descuento' => 0,
-                            'total' => $det->total,
-                            'total_igv' => 0,
-                            'total_a_pagar' => $det->total,
-                            'usuario' => $id_usuario,
-                            'registrado_por' => $id_usuario,
-                            'estado' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s')
-                        ],
-                        'id_doc_com'
-                    );
-                    $data = DB::table('almacen.guia_com_prorrateo_doc')->insertGetId(
-                        [
-                            'id_prorrateo' => $request->id_prorrateo,
-                            'id_tp_doc_prorrateo' => $det->id_tp_prorrateo,
-                            'id_doc_com' => $id_doc,
-                            'importe_soles' => $det->importe,
-                            'importe_aplicado' => $det->importe_aplicado,
-                            'id_tipo_prorrateo' => $det->id_tipo_prorrateo,
-                            'estado' => 1,
-                            'registrado_por' => $id_usuario,
-                            'fecha_registro' => date('Y-m-d H:i:s')
-                        ],
-                        'id_prorrateo_doc'
-                    );
-                }
+                DB::table('almacen.doc_com')->where('id_doc_com', $det['id_doc_com'])
+                    ->update([
+                        'serie' => $det['serie'],
+                        'numero' => $det['numero'],
+                        'id_tp_doc' => $det['id_tp_documento'],
+                        'id_proveedor' => $det['id_proveedor'],
+                        'moneda' => $det['id_moneda'],
+                        'fecha_emision' => $det['fecha_emision'],
+                        'tipo_cambio' => $det['tipo_cambio'],
+                        'sub_total' => $det['total'],
+                        // 'total' => $det['total'],
+                        'total_a_pagar' => $det['total'],
+                    ]);
+            } else {
+                $id_doc = DB::table('almacen.doc_com')->insertGetId(
+                    [
+                        'serie' => $det['serie'],
+                        'numero' => $det['numero'],
+                        'id_tp_doc' => $det['id_tp_documento'],
+                        'id_proveedor' => $det['id_proveedor'],
+                        'moneda' => $det['id_moneda'],
+                        'fecha_emision' => $det['fecha_emision'],
+                        'tipo_cambio' => $det['tipo_cambio'],
+                        'sub_total' => $det['total'],
+                        'total_descuento' => 0,
+                        // 'total' => $det['total'],
+                        'total_igv' => 0,
+                        'total_a_pagar' => $det['total'],
+                        'usuario' => $id_usuario,
+                        'registrado_por' => $id_usuario,
+                        'estado' => 1,
+                        'fecha_registro' => date('Y-m-d H:i:s')
+                    ],
+                    'id_doc_com'
+                );
+                $data = DB::table('almacen.guia_com_prorrateo_doc')->insertGetId(
+                    [
+                        'id_prorrateo' => $request->id_prorrateo,
+                        'id_tp_doc_prorrateo' => $det['id_tp_prorrateo'],
+                        'id_doc_com' => $id_doc,
+                        'importe_soles' => $det['importe'],
+                        'importe_aplicado' => $det['importe_aplicado'],
+                        'id_tipo_prorrateo' => $det['id_tipo_prorrateo'],
+                        'estado' => 1,
+                        'registrado_por' => $id_usuario,
+                        'fecha_registro' => date('Y-m-d H:i:s')
+                    ],
+                    'id_prorrateo_doc'
+                );
             }
+        }
 
-            $detalles = json_decode($request->guias_detalle);
+        // $detalles = json_decode($request->guias_detalle);
 
-            foreach ($detalles as $det) {
+        foreach ($request->detalleGuias as $det) {
 
-                if ($det->id_prorrateo_det == 0) {
-                    //Falta considerar los anulados, agregar estado
-                    DB::table('almacen.guia_com_prorrateo_det')->insert(
-                        [
-                            'id_prorrateo' => $request->id_prorrateo,
-                            'id_guia_com_det' => $det->id_guia_com_det,
-                            'valor_compra_soles' => $det->valor_compra_soles,
-                            'adicional_valor' => $det->adicional_valor,
-                            'adicional_peso' => $det->adicional_peso,
-                            'peso' => $det->peso,
-                            'estado' => 1,
-                            'fecha_registro' => date('Y-m-d H:i:s')
-                        ]
-                    );
+            if ($det['id_prorrateo_det'] == 0) {
+                //Falta considerar los anulados, agregar estado
+                DB::table('almacen.guia_com_prorrateo_det')->insert(
+                    [
+                        'id_prorrateo' => $request->id_prorrateo,
+                        'id_guia_com_det' => $det['id_guia_com_det'],
+                        'valor_compra_soles' => $det['valor_compra_soles'],
+                        'adicional_valor' => $det['adicional_valor'],
+                        'adicional_peso' => $det['adicional_peso'],
+                        'peso' => $det['peso'],
+                        'estado' => 1,
+                        'fecha_registro' => date('Y-m-d H:i:s')
+                    ]
+                );
+
+                // $producto = DB::table('almacen.guia_com_det')
+                //     ->select('alm_prod.id_moneda', 'guia_com.fecha_almacen')
+                //     ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
+                //     ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+                //     ->where('id_guia_com_det', $det['id_guia_com_det'])
+                //     ->first();
+
+                // $valorizacion = floatval($det['total']);
+                // $nueva_valorizacion = 0;
+
+                // if ($request->id_moneda_global == $producto->id_moneda) {
+                //     $nueva_valorizacion = $valorizacion;
+                // } else {
+                //     $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $producto->fecha_almacen]])
+                //         ->orderBy('fecha', 'DESC')->first();
+
+                //     if ($producto->id_moneda == 1) { //soles
+                //         $nueva_valorizacion = $valorizacion * floatval($tipo_cambio->venta);
+                //     } else { //dolares
+                //         $nueva_valorizacion = $valorizacion / floatval($tipo_cambio->venta);
+                //     }
+                // }
+
+                DB::table('almacen.mov_alm_det')
+                    ->where('id_mov_alm_det', $det['id_mov_alm_det'])
+                    ->update(['valorizacion' => $det['valor_ingreso']]);
+            } else {
+                DB::table('almacen.guia_com_prorrateo_det')
+                    ->where('id_prorrateo_det', $det['id_prorrateo_det'])
+                    ->update([
+                        // 'id_guia_com_det' => $det['id_guia_com_det'],
+                        'valor_compra_soles' => $det['valor_compra_soles'],
+                        'adicional_valor' => $det['adicional_valor'],
+                        'adicional_peso' => $det['adicional_peso'],
+                        'peso' => $det['peso'],
+                        'estado' => $det['estado'],
+                    ]);
+
+                if ($det['estado'] == 7) {
+                    DB::table('almacen.mov_alm_det')
+                        ->where('id_mov_alm_det', $det['id_mov_alm_det'])
+                        ->update(['valorizacion' => (floatval($det['valor_compra_soles']))]);
+                } else {
+                    // $producto = DB::table('almacen.guia_com_det')
+                    //     ->select('alm_prod.id_moneda', 'guia_com.fecha_almacen')
+                    //     ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
+                    //     ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+                    //     ->where('id_guia_com_det', $det['id_guia_com_det'])
+                    //     ->first();
+
+                    // $valorizacion = floatval($det['total']);
+                    // $nueva_valorizacion = 0;
+
+                    // if ($request->id_moneda_global == $producto->id_moneda) {
+                    //     $nueva_valorizacion = $valorizacion;
+                    // } else {
+                    //     $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $producto->fecha_almacen]])
+                    //         ->orderBy('fecha', 'DESC')->first();
+
+                    //     if ($producto->id_moneda == 1) { //soles
+                    //         $nueva_valorizacion = $valorizacion * floatval($tipo_cambio->venta);
+                    //     } else { //dolares
+                    //         $nueva_valorizacion = $valorizacion / floatval($tipo_cambio->venta);
+                    //     }
+                    // }
 
                     DB::table('almacen.mov_alm_det')
-                        ->where('id_mov_alm_det', $det->id_mov_alm_det)
-                        ->update(['valorizacion' => (floatval($det->valor_compra_soles) + floatval($det->adicional_valor) + floatval($det->adicional_peso))]);
-                } else {
-                    DB::table('almacen.guia_com_prorrateo_det')
-                        ->where('id_prorrateo_det', $det->id_prorrateo_det)
-                        ->update([
-                            // 'id_guia_com_det' => $det->id_guia_com_det,
-                            'valor_compra_soles' => $det->valor_compra_soles,
-                            'adicional_valor' => $det->adicional_valor,
-                            'adicional_peso' => $det->adicional_peso,
-                            'peso' => $det->peso,
-                            'estado' => $det->estado,
-                        ]);
-
-                    if ($det->estado == 7) {
-                        DB::table('almacen.mov_alm_det')
-                            ->where('id_mov_alm_det', $det->id_mov_alm_det)
-                            ->update(['valorizacion' => (floatval($det->valor_compra_soles))]);
-                    } else {
-                        DB::table('almacen.mov_alm_det')
-                            ->where('id_mov_alm_det', $det->id_mov_alm_det)
-                            ->update(['valorizacion' => (floatval($det->valor_compra_soles) + floatval($det->adicional_valor) + floatval($det->adicional_peso))]);
-                    }
+                        ->where('id_mov_alm_det', $det['id_mov_alm_det'])
+                        ->update(['valorizacion' => $det['valor_ingreso']]);
                 }
             }
-
-            DB::commit();
-            return response()->json($request->id_prorrateo);
-        } catch (\PDOException $e) {
-            // Woopsy
-            DB::rollBack();
         }
+
+        // DB::commit();
+        return response()->json($request->id_prorrateo);
+        // } catch (\PDOException $e) {
+        //     // Woopsy
+        //     DB::rollBack();
+        // }
     }
 
     public function anular_prorrateo($id_prorrateo)
@@ -488,20 +564,43 @@ class ProrrateoCostosController extends Controller
                 'mov_alm_det.id_mov_alm_det',
                 'guia_com_det.cantidad',
                 'sis_moneda.simbolo',
+                'moneda_orden.simbolo as simbolo_orden',
                 'doc_com.fecha_emision',
                 'doc_com.moneda',
                 'doc_com_det.precio_unitario',
+                'log_ord_compra.fecha as fecha_orden',
+                'log_ord_compra.id_moneda as moneda_orden',
+                'log_det_ord_compra.precio as unitario_orden',
                 DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
                         WHERE tc.fecha <= doc_com.fecha_emision
                           AND tc.moneda = doc_com.moneda
-                          LIMIT 1) AS tipo_cambio")
+                          LIMIT 1) AS tipo_cambio_doc"),
+                DB::raw("(SELECT tc.promedio FROM contabilidad.cont_tp_cambio AS tc
+                        WHERE tc.fecha <= log_ord_compra.fecha
+                          AND tc.moneda = log_ord_compra.id_moneda
+                          LIMIT 1) AS tipo_cambio_orden")
             )
             ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'guia_com_prorrateo_det.id_guia_com_det')
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
 
-            ->leftjoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-            ->leftjoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
+            ->leftjoin('almacen.doc_com_det', function ($join) {
+                $join->on('doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
+                $join->where('doc_com_det.estado', '!=', 7);
+            })
+            ->leftjoin('almacen.doc_com', function ($join) {
+                $join->on('doc_com.id_doc_com', '=', 'doc_com_det.id_doc');
+                $join->where('doc_com.estado', '!=', 7);
+            })
+            ->leftjoin('logistica.log_det_ord_compra', function ($join) {
+                $join->on('log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det');
+                $join->where('log_det_ord_compra.estado', '!=', 7);
+            })
+            ->leftjoin('logistica.log_ord_compra', function ($join) {
+                $join->on('log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra');
+                $join->where('log_ord_compra.estado', '!=', 7);
+            })
             ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
+            ->leftjoin('configuracion.sis_moneda as moneda_orden', 'moneda_orden.id_moneda', '=', 'log_ord_compra.id_moneda')
 
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
