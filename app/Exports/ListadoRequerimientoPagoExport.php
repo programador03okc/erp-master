@@ -41,8 +41,12 @@ class ListadoRequerimientoPagoExport implements FromView
         $data=[];
         foreach($requerimientos as $element){
 
+
+            $requerimientosDetalle = (new RequerimientoPagoController)->obtenerRequerimientosElaboradosDetalle($element->id_requerimiento_pago);
+            var_dump($requerimientosDetalle);exit;
+            echo($requerimientosDetalle->fecha_autorizacion);exit;
             $data[]=[
-                'priori'=> $element->priori,
+                'priori'=> $element->prioridad,
                 'codigo'=> $element->codigo,
                 'concepto'=> $element->concepto,
                 'fecha_registro'=> $element->fecha_registro,
@@ -57,7 +61,9 @@ class ListadoRequerimientoPagoExport implements FromView
                 'observacion'=> $element->observacion,
                 'nombre_usuario'=> $element->usuario_nombre_corto,
                 'observacion'=> $element->observacion,
-                'estado_doc'=> $element->nombre_estado
+                'estado_doc'=> $element->nombre_estado,
+
+                'fecha_autorizacion'=>$requerimientosDetalle->fecha_autorizacion!==null ?$requerimientosDetalle->fecha_autorizacion:''
 
             ];
         }

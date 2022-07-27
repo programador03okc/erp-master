@@ -305,8 +305,8 @@ class RequerimientoController extends Controller
                 'incidencia.cliente as cliente_incidencia',
                 DB::raw("concat(perso_asignado.nombres, ' ' ,perso_asignado.apellido_paterno, ' ' ,perso_asignado.apellido_materno)  AS nombre_trabajador"),
                 DB::raw("(CASE WHEN alm_req.estado = 1 THEN 'Habilitado' ELSE 'Deshabilitado' END) AS estado_desc")
-                // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-                // FROM almacen.alm_det_req 
+                // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
+                // FROM almacen.alm_det_req
                 // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
                 // alm_det_req.estado != 7) AS monto_total")
             )
@@ -500,18 +500,18 @@ class RequerimientoController extends Controller
                     'proveedores_venta.razon_social as razon_social_proveedor_seleccionado_venta',
                     'alm_item.id_equipo',
                     'equipo.descripcion as equipo_descripcion',
-                    DB::raw("(SELECT SUM(trans_detalle.cantidad) 
-                    FROM almacen.trans_detalle 
+                    DB::raw("(SELECT SUM(trans_detalle.cantidad)
+                    FROM almacen.trans_detalle
                     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
                             trans_detalle.estado != 7) AS suma_transferencias"),
-                    DB::raw("(SELECT (presup_par.codigo) 
-                    FROM finanzas.presup_par 
+                    DB::raw("(SELECT (presup_par.codigo)
+                    FROM finanzas.presup_par
                     WHERE  presup_par.id_partida = alm_det_req.partida ) AS codigo_partida"),
-                    DB::raw("(SELECT (presup_par.descripcion) 
-                    FROM finanzas.presup_par 
+                    DB::raw("(SELECT (presup_par.descripcion)
+                    FROM finanzas.presup_par
                     WHERE  presup_par.id_partida = alm_det_req.partida ) AS descripcion_partida"),
-                    DB::raw("(SELECT (presup_par.importe_total) 
-                    FROM finanzas.presup_par 
+                    DB::raw("(SELECT (presup_par.importe_total)
+                    FROM finanzas.presup_par
                     WHERE  presup_par.id_partida = alm_det_req.partida ) AS presupuesto_total_partida")
                 )
                 ->where([
@@ -674,7 +674,7 @@ class RequerimientoController extends Controller
     public function guardarRequerimiento(Request $request)
     {
         // dd($request->all());
-        // exit();   
+        // exit();
         DB::beginTransaction();
         try {
 
@@ -864,7 +864,7 @@ class RequerimientoController extends Controller
             '<li> ' . $trazabilidad->descripcion . ': ' . ($nombreCompletoUsuarioRevisaAprueba ?? '') . '</li>' .
             (!empty($comentario) ? ('<li> Comentario: ' . $comentario . '</li>') : '') .
             '</ul>' .
-            '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+            '<p> *Este correo es generado de manera automática, por favor no responder.</p>
         <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
 
         $seNotificaraporEmail = false;
@@ -921,7 +921,7 @@ class RequerimientoController extends Controller
                 '<li> Monto Total: ' . $requerimiento->moneda->simbolo . number_format($montoTotal, 2) . '</li>' .
                 '<li> Creado por: ' . ($nombreCompletoUsuario ? $nombreCompletoUsuario : '') . '</li>' .
                 '</ul>' .
-                '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+                '<p> *Este correo es generado de manera automática, por favor no responder.</p>
             <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE'
         ];
 
@@ -1027,7 +1027,7 @@ class RequerimientoController extends Controller
                 $cantidadItemConTransformacion++;
             }
         }
-        
+
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
         if ($requerimiento->estado == 3) { // si el estado actual es observado
             if($request->monto_total <= $requerimiento->monto_total){
@@ -1109,7 +1109,7 @@ class RequerimientoController extends Controller
 
         $todoDetalleRequerimiento = DetalleRequerimiento::where("id_requerimiento", $requerimiento->id_requerimiento)->get();
         $idDetalleRequerimientoProcesado = [];
- 
+
         for ($i = 0; $i < $count; $i++) {
             $id = $request->idRegister[$i];
             if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)) // es un id con numeros y letras => es nuevo, insertar
@@ -1194,7 +1194,7 @@ class RequerimientoController extends Controller
             $this->guardarAdjuntoNivelDetalleItem($adjuntoDetelleRequerimiento, $requerimiento->codigo);
         }
 
-        // adjuntos cabecera - actualizar, anular adjuntos en tabla 
+        // adjuntos cabecera - actualizar, anular adjuntos en tabla
         $archivoAdjuntoRequerimientoObject = json_decode($request->archivoAdjuntoRequerimientoObject);
         if (count($archivoAdjuntoRequerimientoObject) > 0) {
             foreach ($archivoAdjuntoRequerimientoObject as $ar) {
@@ -1212,7 +1212,7 @@ class RequerimientoController extends Controller
         }
 
 
-        // adjuntos detalle -anular adjuntos en tabla 
+        // adjuntos detalle -anular adjuntos en tabla
         $archivoAdjuntoRequerimientoDetalleObject = json_decode($request->archivoAdjuntoRequerimientoDetalleObject);
         if (count($archivoAdjuntoRequerimientoDetalleObject) > 0) {
             foreach ($archivoAdjuntoRequerimientoDetalleObject as $ar) {
@@ -1229,7 +1229,7 @@ class RequerimientoController extends Controller
         // if ($requerimiento->estado == 3) {
 
 
-            // TODO:  enviar notificación al usuario aprobante, asuto => se levanto la observación 
+            // TODO:  enviar notificación al usuario aprobante, asuto => se levanto la observación
             // $idRolPrimerAprobante = 0;
 
             // $montoTotal= 0;
@@ -1315,7 +1315,7 @@ class RequerimientoController extends Controller
                 '<li> Fecha limite de entrega: ' . $requerimiento->fecha_entrega . '</li>' .
                 '<li> Creado por: ' . ($nombreCompletoUsuario ? $nombreCompletoUsuario : '') . '</li>' .
                 '</ul>' .
-                '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+                '<p> *Este correo es generado de manera automática, por favor no responder.</p>
                             <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE'
         ];
 
@@ -1434,12 +1434,12 @@ class RequerimientoController extends Controller
                 'alm_req.division_id',
                 'division.descripcion as division',
                 DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
-                DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion) 
-                FROM administracion.adm_aprobacion 
+                DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion)
+                FROM administracion.adm_aprobacion
                 WHERE   adm_aprobacion.id_vobo = 3 AND
                 adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos"),
-                DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-                FROM almacen.alm_det_req 
+                DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
+                FROM almacen.alm_det_req
                 WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
                 alm_det_req.estado != 7) AS monto_total")
 
@@ -1562,12 +1562,12 @@ class RequerimientoController extends Controller
                 'alm_req.division_id',
                 'division.descripcion as division',
                 DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
-                DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion) 
-                FROM administracion.adm_aprobacion 
+                DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion)
+                FROM administracion.adm_aprobacion
                 WHERE   adm_aprobacion.id_vobo = 3 AND
                 adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos")
-                // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-                // FROM almacen.alm_det_req 
+                // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
+                // FROM almacen.alm_det_req
                 // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
                 // alm_det_req.estado != 7) AS monto_total")
 
@@ -1639,8 +1639,8 @@ class RequerimientoController extends Controller
             //     $query->whereRaw('SUM(almace.alm_det_req.cantidad * alm_det_req.precio_unitario) = '.$keyword);
             // })
             // ->filterColumn('monto_total', function ($query, $keyword) {
-            //     $query->whereRaw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-            // FROM almacen.alm_det_req 
+            //     $query->whereRaw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
+            // FROM almacen.alm_det_req
             // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
             // alm_det_req.estado != 7)");
             // })
@@ -1695,13 +1695,13 @@ class RequerimientoController extends Controller
     //     $divisiones = Division::mostrar();
     //     $idDivisionList = [];
     //     foreach ($divisiones as $value) {
-    //         $idDivisionList[] = $value->id_division; //lista de id del total de divisiones 
+    //         $idDivisionList[] = $value->id_division; //lista de id del total de divisiones
     //     }
 
     //     $divisionUsuarioNroOrdenUno = Division::mostrarDivisionUsuarioNroOrdenUno();
     //     $idDivisionUsuarioList = [];
     //     foreach ($divisionUsuarioNroOrdenUno as $value) {
-    //         $idDivisionUsuarioList[] = $value->id_division; //lista de id_division al que pertenece el usuario 
+    //         $idDivisionUsuarioList[] = $value->id_division; //lista de id_division al que pertenece el usuario
     //     }
 
 
@@ -1790,8 +1790,8 @@ class RequerimientoController extends Controller
     //             'alm_req.fecha_entrega',
     //             'alm_req.division_id',
     //             'division.descripcion as division',
-    //             DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-    //             FROM almacen.alm_det_req 
+    //             DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
+    //             FROM almacen.alm_det_req
     //             WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
     //             alm_det_req.estado != 7) AS monto_total")
     //         )
@@ -1801,9 +1801,9 @@ class RequerimientoController extends Controller
     //         // ['alm_req.id_requerimiento', '=', '262']
     //         // ['alm_req.codigo', '=', 'RC-210106']
     //         // ['alm_req.tipo_cliente','=',$uso_administracion] // uso administracion
-    //         // ['alm_req.estado', '!=', 2], 
-    //         // ['alm_req.estado', '!=', 3], 
-    //         // ['alm_req.estado', '!=', 7] 
+    //         // ['alm_req.estado', '!=', 2],
+    //         // ['alm_req.estado', '!=', 3],
+    //         // ['alm_req.estado', '!=', 7]
     //         // ])
     //         ->whereNotIn('alm_req.estado', [3, 7])
     //         ->whereNotIn('alm_req.id_tipo_requerimiento', [1, 2, 3])
@@ -1929,7 +1929,7 @@ class RequerimientoController extends Controller
     //                 $numeroOrdenSiguienteAprobacion=0;
     //                 foreach ($flujoTotal as $flujo) {
     //                     if ($flujo->id_operacion == $nextIdOperacion) {
-    //                         if($flujo->orden == (intval($nextNroOrden)+1)){ // si existe una siguiente aprobacion (nro orden + 1 ) 
+    //                         if($flujo->orden == (intval($nextNroOrden)+1)){ // si existe una siguiente aprobacion (nro orden + 1 )
     //                             if(in_array($flujo->id_rol, $idRolUsuarioList) == true){
     //                                 $cantidadConSiguienteAprobacion=true;
     //                                 $numeroOrdenSiguienteAprobacion= $flujo->orden;
@@ -1943,7 +1943,7 @@ class RequerimientoController extends Controller
     //                 if($cantidadConSiguienteAprobacion ==true){
     //                     $tieneRolConSiguienteAprobacion=true;
     //                 }else{
-    //                     $tieneRolConSiguienteAprobacion=false;    
+    //                     $tieneRolConSiguienteAprobacion=false;
     //                 }
 
     //                 if ((in_array($nextIdRolAprobante, $idRolUsuarioList)) == true) {
@@ -2195,7 +2195,7 @@ class RequerimientoController extends Controller
             $aprobacionFinalOPendiente = '';
 
             if ($request->tieneRolConSiguienteAprobacion == true) { // si existe un siguiente flujo de aprobacion con el mismo rol
-                if ($accion == 1 || $accion == 5) { // si accion es revisar/aprobar, buscar siguientes aprobaciones con mismo rol de usuario para auto aprobación 
+                if ($accion == 1 || $accion == 5) { // si accion es revisar/aprobar, buscar siguientes aprobaciones con mismo rol de usuario para auto aprobación
 
                     $allRol = Auth::user()->getAllRol();
                     $idRolUsuarioList = [];
@@ -2273,7 +2273,7 @@ class RequerimientoController extends Controller
 
 
 
-    // botonera aprobar  
+    // botonera aprobar
     function flujoAprobacion($req, $doc)
     {
 
@@ -2354,9 +2354,9 @@ class RequerimientoController extends Controller
         $num_doc = $this->consult_doc_aprob($req, 1);
         $total_aprob = Aprobacion::cantidadAprobaciones($num_doc);
         $total_flujo = $this->consult_tamaño_flujo($req);
-        $areaOfRolAprob = $this->getAreaOfRolAprob($num_doc, 1); //num doc,tp doc 
+        $areaOfRolAprob = $this->getAreaOfRolAprob($num_doc, 1); //num doc,tp doc
 
-        $tp_doc = 1; // tipo de documento = requerimiento 
+        $tp_doc = 1; // tipo de documento = requerimiento
         $id_operacion = $this->get_id_operacion($id_grupo, $areaOfRolAprob['id'], $tp_doc);
 
         // $sgt_aprob='-';
@@ -3063,7 +3063,7 @@ class RequerimientoController extends Controller
 
 
 
-    // tracking requerimiento 
+    // tracking requerimiento
 
     public function explorar_requerimiento($id_requerimiento)
     {
@@ -3290,7 +3290,7 @@ class RequerimientoController extends Controller
             }
         }
 
-        // eliminar flujo con numero de orden aprobado 
+        // eliminar flujo con numero de orden aprobado
         // Debugbar::info($aprobacionPendienteList);
 
 
@@ -3303,7 +3303,7 @@ class RequerimientoController extends Controller
             }
             if (++$i > 2) break; //limite 2
         }
-        // guardar 
+        // guardar
         foreach ($FlujoAGrabarList as $value) {
             $nuevaAprobacion = $this->guardar_aprobacion_documento($value->id_flujo, $id_doc_aprob, $id_vobo, $detalle_observacion, $id_usuario, $value->id_rol);
         }
@@ -3509,7 +3509,7 @@ class RequerimientoController extends Controller
         <html>
             <head>
             <style type="text/css">
-    
+
                 body{
                         background-color: #fff;
                         font-family: "DejaVu Sans";
@@ -3517,7 +3517,7 @@ class RequerimientoController extends Controller
                         box-sizing: border-box;
                         padding:10px;
                 }
-                
+
                 table{
                 width:90%;
                 height:auto;
@@ -3526,7 +3526,7 @@ class RequerimientoController extends Controller
                 .tablePDF{
                 width:95%;
                 }
-    
+
                 .tablePDF thead{
                     padding:4px;
                     background-color:#d04f46;
@@ -3548,16 +3548,16 @@ class RequerimientoController extends Controller
                 .verticalTop{
                     vertical-align:top;
                 }
-                .texttab { 
-                    
-                    display:block; 
-                    margin-left: 20px; 
+                .texttab {
+
+                    display:block;
+                    margin-left: 20px;
                     margin-bottom:5px;
                 }
                 hr{
                     color:#cc352a;
                 }
-                
+
                 .right{
                     text-align:right;
                 }
@@ -3582,7 +3582,7 @@ class RequerimientoController extends Controller
             </style>
             </head>
             <body>
-            
+
                 <img src=".' . $requerimiento['requerimiento'][0]['logo_empresa'] . '" alt="Logo" height="75px">
                 <hr>
 
@@ -3597,7 +3597,7 @@ class RequerimientoController extends Controller
                 <td class="subtitle verticalTop">:</td>
                 <td>' . $requerimiento['requerimiento'][0]['fecha_entrega'] . '</td>
             </tr>
-            </tr>  
+            </tr>
                 <tr>
                     <td class="subtitle">Solicitante</td>
                     <td class="subtitle verticalTop">:</td>
@@ -3620,7 +3620,7 @@ class RequerimientoController extends Controller
                     <td class="subtitle top">Proyecto</td>
                     <td class="subtitle verticalTop">:</td>
                     <td class="verticalTop justify" colspan="4" >' . $requerimiento['requerimiento'][0]['codigo_proyecto'] . ' - ' . $requerimiento['requerimiento'][0]['descripcion_proyecto'] . '</td>
-                </tr>    
+                </tr>
                 <tr>
                     <td class="subtitle">Presupuesto</td>
                     <td class="subtitle verticalTop">:</td>
@@ -3635,7 +3635,7 @@ class RequerimientoController extends Controller
                         $html .=  '<td class="subtitle verticalTop">Incidencia</td>
                         <td class="subtitle verticalTop">:</td>
                         <td>' . $requerimiento['requerimiento'][0]['codigo_incidencia'] . '</td>';
-                    } 
+                    }
 
                     $html .= '</tr>
                 </table>
@@ -3652,7 +3652,7 @@ class RequerimientoController extends Controller
                         <td width="5%" style="text-align:center;">Cant.</td>
                         <td width="8%" style="text-align:center;">Precio ref.</td>
                         <td width="8%" style="text-align:center;">Subtotal</td>
-                    </tr>   
+                    </tr>
                 </thead>';
         $total = 0;
         $simbolMonedaRequerimiento = $this->consult_moneda($requerimiento['requerimiento'][0]['id_moneda'])->simbolo;
@@ -3660,7 +3660,7 @@ class RequerimientoController extends Controller
         foreach ($requerimiento['det_req'] as $key => $data) {
             if($data['estado']!=7){
 
-        
+
             $html .= '<tr>';
             $html .= '<td width="10%">' . $data['codigo_centro_costo'] . '</td>';
             $html .= '<td width="12%" style="word-wrap: break-word">' . ($data['id_tipo_item'] == 1 ? ($data['producto_part_number'] ? $data['producto_part_number'] : $data['part_number']) : '(Servicio)') . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
@@ -3679,7 +3679,7 @@ class RequerimientoController extends Controller
                 <td class="right">' . $simbolMonedaRequerimiento . number_format($total, 2) . '</td>
             </tr>
             </table>
-               
+
                 <footer>
                     <p style="font-size:9px; " class="pie_de_pagina">Generado por: ' . ucwords(strtolower($requerimiento['requerimiento'][0]['persona'])) .  '<br>'
             . 'Fecha registro: ' . $requerimiento['requerimiento'][0]['fecha_registro'] . '<br>'
@@ -4041,6 +4041,10 @@ class RequerimientoController extends Controller
     function listarRequerimientoLogisticosParaVincularView(Request $request){
         $lista = RequerimientoLogisticoView::whereNotIn('id_estado',[1,7]);
         return datatables($lista)->toJson();
+    }
+    public function obtenerRequerimientosElaboradosDetalle($id_requerimiento)
+    {
+
     }
 
 }

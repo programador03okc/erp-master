@@ -1307,5 +1307,55 @@ class RequerimientoPagoController extends Controller
         return $data;
 
     }
+    public function obtenerRequerimientosElaboradosDetalle($id_requerimiento_pago)
+    {
+        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')
+        ->where([['id_requerimiento_pago', $id_requerimiento_pago],['id_estado','!=',7]])
+        ->get();
+
+        $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $id_requerimiento_pago)
+            ->with(
+                'tipoRequerimientoPago',
+                'periodo',
+                'prioridad',
+                'moneda',
+                'creadoPor',
+                'empresa',
+                'sede',
+                'grupo',
+                'division',
+                'cuadroPresupuesto',
+                'tipoDestinatario',
+                'persona.tipoDocumentoIdentidad',
+                'cuentaPersona.banco.contribuyente',
+                'cuentaPersona.tipoCuenta',
+                'cuentaPersona.moneda',
+                'contribuyente.tipoDocumentoIdentidad',
+                'contribuyente.tipoContribuyente',
+                'cuentaContribuyente.banco.contribuyente',
+                'cuentaContribuyente.moneda',
+                'cuentaContribuyente.tipoCuenta',
+                'cuadroCostos',
+                'proyecto',
+                'adjunto'
+            )
+            ->first();
+
+        $documento = Documento::where([['id_tp_documento', 11], ['id_doc', $id_requerimiento_pago]])->first();
+        if (!empty($documento)) {
+            if ($documento->id_doc_aprob > 0) {
+                $aprobacion = Aprobacion::where('id_doc_aprob', $documento->id_doc_aprob)->with('usuario', 'VoBo')->get();
+            } else {
+                $aprobacion = [];
+            }
+        } else {
+            $aprobacion = [];
+        }
+        $requerimientoPago->setAttribute('aprobacion', $aprobacion);
+
+
+
+        return $requerimientoPago->setAttribute('detalle', $detalleRequerimientoPagoList);
+    }
 
 }
