@@ -1910,5 +1910,9 @@ public function anular_configuracion_socket($id){
         $output=['status'=>$status];
         return response()->json($output);
     }
+    public function usuarioAsignar()
+    {
+        return view('configuracion/notas_lanzamiento');
+    }
 }
 

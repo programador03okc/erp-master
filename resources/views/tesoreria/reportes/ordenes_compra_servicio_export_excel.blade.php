@@ -13,6 +13,15 @@
             <th>Estado</th>
             <th>Autorizado por</th>
 
+            <th>Fecha Pago</th>
+            <th>Empresa</th>
+            <th>Cuenta origen</th>
+            <th>Motivo</th>
+            <th>Mnd</th>
+            <th>Total Pago</th>
+            <th>Registrado por</th>
+            <th>Fecha Registro</th>
+
         </tr>
     </thead>
     <tbody>
@@ -36,6 +45,15 @@
             }}</td>
             <td>{{ $requerimiento->estado_doc }}</td>
             <td>{{ $requerimiento->nombre_autorizado!='' ? $requerimiento->nombre_autorizado.' el '.date("d-m-Y", strtotime($requerimiento->fecha_autorizacion)) : '' }}</td>
+
+            <th>{{ date("d-m-Y", strtotime($requerimiento->fecha_pago)) }}</th>
+            <th>{{$requerimiento->razon_social_empresa}}</th>
+            <th>{{$requerimiento->nro_cuenta}}</th>
+            <th>{{$requerimiento->observacion}}</th>
+            <th>{{$requerimiento->simbolo}}</th>
+            <th>{{ round($requerimiento->total_pago, 2) }}</th>
+            <th>{{$requerimiento->nombre_corto}}</th>
+            <th>{{ date("d-m-Y h:i", strtotime($requerimiento->fecha_registro)) }}</th>
         </tr>
         @endforeach
     </tbody>

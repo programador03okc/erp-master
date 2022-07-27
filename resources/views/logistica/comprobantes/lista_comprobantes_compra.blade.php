@@ -17,14 +17,16 @@
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
+                <a class="btn btn-success" href="lista-comprobantes-pago-export-excel"><i class="fas fa-file-excel"></i> Exportar Excel</a>
                 @if (Auth::user()->id_usuario == 3)
                 <button id="btn_actualizar_sedes" class="btn btn-default" onClick="actualizarSedesFaltantes();">Actualizar Sedes</button>
                 <button id="btn_actualizar_proveedores" class="btn btn-default" onClick="actualizarProveedores();">Actualizar Proveedores</button>
                 <button id="btn_actualizar_items" class="btn btn-default" onClick="migrarItemsComprobantesSoftlink();">Actualizar Items</button>
                 <button id="btn_migrar_comprobantes" class="btn btn-success" onClick="migrarComprobantesSoftlink();">Migrar a Softlink</button>
 
-                <a class="btn btn-success" href="lista-comprobantes-pago-export-excel"><i class="fas fa-file-excel"></i> Exportar Excel</a>
+
                 @endif
+
                 <div class="row">
                     <div class="col-sm-12">
                         <!-- <caption>Requerimientos: Registrados | Aprobados</caption> -->
