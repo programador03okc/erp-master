@@ -1292,6 +1292,7 @@ class OrdenController extends Controller
 
     public function listaHistorialOrdenes()
     {
+        $usuarioEnSesion= Auth::user()->id_usuario;
         $ordenes = Orden::select(
             'log_ord_compra.*',
             'sis_sede.descripcion as descripcion_sede_empresa',
@@ -1322,7 +1323,15 @@ class OrdenController extends Controller
             ->leftJoin('configuracion.ubi_dis as dis_destino', 'log_ord_compra.ubigeo_destino', '=', 'dis_destino.id_dis')
             ->leftJoin('configuracion.ubi_prov as prov_destino', 'dis_destino.id_prov', '=', 'prov_destino.id_prov')
             ->leftJoin('configuracion.ubi_dpto as dpto_destino', 'prov_destino.id_dpto', '=', 'dpto_destino.id_dpto')
-            ->where('log_ord_compra.id_tp_documento','!=',13); // no mostrar orden de devolución
+
+            ->where(function($query) use($usuarioEnSesion){
+                $query->where(function($query) use($usuarioEnSesion) {
+                    if(!in_array($usuarioEnSesion,[17,27])){// solo para usuario raulscodes,rhuancac se mostrarara OD
+                        $query->where('log_ord_compra.id_tp_documento','!=',13); 
+                    }
+                });
+            });
+
         return datatables($ordenes)
             ->filterColumn('log_ord_compra.fecha', function ($query, $keyword) {
                 try {
@@ -3644,7 +3653,7 @@ class OrdenController extends Controller
                         $correosAnulaciónOrden = [];
 
                         if (config('app.debug')) {
-                            $correosAnulaciónOrden[] = config('global.correoDebug2');
+                            $correosAnulaciónOrden[] = config('global.correoDebug1');
                         } else {
 
                             // $correosAnulaciónOrden[] = Auth::user()->email; //usuario en sessión que genero la acción
@@ -4088,8 +4097,8 @@ class OrdenController extends Controller
                         $correoFinalizacionCuadroPresupuesto = [];
 
                         if (config('app.debug')) {
-                            $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
-                            $correoFinalizacionCuadroPresupuesto[] = config('global.correoDebug2');
+                            $correosOrdenServicioTransformacion[] = config('global.correoDebug1');
+                            $correoFinalizacionCuadroPresupuesto[] = config('global.correoDebug1');
                         } else {
                             if($correoVendedor != '' || $correoVendedor !=null){
                                 $correosOrdenServicioTransformacion[] = $correoVendedor; // agregar correo de vendedor
