@@ -61,11 +61,14 @@ function listar_guia_detalle(id_guia) {
                             'tipo_cambio': tipo_cambio,
                             'valor_compra': valor_compra,
                             'valor_compra_soles': valor_compra_soles,
+                            'valor_ingreso': 0,
                             'adicional_valor': 0,
                             'adicional_peso': 0,
                             'total': (parseFloat(precio_unitario) * parseFloat(element.cantidad)),
                             'peso': 0,
                             'estado': 1,
+                            'id_moneda_producto': element.moneda_producto,
+                            'tipo_cambio_ingreso': element.tipo_cambio_ingreso,
                         });
                     }
                 });
@@ -95,6 +98,7 @@ function mostrar_guias_detalle() {
     var html = '';
     let importe_valor = $('[name=total_comp_valor]').val();
     let importe_peso = $('[name=total_comp_peso]').val();
+    var id_moneda_global = $('[name=id_moneda_global]').val();
     console.log('importe_valor' + importe_valor);
     console.log('importe_peso' + importe_peso);
 
@@ -139,6 +143,16 @@ function mostrar_guias_detalle() {
             element.adicional_peso = adicional_peso;
             element.total = total;
 
+            if (id_moneda_global == element.id_moneda_producto) {
+                element.valor_ingreso = total;
+            } else {
+                if (element.id_moneda_producto == 1) {
+                    element.valor_ingreso = total * element.tipo_cambio_ingreso;
+                } else {
+                    element.valor_ingreso = total / element.tipo_cambio_ingreso;
+                }
+            }
+            //suma totales
             total_valor_compra += parseFloat(element.valor_compra);
             total_valor += parseFloat(element.valor_compra_soles);
             total_peso += parseFloat(element.peso);
@@ -167,6 +181,7 @@ function mostrar_guias_detalle() {
                 <td style="width: 110px;text-align: right">${formatDecimalDigitos(element.adicional_valor, 3)}</td>
                 <td style="width: 110px;text-align: right">${formatDecimalDigitos(element.adicional_peso, 3)}</td>
                 <td style="width: 110px;text-align: right">${formatDecimalDigitos(element.total, 3)}</td>
+                <td style="width: 110px;text-align: right">${(element.id_moneda_producto == 1 ? 'S/' : '$') + formatDecimalDigitos(element.valor_ingreso, 3)}</td>
                 <td style="display:flex;">
                     <button type="button" class="anular btn btn-danger btn-xs activation" data-toggle="tooltip" 
                         data-placement="bottom" title="Eliminar" onClick="anular_item('${element.id_guia_com_det}');"
@@ -177,7 +192,6 @@ function mostrar_guias_detalle() {
     });
 
     $('#listaGuiaDetalleProrrateo tbody').html(html);
-    var id_moneda_global = $('[name=id_moneda_global]').val();
 
     $('[name=total_ingreso]').val(formatDecimalDigitos(suma_total, 3));
     $('#moneda').text(moneda);
