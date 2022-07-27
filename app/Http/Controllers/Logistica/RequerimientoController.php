@@ -262,6 +262,7 @@ class RequerimientoController extends Controller
                 'alm_req.id_usuario',
                 DB::raw("concat(rrhh_perso.nombres, ' ', rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS persona"),
                 'sis_usua.usuario',
+                'sis_usua.nombre_corto as nombre_corto_usuario',
                 'alm_req.id_rol',
                 'rrhh_rol.id_rol_concepto',
                 'alm_req.id_area',
@@ -360,6 +361,7 @@ class RequerimientoController extends Controller
                     'id_usuario' => $data->id_usuario,
                     'persona' => $data->persona,
                     'usuario' => $data->usuario,
+                    'nombre_corto_usuario' => $data->nombre_corto_usuario,
                     'id_rol' => $data->id_rol,
                     'id_area' => $data->id_area,
                     'area_descripcion' => $data->area_descripcion,
@@ -626,7 +628,32 @@ class RequerimientoController extends Controller
         $num_doc = Documento::getIdDocAprob($id_requerimiento, 1);
         $cantidad_aprobados = Aprobacion::cantidadAprobaciones($num_doc);
 
-        $historialAprobacionList = Aprobacion::getVoBo($num_doc)['data'];
+
+        $usuarioElaboradorDeRequerimiento = 
+
+
+
+        $historialAprobacionList[]=[
+            'accion'=> "Elaborado",
+            'descripcion_rol'=> null,
+            'detalle_observacion'=> null,
+            'fecha_vobo'=> $requerimiento[0]['fecha_registro'],
+            'id_aprobacion'=> 4689,
+            'id_flujo'=> null,
+            'id_operacion'=> null,
+            'id_rol'=> null,
+            'id_usuario'=> $requerimiento[0]['id_usuario'],
+            'id_vobo'=> 7,
+            'nombre_corto'=> $requerimiento[0]['nombre_corto_usuario'],
+            'nombre_flujo'=> null,
+            'nombre_usuario'=> $requerimiento[0]['persona'],
+            'orden'=> null,
+            'tiene_sustento'=> false
+        ];
+        
+        foreach ((Aprobacion::getVoBo($num_doc)['data']) as $key => $value) {
+            $historialAprobacionList[] =$value ;
+        }
 
         $data = [
             "requerimiento" => $requerimiento ? $requerimiento : [],
@@ -1003,7 +1030,7 @@ class RequerimientoController extends Controller
         
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
         if ($requerimiento->estado == 3) { // si el estado actual es observado
-            if($request->monto_total < $requerimiento->monto_total){
+            if($request->monto_total <= $requerimiento->monto_total){
                 $requerimiento->estado = $requerimiento->estado_anterior;
             }else{
                 $requerimiento->estado = 1; // elaborado
@@ -1018,10 +1045,17 @@ class RequerimientoController extends Controller
             $trazabilidad->save();
 
             $idDocumento = Documento::getIdDocAprob($request->id_requerimiento, 1);
-            $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
-            $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
-            $aprobacion->tiene_sustento = true;
-            $aprobacion->save();
+            // $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
+            $observacionesLis = Aprobacion::getObservaciones($idDocumento);
+            foreach ($observacionesLis as $key => $value) {
+                if($value->tiene_sustento == false){
+                    $aprobacion = Aprobacion::where("id_aprobacion", $value->id_aprobacion)->first();
+                    $aprobacion->tiene_sustento = true;
+                    $aprobacion->save();
+                    
+                }
+            }
+            // $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
 
         }
         $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;

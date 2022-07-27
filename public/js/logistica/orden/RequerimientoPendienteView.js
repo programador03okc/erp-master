@@ -556,6 +556,7 @@ class RequerimientoPendienteView {
                 { 'data': 'tipo_req_desc', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center', "searchable": false },
                 { 'data': 'cc_solicitado_por', 'name': 'cc_view.name', 'className': 'text-center' },
+                { 'data': 'nombre_usuario', 'name': 'nombre_usuario', 'className': 'text-center' },
                 { 'data': 'observacion', 'name': 'alm_req.observacion', 'className': 'text-center' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc', 'className': 'text-center' },
                 { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'className': 'text-center', "searchable": false }
@@ -592,19 +593,19 @@ class RequerimientoPendienteView {
                 {
                     'render': function (data, type, row) {
                         return '<span class="label label-default estadoRequerimiento" title="' + (row['estado_doc'] == 'En pausa' ? 'Retiro de aprobación por actualización de CDP' : '') + '">' + row['estado_doc'] + '</span>';
-                    }, targets: 10
+                    }, targets: 11
                 },
                 {
                     'render': function (data, type, row) {
                         // if(permisoCrearOrdenPorRequerimiento == '1') {
                         let observacionLogisticaSinSustento='';
-                        let idObservacionLogistica=0;
-                                (row.historial_aprobacion).forEach(element => {
-                                    if(element.id_vobo ==3 && element.id_rol ==4 && element.tiene_sustento ==false){
-                                        observacionLogisticaSinSustento=element.detalle_observacion??'';
-                                        idObservacionLogistica=element.id_aprobacion??0;
-                                    }
-                                });
+                        // let idObservacionLogistica=0;
+                        //         (row.historial_aprobacion).forEach(element => {
+                        //             if(element.id_vobo ==3 && element.id_rol ==4 && element.tiene_sustento ==false){
+                        //                 observacionLogisticaSinSustento=element.detalle_observacion??'';
+                        //                 idObservacionLogistica=element.id_aprobacion??0;
+                        //             }
+                        //         });
                         
                         let tieneTransformacion = row.tiene_transformacion;
                         let cantidadItemBase = row.cantidad_items_base;
@@ -628,7 +629,7 @@ class RequerimientoPendienteView {
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
                             let btnGestionarEstadoRequerimiento = '';
-                            let btnObservarRequerimientoLogistico = '<button type="button" class="btn btn-warning btn-xs handleClickObservarRequerimientoLogistico" name="btnObservarRequerimientoLogistico" title="Observar requerimiento" data-codigo-requerimiento="' + row.codigo + '" data-id-requerimiento="' + row.id_requerimiento + '"  data-observacion-logistica-sin-sustento="'+observacionLogisticaSinSustento+'" data-id-observacion-logistica="'+idObservacionLogistica+'" ><i class="fas fa-exclamation-circle"></i></button>';
+                            let btnObservarRequerimientoLogistico = '<button type="button" class="btn btn-warning btn-xs handleClickObservarRequerimientoLogistico" name="btnObservarRequerimientoLogistico" title="Observar requerimiento" data-codigo-requerimiento="' + row.codigo + '" data-id-requerimiento="' + row.id_requerimiento + '"  data-observacion-logistica-sin-sustento="'+observacionLogisticaSinSustento+'"  ><i class="fas fa-exclamation-circle"></i></button>';
                             let btnCrearOrdenServicio = '<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  >OS</button>';
                             let btnExportarExcel = '<button type="button" class="btn btn-default btn-xs handleClickSolicitudCotizacionExcel" name="btnSolicitudCotizacionExcel" title="Solicitud cotización excel" data-id-requerimiento="' + row.id_requerimiento + '" style="color:green;" ><i class="far fa-file-excel"></i></button>';
                             // if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
@@ -682,7 +683,7 @@ class RequerimientoPendienteView {
                             return botones;
                         }
 
-                    }, targets: 11
+                    }, targets: 12
                 }
 
             ],
@@ -900,6 +901,7 @@ class RequerimientoPendienteView {
                 { 'data': 'tipo_req_desc', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center', "searchable": false },
                 { 'data': 'cc_solicitado_por', 'name': 'cc_view.name', 'className': 'text-center' },
+                { 'data': 'nombre_usuario', 'name': 'nombre_usuario', 'className': 'text-center' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc', 'className': 'text-center' },
                 { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'className': 'text-center', "searchable": false }
 
@@ -931,7 +933,7 @@ class RequerimientoPendienteView {
                 {
                     'render': function (data, type, row) {
                         return '<span class="label label-default estadoRequerimiento" title="' + (row['estado_doc'] == 'En pausa' ? 'Retiro de aprobación por actualización de CDP' : '') + '">' + row['estado_doc'] + '</span>';
-                    }, targets: 8
+                    }, targets: 9
                 },
                 {
                     'render': function (data, type, row) {
@@ -991,7 +993,7 @@ class RequerimientoPendienteView {
                             }
                         }
 
-                    }, targets: 9
+                    }, targets: 10
                 }
 
             ],
@@ -3594,7 +3596,7 @@ class RequerimientoPendienteView {
         let payload={
             'id_requerimiento':parseInt(obj.dataset.idRequerimiento),
             'codigo_requerimiento':(obj.dataset.codigoRequerimiento).toString(),
-            'id_observacion_logisica':parseInt(obj.dataset.idObservacionLogistica)??0
+            // 'id_observacion_logisica':parseInt(obj.dataset.idObservacionLogistica)??0
         }
  
         if (payload.id_requerimiento > 0) {

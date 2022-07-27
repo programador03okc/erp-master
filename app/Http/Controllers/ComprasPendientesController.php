@@ -228,7 +228,7 @@ class ComprasPendientesController extends Controller
                 'alm_req.tipo_cliente',
                 'tipo_cliente.descripcion AS tipo_cliente_desc',
                 'sis_usua.usuario',
-                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_usuario"),
+                DB::raw("UPPER(CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno)) as nombre_usuario"),
                 'rrhh_rol.id_area',
                 'adm_area.descripcion AS area_desc',
                 'rrhh_rol.id_rol',
@@ -250,7 +250,7 @@ class ComprasPendientesController extends Controller
                 'alm_req.id_prioridad',
                 'alm_req.fecha_registro',
                 'alm_req.trabajador_id',
-                DB::raw("CONCAT(perso_solicitado_por.nombres,' ', perso_solicitado_por.apellido_paterno,' ', perso_solicitado_por.apellido_materno)  AS solicitado_por"),
+                DB::raw("UPPER(CONCAT(perso_solicitado_por.nombres,' ', perso_solicitado_por.apellido_paterno,' ', perso_solicitado_por.apellido_materno))  AS solicitado_por"),
                 'cc_view.name as cc_solicitado_por',
                 'alm_req.estado',
                 'alm_req.id_empresa',
@@ -331,6 +331,10 @@ class ComprasPendientesController extends Controller
                     $query->whereBetween('alm_req.fecha_registro', [$desde, $hasta->addDay()->addSeconds(-1)]);
                 } catch (\Throwable $th) {
                 }
+            })
+            ->filterColumn('nombre_usuario', function ($query, $keyword) {
+                $keywords = trim(strtoupper($keyword));
+                $query->whereRaw("UPPER(CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
             })
             // ->filterColumn('division', function ($query, $keyword) {
             //     try {
@@ -1613,19 +1617,19 @@ class ComprasPendientesController extends Controller
 
                     // $operaciones = Operacion::getOperacion(1, $requerimiento->id_tipo_requerimiento, $requerimiento->id_grupo, $requerimiento->division_id, $requerimiento->id_prioridad, $requerimiento->id_moneda, $requerimiento->monto_total, null,[]);
                     // $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
-                    if($request->id_observacion_logisica >0){
-                        $aprobacion = Aprobacion::find($request->id_observacion_logisica);
-                        $aprobacion->id_flujo = null;
-                        $aprobacion->id_doc_aprob = $documento['id'];
-                        $aprobacion->id_usuario = Auth::user()->id_usuario;
-                        $aprobacion->id_vobo = 3; // observar
-                        $aprobacion->fecha_vobo = new Carbon();
-                        $aprobacion->detalle_observacion = $request->sustento??null; // comentario
-                        $aprobacion->id_rol = 4;
-                        $aprobacion->tiene_sustento = false;
-                        $aprobacion->save();
+                    // if($request->id_observacion_logisica >0){
+                    //     $aprobacion = Aprobacion::find($request->id_observacion_logisica);
+                    //     $aprobacion->id_flujo = null;
+                    //     $aprobacion->id_doc_aprob = $documento['id'];
+                    //     $aprobacion->id_usuario = Auth::user()->id_usuario;
+                    //     $aprobacion->id_vobo = 3; // observar
+                    //     $aprobacion->fecha_vobo = new Carbon();
+                    //     $aprobacion->detalle_observacion = $request->sustento??null; // comentario
+                    //     $aprobacion->id_rol = 4;
+                    //     $aprobacion->tiene_sustento = false;
+                    //     $aprobacion->save();
 
-                    }else{
+                    // }else{
                         $aprobacion = new Aprobacion();
                         $aprobacion->id_flujo = null;
                         $aprobacion->id_doc_aprob = $documento['id'];
@@ -1636,7 +1640,7 @@ class ComprasPendientesController extends Controller
                         $aprobacion->id_rol = 4;
                         $aprobacion->tiene_sustento = false;
                         $aprobacion->save();
-                    }
+                    // }
 
                     if($aprobacion->id_aprobacion >0){
                         $mensaje='Requerimiento logístico observado';

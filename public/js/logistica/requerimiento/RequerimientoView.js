@@ -359,10 +359,13 @@ class RequerimientoView {
 
                     $("#form-requerimiento .activation").attr('disabled', true);
 
-                } else if ((data['requerimiento'][0].estado == 1 || data['requerimiento'][0].estado == 3) && data['requerimiento'][0].id_usuario == auth_user.id_usuario) {
-                    hasDisabledInput = '';
+                } else if ((data['requerimiento'][0].estado == 1 || data['requerimiento'][0].estado == 3)) {
                     document.querySelector("div[id='group-historial-revisiones']").removeAttribute('hidden');
                     this.mostrarHistorialRevisionAprobacion(data['historial_aprobacion']);
+                    disabledControl(btnAdjuntosRequerimiento, true);
+
+                if (data['requerimiento'][0].id_usuario == auth_user.id_usuario) {
+                    hasDisabledInput = '';
                     document.querySelector("form[id='form-requerimiento']").setAttribute('type', 'edition');
                     changeStateButton('editar'); //init.js
                     disabledControl(btnAdjuntosRequerimiento, false);
@@ -372,6 +375,8 @@ class RequerimientoView {
                     // });
 
                     $("#form-requerimiento .activation").attr('disabled', false);
+
+                }
 
 
 
