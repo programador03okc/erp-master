@@ -36,7 +36,7 @@
                     <th>{{ $requerimiento->id_requerimiento }}</th>
                     <th>{{ $requerimiento->serie_numero }}</th>
                     <th>{{ $requerimiento->empresa_razon_social }}</th>
-                    <th>{{ date("d-m-Y", strtotime($requerimiento->fecha_emision)) }}</th>
+                    <th>{{ date("d-m-Y", strtotime($requerimiento->fecha_emision_detalle)) }}</th>
                     <th>{{ $requerimiento->razon_social }}</th>
                     <th>{{ $requerimiento->simbolo }}</th>
                     <th>{{ round($requerimiento->total_a_pagar, 2) }}</th>

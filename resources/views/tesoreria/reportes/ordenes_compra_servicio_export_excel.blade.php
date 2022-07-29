@@ -50,7 +50,7 @@
             <th>{{$requerimiento->razon_social_empresa}}</th>
             <th>{{$requerimiento->nro_cuenta}}</th>
             <th>{{$requerimiento->observacion}}</th>
-            <th>{{$requerimiento->simbolo}}</th>
+            <th>{{$requerimiento->simbolo_detalle}}</th>
             <th>{{ round($requerimiento->total_pago, 2) }}</th>
             <th>{{$requerimiento->nombre_corto}}</th>
             <th>{{ date("d-m-Y h:i", strtotime($requerimiento->fecha_registro)) }}</th>
