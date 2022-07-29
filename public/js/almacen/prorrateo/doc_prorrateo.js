@@ -60,7 +60,7 @@ function mostrar_prorrateo(id_prorrateo) {
                     'id_tp_documento': element.id_tp_documento,
                     'serie': element.serie,
                     'numero': element.numero,
-                    'id_moneda': element.moneda,
+                    'id_moneda': element.id_moneda,
                     'total': element.total_documento,
                     'tipo_cambio': element.tipo_cambio,
                     // 'importe'  :(element.total_a_pagar * element.tipo_cambio),
@@ -99,7 +99,7 @@ function mostrar_prorrateo(id_prorrateo) {
                     'peso': element.peso,
                     'total': (parseFloat(element.valor_compra_soles) + parseFloat(element.adicional_valor) + parseFloat(element.adicional_peso)),
                     'estado': element.estado,
-                    'id_moneda_producto': element.moneda_producto,
+                    'id_moneda_producto': element.id_moneda_producto,
                     'tipo_cambio_ingreso': element.tipo_cambio_ingreso,
                 });
             });
