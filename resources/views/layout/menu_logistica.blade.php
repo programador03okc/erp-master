@@ -209,6 +209,7 @@
         <li><a href="{{route('logistica.gestion-logistica.reportes.ordenes-compra')}}"><i class="far fa-circle fa-xs"></i> Ordenes de compras</a></li>
         <li><a href="{{route('logistica.gestion-logistica.reportes.transito-ordenes-compra')}}"><i class="far fa-circle fa-xs"></i> Transito de ordenes de compras</a></li>
         <li><a href="{{route('logistica.gestion-logistica.reportes.ordenes-servicio')}}"><i class="far fa-circle fa-xs"></i> Ordenes de servicio</a></li>
+        <li><a href="{{route('logistica.gestion-logistica.reportes.compras-locales')}}"><i class="far fa-circle fa-xs"></i> Compras locales</a></li>
     </ul>
 </li>
 @endif

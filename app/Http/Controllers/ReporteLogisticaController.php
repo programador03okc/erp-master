@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Sede;
 use App\Models\Configuracion\Grupo;
+use App\Models\Logistica\ComprasLocalesView;
 use App\Models\Logistica\Orden;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -200,4 +201,49 @@ class ReporteLogisticaController extends Controller{
 		return datatables($data)->rawColumns(['monto','requerimientos','cuadro_costo','tiene_transformacion','cantidad_equipos'])->toJson();
 
 	}	
+
+	public function viewReporteComprasLocales(){
+		$empresas = Empresa::mostrar();
+        $grupos = Grupo::mostrar();
+
+		return view('logistica/reportes/compras_locales',compact('empresas','grupos'));
+	}
+
+	public function listaComprasLocales(Request $request){
+		
+		$idEmpresa = $request->idEmpresa;
+        $idSede = $request->idSede;
+		$fechaRegistroDesde = $request->fechaRegistroDesde;
+        $fechaRegistroHasta = $request->fechaRegistroHasta;
+		$data = $this->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
+		
+		return datatables($data)->toJson();
+
+	}
+
+	public function obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta){
+		$data = ComprasLocalesView::when(($idEmpresa > 0), function ($query) use($idEmpresa) {
+			$sedes= Sede::where('id_empresa',$idEmpresa)->get();
+			$idSedeList=[];
+			foreach($sedes as $sede){
+				$idSedeList[]=$sede->id_sede;
+			}
+            return $query->whereIn('id_sede', $idSedeList);
+        })
+        ->when(($idSede > 0), function ($query) use($idSede) {
+            return $query->where('id_sede',$idSede);
+        })
+
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
+            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
+        })
+        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
+            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
+            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+        });
+
+		return $data;
+	}
 }
