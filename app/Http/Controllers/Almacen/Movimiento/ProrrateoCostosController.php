@@ -494,6 +494,7 @@ class ProrrateoCostosController extends Controller
             ->select('guia_com_prorrateo.*', 'sis_usua.nombre_corto')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'guia_com_prorrateo.registrado_por')
             ->where('guia_com_prorrateo.estado', 1)
+            ->orderBy('guia_com_prorrateo.id_prorrateo', 'desc')
             ->get();
         $data['data'] = $prorrateos;
         return response()->json($data);

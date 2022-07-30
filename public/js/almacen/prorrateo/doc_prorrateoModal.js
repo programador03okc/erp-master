@@ -1,7 +1,7 @@
-$(function(){
+$(function () {
     /* Seleccionar valor del DataTable */
-    $('#listaProrrateo tbody').on('click', 'tr', function(){
-        if ($(this).hasClass('eventClick')){
+    $('#listaProrrateo tbody').on('click', 'tr', function () {
+        if ($(this).hasClass('eventClick')) {
             $(this).removeClass('eventClick');
         } else {
             $('#listaProrrateo').dataTable().$('tr.eventClick').removeClass('eventClick');
@@ -12,7 +12,7 @@ $(function(){
 
         var page = $('.page-main').attr('type');
 
-        if (page == "prorrateo"){
+        if (page == "prorrateo") {
             $('[name=id_prorrateo]').val(myId);
             $('#registrado_por').text(usua);
             mostrar_prorrateo(myId);
@@ -21,29 +21,30 @@ $(function(){
     });
 });
 
-function listar_prorrateos(){
+function listar_prorrateos() {
     var vardataTables = funcDatatables();
     $('#listaProrrateo').dataTable({
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
-        'language' : vardataTables[0],
-        'bDestroy' : true,
+        'language': vardataTables[0],
+        'bDestroy': true,
         'ajax': 'mostrar_prorrateos',
         'columns': [
-            {'data': 'id_prorrateo'},
-            {'data': 'codigo'},
+            { 'data': 'id_prorrateo' },
+            { 'data': 'codigo' },
             // {'render':
             //     function (data, type, row){
             //         return ('PR-'+row['id_prorrateo']);
             //     }
             // },
-            {'data': 'nombre_corto'}
+            { 'data': 'nombre_corto' }
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'order': [['0', 'desc']],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
     });
 }
 
-function prorrateoModal(){
+function prorrateoModal() {
     $('#modal-prorrateo').modal({
         show: true
     });
