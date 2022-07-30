@@ -182,7 +182,7 @@ class Requerimiento extends Model
             ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
             ->where('alm_req.id_requerimiento', $this->attributes['id_requerimiento'])
             ->select(DB::raw("concat(rrhh_perso.nombres, ' ', rrhh_perso.apellido_paterno, ' ', rrhh_perso.apellido_materno)  AS nombre_completo_usuario"))
-            ->first()->nombre_completo_usuario;
+            ->first()->nombre_completo_usuario??'';
         return $nombreUsuario;
     }
 
