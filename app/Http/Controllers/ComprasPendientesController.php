@@ -490,6 +490,10 @@ class ComprasPendientesController extends Controller
             ->whereNotIn('alm_req.estado', [1, 2, 3, 4, 7, 12, 13, 15, 27]);
 
         return datatables($alm_req)
+            ->filterColumn('nombre_usuario', function ($query, $keyword) {
+                $keywords = trim(strtoupper($keyword));
+                $query->whereRaw("UPPER(CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
+            })
             ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {
                 try {
                     $keywords = Carbon::createFromFormat('d-m-Y', trim($keyword));
