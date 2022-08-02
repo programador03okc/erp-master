@@ -42,10 +42,10 @@
                 <th>{{ $requerimiento->serie_numero }}</th>
                 <th>{{ $requerimiento->empresa_razon_social }}</th>
                 <th>{{ date("d-m-Y", strtotime($requerimiento->fecha_emision)) }}</th>
-                <th>{{ $requerimiento->razon_social }}</th>
+                <th>{{ $requerimiento->razon_social_detalle }}</th>
                 <th>{{ $requerimiento->simbolo }}</th>
                 <th>{{ round($requerimiento->total_a_pagar, 2) }}</th>
-                <th>{{ $requerimiento->nombre_corto }}</th>
+                <th>{{ $requerimiento->nombre_corto_detalle }}</th>
                 <th>{{ $requerimiento->condicion  }}</th>
         </tr>
         @endforeach

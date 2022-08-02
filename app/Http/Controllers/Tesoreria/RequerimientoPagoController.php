@@ -1309,53 +1309,103 @@ class RequerimientoPagoController extends Controller
     }
     public function obtenerRequerimientosElaboradosDetalle($id_requerimiento_pago)
     {
-        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')
-        ->where([['id_requerimiento_pago', $id_requerimiento_pago],['id_estado','!=',7]])
+        // $id_requerimiento_pago=50;
+        // $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')
+        // ->where([['id_requerimiento_pago', $id_requerimiento_pago],['id_estado','!=',7]])
+        // ->get();
+
+        $detalleRequerimientoPagoList_2 = DB::table('tesoreria.requerimiento_pago_detalle')
+        ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'requerimiento_pago_detalle.id_partida')
+        ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'requerimiento_pago_detalle.id_centro_costo')
+        ->select(
+            'requerimiento_pago_detalle.*',
+            'presup_par.codigo as partida',
+            'presup_par.id_partida',
+            'centro_costo.codigo as c_costo',
+            'centro_costo.id_centro_costo'
+        )
+        ->where('requerimiento_pago_detalle.id_requerimiento_pago', $id_requerimiento_pago)
         ->get();
 
-        $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $id_requerimiento_pago)
-            ->with(
-                'tipoRequerimientoPago',
-                'periodo',
-                'prioridad',
-                'moneda',
-                'creadoPor',
-                'empresa',
-                'sede',
-                'grupo',
-                'division',
-                'cuadroPresupuesto',
-                'tipoDestinatario',
-                'persona.tipoDocumentoIdentidad',
-                'cuentaPersona.banco.contribuyente',
-                'cuentaPersona.tipoCuenta',
-                'cuentaPersona.moneda',
-                'contribuyente.tipoDocumentoIdentidad',
-                'contribuyente.tipoContribuyente',
-                'cuentaContribuyente.banco.contribuyente',
-                'cuentaContribuyente.moneda',
-                'cuentaContribuyente.tipoCuenta',
-                'cuadroCostos',
-                'proyecto',
-                'adjunto'
+        $requerimientoPago = DB::table('tesoreria.requerimiento_pago')
+        ->select('requerimiento_pago.id_requerimiento_pago', 'requerimiento_pago.fecha_autorizacion')
+        ->where('id_requerimiento_pago', $id_requerimiento_pago)
+        ->first();
+
+        $requerimientoPago->detalle=$detalleRequerimientoPagoList_2;
+        // $detalleRequerimientoPagoList=(object)$detalleRequerimientoPagoList;
+        // var_dump($detalleRequerimientoPagoList->detalle);exit;
+        // $requerimientoPago = RequerimientoPago::where('id_requerimiento_pago', $id_requerimiento_pago)
+        //     ->with(
+        //         'tipoRequerimientoPago',
+        //         'periodo',
+        //         'prioridad',
+        //         'moneda',
+        //         'creadoPor',
+        //         'empresa',
+        //         'sede',
+        //         'grupo',
+        //         'division',
+        //         'cuadroPresupuesto',
+        //         'tipoDestinatario',
+        //         'persona.tipoDocumentoIdentidad',
+        //         'cuentaPersona.banco.contribuyente',
+        //         'cuentaPersona.tipoCuenta',
+        //         'cuentaPersona.moneda',
+        //         'contribuyente.tipoDocumentoIdentidad',
+        //         'contribuyente.tipoContribuyente',
+        //         'cuentaContribuyente.banco.contribuyente',
+        //         'cuentaContribuyente.moneda',
+        //         'cuentaContribuyente.tipoCuenta',
+        //         'cuadroCostos',
+        //         'proyecto',
+        //         'adjunto'
+        //     )
+        //     ->first();
+
+        // $documento = Documento::where([['id_tp_documento', 11], ['id_doc', $id_requerimiento_pago]])->first();
+        // if (!empty($documento)) {
+        //     if ($documento->id_doc_aprob > 0) {
+        //         $aprobacion = Aprobacion::where('id_doc_aprob', $documento->id_doc_aprob)->with('usuario', 'VoBo')->get();
+        //     } else {
+        //         $aprobacion = [];
+        //     }
+        // } else {
+        //     $aprobacion = [];
+        // }
+        // $requerimientoPago->setAttribute('aprobacion', $aprobacion);
+
+
+
+        // return $requerimientoPago->detalle = $detalleRequerimientoPagoList;
+        return $requerimientoPago;
+    }
+
+    public function ordenesPago($id)
+    {
+        // $id=50;
+        $detalles = DB::table('tesoreria.registro_pago')
+            ->select(
+                'registro_pago.*',
+                // 'sis_usua.nombre_corto',
+                // 'sis_moneda.simbolo',
+                // 'adm_contri.razon_social as razon_social_empresa',
+                // 'adm_cta_contri.nro_cuenta',
+                DB::raw("(SELECT count(adjunto) FROM tesoreria.registro_pago_adjuntos
+                      WHERE registro_pago_adjuntos.id_pago = registro_pago.id_pago
+                        and registro_pago_adjuntos.estado != 7) AS count_adjuntos")
             )
-            ->first();
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'registro_pago.registrado_por')
+            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'registro_pago.id_empresa')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'registro_pago.id_cuenta_origen');
 
-        $documento = Documento::where([['id_tp_documento', 11], ['id_doc', $id_requerimiento_pago]])->first();
-        if (!empty($documento)) {
-            if ($documento->id_doc_aprob > 0) {
-                $aprobacion = Aprobacion::where('id_doc_aprob', $documento->id_doc_aprob)->with('usuario', 'VoBo')->get();
-            } else {
-                $aprobacion = [];
-            }
-        } else {
-            $aprobacion = [];
-        }
-        $requerimientoPago->setAttribute('aprobacion', $aprobacion);
+            $query = $detalles->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'registro_pago.id_requerimiento_pago')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
+            ->where([['registro_pago.id_requerimiento_pago', '=', $id], ['registro_pago.estado', '!=', 7]])
+            ->get();
 
-
-
-        return $requerimientoPago->setAttribute('detalle', $detalleRequerimientoPagoList);
+        return $query;
     }
 
 }

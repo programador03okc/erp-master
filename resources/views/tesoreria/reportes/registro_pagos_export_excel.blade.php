@@ -49,9 +49,9 @@
                     <th>{{$requerimiento->razon_social_empresa}}</th>
                     <th>{{$requerimiento->nro_cuenta}}</th>
                     <th>{{$requerimiento->observacion}}</th>
-                    <th>{{$requerimiento->simbolo}}</th>
+                    <th>{{$requerimiento->simbolo_detalle}}</th>
                     <th>{{$requerimiento->total_pago}}</th>
-                    <th>{{$requerimiento->nombre_corto}}</th>
+                    <th>{{$requerimiento->nombre_corto_detalle}}</th>
                     <th>{{ date("d-m-Y h:i", strtotime($requerimiento->fecha_registro_detalle)) }}</th>
                 {{-- @endif
 

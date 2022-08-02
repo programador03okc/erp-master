@@ -13,6 +13,7 @@ class OrdenesCompraServicioExport implements FromView
     */
     public function view(): View{
         $data_json = [];
+        $data_export_excel=[];
         $ingresos = (new RegistroPagoController)->obtenerOrdenesCompraServicio()->orderBy('id_orden_compra', 'ASC')->get();
 
         foreach ($ingresos as $key => $value) {
@@ -20,41 +21,67 @@ class OrdenesCompraServicioExport implements FromView
 
             foreach ($ingresosDetalle as $key => $item) {
 
-                array_push($data_json,$item);
+                // array_push($data_json,$item);
+                array_push( $data_export_excel,(object)
+                    array(
+                        'prioridad'=>$value->prioridad,
+                        'requerimientos'=>$value->requerimientos,
+                        'codigo_empresa'=>$value->codigo_empresa,
+                        'codigo'=>$value->codigo,
+                        'razon_social'=>$value->razon_social,
+                        'fecha_solicitud_pago'=>$value->fecha_solicitud_pago,
+                        'simbolo'=>$value->simbolo,
+                        'monto_total'=>$value->monto_total,
+                        'suma_pagado'=>$value->suma_pagado,
+                        'estado_doc'=>$value->estado_doc,
+                        'nombre_autorizado'=>$value->nombre_autorizado,
+                        'fecha_autorizacion'=>$value->fecha_autorizacion,
+
+                        'fecha_pago'=>$value->fecha_pago,
+                        'razon_social_empresa'=>$value->razon_social_empresa,
+                        'nro_cuenta'=>$value->nro_cuenta,
+                        'observacion'=>$value->observacion,
+                        'simbolo_detalle'=>$value->simbolo,
+                        'total_pago'=>$value->total_pago,
+                        'nombre_corto'=>$value->nombre_corto,
+                        'fecha_registro'=>$value->fecha_registro
+                    )
+                );
+
             }
         }
 
-        $count_data_export = sizeof($ingresos);
-        $count_data_json = sizeof($data_json);
-        $retVal = ($count_data_export<$count_data_json) ? $count_data_json : $count_data_export ;
-        $data_export_excel = [];
-        for ($i=0; $i < $retVal; $i++) {
-            array_push( $data_export_excel,(object)
-                array(
-                    'prioridad'=>$i<$count_data_export?$ingresos[$i]->prioridad:' ',
-                    'requerimientos'=>$i<$count_data_export?$ingresos[$i]->requerimientos:' ',
-                    'codigo_empresa'=>$i<$count_data_export?$ingresos[$i]->codigo_empresa:' ',
-                    'codigo'=>$i<$count_data_export?$ingresos[$i]->codigo:' ',
-                    'razon_social'=>$i<$count_data_export?$ingresos[$i]->razon_social:' ',
-                    'fecha_solicitud_pago'=>$i<$count_data_export?$ingresos[$i]->fecha_solicitud_pago:' ',
-                    'simbolo'=>$i<$count_data_export?$ingresos[$i]->simbolo:' ',
-                    'monto_total'=>$i<$count_data_export?$ingresos[$i]->monto_total:' ',
-                    'suma_pagado'=>$i<$count_data_export?$ingresos[$i]->suma_pagado:' ',
-                    'estado_doc'=>$i<$count_data_export?$ingresos[$i]->estado_doc:' ',
-                    'nombre_autorizado'=>$i<$count_data_export?$ingresos[$i]->nombre_autorizado:' ',
-                    'fecha_autorizacion'=>$i<$count_data_export?$ingresos[$i]->fecha_autorizacion:' ',
+        // $count_data_export = sizeof($ingresos);
+        // $count_data_json = sizeof($data_json);
+        // $retVal = ($count_data_export<$count_data_json) ? $count_data_json : $count_data_export ;
+        // $data_export_excel = [];
+        // for ($i=0; $i < $retVal; $i++) {
+        //     array_push( $data_export_excel,(object)
+        //         array(
+        //             'prioridad'=>$i<$count_data_export?$ingresos[$i]->prioridad:' ',
+        //             'requerimientos'=>$i<$count_data_export?$ingresos[$i]->requerimientos:' ',
+        //             'codigo_empresa'=>$i<$count_data_export?$ingresos[$i]->codigo_empresa:' ',
+        //             'codigo'=>$i<$count_data_export?$ingresos[$i]->codigo:' ',
+        //             'razon_social'=>$i<$count_data_export?$ingresos[$i]->razon_social:' ',
+        //             'fecha_solicitud_pago'=>$i<$count_data_export?$ingresos[$i]->fecha_solicitud_pago:' ',
+        //             'simbolo'=>$i<$count_data_export?$ingresos[$i]->simbolo:' ',
+        //             'monto_total'=>$i<$count_data_export?$ingresos[$i]->monto_total:' ',
+        //             'suma_pagado'=>$i<$count_data_export?$ingresos[$i]->suma_pagado:' ',
+        //             'estado_doc'=>$i<$count_data_export?$ingresos[$i]->estado_doc:' ',
+        //             'nombre_autorizado'=>$i<$count_data_export?$ingresos[$i]->nombre_autorizado:' ',
+        //             'fecha_autorizacion'=>$i<$count_data_export?$ingresos[$i]->fecha_autorizacion:' ',
 
-                    'fecha_pago'=>$i<$count_data_json?$data_json[$i]->fecha_pago:' ',
-                    'razon_social_empresa'=>$i<$count_data_json?$data_json[$i]->razon_social_empresa:' ',
-                    'nro_cuenta'=>$i<$count_data_json?$data_json[$i]->nro_cuenta:' ',
-                    'observacion'=>$i<$count_data_json?$data_json[$i]->observacion:' ',
-                    'simbolo'=>$i<$count_data_json?$data_json[$i]->simbolo:' ',
-                    'total_pago'=>$i<$count_data_json?$data_json[$i]->total_pago:' ',
-                    'nombre_corto'=>$i<$count_data_json?$data_json[$i]->nombre_corto:' ',
-                    'fecha_registro'=>$i<$count_data_json?$data_json[$i]->fecha_registro:' '
-                )
-            );
-        }
+        //             'fecha_pago'=>$i<$count_data_json?$data_json[$i]->fecha_pago:' ',
+        //             'razon_social_empresa'=>$i<$count_data_json?$data_json[$i]->razon_social_empresa:' ',
+        //             'nro_cuenta'=>$i<$count_data_json?$data_json[$i]->nro_cuenta:' ',
+        //             'observacion'=>$i<$count_data_json?$data_json[$i]->observacion:' ',
+        //             'simbolo'=>$i<$count_data_json?$data_json[$i]->simbolo:' ',
+        //             'total_pago'=>$i<$count_data_json?$data_json[$i]->total_pago:' ',
+        //             'nombre_corto'=>$i<$count_data_json?$data_json[$i]->nombre_corto:' ',
+        //             'fecha_registro'=>$i<$count_data_json?$data_json[$i]->fecha_registro:' '
+        //         )
+        //     );
+        // }
         return view('tesoreria.reportes.ordenes_compra_servicio_export_excel', [
             'requerimientos' => $data_export_excel, 'requerimientosDetalle'=>$data_json
         ]);
