@@ -24,6 +24,7 @@ use App\Exports\ReporteOrdenesServicioExcel;
 use App\Exports\ReporteTransitoOrdenesCompraExcel;
 use App\Helpers\CuadroPresupuestoHelper;
 use App\Helpers\Necesidad\RequerimientoHelper;
+use App\Helpers\NotificacionHelper;
 use App\Http\Controllers\Migraciones\MigrateOrdenSoftLinkController;
 use App\Mail\EmailFinalizacionCuadroPresupuesto;
 use App\Mail\EmailOrdenAnulada;
@@ -60,6 +61,7 @@ use App\Models\Tesoreria\RequerimientoPagoTipoDestinatario;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rules\Unique;
 use Mockery\Undefined;
 
 use function GuzzleHttp\json_encode;
@@ -2652,7 +2654,8 @@ class OrdenController extends Controller
                     'mensaje' =>  'OK',
                     'tipo_estado' => 'success',
                     'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento'],
-                    'lista_finalizados' => $actualizarEstados['lista_finalizados']
+                    'lista_finalizados' => $actualizarEstados['lista_finalizados'],
+                    'error' => $actualizarEstados['error']
 
                 ]);
             } // si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
@@ -3009,11 +3012,16 @@ class OrdenController extends Controller
         }else{
             $finalizadosORestablecido['lista_finalizados']=[];
             $finalizadosORestablecido['lista_restablecidos']=[];
+            $finalizadosORestablecido['error']=[];
         }
 
 
 
-        return ['lista_estado_requerimiento' => $nuevoEstadoCabeceraRequerimiento, 'lista_finalizados' => $finalizadosORestablecido['lista_finalizados'], 'lista_restablecidos' => $finalizadosORestablecido['lista_restablecidos']];
+        return ['lista_estado_requerimiento' => $nuevoEstadoCabeceraRequerimiento,
+                'lista_finalizados' => $finalizadosORestablecido['lista_finalizados'],
+                'lista_restablecidos' => $finalizadosORestablecido['lista_restablecidos'],
+                'error' => $finalizadosORestablecido['error']
+            ];
     }
 
 
@@ -3554,7 +3562,8 @@ class OrdenController extends Controller
         $id_requerimiento_list = [];
         $id_usuario_list = [];
         $tipo_estado='';
-
+        $idUsuariosAlAnularOrden=[];
+        $notificacion=[];
         $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
             ->where([
                 ['id_orden_compra', $id_orden]
@@ -3643,6 +3652,7 @@ class OrdenController extends Controller
                     $tipo_estado='success';
                     $msj[] = 'se restableció el estado del requerimiento';
                     $finalizadosORestablecido = CuadroPresupuestoHelper::finalizar('ANULAR',$id_requerimiento_list);
+                    $idUsuariosAlAnularOrden[] =  Auth::user()->id_usuario; // Usuarios que reciben correo al anula orden
 
                     if ($finalizadosORestablecido['lista_restablecidos']  && count($finalizadosORestablecido['lista_restablecidos']) > 0) {
                         foreach ($finalizadosORestablecido['lista_restablecidos'] as $lr) {
@@ -3654,10 +3664,11 @@ class OrdenController extends Controller
 
                         if (config('app.debug')) {
                             $correosAnulaciónOrden[] = config('global.correoDebug1');
+                            $idUsuariosAlAnularOrden[]=Auth::user()->id_usuario;
                         } else {
 
                             // $correosAnulaciónOrden[] = Auth::user()->email; //usuario en sessión que genero la acción
-                            $idUsuariosAlAnularOrden = Usuario::getAllIdUsuariosPorRol(27); // Usuarios que reciben correo al anula rorden
+                            $idUsuariosAlAnularOrden = Usuario::getAllIdUsuariosPorRol(27); // Usuarios que reciben correo al anula orden
                             foreach ($idUsuariosAlAnularOrden as $id) {
                                 if( Usuario::find($id)!=null){
                                     if(Usuario::find($id)->email!=null){
@@ -3674,20 +3685,23 @@ class OrdenController extends Controller
                                 }
                             }
                         }
-                        $orden = Orden::with('sede')->find($id_orden);
-                        // Compras (Karla Quijano, Luis Alegre, Richard Dorado) //id_usuario (78,75,4)
-                        // Despacho (Ricardo Visbal, Yennifer Chicata, Silvia Nashñate) //id_usuario (64,74,97)
-                        // Almacen (Henry Lozano, Dora Casales, Leandro Somontes y Geraldine Capcha) //id_usuario (60,93,96,66)
-                        // PM (Helen Ayma, Maricielo Hinostroza y Boris Correa) //id_usuario (95,87,82)
-                        // Vendedor (según el CDP),
-                        // Manuel Rivera, Jonathan Medina // id_usuario (26,6)
-                        Mail::to($correosAnulaciónOrden)->send(new EmailOrdenAnulada($orden, $finalizadosORestablecido['lista_restablecidos'], Auth::user()->nombre_corto));
-
+                 
 
                         // final de envio correo de anulación de orden
 
 
                     }
+
+                    $orden = Orden::with('sede')->find($id_orden);
+                    // Compras (Karla Quijano, Luis Alegre, Richard Dorado) //id_usuario (78,75,4)
+                    // Despacho (Ricardo Visbal, Yennifer Chicata, Silvia Nashñate) //id_usuario (64,74,97)
+                    // Almacen (Henry Lozano, Dora Casales, Leandro Somontes y Geraldine Capcha) //id_usuario (60,93,96,66)
+                    // PM (Helen Ayma, Maricielo Hinostroza y Boris Correa) //id_usuario (95,87,82)
+                    // Vendedor (según el CDP),
+                    // Manuel Rivera, Jonathan Medina // id_usuario (26,6)
+                    // Mail::to($correosAnulaciónOrden)->send(new EmailOrdenAnulada($orden, $finalizadosORestablecido['lista_restablecidos'], Auth::user()->nombre_corto));
+                       $notificacion = NotificacionHelper::notificacionAnularOrden($orden, array_unique($idUsuariosAlAnularOrden));
+
                 }
                 // else {
                 // $status = 204;
@@ -3705,7 +3719,7 @@ class OrdenController extends Controller
             $msj[] = 'no se encontro el detalle de la orden';
         }
 
-        $output = ['status' => $status,'tipo_estado'=>$tipo_estado, 'mensaje' => $msj, 'requerimientoIdList' => $id_requerimiento_list];
+        $output = ['status' => $status,'tipo_estado'=>$tipo_estado, 'mensaje' => $msj, 'requerimientoIdList' => $id_requerimiento_list, 'notificacion'=>$notificacion];
         return $output;
     }
 
@@ -3756,6 +3770,7 @@ class OrdenController extends Controller
                 $output = [];
                 $requerimientoIdList = [];
                 $anulacion ='';
+                $notificacion = [];
 
                 $ValidarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->validarOrdenSoftlink($idOrden);
                     if ($ValidarOrdenSoftlink['tipo'] == 'success' || $ValidarOrdenSoftlink['tipo'] == 'error') {
@@ -3783,6 +3798,7 @@ class OrdenController extends Controller
                         $tipo_estado = $makeRevertirOrden['tipo_estado'];
                         $msj[] = $makeRevertirOrden['mensaje'];
                         $requerimientoIdList = $makeRevertirOrden['requerimientoIdList'];
+                        $notificacion = $makeRevertirOrden['notificacion'];
                     } else {
                         if($hasIngreso['status'] != 200){
                             $status = $hasIngreso['status'];
@@ -3824,6 +3840,7 @@ class OrdenController extends Controller
                         'tipo_estado' => $tipo_estado,
                         'mensaje' => $msj,
                         'status_migracion_softlink' => $ValidarOrdenSoftlink,
+                        'notificacion' => $notificacion,
                     ];
                     $status = 200;
                 }  
@@ -4120,7 +4137,7 @@ class OrdenController extends Controller
                             $correoFinalizacionCuadroPresupuesto[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
                         }
 
-                        //Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payloadCuadroPresupuestoFinalizado, Auth::user()->nombre_corto));
+                        // Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payloadCuadroPresupuestoFinalizado, Auth::user()->nombre_corto));
                         /**
                          * ENVIAR NOTIFICACION DE FINALIZACION
                          */
@@ -4364,5 +4381,8 @@ class OrdenController extends Controller
         return $data;
     }
 
+    // static public function notificarFinalizacion(){
+    //     return CuadroPresupuestoHelper::notificarFinalizacion();
+    // }
 
 }

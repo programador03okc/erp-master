@@ -884,6 +884,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
 					Route::group(['as' => 'elaborar.', 'prefix' => 'elaborar'], function () {
+						// Route::get('notificar', 'OrdenController@notificarFinalizacion');// solo testing
 						Route::get('index', 'OrdenController@view_crear_orden_requerimiento')->name('index');
 						Route::post('requerimiento-detallado', 'OrdenController@ObtenerRequerimientoDetallado')->name('requerimiento-detallado');
 						Route::post('detalle-requerimiento-orden', 'OrdenController@get_detalle_requerimiento_orden')->name('detalle-requerimiento-orden');
@@ -921,6 +922,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('enviar-notificacion-finalizacion-cdp', 'OrdenController@enviarNotificacionFinalizacionCDP');
 						Route::post('validar-orden-agil-orden-softlink', 'OrdenController@validarOrdenAgilOrdenSoftlink');
 						Route::post('vincular-oc-softlink', 'OrdenController@vincularOcSoftlink');
+						Route::get('imprimir_orden_servicio_o_transformacion/{idOportunidad}', 'Almacen\Movimiento\TransformacionController@imprimir_orden_servicio_o_transformacion');
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');

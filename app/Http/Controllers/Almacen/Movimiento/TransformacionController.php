@@ -1585,4 +1585,37 @@ class TransformacionController extends Controller
         return $pdf->stream();
         return $pdf->download($oportunidad->codigo_oportunidad . '.pdf');
     }
+
+    public function imprimir_orden_servicio_o_transformacion($idOportunidad)
+    {
+        $transformacion = DB::table('almacen.transformacion')
+            ->select(
+                'transformacion.codigo',
+                'cc.id_oportunidad',
+                'adm_empresa.logo_empresa',
+                'alm_req.id_requerimiento'
+            )
+            ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'transformacion.id_od')
+            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+            ->where('cc.id_oportunidad', $idOportunidad)
+            ->first();
+        
+        $oportunidad = Oportunidad::find(isset($transformacion->id_oportunidad)?($transformacion->id_oportunidad):$idOportunidad);       
+        $codigo = empty($transformacion->codigo) ? null : $transformacion->codigo;
+        $logo_empresa = empty($transformacion->logo_empresa)?'':".$transformacion->logo_empresa";
+
+        $vista = View::make(
+            'almacen/customizacion/hoja-transformacion',
+            compact('oportunidad', 'logo_empresa', 'codigo')
+        )->render();
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadHTML($vista);
+
+        return $pdf->stream();
+        return $pdf->download($oportunidad->codigo_oportunidad . '.pdf');
+    }
 }

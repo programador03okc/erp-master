@@ -81,7 +81,7 @@ function proveedorModal(){
     $('#modal-proveedores').modal({
         show: true
     });
-    console.log('modal lista proveedor abierto');
+    // console.log('modal lista proveedor');
 
     var page = $('.page-main').attr('type');
 

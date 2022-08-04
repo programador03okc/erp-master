@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Logistica\Distribucion;
 use App\Exports\DespachosExternosExport;
 use App\Helpers\mgcp\OrdenCompraAmHelper;
 use App\Helpers\mgcp\OrdenCompraDirectaHelper;
+use App\Helpers\NotificacionHelper;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,6 +29,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Debugbar;
 
 class OrdenesDespachoExternoController extends Controller
 {
@@ -826,6 +828,8 @@ class OrdenesDespachoExternoController extends Controller
             $correos = [];
             if (config('app.debug')) {
                 $correos[] = config('global.correoDebug1');
+                $idUsuarios[] = Auth::user()->id_usuario;
+
             } else {
                 $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
                 $correos[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
@@ -835,6 +839,7 @@ class OrdenesDespachoExternoController extends Controller
             }
 
             Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $request->mensaje));
+            NotificacionHelper::notificarContactoDespacho($request->mensaje, $idUsuarios);
 
             DB::commit();
             return response()->json(

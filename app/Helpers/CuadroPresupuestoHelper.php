@@ -19,6 +19,8 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use App\Helpers\NotificacionHelper;
+
 use Debugbar;
 
 
@@ -100,7 +102,10 @@ class CuadroPresupuestoHelper
                         }
                         // preparar correo
                         if($tipoPeticion=='CREAR'){
-                            CuadroPresupuestoHelper::enviarEmailNotificaciónFinalizaciónYOrdenServicio($requerimiento,$codigoOportunidad,$payload,$correoVendedor);
+                            $notificacionFinalizacionYOrdenServicio =CuadroPresupuestoHelper::enviarEmailNotificaciónFinalizaciónYOrdenServicio($requerimiento,$codigoOportunidad,$payload,$correoVendedor);
+                            if($notificacionFinalizacionYOrdenServicio['estado']!='success'){
+                                $error='Hubo un error al intentar enviar la notificación: '.$notificacionFinalizacionYOrdenServicio['mensaje'];
+                            }
                         }
                     }
                 }
@@ -112,18 +117,20 @@ class CuadroPresupuestoHelper
     }
 
 
-    public static function enviarEmailNotificaciónFinalizaciónYOrdenServicio($requerimiento,$codigoOportunidad,$payload,$correoVendedor){
+    static public function enviarEmailNotificaciónFinalizaciónYOrdenServicio($requerimiento,$codigoOportunidad,$payload,$correoVendedor){
         if (count($payload) > 0) {  // cuando tiene CDP finalizados
- 
-            $correosOrdenServicioTransformacion = [];
+            $idUsuarioOrdenServicioTransformacion = [];
             $correoFinalizacionCuadroPresupuesto=[];
-            $usuariosFinalizacionCDP = [];
+            $correosOrdenServicioTransformacion=[];
+            $idUsuariosFinalizacionCDP = [];
 
             if (config('app.debug')) {
-                $correosOrdenServicioTransformacion[] = config('global.correoDebug2');
-                $correoFinalizacionCuadroPresupuesto[]= config('global.correoDebug2');
-
+                $idUsuarioOrdenServicioTransformacion[] = Auth::user()->id_usuario;
+                $idUsuariosFinalizacionCDP[]=  Auth::user()->id_usuario;
+                $correosOrdenServicioTransformacion[]=  Auth::user()->email;
+                $correoFinalizacionCuadroPresupuesto[]=  Auth::user()->email;
             } else {
+
                 if($correoVendedor != '' || $correoVendedor !=null){
                     $correosOrdenServicioTransformacion[] = $correoVendedor; // agregar correo de vendedor
                 }
@@ -132,18 +139,16 @@ class CuadroPresupuestoHelper
                     $correosOrdenServicioTransformacion[] = Usuario::find($id)->email;
                 }
 
+                $idUsuarioOrdenServicioTransformacion= Usuario::getAllIdUsuariosPorRol(25); //Rol de usuario de despacho externo
+                
                 //$correoUsuarioEnSession=Auth::user()->email;
                 $correoFinalizacionCuadroPresupuesto[] = Auth::user()->email;
                 $correoFinalizacionCuadroPresupuesto[] = Usuario::find($requerimiento->id_usuario)->email;
-                $usuariosFinalizacionCDP[] = Auth::user()->id;
-                $usuariosFinalizacionCDP[] = $requerimiento->id_usuario;
+                $idUsuariosFinalizacionCDP[] = Auth::user()->id_usuario;
+                $idUsuariosFinalizacionCDP[] = $requerimiento->id_usuario;
             }
             
-            //Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payload, Auth::user()->nombre_corto));
-
-            NotificacionHelper::notificacionFinalizacionCuadro('OKC20202', 1, $payload);
-
-
+            Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payload, Auth::user()->nombre_corto));
             foreach ($payload as $pl) { // enviar orde servicio / transformacion a multiples usuarios
                 $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
                 ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
@@ -154,12 +159,26 @@ class CuadroPresupuestoHelper
                 ->first();
                 $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
                 $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
-
-                //Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
-                /**
-                 * CREAR NOTIFICACION CON LA URL DE LA HOJA DE TRANSFORMACION
-                 */
+                Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
             }
+            // Debugbar::info('debe guardar notificacion');
+            
+            $notificacionOrdenServicioTransformacion = NotificacionHelper::notificacionOrdenServicioTransformacion($codigoTransformacion,$idUsuarioOrdenServicioTransformacion,$pl['oportunidad']);
+            $notificacionFinalizacionCuadro = NotificacionHelper::notificacionFinalizacionCuadro($codigoOportunidad, $idUsuariosFinalizacionCDP, $payload);
+            
+            if($notificacionOrdenServicioTransformacion['estado'] =='success' && $notificacionFinalizacionCuadro['estado']=='success'){
+                $estadoNotificacion='success';
+            }else{
+                $estadoNotificacion='warning';
+            }
+            return ['estado'=>$estadoNotificacion,'mensaje'=>$notificacionOrdenServicioTransformacion['mensaje'].'. '.$notificacionFinalizacionCuadro['mensaje'].'.'];
         }
+
     }
+
+
+    // static public function notificarFinalizacion(){
+    //    return NotificacionHelper::notificacionFinalizacionCuadro('OKC20202', 1, []);
+
+    // }
 }

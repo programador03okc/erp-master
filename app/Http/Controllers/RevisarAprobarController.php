@@ -796,32 +796,42 @@ class RevisarAprobarController extends Controller{
                 }
             }
             if ($request->accion > 0) {
-                $seNotificaraporEmail = true;
+                // $seNotificaraporEmail = true;
                 // TO-DO NOTIFICAR AL USUARIO QUE SU REQUERIMIENTO FUE APROBADO
-                $correoDestinatario = [];
+                // $correoDestinatario = [];
+                $idUsuarioDestinatario=[];
 
                 if (config('app.debug')) {
-                    $correoDestinatario[] = config('global.correoDebug1');
+                    // $correoDestinatario[] = config('global.correoDebug1');
+                    $idUsuarioDestinatario[] = Auth::user()->id_usuario;
                 } else {
                     if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
-                        $correoDestinatario[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
+                        // $correoDestinatario[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
+                        $idUsuarioDestinatario[] = $requerimiento->id_usuario;
+
                     }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
-                        $correoDestinatario[] = Usuario::withTrashed()->find($requerimientoPago->id_usuario)->email;
+                        // $correoDestinatario[] = Usuario::withTrashed()->find($requerimientoPago->id_usuario)->email;
+                        $idUsuarioDestinatario[] = $requerimientoPago->id_usuario;
+
                     }
 
                 }
-                if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
+                $codigoRequerimiento = $requerimiento->codigo !=null ? $requerimiento->codigo: $requerimientoPago->codigo;
+                $mensajeNotificacion = $codigoRequerimiento.' '.$nombreAccion.' por '.$nombreCompletoUsuarioRevisaAprueba.($request->sustento !=null?(', observación: '.$request->sustento):'');
+                NotificacionHelper::notificacionRequerimiento($idUsuarioDestinatario,$mensajeNotificacion);
+
+                // if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
                     // Mail::to($correoDestinatario)->send(new EmailNotificarUsuarioPropietarioDeDocumento($request->idTipoDocumento,$requerimiento,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$nombreAccion));
-                }elseif($request->idTipoDocumento ==11){ //documento de tipo: requerimiento pago
+                // }elseif($request->idTipoDocumento ==11){ //documento de tipo: requerimiento pago
                     // Mail::to($correoDestinatario)->send(new EmailNotificarUsuarioPropietarioDeDocumento($request->idTipoDocumento,$requerimientoPago,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$nombreAccion));
 
-                }
+                // }
 
             }
 
-            $seNotificaraporEmail = true;
+            // $seNotificaraporEmail = true;
             DB::commit();
-            return response()->json(['id_aprobacion' => $aprobacion['data']->id_aprobacion, 'mensaje'=>$aprobacion['mensaje'], 'notificacion_por_emial' => $seNotificaraporEmail]);
+            return response()->json(['id_aprobacion' => $aprobacion['data']->id_aprobacion, 'mensaje'=>$aprobacion['mensaje']]);
 
         } catch (Exception $e) {
             DB::rollBack();
