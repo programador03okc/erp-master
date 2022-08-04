@@ -81,10 +81,6 @@
 		</div>
 	</div>
 
-	<script type="text/javascript">
-		var auth_user = <?php echo $auth_user ?>;
-	</script>
-
 	<script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
 	<script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
 	<script src="{{ asset('template/adminlte/js/adminlte.min.js') }}"></script>
@@ -98,8 +94,13 @@
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
-	<script src="{{asset('js/publico/notificaciones_sin_leer.js')}}"></script>
-
+	//<script src="{{asset('js/publico/notificaciones_sin_leer.js')}}"></script>
+	<script>
+		$(document).ready(function() {
+			let auth_user = '<?= $auth_user ?>';
+			notificacionesNoLeidas();
+		});
+	</script>
 	<script>
 		function seleccionarMenu(url) {
 			$('ul.sidebar-menu a').filter(function() {
@@ -123,6 +124,26 @@
 			$('ul.treeview-menu a').filter(function() {
 				return this.href == url;
 			}).parents('div.box.active').find("button.btn.btn-box-tool i").attr("class", "fa fa-minus");
+		}
+
+		function notificacionesNoLeidas() {
+			const $spanNotificaciones = $('#spanNotificaciones');
+			$.ajax({
+				url: '{{ route("notificaciones.cantidad-no-leidas") }}',
+				data: {_token: '{{ csrf_token() }}'},
+				type: 'POST',
+				dataType: 'JSON',
+				success: function (data) {
+					$spanNotificaciones.html(data.mensaje);
+					if (data.mensaje > 0) {
+						$spanNotificaciones.removeClass('label-default');
+						$spanNotificaciones.addClass('label-warning');
+					} else {
+						$spanNotificaciones.removeClass('label-warning');
+						$spanNotificaciones.addClass('label-default');
+					}
+				}
+			});
 		}
 	</script>
 

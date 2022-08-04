@@ -807,7 +807,6 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
-
 	Route::group(['as' => 'logistica.', 'prefix' => 'logistica'], function () {
 
 		// Logística
@@ -1906,8 +1905,6 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
-
-
 	/**Tesoreria */
 	Route::group(['as' => 'tesoreria.', 'prefix' => 'tesoreria'], function () {
 
@@ -1987,6 +1984,15 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('movimientos', 'Migraciones\MigracionAlmacenSoftLinkController@movimientos')->name('movimientos');
 		Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importar')->name('importar');
 	});
+
+	Route::group(['as' => 'notificaciones.', 'prefix' => 'notificaciones'], function () {
+		Route::get('index', 'Notificaciones\NotificacionController@index')->name('index');
+		Route::get('ver/{id}', 'Notificaciones\NotificacionController@ver')->name('ver');
+		Route::post('eliminar', 'Notificaciones\NotificacionController@eliminar')->name('eliminar');
+		Route::post('lista-pendientes', 'Notificaciones\NotificacionController@listaPendientes')->name('lista-pendientes');
+		Route::post('cantidad-no-leidas', 'Notificaciones\NotificacionController@cantidadNoLeidas')->name('cantidad-no-leidas');
+	});
+
 	Route::get('listarUsu', 'Almacen\Movimiento\TransferenciaController@listarUsu');
 
 	Route::get('migrar_venta_directa/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrar_venta_directa');
