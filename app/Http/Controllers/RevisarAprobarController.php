@@ -801,23 +801,36 @@ class RevisarAprobarController extends Controller{
                 // TO-DO NOTIFICAR AL USUARIO QUE SU REQUERIMIENTO FUE APROBADO
                 // $correoDestinatario = [];
                 $idUsuarioDestinatario=[];
-
+                $codigoRequerimiento='';
                 if (config('app.debug')) {
                     // $correoDestinatario[] = config('global.correoDebug1');
-                    $idUsuarioDestinatario[] = Auth::user()->id_usuario;
+                    if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
+                        $idUsuarioDestinatario[] = Auth::user()->id_usuario;
+                        $codigoRequerimiento = $requerimiento->codigo??'';
+
+                    }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
+                        $idUsuarioDestinatario[] = Auth::user()->id_usuario;
+                        $codigoRequerimiento = $requerimientoPago->codigo??'';
+
+                    }
+
                 } else {
                     if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
                         // $correoDestinatario[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
                         $idUsuarioDestinatario[] = $requerimiento->id_usuario;
+                        $codigoRequerimiento = $requerimiento->codigo??'';
 
                     }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
                         // $correoDestinatario[] = Usuario::withTrashed()->find($requerimientoPago->id_usuario)->email;
                         $idUsuarioDestinatario[] = $requerimientoPago->id_usuario;
+                        $codigoRequerimiento = $requerimientoPago->codigo??'';
 
                     }
 
                 }
-                $codigoRequerimiento = $requerimiento->codigo !=null ? $requerimiento->codigo: $requerimientoPago->codigo;
+
+                Debugbar::info($codigoRequerimiento);
+
                 $mensajeNotificacion = $codigoRequerimiento.' '.$nombreAccion.' por '.$nombreCompletoUsuarioRevisaAprueba.($request->sustento !=null?(', observación: '.$request->sustento):'');
                 NotificacionHelper::notificacionRequerimiento($idUsuarioDestinatario,$mensajeNotificacion);
 
