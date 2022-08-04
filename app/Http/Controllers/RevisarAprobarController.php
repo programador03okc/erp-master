@@ -688,7 +688,8 @@ class RevisarAprobarController extends Controller{
 
             // $nombreCompletoUsuarioPropietarioDelDocumento = Usuario::find($request->idUsuarioPropietarioDocumento)->nombre_corto;
             //  ======= inicio tipo requerimiento b/s =======
-
+            $requerimiento=[];
+            $requerimientoPago=[];
             if($request->idTipoDocumento ==1){ 
                 if($request->idRequerimiento > 0){
                     $requerimiento = Requerimiento::find($request->idRequerimiento);
