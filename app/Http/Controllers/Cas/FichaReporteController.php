@@ -360,4 +360,60 @@ class FichaReporteController extends Controller
 
         return $lista;
     }
+    public function obtenerListadoIncidencias($id_incidencia)
+    {
+        $incidencia = DB::table('cas.incidencia')
+            ->select(
+                'incidencia_producto_tipo.descripcion as tipo',
+
+                'incidencia_tipo_falla.descripcion as tipo_falla',
+                'incidencia_modo.descripcion as modo',
+                'incidencia_tipo_garantia.descripcion as tipo_garantia',
+                'incidencia_tipo_servicio.descripcion as tipo_servicio',
+                'incidencia_medio.descripcion as medio',
+                'incidencia_atiende.descripcion as atiende',
+
+                'incidencia.*',
+                'adm_contri.razon_social',
+                'adm_contri.id_contribuyente',
+                'adm_empresa.id_empresa',
+                'alm_req.codigo as codigo_requerimiento',
+                'alm_req.concepto',
+                // 'adm_ctb_contac.nombre',
+                // 'adm_ctb_contac.telefono',
+                // 'adm_ctb_contac.cargo',
+                // 'adm_ctb_contac.direccion',
+                'adm_ctb_contac.horario',
+                'adm_ctb_contac.email',
+                'oportunidades.codigo_oportunidad',
+                'oc_propias_view.id_entidad',
+                DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
+            )
+            // ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
+            // ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
+            // ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
+            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'incidencia.id_requerimiento')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+            ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'incidencia.id_empresa')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
+            ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
+            ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'incidencia.id_ubigeo_contacto')
+            ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+            ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+
+            ->leftjoin('cas.incidencia_producto_tipo', 'incidencia_producto_tipo.id_tipo', '=', 'incidencia.id_tipo')
+
+            ->leftjoin('cas.incidencia_tipo_falla', 'incidencia_tipo_falla.id_tipo_falla', '=', 'incidencia.id_tipo_falla')
+            ->leftjoin('cas.incidencia_modo', 'incidencia_modo.id_modo', '=', 'incidencia.id_modo')
+            ->leftjoin('cas.incidencia_tipo_garantia', 'incidencia_tipo_garantia.id_tipo_garantia', '=', 'incidencia.id_tipo_garantia')
+            ->leftjoin('cas.incidencia_tipo_servicio', 'incidencia_tipo_servicio.id_tipo_servicio', '=', 'incidencia.id_tipo_servicio')
+            ->leftjoin('cas.incidencia_medio', 'incidencia_medio.id_medio', '=', 'incidencia.id_medio')
+            ->leftjoin('cas.incidencia_atiende', 'incidencia_atiende.id_atiende', '=', 'incidencia.id_atiende')
+
+            ->where('incidencia.id_incidencia', $id_incidencia)
+            ->first();
+        return $incidencia;
+    }
 }
