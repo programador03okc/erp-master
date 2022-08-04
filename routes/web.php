@@ -2019,6 +2019,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario');
+        #asignar acceso a los usuarios
+        Route::get('usuarios/accesos', 'ConfiguracionController@usuarioAcceso');
+        Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
+        Route::get('usuarios/get/modulos', 'ConfiguracionController@getModulos');
+        Route::get('usuarios/get/modulos/hijos/{id_modulo}', 'ConfiguracionController@getModulosHijos');
+        #----------------------
 		Route::get('listar_usuarios', 'ConfiguracionController@mostrar_usuarios');
 		Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
 		Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
@@ -2033,6 +2039,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');
 			Route::get('perfil/{id}', 'ConfiguracionController@getPerfil')->name('get-perfil');
 			Route::post('perfil', 'ConfiguracionController@savePerfil')->name('save-perfil');
+
+            // Route::get('usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
 		});
 	});
 

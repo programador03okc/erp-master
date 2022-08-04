@@ -31,6 +31,24 @@
                 <th style="background-color: #cccccc;" width="18"><b>Responsable</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Acciones realizadas</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha registro</b></th>
+
+                <th style="background-color: #cccccc;" width="18"><b>Serie</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Marca	</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Producto</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Tipo</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Modelo</b></th>
+
+                <th style="background-color: #cccccc;" width="18"><b>Tipo de falla</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Modo	</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Tipo garantía</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Tipo de servicio</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Medio reporte</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Atiende	</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Equipo operativo</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Conformidad</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Nro. de caso</b></th>
+
+
             </tr>
         </thead>
         <tbody>
@@ -55,6 +73,23 @@
                 <td>{{$d->nombre_corto_detalle}}</td>
                 <td>{{$d->acciones_realizadas}}</td>
                 <td>{{ date('d-m-Y h:i', strtotime($d->fecha_registro_detalle)) }}</td>
+
+
+                <td>{{ $d->serie }}</td>
+                <td>{{ $d->marca }}</td>
+                <td>{{ $d->producto }}</td>
+                <td>{{ $d->tipo }}</td>
+                <td>{{ $d->modelo }}</td>
+
+                <td>{{ $d->tipo_de_falla }}</td>
+                <td>{{ $d->modo }}</td>
+                <td>{{ $d->tipo_garantía }}</td>
+                <td>{{ $d->tipo_de_servicio }}</td>
+                <td>{{ $d->medio_reporte }}</td>
+                <td>{{ $d->atiende }}</td>
+                <td>{{ $d->equipo_operativo }}</td>
+                <td>{{ $d->conformidad }}</td>
+                <td>{{ $d->nro_de_caso }}</td>
             </tr>
 
             @endforeach
