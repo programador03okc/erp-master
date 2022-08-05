@@ -80,7 +80,9 @@
 			</div>
 		</div>
 	</div>
-
+	<script type="text/javascript">
+		var auth_user = <?php echo $auth_user ?>;
+	</script>
 	<script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
 	<script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
 	<script src="{{ asset('template/adminlte/js/adminlte.min.js') }}"></script>
@@ -97,7 +99,6 @@
 	//<script src="{{asset('js/publico/notificaciones_sin_leer.js')}}"></script>
 	<script>
 		$(document).ready(function() {
-			let auth_user = '<?= $auth_user ?>';
 			notificacionesNoLeidas();
 		});
 	</script>
