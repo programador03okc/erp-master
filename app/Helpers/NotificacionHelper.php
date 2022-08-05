@@ -241,4 +241,49 @@ class NotificacionHelper
             return ['estado' => 'error', 'mensaje' => $ex->getMessage()];
         }
     }
+
+    static public function notificacionOrdenDespacho($idUsuarioDestinatario,$mensajeNotificacion,$oportunidad,$requerimiento){
+        try {
+
+            $mensajeNotificacion = '';
+            if ($oportunidad !== null) {
+                $orden = $oportunidad->ordenCompraPropia;
+                $mensajeNotificacion .= 'O. SERVICIO';
+                if ($orden == null) {
+                    $mensajeNotificacion .= ' SIN O/C';
+                } else {
+                    $mensajeNotificacion .= ', '.$orden->nro_orden;
+                    $mensajeNotificacion .= ', '.$orden->entidad->nombre;
+                }
+                $mensajeNotificacion .= ', '.$oportunidad->codigo_oportunidad;
+                if ($orden != null) {
+                    $mensajeNotificacion .= ', '.$orden->empresa->abreviado;
+                }
+            } else if ($requerimiento !== null) {
+                $mensajeNotificacion .= ', DESPACHO DEL ' . $requerimiento->codigo . ' - ' . $requerimiento->concepto;
+            }
+
+            if(count($idUsuarioDestinatario)>0){
+                foreach ($idUsuarioDestinatario as $idUsuario) {
+                    
+ 
+                    $notificacion = new Notificacion();
+                    $notificacion->id_usuario = $idUsuario;
+                    $notificacion->mensaje = $mensajeNotificacion;
+                    $notificacion->fecha = new Carbon();
+                    $notificacion->url = '';
+                    $notificacion->leido = 0;
+                    $notificacion->save();
+                }
+                
+                return ['estado' => 'success', 'mensaje' => 'success'];
+            }else{
+                return ['estado' => 'warning', 'mensaje' => 'Hubo un problema para obtener los usuarios que se realizará la notificación, la variable $usuarios esta vacia'];
+
+            }
+
+        } catch (Exception $ex) {
+            return ['estado' => 'error', 'mensaje' => $ex->getMessage()];
+        }
+    }
 }

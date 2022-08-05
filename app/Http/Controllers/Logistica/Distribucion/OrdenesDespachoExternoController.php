@@ -418,9 +418,10 @@ class OrdenesDespachoExternoController extends Controller
             }
         }
         $correos = [];
-
+        $idUsuarios=[];
         if (config('app.debug')) {
             $correos[] = config('global.correoDebug1');
+            $idUsuarios[]=Auth::user()->id_usuario;
         } else {
             $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
 
@@ -441,6 +442,7 @@ class OrdenesDespachoExternoController extends Controller
         }
 
         Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
+        NotificacionHelper::notificacionOrdenDespacho($idUsuarios,$request->mensaje,$oportunidad,$requerimiento);
 
         foreach ($archivosOc as $archivo) {
             unlink($archivo);
