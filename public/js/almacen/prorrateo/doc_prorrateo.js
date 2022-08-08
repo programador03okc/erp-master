@@ -44,6 +44,7 @@ function mostrar_prorrateo(id_prorrateo) {
 
             $('#codigo').text(response['prorrateo'].codigo);
             $('#estado_doc').text((response['prorrateo'].estado == 1 ? "Activo" : "Inactivo"));
+            $('[name=id_moneda_global]').val(response['prorrateo'].id_moneda);
 
             response['documentos'].forEach(element => {
 
@@ -73,9 +74,7 @@ function mostrar_prorrateo(id_prorrateo) {
             mostrar_documentos();
 
             response['detalles'].forEach(element => {
-                // var unitario = parseFloat(element.precio_unitario !== null
-                //     ? element.precio_unitario
-                //     : element.unitario);
+                simbolo = element.fecha_emision !== null ? element.simbolo : element.simbolo_orden;
 
                 guias_detalle.push({
                     'id_prorrateo_det': element.id_prorrateo_det,
@@ -86,7 +85,7 @@ function mostrar_prorrateo(id_prorrateo) {
                     'codigo': element.codigo,
                     'part_number': element.part_number,
                     'descripcion': element.descripcion,
-                    'simbolo': element.simbolo,
+                    'simbolo': simbolo,
                     'cantidad': element.cantidad,
                     'abreviatura': element.abreviatura,
                     'fecha_emision': (element.fecha_emision !== null ? element.fecha_emision : element.fecha_orden),
@@ -96,8 +95,8 @@ function mostrar_prorrateo(id_prorrateo) {
                     'valor_ingreso': element.valor_kardex,
                     'adicional_valor': element.adicional_valor,
                     'adicional_peso': element.adicional_peso,
-                    'peso': element.peso,
                     'total': (parseFloat(element.valor_compra_soles) + parseFloat(element.adicional_valor) + parseFloat(element.adicional_peso)),
+                    'peso': element.peso,
                     'estado': element.estado,
                     'id_moneda_producto': element.id_moneda_producto,
                     'tipo_cambio_ingreso': element.tipo_cambio_ingreso,

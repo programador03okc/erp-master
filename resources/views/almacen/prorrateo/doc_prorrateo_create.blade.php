@@ -7,7 +7,7 @@
                     <h3 class="modal-title">Nuevo Documento de Prorrateo</h3>
                 </div>
                 <div class="modal-body">
-                    <input class="oculto" name="id_doc_com">
+                    <input class="oculto" name="id_prorrateo_doc">
                     <input class="oculto" name="id_prorrateo">
                     
                     <div class="row">
