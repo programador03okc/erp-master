@@ -139,6 +139,11 @@ class OrdenesDespachoExternoController extends Controller
                             alm_det_req.id_requerimiento = alm_req.id_requerimiento
                             and alm_det_req.estado != 7
                             and alm_det_req.id_producto is null) AS productos_no_mapeados"),
+                // DB::raw('count(*) as user_count, status')
+                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
+                            alm_det_req.id_requerimiento = alm_req.id_requerimiento
+                            and alm_det_req.estado != 7
+                            and alm_det_req.id_tipo_item = 1) AS count_productos"),
             )
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
@@ -163,11 +168,6 @@ class OrdenesDespachoExternoController extends Controller
                 $join->where('despachoInterno.aplica_cambios', '=', true);
                 $join->where('despachoInterno.estado', '!=', 7);
             })
-            // ->leftJoin('almacen.alm_det_req', function ($join) {
-            //     $join->on('alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-            //     $join->where('alm_det_req.aplica_cambios', '=', true);
-            //     $join->where('alm_det_req.estado', '!=', 7);
-            // })
             // ->leftJoin('almacen.orden_despacho_obs as trazabilidad', function ($join) {
             //     $join->on('trazabilidad.id_od', '=', 'orden_despacho.id_od');
             //     $join->orderBy('id_obs', 'desc');
@@ -177,7 +177,15 @@ class OrdenesDespachoExternoController extends Controller
             ->leftJoin('administracion.adm_estado_doc as est_od', 'est_od.id_estado_doc', '=', 'orden_despacho.estado')
             ->leftJoin('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.id_estado_envio')
             ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od')
-            ->where([['alm_req.estado', '!=', 7], ['alm_req.observacion', '!=', 'Creado de forma automática por venta interna']]);
+            ->where(DB::raw('(SELECT COUNT(*) FROM almacen.alm_det_req where
+                    alm_det_req.id_requerimiento = alm_req.id_requerimiento
+                    and alm_det_req.estado != 7
+                    and alm_det_req.id_tipo_item = 1)'), '>', 0)
+            ->where([
+                ['alm_req.estado', '!=', 7],
+                ['alm_req.observacion', '!=', 'Creado de forma automática por venta interna'],
+                // ['nro_productos', '>', 0]
+            ]);
 
         // if ($request->select_mostrar == 1) {
         //     $data->where('orden_despacho.estado', 25);
