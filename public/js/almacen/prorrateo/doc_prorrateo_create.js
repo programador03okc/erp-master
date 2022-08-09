@@ -6,7 +6,7 @@ function open_doc_prorrateo() {
 }
 
 function limpiarCampos() {
-    $('[name=id_doc_com]').val('');
+    $('[name=id_prorrateo_doc]').val('');
     $('[name=id_tp_prorrateo]').val('');
     $('[name=pro_serie]').val('');
     $('[name=pro_numero]').val('');
@@ -31,14 +31,14 @@ $("#form-doc_prorrateo").on("submit", function () {
 });
 
 function guardar_doc_prorrateo() {
-    let id = ($('[name=id_doc_com]').val() !== '' ? $('[name=id_doc_com]').val() : (documentos.length + 1));
+    let id = ($('[name=id_prorrateo_doc]').val() !== '' ? $('[name=id_prorrateo_doc]').val() : 'n' + (documentos.length + 1));
 
-    let doc = documentos.find(doc => doc.id_doc_com == id);
+    let doc = documentos.find(doc => doc.id_prorrateo_doc == id);
 
     if (doc == undefined || doc == null) {
         let nuevo = {
-            'id_prorrateo_doc': 0,
-            'id_doc_com': id,
+            'id_prorrateo_doc': id,
+            // 'id_doc_com': id,
             'id_tp_prorrateo': $('[name=id_tp_prorrateo]').val(),
             'id_tipo_prorrateo': $('[name=id_tipo_prorrateo]').val(),
             'tipo_prorrateo': $('select[name="id_tipo_prorrateo"] option:selected').text(),
@@ -138,13 +138,13 @@ function calculaImporte() {
     }
 }
 
-function editar_documento(id_doc_com) {
+function editar_documento(id_prorrateo_doc) {
     $('#modal-doc_prorrateo').modal({
         show: true
     });
-    let doc = documentos.find(doc => doc.id_doc_com == id_doc_com);
+    let doc = documentos.find(doc => doc.id_prorrateo_doc == id_prorrateo_doc);
 
-    $('[name=id_doc_com]').val(doc.id_doc_com);
+    $('[name=id_prorrateo_doc]').val(doc.id_prorrateo_doc);
     $('[name=id_tp_prorrateo]').val(doc.id_tp_prorrateo);
     $('[name=id_tipo_prorrateo]').val(doc.id_tipo_prorrateo);
     $('[name=pro_serie]').val(doc.serie);
@@ -194,10 +194,10 @@ function mostrar_documentos() {
                 <td style="text-align: right">${element.tipo_prorrateo}</td>
                 <td style="display:flex;">
                     <button type="button" class="editar btn btn-primary btn-xs activation" data-toggle="tooltip" 
-                        data-placement="bottom" title="Editar" onClick="editar_documento(${element.id_doc_com});"
+                        data-placement="bottom" title="Editar" onClick="editar_documento(${element.id_prorrateo_doc});"
                         >  <i class="fas fa-pen"></i></button>
                     <button type="button" class="anular btn btn-danger btn-xs activation" data-toggle="tooltip" 
-                        data-placement="bottom" title="Eliminar" onClick="anular_documento('${element.id_doc_com}');"
+                        data-placement="bottom" title="Eliminar" onClick="anular_documento('${element.id_prorrateo_doc}');"
                         >  <i class="fas fa-trash"></i></button>
                 </td>
             </tr>`;
