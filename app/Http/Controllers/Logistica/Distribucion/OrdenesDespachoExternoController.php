@@ -184,8 +184,8 @@ class OrdenesDespachoExternoController extends Controller
             //         and alm_det_req.estado != 7
             //         and alm_det_req.id_tipo_item = 1)'), '>', 0)
             ->where([
-                ['alm_req.estado', '!=', 7],
-                ['alm_req.observacion', '!=', 'Creado de forma automática por venta interna'],
+                ['alm_req.estado', '!=', 7]
+                // ['alm_req.observacion', '!=', 'Creado de forma automática por venta interna'],
                 // ['nro_productos', '>', 0]
             ]);
 
