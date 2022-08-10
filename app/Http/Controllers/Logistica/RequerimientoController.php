@@ -1397,6 +1397,8 @@ class RequerimientoController extends Controller
             ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
             ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
 
             ->select(
                 'alm_req.id_requerimiento',
@@ -1423,6 +1425,7 @@ class RequerimientoController extends Controller
                 'alm_req.id_presupuesto',
                 'alm_req.id_moneda',
                 'alm_req.*',
+                'oportunidades.codigo_oportunidad',
                 'adm_estado_doc.estado_doc',
                 'alm_tp_req.descripcion AS tipo_requerimiento',
                 'adm_prioridad.descripcion AS priori',

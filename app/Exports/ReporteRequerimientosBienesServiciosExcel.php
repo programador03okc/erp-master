@@ -39,6 +39,7 @@ class reporteRequerimientosBienesServiciosExcel implements FromView
             $data[]=[
                 'priori'=> $element->priori,
                 'codigo'=> $element->codigo,
+                'codigo_oportunidad'=> $element->codigo_oportunidad,
                 'concepto'=> $element->concepto,
                 'fecha_registro'=> $element->fecha_registro,
                 'fecha_entrega'=> $element->fecha_entrega,
