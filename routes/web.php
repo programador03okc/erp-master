@@ -752,7 +752,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'pago.', 'prefix' => 'pago'], function () {
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewListaRequerimientoPago')->name('index');
-                Route::get('listado-requerimientos-pagos-export-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Tesoreria\RequerimientoPagoController@listadoRequerimientoPagoExportExcel');
+				Route::get('listado-requerimientos-pagos-export-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Tesoreria\RequerimientoPagoController@listadoRequerimientoPagoExportExcel');
 				Route::post('lista-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@listarRequerimientoPago')->name('lista-requerimiento-pago');
 				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');
 				// Route::get('detalle-requerimiento-pago/{id?}', 'Tesoreria\RequerimientoPagoController@listarDetalleRequerimientoPago')->name('detalle-requerimiento-pago');
@@ -878,7 +878,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('actualizar-ajuste-estado-requerimiento', 'ComprasPendientesController@actualizarAjusteEstadoRequerimiento');
 
 					Route::post('guardar-observacion-logistica', 'ComprasPendientesController@guardarObservacionLogistica');
-
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
@@ -989,7 +988,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('compras-locales', 'ReporteLogisticaController@viewReporteComprasLocales')->name('compras-locales');
 				Route::post('lista-compras-locales', 'ReporteLogisticaController@listaComprasLocales');
 				Route::get('reporte-compras-locales-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteCompraLocalesExcel')->name('reporte-compras-locales-excel');
-
 			});
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function () {
@@ -1555,8 +1553,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('migrarComprobantesSoftlink', 'Migraciones\MigrateFacturasSoftlinkController@migrarComprobantesSoftlink');
 			Route::get('migrarItemsComprobantesSoftlink', 'Migraciones\MigrateFacturasSoftlinkController@migrarItemsComprobantesSoftlink');
 
-            Route::get('lista-comprobantes-pago-export-excel', 'ComprobanteCompraController@exportListaComprobantesPagos')->name('lista.comprobante.pago.export.excel');
-
+			Route::get('lista-comprobantes-pago-export-excel', 'ComprobanteCompraController@exportListaComprobantesPagos')->name('lista.comprobante.pago.export.excel');
 		});
 
 		Route::group(['as' => 'transferencias.', 'prefix' => 'transferencias'], function () {
@@ -1907,6 +1904,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('anular-partida/{id}', 'Finanzas\Presupuesto\PartidaController@destroy')->name('anular-partida');
 
 			Route::get('mostrarGastosPorPresupuesto/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarGastosPorPresupuesto')->name('mostrar-gastos-presupuesto');
+			Route::post('cuadroGastosExcel', 'Finanzas\Presupuesto\PresupuestoController@cuadroGastosExcel')->name('cuadroGastosExcel');
 		});
 
 		Route::group(['as' => 'centro-costos.', 'prefix' => 'centro-costos'], function () {
@@ -1946,9 +1944,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('mostrar-requerimiento-pago/{idRequerimientoPago}', 'Tesoreria\RequerimientoPagoController@mostrarRequerimientoPago');
 
-                Route::get('reistro-pagos-exportar-excel', 'Tesoreria\RegistroPagoController@registroPagosExportarExcel');
-                Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
-
+				Route::get('reistro-pagos-exportar-excel', 'Tesoreria\RegistroPagoController@registroPagosExportarExcel');
+				Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {
@@ -1979,9 +1976,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 
 			Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
-            Route::get('listado-ventas-internas-exportar-excel', 'Tesoreria\Facturacion\PendientesFacturacionController@listadoVentasInternasExportarExcel');
-            Route::get('listado-ventas-externas-exportar-excel', 'Tesoreria\Facturacion\PendientesFacturacionController@listadoVentasExternasExportarExcel');
-
+			Route::get('listado-ventas-internas-exportar-excel', 'Tesoreria\Facturacion\PendientesFacturacionController@listadoVentasInternasExportarExcel');
+			Route::get('listado-ventas-externas-exportar-excel', 'Tesoreria\Facturacion\PendientesFacturacionController@listadoVentasExternasExportarExcel');
 		});
 
 		Route::group(['as' => 'comprobante-compra.', 'prefix' => 'comprobante-compra'], function () {
@@ -2025,12 +2021,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario');
-        #asignar acceso a los usuarios
-        Route::get('usuarios/accesos', 'ConfiguracionController@usuarioAcceso');
-        Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
-        Route::get('usuarios/get/modulos', 'ConfiguracionController@getModulos');
-        Route::get('usuarios/get/modulos/hijos/{id_modulo}', 'ConfiguracionController@getModulosHijos');
-        #----------------------
+		#asignar acceso a los usuarios
+		Route::get('usuarios/accesos', 'ConfiguracionController@usuarioAcceso');
+		Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
+		Route::get('usuarios/get/modulos', 'ConfiguracionController@getModulos');
+		Route::get('usuarios/get/modulos/hijos/{id_modulo}', 'ConfiguracionController@getModulosHijos');
+		#----------------------
 		Route::get('listar_usuarios', 'ConfiguracionController@mostrar_usuarios');
 		Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
 		Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
@@ -2039,14 +2035,14 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('arbol-acceso/{id_rol}', 'ConfiguracionController@arbol_modulos')->name('arbol-acceso');
 		Route::put('actualizar-accesos-usuario', 'ConfiguracionController@actualizar_accesos_usuario');
 
-        Route::get('usuarios/asignar', 'ConfiguracionController@usuarioAsignar');
+		Route::get('usuarios/asignar', 'ConfiguracionController@usuarioAsignar');
 
 		Route::group(['as' => 'usuario.', 'prefix' => 'usuario'], function () {
 			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');
 			Route::get('perfil/{id}', 'ConfiguracionController@getPerfil')->name('get-perfil');
 			Route::post('perfil', 'ConfiguracionController@savePerfil')->name('save-perfil');
 
-            // Route::get('usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
+			// Route::get('usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
 		});
 	});
 

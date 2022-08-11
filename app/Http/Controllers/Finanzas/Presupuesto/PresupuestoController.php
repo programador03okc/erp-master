@@ -76,7 +76,7 @@ class PresupuestoController extends Controller
         return response()->json(['req_compras' => $detalle, 'req_pagos' => $pagos]);
     }
 
-    public function mostrarGastosPorPresupuesto($id_presupuesto)
+    public function obtenerDetallePresupuesto($id_presupuesto)
     {
         $detalle = DB::table('logistica.log_det_ord_compra')
             ->select(
@@ -91,11 +91,11 @@ class PresupuestoController extends Controller
                 'proveedor.razon_social as proveedor_razon_social',
                 'presup_par.descripcion as partida_descripcion',
                 DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
-                WHERE presup_titu.codigo = presup_par.cod_padre
-                and presup_titu.id_presup = presup_par.id_presup) AS titulo_descripcion"),
+        WHERE presup_titu.codigo = presup_par.cod_padre
+        and presup_titu.id_presup = presup_par.id_presup) AS titulo_descripcion"),
                 DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
-                WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
-                limit 1) AS fecha_pago"),
+        WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
+        limit 1) AS fecha_pago"),
             )
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
@@ -115,6 +115,10 @@ class PresupuestoController extends Controller
             ])
             ->get();
 
+        return $detalle;
+    }
+    public function obtenerPagosPresupuesto($id_presupuesto)
+    {
         $pagos = DB::table('tesoreria.requerimiento_pago_detalle')
             ->select(
                 'requerimiento_pago_detalle.*',
@@ -150,17 +154,30 @@ class PresupuestoController extends Controller
                 ['requerimiento_pago_detalle.id_estado', '!=', 7],
             ])
             ->get();
+        return $pagos;
+    }
+    public function mostrarGastosPorPresupuesto($id_presupuesto)
+    {
+        $detalle = $this->obtenerDetallePresupuesto($id_presupuesto);
+
+        $pagos = $this->obtenerPagosPresupuesto($id_presupuesto);
 
         return response()->json(['req_compras' => $detalle, 'req_pagos' => $pagos]);
     }
 
-    public function cuadroGastosExcel($id_presupuesto)
+    public function cuadroGastosExcel(Request $request)
     {
-        $data = $this->mostrarGastosPorPresupuesto($id_presupuesto);
+        // $data = $this->mostrarGastosPorPresupuesto($request->id_presupuesto);
+        $presup = DB::table('finanzas.presup')->where('id_presup', $request->id_presupuesto)->first();
+
+        $detalle = $this->obtenerDetallePresupuesto($request->id_presupuesto);
+
+        $pagos = $this->obtenerPagosPresupuesto($request->id_presupuesto);
+
         return Excel::download(new CuadroGastosExport(
-            $data->req_compras,
-            $data->req_pagos
-        ), 'cuadroGastos.xlsx');
+            $detalle,
+            $pagos
+        ), $presup->descripcion . '.xlsx');
     }
 
     public function store()
