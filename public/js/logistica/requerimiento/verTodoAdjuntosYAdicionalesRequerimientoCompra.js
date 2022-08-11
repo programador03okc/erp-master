@@ -157,7 +157,7 @@ function cargarAdjuntosLogisticosYPago(idRequerimiento){
             }else{
                 htmlDetalle += `<tr>
                 <td style="text-align:center;" colspan="2">Sin adjuntos para mostrar</td>
-                </tr>`; 
+                </tr>`;
             }
             document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] tbody[id='body_archivos_requerimiento_compra_detalle']").insertAdjacentHTML('beforeend', htmlDetalle);
 
@@ -249,7 +249,7 @@ function agregarAdjuntoRequerimientoCabeceraCompra(obj){
             );
         }else{
             Array.prototype.forEach.call(obj.files, (file) => {
-    
+
                 if (estaHabilitadoLaExtension(file) == true) {
                     let payload = {
                         id: makeId(),
@@ -259,7 +259,7 @@ function agregarAdjuntoRequerimientoCabeceraCompra(obj){
                         file: file
                     };
                     addToTablaArchivosRequerimientoCabecera(payload);
-    
+
                     tempArchivoAdjuntoRequerimientoCabeceraList.push(payload);
                 } else {
                     Swal.fire(
@@ -285,7 +285,7 @@ function calcTamañoTotalAdjuntoLogisticoParaSubir(){
 
     tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
         tamañoTotalArchivoParaSubir+=element.size;
-        
+
     });
         document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] span[id='tamaño_total_archivos_para_subir']").textContent= $.number((tamañoTotalArchivoParaSubir/1000000),2)+'MB';
 }
@@ -491,19 +491,19 @@ function anularAdjuntoDetalle(obj){
             'warning'
         );
     }
-    
+
 }
 
 function guardarAdjuntos(){
     if(tempArchivoAdjuntoRequerimientoCabeceraList.length>0){
         let formData = new FormData($('#form_ver_agregar_adjuntos_requerimiento_compra')[0]);
         formData.append(`archivoAdjuntoRequerimientoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoCabeceraList));
-        
+
         if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
             tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
                 if(element.action =='GUARDAR'){
                     formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
-                }                    
+                }
             });
         }
 
