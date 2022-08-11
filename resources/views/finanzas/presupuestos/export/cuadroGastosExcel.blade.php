@@ -4,32 +4,56 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <h2>Reporte de Ordenes Pendientes</h2>
-    <label>Del {{date('d-m-Y', strtotime($finicio))}} al {{date('d-m-Y', strtotime($ffin))}}</label>
-    <br>
+    <h2>Cuadro de Gastos</h2>
     <br>
     <table>
         <thead>
             <tr>
-                <th style="background-color: #cccccc;" width="18"><b>Orden SoftLink</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Código Orden</b></th>
-                <th style="background-color: #cccccc;" width="30"><b>Proveedor</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Fecha emisión</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Sede Orden</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Creado por</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Estado</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Empresa</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Fecha pago</b></th>
+                <th style="background-color: #cccccc;" width="30"><b>Cod.Req.</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Titulo</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Partida</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Descripción</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Cant.</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Unid.</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Unit.</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>SubTotal</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>IGV</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>P.Compra</b></th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($data as $d)
+            @foreach ($req_compras as $d)
             <tr>
-                <td>{{$d->codigo_softlink}}</td>
-                <td>{{$d->codigo}}</td>
                 <td>{{$d->razon_social}}</td>
-                <td>{{date('d-m-Y H:i', strtotime($d->fecha))}}</td>
-                <td>{{$d->sede_descripcion}}</td>
-                <td>{{$d->nombre_corto}}</td>
-                <td>{{$d->estado_doc}}</td>
+                <td>{{$d->fecha_pago}}</td>
+                <td>{{$d->codigo}}</td>
+                <td>{{$d->titulo_descripcion}}</td>
+                <td>{{$d->partida_descripcion}}</td>
+                <td>{{$d->descripcion_adicional}}</td>
+                <td>{{$d->cantidad}}</td>
+                <td>{{$d->abreviatura}}</td>
+                <td>{{$d->precio}}</td>
+                <td>{{$d->subtotal}}</td>
+                <td>{{$d->subtotal*0.18}}</td>
+                <td>{{$d->subtotal}}</td>
+            </tr>
+            @endforeach
+            @foreach ($req_pagos as $d)
+            <tr>
+                <td>{{$d->razon_social}}</td>
+                <td>{{$d->fecha_pago}}</td>
+                <td>{{$d->codigo}}</td>
+                <td>{{$d->titulo_descripcion}}</td>
+                <td>{{$d->partida_descripcion}}</td>
+                <td>{{$d->descripcion}}</td>
+                <td>{{$d->cantidad}}</td>
+                <td>{{$d->abreviatura}}</td>
+                <td>{{$d->precio_unitario}}</td>
+                <td>{{$d->subtotal}}</td>
+                <td>{{$d->subtotal*0.18}}</td>
+                <td>{{$d->subtotal}}</td>
             </tr>
             @endforeach
         </tbody>
