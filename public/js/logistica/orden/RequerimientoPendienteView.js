@@ -527,7 +527,7 @@ class RequerimientoPendienteView {
                 }
             ],
             'language': vardataTables[0],
-            'order': [[0, 'desc']],
+            'order': [[3, 'desc']],
             'bLengthChange': false,
             'serverSide': true,
             'destroy': true,
