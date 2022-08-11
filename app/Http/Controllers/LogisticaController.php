@@ -2,12 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Administracion\Aprobacion;
-use App\Models\Administracion\Documento;
-use App\Models\Administracion\Periodo;
-use App\Models\Administracion\Prioridad;
-use App\Models\Almacen\AdjuntoDetalleRequerimiento;
-use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\TipoCuenta;
 use Illuminate\Support\Facades\DB;
@@ -15,18 +9,12 @@ use Illuminate\Support\Facades\DB;
 // use Mail;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
-
-use Dompdf\Dompdf;
-use PDF;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-use App\Models\Logistica\Empresa;
 use App\Models\Tesoreria\Usuario;
 use App\Models\Tesoreria\Grupo;
 use DataTables;
@@ -1312,41 +1300,6 @@ class LogisticaController extends Controller
         }
     }
 
-    public function crear_notificacion_nuevo_requerimiento($id_requerimiento){
-        if($id_requerimiento > 0){
-            $req = DB::table('almacen.alm_req')
-            ->select('alm_req.*')
-            ->where([
-                ['alm_req.id_requerimiento', '=', $id_requerimiento]
-            ])
-            ->get();
-    
-            $id_usuario_list=[];
-            if ($req->count() > 0) {
-                $codigo = $req->first()->codigo;
-                $id_empresa = $req->first()->id_empresa;
-                $id_sede = $req->first()->id_sede;
-
-                $id_usuario_list= $this->get_id_usuario_usuario_por_rol('Logístico Compras', $id_sede, $id_empresa);
-
-                if(count($id_usuario_list) > 0){
-                    foreach ($id_usuario_list as $id) {
-                        DB::table('administracion.notificaciones')->insertGetId(
-                            [
-                                'id_usuario' => $id,
-                                'mensaje' => 'Se creo un requerimiento de compra: '.$codigo,
-                                'url' => null,
-                                'fecha' =>  date('Y-m-d H:i:s'),
-                                'leido' => false
-                            ],
-                                'id'
-                            );
-                    }
-                }
-            }
-    
-        }
-    }
 
     public function generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $detalle_req ){
 

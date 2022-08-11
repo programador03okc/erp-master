@@ -96,7 +96,6 @@
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
-	//<script src="{{asset('js/publico/notificaciones_sin_leer.js')}}"></script>
 	<script>
 		$(document).ready(function() {
 			notificacionesNoLeidas();

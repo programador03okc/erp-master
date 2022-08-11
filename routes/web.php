@@ -585,14 +585,6 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::group(['as' => 'administracion.', 'prefix' => 'admin'], function () {
 		// administracion
 		Route::get('index', 'AdministracionController@view_main_administracion')->name('index');
-
-		Route::group(['as' => 'notificaciones.', 'prefix' => 'notificaciones'], function () {
-			Route::get('index', 'AdministracionController@view_notificaciones')->name('index');
-			Route::get('no-leidas', 'AdministracionController@listar_notificaciones_no_leidas');
-			Route::get('leidas', 'AdministracionController@listar_notificaciones_leidas');
-			Route::put('marcar-leida/{id?}', 'AdministracionController@marcar_notificacion_leida');
-			Route::put('marcar-no-leida/{id?}', 'AdministracionController@marcar_notificacion_no_leida');
-		});
 	});
 
 	Route::group(['as' => 'necesidades.', 'prefix' => 'necesidades'], function () {
@@ -1189,18 +1181,9 @@ Route::group(['middleware' => ['auth']], function () {
 			});
 		});
 
-		// });
-
-		Route::group(['as' => 'notificaciones.', 'prefix' => 'notificaciones'], function () {
-
-			Route::get('index', 'AdministracionController@view_notificaciones')->name('index');
-			// Route::get('get_email_usuario_por_rol/{des?}/{sede?}/{emoresa?}', 'LogisticaController@get_email_usuario_por_rol')->name('get_email_usuario_por_rol');
-			Route::get('no-leidas', 'AdministracionController@listar_notificaciones_no_leidas');
-			Route::get('leidas', 'AdministracionController@listar_notificaciones_leidas');
-			Route::put('marcar-leida/{id?}', 'AdministracionController@marcar_notificacion_leida');
-			Route::put('marcar-no-leida/{id?}', 'AdministracionController@marcar_notificacion_no_leida');
-		});
 	});
+
+
 
 	/**Almacén */
 	Route::group(['as' => 'almacen.', 'prefix' => 'almacen'], function () {
@@ -2590,8 +2573,5 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('guardar_area', 'AdministracionController@guardar_area');
 	Route::post('editar_area', 'AdministracionController@actualizar_area');
 	Route::get('anular_area/{id}', 'AdministracionController@anular_area');
-
-	// Route::post('notification', 'SocketController@notification');
-	// Route::get('notificaciones_sin_leer', 'SocketController@notificaciones_sin_leer');
 
 });

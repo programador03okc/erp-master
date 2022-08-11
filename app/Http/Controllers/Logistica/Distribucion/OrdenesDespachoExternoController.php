@@ -179,13 +179,13 @@ class OrdenesDespachoExternoController extends Controller
             ->leftJoin('administracion.adm_estado_doc as est_od', 'est_od.id_estado_doc', '=', 'orden_despacho.estado')
             ->leftJoin('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.id_estado_envio')
             ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od')
-            ->where(DB::raw('(SELECT COUNT(*) FROM almacen.alm_det_req where
-                    alm_det_req.id_requerimiento = alm_req.id_requerimiento
-                    and alm_det_req.estado != 7
-                    and alm_det_req.id_tipo_item = 1)'), '>', 0)
+            // ->where(DB::raw('(SELECT COUNT(*) FROM almacen.alm_det_req where
+            //         alm_det_req.id_requerimiento = alm_req.id_requerimiento
+            //         and alm_det_req.estado != 7
+            //         and alm_det_req.id_tipo_item = 1)'), '>', 0)
             ->where([
-                ['alm_req.estado', '!=', 7],
-                ['alm_req.observacion', '!=', 'Creado de forma automática por venta interna'],
+                ['alm_req.estado', '!=', 7]
+                // ['alm_req.observacion', '!=', 'Creado de forma automática por venta interna'],
                 // ['nro_productos', '>', 0]
             ]);
 
