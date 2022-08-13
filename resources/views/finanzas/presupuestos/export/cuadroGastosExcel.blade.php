@@ -12,6 +12,7 @@
                 <th style="background-color: #cccccc;" width="25"><b>Empresa</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha pago</b></th>
                 <th style="background-color: #cccccc;" width="15"><b>Cod.Req.</b></th>
+                <th style="background-color: #cccccc;" width="15"><b>Cod.Orden</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Titulo</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Partida</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Descripción</b></th>
@@ -30,6 +31,7 @@
                 <td>{{$d->razon_social}}</td>
                 <td>{{$d->fecha_pago}}</td>
                 <td>{{$d->codigo}}</td>
+                <td>{{$d->codigo_oc}}</td>
                 <td>{{$d->titulo_descripcion}}</td>
                 <td>{{$d->partida_descripcion}}</td>
                 <td>{{$d->descripcion_adicional}}</td>
@@ -47,6 +49,7 @@
                 <td>{{$d->razon_social}}</td>
                 <td>{{$d->fecha_pago}}</td>
                 <td>{{$d->codigo}}</td>
+                <td></td>
                 <td>{{$d->titulo_descripcion}}</td>
                 <td>{{$d->partida_descripcion}}</td>
                 <td>{{$d->descripcion}}</td>
