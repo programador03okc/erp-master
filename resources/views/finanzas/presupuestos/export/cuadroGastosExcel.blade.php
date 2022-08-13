@@ -9,12 +9,12 @@
     <table>
         <thead>
             <tr>
-                <th style="background-color: #cccccc;" width="18"><b>Empresa</b></th>
+                <th style="background-color: #cccccc;" width="25"><b>Empresa</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha pago</b></th>
-                <th style="background-color: #cccccc;" width="30"><b>Cod.Req.</b></th>
+                <th style="background-color: #cccccc;" width="15"><b>Cod.Req.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Titulo</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Partida</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Descripción</b></th>
+                <th style="background-color: #cccccc;" width="40"><b>Partida</b></th>
+                <th style="background-color: #cccccc;" width="40"><b>Descripción</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Cant.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Unid.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Unit.</b></th>

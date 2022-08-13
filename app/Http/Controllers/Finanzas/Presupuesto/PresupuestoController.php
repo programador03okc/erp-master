@@ -167,7 +167,6 @@ class PresupuestoController extends Controller
 
     public function cuadroGastosExcel(Request $request)
     {
-        // $data = $this->mostrarGastosPorPresupuesto($request->id_presupuesto);
         $presup = DB::table('finanzas.presup')->where('id_presup', $request->id_presupuesto)->first();
         $detalle = $this->obtenerDetallePresupuesto($request->id_presupuesto);
         $pagos = $this->obtenerPagosPresupuesto($request->id_presupuesto);

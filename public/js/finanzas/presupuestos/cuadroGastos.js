@@ -92,9 +92,9 @@ function exportarCuadroCostos() {
     //     console.log(errorThrown);
     // });
     var form = $(`<form action="cuadroGastosExcel" method="post" target="_blank">
-    <input type="hidden" name="_token" value="${csrf_token}"/>
-    <input type="hidden" name="id_presupuesto" value="${id_presup}"/>
-    </form>`);
+        <input type="hidden" name="_token" value="${csrf_token}"/>
+        <input type="hidden" name="id_presupuesto" value="${id_presup}"/>
+        </form>`);
     $('body').append(form);
-    form.submit();
+    form.trigger('submit');
 }
