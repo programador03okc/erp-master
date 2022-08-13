@@ -87,15 +87,16 @@ class PresupuestoController extends Controller
                 // 'registro_pago.fecha_pago',
                 'alm_und_medida.abreviatura',
                 'log_ord_compra.codigo as codigo_oc',
+                'sis_moneda.simbolo',
                 'proveedor.nro_documento',
                 'proveedor.razon_social as proveedor_razon_social',
                 'presup_par.descripcion as partida_descripcion',
                 DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
-        WHERE presup_titu.codigo = presup_par.cod_padre
-        and presup_titu.id_presup = presup_par.id_presup) AS titulo_descripcion"),
+                WHERE presup_titu.codigo = presup_par.cod_padre
+                and presup_titu.id_presup = presup_par.id_presup) AS titulo_descripcion"),
                 DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
-        WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
-        limit 1) AS fecha_pago"),
+                WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
+                limit 1) AS fecha_pago"),
             )
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
@@ -105,6 +106,7 @@ class PresupuestoController extends Controller
             ->join('finanzas.presup', 'presup.id_presup', '=', 'presup_par.id_presup')
             // ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri as proveedor', 'proveedor.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_det_ord_compra.id_orden_compra')
@@ -126,7 +128,7 @@ class PresupuestoController extends Controller
                 'requerimiento_pago.concepto',
                 'requerimiento_pago.fecha_registro',
                 'adm_contri.razon_social',
-                // 'registro_pago.fecha_pago',
+                'sis_moneda.simbolo',
                 'alm_und_medida.abreviatura',
                 'presup_par.descripcion as partida_descripcion',
                 DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
@@ -134,14 +136,14 @@ class PresupuestoController extends Controller
                 and presup_titu.id_presup = presup_par.id_presup) AS titulo_descripcion"),
                 DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
                 WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
-                limit 1) AS fecha_pago"),
-                // 'presup_titu.descripcion as titulo_descripcion'
+                limit 1) AS fecha_pago")
             )
             // ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'registro_pago.id_requerimiento_pago')
             ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'requerimiento_pago_detalle.id_requerimiento_pago')
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->join('finanzas.presup_par', 'presup_par.id_partida', '=', 'requerimiento_pago_detalle.id_partida')
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
             // ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
             // ->leftJoin('finanzas.presup_titu', function ($join) {
             //     $join->on('presup_titu.codigo', '=', 'presup_par.cod_padre');

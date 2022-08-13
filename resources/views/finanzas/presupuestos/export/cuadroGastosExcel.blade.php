@@ -17,6 +17,7 @@
                 <th style="background-color: #cccccc;" width="40"><b>Descripción</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Cant.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Unid.</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Mnd.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Unit.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>SubTotal</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>IGV</b></th>
@@ -34,10 +35,11 @@
                 <td>{{$d->descripcion_adicional}}</td>
                 <td>{{$d->cantidad}}</td>
                 <td>{{$d->abreviatura}}</td>
+                <td>{{$d->simbolo}}</td>
                 <td>{{$d->precio}}</td>
                 <td>{{$d->subtotal}}</td>
                 <td>{{$d->subtotal*0.18}}</td>
-                <td>{{$d->subtotal}}</td>
+                <td>{{$d->subtotal + ($d->subtotal*0.18)}}</td>
             </tr>
             @endforeach
             @foreach ($req_pagos as $d)
@@ -50,10 +52,11 @@
                 <td>{{$d->descripcion}}</td>
                 <td>{{$d->cantidad}}</td>
                 <td>{{$d->abreviatura}}</td>
+                <td>{{$d->simbolo}}</td>
                 <td>{{$d->precio_unitario}}</td>
                 <td>{{$d->subtotal}}</td>
                 <td>{{$d->subtotal*0.18}}</td>
-                <td>{{$d->subtotal}}</td>
+                <td>{{$d->subtotal + ($d->subtotal*0.18)}}</td>
             </tr>
             @endforeach
         </tbody>
