@@ -1442,7 +1442,7 @@ class OrdenController extends Controller
             ->leftJoin('administracion.adm_empresa', 'sis_sede.id_empresa', '=', 'adm_empresa.id_empresa')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->join('contabilidad.adm_rubro', 'adm_rubro.id_rubro', '=', 'adm_contri.id_rubro')
+            ->leftJoin('contabilidad.adm_rubro', 'adm_rubro.id_rubro', '=', 'adm_contri.id_rubro')
             ->leftJoin('configuracion.ubi_dis as dis_proveedor', 'adm_contri.ubigeo', '=', 'dis_proveedor.id_dis')
             ->leftJoin('configuracion.ubi_prov as prov_proveedor', 'dis_proveedor.id_prov', '=', 'prov_proveedor.id_prov')
             ->leftJoin('configuracion.ubi_dpto as dpto_proveedor', 'prov_proveedor.id_dpto', '=', 'dpto_proveedor.id_dpto')
