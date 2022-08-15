@@ -174,6 +174,7 @@ class KardexSerieController extends Controller
         $producto = DB::table('almacen.alm_prod')
             ->select(
                 'alm_prod.*',
+                'sis_moneda.descripcion as des_moneda',
                 'alm_und_medida.abreviatura',
                 'alm_subcat.descripcion as des_subcategoria',
                 'alm_cat_prod.descripcion as des_categoria',
@@ -182,6 +183,7 @@ class KardexSerieController extends Controller
                 'alm_ubi_posicion.codigo as cod_posicion',
                 'alm_clasif.descripcion as des_clasificacion'
             )
+            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
@@ -216,6 +218,11 @@ class KardexSerieController extends Controller
                 <td>' . $producto->part_number . '</td>
                 <th>Ubicación</th>
                 <td>' . $producto->cod_posicion . '</td>
+            </tr>
+            <tr>
+                <th>Moneda</th>
+                <td>' . $producto->des_moneda . '</td>
+            
             </tr>
             ';
         return json_encode($html);
