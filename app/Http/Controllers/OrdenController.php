@@ -128,8 +128,9 @@ class OrdenController extends Controller
         $bancos = Banco::mostrar();
         $tipo_cuenta = TipoCuenta::mostrar();
         $empresas = $this->select_mostrar_empresas();
+        $rubros = $this->select_mostrar_rubos();
 
-        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('empresas', 'bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
+        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('empresas','rubros', 'bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
     }
 
     function lista_contactos_proveedor($id_proveedor)
@@ -219,6 +220,15 @@ class OrdenController extends Controller
             ->join('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->where('adm_empresa.estado', '=', 1)
             ->orderBy('adm_contri.razon_social', 'asc')
+            ->get();
+        return $data;
+    }
+    public function select_mostrar_rubos()
+
+    {
+        $data = DB::table('contabilidad.adm_rubro')
+            ->where('adm_rubro.estado', '=', 1)
+            ->orderBy('adm_rubro.descripcion', 'asc')
             ->get();
         return $data;
     }
@@ -1390,6 +1400,8 @@ class OrdenController extends Controller
             'adm_contri.nro_documento',
             'adm_contri.direccion_fiscal',
             'adm_contri.ubigeo',
+            'adm_contri.id_rubro',
+            'adm_rubro.descripcion as rubro_descripcion',
             'log_ord_compra.id_cta_principal',
             'adm_cta_contri.nro_cuenta',
             DB::raw("(dis_proveedor.descripcion) || ' - ' || (prov_proveedor.descripcion) || ' - ' || (dpto_proveedor.descripcion)  AS ubigeo_proveedor"),
@@ -1428,6 +1440,7 @@ class OrdenController extends Controller
             ->leftJoin('administracion.adm_empresa', 'sis_sede.id_empresa', '=', 'adm_empresa.id_empresa')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->join('contabilidad.adm_rubro', 'adm_rubro.id_rubro', '=', 'adm_contri.id_rubro')
             ->leftJoin('configuracion.ubi_dis as dis_proveedor', 'adm_contri.ubigeo', '=', 'dis_proveedor.id_dis')
             ->leftJoin('configuracion.ubi_prov as prov_proveedor', 'dis_proveedor.id_prov', '=', 'prov_proveedor.id_prov')
             ->leftJoin('configuracion.ubi_dpto as dpto_proveedor', 'prov_proveedor.id_dpto', '=', 'dpto_proveedor.id_dpto')
@@ -2603,6 +2616,15 @@ class OrdenController extends Controller
                 $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
                 $orden->save();
 
+                if($request->id_proveedor>0 && $request->id_rubro_proveedor !=null && $request->id_rubro_proveedor >0 ){
+                    $proveedor =Proveedor::find($request->id_proveedor);
+                    if($proveedor->id_contribuyente >0){
+                        $contribuyenteProveedor = Contribuyente::find($proveedor->id_contribuyente);
+                        $contribuyenteProveedor->id_rubro=$request->id_rubro_proveedor;
+                        $contribuyenteProveedor->save();
+
+                    }
+                }
 
                 // $idRequerimientoList=[];
 
@@ -3083,6 +3105,16 @@ class OrdenController extends Controller
                     $orden->observacion = isset($request->observacion) ? $request->observacion : null;
                     $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
                     $orden->save();
+                    
+                    if($request->id_proveedor>0 && $request->id_rubro_proveedor !=null && $request->id_rubro_proveedor >0 ){
+                        $proveedor =Proveedor::find($request->id_proveedor);
+                        if($proveedor->id_contribuyente >0){
+                            $contribuyenteProveedor = Contribuyente::find($proveedor->id_contribuyente);
+                            $contribuyenteProveedor->id_rubro=$request->id_rubro_proveedor;
+                            $contribuyenteProveedor->save();
+    
+                        }
+                    }
 
                     $idDetalleProcesado = [];
 
