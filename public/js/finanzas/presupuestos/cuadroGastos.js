@@ -76,20 +76,25 @@ function mostrarCuadroGastos(id) {
 
 function exportarCuadroCostos() {
     var id_presup = $('[name=id_presup]').val();
-    $.ajax({
-        type: "POST",
-        url: "cuadroGastosExcel",
-        data: {
-            id_presupuesto: id_presup
-        },
-        dataType: "JSON",
-        success: function (response) {
-            console.log(response);
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    });
-
+    // $.ajax({
+    //     type: "POST",
+    //     url: "cuadroGastosExcel",
+    //     data: {
+    //         id_presupuesto: id_presup
+    //     },
+    //     dataType: "JSON",
+    //     success: function (response) {
+    //         console.log(response);
+    //     }
+    // }).fail(function (jqXHR, textStatus, errorThrown) {
+    //     console.log(jqXHR);
+    //     console.log(textStatus);
+    //     console.log(errorThrown);
+    // });
+    var form = $(`<form action="cuadroGastosExcel" method="post" target="_blank">
+        <input type="hidden" name="_token" value="${csrf_token}"/>
+        <input type="hidden" name="id_presupuesto" value="${id_presup}"/>
+        </form>`);
+    $('body').append(form);
+    form.trigger('submit');
 }

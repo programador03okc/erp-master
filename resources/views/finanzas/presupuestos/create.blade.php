@@ -205,15 +205,16 @@ Presupuesto
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script>
+        let csrf_token = "{{ csrf_token() }}";
+        $(document).ready(function () {
+            seleccionarMenu(window.location);
+        });
+    </script>
 
     <script src="{{('/js/finanzas/presupuestos/presupuesto.js')}}"></script>
     <script src="{{('/js/finanzas/presupuestos/titulo.js')}}"></script>
     <script src="{{('/js/finanzas/presupuestos/partida.js')}}"></script>
     <script src="{{('/js/finanzas/presupuestos/detalle.js')}}"></script>
     <script src="{{('/js/finanzas/presupuestos/cuadroGastos.js')}}"></script>
-    <script>
-        $(document).ready(function () {
-            seleccionarMenu(window.location);
-        });
-    </script>
 @endsection
