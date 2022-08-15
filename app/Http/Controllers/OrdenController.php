@@ -4430,7 +4430,7 @@ class OrdenController extends Controller
         DB::beginTransaction();
         try {
             $id_orden = $request->id_orden;
-            $codigo= $request->codigo;
+            $codigo= $request->codigo_orden;
 
             $adjuntoOtrosAdjuntosLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar1) : 0;
             // $adjuntoOrdenesLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar2) : 0;
@@ -4467,7 +4467,7 @@ class OrdenController extends Controller
         }
     }
 
-    function subirYRegistrarArchivoCabeceraRequerimiento($id_orden, $adjunto, $codigoRequerimiento, $idCategoria,$fecha_emision)
+    function subirYRegistrarArchivoCabeceraRequerimiento($id_orden, $adjunto, $codigoOrden, $idCategoria,$fecha_emision)
     {
 
         $idAdjuntoList = [];
@@ -4476,7 +4476,7 @@ class OrdenController extends Controller
                 $fechaHoy = new Carbon();
                 $sufijo = $fechaHoy->format('YmdHis');
                 $file = $archivo->getClientOriginalName();
-                $codigo = $codigoRequerimiento;
+                $codigo = $codigoOrden;
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
                 $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
                 // Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
