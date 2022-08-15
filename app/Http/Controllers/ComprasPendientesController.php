@@ -903,11 +903,11 @@ class ComprasPendientesController extends Controller
                 }
                 if($CantidadTransDetalle>0){
                     $mensajeAdicional.=' Vínculo con trasnferencia.';
-                    
+
                 }
                 if($CantidadTransformado>0){
                     $mensajeAdicional.=' Vínculo con item transformado.';
-                    
+
                 }
 
                 if(($cantidadReservasAnuladas>0) && ($totalReservas==$cantidadReservasAnuladas)){
@@ -1189,7 +1189,7 @@ class ComprasPendientesController extends Controller
                     $trazabilidad->fecha_registro = new Carbon();
                     $trazabilidad->save();
                 }
-                // fin trazabilidad 
+                // fin trazabilidad
                 OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->update(['id_producto' => $detalleRequerimiento->id_producto]);
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
             } else {
@@ -1243,7 +1243,7 @@ class ComprasPendientesController extends Controller
                     $trazabilidad->fecha_registro = new Carbon();
                     $trazabilidad->save();
                 }
-                // fin trazabilidad 
+                // fin trazabilidad
                 OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->update(['id_producto' => null]);
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
                 $status = 200;
@@ -1319,7 +1319,7 @@ class ComprasPendientesController extends Controller
                     $trazabilidad->fecha_registro = new Carbon();
                     $trazabilidad->save();
                 }
-                // fin trazabilidad 
+                // fin trazabilidad
 
                 OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento]])->update(['estado' => 7]);
                 Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento]])->update(['estado' => 7]);
@@ -1423,7 +1423,7 @@ class ComprasPendientesController extends Controller
                 ->where([['alm_prod_ubi.id_producto', $idProducto], ['alm_prod_ubi.estado', 1]])
                 ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
                 ->get();
-                
+
                 if(count($ProductoUbicacionList)>0){
                     $mensaje = 'OK';
                     $status=200;
@@ -1457,7 +1457,7 @@ class ComprasPendientesController extends Controller
         DB::beginTransaction();
         try {
             $tipoEstado = '';
-         
+
             if ($request->idDetalleRequerimiento > 0) {
                 $detalleRequerimiento = DetalleRequerimiento::find($request->idDetalleRequerimiento);
                 $detalleRequerimiento->id_tipo_item= $request->idTipoItem;
@@ -1497,9 +1497,9 @@ class ComprasPendientesController extends Controller
                 $estadoOriginalRequerimiento =$requerimiento->estado;
                 if(isset($request->idDetalleRequerimiento)){
                     $count = count($request->idDetalleRequerimiento);
-                    for ($i=0; $i < $count; $i++) { 
-                    
-                        
+                    for ($i=0; $i < $count; $i++) {
+
+
                         if((($request->cantidadParaAnular[$i]!=null) && floatval($request->cantidadParaAnular[$i])>0) || ((isset($request->estadoAtendidoTotal[$i])) && $request->estadoAtendidoTotal[$i] ==true)){
                             $detalleRequerimiento = DetalleRequerimiento::find(intval($request->idDetalleRequerimiento[$i]));
                             if($detalleRequerimiento->cantidad_solicitada_original ==null){
@@ -1510,18 +1510,18 @@ class ComprasPendientesController extends Controller
                             if(floatval($detalleRequerimiento->cantidad) == 0){
                                 $detalleRequerimiento->estado =7;
                             }
-        
+
                             if( $request->cantidadParaAnular[$i] !=0 && (isset($request->estadoAtendidoTotal[$i]) && $request->estadoAtendidoTotal[$i] ==true) && ($detalleRequerimiento->cantidad ==  (floatval($request->atencionOrden[$i])+floatval($request->stockComprometido[$i])) ) ){
                                 $detalleRequerimiento->estado =5;
                             }
                             $detalleRequerimiento->razon_ajuste_necesidad = ($request->razonesDeAjusteDeNecesidad[$i]!=null?$request->razonesDeAjusteDeNecesidad[$i]:'Sin justificar');
                             $detalleRequerimiento->save();
-                            $arrayDetalleRequerimientoActualizados[]=$detalleRequerimiento->id_detalle_requerimiento;                    
+                            $arrayDetalleRequerimientoActualizados[]=$detalleRequerimiento->id_detalle_requerimiento;
                         }
 
-                    
+
                     }
-                    
+
                     $forzarActualizarEstadoRequerimiento="SI";
                 }else{
                     $tipoEstado = 'info';
@@ -1536,7 +1536,7 @@ class ComprasPendientesController extends Controller
                     $tipoEstado = 'success';
                     $mensaje = 'Se actualizo el requerimiento '.$requerimiento->codigo;
                 }
-                
+
 
             }else {
                 $tipoEstado = 'error';
@@ -1558,7 +1558,7 @@ class ComprasPendientesController extends Controller
             $detalle = DetalleRequerimiento::where('id_requerimiento',$documento->id_doc)->get();
             foreach ($detalle as $value) {
                 $det = DetalleRequerimiento::find($value->id_detalle_requerimiento);
-                
+
                 $cantidadDetalleConProducto = DetalleRequerimiento::where([['id_producto',$det->id_producto],['id_requerimiento','!=',$det->id_requerimiento]])->count();
                 $cantiadReservaConProd = Reserva::where('id_producto',$det->id_producto)->count();
                 if($cantidadDetalleConProducto==0 && $cantiadReservaConProd==0){
@@ -1567,7 +1567,7 @@ class ComprasPendientesController extends Controller
                     $prod->save();
                 }
 
-                
+
                 $det->id_producto= null;
                 $det->save();
             }
@@ -1576,18 +1576,18 @@ class ComprasPendientesController extends Controller
 
     public function obtenerIdDocumento($tipoDocumento,$idReq){
         $result = [];
-        
+
         $documento = Documento::where([['id_doc',$idReq],['id_tp_documento',$tipoDocumento]])->first();
 
         if( !empty($documento)){
-            $result =[ 
+            $result =[
                 'id'=> $documento->id_doc_aprob,
                 'mensaje'=>'Id encontrado',
                 'estado'=>'success'
         ];
-            
+
         }else{
-            $result =[ 
+            $result =[
             'id'=>0,
             'mensaje'=>'No se encontro el id',
             'estado'=>'error'
@@ -1596,7 +1596,7 @@ class ComprasPendientesController extends Controller
         }
 
         return $result;
-    
+
     }
 
     public function guardarObservacionLogistica(Request $request){
@@ -1656,9 +1656,9 @@ class ComprasPendientesController extends Controller
                     }else{
                         $mensaje='Lo sentimos, no se pudo guardar la observación';
                     }
-                        
-                    
-    
+
+
+
                 }else {
                     $tipoEstado = 'error';
                     $mensaje = "El ID enviado no es valido, que no fue posible guardar la observación";

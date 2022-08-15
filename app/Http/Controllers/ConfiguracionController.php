@@ -1929,37 +1929,13 @@ public function anular_configuracion_socket($id){
         ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
         ->first();
         return response()->json($users);
-
-        // $data = DB::table('configuracion.sis_usua')
-        //     ->select(
-        //         'sis_usua.id_usuario',
-        //         'sis_usua.nombre_corto',
-        //         'sis_usua.usuario',
-        //         'sis_usua.clave',
-        //         'sis_usua.fecha_registro',
-        //         'sis_usua.estado',
-        //         'sis_acceso.id_acceso',
-        //         'usuario_rol.id_rol',
-        //         'sis_rol.descripcion as rol',
-        //         DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo_usuario"),
-        //         'rrhh_perso.email'
-        //             )
-        //             ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
-        //             ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
-        //             ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
-        //     ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
-        //     ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
-        //     ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
-
-        //     ->where([['sis_usua.estado', '!=', 7]])
-        //     ->orderBy('sis_usua.id_usuario', 'asc')
-        //     ->get();
     }
-    public function getModulos()
+    public function getModulos(Request $request)
     {
         $data_modulo = [];
         $data_modulo_padre = [];
         $data_modulo_hijos = [];
+        $data_modulo_sub_hijos = [];
         $modulos = DB::table('configuracion.sis_modulo')
         ->select('sis_modulo.*')
         ->where([['sis_modulo.estado', '!=', 7]])
@@ -1968,11 +1944,61 @@ public function anular_configuracion_socket($id){
             if ($value->id_padre == 0) {
                 array_push($data_modulo_padre, $value);
             }
+        }
+        foreach ($data_modulo_padre as $key_item => $item) {
+            foreach ($modulos as $key => $value) {
 
+                if ($value->id_padre == $item->id_modulo) {
+                    array_push($data_modulo_hijos, $value);
+                }
+            }
         }
 
-        // return $data_modelo;
+        foreach ($data_modulo_hijos as $key_item => $item) {
+            foreach ($modulos as $key => $value) {
+
+                if ($value->id_padre == $item->id_modulo) {
+                    array_push($data_modulo_sub_hijos, $value);
+                }
+            }
+        }
+
+        // $accesos=   DB::table('configuracion.sis_usua')
+        //             ->select(
+        //             'sis_modulo.id_modulo',
+        //             'sis_modulo.tipo_modulo',
+        //             'sis_modulo.id_padre',
+        //             'sis_modulo.descripcion',
+        //             'usuario',
+        //             'nombre_corto',
+        //             'email',
+        //             'sis_accion.descripcion as accion_descripcion',
+        //             'sis_aplicacion.descripcion as aplicacion_descripcion'
+        //             )
+        //             ->where([
+        //                 ['sis_modulo.estado', '!=', 7],
+        //                 ['sis_usua.id_usuario','=',$request->id_usuario],
+        //                 ['sis_acceso.estado','!=',7]
+        //             ])
+        //             ->leftJoin('configuracion.sis_acceso', 'sis_usua.id_usuario', '=', 'sis_acceso.id_usuario')
+        //             ->leftJoin('configuracion.sis_accion', 'sis_acceso.id_accion', '=', 'sis_accion.id_accion')
+        //             ->leftJoin('configuracion.sis_aplicacion', 'sis_accion.id_aplicacion', '=', 'sis_aplicacion.id_aplicacion')
+        //             ->leftJoin('configuracion.sis_modulo', 'sis_aplicacion.id_sub_modulo', '=', 'sis_modulo.id_modulo')
+        //             ->get();
+
+        $accesos = DB::table('configuracion.sis_acceso_atributo')
+            ->select(
+                'sis_acceso_atributo.*'
+                )
+                ->where([
+                    ['sis_acceso_atributo.estado', '!=', 7],
+                    ['sis_acceso_atributo.id_usuario','=',$request->id_usuario],
+                ])
+            ->get();
         $data_modulo['padre']=$data_modulo_padre;
+        $data_modulo['hijo']=$data_modulo_hijos;
+        $data_modulo['sub_hijo']=$data_modulo_sub_hijos;
+        $data_modulo['accesos']=$accesos;
         return response()->json($data_modulo);
     }
     public function getModulosHijos($id_modulo)
@@ -1982,18 +2008,118 @@ public function anular_configuracion_socket($id){
         ->select('sis_modulo.*')
         ->where([['sis_modulo.id_padre', '=', $id_modulo]])
         ->get();
+
         $modulos_general = DB::table('configuracion.sis_modulo')
         ->select('sis_modulo.*')
         ->where([['sis_modulo.estado', '!=', 7]])
         ->get();
-        foreach ($modulos_general as $key => $value) {
-            $modulos_sub = DB::table('configuracion.sis_modulo')
-                        ->select('sis_modulo.*')
-                        ->where([['sis_modulo.id_padre', '=', $value->$id_modulo]])
-                        ->get();
-            array_push($data_sub_hijos,$modulos_sub);
+
+        foreach ($modulos as $key => $value) {
+
+            foreach ($modulos_general as $key => $item) {
+                if ($value->id_modulo == $item->id_padre) {
+                    array_push($data_sub_hijos,$item);
+                }
+            }
+
+            // $modulos_sub = DB::table('configuracion.sis_modulo')
+            //             ->select('sis_modulo.*')
+            //             ->where([['sis_modulo.id_padre', '=', $value->id_modulo]])
+            //             ->get();
+            // array_push($data_sub_hijos,$modulos_sub);
         }
 
+        return response()->json([
+            "modulos_hijo"=>$modulos,
+            "modulos_subhijos"=>$data_sub_hijos
+        ]);
+
+    }
+    public function asiganrModulos(Request $request)
+    {
+        $modulos_ids = $request->checkModulo;
+        $id_usuario = $request->id_usuario;
+        $modulos_padre =[];
+        $guardar_acceso = [];
+        foreach ($modulos_ids as $key => $value) {
+            $modulo = DB::table('configuracion.sis_modulo')
+                ->select('sis_modulo.*')
+                ->where([['sis_modulo.id_modulo', '=', $value]])
+                ->first();
+            array_push($guardar_acceso,$modulo);
+            while ($modulo->id_padre != 0) {
+                $modulo = DB::table('configuracion.sis_modulo')
+                    ->select('sis_modulo.*')
+                    ->where([['sis_modulo.id_modulo', '=', $modulo->id_padre]])
+                    ->first();
+            };
+            if (!in_array($modulo->id_modulo, $modulos_padre)) {
+                array_push($modulos_padre,$modulo->id_modulo);
+                array_push($guardar_acceso,$modulo);
+            }
+        }
+        // $affected = DB::update('update configuracion.sis_acceso set estado = 7 where id_usuario = ?', [$id_usuario]);
+        DB::table('configuracion.sis_acceso_atributo')
+            ->where('sis_acceso_atributo.id_usuario', $request->id_usuario)
+            ->update(['sis_acceso_atributo.estado' => 7]);
+        foreach ($guardar_acceso as $key => $value) {
+            $ver=0;$nuevo=0;$modificar=0;$eliminar=0;
+
+            if ($request->ver) {
+                foreach ($request->ver as $key_item => $value_item) {
+                    if ($key_item==$value->id_modulo) {
+                        $ver = (int) $value_item[0];
+                    }
+                    if ($value->id_padre===0) {
+                        $ver = (int) 1;
+                    }
+                }
+            }
+            if ($request->nuevo) {
+                foreach ($request->nuevo as $key_item => $value_item) {
+                    if ($key_item==$value->id_modulo) {
+                        $nuevo = (int) $value_item[0];
+                    }
+                }
+            }
+            if ($request->modificar) {
+                foreach ($request->modificar as $key_item => $value_item) {
+                    if ($key_item==$value->id_modulo) {
+                        $modificar = (int) $value_item[0];
+                    }
+                }
+            }
+
+            if ($request->eliminar) {
+                foreach ($request->eliminar as $key_item => $value_item) {
+                    if ($key_item==$value->id_modulo) {
+                        $eliminar = (int) $value_item[0];
+                    }
+                }
+            }
+
+            $value->accesos=array(
+                "ver"=>$ver,
+                "nuevo"=>$nuevo,
+                "modificar"=>$modificar,
+                "eliminar"=>$eliminar,
+            );
+
+            $id_acceso_atributo = DB::table('configuracion.sis_acceso_atributo')->insertGetId(
+                [
+                    'ver'           => $ver,
+                    'nuevo'         => $nuevo,
+                    'modificar'     => $modificar,
+                    'eliminar'      => $eliminar,
+                    'id_modulo'     => $value->id_modulo,
+                    'id_usuario'    => $id_usuario,
+                    'estado'        => 1
+                ],
+                'id_acceso_atributo'
+            );
+        }
+        return response()->json($id_acceso_atributo);
+        // return response()->json($request);
     }
 }
 

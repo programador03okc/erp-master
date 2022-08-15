@@ -59,7 +59,7 @@ Gestión de ordenes
                                 <th>Importe total CDP</th>
                                 <th>Acción</th>
                                 </tr>
- 
+
                                 </thead>
                                 <tbody></tbody>
                             </table>
@@ -119,6 +119,7 @@ Gestión de ordenes
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_filtro_lista_items_orden_elaboradas')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_aprobar_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.registrar_pago')
+@include('logistica.gestion_logistica.compras.ordenes.listado.modal_adjunto_orden')
 
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_editar_estado_orden')
 @include('logistica.gestion_logistica.compras.ordenes.listado.modal_editar_estado_detalle_orden')

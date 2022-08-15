@@ -11,6 +11,8 @@ use Dompdf\Dompdf;
 use PDF;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 date_default_timezone_set('America/Lima');
 
@@ -77,7 +79,7 @@ class OrdenController extends Controller
         return $data;
     }
 
-    
+
 
     function view_generar_orden_requerimiento()
     {
@@ -437,7 +439,7 @@ class OrdenController extends Controller
     //         // ->whereRaw('coalesce((log_det_ord_compra.cantidad * log_det_ord_compra.precio) ,0) '.$simboloSubtotal.' '.$subtotal)
     //         ->get();
 
-    //     // $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray(); 
+    //     // $orden_list = collect($orden_obj)->map(function($x){ return (array) $x; })->toArray();
     //     // Debugbar::info($orden_obj);
 
     //     $output['data'] = $orden_obj;
@@ -919,7 +921,7 @@ class OrdenController extends Controller
             }
         }
         if ($cantidadEstadoCoincidente == $cantidadDetalleOrden) {
-            // actualizar cabecera de orden 
+            // actualizar cabecera de orden
             $orden->estado = $estadoReferencial;
             $orden->save();
         }
@@ -996,7 +998,7 @@ class OrdenController extends Controller
     }
     public function listaOrdenesElaboradas(Request $request){
 
-        $ordenes = OrdenesView::where([['id_estado','>=',1],['id_tp_documento','!=',13]]);       
+        $ordenes = OrdenesView::where([['id_estado','>=',1],['id_tp_documento','!=',13]]);
         // return datatables($ordenes)
         // ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
         //     $query->whereHas('data_requerimiento.codigo_requerimiento', function ($q) use ($keyword) {
@@ -1013,7 +1015,7 @@ class OrdenController extends Controller
         // })
         // ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
         //     $query->whereJsonContains('data_requerimiento', ['codigo_requerimiento'=> $keyword]);
-            
+
         // })
         // ->rawColumns(['codigo_requerimiento'])
         ->toJson();
@@ -1022,7 +1024,7 @@ class OrdenController extends Controller
 
     public function listaItemsOrdenesElaboradas(Request $request){
 
-        $itemsOrdenes = ItemsOrdenesView::where([['id_estado','>=',1],['id_tp_documento','!=',13]]);       
+        $itemsOrdenes = ItemsOrdenesView::where([['id_estado','>=',1],['id_tp_documento','!=',13]]);
         return datatables($itemsOrdenes)
 
         ->toJson();
@@ -1046,8 +1048,8 @@ class OrdenController extends Controller
     //         'sis_sede.descripcion as descripcion_sede_empresa',
 
     //         // 'log_cdn_pago.descripcion as condicion',
-    //         DB::raw("(CASE 
-    //         WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
+    //         DB::raw("(CASE
+    //         WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion
     //         WHEN log_ord_compra.id_condicion = 2 THEN log_cdn_pago.descripcion || ' ' || log_ord_compra.plazo_dias  || ' Días'
     //         ELSE null END) AS condicion
     //         "),
@@ -1064,18 +1066,18 @@ class OrdenController extends Controller
     //         'log_ord_compra_pago.id_pago',
     //         'log_ord_compra_pago.detalle_pago',
     //         'log_ord_compra_pago.archivo_adjunto'
-            
+
     //         // DB::raw("(SELECT  coalesce(sum((log_det_ord_compra.cantidad * log_det_ord_compra.precio))*1.18 ,0) AS monto_total_orden
-    //         // FROM logistica.log_det_ord_compra 
+    //         // FROM logistica.log_det_ord_compra
     //         // WHERE   log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
     //         //         log_det_ord_compra.estado != 7) AS monto_total_orden"),
     //         // DB::raw("(SELECT  coalesce(oc_propias_view.monto_soles) AS monto_total_presup
-    //         // FROM logistica.log_det_ord_compra 
+    //         // FROM logistica.log_det_ord_compra
     //         // INNER JOIN almacen.alm_det_req on alm_det_req.id_detalle_requerimiento = log_det_ord_compra.id_detalle_requerimiento
     //         // INNER JOIN almacen.alm_req on alm_req.id_requerimiento = alm_det_req.id_requerimiento
     //         // INNER JOIN mgcp_cuadro_costos.cc on cc.id = alm_req.id_cc
     //         // INNER JOIN mgcp_ordenes_compra.oc_propias_view on oc_propias_view.id_oportunidad = cc.id_oportunidad
-    
+
     //         // WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra AND
     //         // logistica.log_det_ord_compra.estado != 7 LIMIT 1) AS monto_total_presup")
     //     )
@@ -1117,14 +1119,14 @@ class OrdenController extends Controller
 
     //         ->where([
     //             ['log_ord_compra.estado', '!=', 7]
-   
+
 
     //         ])
- 
+
 
     //         ->orderBy('log_ord_compra.fecha', 'desc')
 
-       
+
     //         ->get();
 
 
@@ -1183,7 +1185,7 @@ class OrdenController extends Controller
     //             ];
     //         }
     //     }
- 
+
     //     $detalle_orden = Orden::select(
     //         'log_ord_compra.id_orden_compra',
     //         'log_det_ord_compra.id_detalle_orden',
@@ -1311,8 +1313,8 @@ class OrdenController extends Controller
             'log_ord_compra.*',
             'sis_sede.descripcion as descripcion_sede_empresa',
             DB::raw("CONCAT(dis_destino.descripcion,' - ',prov_destino.descripcion, ' - ', dpto_destino.descripcion)  AS ubigeo_destino"),
-            DB::raw("(CASE 
-            WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
+            DB::raw("(CASE
+            WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion
             WHEN log_ord_compra.id_condicion = 2 THEN log_cdn_pago.descripcion || ' ' || log_ord_compra.plazo_dias  || ' Días'
             ELSE null END) AS condicion
             "),
@@ -1341,7 +1343,7 @@ class OrdenController extends Controller
             ->where(function($query) use($usuarioEnSesion){
                 $query->where(function($query) use($usuarioEnSesion) {
                     if(!in_array($usuarioEnSesion,[17,27])){// solo para usuario raulscodes,rhuancac se mostrarara OD
-                        $query->where('log_ord_compra.id_tp_documento','!=',13); 
+                        $query->where('log_ord_compra.id_tp_documento','!=',13);
                     }
                 });
             });
@@ -1410,8 +1412,8 @@ class OrdenController extends Controller
             'adm_ctb_contac.nombre as telefono_contacto',
             'log_ord_compra.id_condicion_softlink',
             'log_ord_compra.id_condicion',
-            DB::raw("(CASE 
-            WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion 
+            DB::raw("(CASE
+            WHEN log_ord_compra.id_condicion = 1 THEN log_cdn_pago.descripcion
             WHEN log_ord_compra.id_condicion = 2 THEN log_cdn_pago.descripcion || ' ' || log_ord_compra.plazo_dias  || ' Días'
             ELSE null END) AS condicion
             "),
@@ -1720,7 +1722,7 @@ class OrdenController extends Controller
                     'estado' => $data->estado,
                     // 'monto_igv' => $data->monto_igv,
                     // 'monto_total' => $data->monto_total,
-                    // 'moneda_descripcion' => $data->moneda_descripcion 
+                    // 'moneda_descripcion' => $data->moneda_descripcion
                     // 'nombre_usuario' => $data->nombre_usuario,
                     'proveedor' => [
                         'id_proveedor' => $data->id_proveedor,
@@ -1812,7 +1814,7 @@ class OrdenController extends Controller
                     // 'incluye_igv' => $data->incluye_igv,
                     'garantia' => $data->garantia,
                     'lugar_despacho' => $data->lugar_despacho
-                    // 'nombre_personal_autorizado' => $data->nombre_personal_autorizado 
+                    // 'nombre_personal_autorizado' => $data->nombre_personal_autorizado
                 ];
                 $idDetalleReqList[] = $data->id_detalle_requerimiento;
             }
@@ -1921,7 +1923,7 @@ class OrdenController extends Controller
                     color:white;
                 }
                 .bgColorRed{
-                
+
                 }
                 .tablePDF,
                 .tablePDF tr td{
@@ -1942,9 +1944,9 @@ class OrdenController extends Controller
                 .verticalTop{
                     vertical-align:top;
                 }
-                .texttab { 
-                    display:block; 
-                    margin-left: 20px; 
+                .texttab {
+                    display:block;
+                    margin-left: 20px;
                     margin-bottom:5px;
                 }
                 .right{
@@ -1985,10 +1987,10 @@ class OrdenController extends Controller
             </style>
             </head>
             <body>
-            
+
         ';
         $html .='<div style="display:flex; position:relative; justify-content: space-between;">'.$logoEmpresa.$EstadoSiOrdenAnulada.'</div>'.$sustentoSiOrdenAnulada;
-    
+
         $html .= '
         </div>
                 <br>
@@ -2010,9 +2012,9 @@ class OrdenController extends Controller
                     <tr>
                         <td nowrap  width="15%" class="subtitle"> '.($ordenArray['head']['id_tp_documento']==12?'Sales person':'Contacto').':</td>
                         <td class="verticalTop">' . $ordenArray['head']['proveedor']['contacto']['nombre_contacto'] . ' - ' . $ordenArray['head']['proveedor']['contacto']['cargo_contacto'] . '</td>
-                         
+
                     </tr>
- 
+
                 </table>';
 
         $html .= '<p class="left" style="color:#d04f46">';
@@ -2047,7 +2049,7 @@ class OrdenController extends Controller
                         <td style="width:15px; text-align:center;">'.($ordenArray['head']['id_tp_documento']==12?'Unit price':'Precio').'</td>
                         <td style="width:5px; text-align:center;">'.($ordenArray['head']['id_tp_documento']==12?'Discount':'Descuento').'</td>
                         <td style="width:15px; text-align:center;">'.($ordenArray['head']['id_tp_documento']==12?'Total item':'Total').'</td>
-                    </tr>   
+                    </tr>
                 </thead>';
 
         // $total = 0;
@@ -2117,20 +2119,20 @@ class OrdenController extends Controller
                 <td  class="verticalTop left">' . $ordenArray['head']['condicion_compra']['condicion_pago'] . ' ' . (($ordenArray['head']['condicion_compra']['id_condicion'] == 2) ? $ordenArray['head']['condicion_compra']['plazo_dias'] . ' días' : '') . '</td>';
 
 
-        $html .= ' 
+        $html .= '
                     <td width="15%" class="verticalTop subtitle">-'.($ordenArray['head']['id_tp_documento']==12?'Delivery time':'Plazo de entrega').': </td>
                     <td class="verticalTop">' . $ordenArray['head']['condicion_compra']['plazo_entrega'] . ' Días</td>
-            
+
                 </tr>
                 <tr>
                     <td width="15%" class="verticalTop subtitle">-CDP / Req.: </td>
                     <td class="verticalTop">' . ($ordenArray['head']['codigo_cc'] ? $ordenArray['head']['codigo_cc'] . '/' : '') . ($ordenArray['head']['codigo_requerimiento'] ? $ordenArray['head']['codigo_requerimiento'] : '') . '</td
-        
+
                 </tr>
                 <tr>
                     <td width="15%" class="verticalTop subtitle">-Cod. Softlink: </td>
                     <td class="verticalTop">' .  ($ordenArray['head']['condicion_compra']['codigo_softlink'] ? $ordenArray['head']['condicion_compra']['codigo_softlink'] : '') . '</td
-        
+
                 </tr>
                 </table>
                 <br>
@@ -2155,7 +2157,7 @@ class OrdenController extends Controller
                 </tr>
                 </table>
                 <br>
-                
+
         ';
 
         $html .= '
@@ -2186,9 +2188,9 @@ class OrdenController extends Controller
             .($ordenArray['head']['id_tp_documento']==12?'Register date':'Fecha registro'). ': ' . $ordenArray['head']['fecha_registro'] . '<br>'
             .($ordenArray['head']['id_tp_documento']==12?'System version':'Versión del sistema'). ': ' . config('global.nombreSistema') . ' '  . config('global.version') . ' </p>
                     </footer>
-                
+
             </body>
-            
+
         </html>';
 
         return $html;
@@ -2251,9 +2253,9 @@ class OrdenController extends Controller
     //             .verticalTop{
     //                 vertical-align:top;
     //             }
-    //             .texttab { 
-    //                 display:block; 
-    //                 margin-left: 20px; 
+    //             .texttab {
+    //                 display:block;
+    //                 margin-left: 20px;
     //                 margin-bottom:5px;
     //             }
     //             .right{
@@ -2357,7 +2359,7 @@ class OrdenController extends Controller
     //                     <td width="5%">IGV</td>
     //                     <td width="5%">Monto Dscto</td>
     //                     <td width="5%">Total</td>
-    //                 </tr>   
+    //                 </tr>
     //             </thead>';
 
     //     $total = 0;
@@ -3068,7 +3070,7 @@ class OrdenController extends Controller
             $requerimientoHelper = new RequerimientoHelper();
             if ($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList) == true) {
 
-             
+
                 // if(in_array(Auth::user()->id_usuario,[14,5])){
                     // $ValidarOrdenSoftlink['tipo']='success';
                     // $ValidarOrdenSoftlink['mensaje']='ok';
@@ -3140,7 +3142,7 @@ class OrdenController extends Controller
                                 $detalle->save();
                             } else { // es un id solo de numerico => actualiza
                                 if ($request->idEstado[$i] == 7) {
-                                    if (is_numeric($id)) { // si es un numero 
+                                    if (is_numeric($id)) { // si es un numero
                                         $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
                                         $detalle->estado = 7;
                                         $detalle->save();
@@ -3511,7 +3513,7 @@ class OrdenController extends Controller
             ])
             ->get();
 
-        // verificar si existe ingreso en almacen 
+        // verificar si existe ingreso en almacen
         if (count($log_det_ord_compra) > 0) {
             foreach ($log_det_ord_compra as $data) {
                 $id_detalle_orden_list[] = $data->id_detalle_orden;
@@ -3707,7 +3709,7 @@ class OrdenController extends Controller
                                         $correosAnulaciónOrden[] =Usuario::withTrashed()->find($id)->email;
                                     }
                                 }
-                                    
+
                             }
                             foreach ($id_usuario_list as $idUsu) {
                                 if(Usuario::find($idUsu)!=null){
@@ -3717,7 +3719,7 @@ class OrdenController extends Controller
                                 }
                             }
                         }
-                 
+
 
                         // final de envio correo de anulación de orden
 
@@ -3825,7 +3827,7 @@ class OrdenController extends Controller
                     $hasIngreso = $this->tieneingresoAlmacen($idOrden);
                     $hasPagoAutorizado = $this->tienePagoAutorizado($idOrden);
                     if (($hasIngreso['status'] == 200 && $hasIngreso['data'] == false) && ($hasPagoAutorizado['status'] == 200 && $hasPagoAutorizado['data'] == false)) {
-                        $makeRevertirOrden = $this->makeRevertirOrden($idOrden, $sustento);    
+                        $makeRevertirOrden = $this->makeRevertirOrden($idOrden, $sustento);
                         $status = $makeRevertirOrden['status'];
                         $tipo_estado = $makeRevertirOrden['tipo_estado'];
                         $msj[] = $makeRevertirOrden['mensaje'];
@@ -3844,14 +3846,14 @@ class OrdenController extends Controller
                         $msj[] = $hasPagoAutorizado['mensaje'];
                     }
 
-    
+
                     if ($status == 200) {
                         $orden = Orden::select(
                             'log_ord_compra.codigo'
                         )
                             ->where('log_ord_compra.id_orden_compra', $idOrden)
                             ->first();
-    
+
                         for ($i = 0; $i < count($requerimientoIdList); $i++) {
                             DB::table('almacen.alm_req_obs')
                                 ->insert([
@@ -3864,7 +3866,7 @@ class OrdenController extends Controller
                         }
                     }
                     // Debugbar::info($status);
-    
+
                     $output = [
                         'id_orden_compra' => $idOrden,
                         'codigo' => $orden->codigo,
@@ -3875,7 +3877,7 @@ class OrdenController extends Controller
                         'notificacion' => $notificacion,
                     ];
                     $status = 200;
-                }  
+                }
 
                 // proceso anulación
 
@@ -4133,7 +4135,7 @@ class OrdenController extends Controller
                             if ($cuadroPresupuesto->estado_aprobacion == 4) {
                                 $idCuadroPresupuestoFinalizadoList[] = $requerimiento->id_cc;
                                 $codigoOportunidad[] = $cuadroPresupuesto->oportunidad->codigo_oportunidad;
-                                // obtener correo vendedor 
+                                // obtener correo vendedor
                                 $usuarioResponsable = DB::table('mgcp_usuarios.users')->where('id',$cuadroPresupuesto->oportunidad->id_responsable)->first();
                                 $correoVendedor = $usuarioResponsable->email??'';
 
@@ -4173,7 +4175,7 @@ class OrdenController extends Controller
                         /**
                          * ENVIAR NOTIFICACION DE FINALIZACION
                          */
-                    
+
                         $tipoStatus = "success";
                         $mensaje = "La notificación fue enviada";
 
@@ -4404,11 +4406,11 @@ class OrdenController extends Controller
                 'tiempo_atencion_proveedor' => $d['tiempo_atencion_proveedor'] ?? '',
                 'descripcion_sede_empresa' => $d['descripcion_sede_empresa'] ?? '',
                 'descripcion_estado' => $d['descripcion_estado'] ?? ''
-   
-            
+
+
             ];
         }
-        
+
 
         return $data;
     }
@@ -4416,5 +4418,94 @@ class OrdenController extends Controller
     // static public function notificarFinalizacion(){
     //     return CuadroPresupuestoHelper::notificarFinalizacion();
     // }
+    public function listarCategoriasAdjuntos()
+    {
+        // $categoria_adjunto =
+        return DB::table('logistica.categoria_adjunto')
+        ->get();
+    }
+    public function guardarAdjuntoOrden(Request $request)
+    {
+        # code...
+        DB::beginTransaction();
+        try {
+            $id_orden = $request->id_orden;
+            $codigo= $request->codigo;
 
+            $adjuntoOtrosAdjuntosLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar1) : 0;
+            // $adjuntoOrdenesLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar2) : 0;
+            // $adjuntoComprobanteContableLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar3 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar3) : 0;
+            // $adjuntoComprobanteBancarioLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar4) : 0;
+
+            $idAdjunto = [];
+            if ($adjuntoOtrosAdjuntosLength > 0) {
+                $idAdjunto[] = $this->subirYRegistrarArchivoCabeceraRequerimiento($id_orden, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1, $codigo, 1,$request->fecha_emision_);
+            }
+            // if ($adjuntoOrdenesLength > 0) {
+            //     $idAdjunto[] = $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2, $requerimiento->codigo, 2);
+            // }
+            // if ($adjuntoComprobanteContableLength > 0) {
+            //     $idAdjunto[] = $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar3, $requerimiento->codigo, 3);
+            // }
+            // if ($adjuntoComprobanteBancarioLength > 0) {
+            //     $idAdjunto[] = $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4, $requerimiento->codigo, 4);
+            // }
+            $estado_accion = 'error';
+            if (count($idAdjunto) > 0) {
+                $mensaje = 'Adjuntos guardos';
+                $estado_accion = 'success';
+            } else {
+                $mensaje = 'Hubo un problema y no se pudo guardo los adjuntos';
+                $estado_accion = 'warning';
+            }
+            DB::commit();
+
+            return response()->json(['status' => $estado_accion, 'mensaje' => $mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al guardar los adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
+
+    function subirYRegistrarArchivoCabeceraRequerimiento($id_orden, $adjunto, $codigoRequerimiento, $idCategoria,$fecha_emision)
+    {
+
+        $idAdjuntoList = [];
+        foreach ($adjunto as $key => $archivo) {
+            if ($archivo != null) {
+                $fechaHoy = new Carbon();
+                $sufijo = $fechaHoy->format('YmdHis');
+                $file = $archivo->getClientOriginalName();
+                $codigo = $codigoRequerimiento;
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
+                // Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
+                Storage::disk('archivos')->put("logistica/comporbantes_proveedor/".$newNameFile, File::get($archivo));
+
+                $idAdjunto = DB::table('logistica.adjuntos_logisticos')->insertGetId(
+                    [
+                        'id_orden'     => $id_orden,
+                        'archivo'                   => $newNameFile,
+                        'estado'                 => 1,
+                        'categoria_adjunto_id'      => $idCategoria,
+                        'fecha_emision'            => $fecha_emision,
+                        'fecha_registro'            => $fechaHoy
+                    ],
+                    'id_adjunto'
+                );
+
+                $idAdjuntoList[] = $idAdjunto;
+            }
+        }
+
+        return $idAdjuntoList;
+    }
+    public function listarArchivosOrder($id_order)
+    {
+        return DB::table('logistica.adjuntos_logisticos')
+            ->select('adjuntos_logisticos.archivo','adjuntos_logisticos.fecha_emision','adjuntos_logisticos.fecha_registro', 'categoria_adjunto.descripcion')
+            ->join('logistica.categoria_adjunto', 'adjuntos_logisticos.categoria_adjunto_id', '=', 'categoria_adjunto.id_categoria_adjunto')
+            ->where('adjuntos_logisticos.id_orden', $id_order)
+            ->get();
+    }
 }

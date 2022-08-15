@@ -629,7 +629,7 @@ class RequerimientoController extends Controller
         $cantidad_aprobados = Aprobacion::cantidadAprobaciones($num_doc);
 
 
-        $usuarioElaboradorDeRequerimiento = 
+        $usuarioElaboradorDeRequerimiento =
 
 
 
@@ -650,7 +650,7 @@ class RequerimientoController extends Controller
             'orden'=> null,
             'tiene_sustento'=> false
         ];
-        
+
         foreach ((Aprobacion::getVoBo($num_doc)['data']) as $key => $value) {
             $historialAprobacionList[] =$value ;
         }
@@ -1016,7 +1016,7 @@ class RequerimientoController extends Controller
     public function actualizarRequerimiento(Request $request)
     {
         // dd($request->all());
-        // exit();  
+        // exit();
         $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
 
         $count = count($request->descripcion);
@@ -1052,7 +1052,7 @@ class RequerimientoController extends Controller
                     $aprobacion = Aprobacion::where("id_aprobacion", $value->id_aprobacion)->first();
                     $aprobacion->tiene_sustento = true;
                     $aprobacion->save();
-                    
+
                 }
             }
             // $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();

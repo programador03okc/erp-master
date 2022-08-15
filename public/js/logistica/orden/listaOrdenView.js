@@ -4,7 +4,7 @@ var cantidadFiltrosActivosDetalle = 0;
 var tempDataProveedorParaPago = [];
 let $tablaListaOrdenesElaborados;
 let $tablaListaItemsOrdenesElaborados;
-
+var tempArchivoAdjuntoRequerimientoCabeceraList=[];
 class ListaOrdenView {
     constructor(listaOrdenCtrl) {
         this.listaOrdenCtrl = listaOrdenCtrl;
@@ -161,7 +161,60 @@ class ListaOrdenView {
 
             }
         });
+        $(document).on('click','.adjuntar-archivos',function () {
+            var data_id = $(this).attr('data-id'),
+                data_codigo = $(this).attr('data-codigo');
+            $('#modal-adjuntar-orden [name=id_orden]').val(data_id);
+            $('#modal-adjuntar-orden [name=codigo_orden]').val($(this).attr('data-codigo'));
+            $('#modal-adjuntar-orden .codigo').text(data_codigo);
+            $('#modal-adjuntar-orden .codigo').css('color','cadetblue');
+            $('#modal-adjuntar-orden').modal('show');
+            obteneAdjuntosOrden(data_id).then((res) => {
 
+                let htmlPago = '';
+                console.log(res.length);
+                if (res.length > 0) {
+                    (res).forEach(element => {
+
+                            htmlPago+= '<tr>'
+                                htmlPago+='<td>'
+                                    htmlPago+='<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>'
+                                htmlPago+='</td>'
+
+                                htmlPago+='<td>'
+                                    htmlPago+=''+element.fecha_emision+''
+                                htmlPago+='</td>'
+
+                                htmlPago+='<td>'
+                                    htmlPago+=''+element.descripcion+''
+                                htmlPago+='</td>'
+                            htmlPago+= '</tr>'
+
+                    });
+                }else{
+                    htmlPago = `<tr>
+                    <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
+                    </tr>`;
+                }
+                $('#form-adjunto-orden #body_archivos_requerimiento_compra_detalle').html(htmlPago)
+
+
+            }).catch(function (err) {
+                console.log(err)
+            })
+        });
+
+        $(document).on("change", "input.handleChangeAgregarAdjuntoRequerimientoCompraCabecera", (e) => {
+            this.agregarAdjuntoRequerimientoCabeceraCompra(e.currentTarget);
+        });
+        $('#modal-adjuntar-orden').on("click", "button.handleClickEliminarArchivoCabeceraRequerimientoCompra", (e) => {
+            this.eliminarAdjuntoRequerimientoCompraCabecera(e.currentTarget);
+        });
+        $(document).on("submit", "#form-adjunto-orden", (e) => {
+            e.preventDefault();
+
+            this.guardarAdjuntos();
+        });
     }
 
     limpiarTabla(idElement) {
@@ -180,7 +233,7 @@ class ListaOrdenView {
 
 
 
-    // botonera secundaria 
+    // botonera secundaria
     tipoVistaPorCabecera() {
         document.querySelector("button[id='btnTipoVistaPorCabecera'").classList.add('active');
         document.querySelector("button[id='btnTipoVistaPorItemPara'").classList.remove('active');
@@ -462,7 +515,7 @@ class ListaOrdenView {
 
                     </tr>`;
             });
-            var tabla = `<table class="table table-sm" style="border: none; font-size:x-small;" 
+            var tabla = `<table class="table table-sm" style="border: none; font-size:x-small;"
                 id="detalle_${table_id}">
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
@@ -484,7 +537,7 @@ class ListaOrdenView {
                 <tbody style="background: #e7e8ea;">${html}</tbody>
                 </table>`;
         } else {
-            var tabla = `<table class="table table-sm" style="border: none;" 
+            var tabla = `<table class="table table-sm" style="border: none;"
                 id="detalle_${table_id}">
                 <tbody>
                     <tr><td>No hay registros para mostrar</td></tr>
@@ -546,7 +599,7 @@ class ListaOrdenView {
             tr.classList.add('shown');
             // try datatable stuff
             oInnerTable = $('#listaOrdenes_' + iTableCounter).dataTable({
-                //    data: sections, 
+                //    data: sections,
                 autoWidth: true,
                 deferRender: true,
                 info: false,
@@ -837,7 +890,7 @@ class ListaOrdenView {
                 {
                     'render':
                         function (data, type, row) {
-                            return `<a href="${row.orden_fisica}" target="_blank"><span class="label label-warning">Orden Física</span></a> 
+                            return `<a href="${row.orden_fisica}" target="_blank"><span class="label label-warning">Orden Física</span></a>
                         <a href="${row.orden_electronica}" target="_blank"><span class="label label-info">Orden Electrónica</span></a>`;
                         }
                 }
@@ -1138,7 +1191,7 @@ class ListaOrdenView {
                 show: true
             });
             document.querySelector("div[id='modal-info-adicional-cuenta-seleccionada'] div[class='modal-body']").insertAdjacentHTML('beforeend', `<div>
-            
+
             <dl>
                 <dt>Banco</dt>
                 <dd>${selectCuenta.options[(selectCuenta.selectedIndex)].dataset.banco}</dd>
@@ -1203,12 +1256,12 @@ class ListaOrdenView {
                                     }
                                     (response.data[0].cuenta_persona).forEach(element => {
                                         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
-                                        <option 
-                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
-                                            data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}" 
-                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
-                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
-                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
+                                        <option
+                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                                            data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}"
+                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
                                             value="${element.id_cuenta_bancaria}"
                                             >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}</option>
                                         `);
@@ -1231,12 +1284,12 @@ class ListaOrdenView {
                                     }
                                     (response.data[0].cuenta_contribuyente).forEach(element => {
                                         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
-                                        <option 
-                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
-                                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
-                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
-                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
-                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
+                                        <option
+                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}"
+                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
                                             value="${element.id_cuenta_contribuyente}"
                                             >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}</option>
                                         `);
@@ -1310,7 +1363,7 @@ class ListaOrdenView {
         data.forEach(element => {
             if (idTipoDestinatario == 1) {
                 document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='listaDestinatariosEncontrados']").insertAdjacentHTML('beforeend', `
-                <tr class="handleClickSeleccionarDestinatario" style="cursor:pointer;" 
+                <tr class="handleClickSeleccionarDestinatario" style="cursor:pointer;"
                 data-id-persona="${element.id_persona != null ? element.id_persona : ''}"
                 data-id-contribuyente="${element.id_contribuyente != null ? element.id_contribuyente : ''}"
                 data-tipo-documento-identidad="${element.tipo_documento_identidad != null ? element.tipo_documento_identidad.descripcion : ''}"
@@ -1561,12 +1614,12 @@ class ListaOrdenView {
                     'data': 'data_codigo_oportunidad','className': 'text-center', 'defaultContent':""
                     // render: function (data) {
                         // if (data != null && data.length > 0) {
-                            
+
                         //     return data.map(e => e.id_cc >0 ?(e.cc_codigo_oportunidad):'').join(",");
                         // } else {
                         //     return 'Sin Código';
                         // }
- 
+
                     // }
                 },
                 { 'data': 'descripcion_sede_empresa', 'name': 'descripcion_sede_empresa','className': 'text-center' },
@@ -1584,8 +1637,8 @@ class ListaOrdenView {
                     //     } else {
                     //         return 'Sin determinar';
                     //     }
- 
-                    
+
+
                     // }
                 },
                 { 'data': 'razon_social_proveedor',
@@ -1609,7 +1662,7 @@ class ListaOrdenView {
                     'data': 'data_importe_oportunidad', 'defaultContent':"-"
                     // render: function (data) {
                         // if (data != null && data.length > 0) {
-                            
+
                         //     return data.map(e => e.id_cc >0 ?(e.cc_moneda_oportunidad=='s'?('S/'+$.number(e.cc_importe_oportunidad,2)):('$'+$.number(e.cc_importe_oportunidad,2))):'').join(",");
                         // } else {
                         //     return 'Sin Código';
@@ -1629,7 +1682,7 @@ class ListaOrdenView {
                             //     });
 
                             // }
-    
+
                             let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
                             let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
 
@@ -1642,10 +1695,10 @@ class ListaOrdenView {
                             let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id}">
                                                 <i class="fas fa-chevron-down"></i>
                                                 </button>`;
-                            let btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}" 
-                                data-id-orden-compra="${row.id ?? ''}" 
-                                data-codigo-orden="${row.codigo ?? ''}" 
-                                data-id-proveedor="${row.id_proveedor ?? ''}" 
+                            let btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
+                                data-id-orden-compra="${row.id ?? ''}"
+                                data-codigo-orden="${row.codigo ?? ''}"
+                                data-id-proveedor="${row.id_proveedor ?? ''}"
                                 data-id-cuenta-principal="${row.id_cta_principal ?? ''}"
                                 data-estado-pago="${row.estado_pago ?? ''}"
                                 data-id-prioridad-pago="${row.id_prioridad_pago ?? ''}"
@@ -1658,13 +1711,15 @@ class ListaOrdenView {
                                 data-comentario-pago="${row.comentario_pago ?? ''}" >
                                     <i class="fas fa-money-check-alt fa-xs"></i>
                                 </button>`;
+
+                            let btnAdjuntar = `<button type="button"  class="btn btn-default adjuntar-archivos" data-toggle="tooltip" title="Adjuntar archivos" data-codigo="${row.codigo}" data-id="${row.id}" data-codigo="${row.codigo}" ><i class="fas fa-paperclip fa-xs"></i></button>`;
                             let containerCloseBrackets = '</div>';
-                            return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnEnviarAPago + btnAnularOrden + containerCloseBrackets);
+                            return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnEnviarAPago + btnAnularOrden + btnAdjuntar + containerCloseBrackets);
 
                         }
                 }
             ],
-        
+
             'columnDefs': [
 
 
@@ -1832,19 +1887,19 @@ class ListaOrdenView {
                 {
                     'render':
                         function (data, type, row, meta) {
-    
+
                             let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
                             let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden + '"><i class="fas fa-file-download fa-xs"></i></button>';
                             let btnDocumentosVinculados = '<button type="button" class="btn btn-sm btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden + '"><i class="fas fa-folder fa-xs"></i></button>';
                             let containerCloseBrackets = '</div>';
-    
+
                             return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + containerCloseBrackets);
-    
+
 
                         }
                 }
             ],
-        
+
             'columnDefs': [
 
 
@@ -1906,4 +1961,258 @@ class ListaOrdenView {
         window.open('exportar-lista-ordenes-elaboradas-nivel-detalle-excel');
     }
 
+    agregarAdjuntoRequerimientoCabeceraCompra(obj){
+        if (obj.files != undefined && obj.files.length > 0) {
+            // console.log(obj.files);
+            if((obj.files.length + tempArchivoAdjuntoRequerimientoCabeceraList.length)>1){
+                Swal.fire(
+                    '',
+                    'Solo puedes subir un máximo de 1 archivos',
+                    'warning'
+                );
+            }else{
+                Array.prototype.forEach.call(obj.files, (file) => {
+
+                    if (this.estaHabilitadoLaExtension(file) == true) {
+                        let payload = {
+                            id: this.makeId(),
+                            category: 1, //default: otros adjuntos
+                            nameFile: file.name,
+                            action: 'GUARDAR',
+                            file: file
+                        };
+                        this.addToTablaArchivosRequerimientoCabecera(payload);
+
+                        tempArchivoAdjuntoRequerimientoCabeceraList.push(payload);
+                        console.log(tempArchivoAdjuntoRequerimientoCabeceraList);
+                        console.log(payload);
+                    } else {
+                        Swal.fire(
+                            'Este tipo de archivo no esta permitido adjuntar',
+                            file.name,
+                            'warning'
+                        );
+                    }
+                });
+
+            }
+
+
+        }
+        this.calcTamañoTotalAdjuntoLogisticoParaSubir();
+
+        return false;
+
+    }
+
+    estaHabilitadoLaExtension(file) {
+        let extension = (file.name.match(/(?<=\.)\w+$/g) !=null)?file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase():''; // assuming that this file has any extension
+        if (extension === 'dwg'
+            || extension === 'dwt'
+            || extension === 'cdr'
+            || extension === 'back'
+            || extension === 'backup'
+            || extension === 'psd'
+            || extension === 'sql'
+            || extension === 'exe'
+            || extension === 'html'
+            || extension === 'js'
+            || extension === 'php'
+            || extension === 'ai'
+            || extension === 'mp4'
+            || extension === 'mp3'
+            || extension === 'avi'
+            || extension === 'mkv'
+            || extension === 'flv'
+            || extension === 'mov'
+            || extension === 'wmv'
+            || extension === ''
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    getcategoriaAdjunto() {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `listas-categorias-adjunto`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function (err) {
+                    reject(err)
+                }
+            });
+        });
+    }
+    addToTablaArchivosRequerimientoCabecera(payload) {
+        this.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
+
+            let html = '';
+            html = `<tr id="${payload.id}" style="text-align:center">
+            <td style="text-align:left;">${payload.nameFile}</td>
+            <td style="text-align:left;"><input type="date" class="form-control" name="fecha_emision " required></td>
+            <td>
+                <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
+            `;
+            categoriaAdjuntoList.forEach(element => {
+                if (element.id_categoria_adjunto == payload.category) {
+                    html += `<option value="${element.id_categoria_adjunto}" selected>${element.descripcion}</option>`
+                } else {
+                    html += `<option value="${element.id_categoria_adjunto}">${element.descripcion}</option>`
+
+                }
+            });
+            html += `</select>
+            </td>
+            <td style="text-align:center;">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoCabeceraRequerimientoCompra" name="btnEliminarArchivoRequerimientoPago" title="Eliminar" data-id="${payload.id}" ><i class="fas fa-trash-alt"></i></button>
+                </div>
+            </td>
+            </tr>`;
+
+            document.querySelector("div[id='modal-adjuntar-orden'] tbody[id='body_archivos_requerimiento_compra_cabecera']").insertAdjacentHTML('beforeend', html);
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+    makeId() {
+        let ID = "";
+        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        for (let i = 0; i < 12; i++) {
+            ID += characters.charAt(Math.floor(Math.random() * 36));
+        }
+        return ID;
+    }
+
+    calcTamañoTotalAdjuntoLogisticoParaSubir(){
+        let tamañoTotalArchivoParaSubir=0;
+
+        tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
+            tamañoTotalArchivoParaSubir+=element.size;
+
+        });
+            document.querySelector("div[id='modal-adjuntar-orden'] span[id='tamaño_total_archivos_para_subir']").textContent= $.number((tamañoTotalArchivoParaSubir/1000000),2)+'MB';
+    }
+    eliminarAdjuntoRequerimientoCompraCabecera(obj){
+        obj.closest("tr").remove();
+        var regExp = /[a-zA-Z]/g; //expresión regular
+        if ((regExp.test(obj.dataset.id) == true)) {
+            tempArchivoAdjuntoRequerimientoCabeceraList = tempArchivoAdjuntoRequerimientoCabeceraList.filter((element, i) => element.id != obj.dataset.id);
+        } else {
+            if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
+                let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.dataset.id);
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ELIMINAR';
+            } else {
+                Swal.fire(
+                    '',
+                    'Hubo un error inesperado al intentar eliminar el adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                    'error'
+                );
+            }
+
+        }
+    }
+    guardarAdjuntos(){
+        if(tempArchivoAdjuntoRequerimientoCabeceraList.length>0){
+            let formData = new FormData($('#modal-adjuntar-orden #form-adjunto-orden')[0]);
+            formData.append(`archivoAdjuntoRequerimientoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoCabeceraList));
+
+            if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
+                tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
+                    if(element.action =='GUARDAR'){
+                        formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
+                    }
+                });
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: 'guardar-adjunto-orden',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+                    $('#modal-adjuntar-orden .modal-content').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success: (response) =>{
+                    if (response.status =='success') {
+                        $('#modal-adjuntar-orden .modal-content').LoadingOverlay("hide", true);
+
+                        Lobibox.notify('success', {
+                            title:false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: response.mensaje
+                        });
+                        $('#modal-adjuntar-orden').modal('hide');
+
+                    } else {
+                        $('#modal-adjuntar-orden .modal-content').LoadingOverlay("hide", true);
+                        console.log(response);
+                        Swal.fire(
+                            '',
+                            response.mensaje,
+                            'error'
+                        );
+                    }
+                },
+                fail:  (jqXHR, textStatus, errorThrown) =>{
+                    $('#modal-adjuntar-orden .modal-content').LoadingOverlay("hide", true);
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar guardar los adjuntos, por favor vuelva a intentarlo',
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+
+        }else{
+            Swal.fire(
+                '',
+                'No existen adjuntos para guardar',
+                'warning'
+            );
+        }
+    }
+}
+function obteneAdjuntosOrden(id_orden) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: `listar-archivos-adjuntos-orden/${id_orden}`,
+            dataType: 'JSON',
+            beforeSend: (data) => {
+            // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("show", {
+            //     imageAutoResize: true,
+            //     progress: true,
+            //     imageColor: "#3c8dbc"
+            // });
+        },
+            success(response) {
+                // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                resolve(response);
+            },
+            error: function (err) {
+                // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                reject(err)
+            }
+        });
+    });
 }

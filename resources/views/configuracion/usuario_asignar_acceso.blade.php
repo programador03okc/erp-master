@@ -15,34 +15,44 @@
         </ol>
     </legend>
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <ul class="nav nav-tabs" role="tablist" id="tab_modulos">
-                    {{-- <li role="presentation" class="active"><a href="#modulo1" aria-controls="modulo1" role="tab" data-toggle="tab">modulo 1</a></li>
-                    <li role="presentation" class=""><a href="#modulo2" onClick="vista_extendida();" aria-controls="modulo2" role="tab" data-toggle="tab">modulo 2</a></li> --}}
-                </ul>
-                <div class="tab-content" id="tabpanel_modulos">
-                    {{-- <div role="tabpanel" class="tab-pane active" id="modulo1">
-                        <div class="panel panel-default">
-                            <div class="panel-body" style="overflow: scroll; height: 35vh;">
-                                <div class="row">
+        <form action="" data-form="enviar-data">
+            <input type="hidden" name="id_usuario" value="">
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="nav nav-tabs" role="tablist" id="tab_modulos">
+                        {{-- <li role="presentation" class="active"><a href="#modulo1" aria-controls="modulo1" role="tab" data-toggle="tab">modulo 1</a></li>
+                        <li role="presentation" class=""><a href="#modulo2" onClick="vista_extendida();" aria-controls="modulo2" role="tab" data-toggle="tab">modulo 2</a></li> --}}
+                    </ul>
+                    <div class="tab-content" id="tabpanel_modulos">
 
+                        {{-- <div role="tabpanel" class="tab-pane active" id="modulo1">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="overflow: scroll; height: 35vh;">
+                                    <div class="row">
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div role="tabpanel" class="tab-pane" id="modulo2">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="row">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div> --}}
+
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="modulo2">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div class="row">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                 </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button class="btn btn-primary" type="submit"> Guardar</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 
