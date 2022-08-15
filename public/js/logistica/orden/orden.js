@@ -613,6 +613,7 @@ function mostrarOrden(id) {
         url: 'mostrar-orden/' + id,
         dataType: 'JSON',
         success: (response) => {
+            console.log(response);
             construirFormularioOrden(response);
             detalleOrdenList = response.detalle;
             setStatusPage();
@@ -635,7 +636,7 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_documento']").value = data.id_tp_documento ? data.id_tp_documento : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_rubro_proveedor']").value = data.id_rubro ? data.id_rubro : '';
-    $('.selectpicker').selectpicker('refresh')
+    $('.selectpicker').selectpicker('refresh');
     document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='codigo_orden_interno']").textContent = data.codigo_orden ? data.codigo_orden : '';
     // document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden !=null?"(Estado: "+data.estado_orden+')':'';
     document.querySelector("form[id='form-crear-orden-requerimiento'] span[name='estado_orden']").textContent = data.estado_orden != null ? `(Estado: ${data.estado_orden})` : '';
