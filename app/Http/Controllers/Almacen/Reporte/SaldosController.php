@@ -85,8 +85,7 @@ class SaldosController extends Controller
             $query = $query->get();
 
             foreach ($query as $d) {
-                $movimientos = DB::table('almacen.mov_alm')
-                    ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
+                $movimientos = DB::table('almacen.mov_alm_det')
                     ->select(
                         'mov_alm.codigo',
                         'mov_alm.id_tp_mov',
@@ -95,49 +94,59 @@ class SaldosController extends Controller
                         'mov_alm_det.cantidad',
                         'mov_alm_det.valorizacion'
                     )
-                    ->where('mov_alm.id_almacen', $d->id_almacen)
-                    ->where('mov_alm.estado', 1)
-                    ->where('mov_alm.fecha_emision', '<=', $request->session()->get('filtroFecha'))
-                    ->where('mov_alm_det.id_producto', $d->id_producto)
-                    ->where('mov_alm_det.estado', 1)
-                    ->orderBy('mov_alm.fecha_emision');
+                    ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+                    ->where([
+                        ['mov_alm_det.id_producto', '=', $d->id_producto],
+                        ['mov_alm.id_almacen', '=', $d->id_almacen],
+                        // ['mov_alm.estado', '=', 1],
+                        ['mov_alm.fecha_emision', '<=', $request->session()->get('filtroFecha')],
+                        ['mov_alm_det.estado', '=', 1]
+                    ])
+                    ->orderBy('mov_alm.fecha_emision', 'asc')
+                    ->orderBy('mov_alm.id_tp_mov', 'asc')
+                    ->get();
 
-                if ($movimientos->count() > 0) {
-                    $saldo = 0;
-                    $saldo_valor = 0;
-                    $costo_promedio = 0;
+                // if ($movimientos->count() > 0) {
+                $saldo = 0;
+                $saldo_valor = 0;
+                $costo_promedio = 0;
+                $valor_salida = 0;
 
-                    foreach ($movimientos->get() as $key) {
-                        if ($key->id_tp_mov == 0 || $key->id_tp_mov == 1) {
-                            $saldo += (float) $key->cantidad;
-                            $saldo_valor += (float) $key->valorizacion;
-                        } else if ($key->id_tp_mov == 2) {
-                            $saldo -= (float) $key->cantidad;
-                            $valor_salida = $costo_promedio * (float) $key->cantidad;
-                            $saldo_valor -= (float) $valor_salida;
-                        }
-                        $costo_promedio = (float) ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+                foreach ($movimientos as $m) {
+
+                    if ($m->id_tp_mov == 1 || $m->id_tp_mov == 0) { //ingreso o inicial
+                        $saldo += $m->cantidad;
+                        $saldo_valor += $m->valorizacion;
+                    } else if ($m->id_tp_mov == 2) { //salida
+                        $saldo -= $m->cantidad;
+                        $valor_salida = $costo_promedio * $m->cantidad;
+                        $saldo_valor -= $valor_salida;
                     }
 
-                    $reserva = ($d->cantidad_reserva == null) ? 0 : $d->cantidad_reserva;
-                    $data[] = [
-                        'id_producto'           => $d->id_producto,
-                        'id_almacen'            => $d->id_almacen,
-                        'codigo'                => ($d->codigo != null) ? $d->codigo : '',
-                        'cod_softlink'          => ($d->cod_softlink != null) ? $d->cod_softlink : '',
-                        'part_number'           => ($d->part_number != null) ? trim($d->part_number) : '',
-                        'categoria'             => trim($d->categoria),
-                        'producto'              => trim($d->producto),
-                        'simbolo'               => ($d->simbolo != null) ? $d->simbolo : '',
-                        'valorizacion'          => $saldo_valor,
-                        'costo_promedio'        => $costo_promedio,
-                        'abreviatura'           => ($d->abreviatura != null) ? $d->abreviatura : '',
-                        'stock'                 => $saldo,
-                        'reserva'               => $reserva,
-                        'disponible'            => ($saldo - $reserva),
-                        'almacen_descripcion'   => ($d->almacen_descripcion != null) ? $d->almacen_descripcion : '',
-                    ];
+                    if ($saldo !== 0) {
+                        $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+                    }
                 }
+
+                $reserva = ($d->cantidad_reserva == null) ? 0 : $d->cantidad_reserva;
+                $data[] = [
+                    'id_producto'           => $d->id_producto,
+                    'id_almacen'            => $d->id_almacen,
+                    'codigo'                => ($d->codigo != null) ? $d->codigo : '',
+                    'cod_softlink'          => ($d->cod_softlink != null) ? $d->cod_softlink : '',
+                    'part_number'           => ($d->part_number != null) ? trim($d->part_number) : '',
+                    'categoria'             => trim($d->categoria),
+                    'producto'              => trim($d->producto),
+                    'simbolo'               => ($d->simbolo != null) ? $d->simbolo : '',
+                    'valorizacion'          => $saldo_valor,
+                    'costo_promedio'        => $costo_promedio,
+                    'abreviatura'           => ($d->abreviatura != null) ? $d->abreviatura : '',
+                    'stock'                 => $saldo,
+                    'reserva'               => $reserva,
+                    'disponible'            => ($saldo - $reserva),
+                    'almacen_descripcion'   => ($d->almacen_descripcion != null) ? $d->almacen_descripcion : '',
+                ];
+                // }
             }
         }
         return DataTables::of($data)->make(true);
