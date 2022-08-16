@@ -139,6 +139,7 @@ function calculaImporte() {
 }
 
 function editar_documento(id_prorrateo_doc) {
+    console.log(id_prorrateo_doc);
     $('#modal-doc_prorrateo').modal({
         show: true
     });
@@ -194,7 +195,7 @@ function mostrar_documentos() {
                 <td style="text-align: right">${element.tipo_prorrateo}</td>
                 <td style="display:flex;">
                     <button type="button" class="editar btn btn-primary btn-xs activation" data-toggle="tooltip" 
-                        data-placement="bottom" title="Editar" onClick="editar_documento(${element.id_prorrateo_doc});"
+                        data-placement="bottom" title="Editar" onClick="editar_documento('${element.id_prorrateo_doc}');"
                         >  <i class="fas fa-pen"></i></button>
                     <button type="button" class="anular btn btn-danger btn-xs activation" data-toggle="tooltip" 
                         data-placement="bottom" title="Eliminar" onClick="anular_documento('${element.id_prorrateo_doc}');"
