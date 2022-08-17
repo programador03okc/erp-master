@@ -19,6 +19,7 @@ function listar_guia_detalle(id_guia) {
                 var moneda = '';
                 var simbolo = '';
                 var tipo_cambio = 0;
+                var total = 0;
                 var id_moneda_global = $('[name=id_moneda_global]').val();
 
                 response.forEach(element => {
@@ -44,6 +45,7 @@ function listar_guia_detalle(id_guia) {
                                 valor_compra_soles = valor_compra / parseFloat(tipo_cambio);
                             }
                         }
+                        total = (parseFloat(precio_unitario) * parseFloat(element.cantidad));
 
                         guias_detalle.push({
                             'id_prorrateo_det': 0,
@@ -64,7 +66,7 @@ function listar_guia_detalle(id_guia) {
                             'valor_ingreso': 0,
                             'adicional_valor': 0,
                             'adicional_peso': 0,
-                            'total': (parseFloat(precio_unitario) * parseFloat(element.cantidad)),
+                            'total': total,
                             'peso': 0,
                             'estado': 1,
                             'id_moneda_producto': element.moneda_producto,

@@ -115,11 +115,11 @@ class ProrrateoCostosController extends Controller
                 'log_det_ord_compra.precio as unitario_orden',
                 DB::raw("(SELECT tc.venta FROM contabilidad.cont_tp_cambio AS tc
                         WHERE tc.fecha <= doc_com.fecha_emision
-                          AND tc.moneda = doc_com.moneda
+                          AND tc.moneda = 2
                           LIMIT 1) AS tipo_cambio_doc"),
                 DB::raw("(SELECT tc.venta FROM contabilidad.cont_tp_cambio AS tc
                         WHERE tc.fecha <= log_ord_compra.fecha
-                          AND tc.moneda = log_ord_compra.id_moneda
+                          AND tc.moneda = 2
                           LIMIT 1) AS tipo_cambio_orden"),
                 DB::raw("(SELECT tc.venta FROM contabilidad.cont_tp_cambio AS tc
                           WHERE tc.fecha <= guia_com.fecha_almacen
