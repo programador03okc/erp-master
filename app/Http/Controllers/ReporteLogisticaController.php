@@ -7,6 +7,7 @@ use App\Models\Administracion\Sede;
 use App\Models\Configuracion\Grupo;
 use App\Models\Logistica\ComprasLocalesView;
 use App\Models\Logistica\Orden;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
@@ -205,8 +206,9 @@ class ReporteLogisticaController extends Controller{
 	public function viewReporteComprasLocales(){
 		$empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
+        $fechaActual = new Carbon();
 
-		return view('logistica/reportes/compras_locales',compact('empresas','grupos'));
+		return view('logistica/reportes/compras_locales',compact('empresas','grupos','fechaActual'));
 	}
 
 	public function listaComprasLocales(Request $request){

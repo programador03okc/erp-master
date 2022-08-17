@@ -32,95 +32,102 @@ class ComprasLocales {
                 this.mostrar(this.ActualParametroEmpresa,this.ActualParametroSede,this.ActualParametroFechaDesde,this.ActualParametroFechaHasta);
             }
         });
+
+        $('#modal-filtro-reporte-compra-locales').on("change", "select.handleChangeFiltroEmpresa", (e) => {
+            this.handleChangeFiltroEmpresa(e);
+        });
+        $('#modal-filtro-reporte-compra-locales').on("click", "input[type=checkbox]", (e) => {
+            this.estadoCheckFiltro(e);
+        });
     }
 
-    // abrirModalFiltrosListaComprasLocales(){
-    //     $('#modal-filtro-reporte-transito-ordenes-compra').modal({
-    //         show: true,
-    //         backdrop: 'true'
-    //     });
-    // }
+    abrirModalFiltrosListaComprasLocales(){
+        $('#modal-filtro-reporte-compra-locales').modal({
+            show: true,
+            backdrop: 'true'
+        });
+    }
 
-    // getDataSelectSede(id_empresa){
+    getDataSelectSede(id_empresa){
         
-    //     return new Promise(function(resolve, reject) {
-    //         if(id_empresa >0){
-    //             $.ajax({
-    //                 type: 'GET',
-    //                 url: `listar-sedes-por-empresa/` + id_empresa,
-    //                 dataType: 'JSON',
-    //                 success(response) {
-    //                     resolve(response) // Resolve promise and go to then() 
-    //                 },
-    //                 error: function(err) {
-    //                 reject(err) // Reject the promise and go to catch()
-    //                 }
-    //                 });
-    //             }else{
-    //                 resolve(false);
-    //             }
-    //         });
-    // } 
+        return new Promise(function(resolve, reject) {
+            if(id_empresa >0){
+                $.ajax({
+                    type: 'GET',
+                    url: `listar-sedes-por-empresa/` + id_empresa,
+                    dataType: 'JSON',
+                    success(response) {
+                        resolve(response) // Resolve promise and go to then() 
+                    },
+                    error: function(err) {
+                    reject(err) // Reject the promise and go to catch()
+                    }
+                    });
+                }else{
+                    resolve(false);
+                }
+            });
+    } 
 
-    // handleChangeFiltroEmpresa(event) {
-    //     let id_empresa = event.target.value;
-    //     this.getDataSelectSede(id_empresa).then((res) => {
-    //         this.llenarSelectSede(res);
-    //     }).catch(function (err) {
-    //         console.log(err)
-    //     })
+    handleChangeFiltroEmpresa(event) {
+        let id_empresa = event.target.value;
+        this.getDataSelectSede(id_empresa).then((res) => {
+            this.llenarSelectSede(res);
+        }).catch(function (err) {
+            console.log(err)
+        })
 
-    // }
+    }
 
-    // llenarSelectSede(array) {
-    //     let selectElement = document.querySelector("div[id='modal-filtro-reporte-transito-ordenes-compra'] select[name='sede']");
+    llenarSelectSede(array) {
+        let selectElement = document.querySelector("div[id='modal-filtro-reporte-compra-locales'] select[name='sede']");
 
-    //     if (selectElement.options.length > 0) {
-    //         var i, L = selectElement.options.length - 1;
-    //         for (i = L; i >= 0; i--) {
-    //             selectElement.remove(i);
-    //         }
-    //     }
+        if (selectElement.options.length > 0) {
+            var i, L = selectElement.options.length - 1;
+            for (i = L; i >= 0; i--) {
+                selectElement.remove(i);
+            }
+        }
 
-    //     array.forEach(element => {
-    //         let option = document.createElement("option");
-    //         option.text = element.descripcion;
-    //         option.value = element.id_sede;
-    //         selectElement.add(option);
-    //     });
-    // }
+        array.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_sede;
+            selectElement.add(option);
+        });
+    }
 
 
-    // estadoCheckFiltroOrdenesCompra(e){
-    //     const modalFiltro =document.querySelector("div[id='modal-filtro-reporte-transito-ordenes-compra']");
-    //     switch (e.currentTarget.getAttribute('name')) {
-    //         case 'chkEmpresa':
-    //             if (e.currentTarget.checked == true) {
-    //                 modalFiltro.querySelector("select[name='empresa']").removeAttribute("readOnly")
-    //             } else {
-    //                 modalFiltro.querySelector("select[name='empresa']").setAttribute("readOnly", true)
-    //             }
-    //             break;
-    //         case 'chkSede':
-    //             if (e.currentTarget.checked == true) {
-    //                 modalFiltro.querySelector("select[name='sede']").removeAttribute("readOnly")
-    //             } else {
-    //                 modalFiltro.querySelector("select[name='sede']").setAttribute("readOnly", true)
-    //             }
-    //             break;
-    //         case 'chkFechaRegistro':
-    //             if (e.currentTarget.checked == true) {
-    //                 modalFiltro.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly")
-    //                 modalFiltro.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly")
-    //             } else {
-    //                 modalFiltro.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
-    //                 modalFiltro.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
-    //             }
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
+    estadoCheckFiltro(e){
+        const modalFiltro =document.querySelector("div[id='modal-filtro-reporte-compra-locales']");
+        switch (e.currentTarget.getAttribute('name')) {
+            case 'chkEmpresa':
+                if (e.currentTarget.checked == true) {
+                    modalFiltro.querySelector("select[name='empresa']").removeAttribute("readOnly")
+                } else {
+                    modalFiltro.querySelector("select[name='empresa']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkSede':
+                if (e.currentTarget.checked == true) {
+                    modalFiltro.querySelector("select[name='sede']").removeAttribute("readOnly")
+                } else {
+                    modalFiltro.querySelector("select[name='sede']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkFechaRegistro':
+                if (e.currentTarget.checked == true) {
+                    modalFiltro.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly")
+                    modalFiltro.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly")
+                } else {
+                    modalFiltro.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
+                }
+                break;
+            default:
+                break;
+        }
+    }
     // updateValorFiltro(){
     //     const modalFiltro = document.querySelector("div[id='modal-filtro-reporte-transito-ordenes-compra']");
     //     if(modalFiltro.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
@@ -156,17 +163,17 @@ class ComprasLocales {
         $tablaListaComprasLocales= $('#listaComprasLocales').DataTable({
             'dom': vardataTables[1],
             'buttons': [
-                // {
-                //     text: '<i class="fas fa-filter"></i> Filtros : 0',
-                //     attr: {
-                //         id: 'btnFiltrosListaComprasLocales'
-                //     },
-                //     action: () => {
-                //         this.abrirModalFiltrosListaComprasLocales();
+                {
+                    text: '<i class="fas fa-filter"></i> Filtros : 0',
+                    attr: {
+                        id: 'btnFiltrosListaComprasLocales'
+                    },
+                    action: () => {
+                        this.abrirModalFiltrosListaComprasLocales();
 
-                //     },
-                //     className: 'btn-default btn-sm'
-                // },
+                    },
+                    className: 'btn-default btn-sm'
+                },
                 {
                     text: '<i class="far fa-file-excel"></i> Descargar',
                     attr: {
@@ -204,11 +211,12 @@ class ComprasLocales {
             },
             'columns': [
                 { 'data': 'descripcion', 'name': 'descripcion', 'className': 'text-center' },
+                { 'data': 'rubro_proveedor', 'name': 'rubro_proveedor', 'className': 'text-center' },
                 { 'data': 'razon_social_proveedor', 'name': 'razon_social_proveedor', 'className': 'text-center' },
                 { 'data': 'nro_documento_proveedor', 'name': 'nro_documento_proveedor', 'className': 'text-center' },
                 { 'data': 'direccion_proveedor', 'name': 'direccion_proveedor', 'className': 'text-center' },
                 { 'data': 'ubigeo_proveedor', 'name': 'ubigeo_proveedor', 'className': 'text-center' },
-                { 'data': 'fecha_emision_doc_com', 'name': 'fecha_emision_doc_com', 'className': 'text-center' },
+                { 'data': 'fecha_emision_comprobante_proveedor', 'name': 'fecha_emision_comprobante_proveedor', 'className': 'text-center' },
                 { 'data': 'fecha_pago', 'name': 'fecha_pago', 'className': 'text-center' },
                 { 'data': 'tiempo_cancelacion', 'name': 'tiempo_cancelacion', 'className': 'text-center' },
                 { 'data': 'moneda_doc_com', 'name': 'moneda_doc_com', 'className': 'text-center' },
