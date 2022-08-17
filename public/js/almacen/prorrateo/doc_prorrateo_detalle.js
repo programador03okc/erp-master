@@ -27,10 +27,10 @@ function listar_guia_detalle(id_guia) {
                     if (id == undefined || id == null) {
 
                         fecha_emision = element.fecha_emision !== null ? element.fecha_emision : element.fecha_orden;
-                        precio_unitario = element.precio_unitario !== null ? element.precio_unitario : element.unitario_orden;
+                        precio_unitario = element.precio_unitario !== null ? parseFloat(element.precio_unitario) : parseFloat(element.unitario_orden);
                         moneda = element.fecha_emision !== null ? element.moneda : element.moneda_orden;
                         simbolo = element.fecha_emision !== null ? element.simbolo : element.simbolo_orden;
-                        tipo_cambio = element.fecha_emision !== null ? element.tipo_cambio_doc : element.tipo_cambio_orden;
+                        tipo_cambio = element.fecha_emision !== null ? parseFloat(element.tipo_cambio_doc) : parseFloat(element.tipo_cambio_orden);
 
                         unitario = parseFloat(precio_unitario);
                         valor_compra = ((unitario * parseFloat(element.cantidad)) + parseFloat(element.unitario_adicional));
@@ -55,7 +55,7 @@ function listar_guia_detalle(id_guia) {
                             'part_number': element.part_number,
                             'descripcion': element.descripcion,
                             'simbolo': simbolo,
-                            'cantidad': element.cantidad,
+                            'cantidad': parseFloat(element.cantidad),
                             'abreviatura': element.abreviatura,
                             'fecha_emision': fecha_emision,
                             'tipo_cambio': tipo_cambio,
