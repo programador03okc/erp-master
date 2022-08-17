@@ -983,6 +983,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('compras-locales', 'ReporteLogisticaController@viewReporteComprasLocales')->name('compras-locales');
 				Route::post('lista-compras-locales', 'ReporteLogisticaController@listaComprasLocales');
 				Route::get('reporte-compras-locales-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteCompraLocalesExcel')->name('reporte-compras-locales-excel');
+				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
+
 			});
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function () {
