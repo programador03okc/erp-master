@@ -207,18 +207,22 @@ Saldos Actuales
                         }, className: 'text-right', searchable: false, orderable: false
                     },
                     {data: 'abreviatura', className: 'text-center'},
-                    {data: 'stock', className: 'text-center', searchable: false, orderable: false},
+                    {data: 'stock', className: 'text-center', searchable: false, orderable: true},
+                    {data: 'reserva', className: 'text-center', searchable: false, orderable: true},
+                    {data: 'disponible', className: 'text-center', searchable: false, orderable: true},
+                    {data: 'almacen_descripcion'}
+                ],
+                columnDefs: [
                     {
                         render: function (data, type, row) {
                             return `
                             <a class="label label-danger" 
                                 onclick="verRequerimiento(`+ row['id_producto'] +`, `+ row['id_almacen'] +`);" style="font-size: 11px">`+ row['reserva'] +`
                             </a>`;
-                        }, className: 'text-center', searchable: false, orderable: false
-                    },
-                    {data: 'disponible', className: 'text-center', searchable: false, orderable: false},
-                    {data: 'almacen_descripcion'}
-                ],
+                        },targets: 10, className: 'text-center', searchable: false, orderable: true
+                    }
+                    
+                ]
             });
             $tabla.on('search.dt', function() {
                 $('#tablaSaldos_filter input').attr('disabled', true);
