@@ -48,6 +48,8 @@ Detalle de Salidas
                                 <th>Cant.</th>
                                 <th>Estado</th>
                                 <th>Almacén</th>
+                                <th>CDP</th>
+                                <th>Responsable</th>
                                 <th>Fecha Registro</th>
                                 <th></th>
                             </tr>
@@ -158,10 +160,10 @@ Detalle de Salidas
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
-
     <script src="{{ asset('js/almacen/reporte/busqueda_salidas.js')}}"></script>
     <script>
     $(document).ready(function(){
+        vista_extendida();
         seleccionarMenu(window.location);
     });
     </script>

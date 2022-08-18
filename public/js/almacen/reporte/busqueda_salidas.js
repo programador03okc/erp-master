@@ -50,6 +50,8 @@ function actualizarLista() {
             { 'data': 'cantidad' },
             { 'data': 'estado_doc' },
             { 'data': 'alm_descripcion' },
+            { 'data': 'cdp' },
+            { 'data': 'responsable' },
             // {'data': 'des_condicion'},
             // {'data': 'credito_dias'},
             // {'data': 'des_operacion'},
