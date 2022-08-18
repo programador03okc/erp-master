@@ -177,7 +177,10 @@ function anular_doc_prorrateo(id) {
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
-            if (response) {
+            if (response.tipo == 'success') {
+                $('#listaProrrateos tbody').html('');
+                $('#listaGuiaDetalleProrrateo tbody').html('');
+
                 Lobibox.notify("success", {
                     title: false,
                     size: "mini",

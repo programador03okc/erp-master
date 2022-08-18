@@ -488,7 +488,15 @@ class ProrrateoCostosController extends Controller
                 ->update(['estado' => 7]);
 
             $guia_detalles = DB::table('almacen.guia_com_prorrateo_det')
-                ->select('guia_com_prorrateo_det.id_guia_com_det')
+                ->select(
+                    'guia_com_prorrateo_det.id_guia_com_det',
+                    'mov_alm_det.id_mov_alm_det',
+                    'guia_com_prorrateo_det.valor_compra'
+                )
+                ->join('almacen.mov_alm_det', function ($join) {
+                    $join->on('mov_alm_det.id_guia_com_det', '=', 'guia_com_prorrateo_det.id_guia_com_det');
+                    $join->where('mov_alm_det.estado', '!=', 7);
+                })
                 ->where('guia_com_prorrateo_det.id_prorrateo', $id_prorrateo)
                 ->get();
 
@@ -496,23 +504,31 @@ class ProrrateoCostosController extends Controller
                 DB::table('almacen.guia_com_det')
                     ->where('guia_com_det.id_guia_com_det', $det->id_guia_com_det)
                     ->update(['unitario_adicional' => 0]);
+
+                DB::table('almacen.mov_alm_det')
+                    ->where('id_mov_alm_det', $det->id_mov_alm_det)
+                    ->update(['valorizacion' => $det->valor_compra]);
             }
 
-            $docs = DB::table('almacen.guia_com_prorrateo_doc')
-                ->select('guia_com_prorrateo_doc.id_doc_com')
-                ->where('guia_com_prorrateo_doc.id_prorrateo', $id_prorrateo)
-                ->get();
+            // $docs = DB::table('almacen.guia_com_prorrateo_doc')
+            //     ->select('guia_com_prorrateo_doc.id_doc_com')
+            //     ->where('guia_com_prorrateo_doc.id_prorrateo', $id_prorrateo)
+            //     ->get();
 
-            foreach ($docs as $doc) {
-                DB::table('almacen.doc_com')
-                    ->where('doc_com.id_doc_com', $doc->id_doc_com)
-                    ->update(['estado' => 7]);
-            }
+            // foreach ($docs as $doc) {
+            //     DB::table('almacen.doc_com')
+            //         ->where('doc_com.id_doc_com', $doc->id_doc_com)
+            //         ->update(['estado' => 7]);
+            // }
             DB::commit();
-            return response()->json(true);
+            return response()->json([
+                'tipo' => "success",
+                'mensaje' => "Se guardó correctamente el prorrateo.", 200
+            ]);
         } catch (\PDOException $e) {
             // Woopsy
-            DB::rollBack($e);
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al procesar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
     }
 
