@@ -5489,8 +5489,8 @@ class AlmacenController extends Controller
                     'alm_prod.descripcion',
                     'tp_ope.descripcion as ope_descripcion',
                     'adm_estado_doc.estado_doc',
-                    'oportunidades.codigo_oportunidad',
-                    'users.nombre_corto'
+                    'oportunidades.codigo_oportunidad AS cdp',
+                    'users.nombre_corto AS responsable'
                 )
                 ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
