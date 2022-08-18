@@ -196,29 +196,35 @@ Saldos Actuales
                     {data: 'categoria'},
                     {data: 'producto'},
                     {data: 'simbolo', className: 'text-center'},
-                    {
-                        render: function (data, type, row) {
-                            return $.number(row['valorizacion'], 2, '.', ',');
-                        }, className: 'text-right', searchable: false, orderable: false
-                    },
-                    {
-                        render: function (data, type, row) {
-                            return $.number(row['costo_promedio'], 2, '.', ',');
-                        }, className: 'text-right', searchable: false, orderable: false
-                    },
-                    {data: 'abreviatura', className: 'text-center'},
-                    {data: 'stock', className: 'text-center', searchable: false, orderable: false},
+                    {data: 'valorizacion', className: 'text-center',searchable: false},
+                    {data: 'costo_promedio', className: 'text-center',searchable: false},
+                    {data: 'abreviatura', className: 'text-center',searchable: false},
+                    {data: 'stock', className: 'text-center', searchable: false, orderable: true},
+                    {data: 'reserva', className: 'text-center', searchable: false, orderable: true},
+                    {data: 'disponible', className: 'text-center', searchable: false, orderable: true},
+                    {data: 'almacen_descripcion'}
+                ],
+                columnDefs: [
+                    // {
+                    //     render: function (data, type, row) {
+                    //         return $.number(row['valorizacion'], 2, '.', ',');
+                    //     },targets: 6
+                    // },
+                    // {
+                    //     render: function (data, type, row) {
+                    //         return $.number(row['costo_promedio'], 2, '.', ',');
+                    //     },targets: 7
+                    // },
                     {
                         render: function (data, type, row) {
                             return `
                             <a class="label label-danger" 
                                 onclick="verRequerimiento(`+ row['id_producto'] +`, `+ row['id_almacen'] +`);" style="font-size: 11px">`+ row['reserva'] +`
                             </a>`;
-                        }, className: 'text-center', searchable: false, orderable: false
-                    },
-                    {data: 'disponible', className: 'text-center', searchable: false, orderable: false},
-                    {data: 'almacen_descripcion'}
-                ],
+                        },targets: 10
+                    }
+                    
+                ]
             });
             $tabla.on('search.dt', function() {
                 $('#tablaSaldos_filter input').attr('disabled', true);

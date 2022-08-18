@@ -5488,7 +5488,9 @@ class AlmacenController extends Controller
                     'alm_prod.codigo',
                     'alm_prod.descripcion',
                     'tp_ope.descripcion as ope_descripcion',
-                    'adm_estado_doc.estado_doc'
+                    'adm_estado_doc.estado_doc',
+                    'oportunidades.codigo_oportunidad AS cdp',
+                    'users.nombre_corto AS responsable'
                 )
                 ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
@@ -5496,6 +5498,14 @@ class AlmacenController extends Controller
                 // ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
                 ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'mov_alm_det.id_guia_ven_det')
                 ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
+
+                ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
+                ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
+                ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+                ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                ->join('mgcp_usuarios.users', 'users.id', '=', 'oportunidades.id_responsable')
+
                 ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
                 ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
                 ->leftjoin('almacen.tp_doc_almacen', 'tp_doc_almacen.id_tp_doc_almacen', '=', 'guia_ven.id_tp_doc_almacen')
@@ -5522,7 +5532,9 @@ class AlmacenController extends Controller
                     'alm_prod.codigo',
                     'alm_prod.descripcion',
                     'tp_ope.descripcion as ope_descripcion',
-                    'adm_estado_doc.estado_doc'
+                    'adm_estado_doc.estado_doc',
+                    'oportunidades.codigo_oportunidad',
+                    'users.nombre_corto'
                 )
                 ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
@@ -5530,6 +5542,14 @@ class AlmacenController extends Controller
                 // ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
                 ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_det', '=', 'mov_alm_det.id_guia_ven_det')
                 ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
+
+                ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
+                ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
+                ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
+                ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                ->join('mgcp_usuarios.users', 'users.id', '=', 'oportunidades.id_responsable')
+
                 ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
                 ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
                 ->leftjoin('almacen.tp_doc_almacen', 'tp_doc_almacen.id_tp_doc_almacen', '=', 'guia_ven.id_tp_doc_almacen')
