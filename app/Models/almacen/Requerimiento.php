@@ -170,7 +170,7 @@ class Requerimiento extends Model
     {
         $estado = Estado::join('almacen.alm_req', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado')
             ->where('alm_req.id_requerimiento', $this->attributes['id_requerimiento'])
-            ->first()->estado_doc;
+            ->first()->estado_doc??'';
         return $estado;
     }
 
