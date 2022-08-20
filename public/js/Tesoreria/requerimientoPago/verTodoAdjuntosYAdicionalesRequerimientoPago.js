@@ -123,6 +123,7 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
                     if (element.id_estado != 7) {
                         htmlCabecera += `<tr>
                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/pago/cabecera/${element.archivo}" target="_blank">${element.archivo}</a></td>
+                        <td style="text-align:left;">${element.fecha_emision??''}</td>
                         <td style="text-align:left;">${element.categoria_adjunto.descripcion}</td>
                         <td style="text-align:center;">
                             <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoCabecera handleClickAnularAdjuntoPagoCabecera" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos==true?'':'disabled'}><i class="fas fa-times fa-xs"></i></button>
@@ -272,6 +273,9 @@ function addToTablaArchivosRequerimientoPagoCabecera(payload) {
         let html = '';
         html = `<tr id="${payload.id}" style="text-align:center">
         <td style="text-align:left;">${payload.nameFile}</td>
+        <td>
+            <input type="date" class="form-control handleChangeFechaEmision" name="fechaEmision" value="${moment().format("YYYY-MM-DD")}" />
+        </td>
         <td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
         `;

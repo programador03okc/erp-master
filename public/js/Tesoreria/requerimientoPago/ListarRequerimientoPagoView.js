@@ -210,6 +210,9 @@ class ListarRequerimientoPagoView {
         $('#modal-adjuntar-archivos-requerimiento-pago').on("change", "select.handleChangeCategoriaAdjunto", (e) => {
             this.actualizarCategoriaDeAdjunto(e.currentTarget);
         });
+        $('#modal-adjuntar-archivos-requerimiento-pago').on("change", "input.handleChangeFechaEmision", (e) => {
+            this.actualizarFechaEmisionAdjunto(e.currentTarget);
+        });
 
         $('#modal-adjuntar-archivos-requerimiento-pago-detalle').on("change", "input.handleChangeAgregarAdjuntoDetalle", (e) => {
             this.agregarAdjuntoRequerimientoPagoDetalle(e.currentTarget);
@@ -1568,11 +1571,35 @@ class ListarRequerimientoPagoView {
         if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
             let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
             tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].category = parseInt(obj.value) > 0 ? parseInt(obj.value) : 1;
-            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
+            var regExp = /[a-zA-Z]/g; //expresión regular
+            if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
+            }else{
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
+            }
         } else {
             Swal.fire(
                 '',
                 'Hubo un error inesperado al intentar cambiar la categoría del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                'error'
+            );
+        }
+    }
+    actualizarFechaEmisionAdjunto(obj) {
+        if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+            let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].fecha_emision = obj.value;
+
+            var regExp = /[a-zA-Z]/g; //expresión regular
+            if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
+            }else{
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
+            }
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un error inesperado al intentar cambiar la fecha emision del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
                 'error'
             );
         }
@@ -1586,6 +1613,7 @@ class ListarRequerimientoPagoView {
             if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
                     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFile${element.category}[]`, element.file);
+                    formData.append(`fecha_emision[]`, element.fecha_emision);
                 });
             }
             if (tempArchivoAdjuntoRequerimientoPagoDetalleList.length > 0) {
@@ -1691,6 +1719,8 @@ class ListarRequerimientoPagoView {
                     tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
                         if (element.action == 'GUARDAR') {
                             formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileGuardar${element.category}[]`, element.file);
+                            formData.append(`fecha_emision[]`, element.fecha_emision);
+
                         }
                         // //? actualizar adjuntos, actualmente no se actualizan archivos por otros
                         // else if(element.action == 'ACTUALIZAR'){
@@ -2346,9 +2376,10 @@ class ListarRequerimientoPagoView {
                         {
                             'id': element.id_requerimiento_pago_adjunto,
                             'nameFile': element.archivo,
+                            'fecha_emision':element.fecha_emision,
                             'category': element.id_categoria_adjunto,
                             'action': '',
-                            'file': [],
+                            'file': []
                         }
                     );
                 }
@@ -2372,6 +2403,7 @@ class ListarRequerimientoPagoView {
                         tempArchivoAdjuntoRequerimientoPagoCabeceraList.push({
                             id: element.id_requerimiento_pago_adjunto,
                             category: element.id_categoria_adjunto,
+                            fecha_emision:element.fecha_emision,
                             nameFile: element.archivo,
                             action:'',
                             file: []
@@ -2394,6 +2426,7 @@ class ListarRequerimientoPagoView {
         adjuntoList.forEach(element => {
             html += `<tr id="${element.id}" style="text-align:center">
         <td style="text-align:left;">${element.nameFile}</td>
+        <td style="text-align:left;">${element.fecha_emision}</td>
         <td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto" disabled>
         `;
@@ -2437,6 +2470,7 @@ class ListarRequerimientoPagoView {
                             tempArchivoAdjuntoRequerimientoPagoCabeceraList.push({
                                 id: element.id_requerimiento_pago_adjunto,
                                 category: element.id_categoria_adjunto,
+                                fecha_emision: element.fecha_emision,
                                 nameFile: element.archivo,
                                 action:'',
                                 file: []
@@ -2514,6 +2548,7 @@ class ListarRequerimientoPagoView {
         adjuntoList.forEach(element => {
             html += `<tr id="${element.id}" style="text-align:center">
         <td style="text-align:left;">${element.nameFile}</td>
+        <td style="text-align:left;">${element.fecha_emision??''}</td>
         <td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto" ${hasDisabledSelectTipoArchivo}>
         `;
@@ -2616,6 +2651,7 @@ class ListarRequerimientoPagoView {
                     let payload = {
                         id: this.makeId(),
                         category: 1, //default: otros adjuntos
+                        fecha_emision: moment().format("YYYY-MM-DD"), //default: fecha hoy
                         nameFile: file.name,
                         action: 'GUARDAR',
                         file: file
@@ -2657,6 +2693,9 @@ class ListarRequerimientoPagoView {
         let html = '';
         html = `<tr id="${payload.id}" style="text-align:center">
         <td style="text-align:left;">${payload.nameFile}</td>
+        <td>
+            <input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" value="${moment().format("YYYY-MM-DD")}" />
+        </td>
         <td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
         `;
