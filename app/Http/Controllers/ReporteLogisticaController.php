@@ -15,7 +15,7 @@ use Dompdf\Dompdf;
 // use Maatwebsite\Excel\Facades\Excel;
 
 class ReporteLogisticaController extends Controller{
-	
+
 
     public function viewReporteOrdenesCompra(){
 		$empresas = Empresa::mostrar();
@@ -29,13 +29,13 @@ class ReporteLogisticaController extends Controller{
 
 		return view('logistica/reportes/ordenes_servicio',compact('empresas','grupos'));
 	}
-	
+
     public function viewReporteTransitoOrdenesCompra(){
 		$empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
 		return view('logistica/reportes/transito_ordenes_compra',compact('empresas','grupos'));
 	}
-	
+
 
 	public function obtenerDataOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta){
 		$data = Orden::with([
@@ -44,7 +44,7 @@ class ReporteLogisticaController extends Controller{
 			},
 			'estado'
 		])
-		->select('log_ord_compra.*',  DB::raw("(SELECT  array_to_json(array_agg(json_build_object( 
+		->select('log_ord_compra.*',  DB::raw("(SELECT  array_to_json(array_agg(json_build_object(
             'codigo_oportunidad',cc_view.codigo_oportunidad ,
 			'fecha_creacion',cc_view.fecha_creacion,
 			'fecha_limite',cc_view.fecha_limite,
@@ -72,13 +72,13 @@ class ReporteLogisticaController extends Controller{
         })
 
         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
+            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde);
         })
         ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
+            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta);
         })
         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]);
         })
 		->where([['log_ord_compra.id_tp_documento', '=', 2],['log_ord_compra.estado', '!=', 7]]);
 
@@ -105,30 +105,30 @@ class ReporteLogisticaController extends Controller{
         })
 
         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
+            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde);
         })
         ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
+            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta);
         })
         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]);
         })
 		->where([['log_ord_compra.id_tp_documento', '=', 3],['log_ord_compra.estado', '!=', 7]]);
 
 		return $data;
 	}
 
- 
+
 	public function listaOrdenesCompra(Request $request){
-		
+
 		$idEmpresa = $request->idEmpresa;
         $idSede = $request->idSede;
 		$fechaRegistroDesde = $request->fechaRegistroDesde;
         $fechaRegistroHasta = $request->fechaRegistroHasta;
 
 		$data = $this->obtenerDataOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
-		
-		
+
+
 		return datatables($data)
 		// ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
 		// 	$query->where('alm_req.codigo', $keyword);
@@ -137,14 +137,14 @@ class ReporteLogisticaController extends Controller{
 
 	}
 	public function listaOrdenesServicio(Request $request){
-		
+
 		$idEmpresa = $request->idEmpresa;
         $idSede = $request->idSede;
 		$fechaRegistroDesde = $request->fechaRegistroDesde;
         $fechaRegistroHasta = $request->fechaRegistroHasta;
 
 		$data = $this->obtenerDataOrdenesServicio($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
-		
+
 		return datatables($data)
 		->rawColumns(['requerimientos','cuadro_costo'])->toJson();
 
@@ -159,7 +159,7 @@ class ReporteLogisticaController extends Controller{
 			'proveedor.contribuyente',
 			'estado'
 		])
-		 
+
 		// ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
 
 		->when(($idEmpresa > 0), function ($query) use($idEmpresa) {
@@ -176,21 +176,21 @@ class ReporteLogisticaController extends Controller{
 
 
         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
+            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde);
         })
         ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
+            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta);
         })
         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
+            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]);
         })
 		->where([['log_ord_compra.id_tp_documento', '=', 2],['log_ord_compra.estado', '!=', 7]]);
-		
+
 		return $data;
 	}
-	
+
 	public function listaTransitoOrdenesCompra(Request $request){
-		
+
 		$idEmpresa = $request->idEmpresa;
         $idSede = $request->idSede;
 		$fechaRegistroDesde = $request->fechaRegistroDesde;
@@ -198,10 +198,10 @@ class ReporteLogisticaController extends Controller{
 		$data = $this->obtenerDataTransitoOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
 
 
- 
+
 		return datatables($data)->rawColumns(['monto','requerimientos','cuadro_costo','tiene_transformacion','cantidad_equipos'])->toJson();
 
-	}	
+	}
 
 	public function viewReporteComprasLocales(){
 		$empresas = Empresa::mostrar();
@@ -212,18 +212,22 @@ class ReporteLogisticaController extends Controller{
 	}
 
 	public function listaComprasLocales(Request $request){
-		
+
+        // return $request;
 		$idEmpresa = $request->idEmpresa;
         $idSede = $request->idSede;
 		$fechaRegistroDesde = $request->fechaRegistroDesde;
         $fechaRegistroHasta = $request->fechaRegistroHasta;
-		$data = $this->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
-		
+        $fechaRegistroDesdeCancelacion = $request->fechaRegistroDesdeCancelacion;
+        $fechaRegistroHastaCancelacion = $request->fechaRegistroHastaCancelacion;
+        $razonSocialProveedor = $request->razon_social_proveedor;
+		$data = $this->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor);
+
 		return datatables($data)->toJson();
 
 	}
 
-	public function obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta){
+	public function obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor){
 		$data = ComprasLocalesView::when(($idEmpresa > 0), function ($query) use($idEmpresa) {
 			$sedes= Sede::where('id_empresa',$idEmpresa)->get();
 			$idSedeList=[];
@@ -237,14 +241,29 @@ class ReporteLogisticaController extends Controller{
         })
 
         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-            return $query->where('log_ord_compra.fecha' ,'>=',$fechaRegistroDesde); 
+            return $query->where('compras_locales_view.fecha_emision_comprobante_contribuyente' ,'>=',$fechaRegistroDesde);
         })
         ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-            return $query->where('log_ord_compra.fecha' ,'<=',$fechaRegistroHasta); 
+            return $query->where('compras_locales_view.fecha_emision_comprobante_contribuyente' ,'<=',$fechaRegistroHasta);
         })
         ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-            return $query->whereBetween('log_ord_compra.fecha' ,[$fechaRegistroDesde,$fechaRegistroHasta]); 
-        });
+            return $query->whereBetween('compras_locales_view.fecha_emision_comprobante_contribuyente' ,[$fechaRegistroDesde,$fechaRegistroHasta]);
+        })
+
+        ->when((($fechaRegistroDesdeCancelacion != 'SIN_FILTRO') and ($fechaRegistroHastaCancelacion == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesdeCancelacion) {
+            return $query->where('compras_locales_view.fecha_pago' ,'>=',$fechaRegistroDesdeCancelacion);
+        })
+        ->when((($fechaRegistroDesdeCancelacion == 'SIN_FILTRO') and ($fechaRegistroHastaCancelacion != 'SIN_FILTRO')), function ($query) use($fechaRegistroHastaCancelacion) {
+            return $query->where('compras_locales_view.fecha_pago' ,'<=',$fechaRegistroHastaCancelacion);
+        })
+        ->when((($fechaRegistroDesdeCancelacion != 'SIN_FILTRO') and ($fechaRegistroHastaCancelacion != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion) {
+            return $query->whereBetween('compras_locales_view.fecha_pago' ,[$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion]);
+        })
+        ->when((($razonSocialProveedor != 'SIN_FILTRO')), function ($query) use($razonSocialProveedor) {
+            return $query->where('compras_locales_view.razon_social_contribuyente' ,'like','%'.$razonSocialProveedor.'%');
+        })
+        ;
+
 
 		return $data;
 	}

@@ -3107,14 +3107,14 @@ class OrdenController extends Controller
                     $orden->observacion = isset($request->observacion) ? $request->observacion : null;
                     $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
                     $orden->save();
-                    
+
                     if($request->id_proveedor>0 && $request->id_rubro_proveedor !=null && $request->id_rubro_proveedor >0 ){
                         $proveedor =Proveedor::find($request->id_proveedor);
                         if($proveedor->id_contribuyente >0){
                             $contribuyenteProveedor = Contribuyente::find($proveedor->id_contribuyente);
                             $contribuyenteProveedor->id_rubro=$request->id_rubro_proveedor;
                             $contribuyenteProveedor->save();
-    
+
                         }
                     }
 
@@ -4024,9 +4024,10 @@ class OrdenController extends Controller
     {
         return Excel::download(new ReporteTransitoOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_transito_ordenes_compra.xlsx');
     }
-    public function reporteCompraLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta)
+    public function reporteCompraLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor)
     {
-        return Excel::download(new ReporteComprasLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_compra_locales.xlsx');
+        // return $razonSocialProveedor;
+        return Excel::download(new ReporteComprasLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor), 'reporte_compra_locales.xlsx');
     }
 
 
