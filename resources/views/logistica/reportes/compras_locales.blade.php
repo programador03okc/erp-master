@@ -131,20 +131,6 @@ Reporte de compras locales
                             <div class="form-group">
                                 <label class="col-sm-4">
                                     <div class="checkbox">
-                                        <label title="Razon">
-                                            <input type="checkbox" name="chkRazon"> Razon social contribuyente
-                                        </label>
-                                    </div>
-                                </label>
-                                <div class="col-sm-8">
-                                    <select class="form-control input-sm handleChangeFiltroRazon handleUpdateValorFiltro" name="razon" readOnly>
-
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-4">
-                                    <div class="checkbox">
                                         <label title="Fecha de cancelacion">
                                             <input type="checkbox" name="chkFechaCancelacion"> Fecha de cancelación
                                         </label>
