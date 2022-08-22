@@ -960,6 +960,8 @@ class RevisarAprobarDocumentoView {
         let html = '';
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
+                if(data[i].estado !=7){
+
                 let cantidadAdjuntosItem = 0;
                 cantidadAdjuntosItem = data[i].adjuntos.length;
                 if (cantidadAdjuntosItem > 0) {
@@ -996,7 +998,7 @@ class RevisarAprobarDocumentoView {
             </tr>`);
 
                 // document.querySelector("a[class='handleClickVerAdjuntosItem" + i + "']") ? document.querySelector("a[class~='handleClickVerAdjuntosItem" + i + "']").addEventListener("click", this.verAdjuntosItem.bind(this, data[i].id_detalle_requerimiento), false) : false;
-
+            }
 
             }
 
