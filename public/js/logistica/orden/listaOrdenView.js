@@ -161,18 +161,20 @@ class ListaOrdenView {
 
             }
         });
-        $(document).on('click','.adjuntar-archivos',function () {
-            var data_id = $(this).attr('data-id'),
-                data_codigo = $(this).attr('data-codigo');
+        $(document).on('click','.adjuntar-archivos', (e)=> {
+            $(":file").filestyle('clear');
+            this.limpiarTabla('adjuntosCabecera');
+            var data_id = e.currentTarget.dataset.id,
+                data_codigo = e.currentTarget.dataset.codigo;
             $('#modal-adjuntar-orden [name=id_orden]').val(data_id);
-            $('#modal-adjuntar-orden [name=codigo_orden]').val($(this).attr('data-codigo'));
+            $('#modal-adjuntar-orden [name=codigo_orden]').val(e.currentTarget.dataset.codigo);
             $('#modal-adjuntar-orden .codigo').text(data_codigo);
             $('#modal-adjuntar-orden .codigo').css('color','cadetblue');
             $('#modal-adjuntar-orden').modal('show');
-            obteneAdjuntosOrden(data_id).then((res) => {
+            this.obteneAdjuntosOrden(data_id).then((res) => {
 
                 let htmlPago = '';
-                console.log(res.length);
+                // console.log(res.length);
                 if (res.length > 0) {
                     (res).forEach(element => {
 
@@ -215,6 +217,11 @@ class ListaOrdenView {
 
             this.guardarAdjuntos();
         });
+
+        $('#modal-adjuntar-orden').on("change", "input.handleChangeFechaEmision", (e) => {
+            this.actualizarFechaEmisionDeAdjunto(e.currentTarget);
+        });
+
     }
 
     limpiarTabla(idElement) {
@@ -1964,19 +1971,20 @@ class ListaOrdenView {
     agregarAdjuntoRequerimientoCabeceraCompra(obj){
         if (obj.files != undefined && obj.files.length > 0) {
             // console.log(obj.files);
-            if((obj.files.length + tempArchivoAdjuntoRequerimientoCabeceraList.length)>1){
-                Swal.fire(
-                    '',
-                    'Solo puedes subir un máximo de 1 archivos',
-                    'warning'
-                );
-            }else{
+            // if((obj.files.length + tempArchivoAdjuntoRequerimientoCabeceraList.length)>1){
+            //     Swal.fire(
+            //         '',
+            //         'Solo puedes subir un máximo de 1 archivos',
+            //         'warning'
+            //     );
+            // }else{
                 Array.prototype.forEach.call(obj.files, (file) => {
 
                     if (this.estaHabilitadoLaExtension(file) == true) {
                         let payload = {
                             id: this.makeId(),
                             category: 1, //default: otros adjuntos
+                            fecha_emision: moment().format('YYYY-MM-DD'), 
                             nameFile: file.name,
                             action: 'GUARDAR',
                             file: file
@@ -1985,7 +1993,7 @@ class ListaOrdenView {
 
                         tempArchivoAdjuntoRequerimientoCabeceraList.push(payload);
                         console.log(tempArchivoAdjuntoRequerimientoCabeceraList);
-                        console.log(payload);
+                        // console.log(payload);
                     } else {
                         Swal.fire(
                             'Este tipo de archivo no esta permitido adjuntar',
@@ -1995,7 +2003,7 @@ class ListaOrdenView {
                     }
                 });
 
-            }
+            // }
 
 
         }
@@ -2003,6 +2011,30 @@ class ListaOrdenView {
 
         return false;
 
+    }
+
+    actualizarFechaEmisionDeAdjunto(obj) {
+
+        if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
+            let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoCabeceraList[indice].fecha_emision = obj.value;
+            if (tempArchivoAdjuntoRequerimientoCabeceraList[indice].id > 0) {
+    
+            }
+            var regExp = /[a-zA-Z]/g; //expresión regular
+            if (regExp.test(tempArchivoAdjuntoRequerimientoCabeceraList[indice].id) == false) {
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ACTUALIZAR';
+            } else {
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'GUARDAR';
+            }
+    
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un error inesperado al intentar cambiar la categoría del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                'error'
+            );
+        }
     }
 
     estaHabilitadoLaExtension(file) {
@@ -2055,7 +2087,7 @@ class ListaOrdenView {
             let html = '';
             html = `<tr id="${payload.id}" style="text-align:center">
             <td style="text-align:left;">${payload.nameFile}</td>
-            <td style="text-align:left;"><input type="date" class="form-control" name="fecha_emision " required></td>
+            <td style="text-align:left;"><input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision"  value="${moment().format("YYYY-MM-DD")}" required></td>
             <td>
                 <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
             `;
@@ -2127,7 +2159,12 @@ class ListaOrdenView {
             if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
                 tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
                     if(element.action =='GUARDAR'){
+                        formData.append(`id_adjunto[]`, element.id);
+                        formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
+                        formData.append(`categoria_adjunto[]`, element.category);
                         formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
+                        formData.append(`nombre_real_adjunto[]`, element.nameFile);
+                        formData.append(`accion[]`, 'GUARDAR');
                     }
                 });
             }
@@ -2191,28 +2228,30 @@ class ListaOrdenView {
             );
         }
     }
-}
-function obteneAdjuntosOrden(id_orden) {
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            type: 'GET',
-            url: `listar-archivos-adjuntos-orden/${id_orden}`,
-            dataType: 'JSON',
-            beforeSend: (data) => {
-            // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("show", {
-            //     imageAutoResize: true,
-            //     progress: true,
-            //     imageColor: "#3c8dbc"
-            // });
-        },
-            success(response) {
-                // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
-                resolve(response);
+
+    obteneAdjuntosOrden(id_orden) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `listar-archivos-adjuntos-orden/${id_orden}`,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("show", {
+                //     imageAutoResize: true,
+                //     progress: true,
+                //     imageColor: "#3c8dbc"
+                // });
             },
-            error: function (err) {
-                // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
-                reject(err)
-            }
+                success(response) {
+                    // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                    resolve(response);
+                },
+                error: function (err) {
+                    // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                    reject(err)
+                }
+            });
         });
-    });
+    }
 }
+

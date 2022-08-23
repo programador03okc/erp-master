@@ -982,7 +982,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('reporte-transito-ordenes-compra-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteTransitoOrdenesCompraExcel')->name('reporte-transito-ordenes-compra-excel');
 				Route::get('compras-locales', 'ReporteLogisticaController@viewReporteComprasLocales')->name('compras-locales');
 				Route::post('lista-compras-locales', 'ReporteLogisticaController@listaComprasLocales');
-				Route::get('reporte-compras-locales-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteCompraLocalesExcel')->name('reporte-compras-locales-excel');
+				Route::get('reporte-compras-locales-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}/{fechaDesdeCancelacion?}/{fechaHastaCancelacion?}/{razonSocialProveedor?}', 'OrdenController@reporteCompraLocalesExcel')->name('reporte-compras-locales-excel');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 
 			});

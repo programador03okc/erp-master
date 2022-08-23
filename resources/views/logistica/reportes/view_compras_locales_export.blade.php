@@ -2,6 +2,7 @@
     <thead>
         <tr>
         <th>Bien comprado/ servicio contratado</th>
+        <th>Rubro Proveedor</th>
         <th>Razón Social del Proveedor</th>
         <th>RUC del Proveedor</th>
         <th>Domicilio Fiscal/Principal</th>
@@ -24,11 +25,12 @@
 
         <tr>
             <td>{{ $compras['descripcion'] }}</td>
-            <td>{{ $compras['razon_social_proveedor'] }}</td>
-            <td>{{ $compras['nro_documento_proveedor'] }}</td>
-            <td>{{ $compras['direccion_proveedor'] }}</td>
-            <td>{{ $compras['ubigeo_proveedor'] }}</td>
-            <td>{{ $compras['fecha_emision_doc_com'] }}</td>
+            <td>{{ $compras['rubro_contribuyente'] }}</td>
+            <td>{{ $compras['razon_social_contribuyente'] }}</td>
+            <td>{{ $compras['nro_documento_contribuyente'] }}</td>
+            <td>{{ $compras['direccion_contribuyente'] }}</td>
+            <td>{{ $compras['ubigeo_contribuyente'] }}</td>
+            <td>{{ $compras['fecha_emision_comprobante_contribuyente'] }}</td>
             <td>{{ $compras['fecha_pago'] }}</td>
             <td>{{ $compras['tiempo_cancelacion'] }}</td>
             <td>{{ $compras['moneda_doc_com'] }}</td>

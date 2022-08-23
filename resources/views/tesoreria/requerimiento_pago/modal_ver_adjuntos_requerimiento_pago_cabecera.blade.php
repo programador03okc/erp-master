@@ -10,6 +10,7 @@
                     <thead>
                         <tr>
                             <th width="200">Descripción</th>
+                            <th width="80">Fecha emisión</th>
                             <th width="100">Tipo</th>
                             <th width="20">Acción</th>
                         </tr>

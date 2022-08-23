@@ -45,7 +45,14 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <table id="adjuntosCabecera" class="mytable table table-condensed table-bordered table-okc-view">
-                                    <tbody id="body_archivos_requerimiento_pago_cabecera"></tbody>
+                                    <tbody id="body_archivos_requerimiento_pago_cabecera">
+                                        <thead>
+                                            <th>Adjunto</th>
+                                            <th>Fecha emisión</th>
+                                            <th>Tipo adjunto</th>
+                                            <th>Acción</th>
+                                        </thead>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
