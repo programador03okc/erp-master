@@ -213,6 +213,9 @@ class ListarRequerimientoPagoView {
         $('#modal-adjuntar-archivos-requerimiento-pago').on("change", "input.handleChangeFechaEmision", (e) => {
             this.actualizarFechaEmisionAdjunto(e.currentTarget);
         });
+        // $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeFechaEmision", (e) => {
+        //     this.actualizarFechaEmisionAdjunto(e.currentTarget);
+        // });
 
         $('#modal-adjuntar-archivos-requerimiento-pago-detalle').on("change", "input.handleChangeAgregarAdjuntoDetalle", (e) => {
             this.agregarAdjuntoRequerimientoPagoDetalle(e.currentTarget);
@@ -1573,9 +1576,9 @@ class ListarRequerimientoPagoView {
             tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].category = parseInt(obj.value) > 0 ? parseInt(obj.value) : 1;
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
             }else{
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
             }
         } else {
             Swal.fire(
@@ -1589,12 +1592,12 @@ class ListarRequerimientoPagoView {
         if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
             let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
             tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].fecha_emision = obj.value;
-
+// console.log(tempArchivoAdjuntoRequerimientoPagoCabeceraList);
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
             }else{
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
             }
         } else {
             Swal.fire(
@@ -1613,7 +1616,13 @@ class ListarRequerimientoPagoView {
             if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
                     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFile${element.category}[]`, element.file);
-                    formData.append(`fecha_emision[]`, element.fecha_emision);
+                    formData.append(`id_adjunto[]`, element.id);
+                    formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
+                    formData.append(`categoria_adjunto[]`, element.category);
+                    formData.append(`archivo_adjunto[]`, element.file);
+                    // formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
+                    formData.append(`nombre_real_adjunto[]`, element.nameFile);
+                    formData.append(`accion_adjunto[]`, 'GUARDAR');
                 });
             }
             if (tempArchivoAdjuntoRequerimientoPagoDetalleList.length > 0) {
@@ -1736,6 +1745,7 @@ class ListarRequerimientoPagoView {
                     tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
                         if (element.action == 'GUARDAR') {
                             formData.append(`archivoAdjuntoRequerimientoPagoDetalleGuardar${element.id}[]`, element.file);
+                            // formData.append(`fecha_emision[]`, element.fecha_emision);
                         }
                     });
                 }
@@ -2599,7 +2609,7 @@ class ListarRequerimientoPagoView {
         } else {
             if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
                 let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.dataset.id);
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ELIMINAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ELIMINAR';
             } else {
                 Swal.fire(
                     '',
@@ -2653,7 +2663,7 @@ class ListarRequerimientoPagoView {
                         category: 1, //default: otros adjuntos
                         fecha_emision: moment().format("YYYY-MM-DD"), //default: fecha hoy
                         nameFile: file.name,
-                        action: 'GUARDAR',
+                        action_adjunto: 'GUARDAR',
                         file: file
                     };
                     this.addToTablaArchivosRequerimientoPagoCabecera(payload);
@@ -2916,7 +2926,7 @@ class ListarRequerimientoPagoView {
                         id: objBotonAdjuntoRequerimientoPagoDetalleSeleccionado.dataset.id,
                         id_requerimiento_pago_detalle: objBotonAdjuntoRequerimientoPagoDetalleSeleccionado.dataset.id,
                         nameFile: file.name,
-                        action: 'GUARDAR',
+                        action_adjunto: 'GUARDAR',
                         file: file
                     };
                     this.agregarRegistroEnTablaAdjuntoRequerimientoPagoDetalle(payload);
@@ -2973,7 +2983,7 @@ class ListarRequerimientoPagoView {
         } else {
             if (tempArchivoAdjuntoRequerimientoPagoDetalleList.length > 0) {
                 let indice = tempArchivoAdjuntoRequerimientoPagoDetalleList.findIndex(elemnt => elemnt.id == obj.dataset.id);
-                tempArchivoAdjuntoRequerimientoPagoDetalleList[indice].action = 'ELIMINAR';
+                tempArchivoAdjuntoRequerimientoPagoDetalleList[indice].action_adjunto = 'ELIMINAR';
             } else {
                 Swal.fire(
                     '',

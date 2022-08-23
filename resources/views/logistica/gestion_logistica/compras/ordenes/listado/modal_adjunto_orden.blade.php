@@ -18,7 +18,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <input type="file" class="filestyle handleChangeAgregarAdjuntoRequerimientoCompraCabecera" name="nombre_archivo" placeholder="Seleccionar archivo" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo" data-size="sm" data-iconName="fa fa-folder-open" accept="application/pdf,image/*" />
+                                <input type="file"  multiple="multiple" class="filestyle handleChangeAgregarAdjuntoRequerimientoCompraCabecera" name="nombre_archivo" placeholder="Seleccionar archivo" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo" data-size="sm" data-iconName="fa fa-folder-open" accept="application/pdf,image/*" />
                                 <div style="display:flex; justify-content: space-between;">
                                     <h6>Máximo 1 archivos de seleccion y con un máximo de 100MB por subida.</h6>
                                     <h6>Carga actual: <span class="label label-default" id="tamaño_total_archivos_para_subir">0MB</span></h6>
