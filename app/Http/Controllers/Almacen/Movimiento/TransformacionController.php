@@ -274,7 +274,7 @@ class TransformacionController extends Controller
         $tc = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $fecha]])
             ->orderBy('fecha', 'DESC')->first();
 
-        return response()->json($tc->venta);
+        return response()->json($tc !== null ? $tc->venta : 0);
     }
 
     public function mostrar_transformacion($id_transformacion)
@@ -1603,10 +1603,10 @@ class TransformacionController extends Controller
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->where('cc.id_oportunidad', $idOportunidad)
             ->first();
-        
-        $oportunidad = Oportunidad::find(isset($transformacion->id_oportunidad)?($transformacion->id_oportunidad):$idOportunidad);       
+
+        $oportunidad = Oportunidad::find(isset($transformacion->id_oportunidad) ? ($transformacion->id_oportunidad) : $idOportunidad);
         $codigo = empty($transformacion->codigo) ? null : $transformacion->codigo;
-        $logo_empresa = empty($transformacion->logo_empresa)?'':".$transformacion->logo_empresa";
+        $logo_empresa = empty($transformacion->logo_empresa) ? '' : ".$transformacion->logo_empresa";
 
         $vista = View::make(
             'almacen/customizacion/hoja-transformacion',
