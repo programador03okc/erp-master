@@ -845,7 +845,8 @@ class TransferenciaController extends Controller
 
                 if ($det !== null) {
 
-                    $unitario = (floatval($det->cant_mov) > 0 ? (floatval($det->valorizacion) / floatval($det->cant_mov)) : 0);
+                    // $unitario = (floatval($det->cant_mov) > 0 ? (floatval($det->valorizacion) / floatval($det->cant_mov)) : 0);
+                    $unitario = (new SalidaPdfController())->obtenerCostoPromedioSalida($det->id_producto, $guia_ven->id_almacen, '2022-01-01', $request->fecha_almacen_recibir);
 
                     $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
                         [
