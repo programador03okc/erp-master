@@ -53,7 +53,7 @@ $(function(){
         ]
     });
     resizeSide();
-// del boton
+    // del boton
 
     /* Seleccionar valor del DataTable */
     $('#listaTrabajadorUser tbody').on('click', 'tr', function(){
@@ -69,38 +69,36 @@ $(function(){
         $('.modal-footer #nameTr').text(nameTr);
     });
 
-    $('#formPage').on('submit', function(){
+    $('#formPage').on('submit', function(e){
+        e.preventDefault();
         var data = $(this).serialize();
-        var ask = confirm('¿Desea guardar este registro?');
+        // var ask = confirm('¿Desea guardar este registro?');
 
-        if (ask == true){
-            $.ajax({
-                type: 'POST',
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                url: 'guardar_usuarios',
-                data: data,
-                dataType: 'JSON',
-                success: function(response){
-                    if (response > 0){
-                        alert('Se registro al usuario correctamente');
-                        $('#formPage')[0].reset();
-                        $('#listaUsuarios').DataTable().ajax.reload();
-                        $('#modal-agregarUsuario').modal('hide');
-                    }else if (response == 'exist'){
-                        alert('Ya existe usuario registrado para dicho trabajador');
-                    }else{
-                        alert('Error, inténtelo más tarde');
-                    }
-                }
-            }).fail( function(jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
-            return false;
-        }else{
-            return false;
-        }
+        $.ajax({
+            type: 'POST',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: 'guardar_usuarios',
+            data: data,
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                // if (response > 0){
+                //     alert('Se registro al usuario correctamente');
+                //     $('#formPage')[0].reset();
+                //     $('#listaUsuarios').DataTable().ajax.reload();
+                //     $('#modal-agregarUsuario').modal('hide');
+                // }else if (response == 'exist'){
+                //     alert('Ya existe usuario registrado para dicho trabajador');
+                // }else{
+                //     alert('Error, inténtelo más tarde');
+                // }
+            }
+        }).fail( function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+
     });
 
     $('#todos').change(function(){

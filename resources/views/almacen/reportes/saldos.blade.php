@@ -218,12 +218,12 @@ Saldos Actuales
                     {
                         render: function (data, type, row) {
                             return `
-                            <a class="label label-danger" 
+                            <a class="label label-danger"
                                 onclick="verRequerimiento(`+ row['id_producto'] +`, `+ row['id_almacen'] +`);" style="font-size: 11px">`+ row['reserva'] +`
                             </a>`;
                         },targets: 10
                     }
-                    
+
                 ]
             });
             $tabla.on('search.dt', function() {
