@@ -2035,6 +2035,11 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
+    // gerencial
+    Route::group(['as' => 'gerencial.', 'prefix' => 'gerencial'], function () {
+
+		Route::get('index', 'Gerencial\GerencialController@index')->name('index');
+	});
 	Route::get('config', function () {
 		return view('configuracion/main');
 	});
