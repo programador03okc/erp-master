@@ -515,6 +515,7 @@ class RequerimientoController extends Controller
                     WHERE  presup_par.id_partida = alm_det_req.partida ) AS presupuesto_total_partida")
                 )
                 ->where([
+                    ['alm_det_req.estado','!=',7],
                     ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
 
                 ])
