@@ -334,13 +334,13 @@ class OrdenesDespachoExternoController extends Controller
 
     //             $asunto_facturacion = $req->orden_am . ' | ' . $req->nombre . ' | ' . $req->codigo_oportunidad . ' | ' . $req->codigo_empresa;
     //             $contenido_facturacion = '
-    //                 Favor de generar documentación: <br>- ' . ($request->documento == 'Factura' ? $request->documento . '<br>- Guía<br>- Certificado de Garantía<br>- CCI<br>' : '<br>') . ' 
+    //                 Favor de generar documentación: <br>- ' . ($request->documento == 'Factura' ? $request->documento . '<br>- Guía<br>- Certificado de Garantía<br>- CCI<br>' : '<br>') . '
     //                 <br>Requerimiento ' . $req->codigo . '
     //                 <br>Entidad: ' . $req->nombre . '
     //                 <br>Empresa: ' . $req->razon_social . '
     //                 <br>' . $request->contenido . '<br>
     //         <br>' . ($req->id_oc_propia !== null
-    //                 ? ('Ver Orden Física: ' . $req->url_oc_fisica . ' 
+    //                 ? ('Ver Orden Física: ' . $req->url_oc_fisica . '
     //         <br>Ver Orden Electrónica: https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=' . $req->id_oc_propia . '&ImprimirCompleto=1') : '') . '
     //         <br><br>
     //         Saludos,<br>
@@ -452,9 +452,10 @@ class OrdenesDespachoExternoController extends Controller
                 $correos[] = Usuario::withTrashed()->find($id)->email;
             }
         }
+        $orden_despacho = OrdenDespacho::where('id_requerimiento', $request->id_requerimiento)->first();
 
         Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
-        NotificacionHelper::notificacionOrdenDespacho($idUsuarios,$request->mensaje,$oportunidad,$requerimiento);
+        NotificacionHelper::notificacionOrdenDespacho($idUsuarios,$request->mensaje,$oportunidad,$requerimiento,$orden_despacho->codigo, $orden_despacho->fecha_registro);
 
         foreach ($archivosOc as $archivo) {
             unlink($archivo);
@@ -995,7 +996,7 @@ class OrdenesDespachoExternoController extends Controller
                 'oc_propias_view.tipo',
                 'oc_directas.id_despacho as id_despacho_directa',
                 'oc_propias.id_despacho as id_despacho_propia',
-                DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs 
+                DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs
                 inner join almacen.orden_despacho on
                 (orden_despacho_obs.id_od = orden_despacho.id_od)
                 where   orden_despacho.id_requerimiento = alm_req.id_requerimiento
@@ -1045,7 +1046,7 @@ class OrdenesDespachoExternoController extends Controller
                         'oc_propias_view.tipo',
                         'oc_directas.id_despacho as id_despacho_directa',
                         'oc_propias.id_despacho as id_despacho_propia',
-                        DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs 
+                        DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs
                         inner join almacen.orden_despacho on
                         (orden_despacho_obs.id_od = orden_despacho.id_od)
                         where   orden_despacho.id_requerimiento = alm_req.id_requerimiento
