@@ -287,4 +287,39 @@ class NotificacionHelper
             return ['estado' => 'error', 'mensaje' => $ex->getMessage()];
         }
     }
+    static public function notificacionODI($idUsuarioDestinatario,$codigo,$fecha_registro,$codigo_oportunidada,$req)
+    {
+        try {
+
+            $mensajeNotificacion = 'Se ha generado la '.$codigo;
+                if ($codigo_oportunidada == null) {
+                    $mensajeNotificacion .= ' SIN CDP';
+                } else {
+                    $mensajeNotificacion .= ', '.$req->razon_social_contribuyente;
+                }
+                $mensajeNotificacion .= ', '.$codigo_oportunidada;
+                $mensajeNotificacion .= ', '.$req->empreas_sede;
+
+            if(count($idUsuarioDestinatario)>0){
+                foreach ($idUsuarioDestinatario as $idUsuario) {
+
+                    $notificacion = new Notificacion();
+                    $notificacion->id_usuario = $idUsuario;
+                    $notificacion->mensaje = $mensajeNotificacion.', '.$fecha_registro;
+                    $notificacion->fecha = new Carbon();
+                    $notificacion->url = '';
+                    $notificacion->leido = 0;
+                    $notificacion->save();
+                }
+
+                return ['estado' => 'success', 'mensaje' => 'success'];
+            }else{
+                return ['estado' => 'warning', 'mensaje' => 'Hubo un problema para obtener los usuarios que se realizará la notificación, la variable $usuarios esta vacia'];
+
+            }
+
+        } catch (Exception $ex) {
+            return ['estado' => 'error', 'mensaje' => $ex->getMessage()];
+        }
+    }
 }
