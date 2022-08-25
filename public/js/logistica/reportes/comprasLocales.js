@@ -241,7 +241,7 @@ class ComprasLocales {
                 }
             ],
             'language': vardataTables[0],
-            'order': [[0, 'desc']],
+            'order': [[10, 'desc']],
             'bLengthChange': false,
             'serverSide': true,
             'destroy': true,
@@ -269,6 +269,9 @@ class ComprasLocales {
 
             },
             'columns': [
+                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
+                { 'data': 'codigo_requerimiento', 'name': 'codigo_requerimiento', 'className': 'text-center' },
+                { 'data': 'codigo_producto', 'name': 'codigo_producto', 'className': 'text-center' },
                 { 'data': 'descripcion', 'name': 'descripcion', 'className': 'text-center' },
                 { 'data': 'rubro_contribuyente', 'name': 'rubro_contribuyente', 'className': 'text-center' },
                 { 'data': 'razon_social_contribuyente', 'name': 'razon_social_contribuyente', 'className': 'text-center' },
@@ -279,8 +282,8 @@ class ComprasLocales {
                 { 'data': 'fecha_pago', 'name': 'fecha_pago', 'className': 'text-center' },
                 { 'data': 'tiempo_cancelacion', 'name': 'tiempo_cancelacion', 'className': 'text-center' },
                 { 'data': 'moneda_doc_com', 'name': 'moneda_doc_com', 'className': 'text-center' },
-                { 'data': 'total_igv_doc_com', 'name': 'total_igv_doc_com', 'className': 'text-center' },
-                { 'data': 'total_a_pagar_doc_com', 'name': 'total_a_pagar_doc_com', 'className': 'text-center' },
+                { 'data': 'total_a_pagar_soles', 'name': 'total_a_pagar_soles', 'className': 'text-center' },
+                { 'data': 'total_a_pagar_dolares', 'name': 'total_a_pagar_dolares', 'className': 'text-center' },
                 { 'data': 'tipo_doc_com', 'name': 'tipo_doc_com', 'className': 'text-center' },
                 { 'data': 'nro_doc_com', 'name': 'nro_doc_com', 'className': 'text-center' },
                 { 'data': 'descripcion_sede_empresa', 'name': 'descripcion_sede_empresa', 'className': 'text-center' },

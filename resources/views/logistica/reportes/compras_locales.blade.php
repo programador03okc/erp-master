@@ -31,6 +31,9 @@ Reporte de compras locales
                             <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" id="listaComprasLocales">
                                 <thead>
                                     <tr>
+                                        <th style="text-align:center; width:10%;">Cod. Ord.</th>
+                                        <th style="text-align:center; width:10%;">Cod. Req.</th>
+                                        <th style="text-align:center; width:10%;">Cod. prod.</th>
                                         <th style="text-align:center; width:10%;">Bien comprado/ servicio contratado</th>
                                         <th style="text-align:center; width:10%;">Rubro Proveedor</th>
                                         <th style="text-align:center; width:10%;">Razón Social del Proveedor</th>

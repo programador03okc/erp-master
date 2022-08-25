@@ -37,6 +37,9 @@ class ReporteComprasLocalesExcel implements FromView
         $data=[];
         foreach($comLocales as $element){
             $data[]=[
+                'codigo'=> $element->codigo??'',
+                'codigo_requerimiento'=> $element->codigo_requerimiento??'',
+                'codigo_producto'=> $element->codigo_producto??'',
                 'descripcion'=> $element->descripcion??'',
                 'rubro_contribuyente'=> $element->rubro_contribuyente??'',
                 'razon_social_contribuyente'=> $element->razon_social_contribuyente??'',
@@ -47,8 +50,8 @@ class ReporteComprasLocalesExcel implements FromView
                 'fecha_pago'=> $element->fecha_pago??'',
                 'tiempo_cancelacion'=> $element->tiempo_cancelacion??'',
                 'moneda_doc_com'=> $element->moneda_doc_com??'',
-                'total_igv_doc_com'=> $element->total_igv_doc_com??'',
-                'total_a_pagar_doc_com'=> $element->total_a_pagar_doc_com??'',
+                'total_a_pagar_soles'=> $element->total_a_pagar_soles??'',
+                'total_a_pagar_dolares'=> $element->total_a_pagar_dolares??'',
                 'tipo_doc_com'=> $element->tipo_doc_com??'',
                 'nro_doc_com'=> $element->nro_doc_com??'',
                 'descripcion_sede_empresa'=> $element->descripcion_sede_empresa??'',
