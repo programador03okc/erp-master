@@ -245,18 +245,18 @@ function listarRequerimientosPendientes(usuario) {
             {
                 'render': function (data, type, row) {
                     return `<div>
-                    <div style="display:flex;"> 
+                    <div style="display:flex;">
                         <button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>
-                        
+
                         ${row['tiene_transformacion'] ?
                             `<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                            data-placement="bottom" title="Despacho Interno" data-id="${row['id_requerimiento']}" 
+                            data-placement="bottom" title="Despacho Interno" data-id="${row['id_requerimiento']}"
                             data-estado="${row['estado_di']}" data-estado-despacho="${row['estado_despacho']}"
                             data-idod="${row['id_despacho_interno']}" >
                             <strong>ODI</strong></button>` : ''}
-                            
+
                         ${row['id_requerimiento'] !== null ?
                             `<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                             data-placement="bottom" title="Orden de Despacho" data-id="${row['id_requerimiento']}" data-tipo="${row['id_tipo_requerimiento']}"
@@ -276,14 +276,20 @@ function listarRequerimientosPendientes(usuario) {
 
                         /*(row['id_od'] == null && row['productos_no_mapeados'] == 0)*/
                         `${row["tiene_comentarios"] ?
-                            `<button type="button" class="comentarios btn btn-default btn-flat btn-xs" data-toggle="tooltip" 
+                            `<button type="button" class="comentarios btn btn-default btn-flat btn-xs" data-toggle="tooltip"
                                 data-placement="bottom" title="Ver comentarios mgcp" data-oc="${row["id_oc_propia"]}" data-tp="${row["tipo"]}"
                                 data-nro="${row["nro_orden"]}" style="background-color: #e4a8ff;">
                                 <i class="fas fa-comment"></i></button>` : ''
                         }
+                        ${row['id_od'] !== null ?
+                            `<button type="button" class="btn btn-success btn-flat btn-xs adjuntos-despacho" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver adjuntos de notificaciones"
+                                >
+                                <i class="fas fa-file-archive"></i></button>` : ''
+                        }
                         </div>
                         <div style="display:flex;">
-                            <button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs " 
+                            <button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs "
                             data-toggle="tooltip" data-placement="bottom" data-id="${row['id_od']}" title="Datos del contacto" >
                             <i class="fas fa-id-badge"></i></button>
                         `+
@@ -292,17 +298,17 @@ function listarRequerimientosPendientes(usuario) {
                             <button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
                             data-placement="bottom" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" title="Agencia de transporte" >
                             <i class="fas fa-truck"></i></button>
-                            
-                            <button type="button" class="estados btn btn-${row["count_estados_envios"] > 0 ? 'primary' : 'default'} btn-flat btn-xs" data-toggle="tooltip" 
+
+                            <button type="button" class="estados btn btn-${row["count_estados_envios"] > 0 ? 'primary' : 'default'} btn-flat btn-xs" data-toggle="tooltip"
                             data-placement="bottom" title="Ver Trazabilidad de Envío" data-id="${row["id_od"]}">
                             <i class="fas fa-route"></i></button></div>`: '') +
                         // ((row['id_od'] !== null && parseInt(row['estado_od']) == 1) ?
-                        //     `<button type="button" class="anular_od btn btn-flat btn-danger btn-xs boton" data-toggle="tooltip" 
+                        //     `<button type="button" class="anular_od btn btn-flat btn-danger btn-xs boton" data-toggle="tooltip"
                         //             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho Externo" >
                         //             <i class="fas fa-trash"></i></button>` : '') +
                         /*(row["nro_orden"] !== null && row['productos_no_mapeados'] == 0
-                           ? `<button type="button" class="facturar btn btn-flat btn-xs btn-${row["enviar_facturacion"] ? "info" : "default"} 
-                                   boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
+                           ? `<button type="button" class="facturar btn btn-flat btn-xs btn-${row["enviar_facturacion"] ? "info" : "default"}
+                                   boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación"
                                    data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}" data-envio="${row["enviar_facturacion"]}">
                                    <i class="fas fa-file-upload"></i></button>`
                            : '')*/
@@ -442,6 +448,32 @@ $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) 
         $('[name=envio]').val('envio');
         openOrdenDespachoEnviar(data);
     }
+});
+$('#requerimientosEnProceso tbody').on("click", "button.adjuntos-despacho", function (e) {
+    $(e.preventDefault());
+    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data(),
+        html='';
+    $('#modal-adjuntos-despacho').modal('show');
+    $('#codigo_adjunto').text((data.codigo_oportunidad ?? '') + '-' + (data.codigo ?? ''));
+    console.log(data);
+    $.ajax({
+        type: 'GET',
+        url: 'adjuntos-despacho',
+        data: data,
+        dataType: 'JSON',
+    }).done(function (response) {
+        console.log(response);
+        $.each(response, function (index, element) {
+            html+='<tr>'
+                html+='<td> <a href="/files/logistica/despacho/'+element.archivo+'" target="_blank" >'+element.archivo+'</a></td>'
+                html+='<td> '+element.fecha_registro+'</td>'
+            html+='</tr>';
+        });
+        $('[data-table="adjuntos-archivos"]').html(html);
+    }).always(function () {
+    }).fail(function (jqXHR) {
+        console.log('Error devuelto: ' + jqXHR.responseText);
+    });
 });
 
 $('#requerimientosEnProceso tbody').on("click", "button.interno", function (e) {

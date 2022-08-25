@@ -12,8 +12,10 @@ use App\Http\Controllers\Controller;
 use App\Mail\EmailContactoDespacho;
 use App\Mail\EmailOrdenDespacho;
 use App\Models\Administracion\Periodo;
+use App\models\almacen\AdjuntosDespacho;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Comercial\Cliente;
+use App\models\Configuracion\AdjuntosNotificaciones;
 use App\Models\Configuracion\Usuario;
 use App\Models\Contabilidad\ContactoContribuyente;
 use App\Models\Contabilidad\Contribuyente;
@@ -28,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Debugbar;
 
@@ -454,7 +457,7 @@ class OrdenesDespachoExternoController extends Controller
         }
         $orden_despacho = OrdenDespacho::where('id_requerimiento', $request->id_requerimiento)->first();
 
-        Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
+        // Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
         NotificacionHelper::notificacionOrdenDespacho($idUsuarios,$request->mensaje,$oportunidad,$requerimiento,$orden_despacho->codigo, $orden_despacho->fecha_registro);
 
         foreach ($archivosOc as $archivo) {
@@ -471,6 +474,7 @@ class OrdenesDespachoExternoController extends Controller
 
     public function guardarOrdenDespachoExterno(Request $request)
     {
+
         try {
             DB::beginTransaction();
             $ordenDespacho = null;
@@ -602,6 +606,31 @@ class OrdenesDespachoExternoController extends Controller
                 }
 
                 $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento);
+
+                if ($request->archivos) {
+                    foreach ($request->archivos as $key => $value) {
+                        if ($value != null) {
+                            $fechaHoy = new Carbon();
+                            $sufijo = $fechaHoy->format('YmdHis');
+                            $file = $value->getClientOriginalName();
+                            $codigo = $request->codigo;
+                            $extension = pathinfo($file, PATHINFO_EXTENSION);
+                            $id_requerimiento = $request->id_requerimiento;
+                            $newNameFile = $codigo . '_' . $key . $id_requerimiento . $sufijo . '.' . $extension;
+                            Storage::disk('archivos')->put("logistica/despacho/" . $newNameFile, File::get($value));
+
+                            $adjuntos_notificaciones = new AdjuntosDespacho();
+                            $adjuntos_notificaciones->archivo = $newNameFile;
+                            $adjuntos_notificaciones->estado = 1;
+                            $adjuntos_notificaciones->fecha_registro= date('Y-m-d H:i:s');
+                            $adjuntos_notificaciones->id_requerimiento= $request->id_requerimiento ;
+                            $adjuntos_notificaciones->id_oportunidad=$request->id_oportunidad;
+                            $adjuntos_notificaciones->save();
+
+                        }
+
+                    }
+                }
             }
 
             DB::commit();
@@ -1438,5 +1467,10 @@ class OrdenesDespachoExternoController extends Controller
             DB::rollBack();
             return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
         }
+    }
+    public function adjuntosDespacho(Request $request)
+    {
+        $adjuntos_despacho = AdjuntosDespacho::where('estado',1)->where('id_oportunidad',$request->id_oportunidad)->where('id_requerimiento',$request->id_requerimiento)->get();
+        return response()->json($adjuntos_despacho);
     }
 }
