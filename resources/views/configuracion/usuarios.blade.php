@@ -4,34 +4,69 @@
 @section('cabecera')
     Gestión de Usuarios
 @endsection
+
+@section('estilos')
+    <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+@endsection
+
+@section('breadcrumb')
+<ol class="breadcrumb">
+    <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Configuraciones</a></li>
+    <li>Usuarios</li>
+    <li class="active">@yield('cabecera')</li>
+</ol>
+@endsection
+
 @section('content')
 <div class="page-main" type="usuarios">
     <legend class="mylegend">
         <h2>Usuarios</h2>
         <ol class="breadcrumb">
             <li>
-                <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Nuevo Usuario" onClick="crear_usuario();">Nuevo Usuario</button>
+
             </li>
         </ol>
     </legend>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <table class="mytable table table-striped table-condensed table-bordered" id="listaUsuarios">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th width="12%">Nombre</th>
-                            <th>Usuario</th>
-                            <th>Clave</th>
-                            <th>Email</th>
-                            {{-- <th>Rol</th> --}}
-                            <th>Fecha Registro</th>
-                            <th width="15%">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+
+    <div class="box box-solid">
+        <div class="box-header">
+            <h3 class="box-title">Lista de usuarios</h3>
+            <div class="pull-right box-tools">
+                <button type="submit" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Nuevo Usuario" onClick="crear_usuario();">Nuevo Usuario</button>
+            </div>
+        </div>
+        <div class="box-body">
+            {{-- <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="id_rol">Rol : </label>
+                        <select id="id_rol" class="selectpicker" name="id_rol[]"
+                            data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10" required>
+                            @foreach ($rol as $item)
+                                <option value="{{$item->id_rol}}" >{{$item->descripcion}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div> --}}
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="mytable table table-striped table-condensed table-bordered" id="listaUsuarios">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th width="12%">Nombre</th>
+                                <th>Usuario</th>
+                                <th>Clave</th>
+                                <th>Email</th>
+                                {{-- <th>Rol</th> --}}
+                                <th>Fecha Registro</th>
+                                <th width="15%">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -39,7 +74,7 @@
 
 <!-- modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-agregarUsuario">
-    <div class="modal-dialog" style="width: 30%;">
+    <div class="modal-dialog" style="width: 70%;">
         <div class="modal-content">
             <form class="formularioUsu" type="register" id="formPage">
                 <div class="modal-header">
@@ -49,34 +84,269 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <h5>Trabajador</h5>
-                            <!-- <input type="hidden" class="form-control input-sm" name="id_trabajador">
-                            <div class="input-group-okc">
-                                <input type="text" class="form-control input-sm" name="trab" id="trab" disabled>
-                                <div class="input-group-append">
-                                    <button type="button" class="input-group-text" id="basic-addon1" onclick="modalTrabajadores();">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
-                            </div> -->
-                            <div style="display:flex;">
-                                <input class="oculto" name="id_trabajador"/>
-                                <input type="text" class="form-control activation" name="nombre_trabajador" placeholder="Seleccione un trabajador..."
-                                    aria-describedby="basic-addon1" disabled>
-                                <button type="button" class="input-group-text activation btn-primary" id="basic-addon1" onClick="trabajadorModal();">
-                                    <i class="fa fa-search"></i>
-                                </button>
+                            <h4>DATOS PERSONALES</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nro_documento">N° de documento</label>
+                                <input type="number" class="form-control" id="nro_documento" name="nro_documento" required>
+                                <small id="emailHelp" class="form-text text-muted">N° de documento de identificación.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nombres">Nombres:</label>
+                                <input type="text" class="form-control" id="nombres" name="nombres" required>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <h5>Usuario</h5>
-                            <input type="text" class="form-control input-sm" name="usuario" id="usuario" required>
+                            <div class="form-group">
+                                <label for="apellido_paterno">Apellido Paterno : </label>
+                                <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" required>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <h5>Clave</h5>
-                            <input type="password" class="form-control input-sm" name="clave" id="clave" required>
+                            <div class="form-group">
+                                <label for="apellido_materno">Apellido Materno : </label>
+                                <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="fecha_nacimiento">Fecha de nacimiento : </label>
+                                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="sexo">Sexo : </label>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="sexo" id="inlineRadio1" value="M" required>
+                                        <label class="form-check-label" for="inlineRadio1">Masculino</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="sexo" id="inlineRadio2" value="F" required>
+                                        <label class="form-check-label" for="inlineRadio2">Femenino</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_estado_civil">Estado civil : </label>
+                                <select id="id_estado_civil" class="form-control" name="id_estado_civil" required>
+                                    <option value="" >Seleccione...</option>
+                                    @foreach ($estado_civil as $item)
+                                        <option value="{{$item->id_estado_civil}}" >{{$item->descripcion}}</option>
+                                    @endforeach
+
+                                  </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="telefono">Telefono : </label>
+                                <input type="number" class="form-control" id="telefono" name="telefono" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="direccion">Direccion : </label>
+                                <input type="text" class="form-control" id="direccion" name="direccion" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email">Email : </label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="brevette">Brevette : </label>
+                                <input type="text" class="form-control" id="brevette" name="brevette" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pais">Pais : </label>
+                                <select id="pais" class="form-control" name="pais" required>
+                                    <option value="" >Seleccione...</option>
+                                    @foreach ($pais as $item)
+                                        <option value="{{$item->id_pais}}" >{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="ubigeo">Ubigeo : </label>
+                                <input type="text" class="form-control" id="ubigeo" name="ubigeo" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_tipo_trabajador">Tipo trabajador : </label>
+                                <select id="id_tipo_trabajador" class="form-control" name="id_tipo_trabajador" required>
+                                    <option value="" >Seleccione...</option>
+                                    @foreach ($tipo_trabajador as $item)
+                                        <option value="{{$item->id_tipo_trabajador}}" >{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_categoria_ocupacional">Categoria ocupacional : </label>
+                                <select id="id_categoria_ocupacional" class="form-control" name="id_categoria_ocupacional" required>
+                                    <option value="" >Seleccione...</option>
+                                    @foreach ($categoria_ocupacional as $item)
+                                        <option value="{{$item->id_categoria_ocupacional}}" >{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_tipo_planilla">Tipo de planilla : </label>
+                                <select id="id_tipo_planilla" class="form-control" name="id_tipo_planilla" required>
+                                    <option value="" >Seleccione...</option>
+                                    @foreach ($tipo_planilla as $item)
+                                        <option value="{{$item->id_tipo_planilla}}" >{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="condicion">Condición : </label>
+                                <input type="text" class="form-control" id="condicion" name="condicion" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="hijos">Hijos : </label>
+                                <input type="number" class="form-control" id="hijos" name="hijos" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_pension">Pension : </label>
+                                <select id="id_pension" class="form-control" name="id_pension" required>
+                                    <option value="" >Seleccione...</option>
+                                    @foreach ($pension as $item)
+                                        <option value="{{$item->id_pension}}" >{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cuspp">Cuspp : </label>
+                                <input type="text" class="form-control" id="cuspp" name="cuspp" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="seguro">Seguro : </label>
+                                <input type="text" class="form-control" id="seguro" name="seguro" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Confianza : </label>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="confianza" id="confianza1" value="t" required>
+                                            <label class="form-check-label" for="confianza1">Si</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="confianza" id="confianza2" value="f" required>
+                                            <label class="form-check-label" for="confianza2">No</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>CREDENCIALES</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="usuario">Usuario : </label>
+                                <input type="text" class="form-control" id="usuario" name="usuario" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clave">Clave : </label>
+                                <input type="password" class="form-control" id="clave" name="clave" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nombre_corto">Nombre corto : </label>
+                                <input type="text" class="form-control" id="nombre_corto" name="nombre_corto" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="codvent_softlink">Codvend Softlink : </label>
+                                <input type="text" class="form-control" id="codvent_softlink" name="codvent_softlink" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_grupo">Grupo : </label>
+                                <select id="id_grupo" class="selectpicker" name="id_grupo[]" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10" required>
+                                    @foreach ($grupo as $item)
+                                        <option value="{{$item->id_grupo}}" >{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_rol">Rol : </label>
+                                <select id="id_rol" class="selectpicker" name="id_rol[]" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10" required>
+                                    @foreach ($rol as $item)
+                                        <option value="{{$item->id_rol}}" >{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -177,6 +447,9 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
+
 
     <script src="{{('/js/configuracion/usuario.js')}}"></script>
     <script src="{{('/js/configuracion/modal_asignar_accesos.js')}}"></script>

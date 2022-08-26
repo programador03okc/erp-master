@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class rrhh_trab extends Model
 {
           // table name
-          protected $table = 'rrhh_trab';
+          protected $table = 'rrhh.rrhh_trab';
           //primary key
           protected $primaryKey = 'id_trabajador';
           // public $incrementing = false;
           //Timesptamps
           public $timestamps = false;
-    
+
         protected $fillable = [
             'id_trabajador',
             'id_postulante',

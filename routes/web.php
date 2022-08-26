@@ -1117,6 +1117,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('guardarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
+                Route::get('adjuntos-despacho', 'Logistica\Distribucion\OrdenesDespachoExternoController@adjuntosDespacho');
 				Route::post('generarDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInterno');
 				// Route::get('guardarOrdenDespachoExterno/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
 				Route::post('actualizarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarOrdenDespachoExterno');
@@ -2035,6 +2036,11 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
+    // gerencial
+    Route::group(['as' => 'gerencial.', 'prefix' => 'gerencial'], function () {
+
+		Route::get('index', 'Gerencial\GerencialController@index')->name('index');
+	});
 	Route::get('config', function () {
 		return view('configuracion/main');
 	});

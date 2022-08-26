@@ -11,6 +11,7 @@ function openOrdenDespachoEnviar(data) {
         $('[name=id_requerimiento]').val(data.id_requerimiento ?? '');
         $('[name=id_oportunidad]').val(data.id_oportunidad ?? '');
         $('#codigo_cdp').text((data.codigo_oportunidad ?? '') + ' - ' + (data.codigo ?? ''));
+        $('[name="codigo"]').val((data.codigo_oportunidad ?? '') + '-' + (data.codigo ?? ''));
 
         var msj = "Por favor hacer seguimiento a este pedido. Vence: " + (formatDate(data.fecha_entrega) ?? '') +
             "\nFECHA DE DESPACHO: \n" +

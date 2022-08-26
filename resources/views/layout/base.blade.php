@@ -11,6 +11,8 @@
 	<link rel="icon" type="image/ico" href="{{ asset('images/icono.ico')}}" />
 	<link rel="stylesheet" href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('template/fontawesome/css/all.min.css') }}">
+
+
 	<link rel="stylesheet" href="{{ asset('template/adminlte/css/AdminLTE.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/app.css')}}">
 	<link rel="stylesheet" href="{{ asset('css/skin-okc.css')}}">
@@ -96,6 +98,8 @@
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
+
+
 	<script>
 		$(document).ready(function() {
 			notificacionesNoLeidas();
