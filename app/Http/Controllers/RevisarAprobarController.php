@@ -129,50 +129,50 @@ class RevisarAprobarController extends Controller{
         //     return $query->whereRaw('requerimiento_pago.id_prioridad = ' . $idPrioridad);
         // })
         ->get();
-        $documentoTipoRequerimientoPago=[];
-        // $documentoTipoRequerimientoPago =Documento::join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'adm_documentos_aprob.id_doc')
-        // ->leftJoin('tesoreria.requerimiento_pago_tipo', 'requerimiento_pago.id_requerimiento_pago_tipo', '=', 'requerimiento_pago_tipo.id_requerimiento_pago_tipo')
-        // ->leftJoin('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'adm_documentos_aprob.id_tp_documento')
-        // ->leftJoin('administracion.adm_prioridad', 'requerimiento_pago.id_prioridad', '=', 'adm_prioridad.id_prioridad')
-        // ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
-        // ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-        // ->leftJoin('contabilidad.adm_contri as contrib_empresa', 'adm_empresa.id_contribuyente', '=', 'contrib_empresa.id_contribuyente')
-        // ->leftJoin('administracion.division', 'division.id_division', '=', 'requerimiento_pago.id_division')
-        // ->leftJoin('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
-        // ->leftJoin('configuracion.sis_usua', 'requerimiento_pago.id_usuario', '=', 'sis_usua.id_usuario')
-        // ->leftJoin('configuracion.sis_moneda', 'requerimiento_pago.id_moneda', '=', 'sis_moneda.id_moneda')
-        // ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago.id_estado', '=', 'requerimiento_pago_estado.id_requerimiento_pago_estado')
-        // ->select(
-        //     'adm_documentos_aprob.*',
-        //     'requerimiento_pago_tipo.descripcion AS tipo_requerimiento',
-        //     'adm_tp_docum.descripcion as tipo_documento_descripcion',
-        //     'requerimiento_pago.*',
-        //     'sis_moneda.descripcion as moneda_descripcion',
-        //     'sis_moneda.simbolo as moneda_simbolo',
-        //     'adm_prioridad.descripcion as prioridad_descripcion',
-        //     'contrib_empresa.razon_social as empresa_razon_social',
-        //     'sis_sede.codigo as sede_descripcion',
-        //     'sis_grupo.descripcion as grupo_descripcion',
-        //     'division.descripcion as division_descripcion',
-        //     'sis_usua.nombre_corto as usuario_nombre_corto',
-        //     'requerimiento_pago_estado.descripcion as estado_descripcion',
-        //     'requerimiento_pago_estado.bootstrap_color',
-        // )
-        // ->where([['adm_documentos_aprob.id_tp_documento',11]]) // documento => requerimiento de pago
-        // ->whereIn('requerimiento_pago.id_estado',[1,4]) // elaborado, pendiente aprobación
-        // // ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
-        // //     return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
-        // // })
-        // // ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
-        // //     return $query->whereRaw('alm_req.id_sede = ' . $idSede);
-        // // })
-        // // ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
-        // //     return $query->whereRaw('alm_req.id_grupo = ' . $idGrupo);
-        // // })
-        // // ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
-        // //     return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
-        // // })
-        // ->get();
+        
+        $documentoTipoRequerimientoPago =Documento::join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'adm_documentos_aprob.id_doc')
+        ->leftJoin('tesoreria.requerimiento_pago_tipo', 'requerimiento_pago.id_requerimiento_pago_tipo', '=', 'requerimiento_pago_tipo.id_requerimiento_pago_tipo')
+        ->leftJoin('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'adm_documentos_aprob.id_tp_documento')
+        ->leftJoin('administracion.adm_prioridad', 'requerimiento_pago.id_prioridad', '=', 'adm_prioridad.id_prioridad')
+        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
+        ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+        ->leftJoin('contabilidad.adm_contri as contrib_empresa', 'adm_empresa.id_contribuyente', '=', 'contrib_empresa.id_contribuyente')
+        ->leftJoin('administracion.division', 'division.id_division', '=', 'requerimiento_pago.id_division')
+        ->leftJoin('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
+        ->leftJoin('configuracion.sis_usua', 'requerimiento_pago.id_usuario', '=', 'sis_usua.id_usuario')
+        ->leftJoin('configuracion.sis_moneda', 'requerimiento_pago.id_moneda', '=', 'sis_moneda.id_moneda')
+        ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago.id_estado', '=', 'requerimiento_pago_estado.id_requerimiento_pago_estado')
+        ->select(
+            'adm_documentos_aprob.*',
+            'requerimiento_pago_tipo.descripcion AS tipo_requerimiento',
+            'adm_tp_docum.descripcion as tipo_documento_descripcion',
+            'requerimiento_pago.*',
+            'sis_moneda.descripcion as moneda_descripcion',
+            'sis_moneda.simbolo as moneda_simbolo',
+            'adm_prioridad.descripcion as prioridad_descripcion',
+            'contrib_empresa.razon_social as empresa_razon_social',
+            'sis_sede.codigo as sede_descripcion',
+            'sis_grupo.descripcion as grupo_descripcion',
+            'division.descripcion as division_descripcion',
+            'sis_usua.nombre_corto as usuario_nombre_corto',
+            'requerimiento_pago_estado.descripcion as estado_descripcion',
+            'requerimiento_pago_estado.bootstrap_color',
+        )
+        ->where([['adm_documentos_aprob.id_tp_documento',11]]) // documento => requerimiento de pago
+        ->whereIn('requerimiento_pago.id_estado',[1,4]) // elaborado, pendiente aprobación
+        // ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
+        //     return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
+        // })
+        // ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
+        //     return $query->whereRaw('alm_req.id_sede = ' . $idSede);
+        // })
+        // ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
+        //     return $query->whereRaw('alm_req.id_grupo = ' . $idGrupo);
+        // })
+        // ->when((intval($idPrioridad) > 0), function ($query)  use ($idPrioridad) {
+        //     return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
+        // })
+        ->get();
         
 
         $documentosEnUnaLista = $documentoTipoRequerimientoBienesYServicios->merge($documentoTipoRequerimientoPago);
