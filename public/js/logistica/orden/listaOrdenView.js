@@ -162,6 +162,7 @@ class ListaOrdenView {
             }
         });
         $(document).on('click','.adjuntar-archivos', (e)=> {
+            tempArchivoAdjuntoRequerimientoCabeceraList=[];
             $(":file").filestyle('clear');
             this.limpiarTabla('adjuntosCabecera');
             var data_id = e.currentTarget.dataset.id,
