@@ -89,7 +89,9 @@ Gestión de Despachos
                     <div class="col-md-12" data-loading="loading">
                         <table class="table table-striped">
                             <tbody  data-table="adjuntos-archivos">
-
+                                <tr>
+                                    <td> Sin adjuntos...</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

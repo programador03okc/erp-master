@@ -1470,7 +1470,11 @@ class OrdenesDespachoExternoController extends Controller
     }
     public function adjuntosDespacho(Request $request)
     {
+        $success=false;
         $adjuntos_despacho = AdjuntosDespacho::where('estado',1)->where('id_oportunidad',$request->id_oportunidad)->where('id_requerimiento',$request->id_requerimiento)->get();
-        return response()->json($adjuntos_despacho);
+        if (sizeof($adjuntos_despacho)>0) {
+            $success=true;
+        }
+        return response()->json(['success'=>$success,'data'=>$adjuntos_despacho]);
     }
 }

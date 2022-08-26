@@ -463,12 +463,21 @@ $('#requerimientosEnProceso tbody').on("click", "button.adjuntos-despacho", func
         dataType: 'JSON',
     }).done(function (response) {
         console.log(response);
-        $.each(response, function (index, element) {
+        if (response.success===true) {
+            console.log('si');
+            $.each(response.data, function (index, element) {
+                html+='<tr>'
+                    html+='<td> <a href="/files/logistica/despacho/'+element.archivo+'" target="_blank" >'+element.archivo+'</a></td>'
+                    html+='<td> '+element.fecha_registro+'</td>'
+                html+='</tr>';
+            });
+
+        }else{
+            console.log('no');
             html+='<tr>'
-                html+='<td> <a href="/files/logistica/despacho/'+element.archivo+'" target="_blank" >'+element.archivo+'</a></td>'
-                html+='<td> '+element.fecha_registro+'</td>'
+                html+='<td class="text-center"> Sin adjuntos...</td>'
             html+='</tr>';
-        });
+        }
         $('[data-table="adjuntos-archivos"]').html(html);
     }).always(function () {
     }).fail(function (jqXHR) {
