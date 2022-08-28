@@ -9,6 +9,7 @@ use App\Http\Controllers\Logistica\Distribucion\OrdenesDespachoExternoController
 use App\Models\Almacen\Requerimiento;
 use App\Models\Distribucion\OrdenDespacho;
 use App\Models\Logistica\Orden;
+use App\Models\Tesoreria\TipoCambio;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -37,7 +38,8 @@ class VentasInternasController extends Controller
                     'guia_com_det.id_guia_com_det',
                     'guia_com.id_almacen',
                     'alm_almacen.id_sede',
-                    'alm_prod.id_unidad_medida'
+                    'alm_prod.id_unidad_medida',
+                    'alm_prod.id_moneda',
                 )
                 ->join('almacen.guia_com_det', 'guia_com_det.id_guia_ven_det', '=', 'doc_ven_det.id_guia_ven_det')
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'doc_ven_det.id_item')
@@ -86,6 +88,9 @@ class VentasInternasController extends Controller
                     }
                 }
 
+                $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $doc_ven->fecha_emision]])
+                    ->orderBy('fecha', 'DESC')->first();
+
                 $id_doc = DB::table('almacen.doc_com')->insertGetId(
                     [
                         'serie' => strtoupper($doc_ven->serie),
@@ -102,6 +107,7 @@ class VentasInternasController extends Controller
                         'sub_total' => $doc_ven->sub_total,
                         'total_igv' => $doc_ven->total_igv,
                         'total_icbper' => 0,
+                        'tipo_cambio' => $tipo_cambio->venta,
                         'porcen_igv' => $doc_ven->porcen_igv,
                         'total_a_pagar' => $doc_ven->total_a_pagar,
                         'usuario' => $doc_ven->usuario,
@@ -249,9 +255,19 @@ class VentasInternasController extends Controller
                         ->where('id_guia_com_det', $item->id_guia_com_det)
                         ->update(['id_oc_det' => $id_oc_det]);
 
+                    if ($item->id_moneda == $doc_ven->moneda) { //moneda del producto == moneda del documento
+                        $unitario = $item->precio_unitario;
+                    } else {
+                        if ($item->id_moneda == 1) { //soles
+                            $unitario = $item->precio_unitario * $tipo_cambio->venta;
+                        } else { //dolares
+                            $unitario = $item->precio_unitario / $tipo_cambio->venta;
+                        }
+                    }
+
                     DB::table('almacen.mov_alm_det')
                         ->where('id_guia_com_det', $item->id_guia_com_det)
-                        ->update(['valorizacion' => $item->precio_total]);
+                        ->update(['valorizacion' => ($unitario * $item->cantidad)]);
 
                     OrdenesPendientesController::actualiza_prod_ubi($item->id_item, $item->id_almacen);
                 }
@@ -280,8 +296,16 @@ class VentasInternasController extends Controller
                 'alm_req.id_requerimiento',
             )
             ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'doc_com_det.id_guia_com_det')
-            ->join('almacen.mov_alm_det', 'mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
-            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            // ->join('almacen.mov_alm_det', 'mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+            ->join('almacen.mov_alm_det', function ($join) {
+                $join->on('mov_alm_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
+                $join->where('mov_alm_det.estado', '!=', 7);
+            })
+            // ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            ->join('almacen.mov_alm', function ($join) {
+                $join->on('mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm');
+                $join->where('mov_alm.estado', '!=', 7);
+            })
             ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
             ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
             ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')

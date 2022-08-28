@@ -107,18 +107,25 @@ class ListaRequerimientosAlmacenController extends Controller
                     'id_sede' => $alm->id_sede
                 ]);
 
-            $od = DB::table('almacen.orden_despacho')
+            // $od = DB::table('almacen.orden_despacho')
+            //     ->where([
+            //         ['id_requerimiento', '=', $request->id_requerimiento],
+            //         ['estado', '=', 1]
+            //     ])
+            //     ->first();
+
+            // if ($od !== null) {
+            //     DB::table('almacen.orden_despacho')
+            //         ->where('id_od', $od->id_od)
+            //         ->update(['id_almacen' => $request->id_almacen]);
+            // }
+
+            DB::table('almacen.orden_despacho')
                 ->where([
                     ['id_requerimiento', '=', $request->id_requerimiento],
                     ['estado', '=', 1]
                 ])
-                ->first();
-
-            if ($od !== null) {
-                DB::table('almacen.orden_despacho')
-                    ->where('id_od', $od->id_od)
-                    ->update(['id_almacen' => $request->id_almacen]);
-            }
+                ->update(['id_almacen' => $request->id_almacen]);
 
             $detalle = json_decode($request->detalle);
 
@@ -129,6 +136,18 @@ class ListaRequerimientosAlmacenController extends Controller
                         'tiene_transformacion' => $det->tiene_transformacion,
                         'entrega_cliente' => $det->entrega_cliente,
                     ]);
+
+                // DB::table('almacen.orden_despacho_det')
+                //     ->where([
+                //         ['id_detalle_requerimiento','=', $det->id_detalle_requerimiento],
+                //         ['estado','!=',7]
+                //     ])
+                //     ->get();
+
+                // if ($det->tiene_transformacion && $det->entrega_cliente){
+                //     DB::table('almacen.orden_despacho_det')
+                //     ->update([])
+                // }
             }
 
             DB::table('almacen.alm_req_obs')
