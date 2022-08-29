@@ -916,9 +916,9 @@ Route::group(['middleware' => ['auth']], function () {
 					});
 					Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 						Route::get('index', 'OrdenController@view_listar_ordenes')->name('index');
-                        Route::get('listas-categorias-adjunto', 'OrdenController@listarCategoriasAdjuntos');
-                        Route::post('guardar-adjunto-orden', 'OrdenController@guardarAdjuntoOrden');
-                        Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
+						Route::get('listas-categorias-adjunto', 'OrdenController@listarCategoriasAdjuntos');
+						Route::post('guardar-adjunto-orden', 'OrdenController@guardarAdjuntoOrden');
+						Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
 						Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 						Route::get('facturas/{id_orden}', 'OrdenController@obtenerFacturas');
@@ -984,7 +984,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('lista-compras-locales', 'ReporteLogisticaController@listaComprasLocales');
 				Route::get('reporte-compras-locales-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteCompraLocalesExcel')->name('reporte-compras-locales-excel');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
-
 			});
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function () {
@@ -1185,7 +1184,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('cambiaEstado', 'Logistica\Distribucion\OrdenesDespachoInternoController@cambiaEstado');
 			});
 		});
-
 	});
 
 
@@ -1591,6 +1589,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('getAlmacenesPorEmpresa/{id}', 'Almacen\Movimiento\TransferenciaController@getAlmacenesPorEmpresa');
 				Route::get('imprimir_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@imprimir_transferencia');
+
+				Route::post('actualizarCostosVentasInternas', 'Tesoreria\Facturacion\VentasInternasController@actualizarCostosVentasInternas');
 			});
 		});
 
@@ -2009,13 +2009,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario');
-        #asignar acceso a los usuarios
-        Route::get('usuarios/accesos', 'ConfiguracionController@usuarioAcceso');
-        Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
-        Route::get('usuarios/get/modulos', 'ConfiguracionController@getModulos');
-        Route::get('usuarios/get/modulos/hijos/{id_modulo}', 'ConfiguracionController@getModulosHijos');
-        Route::post('usuarios/asignar/modulos', 'ConfiguracionController@asiganrModulos');
-        #----------------------
+		#asignar acceso a los usuarios
+		Route::get('usuarios/accesos', 'ConfiguracionController@usuarioAcceso');
+		Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
+		Route::get('usuarios/get/modulos', 'ConfiguracionController@getModulos');
+		Route::get('usuarios/get/modulos/hijos/{id_modulo}', 'ConfiguracionController@getModulosHijos');
+		Route::post('usuarios/asignar/modulos', 'ConfiguracionController@asiganrModulos');
+		#----------------------
 		Route::get('listar_usuarios', 'ConfiguracionController@mostrar_usuarios');
 		Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
 		Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
@@ -2579,5 +2579,4 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('guardar_area', 'AdministracionController@guardar_area');
 	Route::post('editar_area', 'AdministracionController@actualizar_area');
 	Route::get('anular_area/{id}', 'AdministracionController@anular_area');
-
 });

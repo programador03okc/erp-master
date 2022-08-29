@@ -473,3 +473,11 @@ function abrirRequerimiento(id_requerimiento) {
     var win = window.open(url, "_blank");
     win.focus();
 }
+
+function exportarVentasInternasActualizadas() {
+    var form = $(`<form action="actualizarCostosVentasInternas" method="post" target="_blank">
+        <input type="hidden" name="_token" value="${csrf_token}"/>
+        </form>`);
+    $('body').append(form);
+    form.trigger('submit');
+}
