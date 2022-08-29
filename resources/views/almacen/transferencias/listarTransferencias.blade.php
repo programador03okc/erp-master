@@ -161,6 +161,12 @@ Transferencias
                                 @csrf()
                                 <input type="hidden" name="id_almacen_destino_recibida" value="0">
                             </form>
+                            @if (Auth::user()->id_usuario == 3)
+                            <button data-toggle="tooltip" data-placement="bottom" title="Actualizar Ventas Internas" 
+                                class="btn btn-success btn-sm exportar" style="color:#fff !important;" onClick="exportarVentasInternasActualizadas()">
+                                <i class="fas fa-file-excel"></i> Actualizar Ventas Internas
+                            </button>
+                            @endif
                             <div class="row" style="padding-top:10px;">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasRecibidas">
@@ -225,6 +231,16 @@ Transferencias
 <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
+<script>
+    let csrf_token = "{{ csrf_token() }}";
+    $(document).ready(function() {
+        seleccionarMenu(window.location);
+        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
+        iniciar('{{Auth::user()->tieneAccion(91)}}', '{{Auth::user()->id_usuario}}');
+        //listarRequerimientosPendientes();
+
+    });
+</script>
 <script src="{{ asset('js/almacen/transferencias/listarTransferencias.js')}}?v={{filemtime(public_path('js/almacen/transferencias/listarTransferencias.js'))}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciasRecibidas.js')}}?v={{filemtime(public_path('js/almacen/transferencias/transferenciasRecibidas.js'))}}"></script>
 <script src="{{ asset('js/almacen/transferencias/transferenciaCreate.js')}}?v={{filemtime(public_path('js/almacen/transferencias/transferenciaCreate.js'))}}"></script>
@@ -238,13 +254,4 @@ Transferencias
 <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_series.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 
-<script>
-    $(document).ready(function() {
-        seleccionarMenu(window.location);
-        $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
-        iniciar('{{Auth::user()->tieneAccion(91)}}', '{{Auth::user()->id_usuario}}');
-        //listarRequerimientosPendientes();
-
-    });
-</script>
 @endsection
