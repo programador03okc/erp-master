@@ -374,7 +374,7 @@ class VentasInternasController extends Controller
 
             $unitario_ingreso_actual = floatval($det->valorizacion) / floatval($det->cantidad);
 
-            if ($unitario_ingreso_actual !== $unitario) {
+            if (round($unitario_ingreso_actual, 6, PHP_ROUND_HALF_UP) !== round($unitario, 6, PHP_ROUND_HALF_UP)) {
                 $nueva_val = $unitario * floatval($det->cantidad);
 
                 DB::table('almacen.mov_alm_det')
