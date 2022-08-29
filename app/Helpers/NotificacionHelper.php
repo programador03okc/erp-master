@@ -242,10 +242,10 @@ class NotificacionHelper
         }
     }
 
-    static public function notificacionOrdenDespacho($idUsuarioDestinatario,$mensajeNotificacion,$oportunidad,$requerimiento,$codigo, $fecha_registro){
+    static public function notificacionOrdenDespacho($idUsuarioDestinatario,$comentario,$oportunidad,$requerimiento,$ordenDespacho){
         try {
 
-            $mensajeNotificacion = 'Se ha generado la '.$codigo;
+            $mensajeNotificacion = 'Se ha generado la '.$ordenDespacho->codigo;
             if ($oportunidad !== null) {
                 $orden = $oportunidad->ordenCompraPropia;
                 $mensajeNotificacion .= 'O. SERVICIO';
@@ -270,10 +270,11 @@ class NotificacionHelper
 
                     $notificacion = new Notificacion();
                     $notificacion->id_usuario = $idUsuario;
-                    $notificacion->mensaje = $mensajeNotificacion.', '.$fecha_registro;
+                    $notificacion->mensaje = $mensajeNotificacion.', '.$ordenDespacho->fecha_despacho;
                     $notificacion->fecha = new Carbon();
                     $notificacion->url = '';
                     $notificacion->leido = 0;
+                    $notificacion->comentario = $comentario;
                     $notificacion->save();
                 }
 
@@ -287,7 +288,7 @@ class NotificacionHelper
             return ['estado' => 'error', 'mensaje' => $ex->getMessage()];
         }
     }
-    static public function notificacionODI($idUsuarioDestinatario,$codigo,$fecha_registro,$codigo_oportunidada,$req)
+    static public function notificacionODI($idUsuarioDestinatario,$codigo,$fecha_despacho,$codigo_oportunidada,$req, $cometario)
     {
         try {
 
@@ -305,10 +306,11 @@ class NotificacionHelper
 
                     $notificacion = new Notificacion();
                     $notificacion->id_usuario = $idUsuario;
-                    $notificacion->mensaje = $mensajeNotificacion.', '.$fecha_registro;
+                    $notificacion->mensaje = $mensajeNotificacion.', '.$fecha_despacho;
                     $notificacion->fecha = new Carbon();
                     $notificacion->url = '';
                     $notificacion->leido = 0;
+                    $notificacion->comentario = $cometario??'';
                     $notificacion->save();
                 }
 

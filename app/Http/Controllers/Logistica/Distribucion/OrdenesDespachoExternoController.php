@@ -409,10 +409,10 @@ class OrdenesDespachoExternoController extends Controller
     //         return response()->json('Algo salio mal');
     //     }
     // }
-    private function enviarOrdenDespacho(Request $request, $oportunidad, $requerimiento)
+    private function enviarOrdenDespacho(Request $request, $oportunidad, $requerimiento,$ordenDespacho)
     {
         $archivosOc = [];
-
+    /* 
         if ($oportunidad !== null) {
             $ordenView = $oportunidad->ordenCompraPropia;
             //Obtencion de archivos en carpeta temporal
@@ -425,13 +425,13 @@ class OrdenesDespachoExternoController extends Controller
             }
         }
         //Guardar archivos subidos
-        if ($request->hasFile('archivos')) {
+      if ($request->hasFile('archivos')) {
             $archivos = $request->file('archivos');
             foreach ($archivos as $archivo) {
                 Storage::putFileAs('mgcp/ordenes-compra/temporal/', $archivo, $archivo->getClientOriginalName());
                 $archivosOc[] = storage_path('app/mgcp/ordenes-compra/temporal/') . $archivo->getClientOriginalName();
             }
-        }
+        }*/
         $correos = [];
         $idUsuarios=[];
         if (config('app.debug')) {
@@ -458,11 +458,11 @@ class OrdenesDespachoExternoController extends Controller
         $orden_despacho = OrdenDespacho::where('id_requerimiento', $request->id_requerimiento)->first();
 
         // Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
-        NotificacionHelper::notificacionOrdenDespacho($idUsuarios,$request->mensaje,$oportunidad,$requerimiento,$orden_despacho->codigo, $orden_despacho->fecha_registro);
+        NotificacionHelper::notificacionOrdenDespacho($idUsuarios,$request->mensaje,$oportunidad,$requerimiento,$ordenDespacho);
 
-        foreach ($archivosOc as $archivo) {
-            unlink($archivo);
-        }
+        // foreach ($archivosOc as $archivo) {
+        //   unlink($archivo);
+        //}
     }
 
     public function usuariosDespacho()
@@ -605,7 +605,7 @@ class OrdenesDespachoExternoController extends Controller
                     $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
                 }
 
-                $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento);
+                $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento,$ordenDespacho);
 
                 if ($request->archivos) {
                     foreach ($request->archivos as $key => $value) {

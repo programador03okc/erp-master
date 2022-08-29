@@ -12,6 +12,7 @@ use App\Models\mgcp\Oportunidad\Oportunidad;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Debugbar;
 
 class OrdenesDespachoInternoController extends Controller
 {
@@ -180,7 +181,7 @@ class OrdenesDespachoInternoController extends Controller
 
         try {
             DB::beginTransaction();
-
+            $idOd=0;
             $req = DB::table('almacen.alm_req')
                 ->select(
                     'alm_req.*',
@@ -205,6 +206,7 @@ class OrdenesDespachoInternoController extends Controller
                 ->first();
 
             if ($req !== null) {
+                $idOd=$req->id_od;
                 if ($req->codigoDespachoInterno !== null) {
                     DB::table('almacen.orden_despacho')
                         ->where('id_od', $req->id_od)
@@ -244,6 +246,8 @@ class OrdenesDespachoInternoController extends Controller
                             ],
                             'id_od'
                         );
+                        
+                    $idOd=$id_od;
 
                     //Agrega accion en requerimiento
                     DB::table('almacen.alm_req_obs')
@@ -367,16 +371,22 @@ class OrdenesDespachoInternoController extends Controller
                 } else {
                     $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
                 }
-                $orden_despacho = OrdenDespacho::where('id_requerimiento', $request->id_requerimiento)->first();
-                $cuadro = CuadroCosto::where('id_oportunidad', $req->id_oportunidad)->first();
-                $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
-                NotificacionHelper::notificacionODI(
-                    $idUsuarios,
-                    $orden_despacho->codigo,
-                    $orden_despacho->fecha_registro,
-                    $oportunidad->codigo_oportunidad,
-                    $req
-                );
+                //$orden_despacho = OrdenDespacho::where('id_requerimiento', $request->id_requerimiento)->first();
+                $idOd= isset($id_od) && $id_od>0?$id_od:(isset($req->id_od) && $req->id_od > 0? $req->id_od:0);
+               // Debugbar::info($idOd);
+                if($idOd>0){
+                    $orden_despacho = OrdenDespacho::find($idOd);
+                    $cuadro = CuadroCosto::where('id_oportunidad', $req->id_oportunidad)->first();
+                    $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+                    NotificacionHelper::notificacionODI(
+                        $idUsuarios,
+                        $orden_despacho->codigo,
+                        $orden_despacho->fecha_despacho,
+                        $oportunidad->codigo_oportunidad,
+                        $req,
+                        trim($request->comentario)
+                    );
+                }
             } else {
                 $arrayRspta = array(
                     'tipo' => 'warning',
