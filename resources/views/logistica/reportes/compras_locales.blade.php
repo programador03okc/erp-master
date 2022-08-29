@@ -31,6 +31,9 @@ Reporte de compras locales
                             <table class="mytable table table-condensed table-striped table-hover table-bordered table-okc-view" id="listaComprasLocales">
                                 <thead>
                                     <tr>
+                                        <th style="text-align:center; width:10%;">Cod. Ord.</th>
+                                        <th style="text-align:center; width:10%;">Cod. Req.</th>
+                                        <th style="text-align:center; width:10%;">Cod. prod.</th>
                                         <th style="text-align:center; width:10%;">Bien comprado/ servicio contratado</th>
                                         <th style="text-align:center; width:10%;">Rubro Proveedor</th>
                                         <th style="text-align:center; width:10%;">Razón Social del Proveedor</th>
@@ -113,7 +116,7 @@ Reporte de compras locales
                                 <label class="col-sm-4">
                                     <div class="checkbox">
                                         <label title="Fecha de creación">
-                                            <input type="checkbox" name="chkFechaRegistro"> Fecha
+                                            <input type="checkbox" name="chkFechaRegistro"> Fecha presentacion
                                         </label>
                                     </div>
                                 </label>
@@ -127,7 +130,38 @@ Reporte de compras locales
                                 </div>
                             </div>
 
- 
+                            {{-- --- --}}
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Fecha de cancelacion">
+                                            <input type="checkbox" name="chkFechaCancelacion"> Fecha de cancelación
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-4">
+                                    <input type="date" name="fechaCancelacionDesde" class="form-control handleUpdateValorFiltro" readOnly>
+                                    <small class="help-block">Desde (dd-mm-aaaa)</small>
+                                </div>
+                                <div class="col-sm-4">
+                                    <input type="date" name="fechaCancelacionHasta" class="form-control handleUpdateValorFiltro" readOnly>
+                                    <small class="help-block">Hasta (dd-mm-aaaa)</small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="razon_social_proveedor">
+                                            <input type="checkbox" name="chkRazonSocialProveedor"> Razon social del proveedor
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" name="razon_social_proveedor" class="form-control handleUpdateValorFiltro" readOnly>
+                                    <small class="help-block">razon social del proveedor</small>
+                                </div>
+                            </div>
+
                         </fieldset>
                     </div>
                 </div>
@@ -169,4 +203,3 @@ Reporte de compras locales
 @endsection
 
 
- 

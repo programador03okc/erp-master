@@ -1,4 +1,4 @@
-var tempArchivoAdjuntoRequerimientoPagoCabeceraList=[];
+var tempArchivoAdjuntoRequerimientoPagoCabeceraList = [];
 
 $('#ListaRequerimientoPago').on("click", "button.handleClickVerAgregarAdjuntosRequerimiento", (e) => {
     verAgregarAdjuntosRequerimientoPago(e.currentTarget.dataset.idRequerimientoPago);
@@ -18,6 +18,9 @@ $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("click", "button.handleCl
 });
 $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "select.handleChangeCategoriaAdjunto", (e) => {
     actualizarCategoriaDeAdjunto(e.currentTarget);
+});
+$('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeFechaEmision", (e) => {
+    actualizarFechaEmisionDeAdjunto(e.currentTarget);
 });
 $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("click", "button.handleClickGuardarAdjuntosAdicionales", (e) => {
     guardarAdjuntos();
@@ -85,9 +88,9 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
         backdrop: 'static'
     });
     $(":file").filestyle('clear');
-    tempArchivoAdjuntoRequerimientoPagoCabeceraList=[];
+    tempArchivoAdjuntoRequerimientoPagoCabeceraList = [];
     calcTamañoTotalAdjuntoPagoParaSubir();
-    document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='id_requerimiento_pago']").value =idRequerimientoPago;
+    document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='id_requerimiento_pago']").value = idRequerimientoPago;
     if (idRequerimientoPago > 0) {
         limpiarTabla('adjuntosPago');
         limpiarTabla('adjuntosCabecera');
@@ -103,7 +106,7 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
                     <td>${res[i].observacion ? res[i].observacion : ''}</td>
                     </tr>`);
                 }
-    
+
             }
 
         }).catch(function (err) {
@@ -113,19 +116,20 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
         obteneTodoAdjuntosRequerimientoPago(idRequerimientoPago).then((res) => {
             // llenar tabla cabecera
             let htmlCabecera = '';
-            let tieneAccesoParaEliminarAdjuntos=false;
-            if(res.id_usuario_propietario_requerimiento >0 && res.id_usuario_propietario_requerimiento == auth_user.id_usuario){
-                tieneAccesoParaEliminarAdjuntos= true;
+            let tieneAccesoParaEliminarAdjuntos = false;
+            if (res.id_usuario_propietario_requerimiento > 0 && res.id_usuario_propietario_requerimiento == auth_user.id_usuario) {
+                tieneAccesoParaEliminarAdjuntos = true;
             }
             if (res.adjuntos_cabecera.length > 0) {
                 (res.adjuntos_cabecera).forEach(element => {
-                  
+
                     if (element.id_estado != 7) {
                         htmlCabecera += `<tr>
                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/pago/cabecera/${element.archivo}" target="_blank">${element.archivo}</a></td>
+                        <td style="text-align:left;">${element.fecha_emision ?? ''}</td>
                         <td style="text-align:left;">${element.categoria_adjunto.descripcion}</td>
                         <td style="text-align:center;">
-                            <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoCabecera handleClickAnularAdjuntoPagoCabecera" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos==true?'':'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                            <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoCabecera handleClickAnularAdjuntoPagoCabecera" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos == true ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
                         </td>
                         </tr>`;
 
@@ -142,7 +146,7 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
                         htmlDetalle += `<tr>
                                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/pago/detalle/${element.archivo}" target="_blank">${element.archivo}</a></td>
                                         <td style="text-align:center;">
-                                        <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoDetalle handleClickAnularAdjuntoPagoDetalle" data-id-adjunto="${element.id_requerimiento_pago_detalle_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos==true?'':'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                                        <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoDetalle handleClickAnularAdjuntoPagoDetalle" data-id-adjunto="${element.id_requerimiento_pago_detalle_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos == true ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
                                     </td>
                                         </tr>`;
 
@@ -161,7 +165,7 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
 
 
 function estaHabilitadoLaExtension(file) {
-    let extension = (file.name.match(/(?<=\.)\w+$/g) !=null)?file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase():''; // assuming that this file has any extension
+    let extension = (file.name.match(/(?<=\.)\w+$/g) != null) ? file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase() : ''; // assuming that this file has any extension
     if (extension === 'dwg'
         || extension === 'dwt'
         || extension === 'cdr'
@@ -199,55 +203,56 @@ function makeId() {
 }
 
 
-function agregarAdjuntoRequerimientoPagoCabecera(obj){
+function agregarAdjuntoRequerimientoPagoCabecera(obj) {
     if (obj.files != undefined && obj.files.length > 0) {
         // console.log(obj.files);
-        if((obj.files.length + tempArchivoAdjuntoRequerimientoPagoCabeceraList.length)>5){
+        if ((obj.files.length + tempArchivoAdjuntoRequerimientoPagoCabeceraList.length) > 5) {
             Swal.fire(
                 '',
                 'Solo puedes subir un máximo de 5 archivos',
                 'warning'
             );
-        }else{
+        } else {
             Array.prototype.forEach.call(obj.files, (file) => {
-                
+
                 if (estaHabilitadoLaExtension(file) == true) {
                     let payload = {
                         id: makeId(),
                         category: 1, //default: otros adjuntos
                         size: file.size,
                         nameFile: file.name,
+                        fecha_emision: moment().format('YYYY-MM-DD'),
                         action: 'GUARDAR',
                         file: file
                     };
                     addToTablaArchivosRequerimientoPagoCabecera(payload);
-                    
+
                     tempArchivoAdjuntoRequerimientoPagoCabeceraList.push(payload);
                 } else {
                     Swal.fire(
                         'Este tipo de archivo no esta permitido adjuntar',
                         file.name,
                         'warning'
-                        );
-                    }
-                });
-        }
-            
+                    );
+                }
+            });
         }
 
-        calcTamañoTotalAdjuntoPagoParaSubir();
-        return false;
-        
     }
-    
-function calcTamañoTotalAdjuntoPagoParaSubir(){
-    let tamañoTotalArchivoParaSubir=0;
+
+    calcTamañoTotalAdjuntoPagoParaSubir();
+    return false;
+
+}
+
+function calcTamañoTotalAdjuntoPagoParaSubir() {
+    let tamañoTotalArchivoParaSubir = 0;
 
     tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-        tamañoTotalArchivoParaSubir+=element.size;
-        
+        tamañoTotalArchivoParaSubir += element.size;
+
     });
-        document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] span[id='tamaño_total_archivos_para_subir']").textContent= $.number((tamañoTotalArchivoParaSubir/1000000),2)+'MB';
+    document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] span[id='tamaño_total_archivos_para_subir']").textContent = $.number((tamañoTotalArchivoParaSubir / 1000000), 2) + 'MB';
 }
 
 function getcategoriaAdjunto() {
@@ -272,6 +277,9 @@ function addToTablaArchivosRequerimientoPagoCabecera(payload) {
         let html = '';
         html = `<tr id="${payload.id}" style="text-align:center">
         <td style="text-align:left;">${payload.nameFile}</td>
+        <td>
+            <input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" value="${moment().format("YYYY-MM-DD")}" />
+        </td>
         <td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
         `;
@@ -298,12 +306,35 @@ function addToTablaArchivosRequerimientoPagoCabecera(payload) {
         console.log(err)
     })
 }
-function actualizarCategoriaDeAdjunto(obj){
+function actualizarCategoriaDeAdjunto(obj) {
 
     if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
         let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
         tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].category = parseInt(obj.value) > 0 ? parseInt(obj.value) : 1;
-        // tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
+        // tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+    } else {
+        Swal.fire(
+            '',
+            'Hubo un error inesperado al intentar cambiar la categoría del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+            'error'
+        );
+    }
+}
+function actualizarFechaEmisionDeAdjunto(obj) {
+
+    if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+        let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+        tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].fecha_emision = obj.value;
+        if (tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id > 0) {
+
+        }
+        var regExp = /[a-zA-Z]/g; //expresión regular
+        if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+        } else {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
+        }
+
     } else {
         Swal.fire(
             '',
@@ -313,7 +344,7 @@ function actualizarCategoriaDeAdjunto(obj){
     }
 }
 
-function eliminarAdjuntoRequerimientoPagoCabecera(obj){
+function eliminarAdjuntoRequerimientoPagoCabecera(obj) {
     obj.closest("tr").remove();
     var regExp = /[a-zA-Z]/g; //expresión regular
     if ((regExp.test(obj.dataset.id) == true)) {
@@ -321,7 +352,7 @@ function eliminarAdjuntoRequerimientoPagoCabecera(obj){
     } else {
         if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
             let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.dataset.id);
-            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ELIMINAR';
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ELIMINAR';
         } else {
             Swal.fire(
                 '',
@@ -333,28 +364,28 @@ function eliminarAdjuntoRequerimientoPagoCabecera(obj){
     }
 }
 
-function anularAdjuntoPagoCabecera(obj){
-    let idAdjunto=obj.dataset.idAdjunto;
-    if(idAdjunto>0){
+function anularAdjuntoPagoCabecera(obj) {
+    let idAdjunto = obj.dataset.idAdjunto;
+    if (idAdjunto > 0) {
         $.ajax({
             type: 'POST',
             url: 'anular-adjunto-requerimiento-pago-cabecera',
-            data: {id_adjunto:idAdjunto},
+            data: { id_adjunto: idAdjunto },
             dataType: 'JSON',
-            beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+            beforeSend: (data) => { // Are not working with dataType:'jsonp'
                 $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("show", {
                     imageAutoResize: true,
                     progress: true,
                     imageColor: "#3c8dbc"
                 });
             },
-            success: (response) =>{
-                if (response.status =='success') {
+            success: (response) => {
+                if (response.status == 'success') {
                     $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
 
                     obj.closest('tr').remove();
                     Lobibox.notify('success', {
-                        title:false,
+                        title: false,
                         size: 'mini',
                         rounded: true,
                         sound: false,
@@ -372,7 +403,7 @@ function anularAdjuntoPagoCabecera(obj){
                     );
                 }
             },
-            fail:  (jqXHR, textStatus, errorThrown) =>{
+            fail: (jqXHR, textStatus, errorThrown) => {
                 $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
                 Swal.fire(
                     '',
@@ -384,7 +415,7 @@ function anularAdjuntoPagoCabecera(obj){
                 console.log(errorThrown);
             }
         });
-    }else{
+    } else {
         Swal.fire(
             '',
             'No existen un ID adjuntos para continuar con la acción',
@@ -393,28 +424,28 @@ function anularAdjuntoPagoCabecera(obj){
     }
 }
 
-function anularAdjuntoPagoDetalle(obj){
-    let idAdjunto=obj.dataset.idAdjunto;
-    if(idAdjunto>0){
+function anularAdjuntoPagoDetalle(obj) {
+    let idAdjunto = obj.dataset.idAdjunto;
+    if (idAdjunto > 0) {
         $.ajax({
             type: 'POST',
             url: 'anular-adjunto-requerimiento-pago-detalle',
-            data: {id_adjunto:idAdjunto},
+            data: { id_adjunto: idAdjunto },
             dataType: 'JSON',
-            beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+            beforeSend: (data) => { // Are not working with dataType:'jsonp'
                 $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("show", {
                     imageAutoResize: true,
                     progress: true,
                     imageColor: "#3c8dbc"
                 });
             },
-            success: (response) =>{
-                if (response.status =='success') {
+            success: (response) => {
+                if (response.status == 'success') {
                     $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
 
                     obj.closest('tr').remove();
                     Lobibox.notify('success', {
-                        title:false,
+                        title: false,
                         size: 'mini',
                         rounded: true,
                         sound: false,
@@ -432,7 +463,7 @@ function anularAdjuntoPagoDetalle(obj){
                     );
                 }
             },
-            fail:  (jqXHR, textStatus, errorThrown) =>{
+            fail: (jqXHR, textStatus, errorThrown) => {
                 $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
                 Swal.fire(
                     '',
@@ -444,26 +475,34 @@ function anularAdjuntoPagoDetalle(obj){
                 console.log(errorThrown);
             }
         });
-    }else{
+    } else {
         Swal.fire(
             '',
             'No existen un ID adjuntos para continuar con la acción',
             'warning'
         );
     }
-    
+
 }
 
-function guardarAdjuntos(){
-    if(tempArchivoAdjuntoRequerimientoPagoCabeceraList.length>0){
+function guardarAdjuntos() {
+    if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
         let formData = new FormData($('#form_ver_agregar_adjuntos_requerimiento_pago')[0]);
         formData.append(`archivoAdjuntoRequerimientoPagoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoCabeceraList));
-        
+
         if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
             tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-                if(element.action =='GUARDAR'){
-                    formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileGuardar${element.category}[]`, element.file);
-                }                    
+                if (element.action == 'GUARDAR') {
+                    formData.append(`id_adjunto[]`, element.id);
+                    formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
+                    formData.append(`categoria_adjunto[]`, element.category);
+                    formData.append(`archivo_adjunto[]`, element.file);
+                    // formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileGuardar${element.category}[]`, element.file);
+                    formData.append(`nombre_real_adjunto[]`, element.nameFile);
+                    formData.append(`accion_adjunto[]`, 'GUARDAR');
+
+
+                }
             });
         }
 
@@ -474,19 +513,19 @@ function guardarAdjuntos(){
             processData: false,
             contentType: false,
             dataType: 'JSON',
-            beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
+            beforeSend: (data) => { // Are not working with dataType:'jsonp'
                 $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("show", {
                     imageAutoResize: true,
                     progress: true,
                     imageColor: "#3c8dbc"
                 });
             },
-            success: (response) =>{
-                if (response.status =='success') {
+            success: (response) => {
+                if (response.status == 'success') {
                     $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
 
                     Lobibox.notify('success', {
-                        title:false,
+                        title: false,
                         size: 'mini',
                         rounded: true,
                         sound: false,
@@ -503,10 +542,10 @@ function guardarAdjuntos(){
                         'error'
                     );
                 }
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList=[];
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList = [];
 
             },
-            fail:  (jqXHR, textStatus, errorThrown) =>{
+            fail: (jqXHR, textStatus, errorThrown) => {
                 $('#modal-ver-agregar-adjuntos-requerimiento-pago .modal-content').LoadingOverlay("hide", true);
                 Swal.fire(
                     '',
@@ -519,7 +558,7 @@ function guardarAdjuntos(){
             }
         });
 
-    }else{
+    } else {
         Swal.fire(
             '',
             'No existen adjuntos para guardar',
