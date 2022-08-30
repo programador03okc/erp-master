@@ -231,7 +231,6 @@
 
 
     function buildFormat(obj, table_id, id, row) {
-        obj.setAttribute('disabled', true);
         var html = '';
         if (obj.dataset.comentario.length > 0) {
             html += `<tr>
