@@ -2010,14 +2010,16 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario');
+
         #asignar acceso a los usuarios
         Route::get('usuarios/accesos', 'ConfiguracionController@usuarioAcceso');
         Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
-        Route::get('usuarios/get/modulos', 'ConfiguracionController@getModulos');
-        Route::get('usuarios/get/modulos/hijos/{id_modulo}', 'ConfiguracionController@getModulosHijos');
+
+
         Route::post('usuarios/asignar/modulos', 'ConfiguracionController@asiganrModulos');
         #----------------------
 		Route::get('listar_usuarios', 'ConfiguracionController@mostrar_usuarios');
+        Route::post('cambiar-clave', 'ConfiguracionController@cambiarClave');
 		Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
 		Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 		Route::get('anular_usuario/{id}', 'ConfiguracionController@anular_usuario');
@@ -2027,6 +2029,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('usuarios/asignar', 'ConfiguracionController@usuarioAsignar');
 
+        Route::get('modulos', 'ConfiguracionController@getModulos');
+        Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
 		Route::group(['as' => 'usuario.', 'prefix' => 'usuario'], function () {
 			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');
 			Route::get('perfil/{id}', 'ConfiguracionController@getPerfil')->name('get-perfil');
@@ -2038,8 +2042,21 @@ Route::group(['middleware' => ['auth']], function () {
 
     // gerencial
     Route::group(['as' => 'gerencial.', 'prefix' => 'gerencial'], function () {
+        Route::get('index', 'Gerencial\GerencialController@index')->name('index');
 
-		Route::get('index', 'Gerencial\GerencialController@index')->name('index');
+        Route::get('prueba', 'Gerencial\Cobranza\RegistroController@prueba')->name('prueba');
+
+        Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
+            Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
+            Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
+            Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros')->name('listar');
+            // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
+            // });
+            // Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
+
+            // });
+		});
+
 	});
 	Route::get('config', function () {
 		return view('configuracion/main');

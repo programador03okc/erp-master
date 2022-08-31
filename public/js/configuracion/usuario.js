@@ -30,6 +30,13 @@ $(function(){
             {'render':
                 function (data, type, row, meta){
                     return (`<div class="d-flex">
+                            <button type="button" class="btn bg-orange btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar clave" data-calve="change-clave" data-id="${row['id_usuario']}">
+                                <i class="fas fa-key"></i>
+                            </button>
+                            <button type="button" class="btn bg-orange btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar clave" data-accesos="change-accesos" data-id="${row['id_usuario']}">
+                                <i class="fas fa-user-cog"></i>
+                            </button>
+
                             <button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Editar" onclick="editarUsuario(${row['id_usuario']});">
                                 <i class="fas fa-edit"></i></button>
@@ -49,7 +56,7 @@ $(function(){
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         'order': [
-            [6, 'desc']
+            [0, 'desc']
         ]
     });
     resizeSide();
@@ -425,10 +432,109 @@ function guardarAcceso(){
     return false;
 }
 $(document).on('click','[data-action="view-modulos"]',function () {
-    var id_usuario = $(this).attr('data-id');
-    localStorage.setItem("id_usuario",id_usuario);
-    // var id = localStorage.getItem("id_usuario");
-    // console.log(id);
-    window.open(`usuarios/accesos`);
+
+});
+$(document).on('click','[data-calve="change-clave"]',function () {
+
+    // $('#modal_cambio_clave').modal('show');
+    $('#modal_cambio_clave [name="id_usuario"]').val($(this).attr('data-id'));
+    $('#modal_cambio_clave').modal({
+        show: true,
+        backdrop: 'static'
+    });
+});
+$(document).on('submit','[data-form="cambio-clave"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
+    if ($(this).find('input[name="nueva_clave"]').val()===$(this).find('input[name="repetir_clave"]').val()) {
+        Swal.fire({
+            title: '¿Está seguro de cambiar la contraseña?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return $.ajax({
+                        type: 'POST',
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        url: 'cambiar-clave',
+                        data: data,
+                        dataType: 'JSON',
+                        success: function(response){
+                            console.log(response);
+                        }
+                    }).fail( function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    })
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Éxito',
+                    text: "Se actualizo su clave con éxito",
+                    icon: 'sucess',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                })
+            }
+        })
+    }else{
+        Swal.fire({
+            title: 'Error',
+            text: "La clave no coincide, verifique que sean iguales por favor",
+            icon: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+            }
+        })
+    }
 });
 
+$(document).on('click','[data-accesos="change-accesos"]',function () {
+    $('#modal_accesos [name="id_usuario"]').val($(this).attr('data-id'));
+    $('#modal_accesos').modal({
+        show: true,
+        backdrop: 'static'
+    });
+});
+$(document).on('change','[data-select="modulos-select"]',function () {
+    var data = $(this).val();
+    console.log(data);
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'get/modulos',
+        data: {data:data},
+        dataType: 'JSON',
+        success: function(response){
+            // data-accesos="accesos"
+            if (response.status===200) {
+                console.log(response);
+            }else{
+                console.log('sin data');
+            }
+
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});

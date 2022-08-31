@@ -432,6 +432,141 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal_cambio_clave">
+    <div class="modal-dialog" style="width: 50%;">
+        <form action="" data-form="cambio-clave">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">Cambio de clave</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" class="form-control" name="id_usuario" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nueva_clave">Nueva clave : </label>
+                                <input type="password" class="form-control" id="nueva_clave" name="nueva_clave" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="repetir_clave">Repetir clave : </label>
+                                <input type="password" class="form-control" id="repetir_clave" name="repetir_clave" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-secundary" type="button"  data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-sm btn-primary" type="submit">Guardar</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="modal_accesos">
+    <div class="modal-dialog" style="width: 50%;">
+        <form action="" data-form="cambio-clave">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">Asignacion de accesos de clave</h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" class="form-control" name="id_usuario" />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="nav-tabs-custom">
+                                <ul class="nav nav-tabs">
+                                    <li class="active"><a href="#tab_1" data-toggle="tab">Accesos</a></li>
+                                    <li><a href="#tab_2" data-toggle="tab">Tab 2</a></li>
+                                    <li><a href="#tab_3" data-toggle="tab">Tab 3</a></li>
+
+                                    <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_1">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="modulos">Modulos : </label>
+                                                    <select id="modulos" class="selectpicker" name="modulos[]" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10" data-select="modulos-select" required>
+                                                        @foreach ($modulos_padre as $modulos)
+                                                            <option value="{{$modulos->id_modulo}}">{{$modulos->descripcion}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="card" style="border: #b1aaaa 1px solid;">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12 text-center" data-accesos="accesos">
+                                                                Accesos
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                  </div>
+                                            </div>
+                                            <div class="col-md-2 text-center">
+                                                <div class="form-group">
+                                                    <button><</button>
+                                                    <button>></button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="card" style="border: #b1aaaa 1px solid;">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12 text-center" data-accesos="select-accesos">
+                                                                Accesos asignados.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                  </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_2">
+                                        The European languages are members of the same family. Their separate existence is a myth.
+                                        For science, music, sport, etc, Europe uses the same vocabulary. The languages only differ
+                                        in their grammar, their pronunciation and their most common words. Everyone realizes why a
+                                        new common language would be desirable: one could refuse to pay expensive translators. To
+                                        achieve this, it would be necessary to have uniform grammar, pronunciation and more common
+                                        words. If several languages coalesce, the grammar of the resulting language is more simple
+                                        and regular than that of the individual languages.
+                                    </div>
+                                    <div class="tab-pane" id="tab_3">
+                                        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                                        when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                        It has survived not only five centuries, but also the leap into electronic typesetting,
+                                        remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
+                                        sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
+                                        like Aldus PageMaker including versions of Lorem Ipsum.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-secundary" type="button"  data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-sm btn-primary" type="submit">Guardar</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
 @include('proyectos.residentes.trabajadorModal')
 @include('configuracion.modal_editar_usuario')
 @include('configuracion.modal_asignar_accesos')
@@ -454,5 +589,4 @@
     <script src="{{('/js/configuracion/usuario.js')}}"></script>
     <script src="{{('/js/configuracion/modal_asignar_accesos.js')}}"></script>
     <script src="{{ asset('js/proyectos/residentes/trabajadorModal.js')}}"></script>
-
 @endsection
