@@ -163,14 +163,15 @@ class CuadroPresupuestoHelper
             }
             // Debugbar::info('debe guardar notificacion');
             
-            $notificacionOrdenServicioTransformacion = NotificacionHelper::notificacionOrdenServicioTransformacion($codigoTransformacion,$idUsuarioOrdenServicioTransformacion,$pl['oportunidad']);
-            $notificacionFinalizacionCuadro = NotificacionHelper::notificacionFinalizacionCuadro($codigoOportunidad, $idUsuariosFinalizacionCDP, $payload);
-            
-            if($notificacionOrdenServicioTransformacion['estado'] =='success' && $notificacionFinalizacionCuadro['estado']=='success'){
+            // $notificacionOrdenServicioTransformacion = NotificacionHelper::notificacionOrdenServicioTransformacion($codigoTransformacion,$idUsuarioOrdenServicioTransformacion,$pl['oportunidad']);
+            $notificacionOrdenServicioTransformacion['mensaje']='';
+            // $notificacionFinalizacionCuadro = NotificacionHelper::notificacionFinalizacionCuadro($codigoOportunidad, $idUsuariosFinalizacionCDP, $payload);
+            $notificacionFinalizacionCuadro['mensaje']='';
+            // if($notificacionOrdenServicioTransformacion['estado'] =='success' && $notificacionFinalizacionCuadro['estado']=='success'){
                 $estadoNotificacion='success';
-            }else{
-                $estadoNotificacion='warning';
-            }
+            // }else{
+            //     $estadoNotificacion='warning';
+            // }
             return ['estado'=>$estadoNotificacion,'mensaje'=>$notificacionOrdenServicioTransformacion['mensaje'].'. '.$notificacionFinalizacionCuadro['mensaje'].'.'];
         }
 
