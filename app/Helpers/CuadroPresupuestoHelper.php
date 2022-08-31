@@ -148,7 +148,7 @@ class CuadroPresupuestoHelper
                 $idUsuariosFinalizacionCDP[] = $requerimiento->id_usuario;
             }
             
-            Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payload, Auth::user()->nombre_corto));
+            // Mail::to(array_unique($correoFinalizacionCuadroPresupuesto))->send(new EmailFinalizacionCuadroPresupuesto($codigoOportunidad, $payload, Auth::user()->nombre_corto));
             foreach ($payload as $pl) { // enviar orde servicio / transformacion a multiples usuarios
                 $transformacion =  Transformacion::select('transformacion.codigo', 'cc.id_oportunidad', 'adm_empresa.logo_empresa')
                 ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
@@ -159,7 +159,7 @@ class CuadroPresupuestoHelper
                 ->first();
                 $logoEmpresa=empty($transformacion->logo_empresa)?null:$transformacion->logo_empresa;
                 $codigoTransformacion=empty($transformacion->codigo)?null:$transformacion->codigo;
-                Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
+                // Mail::to($correosOrdenServicioTransformacion)->send(new EmailOrdenServicioOrdenTransformacion($pl['oportunidad'],$logoEmpresa,$codigoTransformacion));
             }
             // Debugbar::info('debe guardar notificacion');
             

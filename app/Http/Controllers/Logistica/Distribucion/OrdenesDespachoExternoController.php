@@ -882,7 +882,7 @@ class OrdenesDespachoExternoController extends Controller
                 }
             }
 
-            Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $request->mensaje));
+            // Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $request->mensaje));
             NotificacionHelper::notificarContactoDespacho($request->mensaje, $idUsuarios);
 
             DB::commit();
