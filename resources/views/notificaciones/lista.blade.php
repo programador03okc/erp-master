@@ -128,7 +128,7 @@
                 {
                     render: function(data, type, row) {
                         var botones = `
-                            <button data-id="` + row.id + `" title="Desplegar" class="btn btn-default btn-xs desplegar" data-comentario="${row.comentario}"><span class="fas fa-chevron-down fa-sm"></span></button>
+                            <button data-id="` + row.id + `" title="Desplegar" class="btn ${row.comentario!=null && row.comentario.length>0?'btn-primary':'btn-default'}  btn-xs desplegar" data-comentario="${row.comentario??''}"><span class="fas fa-chevron-down fa-sm"></span></button>
                             <a target="_blank" href="` + "{{ url('/notificaciones/ver') }}/" + row.id + `" title="Ver" class="btn btn-primary btn-xs visitar">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
