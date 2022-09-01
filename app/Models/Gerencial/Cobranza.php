@@ -30,4 +30,12 @@ class Cobranza extends Model
     {
         return $this->belongsTo(Cliente::class, 'id_cliente', 'id_cliente');
     }
+    public function areaResponsable()
+    {
+        return $this->belongsTo(AreaResponsable::class, 'id_area', 'id_area');
+    }
+    public function estadoDocumento()
+    {
+        return $this->belongsTo(EstadoDocumento::class, 'id_estado_doc', 'id_estado_doc');
+    }
 }

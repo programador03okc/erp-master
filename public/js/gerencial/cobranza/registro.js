@@ -109,9 +109,40 @@ function listarRegistros() {
             {data: 'atraso', name:"atraso"},
             {data: 'moneda', name:"moneda"},
             {data: 'importe', name:"importe"},
-            {data: 'estado', name:"estado"},
-            {data: 'area', name:"area"},
-            {data: 'fase', name:"fase"},
+            // {data: 'estado', name:"estado"},
+            {
+                render: function (data, type, row) {
+                    var html='';
+                    var html=`<select class="" name="estado_documento">`;
+                    row['estado'][1].forEach(element => {
+
+                        html+=`<option value="${element.id_estado_doc}" ${element.id_estado_doc===row['estado'][0]?'selected':''}>${element.nombre}</option>`;
+                    });
+                    html+=`</select>`;
+                    return (html);
+                },
+                className: "text-center"
+            },
+            {
+                render: function (data, type, row) {
+                    var html='';
+                    var html=`<select class="" name="area_responsable">`;
+                    row['area'][1].forEach(element => {
+
+                        html+=`<option value="${element.id_area}" ${element.id_area===row['area'][0]?'selected':''}>${element.descripcion}</option>`;
+                    });
+                    html+=`</select>`;
+                    return (html);
+                },
+                className: "text-center"
+            },
+            // {data: 'fase', name:"fase"},
+            {
+                render: function (data, type, row) {
+                    return (`<label class="label label-primary">${row['fase']}</label>`);
+                },
+                className: "text-center"
+            },
             // {data: 'id_tipo_tramite', name:"id_tipo_tramite"},
             {
                 render: function (data, type, row) {

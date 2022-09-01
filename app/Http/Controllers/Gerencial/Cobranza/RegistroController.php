@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Gerencial\Cobranza;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Gerencial\AreaResponsable;
 use App\models\Gerencial\CobanzaFase;
 use App\models\Gerencial\Cobranza;
 use App\models\Gerencial\Empresa;
+use App\models\Gerencial\EstadoDocumento;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -52,16 +54,17 @@ class RegistroController extends Controller
          })
         ->addColumn('moneda', function($data){ return ($data->moneda == 1) ? 'S/' : 'US $'; })
         ->addColumn('importe', function($data){ return number_format($data->importe, 2); })
-        ->addColumn('estado', function($data){ return 'ver --'; })
-        ->addColumn('area', function($data){ return 'ver --'; })
+        ->addColumn('estado', function($data){
+            $estado_documento = EstadoDocumento::where('estado',1)->get();
+            return [$data->estadoDocumento->id_estado_doc,$estado_documento];
+        })
+        ->addColumn('area', function($data){
+            $area_responsable = AreaResponsable::where('estado',1)->get();
+            return [$data->areaResponsable->id_area, $area_responsable];
+         })
         ->addColumn('fase', function($data) {
             $fase = CobanzaFase::where('id_cobranza', $data->id_cobranza)->orderBy('id_fase', 'desc')->first();
-            if ($fase) {
-
-                return $this->cobranzaFase($fase->fase);
-            } else {
-                return '-';
-            }
+            return ($fase?$fase->fase[0] : '-');
         })->make(true);
     }
     public function restar_fechas($fi, $ff){
@@ -71,24 +74,4 @@ class RegistroController extends Controller
 		$diasFalt = ((($dif / 60) / 60) / 24);
 		return ceil($diasFalt);
 	}
-    public function cobranzaFase($fase)
-    {
-        $txt_phase='';
-            switch ($fase) {
-                case 'COMPROMISO':
-                    $txt_phase = '<label class="label label-primary">C</label>';
-                    break;
-                case 'DEVENGADO':
-                    $txt_phase = '<label class="label label-primary">D</label>';
-                    break;
-                case 'PAGADO':
-                    $txt_phase = '<label class="label label-primary">P</label>';
-                    break;
-                default:
-                    $txt_phase = '-';
-                    break;
-            }
-
-        return $txt_phase;
-    }
 }
