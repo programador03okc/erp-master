@@ -2050,6 +2050,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
             Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
             Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros')->name('listar');
+            Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes')->name('listar');
+            Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente')->name('listar');
             // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
             // });
             // Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {

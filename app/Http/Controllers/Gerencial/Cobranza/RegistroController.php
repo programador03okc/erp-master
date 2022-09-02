@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Gerencial\Cobranza;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Administracion\Periodo;
+use App\Models\Contabilidad\Contribuyente;
 use App\models\Gerencial\AreaResponsable;
+use App\models\Gerencial\Cliente;
 use App\models\Gerencial\CobanzaFase;
 use App\models\Gerencial\Cobranza;
 use App\models\Gerencial\Empresa;
 use App\models\Gerencial\EstadoDocumento;
+use App\models\Gerencial\Sector;
+use App\models\Gerencial\TipoTramite;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -19,30 +24,14 @@ class RegistroController extends Controller
     public function registro()
     {
         # code...
-        return view('gerencial/cobranza/registro');
+        $sector             = Sector::where('estado',1)->get();
+        $tipo_ramite        = TipoTramite::where('estado',1)->get();
+        $empresa            = Empresa::where('estado',1)->get();
+        $periodo            = Periodo::where('estado',1)->get();
+        $estado_documento   = EstadoDocumento::where('estado',1)->get();
+
+        return view('gerencial/cobranza/registro',compact('sector','tipo_ramite','empresa','periodo','estado_documento'));
     }
-
-    public function prueba()
-    {
-        $cobranza = Cobranza::with(['cobranzaFase' => function ($query) {
-            $query->orderBy('id_cobranza', 'desc')->first(); // latest()
-        }])->limit(20)->get();
-        // return $cobranza[0];
-
-        $data = Cobranza::select('*')->orderBy('id_cobranza', 'desc')->limit(50);
-        return DataTables::of($data)
-        ->addColumn('empresa', function($data){ return $data->empresa->nombre; })
-        ->addColumn('fase', function($data) {
-            $fase = CobanzaFase::where('id_cobranza', $data->id_cobranza)->orderBy('id_fase', 'desc')->first();
-            if ($fase) {
-                return $fase->fase;
-            } else {
-                return '';
-            }
-        })->make(true);
-        // return response()->json($cobranza, 200);
-    }
-
     public function listarRegistros()
     {
         $data = Cobranza::select('*')->orderBy('id_cobranza', 'desc');
@@ -74,4 +63,27 @@ class RegistroController extends Controller
 		$diasFalt = ((($dif / 60) / 60) / 24);
 		return ceil($diasFalt);
 	}
+    public function listarClientes()
+    {
+        $data = Cliente::select('*')->orderBy('id_cliente', 'desc');
+        return DataTables::of($data)->make(true);;
+    }
+    public function prueba()
+    {
+        $data = Cliente::select('*')->orderBy('id_cliente', 'desc');
+        return DataTables::of($data);
+        // return response()->json($cobranza, 200);
+    }
+    public function nuevoCliente(Request $request)
+    {
+        // $cliente = Cliente::where('ruc',$request->nuevo_ruc_dni_cliente)->orWhere('nombre','like','%'.$request->nuevo_cliente.'%')->first();
+        $cliente = Contribuyente::where('estado',1)->where('nro_documento',$request->nuevo_ruc_dni_cliente)
+        ->orWhere('razon_social','like','%'.$request->nuevo_cliente)
+        ->first();
+        if ($cliente) {
+            return $cliente;
+        } else {
+            return $cliente;
+        }
+    }
 }
