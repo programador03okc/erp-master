@@ -20,6 +20,8 @@
         <th>N° Comprobante de Pago</th>
         <th>Empresa - sede</th>
         <th>Grupo</th>
+        <th>Proyecto</th>
+        <th>Estado pago</th>
 
         </tr>
     </thead>
@@ -46,6 +48,8 @@
             <td>{{ $compras['nro_doc_com'] }}</td>
             <td>{{ $compras['descripcion_sede_empresa'] }}</td>
             <td>{{ $compras['descripcion_grupo'] }}</td>
+            <td>{{ $compras['descripcion_proyecto'] }}</td>
+            <td>{{ $compras['descripcion_estado_pago'] }}</td>
         </tr>
         @endforeach
     </tbody>

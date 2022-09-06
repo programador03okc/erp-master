@@ -4024,10 +4024,10 @@ class OrdenController extends Controller
     {
         return Excel::download(new ReporteTransitoOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_transito_ordenes_compra.xlsx');
     }
-    public function reporteCompraLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor)
+    public function reporteCompraLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago)
     {
         // return $razonSocialProveedor;
-        return Excel::download(new ReporteComprasLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor), 'reporte_compra_locales.xlsx');
+        return Excel::download(new ReporteComprasLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago), 'reporte_compra_locales.xlsx');
     }
 
 
