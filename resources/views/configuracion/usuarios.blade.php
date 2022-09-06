@@ -474,7 +474,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Asignacion de accesos de clave</h3>
+                    <h3 class="modal-title">Asignacion de accesos</h3>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" class="form-control" name="id_usuario" />
@@ -494,7 +494,7 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="modulos">Modulos : </label>
-                                                    <select id="modulos" class="selectpicker" name="modulos[]" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10" data-select="modulos-select" required>
+                                                    <select id="modulos" class="form-control" name="modulos" data-select="modulos-select" required>
                                                         @foreach ($modulos_padre as $modulos)
                                                             <option value="{{$modulos->id_modulo}}">{{$modulos->descripcion}}</option>
                                                         @endforeach

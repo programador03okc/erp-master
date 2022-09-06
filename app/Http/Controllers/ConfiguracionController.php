@@ -2,7 +2,9 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\StringHelper;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
+use App\Models\Configuracion\Modulo;
 use App\Models\Configuracion\Pais as ConfiguracionPais;
 use App\Models\Configuracion\Rol;
 use App\Models\Configuracion\SisUsua;
@@ -2038,10 +2040,11 @@ public function anular_configuracion_socket($id){
     {
         return view('configuracion/notas_lanzamiento');
     }
-    public function usuarioAcceso()
+    public function usuarioAcceso($id)
     {
         # code...
-        return view('configuracion/usuario_asignar_acceso');
+        return $id;
+        return view('configuracion/usuario_accesos',compact('id'));
     }
     public function getUsuario($id)
     {
@@ -2067,68 +2070,6 @@ public function anular_configuracion_socket($id){
                 "status"=>404
             ]);
         }
-
-    }
-    public function getModulosAccion(Request $request)
-    {
-        $data_json=[];
-        foreach ($request->data as $key => $value) {
-            // $modulo = DB::table('configuracion.sis_modulo')
-            // ->where('id_modulo', $value)
-            // ->first();
-
-            $modulo_accesos = DB::table('configuracion.sis_acceso')
-            ->select(
-                'sis_usua.nombre_corto',
-                'sis_accion.id_aplicacion',
-                'sis_aplicacion.descripcion as desciption_aplicacion',
-                'sis_modulo.descripcion as modulo',
-                'sis_modulo.id_modulo',
-
-            )
-            ->join('configuracion.sis_usua', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
-            ->join('configuracion.sis_accion', 'sis_acceso.id_accion', '=', 'sis_accion.id_accion')
-            ->join('configuracion.sis_aplicacion', 'sis_accion.id_aplicacion', '=', 'sis_aplicacion.id_aplicacion')
-            ->join('configuracion.sis_modulo', 'sis_aplicacion.id_sub_modulo', '=', 'sis_modulo.id_modulo')
-            ->where('sis_modulo.id_modulo', $value)
-            ->get();
-
-
-        }
-        if (sizeof($modulo_accesos)>0) {
-            # code...
-            return response()->json([
-                "status"=>200,
-                "data"=>$modulo_accesos
-            ]);
-        }else{
-            return response()->json(["status"=>400]);
-        }
-
-        // $data_sub_hijos=[];
-        // $modulos = DB::table('configuracion.sis_modulo')
-        // ->select('sis_modulo.*')
-       // ->where([['sis_modulo.id_padre', '=', $id_modulo]])
-        // ->get();
-
-        // $modulos_general = DB::table('configuracion.sis_modulo')
-        // ->select('sis_modulo.*')
-        // ->where([['sis_modulo.estado', '!=', 7]])
-        // ->get();
-
-        // foreach ($modulos as $key => $value) {
-
-        //     foreach ($modulos_general as $key => $item) {
-        //         if ($value->id_modulo == $item->id_padre) {
-        //             array_push($data_sub_hijos,$item);
-        //         }
-        //     }
-        // }
-
-        // return response()->json([
-        //     "modulos_hijo"=>$modulos,
-        //     "modulos_subhijos"=>$data_sub_hijos
-        // ]);
 
     }
     public function asiganrModulos(Request $request)
@@ -2234,6 +2175,103 @@ public function anular_configuracion_socket($id){
             ]);
         }
 
+    }
+    public function viewAccesos($id)
+    {
+        $modulos =DB::table('configuracion.table_configuracion_modulo')->where('estado',1)->where('id_padre',0)->get();
+        return view('configuracion.usuario_accesos', compact('modulos','id'));
+    }
+    public function getModulosAccion(Request $request)
+    {
+        $success=false;
+        $status=400;
+        $sub_modulos =[];
+
+        $array__modulos=[];
+        if ($request->data) {
+            $success=true;
+            $status = 200;
+            $sub_modulos = DB::table('configuracion.table_configuracion_modulo')
+            ->select(
+                'table_configuracion_modulo.id_modulo',
+                'table_configuracion_modulo.descripcion as modulo',
+                'accesos.id_acceso',
+                'accesos.descripcion as acceso'
+            )
+            ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'table_configuracion_modulo.id_modulo','left')
+            ->where('table_configuracion_modulo.estado',1)
+            ->where('table_configuracion_modulo.id_padre',$request->data)
+            ->get();
+            foreach ($sub_modulos as $key => $value) {
+                $value->modulos_hijos=[];
+                if ($value->acceso ===null) {
+
+                    $sub_modulos_hijos = DB::table('configuracion.table_configuracion_modulo')
+                    ->select(
+                        'table_configuracion_modulo.id_modulo',
+                        'table_configuracion_modulo.descripcion as modulo',
+                        'accesos.id_acceso',
+                        'accesos.descripcion as acceso'
+                    )
+                    ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'table_configuracion_modulo.id_modulo')
+                    ->where('table_configuracion_modulo.id_padre',$value->id_modulo)
+                    ->orderBy('table_configuracion_modulo.id_modulo','ASC')
+                    ->get();
+                    if (sizeof($sub_modulos_hijos)>0) {
+                        $value->modulos_hijos = $sub_modulos_hijos;
+                    }
+
+                }
+            }
+        }
+        return response()->json([
+            "success"=>$success,
+            "status"=>$status,
+            "sub_modulos"=>$sub_modulos
+        ]);
+    }
+    public function guardarAccesos(Request $request)
+    {
+        foreach ($request->id_acceso as $key => $value) {
+            foreach ($value as $key_acceso => $value_acceso) {
+                $accesos_uduario = new AccesosUsuarios;
+                $accesos_uduario->id_acceso = $value_acceso;
+                $accesos_uduario->id_usuario = $request->id_usuario;
+                $accesos_uduario->id_modulo = $key;
+                $accesos_uduario->estado = 1;
+                $accesos_uduario->save();
+            }
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200
+        ]);
+    }
+    public function accesoUsuario($id)
+    {
+        // $accesos_uduarios = AccesosUsuarios::where('accesos_usuarios.id_usuario',$id)
+        //     ->select(
+        //         'table_configuracion_modulo.id_modulo',
+        //         'table_configuracion_modulo.descripcion as modulo',
+        //         'accesos.id_acceso',
+        //         'accesos.descripcion as acceso'
+        //     )
+        //     ->join('configuracion.accesos', 'accesos.id_acceso', '=', 'accesos_usuarios.id_acceso')
+        //     ->join('configuracion.table_configuracion_modulo', 'table_configuracion_modulo.id_modulo', '=', 'accesos.id_modulo')
+        //     ->where('accesos_usuarios.estado',1)
+        //     ->get();
+        $accesos_uduarios = AccesosUsuarios::where('id_usuario',$id)
+            ->where('estado',1)
+            ->get();
+        foreach ($accesos_uduarios as $key => $value) {
+            $value->accesos = $value->accesos;
+            $value->modulos = $value->accesos->modulos;
+            // return $value;
+        }
+        return response()->json([
+            "success"=>true,
+            "data"=>$accesos_uduarios
+        ]);
     }
 }
 

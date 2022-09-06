@@ -2010,10 +2010,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario');
-
         #asignar acceso a los usuarios
-        Route::get('usuarios/accesos', 'ConfiguracionController@usuarioAcceso');
-        Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
+        // Route::get('configuracion/usuarios/accesos/{id}', 'ConfiguracionController@usuarioAcceso')->name('accesos');
+        // Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
 
 
         Route::post('usuarios/asignar/modulos', 'ConfiguracionController@asiganrModulos');
@@ -2030,7 +2029,15 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('usuarios/asignar', 'ConfiguracionController@usuarioAsignar');
 
         Route::get('modulos', 'ConfiguracionController@getModulos');
-        Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
+
+        Route::get('accesos/{id}', 'ConfiguracionController@viewAccesos')->name('accesos');
+        Route::group(['as' => 'accesos.', 'prefix' => 'accesos'], function () {
+            Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
+            Route::post('guardar-accesos', 'ConfiguracionController@guardarAccesos');
+            Route::get('accesos-usuario/{id}', 'ConfiguracionController@accesoUsuario');
+		});
+
+
 		Route::group(['as' => 'usuario.', 'prefix' => 'usuario'], function () {
 			Route::get('password-user-decode/{id?}', 'ConfiguracionController@getPasswordUserDecode')->name('password-user-decode');
 			Route::get('perfil/{id}', 'ConfiguracionController@getPerfil')->name('get-perfil');

@@ -33,16 +33,13 @@ $(function(){
                             <button type="button" class="btn bg-orange btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar clave" data-calve="change-clave" data-id="${row['id_usuario']}">
                                 <i class="fas fa-key"></i>
                             </button>
-                            <button type="button" class="btn bg-orange btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar clave" data-accesos="change-accesos" data-id="${row['id_usuario']}">
+                            <a class="btn bg-orange btn-flat botonList" data-toggle="tooltip" data-placement="bottom"  data-id="${row['id_usuario']}" href="accesos/${row['id_usuario']}">
                                 <i class="fas fa-user-cog"></i>
-                            </button>
+                            </a>
 
                             <button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Editar" onclick="editarUsuario(${row['id_usuario']});">
                                 <i class="fas fa-edit"></i></button>
-                            <button type="button" class="btn bg-secundary btn-flat botonList" data-toggle="tooltip"
-                                 title="Asignar Accesos de Moduos" data-id="${row['id_usuario']}" data-action="view-modulos">
-                                <i class="fas fa-user-tag"></i></button>
                             <button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Asignar Accesos" onclick="accesoUsuario(${row['id_usuario']});">
                                 <i class="fas fa-user-tag"></i></button>
@@ -431,9 +428,6 @@ function guardarAcceso(){
     });
     return false;
 }
-$(document).on('click','[data-action="view-modulos"]',function () {
-
-});
 $(document).on('click','[data-calve="change-clave"]',function () {
 
     // $('#modal_cambio_clave').modal('show');
@@ -507,34 +501,3 @@ $(document).on('submit','[data-form="cambio-clave"]',function (e) {
     }
 });
 
-$(document).on('click','[data-accesos="change-accesos"]',function () {
-    $('#modal_accesos [name="id_usuario"]').val($(this).attr('data-id'));
-    $('#modal_accesos').modal({
-        show: true,
-        backdrop: 'static'
-    });
-});
-$(document).on('change','[data-select="modulos-select"]',function () {
-    var data = $(this).val();
-    console.log(data);
-    $.ajax({
-        type: 'POST',
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'get/modulos',
-        data: {data:data},
-        dataType: 'JSON',
-        success: function(response){
-            // data-accesos="accesos"
-            if (response.status===200) {
-                console.log(response);
-            }else{
-                console.log('sin data');
-            }
-
-        }
-    }).fail( function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    })
-});
