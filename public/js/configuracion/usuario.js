@@ -199,7 +199,7 @@ function getPerfilUsuario(id){
 function loadPerfilUsuario(id){
     getPerfilUsuario(id).then(function(res) {
         // Run this when your request was successful
-        // console.log(res)
+        console.log(res);
         if(res.status ==200){
             document.querySelector("div[id='modal-editar-usuario'] input[name='id_usuario']").value= id;
             document.querySelector("div[id='modal-editar-usuario'] input[name='nombres']").value= res.data.nombres;
