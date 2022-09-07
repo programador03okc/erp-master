@@ -57,8 +57,8 @@
         <div class="col-md-6">
             <div class="box box-primary">
                 <div class="row">
-                    <div class="col-md-12 text-center" data-accesos="accesos" style="height: 500px;overflow-y: auto;">
-                        Accesos
+                    <div class="col-md-12" data-accesos="accesos" style="height: 500px;overflow-y: auto;">
+                        {{-- Accesos --}}
                     </div>
                 </div>
             </div>
@@ -68,8 +68,8 @@
                 <form action="" data-form="accesos-seleccionados">
                     <input type="hidden" name="id_usuario" value="{{$id}}">
                     <div class="row">
-                        <div class="col-md-12 text-center" data-accesos="select-accesos" style="height: 500px;overflow-y: auto;">
-                            <label for="" data-action="text-selct">Accesos asignados.</label>
+                        <div class="col-md-12" data-accesos="select-accesos" style="height: 500px;overflow-y: auto;">
+                            {{-- <label for="" data-action="text-selct">Accesos asignados.</label> --}}
                         </div>
                     </div>
                 </form>

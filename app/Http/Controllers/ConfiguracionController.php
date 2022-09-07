@@ -870,30 +870,10 @@ class ConfiguracionController extends Controller{
 
 
         return response()->json([
+            "status"=>200,
             'success'=>true,
 
         ]);
-        // $usuario = DB::table('configuracion.sis_usua')
-        //     ->where('id_trabajador',$request->id_trabajador)
-        //     ->where([['estado','!=',7]])
-        //     ->count();
-
-        // if ($usuario > 0){
-        //     $data = 'exist';
-        // } else {
-        //     $data = DB::table('configuracion.sis_usua')->insertGetId(
-        //         [
-        //             'id_trabajador'     => $request->id_trabajador,
-        //             'usuario'           => $request->usuario,
-        //             'clave'             => StringHelper::encode5t($request->clave),
-        //             'estado'            => 1,
-        //             'fecha_registro'    => date('Y-m-d H:i:s')
-
-        //         ],
-        //         'id_usuario'
-        //     );
-        // }
-        // return response()->json($data);
     }
 
     public function anular_usuario($id){
@@ -2232,41 +2212,49 @@ public function anular_configuracion_socket($id){
     }
     public function guardarAccesos(Request $request)
     {
-        foreach ($request->id_acceso as $key => $value) {
-            foreach ($value as $key_acceso => $value_acceso) {
-                $accesos_uduario = new AccesosUsuarios;
-                $accesos_uduario->id_acceso = $value_acceso;
-                $accesos_uduario->id_usuario = $request->id_usuario;
-                $accesos_uduario->id_modulo = $key;
-                $accesos_uduario->estado = 1;
-                $accesos_uduario->save();
+        if ($request->id_modulo_padre) {
+            AccesosUsuarios::where('id_usuario',$request->id_usuario)->where('estado',1)->update([
+                "estado"=>0
+            ]);
+            foreach ($request->id_modulo_padre as $key_modulo_padre => $value_modulo_hijos) {
+                foreach ($value_modulo_hijos as $key_modulo_hijo => $value_accesos) {
+                    foreach ($value_accesos as $key_accesos => $value_acceso) {
+                        $accesos_uduario = new AccesosUsuarios;
+                        $accesos_uduario->id_acceso = $value_acceso;
+                        $accesos_uduario->id_usuario = $request->id_usuario;
+                        $accesos_uduario->id_modulo = $key_modulo_hijo;
+                        $accesos_uduario->estado = 1;
+                        $accesos_uduario->id_padre = $key_modulo_padre;
+                        $accesos_uduario->save();
+
+                    }
+
+                }
+
             }
+            return response()->json([
+                "success"=>true,
+                "status"=>200
+            ]);
+        }else{
+            return response()->json([
+                "success"=>false,
+                "status"=>404
+            ]);
         }
-        return response()->json([
-            "success"=>true,
-            "status"=>200
-        ]);
+
+
     }
     public function accesoUsuario($id)
     {
-        // $accesos_uduarios = AccesosUsuarios::where('accesos_usuarios.id_usuario',$id)
-        //     ->select(
-        //         'table_configuracion_modulo.id_modulo',
-        //         'table_configuracion_modulo.descripcion as modulo',
-        //         'accesos.id_acceso',
-        //         'accesos.descripcion as acceso'
-        //     )
-        //     ->join('configuracion.accesos', 'accesos.id_acceso', '=', 'accesos_usuarios.id_acceso')
-        //     ->join('configuracion.table_configuracion_modulo', 'table_configuracion_modulo.id_modulo', '=', 'accesos.id_modulo')
-        //     ->where('accesos_usuarios.estado',1)
-        //     ->get();
         $accesos_uduarios = AccesosUsuarios::where('id_usuario',$id)
             ->where('estado',1)
+            ->orderBy('id_modulo','ASC')
             ->get();
         foreach ($accesos_uduarios as $key => $value) {
-            $value->accesos = $value->accesos;
-            $value->modulos = $value->accesos->modulos;
-            // return $value;
+            $value->accesos;
+            $value->accesos->modulos;
+            $value->moduloPadre;
         }
         return response()->json([
             "success"=>true,

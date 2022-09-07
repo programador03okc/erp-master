@@ -15,4 +15,8 @@ class AccesosUsuarios extends Model
     {
         return $this->hasOne(Accesos::class, 'id_acceso', 'id_acceso');
     }
+    public function moduloPadre()
+    {
+        return $this->hasOne(TableConfiguracionModulo::class, 'id_modulo', 'id_padre');
+    }
 }

@@ -77,31 +77,57 @@ $(function(){
         e.preventDefault();
         var data = $(this).serialize();
         // var ask = confirm('¿Desea guardar este registro?');
-
-        $.ajax({
-            type: 'POST',
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: 'guardar_usuarios',
-            data: data,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                // if (response > 0){
-                //     alert('Se registro al usuario correctamente');
-                //     $('#formPage')[0].reset();
-                //     $('#listaUsuarios').DataTable().ajax.reload();
-                //     $('#modal-agregarUsuario').modal('hide');
-                // }else if (response == 'exist'){
-                //     alert('Ya existe usuario registrado para dicho trabajador');
-                // }else{
-                //     alert('Error, inténtelo más tarde');
-                // }
+        Swal.fire({
+            title: 'Nuevo usuario',
+            text: "¿Esta seguro de guardar?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'no'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    url: 'guardar_usuarios',
+                    data: data,
+                    dataType: 'JSON',
+                    success: function(response){
+                        if (response.status===200) {
+                            Swal.fire({
+                                title: 'Éxito',
+                                text: "Se guardo con éxito",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Si'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            })
+                        }
+                        // if (response > 0){
+                        //     alert('Se registro al usuario correctamente');
+                        //     $('#formPage')[0].reset();
+                        //     $('#listaUsuarios').DataTable().ajax.reload();
+                        //     $('#modal-agregarUsuario').modal('hide');
+                        // }else if (response == 'exist'){
+                        //     alert('Ya existe usuario registrado para dicho trabajador');
+                        // }else{
+                        //     alert('Error, inténtelo más tarde');
+                        // }
+                    }
+                }).fail( function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
             }
-        }).fail( function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
+        })
 
     });
 
