@@ -1969,6 +1969,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('listado-ventas-externas-exportar-excel', 'Tesoreria\Facturacion\PendientesFacturacionController@listadoVentasExternasExportarExcel');
 
             Route::post('guardar-adjuntos-factura', 'Tesoreria\Facturacion\PendientesFacturacionController@guardarAdjuntosFactura');
+            Route::get('ver-adjuntos', 'Tesoreria\Facturacion\PendientesFacturacionController@verAdjuntos');
+            Route::post('eliminar-adjuntos', 'Tesoreria\Facturacion\PendientesFacturacionController@eliminarAdjuntos');
 		});
 
 		Route::group(['as' => 'comprobante-compra.', 'prefix' => 'comprobante-compra'], function () {

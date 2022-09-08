@@ -120,14 +120,18 @@ function detalleFacturasRequerimiento(table_id, id, row) {
         console.log(errorThrown);
     });
 }
+var array_adjuntos=[];
 $(document).on('click','.adjuntar-documentos',function () {
     var data_id_doc = $(this).attr('data-id-doc');
+    array_adjuntos = []
     $('#modal-adjuntos-factura').modal('show');
     $('[name="id_doc_ven"]').val($(this).attr('data-id-doc'));
     $('[name="id_requerimiento"]').val($(this).attr('data-id-requerimiento'));
     $('[data-action="table-body"]').html('');
+    $('[name="adjuntos[]"]').val('');
+
+    verAdjuntos($(this).attr('data-id-requerimiento'),$(this).attr('data-id-doc'));
 });
-var array_adjuntos=[];
 
 $(document).on('change','[data-action="adjuntos"]',function () {
     var file = $(this)[0].files;
@@ -162,17 +166,111 @@ $(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
     $.each(array_adjuntos, function (indexInArray, valueOfElement) {
         data_forma_adjuntos.append('archivos[]', valueOfElement);
     });
+    Swal.fire({
+        title: 'Adjuntos',
+        text: "¿Está seguro de guardar?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'no'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'POST',
+                url: 'guardar-adjuntos-factura',
+                data: data_forma_adjuntos,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                },
+                success: (response) => {
+                    if (response.status===200) {
+                        array_adjuntos = []
+                        Swal.fire(
+                            'Éxito',
+                            'Se guardo con éxito',
+                            'success'
+                        )
+                        $('#modal-adjuntos-factura').modal("hide");
+                    }
+                },
+                fail: (jqXHR, textStatus, errorThrown) => {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        }
+    })
 
+});
+function verAdjuntos(id_requerimiento,id_doc_venta) {
+    var html='';
+    $('[data-action="ver-table-body"]').html(html);
     $.ajax({
-        type: 'POST',
-        url: 'guardar-adjuntos-factura',
-        data: data_forma_adjuntos,
-        processData: false,
-        contentType: false,
+        type: 'GET',
+        url: 'ver-adjuntos',
+        data: {
+            id_requerimiento:id_requerimiento,
+            id_doc_venta:id_doc_venta
+        },
+        // processData: false,
+        // contentType: false,
         dataType: 'JSON',
         beforeSend: (data) => {
         },
         success: (response) => {
+            if (response.status===200) {
+                console.log(response);
+
+                $.each(response.data, function (indexInArray, valueOfElement) {
+                    html+='<tr data-key="'+valueOfElement.id_adjuntos+'">'
+                        html+='<td>'
+                            html+='<a href="/files/tesoreria/adjuntos_facturas/'+valueOfElement.archivo+'" target="_blank">'+valueOfElement.archivo+'</a>'
+                        html+='</td>'
+                        html+='<td>'
+                            html+=''+valueOfElement.fecha_registro
+                        html+='</td>'
+                        html+='<td><buton class="btn btn-danger" data-adjunto="eliminar" data-id="'+valueOfElement.id_adjuntos+'" data-key="'+indexInArray+'"><i class="fas fa-trash-alt"></i></button></td>'
+                    html+='</tr>'
+                });
+                $('[data-action="ver-table-body"]').html(html);
+            }
+        },
+        fail: (jqXHR, textStatus, errorThrown) => {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    });
+}
+$(document).on('click','[data-adjunto="eliminar"]',function () {
+    var id_adjuntos = $(this).attr('data-id');
+    $('tr[data-key="'+id_adjuntos+'"]').remove();
+    $.ajax({
+        type: 'POST',
+        url: 'eliminar-adjuntos',
+        data: {
+            id_adjuntos:id_adjuntos
+        },
+        // processData: false,
+        // contentType: false,
+        dataType: 'JSON',
+        beforeSend: (data) => {
+        },
+        success: (response) => {
+            if (response.status===200) {
+                console.log(response);
+                Swal.fire(
+                    'Éxito',
+                    'Se elimino con éxito',
+                    'success'
+                )
+                $('tr[data-key="'+id_adjuntos+'"]').remove();
+            }
         },
         fail: (jqXHR, textStatus, errorThrown) => {
             console.log(jqXHR);

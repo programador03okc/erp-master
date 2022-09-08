@@ -150,11 +150,30 @@ Facturación
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-12" style="margin-bottom: 15px;">
+                            <fieldset class="group-table">
+                                <div class="form-group">
+                                    <label for="">Archivos seleccionados</label>
+                                </div>
+                                <table class="table">
+                                    <tbody data-action="table-body">
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12">
-                            <table class="table">
-                                <tbody data-action="table-body">
-                                </tbody>
-                            </table>
+                            <fieldset class="group-table">
+                                <div class="form-group">
+                                    <label for="">Archivos adjuntos</label>
+                                </div>
+                                <table class="table">
+                                    <tbody data-action="ver-table-body">
+                                    </tbody>
+                                </table>
+                            </fieldset>
+
                         </div>
                     </div>
 

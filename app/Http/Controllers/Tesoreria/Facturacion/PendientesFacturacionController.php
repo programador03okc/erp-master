@@ -695,6 +695,45 @@ class PendientesFacturacionController extends Controller
             $adjunto->save();
         }
 
-        return $request;
+        return response()->json([
+            "status"=>200,
+            "success"=>true
+        ]);
+    }
+    public function verAdjuntos(Request $request)
+    {
+        // return $request;
+        $data=Adjuntos::where('estado',1)->where('id_requerimiento',$request->id_requerimiento)->where('id_doc_venta',$request->id_doc_venta)->get();
+        if (sizeof($data)>0) {
+            return response()->json([
+                "status"=>200,
+                "success"=>true,
+                "data"=>$data
+            ]);
+        }else{
+            return response()->json([
+                "status"=>404,
+                "success"=>false
+            ]);
+        }
+    }
+    public function eliminarAdjuntos(Request $request)
+    {
+        $data=Adjuntos::where('id_adjuntos',$request->id_adjuntos)->update([
+            "estado"=>7
+        ]);
+
+        if ($data) {
+            return response()->json([
+                "status"=>200,
+                "success"=>true,
+                "data"=>$data
+            ]);
+        }else{
+            return response()->json([
+                "status"=>404,
+                "success"=>false
+            ]);
+        }
     }
 }
