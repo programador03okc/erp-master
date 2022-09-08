@@ -36,7 +36,6 @@ function detalleFacturasRequerimiento(table_id, id, row) {
         url: "detalleFacturasRequerimientos/" + id,
         dataType: "JSON",
         success: function(response) {
-            console.log(response);
             var html = "";
             var i = 1;
 
@@ -224,7 +223,6 @@ function verAdjuntos(id_requerimiento,id_doc_venta) {
         },
         success: (response) => {
             if (response.status===200) {
-                console.log(response);
 
                 $.each(response.data, function (indexInArray, valueOfElement) {
                     html+='<tr data-key="'+valueOfElement.id_adjuntos+'">'
@@ -263,7 +261,6 @@ $(document).on('click','[data-adjunto="eliminar"]',function () {
         },
         success: (response) => {
             if (response.status===200) {
-                console.log(response);
                 Swal.fire(
                     'Éxito',
                     'Se elimino con éxito',
