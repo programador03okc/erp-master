@@ -1445,6 +1445,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('actualizaItemsODE/{id}', 'Almacen\Movimiento\SalidasPendientesController@actualizaItemsODE');
 				Route::get('actualizaItemsODI/{id}', 'Almacen\Movimiento\SalidasPendientesController@actualizaItemsODI');
+                Route::get('atencion-ver-adjuntos', 'Almacen\Movimiento\SalidasPendientesController@verAdjuntos')->name('index');
 			});
 
 			Route::group(['as' => 'customizacion.', 'prefix' => 'customizacion'], function () {

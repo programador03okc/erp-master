@@ -637,37 +637,37 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="nro_documento">N° de documento</label>
-                            <input type="number" class="form-control" id="nro_documento" name="nro_documento" required>
+                            <label for="nro_documento_modificar">N° de documento</label>
+                            <input type="number" class="form-control" id="nro_documento_modificar" name="nro_documento" required>
                             <small id="emailHelp" class="form-text text-muted">N° de documento de identificación.</small>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="nombres">Nombres:</label>
-                            <input type="text" class="form-control" id="nombres" name="nombres" required>
+                            <label for="nombres_modificar">Nombres:</label>
+                            <input type="text" class="form-control" id="nombres_modificar" name="nombres" required>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="apellido_paterno">Apellido Paterno : </label>
-                            <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" required>
+                            <label for="apellido_paterno_modificar">Apellido Paterno : </label>
+                            <input type="text" class="form-control" id="apellido_paterno_modificar" name="apellido_paterno" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="apellido_materno">Apellido Materno : </label>
-                            <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" required>
+                            <label for="apellido_materno_modificar">Apellido Materno : </label>
+                            <input type="text" class="form-control" id="apellido_materno_modificar" name="apellido_materno" required>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="fecha_nacimiento">Fecha de nacimiento : </label>
-                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+                            <label for="fecha_nacimiento_modificar">Fecha de nacimiento : </label>
+                            <input type="date" class="form-control" id="fecha_nacimiento_modificar" name="fecha_nacimiento" required>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -675,12 +675,12 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="sexo" id="inlineRadio1" value="M" required>
-                                    <label class="form-check-label" for="inlineRadio1">Masculino</label>
+                                    <input class="form-check-input" type="radio" name="sexo" id="inlineRadio1_modificar" value="M" required>
+                                    <label class="form-check-label" for="inlineRadio1_modificar">Masculino</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="sexo" id="inlineRadio2" value="F" required>
-                                    <label class="form-check-label" for="inlineRadio2">Femenino</label>
+                                    <input class="form-check-input" type="radio" name="sexo" id="inlineRadio2_modificar" value="F" required>
+                                    <label class="form-check-label" for="inlineRadio2_modificar">Femenino</label>
                                 </div>
                             </div>
                         </div>
@@ -690,8 +690,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="id_estado_civil">Estado civil : </label>
-                            <select id="id_estado_civil" class="form-control" name="id_estado_civil" required>
+                            <label for="id_estado_civil_modificar">Estado civil : </label>
+                            <select id="id_estado_civil_modificar" class="form-control" name="id_estado_civil" required>
                                 <option value="" >Seleccione...</option>
                                 @foreach ($estado_civil as $item)
                                     <option value="{{$item->id_estado_civil}}" >{{$item->descripcion}}</option>
@@ -702,36 +702,36 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="telefono">Telefono : </label>
-                            <input type="number" class="form-control" id="telefono" name="telefono" required>
+                            <label for="telefon_modificaro">Telefono : </label>
+                            <input type="number" class="form-control" id="telefono_modificar" name="telefono" required>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="direccion">Direccion : </label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" required>
+                            <label for="direccion_modificar">Direccion : </label>
+                            <input type="text" class="form-control" id="direccion_modificar" name="direccion" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="email">Email : </label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <label for="email_modificar">Email : </label>
+                            <input type="email" class="form-control" id="email_modificar" name="email" required>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="brevette">Brevette : </label>
-                            <input type="text" class="form-control" id="brevette" name="brevette" required>
+                            <label for="brevette_modificar">Brevette : </label>
+                            <input type="text" class="form-control" id="brevette_modificar" name="brevette" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="pais">Pais : </label>
-                            <select id="pais" class="form-control" name="pais" required>
+                            <label for="pais_modificar">Pais : </label>
+                            <select id="pais_modificar" class="form-control" name="pais" required>
                                 <option value="" >Seleccione...</option>
                                 @foreach ($pais as $item)
                                     <option value="{{$item->id_pais}}" >{{$item->descripcion}}</option>
@@ -743,14 +743,14 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="ubigeo">Ubigeo : </label>
-                            <input type="text" class="form-control" id="ubigeo" name="ubigeo" required>
+                            <label for="ubigeo_modificar">Ubigeo : </label>
+                            <input type="text" class="form-control" id="ubigeo_modificar" name="ubigeo" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="id_tipo_trabajador">Tipo trabajador : </label>
-                            <select id="id_tipo_trabajador" class="form-control" name="id_tipo_trabajador" required>
+                            <label for="id_tipo_trabajador_modificar">Tipo trabajador : </label>
+                            <select id="id_tipo_trabajador_modificar" class="form-control" name="id_tipo_trabajador" required>
                                 <option value="" >Seleccione...</option>
                                 @foreach ($tipo_trabajador as $item)
                                     <option value="{{$item->id_tipo_trabajador}}" >{{$item->descripcion}}</option>
@@ -762,8 +762,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="id_categoria_ocupacional">Categoria ocupacional : </label>
-                            <select id="id_categoria_ocupacional" class="form-control" name="id_categoria_ocupacional" required>
+                            <label for="id_categoria_ocupaciona_modificar">Categoria ocupacional : </label>
+                            <select id="id_categoria_ocupacional_modificar" class="form-control" name="id_categoria_ocupacional" required>
                                 <option value="" >Seleccione...</option>
                                 @foreach ($categoria_ocupacional as $item)
                                     <option value="{{$item->id_categoria_ocupacional}}" >{{$item->descripcion}}</option>
@@ -773,8 +773,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="id_tipo_planilla">Tipo de planilla : </label>
-                            <select id="id_tipo_planilla" class="form-control" name="id_tipo_planilla" required>
+                            <label for="id_tipo_planilla_modificar">Tipo de planilla : </label>
+                            <select id="id_tipo_planilla_modificar" class="form-control" name="id_tipo_planilla" required>
                                 <option value="" >Seleccione...</option>
                                 @foreach ($tipo_planilla as $item)
                                     <option value="{{$item->id_tipo_planilla}}" >{{$item->descripcion}}</option>
@@ -786,22 +786,22 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="condicion">Condición : </label>
-                            <input type="text" class="form-control" id="condicion" name="condicion" required>
+                            <label for="condicion_modificar">Condición : </label>
+                            <input type="text" class="form-control" id="condicion_modificar" name="condicion" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="hijos">Hijos : </label>
-                            <input type="number" class="form-control" id="hijos" name="hijos" required>
+                            <label for="hijos_modificar">Hijos : </label>
+                            <input type="number" class="form-control" id="hijos_modificar" name="hijos" required>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="id_pension">Pension : </label>
-                            <select id="id_pension" class="form-control" name="id_pension" required>
+                            <label for="id_pension_modificar">Pension : </label>
+                            <select id="id_pension_modificar" class="form-control" name="id_pension" required>
                                 <option value="" >Seleccione...</option>
                                 @foreach ($pension as $item)
                                     <option value="{{$item->id_pension}}" >{{$item->descripcion}}</option>
@@ -811,16 +811,16 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="cuspp">Cuspp : </label>
-                            <input type="text" class="form-control" id="cuspp" name="cuspp" required>
+                            <label for="cuspp_modificar">Cuspp : </label>
+                            <input type="text" class="form-control" id="cuspp_modificar" name="cuspp" required>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="seguro">Seguro : </label>
-                            <input type="text" class="form-control" id="seguro" name="seguro" required>
+                            <label for="seguro_modificar">Seguro : </label>
+                            <input type="text" class="form-control" id="seguro_modificar" name="seguro" required>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -829,12 +829,12 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="confianza" id="confianza1" value="t" required>
-                                        <label class="form-check-label" for="confianza1">Si</label>
+                                        <input class="form-check-input" type="radio" name="confianza" id="confianza1_modificar" value="t" required>
+                                        <label class="form-check-label" for="confianza1_modificar">Si</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="confianza" id="confianza2" value="f" required>
-                                        <label class="form-check-label" for="confianza2">No</label>
+                                        <input class="form-check-input" type="radio" name="confianza" id="confianza2_modificar" value="f" required>
+                                        <label class="form-check-label" for="confianza2_modificar">No</label>
                                     </div>
                                 </div>
                             </div>
@@ -849,36 +849,36 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="usuario">Usuario : </label>
-                            <input type="text" class="form-control" id="usuario" name="usuario" required>
+                            <label for="usuario_modificar">Usuario : </label>
+                            <input type="text" class="form-control" id="usuario_modificar" name="usuario" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="clave">Clave : </label>
-                            <input type="password" class="form-control" id="clave" name="clave" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="nombre_corto">Nombre corto : </label>
-                            <input type="text" class="form-control" id="nombre_corto" name="nombre_corto" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="codvent_softlink">Codvend Softlink : </label>
-                            <input type="text" class="form-control" id="codvent_softlink" name="codvent_softlink" required>
+                            <label for="clave_modificar">Clave : </label>
+                            <input type="password" class="form-control" id="clave_modificar" name="clave" required>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="id_grupo">Grupo : </label>
-                            <select id="id_grupo" class="selectpicker" name="id_grupo[]" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10" required>
+                            <label for="nombre_corto_modificar">Nombre corto : </label>
+                            <input type="text" class="form-control" id="nombre_corto_modificar" name="nombre_corto" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="codvent_softlink_modificar">Codvend Softlink : </label>
+                            <input type="text" class="form-control" id="codvent_softlink_modificar" name="codvent_softlink" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_grupo_modificar">Grupo : </label>
+                            <select id="id_grupo_modificar" class="selectpicker" name="id_grupo[]" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10" required>
                                 @foreach ($grupo as $item)
                                     <option value="{{$item->id_grupo}}" >{{$item->descripcion}}</option>
                                 @endforeach
@@ -887,8 +887,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="id_rol">Rol : </label>
-                            <select id="id_rol" class="selectpicker" name="id_rol[]" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10" required>
+                            <label for="id_rol_modificar">Rol : </label>
+                            <select id="id_rol_modificar" class="selectpicker" name="id_rol[]" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10" required>
                                 @foreach ($roles as $item)
                                     <option value="{{$item->id_rol}}" >{{$item->descripcion}}</option>
                                 @endforeach

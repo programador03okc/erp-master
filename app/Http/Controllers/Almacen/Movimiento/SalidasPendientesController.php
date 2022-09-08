@@ -12,6 +12,7 @@ use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
+use App\models\contabilidad\Adjuntos;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -66,17 +67,17 @@ class SalidasPendientesController extends Controller
                 'oc_propias_view.tipo',
                 // DB::raw("(rrhh_perso.nombres) || ' ' || (rrhh_perso.apellido_paterno) || ' ' || (rrhh_perso.apellido_materno) AS nombre_persona"),
                 'alm_almacen.descripcion as almacen_descripcion',
-                DB::raw("(SELECT SUM(reserva.stock_comprometido) 
+                DB::raw("(SELECT SUM(reserva.stock_comprometido)
                         FROM almacen.alm_reserva AS reserva
-                        INNER JOIN almacen.orden_despacho_det AS despacho 
-                            ON( despacho.id_od = orden_despacho.id_od  
+                        INNER JOIN almacen.orden_despacho_det AS despacho
+                            ON( despacho.id_od = orden_despacho.id_od
                             and despacho.transformado = false)
                         WHERE reserva.id_detalle_requerimiento = despacho.id_detalle_requerimiento
                             and reserva.estado != 7
                             and reserva.estado != 5
                             and reserva.id_almacen_reserva = orden_despacho.id_almacen) AS suma_reservas"),
-                DB::raw("(SELECT SUM(despacho.cantidad) 
-                        FROM  almacen.orden_despacho_det AS despacho 
+                DB::raw("(SELECT SUM(despacho.cantidad)
+                        FROM  almacen.orden_despacho_det AS despacho
                         WHERE despacho.id_od = orden_despacho.id_od
                           AND despacho.transformado = false
                           AND despacho.estado != 7) AS suma_cantidad")
@@ -407,7 +408,7 @@ class SalidasPendientesController extends Controller
                     $mensaje = 'Se guardó correctamente la salida de almacén';
                 } else {
                     $tipo = 'warning';
-                    $mensaje = 'No hay stock disponible para éstos productos: 
+                    $mensaje = 'No hay stock disponible para éstos productos:
                     ' . $mensaje;
                 }
             }
@@ -706,11 +707,11 @@ class SalidasPendientesController extends Controller
                 'alm_prod.id_unidad_medida',
                 'alm_und_medida.abreviatura',
                 'orden_despacho.id_almacen',
-                DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
+                DB::raw("(SELECT SUM(guia_ven_det.cantidad)
                         FROM almacen.guia_ven_det
                         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
                             and guia_ven_det.estado != 7) as cantidad_despachada"),
-                DB::raw("(SELECT SUM(reserva.stock_comprometido) 
+                DB::raw("(SELECT SUM(reserva.stock_comprometido)
                         FROM almacen.alm_reserva AS reserva
                         WHERE reserva.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                             and reserva.estado != 7
@@ -767,7 +768,7 @@ class SalidasPendientesController extends Controller
                 // 'alm_reserva.id_reserva',
                 'alm_reserva.id_almacen_reserva',
                 'alm_almacen.descripcion as almacen_reserva',
-                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
+                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido)
                         FROM almacen.alm_reserva
                         WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                             and alm_reserva.estado = 1) as stock_comprometido"),
@@ -887,7 +888,7 @@ class SalidasPendientesController extends Controller
         <html>
             <head>
                 <style type="text/css">
-                *{ 
+                *{
                     font-family: "DejaVu Sans";
                 }
                 table{
@@ -922,7 +923,7 @@ class SalidasPendientesController extends Controller
                 </table>
                 <h3 style="margin:0px;"><center>SALIDA DE ALMACÉN</center></h3>
                 <h5><center>' . $salida->des_almacen . '</center></h5>
-                
+
                 <table border="0">
                     <tr>
                         <td width=120px>Salida N°</td>
@@ -1499,7 +1500,7 @@ class SalidasPendientesController extends Controller
                             and guia_ven_det.estado != 7) as cantidad_despachada"),
                 'alm_reserva.id_almacen_reserva',
                 'almacen_reserva.descripcion as almacen_reserva',
-                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
+                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido)
                         FROM almacen.alm_reserva
                         WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                             and alm_reserva.estado = 1) as stock_comprometido")
@@ -1735,5 +1736,14 @@ class SalidasPendientesController extends Controller
             DB::rollBack();
             return response()->json(['tipo' => 'danger', 'mensaje' => 'Algo salió mal. Inténtelo nuevamente.', 200]);
         }
+    }public function verAdjuntos(Request $request)
+    {
+
+        $data = Adjuntos::where('estado',1)->where('id_requerimiento',$request->id)->get();
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$data
+        ]);
     }
 }
