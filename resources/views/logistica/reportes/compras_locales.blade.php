@@ -50,6 +50,7 @@ Reporte de compras locales
                                         <th style="text-align:center; width:10%;">N° Comprobante de Pago</th>
                                         <th style="text-align:center; width:10%;">Empresa - sede</th>
                                         <th style="text-align:center; width:10%;">Grupo</th>
+                                        <th style="text-align:center; width:20%;">Proyecto</th>
 
                                     </tr>
                                 </thead>
@@ -110,6 +111,67 @@ Reporte de compras locales
                                 <div class="col-sm-8">
                                     <select class="form-control input-sm handleUpdateValorFiltro" name="sede" readOnly>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Sede">
+                                            <input type="checkbox" name="chkGrupo"> Grupo
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm handleUpdateValorFiltro" name="grupo" readOnly>
+                                    @foreach ($grupos as $grupo)
+                                        <option value="{{$grupo->id_grupo}}">{{$grupo->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Proyecto">
+                                            <input type="checkbox" name="chkProyecto"> Proyecto
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm handleUpdateValorFiltro" name="proyecto" readOnly>
+                                    @foreach ($proyectos as $proyecto)
+                                        <option value="{{$proyecto->id_proyecto}}">{{$proyecto->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Estado de Pago">
+                                            <input type="checkbox" name="chkEstadoPago"> Estado pago
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm handleUpdateValorFiltro" name="estadoPago" readOnly>
+                                    @foreach ($estadosPago as $estado)
+                                        <option value="{{$estado->id_requerimiento_pago_estado}}">{{$estado->descripcion}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Observación en orden">
+                                            <input type="checkbox" name="chkObservacionOrden"> Coincidencia en observacion de orden
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control handleUpdateValorFiltro" name="observacionOrden" value="COMPRA LOCAL" readOnly>
+                                    
                                 </div>
                             </div>
                             <div class="form-group">
@@ -195,7 +257,23 @@ Reporte de compras locales
     $(document).ready(function() {
         seleccionarMenu(window.location);
         const comprasLocales = new ComprasLocales();
-        comprasLocales.mostrar();
+        comprasLocales.mostrar(
+            'SIN_FILTRO'
+            ,'SIN_FILTRO'
+            ,'SIN_FILTRO'
+            ,'SIN_FILTRO'
+            ,'SIN_FILTRO'
+            ,'SIN_FILTRO'
+            ,'SIN_FILTRO'
+            ,3
+            ,'SIN_FILTRO'
+            ,'COMPRA LOCAL'
+            ,6);
+
+            comprasLocales.ActualParametroGrupo=3;
+            comprasLocales.ActualParametroObservacionOrden='COMPRA LOCAL';
+            comprasLocales.ActualParametroEstadoPago=6;
+
         comprasLocales.initializeEventHandler();
     });
 </script>

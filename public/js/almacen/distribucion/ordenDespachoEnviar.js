@@ -65,10 +65,10 @@ function openOrdenDespachoEnviar(data) {
                         console.log('Error devuelto: ' + response.error);
                     }
                 }).always(function () {
-                   /* if ($submit !== null && $submit !== undefined) {
+                   if ($submit !== null && $submit !== undefined) {
                         $submit.prop('disabled', false);
                         $submit.html('Enviar');
-                    }*/
+                    }
                 }).fail(function (jqXHR) {
                     Lobibox.notify('error', {
                         size: "mini",

@@ -11,4 +11,14 @@ class Proyecto extends Model
     public $timestamps=false;
 
 
+    public static function mostrar()
+    {
+        $data = Proyecto::select(
+                'proy_proyecto.*'
+            )
+            ->where('estado','!=',7)
+            ->orderBy('proy_proyecto.descripcion', 'asc')
+            ->get();
+        return $data;
+    }
 }
