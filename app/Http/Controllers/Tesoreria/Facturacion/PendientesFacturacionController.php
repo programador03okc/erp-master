@@ -11,7 +11,10 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
+use App\models\contabilidad\Adjuntos;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class PendientesFacturacionController extends Controller
 {
@@ -668,5 +671,30 @@ class PendientesFacturacionController extends Controller
             ->join('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_ven.id_condicion')
             ->where([['alm_req.id_requerimiento', '=', $id_requerimiento], ['doc_ven.estado', '!=', 7]])
             ->distinct()->get();
+    }
+    public function guardarAdjuntosFactura(Request $request)
+    {
+
+        foreach ($request->adjuntos as $key => $archivo) {
+
+            $fechaHoy = new Carbon();
+            $sufijo = $fechaHoy->format('YmdHis');
+            $file = $archivo->getClientOriginalName();
+            // $codigo = $codigoRequerimiento;
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+            // $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
+            $newNameFile = $key  . $sufijo . '.' . $extension;
+            Storage::disk('archivos')->put("tesoreria/adjuntos_facturas/" . $newNameFile, File::get($archivo));
+
+            $adjunto = new Adjuntos;
+            $adjunto->archivo = $newNameFile;
+            $adjunto->estado  =1;
+            $adjunto->fecha_registro  = $fechaHoy;
+            $adjunto->id_requerimiento  = $request->id_requerimiento ;
+            $adjunto->id_doc_venta = $request->id_doc_ven ;
+            $adjunto->save();
+        }
+
+        return $request;
     }
 }

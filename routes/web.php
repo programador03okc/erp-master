@@ -1967,6 +1967,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
 			Route::get('listado-ventas-internas-exportar-excel', 'Tesoreria\Facturacion\PendientesFacturacionController@listadoVentasInternasExportarExcel');
 			Route::get('listado-ventas-externas-exportar-excel', 'Tesoreria\Facturacion\PendientesFacturacionController@listadoVentasExternasExportarExcel');
+
+            Route::post('guardar-adjuntos-factura', 'Tesoreria\Facturacion\PendientesFacturacionController@guardarAdjuntosFactura');
 		});
 
 		Route::group(['as' => 'comprobante-compra.', 'prefix' => 'comprobante-compra'], function () {
