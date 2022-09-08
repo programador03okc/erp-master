@@ -707,7 +707,8 @@ class ConfiguracionController extends Controller{
         //     ->where('sis_usua.id_usuario', '=', $id)
         //     ->orderBy('sis_usua.id_usuario', 'asc')
         //     ->get();
-
+        $sis_usua = SisUsua::where('id_usuario',$id)
+        ->get();
             if(count($sis_usua)>0){
                 $status=200;
                 $usuario=[
