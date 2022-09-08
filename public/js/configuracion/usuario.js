@@ -30,12 +30,16 @@ $(function(){
             {'render':
                 function (data, type, row, meta){
                     return (`<div class="d-flex">
+                            <button type="button" class="btn bg-orange btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar clave" data-calve="change-clave" data-id="${row['id_usuario']}">
+                                <i class="fas fa-key"></i>
+                            </button>
+                            <a class="btn bg-orange btn-flat botonList" data-toggle="tooltip" data-placement="bottom"  data-id="${row['id_usuario']}" href="accesos/${row['id_usuario']}">
+                                <i class="fas fa-user-cog"></i>
+                            </a>
+
                             <button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Editar" onclick="editarUsuario(${row['id_usuario']});">
                                 <i class="fas fa-edit"></i></button>
-                            <button type="button" class="btn bg-secundary btn-flat botonList" data-toggle="tooltip"
-                                 title="Asignar Accesos de Moduos" data-id="${row['id_usuario']}" data-action="view-modulos">
-                                <i class="fas fa-user-tag"></i></button>
                             <button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Asignar Accesos" onclick="accesoUsuario(${row['id_usuario']});">
                                 <i class="fas fa-user-tag"></i></button>
@@ -49,7 +53,7 @@ $(function(){
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
         'order': [
-            [6, 'desc']
+            [0, 'desc']
         ]
     });
     resizeSide();
@@ -73,31 +77,57 @@ $(function(){
         e.preventDefault();
         var data = $(this).serialize();
         // var ask = confirm('¿Desea guardar este registro?');
-
-        $.ajax({
-            type: 'POST',
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: 'guardar_usuarios',
-            data: data,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                // if (response > 0){
-                //     alert('Se registro al usuario correctamente');
-                //     $('#formPage')[0].reset();
-                //     $('#listaUsuarios').DataTable().ajax.reload();
-                //     $('#modal-agregarUsuario').modal('hide');
-                // }else if (response == 'exist'){
-                //     alert('Ya existe usuario registrado para dicho trabajador');
-                // }else{
-                //     alert('Error, inténtelo más tarde');
-                // }
+        Swal.fire({
+            title: 'Nuevo usuario',
+            text: "¿Esta seguro de guardar?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'no'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    url: 'guardar_usuarios',
+                    data: data,
+                    dataType: 'JSON',
+                    success: function(response){
+                        if (response.status===200) {
+                            Swal.fire({
+                                title: 'Éxito',
+                                text: "Se guardo con éxito",
+                                icon: 'success',
+                                showCancelButton: false,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Si'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            })
+                        }
+                        // if (response > 0){
+                        //     alert('Se registro al usuario correctamente');
+                        //     $('#formPage')[0].reset();
+                        //     $('#listaUsuarios').DataTable().ajax.reload();
+                        //     $('#modal-agregarUsuario').modal('hide');
+                        // }else if (response == 'exist'){
+                        //     alert('Ya existe usuario registrado para dicho trabajador');
+                        // }else{
+                        //     alert('Error, inténtelo más tarde');
+                        // }
+                    }
+                }).fail( function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
             }
-        }).fail( function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
+        })
 
     });
 
@@ -169,7 +199,7 @@ function getPerfilUsuario(id){
 function loadPerfilUsuario(id){
     getPerfilUsuario(id).then(function(res) {
         // Run this when your request was successful
-        // console.log(res)
+        console.log(res);
         if(res.status ==200){
             document.querySelector("div[id='modal-editar-usuario'] input[name='id_usuario']").value= id;
             document.querySelector("div[id='modal-editar-usuario'] input[name='nombres']").value= res.data.nombres;
@@ -424,11 +454,76 @@ function guardarAcceso(){
     });
     return false;
 }
-$(document).on('click','[data-action="view-modulos"]',function () {
-    var id_usuario = $(this).attr('data-id');
-    localStorage.setItem("id_usuario",id_usuario);
-    // var id = localStorage.getItem("id_usuario");
-    // console.log(id);
-    window.open(`usuarios/accesos`);
+$(document).on('click','[data-calve="change-clave"]',function () {
+
+    // $('#modal_cambio_clave').modal('show');
+    $('#modal_cambio_clave [name="id_usuario"]').val($(this).attr('data-id'));
+    $('#modal_cambio_clave').modal({
+        show: true,
+        backdrop: 'static'
+    });
+});
+$(document).on('submit','[data-form="cambio-clave"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
+    if ($(this).find('input[name="nueva_clave"]').val()===$(this).find('input[name="repetir_clave"]').val()) {
+        Swal.fire({
+            title: '¿Está seguro de cambiar la contraseña?',
+            text: "",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return $.ajax({
+                        type: 'POST',
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        url: 'cambiar-clave',
+                        data: data,
+                        dataType: 'JSON',
+                        success: function(response){
+                            console.log(response);
+                        }
+                    }).fail( function(jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
+                    })
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Éxito',
+                    text: "Se actualizo su clave con éxito",
+                    icon: 'sucess',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload();
+                    }
+                })
+            }
+        })
+    }else{
+        Swal.fire({
+            title: 'Error',
+            text: "La clave no coincide, verifique que sean iguales por favor",
+            icon: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+            }
+        })
+    }
 });
 

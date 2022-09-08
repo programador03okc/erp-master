@@ -1980,7 +1980,7 @@ class ListaOrdenView {
             //     );
             // }else{
                 Array.prototype.forEach.call(obj.files, (file) => {
-
+                    console.log(file);
                     if (this.estaHabilitadoLaExtension(file) == true) {
                         let payload = {
                             id: this.makeId(),
