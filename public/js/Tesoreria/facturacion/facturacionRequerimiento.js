@@ -77,7 +77,7 @@ function detalleFacturasRequerimiento(table_id, id, row) {
                                     }, 'requerimiento')">
                                 <i class="fas fa-file-alt"></i></button>
                                 <button type="button" class="btn btn-success btn-xs btn-flat adjuntar-documentos" title="Adjuntar" data-id-doc="${element.id_doc_ven}" data-id-requerimiento="${id}">
-                                    <i class="fas fa-file-alt"></i>
+                                    <i class="fas fa-paperclip"></i>
                                 </button>
                             <div/>
                         </td>
@@ -173,10 +173,10 @@ $(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Si',
-        cancelButtonText: 'no'
-      }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
+        cancelButtonText: 'no',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
                 type: 'POST',
                 url: 'guardar-adjuntos-factura',
                 data: data_forma_adjuntos,
@@ -188,12 +188,7 @@ $(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
                 success: (response) => {
                     if (response.status===200) {
                         array_adjuntos = []
-                        Swal.fire(
-                            'Éxito',
-                            'Se guardo con éxito',
-                            'success'
-                        )
-                        $('#modal-adjuntos-factura').modal("hide");
+
                     }
                 },
                 fail: (jqXHR, textStatus, errorThrown) => {
@@ -202,6 +197,16 @@ $(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
                     console.log(errorThrown);
                 }
             });
+
+          },
+      }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire(
+                'Éxito',
+                'Se guardo con éxito',
+                'success'
+            )
+            $('#modal-adjuntos-factura').modal("hide");
         }
     })
 
@@ -247,32 +252,56 @@ function verAdjuntos(id_requerimiento,id_doc_venta) {
 }
 $(document).on('click','[data-adjunto="eliminar"]',function () {
     var id_adjuntos = $(this).attr('data-id');
-    $('tr[data-key="'+id_adjuntos+'"]').remove();
-    $.ajax({
-        type: 'POST',
-        url: 'eliminar-adjuntos',
-        data: {
-            id_adjuntos:id_adjuntos
-        },
-        // processData: false,
-        // contentType: false,
-        dataType: 'JSON',
-        beforeSend: (data) => {
-        },
-        success: (response) => {
-            if (response.status===200) {
-                Swal.fire(
-                    'Éxito',
-                    'Se elimino con éxito',
-                    'success'
-                )
-                $('tr[data-key="'+id_adjuntos+'"]').remove();
-            }
-        },
-        fail: (jqXHR, textStatus, errorThrown) => {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
+
+    Swal.fire({
+        title: 'Eliminar',
+        text: "¿Está seguro de eliminar?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'no',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                url: 'eliminar-adjuntos',
+                data: {
+                    id_adjuntos:id_adjuntos
+                },
+                // processData: false,
+                // contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                },
+                success: (response) => {
+                    if (response.status===200) {
+                        Swal.fire(
+                            'Éxito',
+                            'Se elimino con éxito',
+                            'success'
+                        )
+                        $('tr[data-key="'+id_adjuntos+'"]').remove();
+                    }
+                },
+                fail: (jqXHR, textStatus, errorThrown) => {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            })
+
+          },
+      }).then((result) => {
+        if (result.isConfirmed) {
+            // Swal.fire(
+            //     'Éxito',
+            //     'Se guardo con éxito',
+            //     'success'
+            // )
+            // $('#modal-adjuntos-factura').modal("hide");
         }
-    });
+    })
+
 });
