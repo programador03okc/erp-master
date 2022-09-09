@@ -112,14 +112,14 @@ Atención de Salidas
             <form id="form-guia_ven_create">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Adjuntos - <strong><span id="codigo"></span></strong>
+                    <h3 class="modal-title">Adjuntos</h3>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-table">
                                 <div class="form-group">
-                                    <label for="">Adjuntos</label>
+                                    <label for="">Adjuntos Contabilidad</label>
                                 </div>
                                 <table class="table">
                                     <tbody data-table="ver-table-body">

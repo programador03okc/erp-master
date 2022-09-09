@@ -674,7 +674,6 @@ class PendientesFacturacionController extends Controller
     }
     public function guardarAdjuntosFactura(Request $request)
     {
-
         foreach ($request->adjuntos as $key => $archivo) {
 
             $fechaHoy = new Carbon();
@@ -692,6 +691,8 @@ class PendientesFacturacionController extends Controller
             $adjunto->fecha_registro  = $fechaHoy;
             $adjunto->id_requerimiento  = $request->id_requerimiento ;
             $adjunto->id_doc_venta = $request->id_doc_ven ;
+            $adjunto->descripcion = 'Contabilidad' ;
+            $adjunto->id_usuario = Auth::user()->id_usuario;
             $adjunto->save();
         }
 

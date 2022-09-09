@@ -140,12 +140,24 @@ Facturación
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
+                        <div class="col-md-12" style="margin-bottom: 15px;">
+                            {{-- <div class="form-group"> --}}
+
+                                {{-- <input class="form-control" type="file" name="adjuntos[]" multiple data-action="adjuntos" required> --}}
+                            {{-- </div> --}}
+                            <fieldset class="group-table">
+                                <div class="form-group">
+                                    <label for="">Adjuntar nuevo</label>
+                                </div>
                                 <input type="hidden" name="id_doc_ven">
                                 <input type="hidden" name="id_requerimiento">
-                                <input class="form-control" type="file" name="adjuntos[]" multiple data-action="adjuntos" required>
-                            </div>
+                                <input type="file" multiple="multiple" class="filestyle" name="adjuntos[]" multiple data-action="adjuntos" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo"  data-iconName="fa fa-folder-open" required/>
+                                <br>
+                                <div style="display:flex; justify-content: space-between;">
+                                    <h6>seleccieon multiple y con un máximo de 2MB por subida.</h6>
+                                    <h6>Carga actual: <span class="label label-default" id="peso-estimado">0MB</span></h6>
+                                </div>
+                            </fieldset>
 
                         </div>
                     </div>
@@ -180,7 +192,7 @@ Facturación
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+                    <button type="submit" class="btn btn-success guardar-adjuntos"><i class="fa fa-save"></i> Guardar</button>
                 </div>
             </form>
         </div>

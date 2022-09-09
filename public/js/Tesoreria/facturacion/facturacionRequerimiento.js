@@ -133,10 +133,30 @@ $(document).on('click','.adjuntar-documentos',function () {
 });
 
 $(document).on('change','[data-action="adjuntos"]',function () {
-    var file = $(this)[0].files;
+    var file = $(this)[0].files,
+        peso_archivo= 0,
+        peso_total = 0;
+
     $.each(file, function (index, element) {
-        array_adjuntos.push(element);
+        peso_archivo=peso_archivo+element.size;
+
+        if (peso_archivo<=2000000) {
+            console.log(peso_total);
+            array_adjuntos.push(element);
+        }
+
+
     });
+    peso_total = peso_archivo/(1000000);
+    $('#peso-estimado').text(peso_total.toFixed(2)+'MB');
+
+    if (peso_archivo<=2000000) {
+        console.log('pesa menos de 2mb');
+        $('.guardar-adjuntos').removeAttr('disabled');
+
+    }else{
+        $('.guardar-adjuntos').attr('disabled',true);
+    }
     adjuntosSeleccionados();
 });
 function adjuntosSeleccionados() {
@@ -146,7 +166,7 @@ function adjuntosSeleccionados() {
             html+='<td>'
                 html+=valueOfElement.name
             html+='</td>'
-            html+='<td><buton class="btn btn-danger" data-action="eliminar-adjunto" data-key="'+indexInArray+'"><i class="fas fa-trash-alt"></i></button></td>'
+            html+='<td><buton class="btn btn-danger btn-xs" data-action="eliminar-adjunto" data-key="'+indexInArray+'"><i class="fas fa-trash-alt"></i></button></td>'
         html+='</tr>'
     });
     $('[data-action="table-body"]').html(html);
@@ -236,8 +256,11 @@ function verAdjuntos(id_requerimiento,id_doc_venta) {
                         html+='</td>'
                         html+='<td>'
                             html+=''+valueOfElement.fecha_registro
-                        html+='</td>'
-                        html+='<td><buton class="btn btn-danger" data-adjunto="eliminar" data-id="'+valueOfElement.id_adjuntos+'" data-key="'+indexInArray+'"><i class="fas fa-trash-alt"></i></button></td>'
+                        html+='</td>';
+                        if (auth_user.id_usuario==valueOfElement.id_usuario) {
+                            html+='<td><buton class="btn btn-danger btn-xs" data-adjunto="eliminar" data-id="'+valueOfElement.id_adjuntos+'" data-key="'+indexInArray+'"><i class="fas fa-trash-alt"></i></button></td>';
+                        }
+
                     html+='</tr>'
                 });
                 $('[data-action="ver-table-body"]').html(html);
@@ -282,6 +305,7 @@ $(document).on('click','[data-adjunto="eliminar"]',function () {
                             'Se elimino con éxito',
                             'success'
                         )
+                        $('tr[data-key="'+id_adjuntos+'"]').remove();
                         $('tr[data-key="'+id_adjuntos+'"]').remove();
                     }
                 },

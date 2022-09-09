@@ -83,7 +83,8 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-		var auth_user = <?php echo $auth_user ?>;
+		var auth_user = <?= $auth_user ?>;
+        // console.log(auth_user);
 	</script>
 	<script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
 	<script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>

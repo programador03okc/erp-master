@@ -591,14 +591,17 @@ function verAdjuntos(id) {
                 console.log(response);
 
                 $.each(response.data, function (indexInArray, valueOfElement) {
-                    html+='<tr data-key="'+valueOfElement.id_adjuntos+'">'
-                        html+='<td>'
-                            html+='<a href="/files/tesoreria/adjuntos_facturas/'+valueOfElement.archivo+'" target="_blank"><i class="fa fa-file-download"></i> '+valueOfElement.archivo+'</a>'
-                        html+='</td>'
-                        html+='<td>'
-                            html+=''+valueOfElement.fecha_registro
-                        html+='</td>'
-                    html+='</tr>'
+                    if (valueOfElement.descripcion==='Contabilidad') {
+                        html+='<tr data-key="'+valueOfElement.id_adjuntos+'">'
+                            html+='<td>'
+                                html+='<a href="/files/tesoreria/adjuntos_facturas/'+valueOfElement.archivo+'" target="_blank"><i class="fa fa-file-download"></i> '+valueOfElement.archivo+'</a>'
+                            html+='</td>'
+                            html+='<td>'
+                                html+=''+valueOfElement.fecha_registro
+                            html+='</td>'
+                        html+='</tr>'
+                    }
+
                 });
                 $('[data-table="ver-table-body"]').html(html);
             }
