@@ -147,14 +147,13 @@ function listarReservasAlmacen(id_usuario) {
                     </button>`: ''
 
                         }
-                    ${row['numero'] !== null ? `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
+                    <button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
 
-                    data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}">
+                        data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}">
 
-                    <i class="fas fa-trash"></i>
+                        <i class="fas fa-trash"></i>
 
-                    </button>` : ''}
-                    `;
+                    </button>`;
 
                 }, targets: 15
 
