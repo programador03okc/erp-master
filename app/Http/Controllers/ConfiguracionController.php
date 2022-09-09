@@ -707,24 +707,22 @@ class ConfiguracionController extends Controller{
         //     ->where('sis_usua.id_usuario', '=', $id)
         //     ->orderBy('sis_usua.id_usuario', 'asc')
         //     ->get();
-        $sis_usua = SisUsua::where('id_usuario',$id)
-        ->get();
-            if(count($sis_usua)>0){
-                $status=200;
-                $usuario=[
-                    'nombres'=>$sis_usua->first()->nombres,
-                    'apellido_paterno'=>$sis_usua->first()->apellido_paterno,
-                    'apellido_materno'=>$sis_usua->first()->apellido_materno,
-                    'nombre_corto'=>$sis_usua->first()->nombre_corto,
-                    'usuario'=>$sis_usua->first()->usuario,
-                    'contraseña_codificada'=>$sis_usua->first()->clave,
-                    'contraseña_decodificada'=> $this->decode5t(strval($sis_usua->first()->clave)),
-                    'email'=>$sis_usua->first()->email,
-                    'id_rol'=>$sis_usua->first()->id_rol
-                ];
-            }
-            $output=['status'=>$status,'data'=>$usuario];
-            return $output;
+        $data = SisUsua::select(
+            'sis_usua.*',
+            'rrhh_trab.*',
+            'rrhh_postu.*',
+            'rrhh_perso.*'
+        )
+        ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+        ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
+        ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
+        ->where('id_usuario',$id)
+        ->first();
+
+        return response()->json([
+            "status"=>200,
+            "data"=>$data
+        ]);
     }
 
 

@@ -123,60 +123,16 @@ $(document).on('click','[data-action="modulo-seleccionado"]',function () {
         data_disable=$(this).attr('data-disabled'),
         $this_componente=$(this);
 
+        // array_title.splice(index,1);
+        if (array_disable_accesos.indexOf(id_acceso)===-1) {
+            array_disable_accesos.push(id_acceso);
+        }
         asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso, acceso, html, data_disable,$this_componente);
-    // if (data_disable=='true') {
-    //     $(this).attr('data-disabled','false');
-
-
-    //     if (array_title.indexOf(id_modulo)===-1) {
-    //         html+='<div class="col-md-12" data-count="col">'
-    //             html+='<label data-id-modulo="'+id_modulo+'">'+titulo+'</label>';
-    //             array_title.push(id_modulo);
-    //         html+='</div>';
-    //         $('[data-accesos="select-accesos"]').append(html);
-    //     }
-
-    //     html='';
-    //     if (!sub_titulo) {
-    //         html+='<div class="col-md-12">'
-    //             html+='<label class="btn" data-action="disabled-accesos" data-id-acceso="'+id_acceso+'" data-action-id-modulo="'+id_modulo+'">'+acceso+'</label>'
-    //             html+='<input type="hidden" value="'+id_acceso+'" name="id_acceso['+id_modulo+'][]" data-input="'+id_acceso+'">'
-    //             html+='<input type="hidden" value="'+id_acceso+'" name="id_modulo_padre['+0+']['+id_modulo+'][]" data-input="'+id_acceso+'">'
-    //         html+='</div>'
-    //         $('[data-accesos="select-accesos"] [data-id-modulo="'+id_modulo+'"]').append(html);
-    //     }
-
-    //     html='';
-    //     if (sub_titulo) {
-    //         if (array_sub_title.indexOf(id_sub_modulo)===-1) {
-    //             html+='<div class="col-md-12" data-count="col-hijo">';
-    //                 html+='<label data-id-sub-modulo="'+id_sub_modulo+'">'+sub_titulo+'</label>';
-    //             html+='</div>';
-    //             array_sub_title.push(id_sub_modulo);
-    //             $('[data-accesos="select-accesos"] [data-id-modulo="'+id_modulo+'"]').append(html);
-    //         }
-    //     }
-    //     html='';
-    //     if (id_sub_modulo) {
-    //         html+='<div class="col-md-12">'
-    //             html+='<label class="btn" data-action="disabled-accesos" data-action-id-sub-modulo="'+id_sub_modulo+'" data-id-acceso="'+id_acceso+'">'+acceso+'</label>'
-    //             html+='<input type="hidden" value="'+id_acceso+'" name="id_acceso['+id_sub_modulo+'][]" data-input="'+id_acceso+'">'
-    //             html+='<input type="hidden" value="'+id_acceso+'" name="id_modulo_padre['+id_modulo+']['+id_sub_modulo+'][]" data-input="'+id_acceso+'">'
-    //         html+='</div>';
-    //         $('[data-accesos="select-accesos"] [data-id-sub-modulo="'+id_sub_modulo+'"]').append(html);
-    //     }
-
-    //     $('[data-accesos="select-accesos"]').removeClass('text-center');
-    //     $('[data-action="text-selct"]').remove();
-    //     $(this).attr('disabled',true);
-    // }
 });
 
 function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso, acceso, html, data_disable,$this_componente) {
     if (data_disable=='true') {
         $this_componente.attr('data-disabled','false');
-
-
         if (array_title.indexOf(id_modulo)===-1) {
             html+='<div class="col-md-12" data-count="col">'
                 html+='<label data-id-modulo="'+id_modulo+'">'+titulo+'</label>';
@@ -184,7 +140,6 @@ function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso
             array_title.push(id_modulo);
             $('[data-accesos="select-accesos"]').append(html);
         }
-
         html='';
         if (!sub_titulo) {
             html+='<div class="col-md-12">'
@@ -194,7 +149,6 @@ function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso
             html+='</div>'
             $('[data-accesos="select-accesos"] [data-id-modulo="'+id_modulo+'"]').append(html);
         }
-
         html='';
         if (sub_titulo) {
             if (array_sub_title.indexOf(id_sub_modulo)===-1) {
@@ -202,7 +156,6 @@ function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso
                     html+='<label data-id-sub-modulo="'+id_sub_modulo+'">'+sub_titulo+'</label>';
                 html+='</div>';
                 array_sub_title.push(parseInt(id_sub_modulo));
-                console.log(array_sub_title);
                 $('[data-accesos="select-accesos"] [data-id-modulo="'+id_modulo+'"]').append(html);
             }
         }
@@ -231,7 +184,8 @@ $(document).on('click','[data-action="disabled-accesos"]',function () {
     var id_modulo = $(this).attr('data-action-id-modulo');
     var id_sub_modulo = $(this).attr('data-action-id-sub-modulo');
 
-    console.log($('[data-count="col-hijo"] div').length);
+    array_disable_accesos.splice(array_disable_accesos.indexOf(id_acceso),1);
+
     if ($('[data-count="col-hijo"] div').length===0) {
         $('[data-count="col-hijo"]').remove();
         index_hijo = array_sub_title.indexOf(id_sub_modulo);
@@ -268,7 +222,7 @@ $(document).on('click','[data-action="guardar"]',function () {
                             'Éxito',
                             'Se guardo con éxito su registro',
                             'success'
-                          )
+                        )
                     }
                 }
             }).fail( function(jqXHR, textStatus, errorThrown) {

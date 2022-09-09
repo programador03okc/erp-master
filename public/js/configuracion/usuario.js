@@ -199,18 +199,61 @@ function getPerfilUsuario(id){
 function loadPerfilUsuario(id){
     getPerfilUsuario(id).then(function(res) {
         // Run this when your request was successful
-        console.log(res);
         if(res.status ==200){
-            document.querySelector("div[id='modal-editar-usuario'] input[name='id_usuario']").value= id;
-            document.querySelector("div[id='modal-editar-usuario'] input[name='nombres']").value= res.data.nombres;
-            document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_paterno']").value= res.data.apellido_paterno;
-            document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_materno']").value= res.data.apellido_materno;
-            document.querySelector("div[id='modal-editar-usuario'] input[name='nombre_corto']").value= res.data.nombre_corto;
-            document.querySelector("div[id='modal-editar-usuario'] input[name='usuario']").value= res.data.usuario;
-            // document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value= '*'.repeat((res.data.contraseña_decodificada).length);
-            document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value=  res.data.contraseña_decodificada;
-            document.querySelector("div[id='modal-editar-usuario'] input[name='email']").value= res.data.email;
-            document.querySelector("div[id='modal-editar-usuario'] select[name='rol']").value= res.data.id_rol;
+            // document.querySelector("div[id='modal-editar-usuario'] input[name='id_usuario']").value= id;
+            // document.querySelector("div[id='modal-editar-usuario'] input[name='nombres']").value= res.data.nombres;
+            // document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_paterno']").value= res.data.apellido_paterno;
+            // document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_materno']").value= res.data.apellido_materno;
+            // document.querySelector("div[id='modal-editar-usuario'] input[name='nombre_corto']").value= res.data.nombre_corto;
+            // document.querySelector("div[id='modal-editar-usuario'] input[name='usuario']").value= res.data.usuario;
+            // // document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value= '*'.repeat((res.data.contraseña_decodificada).length);
+            // document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value=  res.data.contraseña_decodificada;
+            // document.querySelector("div[id='modal-editar-usuario'] input[name='email']").value= res.data.email;
+            // document.querySelector("div[id='modal-editar-usuario'] select[name='rol']").value= res.data.id_rol;
+            console.log(res);
+            console.log(res.data.nro_documento);
+            $('#modal-editar-usuario [name="nro_documento"]').val(res.data.nro_documento);
+            $('#modal-editar-usuario [name="nombres"]').val(res.data.nombres);
+            $('#modal-editar-usuario [name="apellido_paterno"]').val(res.data.apellido_paterno);
+            $('#modal-editar-usuario [name="apellido_materno"]').val(res.data.apellido_materno);
+            $('#modal-editar-usuario [name="fecha_nacimiento"]').val(res.data.fecha_nacimiento);
+
+            if (res.data.sexo==='M') {
+                $('#modal-editar-usuario [name="sexo"][value="M"]').attr('checked',true);
+            }else{
+                $('#modal-editar-usuario [name="sexo"][value="F"]').attr('checked',true);
+            }
+            $('#modal-editar-usuario [name="id_estado_civil"] [value="'+res.data.id_estado_civil+'"]').attr('selected',true);
+            $('#modal-editar-usuario [name="telefono"]').val(res.data.telefono);
+            $('#modal-editar-usuario [name="direccion"]').val(res.data.direccion);
+            $('#modal-editar-usuario [name="email"]').val(res.data.email);
+            $('#modal-editar-usuario [name="brevette"]').val(res.data.brevette);
+
+            $('#modal-editar-usuario [name="pais"] [value="'+res.data.id_pais+'"]').attr('selected',true);
+            $('#modal-editar-usuario [name="ubigeo"]').val(res.data.ubigeo);
+            $('#modal-editar-usuario [name="id_tipo_trabajador"] [value="'+res.data.id_tipo_trabajador+'"]').attr('selected',true);
+            $('#modal-editar-usuario [name="id_categoria_ocupacional"] [value="'+res.data.id_categoria_ocupacional+'"]').attr('selected',true);
+            $('#modal-editar-usuario [name="id_tipo_planilla"] [value="'+res.data.id_tipo_planilla+'"]').attr('selected',true);
+
+            $('#modal-editar-usuario [name="condicion"]').val(res.data.condicion);
+            $('#modal-editar-usuario [name="hijos"]').val(res.data.hijos);
+            $('#modal-editar-usuario [name="id_pension"]').val(res.data.id_pension);
+
+            $('#modal-editar-usuario [name="cuspp"]').val(res.data.cuspp);
+            $('#modal-editar-usuario [name="seguro"]').val(res.data.seguro);
+            if (res.data.confianza==='f') {
+                $('#modal-editar-usuario [name="confianza"][value="f"]').attr('checked',true);
+            }else{
+                $('#modal-editar-usuario [name="confianza"][value="t"]').attr('checked',true);
+            }
+
+            $('#modal-editar-usuario [name="usuario"]').val(res.data.usuario);
+            // $('#modal-editar-usuario [name="clave"]').val(res.data.nro_documento);
+            $('#modal-editar-usuario [name="nombre_corto"]').val(res.data.nombre_corto);
+            $('#modal-editar-usuario [name="codvent_softlink"]').val(res.data.codvend_softlink);
+
+            // $('#modal-editar-usuario [name="id_grupo[]"]').val(res.data.nro_documento);
+            // $('#modal-editar-usuario [name="id_rol[]"]').val(res.data.nro_documento);
         }
     }).catch(function(err) {
         // Run this when promise was rejected via reject()
