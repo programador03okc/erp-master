@@ -133,32 +133,30 @@ $(document).on('click','.adjuntar-documentos',function () {
 });
 
 $(document).on('change','[data-action="adjuntos"]',function () {
-    var file = $(this)[0].files,
-        peso_archivo= 0,
-        peso_total = 0;
+    var file = $(this)[0].files;
 
     $.each(file, function (index, element) {
-        peso_archivo=peso_archivo+element.size;
-
-        if (peso_archivo<=2000000) {
-            console.log(peso_total);
-            array_adjuntos.push(element);
-        }
-
-
+        array_adjuntos.push(element);
+    });
+    pesoArchivos();
+    adjuntosSeleccionados();
+});
+function pesoArchivos() {
+    var peso_archivo= 0,
+    peso_total = 0;
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        peso_archivo=peso_archivo+valueOfElement.size;
     });
     peso_total = peso_archivo/(1000000);
     $('#peso-estimado').text(peso_total.toFixed(2)+'MB');
 
     if (peso_archivo<=2000000) {
-        console.log('pesa menos de 2mb');
         $('.guardar-adjuntos').removeAttr('disabled');
 
     }else{
         $('.guardar-adjuntos').attr('disabled',true);
     }
-    adjuntosSeleccionados();
-});
+}
 function adjuntosSeleccionados() {
     var html='';
     $.each(array_adjuntos, function (indexInArray, valueOfElement) {
@@ -177,7 +175,8 @@ $(document).on('click','[data-action="eliminar-adjunto"]',function () {
     if (array_adjuntos.length===0) {
         $('[name="adjuntos[]"]').val('');
     }
-    adjuntosSeleccionados()
+    adjuntosSeleccionados();
+    pesoArchivos();
 });
 $(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
     e.preventDefault();
