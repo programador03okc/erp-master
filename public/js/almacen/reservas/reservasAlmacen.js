@@ -132,8 +132,7 @@ function listarReservasAlmacen(id_usuario) {
 
                 'render': function (data, type, row) {
 
-                    return `${id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93' ?
-
+                    let $btn_editar = (id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93') ?
                     `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
 
                         data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
@@ -144,16 +143,20 @@ function listarReservasAlmacen(id_usuario) {
 
                         <i class="fas fa-edit"></i>
 
-                    </button>`: ''
+                    </button>`: '';
 
-                        }
-                    <button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
+
+                    let $btn_eliminar = (row['numero'] !== null) ?
+                    `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
 
                         data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}">
 
                         <i class="fas fa-trash"></i>
 
-                    </button>`;
+                    </button>`:'';
+
+                    return $btn_editar+$btn_eliminar;
+
 
                 }, targets: 15
 
