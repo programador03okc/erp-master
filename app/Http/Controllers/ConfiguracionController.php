@@ -2158,13 +2158,19 @@ public function anular_configuracion_socket($id){
     }
     public function viewAccesos($id)
     {
-        // $usuarios = SisUsua::select(
-        //     ''
-        // )
-        // ->where('estado',1)
-        // ->first();
+        $usuario = SisUsua::select(
+            'sis_usua.*',
+            'rrhh_trab.*',
+            'rrhh_postu.*',
+            'rrhh_perso.*'
+        )
+        ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+        ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
+        ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
+        ->where('id_usuario',$id)
+        ->first();
         $modulos =DB::table('configuracion.table_configuracion_modulo')->where('estado',1)->where('id_padre',0)->get();
-        return view('configuracion.usuario_accesos', compact('modulos','id'));
+        return view('configuracion.usuario_accesos', compact('modulos','id','usuario'));
     }
     public function getModulosAccion(Request $request)
     {

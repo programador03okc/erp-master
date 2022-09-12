@@ -31,7 +31,7 @@
 
     <div class="box box-danger">
         <div class="box-header">
-            <h3 class="box-title">Nombres y Apellidos : <label for=""></label> </h3>
+            <h3 class="box-title">Nombres y Apellidos : {{$usuario->nombres.' '.$usuario->apellido_paterno.' '.$usuario->apellido_materno}} </h3>
             <div class="pull-right box-tools">
             </div>
         </div>
