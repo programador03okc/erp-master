@@ -141,17 +141,47 @@ $(function(){
 $(document).on('submit','[data-form="actualizar-usuario"]',function (e) {
     e.preventDefault();
     var data = $(this).serialize();
+    Swal.fire({
+        title: '¿Etsá seguro de guardar?',
+        text: "Se editara el registro seleccionado",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: (respuesta) => {
+            return $.ajax({
+                type: 'POST',
+                url:'/configuracion/usuario/perfil',
+                data: data,
+                beforeSend: function(){
+                },
+                success: function(response){
 
-    $.ajax({
-        type: 'POST',
-        url:'/configuracion/usuario/perfil',
-        data: data,
-        beforeSend: function(){
-        },
-        success: function(response){
-            console.log(response);
+                    if (response.status===200) {
+                        Swal.fire(
+                            'Éxito!',
+                            'Se guardo con éxito.',
+                            'success'
+                        ).then((result) => {
+                            location.reload();
+                        })
+                    }
+                }
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+            // allowOutsideClick: () => !Swal.isLoading();
+          },
+    }).then((result) => {
+        if (result.isConfirmed) {
+
         }
-    });
+    })
 });
 
 function getPerfilUsuario(id){
