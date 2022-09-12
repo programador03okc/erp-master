@@ -528,7 +528,7 @@ $(document).on('submit','[data-form="cambio-clave"]',function (e) {
                 Swal.fire({
                     title: 'Éxito',
                     text: "Se actualizo su clave con éxito",
-                    icon: 'sucess',
+                    icon: 'success',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
