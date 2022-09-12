@@ -7,7 +7,7 @@
             <i class="fas fa-user-cog"></i> <span>Gestión de Accesos</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
-                <li><a href="usuarios"> Usuarios</a></li>
+                <li><a href="{{route('configuracion.listarUsuarios')}}"> Usuarios</a></li>
                 <li><a href="accesos"> Roles </a></li>
          </ul>
     </li>
