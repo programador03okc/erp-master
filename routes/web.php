@@ -1467,6 +1467,18 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidaPdfController@imprimir_salida');
 			});
 
+			Route::group(['as' => 'devolucion.', 'prefix' => 'devolucion'], function () {
+				//Devoluciones
+				Route::get('index', 'Almacen\Movimiento\DevolucionController@viewDevolucion')->name('index');
+				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
+				Route::get('mostrarDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@mostrarDevolucion');
+				Route::post('guardarDevolucion', 'Almacen\Movimiento\DevolucionController@guardarDevolucion');
+				Route::post('actualizarDevolucion', 'Almacen\Movimiento\DevolucionController@actualizarDevolucion');
+				Route::get('validarEdicion/{id}', 'Almacen\Movimiento\DevolucionController@validarEdicion');
+				Route::get('anularDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@anularDevolucion');
+			});
+
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
 				//Pendientes de Salida
 				Route::get('index', 'Almacen\Movimiento\ProrrateoCostosController@view_prorrateo_costos')->name('index');

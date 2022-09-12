@@ -24,6 +24,9 @@ $(function () {
         else if (origen == 'sobrante') {
             agregarCustomizacionSobrante(sel);
         }
+        else if (origen == 'devolucion') {
+            agregarProducto(sel);
+        }
         $("#modal-productoCatalogo").modal("hide");
     });
 });

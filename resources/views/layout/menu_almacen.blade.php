@@ -81,6 +81,9 @@
             <li><a href="{{route('almacen.transferencias.gestion-transferencias.index')}}"> Transferencias </a></li>
             @endif
             <li><a href="{{route('almacen.movimientos.customizacion.index')}}"> Customización </a></li>
+            @if (Auth::user()->id_usuario == 3)
+            <li><a href="{{route('almacen.movimientos.devolucion.index')}}"> Devolución </a></li>
+            @endif
             <li><a href="{{route('almacen.movimientos.prorrateo.index')}}"> Prorrateo de Costos </a></li>
             <li><a href="{{route('almacen.movimientos.reservas.index')}}"> Reservas de almacén </a></li>
             <li><a href="{{route('almacen.movimientos.requerimientos-almacen.index')}}"> Estado de Requerimientos </a></li>
