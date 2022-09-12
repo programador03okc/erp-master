@@ -21,7 +21,7 @@
 @section('content')
 <div class="page-main" type="usuarios">
     <legend class="mylegend">
-        <h2>Usuarios</h2>
+        <h2>Accesos</h2>
         <ol class="breadcrumb">
             <li>
 
@@ -31,7 +31,7 @@
 
     <div class="box box-danger">
         <div class="box-header">
-            <h3 class="box-title">Accesos</h3>
+            <h3 class="box-title">Nombres y Apellidos : <label for=""></label> </h3>
             <div class="pull-right box-tools">
             </div>
         </div>

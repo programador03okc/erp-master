@@ -2158,6 +2158,11 @@ public function anular_configuracion_socket($id){
     }
     public function viewAccesos($id)
     {
+        // $usuarios = SisUsua::select(
+        //     ''
+        // )
+        // ->where('estado',1)
+        // ->first();
         $modulos =DB::table('configuracion.table_configuracion_modulo')->where('estado',1)->where('id_padre',0)->get();
         return view('configuracion.usuario_accesos', compact('modulos','id'));
     }
