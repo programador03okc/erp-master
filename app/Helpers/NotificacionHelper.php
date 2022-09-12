@@ -56,9 +56,9 @@ class NotificacionHelper
 
     static public function notificacionFinalizacionCuadro($oportunidades, $usuarios, $payload)
     {
-            //  Debugbar::info($usuarios);                    
+            //  Debugbar::info($usuarios);
             try {
-            
+
             if(count($usuarios)>0){
 
                 foreach ($usuarios as $idUsuario) {
@@ -85,7 +85,7 @@ class NotificacionHelper
                     $notificacion->leido = 0;
                     $notificacion->save();
                 }
-                
+
                 return ['estado' => 'success', 'mensaje' => 'success'];
             }else{
                 return ['estado' => 'warning', 'mensaje' => 'Hubo un problema para obtener los usuarios que se realizará la notificación, la variable $usuarios esta vacia'];
@@ -97,7 +97,7 @@ class NotificacionHelper
         }
     }
 
-    static public function notificacionOrdenServicioTransformacion($codigoTransformacion, $usuarios, $oportunidad) 
+    static public function notificacionOrdenServicioTransformacion($codigoTransformacion, $usuarios, $oportunidad)
     {
             try {
 
@@ -115,7 +115,7 @@ class NotificacionHelper
                     $mensajeNotificacion .= ', '.$orden->empresa->abreviado;
                 }
 
-            
+
             if(count($usuarios)>0){
 
                 foreach ($usuarios as $idUsuario) {
@@ -127,7 +127,7 @@ class NotificacionHelper
                     $notificacion->leido = 0;
                     $notificacion->save();
                 }
-                
+
                 return ['estado' => 'success', 'mensaje' => 'success'];
             }else{
                 return ['estado' => 'warning', 'mensaje' => 'Hubo un problema para obtener los usuarios que se realizará la notificación, la variable $usuarios esta vacia'];
@@ -153,11 +153,11 @@ class NotificacionHelper
             foreach(($orden->oportunidad) as $o) {
                 $codigoOportunidadList[] = $o['codigo_oportunidad'];
             }
-            
+
             if(count($usuarios)>0){
                 $mensajeNotificacion='';
                 foreach ($usuarios as $idUsuario) {
-                    
+
                     $mensajeNotificacion='Se anulo la orden '.$orden->codigo.' - '.$orden->sede->descripcion.
                     ', sustento: '.$orden->sustento_anulacion.
                     ', Requerimiento: '.(implode(",", $codigoRequerimientoList)).
@@ -165,7 +165,7 @@ class NotificacionHelper
                     ', CDP: '. implode(",", $codigoOportunidadList).
                     ', fecha creación: '. $orden->fecha.
                     ', fecha anulación: '. $orden->fecha_anulacion;
- 
+
                     $notificacion = new Notificacion();
                     $notificacion->id_usuario = $idUsuario;
                     $notificacion->mensaje = $mensajeNotificacion ?? null;
@@ -174,7 +174,7 @@ class NotificacionHelper
                     $notificacion->leido = 0;
                     $notificacion->save();
                 }
-                
+
                 return ['estado' => 'success', 'mensaje' => 'success'];
             }else{
                 return ['estado' => 'warning', 'mensaje' => 'Hubo un problema para obtener los usuarios que se realizará la notificación, la variable $usuarios esta vacia'];
@@ -191,8 +191,8 @@ class NotificacionHelper
 
             if(count($usuarios)>0){
                 foreach ($usuarios as $idUsuario) {
-                    
- 
+
+
                     $notificacion = new Notificacion();
                     $notificacion->id_usuario = $idUsuario;
                     $notificacion->mensaje = $mensaje ?? null;
@@ -201,7 +201,7 @@ class NotificacionHelper
                     $notificacion->leido = 0;
                     $notificacion->save();
                 }
-                
+
                 return ['estado' => 'success', 'mensaje' => 'success'];
             }else{
                 return ['estado' => 'warning', 'mensaje' => 'Hubo un problema para obtener los usuarios que se realizará la notificación, la variable $usuarios esta vacia'];
@@ -220,8 +220,8 @@ class NotificacionHelper
 
             if(count($idUsuarioDestinatario)>0){
                 foreach ($idUsuarioDestinatario as $idUsuario) {
-                    
- 
+
+
                     $notificacion = new Notificacion();
                     $notificacion->id_usuario = $idUsuario;
                     $notificacion->mensaje = $mensajeNotificacion;
@@ -230,7 +230,7 @@ class NotificacionHelper
                     $notificacion->leido = 0;
                     $notificacion->save();
                 }
-                
+
                 return ['estado' => 'success', 'mensaje' => 'success'];
             }else{
                 return ['estado' => 'warning', 'mensaje' => 'Hubo un problema para obtener los usuarios que se realizará la notificación, la variable $usuarios esta vacia'];
@@ -242,18 +242,19 @@ class NotificacionHelper
         }
     }
 
-    static public function notificacionOrdenDespacho($idUsuarioDestinatario,$mensajeNotificacion,$oportunidad,$requerimiento){
+    static public function notificacionOrdenDespacho($idUsuarioDestinatario,$comentario,$oportunidad,$requerimiento,$ordenDespacho){
         try {
 
-            $mensajeNotificacion = '';
+            $mensajeNotificacion = 'Se ha generado la '.$ordenDespacho->codigo;
             if ($oportunidad !== null) {
                 $orden = $oportunidad->ordenCompraPropia;
                 $mensajeNotificacion .= 'O. SERVICIO';
                 if ($orden == null) {
                     $mensajeNotificacion .= ' SIN O/C';
                 } else {
-                    $mensajeNotificacion .= ', '.$orden->nro_orden;
                     $mensajeNotificacion .= ', '.$orden->entidad->nombre;
+                    $mensajeNotificacion .= ', '.$orden->nro_orden;
+                    // $mensajeNotificacion .= ', '.$orden->entidad->nombre;
                 }
                 $mensajeNotificacion .= ', '.$oportunidad->codigo_oportunidad;
                 if ($orden != null) {
@@ -265,17 +266,54 @@ class NotificacionHelper
 
             if(count($idUsuarioDestinatario)>0){
                 foreach ($idUsuarioDestinatario as $idUsuario) {
-                    
- 
+
+
                     $notificacion = new Notificacion();
                     $notificacion->id_usuario = $idUsuario;
-                    $notificacion->mensaje = $mensajeNotificacion;
+                    $notificacion->mensaje = $mensajeNotificacion.', '.$ordenDespacho->fecha_despacho;
                     $notificacion->fecha = new Carbon();
                     $notificacion->url = '';
                     $notificacion->leido = 0;
+                    $notificacion->comentario = $comentario;
                     $notificacion->save();
                 }
-                
+
+                return ['estado' => 'success', 'mensaje' => 'success'];
+            }else{
+                return ['estado' => 'warning', 'mensaje' => 'Hubo un problema para obtener los usuarios que se realizará la notificación, la variable $usuarios esta vacia'];
+
+            }
+
+        } catch (Exception $ex) {
+            return ['estado' => 'error', 'mensaje' => $ex->getMessage()];
+        }
+    }
+    static public function notificacionODI($idUsuarioDestinatario,$codigo,$fecha_despacho,$codigo_oportunidada,$req, $cometario)
+    {
+        try {
+
+            $mensajeNotificacion = 'Se ha generado la '.$codigo;
+                if ($codigo_oportunidada == null) {
+                    $mensajeNotificacion .= ' SIN CDP';
+                } else {
+                    $mensajeNotificacion .= ', '.$req->razon_social_contribuyente;
+                }
+                $mensajeNotificacion .= ', '.$codigo_oportunidada;
+                $mensajeNotificacion .= ', '.$req->empreas_sede;
+
+            if(count($idUsuarioDestinatario)>0){
+                foreach ($idUsuarioDestinatario as $idUsuario) {
+
+                    $notificacion = new Notificacion();
+                    $notificacion->id_usuario = $idUsuario;
+                    $notificacion->mensaje = $mensajeNotificacion.', '.$fecha_despacho;
+                    $notificacion->fecha = new Carbon();
+                    $notificacion->url = '';
+                    $notificacion->leido = 0;
+                    $notificacion->comentario = $cometario??'';
+                    $notificacion->save();
+                }
+
                 return ['estado' => 'success', 'mensaje' => 'success'];
             }else{
                 return ['estado' => 'warning', 'mensaje' => 'Hubo un problema para obtener los usuarios que se realizará la notificación, la variable $usuarios esta vacia'];

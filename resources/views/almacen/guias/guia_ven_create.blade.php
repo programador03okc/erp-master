@@ -4,7 +4,7 @@
             <form id="form-guia_ven_create">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Guia de Venta - <strong><span id="name_title"></span></strong> 
+                    <h3 class="modal-title">Guia de Venta - <strong><span id="name_title"></span></strong>
                         <strong><span id="codigo_req"></span></strong> (<span id="almacen_req"></span>)</h3>
                         <span id="mensaje" class="red"></span>
                 </div>

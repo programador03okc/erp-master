@@ -7,6 +7,9 @@ use App\Models\Administracion\Sede;
 use App\Models\Configuracion\Grupo;
 use App\Models\Logistica\ComprasLocalesView;
 use App\Models\Logistica\Orden;
+use App\Models\Proyectos\Proyecto;
+use App\Models\Tesoreria\Estado;
+use App\Models\Tesoreria\RequerimientoPagoEstados;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -206,9 +209,11 @@ class ReporteLogisticaController extends Controller{
 	public function viewReporteComprasLocales(){
 		$empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
+        $proyectos = Proyecto::mostrar();
+        $estadosPago = RequerimientoPagoEstados::mostrar();
         $fechaActual = new Carbon();
 
-		return view('logistica/reportes/compras_locales',compact('empresas','grupos','fechaActual'));
+		return view('logistica/reportes/compras_locales',compact('empresas','grupos','proyectos','estadosPago','fechaActual'));
 	}
 
 	public function listaComprasLocales(Request $request){
@@ -221,13 +226,18 @@ class ReporteLogisticaController extends Controller{
         $fechaRegistroDesdeCancelacion = $request->fechaRegistroDesdeCancelacion;
         $fechaRegistroHastaCancelacion = $request->fechaRegistroHastaCancelacion;
         $razonSocialProveedor = $request->razon_social_proveedor;
-		$data = $this->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor);
+        $idGrupo = $request->idGrupo;
+        $idProyecto = $request->idProyecto;
+        $observacionOrden = $request->observacionOrden;
+        $estadoPago = $request->estadoPago;
+
+		$data = $this->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago);
 
 		return datatables($data)->toJson();
 
 	}
 
-	public function obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor){
+	public function obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago){
 		$data = ComprasLocalesView::when(($idEmpresa > 0), function ($query) use($idEmpresa) {
 			$sedes= Sede::where('id_empresa',$idEmpresa)->get();
 			$idSedeList=[];
@@ -262,6 +272,18 @@ class ReporteLogisticaController extends Controller{
         ->when((($razonSocialProveedor != 'SIN_FILTRO')), function ($query) use($razonSocialProveedor) {
             return $query->where('compras_locales_view.razon_social_contribuyente' ,'like','%'.$razonSocialProveedor.'%');
         })
+        ->when((($idGrupo != 'SIN_FILTRO')), function ($query) use($idGrupo) {
+            return $query->where('compras_locales_view.id_grupo' ,'=',$idGrupo);
+        })
+        ->when((($idProyecto != 'SIN_FILTRO')), function ($query) use($idProyecto) {
+            return $query->where('compras_locales_view.razon_social_contribuyente' ,'=',$idProyecto);
+        })
+        ->when((($observacionOrden != 'SIN_FILTRO')), function ($query) use($observacionOrden) {
+			return $query->where('compras_locales_view.observacion_orden' ,'like','%'.$observacionOrden.'%');
+        })
+		->when((($estadoPago != 'SIN_FILTRO')), function ($query) use($estadoPago) {
+			return $query->where('compras_locales_view.id_requerimiento_pago_estado' ,'=',$estadoPago);
+		})
         ;
 
 

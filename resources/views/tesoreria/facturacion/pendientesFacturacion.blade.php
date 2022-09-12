@@ -129,6 +129,75 @@ Facturación
     </div>
 </div>
 
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-adjuntos-factura" style="overflow-y: scroll;">
+    <div class="modal-dialog" style="width:500px;">
+        <div class="modal-content">
+            <form action="" data-form="guardar-adjuntos" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">Adjuntar</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12" style="margin-bottom: 15px;">
+                            {{-- <div class="form-group"> --}}
+
+                                {{-- <input class="form-control" type="file" name="adjuntos[]" multiple data-action="adjuntos" required> --}}
+                            {{-- </div> --}}
+                            <fieldset class="group-table">
+                                <div class="form-group">
+                                    <label for="">Adjuntar nuevo</label>
+                                </div>
+                                <input type="hidden" name="id_doc_ven">
+                                <input type="hidden" name="id_requerimiento">
+                                <input type="file" multiple="multiple" class="filestyle" name="adjuntos[]" multiple data-action="adjuntos" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo"  data-iconName="fa fa-folder-open" required/>
+                                <br>
+                                <div style="display:flex; justify-content: space-between;">
+                                    <h6>seleccieon multiple y con un máximo de 2MB por subida.</h6>
+                                    <h6>Carga actual: <span class="label label-default" id="peso-estimado">0MB</span></h6>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" style="margin-bottom: 15px;">
+                            <fieldset class="group-table">
+                                <div class="form-group">
+                                    <label for="">Archivos seleccionados</label>
+                                </div>
+                                <table class="table">
+                                    <tbody data-action="table-body">
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <fieldset class="group-table">
+                                <div class="form-group">
+                                    <label for="">Archivos adjuntos</label>
+                                </div>
+                                <table class="table">
+                                    <tbody data-action="ver-table-body">
+                                    </tbody>
+                                </table>
+                            </fieldset>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+                    <button type="submit" class="btn btn-success guardar-adjuntos"><i class="fa fa-save"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @include('tesoreria.facturacion.doc_ven_create')
 @include('tesoreria.facturacion.doc_ven_ver')
 @include('tesoreria.facturacion.doc_ven_anula')

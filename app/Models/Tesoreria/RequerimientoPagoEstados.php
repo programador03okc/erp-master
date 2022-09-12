@@ -12,4 +12,15 @@ class RequerimientoPagoEstados extends Model
     protected $primaryKey = 'id_requerimiento_pago_estado';
     public $timestamps = false;
 
+    public static function mostrar()
+    {
+        $data = RequerimientoPagoEstados::select(
+                'requerimiento_pago_estado.*'
+            )
+            ->where('estado','!=',7)
+            ->orderBy('requerimiento_pago_estado.descripcion', 'asc')
+            ->get();
+        return $data;
+    }
+
 }

@@ -2,7 +2,23 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\StringHelper;
+use App\models\Configuracion\AccesosUsuarios;
+use App\Models\Configuracion\Grupo;
+use App\Models\Configuracion\Modulo;
+use App\Models\Configuracion\Pais as ConfiguracionPais;
+use App\Models\Configuracion\Rol;
 use App\Models\Configuracion\SisUsua;
+use App\models\Configuracion\UsuarioGrupo;
+use App\models\Configuracion\UsuarioRol;
+use App\models\rrhh\rrhh_categoria_ocupacional;
+use App\Models\rrhh\rrhh_est_civil;
+use App\models\rrhh\rrhh_pension;
+use App\Models\rrhh\rrhh_perso;
+use App\Models\rrhh\rrhh_postu;
+use App\models\rrhh\rrhh_tipo_planilla;
+use App\Models\rrhh\rrhh_tp_trab;
+use App\Models\rrhh\rrhh_trab;
+use App\Models\sistema\pais;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +49,20 @@ class ConfiguracionController extends Controller{
     function view_usuario(){
         $modulos = $this->select_modulos();
         $roles=$this->lista_roles();
-        return view('configuracion/usuarios', compact('modulos','roles'));
+
+        $estado_civil = rrhh_est_civil::where("estado",1)->get();
+        $pais = ConfiguracionPais::where('estado',1)->get();
+        $tipo_trabajador =rrhh_tp_trab::where("estado",1)->get();
+        $categoria_ocupacional = rrhh_categoria_ocupacional::where("estado",1)->get();
+        $tipo_planilla = rrhh_tipo_planilla::where("estado",1)->get();
+        $pension = rrhh_pension::where("estado",1)->get();
+        $grupo = Grupo::get();
+        $rol = Rol::where("estado",1)->get();
+
+        $modulos_padre =DB::table('configuracion.sis_modulo')->where('sis_modulo.estado',1)->where('sis_modulo.id_padre',0)->get();
+
+        // return $rol[0]->id_rol;
+        return view('configuracion/usuarios', compact('modulos','roles','estado_civil','pais','tipo_trabajador','categoria_ocupacional','tipo_planilla','pension','grupo','rol','modulos_padre'));
     }
 
     function view_notas_lanzamiento(){
@@ -648,57 +677,57 @@ class ConfiguracionController extends Controller{
     }
 
     public function getPerfil($id){
+
         $usuario=[];
         $status=0;
-        $sis_usua = DB::table('configuracion.sis_usua')
-            ->select(
-                'sis_usua.id_usuario',
-                'sis_usua.nombre_corto',
-                'sis_usua.usuario',
-                'sis_usua.clave',
-                'sis_usua.fecha_registro',
-                'sis_usua.estado',
-                'sis_acceso.id_acceso',
-                'usuario_rol.id_rol',
-                'sis_rol.descripcion as rol',
-                'rrhh_perso.nombres',
-                'rrhh_perso.apellido_paterno',
-                'rrhh_perso.apellido_materno',
-                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo_usuario"),
-                'rrhh_perso.email'
-                    )
-                    ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
-                    ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
-                    ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
-            ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
-            ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
-            ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
+        // $sis_usua = DB::table('configuracion.sis_usua')
+        //     ->select(
+        //         'sis_usua.id_usuario',
+        //         'sis_usua.nombre_corto',
+        //         'sis_usua.usuario',
+        //         'sis_usua.clave',
+        //         'sis_usua.fecha_registro',
+        //         'sis_usua.estado',
+        //         'sis_acceso.id_acceso',
+        //         'usuario_rol.id_rol',
+        //         'sis_rol.descripcion as rol',
+        //         'rrhh_perso.nombres',
+        //         'rrhh_perso.apellido_paterno',
+        //         'rrhh_perso.apellido_materno',
+        //         DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_completo_usuario"),
+        //         'rrhh_perso.email'
+        //             )
+        //             ->leftJoin('configuracion.sis_acceso', 'sis_acceso.id_usuario', '=', 'sis_usua.id_usuario')
+        //             ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
+        //             ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
+        //     ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+        //     ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
+        //     ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
 
-            ->where('sis_usua.id_usuario', '=', $id)
-            ->orderBy('sis_usua.id_usuario', 'asc')
-            ->get();
+        //     ->where('sis_usua.id_usuario', '=', $id)
+        //     ->orderBy('sis_usua.id_usuario', 'asc')
+        //     ->get();
+        $data = SisUsua::select(
+            'sis_usua.*',
+            'rrhh_trab.*',
+            'rrhh_postu.*',
+            'rrhh_perso.*'
+        )
+        ->join('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+        ->join('rrhh.rrhh_postu', 'rrhh_trab.id_postulante', '=', 'rrhh_postu.id_postulante')
+        ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
+        ->where('id_usuario',$id)
+        ->first();
 
-            if(count($sis_usua)>0){
-                $status=200;
-                $usuario=[
-                    'nombres'=>$sis_usua->first()->nombres,
-                    'apellido_paterno'=>$sis_usua->first()->apellido_paterno,
-                    'apellido_materno'=>$sis_usua->first()->apellido_materno,
-                    'nombre_corto'=>$sis_usua->first()->nombre_corto,
-                    'usuario'=>$sis_usua->first()->usuario,
-                    'contraseña_codificada'=>$sis_usua->first()->clave,
-                    'contraseña_decodificada'=> $this->decode5t(strval($sis_usua->first()->clave)),
-                    'email'=>$sis_usua->first()->email,
-                    'id_rol'=>$sis_usua->first()->id_rol
-                ];
-            }
-            $output=['status'=>$status,'data'=>$usuario];
-            return $output;
+        return response()->json([
+            "status"=>200,
+            "data"=>$data
+        ]);
     }
 
 
     public function mostrar_usuarios(){
-        $response = DB::table('configuracion.sis_usua')
+        $response = SisUsua::where('estado',1)
         ->select(
             'sis_usua.id_usuario',
             'sis_usua.nombre_corto',
@@ -711,10 +740,27 @@ class ConfiguracionController extends Controller{
             // 'sis_rol.descripcion as rol',
 
         )
-        // ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
-        // ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
-        ->groupBy('sis_usua.id_usuario')
+        // ->ordeBy('sis_usua.id_usuario','desc')
         ->get();
+
+        // return $response;
+        // $response = DB::table('configuracion.sis_usua')
+        // ->select(
+        //     'sis_usua.id_usuario',
+        //     'sis_usua.nombre_corto',
+        //     'sis_usua.usuario',
+        //     'sis_usua.clave',
+        //     'sis_usua.fecha_registro',
+        //     'sis_usua.estado',
+        //     'sis_usua.email',
+        //     // 'usuario_rol.id_rol',
+        //     // 'sis_rol.descripcion as rol',
+
+        // )
+        // // ->leftJoin('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
+        // // ->leftJoin('configuracion.sis_rol', 'sis_rol.id_rol', '=', 'usuario_rol.id_rol')
+        // ->groupBy('sis_usua.id_usuario')
+        // ->get();
 
 
         // $data = DB::table('configuracion.sis_usua')
@@ -747,27 +793,85 @@ class ConfiguracionController extends Controller{
     }
 
     public function guardar_usuarios(Request $request){
-        $usuario = DB::table('configuracion.sis_usua')
-            ->where('id_trabajador',$request->id_trabajador)
-            ->where([['estado','!=',7]])
-            ->count();
 
-        if ($usuario > 0){
-            $data = 'exist';
-        } else {
-            $data = DB::table('configuracion.sis_usua')->insertGetId(
-                [
-                    'id_trabajador'     => $request->id_trabajador,
-                    'usuario'           => $request->usuario,
-                    'clave'             => StringHelper::encode5t($request->clave),
-                    'estado'            => 1,
-                    'fecha_registro'    => date('Y-m-d H:i:s')
+        // echo $this->decode5t('hNjQ0ZFbstmUsRGUadEeaNmeshVVB1TP');exit;
+        // echo $this->encode5t($request->clave);exit;
 
-                ],
-                'id_usuario'
-            );
+        $rrhh_perso = new rrhh_perso;
+        $rrhh_perso->id_documento_identidad = 1;
+        $rrhh_perso->nro_documento          = (int) $request->nro_documento;
+        $rrhh_perso->nombres                = $request->nombres;
+        $rrhh_perso->apellido_paterno       = $request->apellido_paterno;
+        $rrhh_perso->apellido_materno       = $request->apellido_materno;
+        $rrhh_perso->fecha_nacimiento       = $request->fecha_nacimiento;
+        $rrhh_perso->sexo                   = $request->sexo;
+        $rrhh_perso->id_estado_civil        = (int) $request->id_estado_civil;
+        $rrhh_perso->estado                 = 1;
+        $rrhh_perso->fecha_registro         = date('Y-m-d H:i:s');
+        $rrhh_perso->telefono               = (int) $request->telefono;
+        $rrhh_perso->direccion              = $request->direccion;
+        $rrhh_perso->email                  = $request->email;
+        $rrhh_perso->save();
+
+        $rrhh_postu = new rrhh_postu;
+        $rrhh_postu->id_persona     = (int) $rrhh_perso->id_persona;
+        $rrhh_postu->direccion      = $request->direccion;
+        $rrhh_postu->telefono       = (int) $request->telefono;
+        $rrhh_postu->correo         = $request->email;
+        $rrhh_postu->brevette       = $request->brevette;
+        $rrhh_postu->id_pais        = (int) $request->id_pais;
+        $rrhh_postu->ubigeo         = $request->ubigeo;
+        $rrhh_postu->fecha_registro = date('Y-m-d H:i:s');
+        $rrhh_postu->save();
+
+        $rrhh_trab = new rrhh_trab;
+        $rrhh_trab->id_postulante               = (int) $rrhh_postu->id_postulante;
+        $rrhh_trab->id_tipo_trabajador          = (int) $request->id_tipo_trabajador;
+        $rrhh_trab->id_categoria_ocupacional    = (int) $request->id_categoria_ocupacional;
+        $rrhh_trab->id_tipo_planilla            = (int) $request->id_tipo_planilla;
+        $rrhh_trab->condicion                   = $request->condicion;
+        $rrhh_trab->hijos                       = $request->hijos;
+        $rrhh_trab->id_pension                  = (int) $request->id_pension;
+        $rrhh_trab->cuspp                       = $request->cuspp;
+        $rrhh_trab->seguro                      = $request->seguro;
+        $rrhh_trab->confianza                   = $request->confianza;
+        $rrhh_trab->estado                      = 1;
+        $rrhh_trab->fecha_registro = date('Y-m-d H:i:s');
+        $rrhh_trab->save();
+
+        $sis_usua                   = new SisUsua;
+        $sis_usua->id_trabajador    = $rrhh_trab->id_trabajador;
+        $sis_usua->usuario          = $request->usuario;
+        $sis_usua->clave            = StringHelper::encode5t($request->clave);
+        $sis_usua->estado           = 1;
+        $sis_usua->fecha_registro   = date('Y-m-d H:i:s');
+        $sis_usua->nombre_corto     = $request->nombre_corto;
+        $sis_usua->codvend_softlink = $request->codvent_softlink;
+        $sis_usua->email            = $request->email;
+        $sis_usua->save();
+
+        foreach ($request->id_grupo as $key => $value) {
+            $usuario_grupo              = new UsuarioGrupo;
+            $usuario_grupo->id_grupo    = $value;
+            $usuario_grupo->id_usuario  = $sis_usua->id_usuario;
+            $usuario_grupo->estado      = 1;
+            $usuario_grupo->save();
         }
-        return response()->json($data);
+
+        foreach ($request->id_rol as $key => $value) {
+            $usuario_rol                = new UsuarioRol;
+            $usuario_rol->id_rol        = $value;
+            $usuario_rol->id_usuario    = $sis_usua->id_usuario;
+            $usuario_rol->estado        = 1;
+            $usuario_rol->save();
+        }
+
+
+        return response()->json([
+            "status"=>200,
+            'success'=>true,
+
+        ]);
     }
 
     public function anular_usuario($id){
@@ -1914,10 +2018,11 @@ public function anular_configuracion_socket($id){
     {
         return view('configuracion/notas_lanzamiento');
     }
-    public function usuarioAcceso()
+    public function usuarioAcceso($id)
     {
         # code...
-        return view('configuracion/usuario_asignar_acceso');
+        return $id;
+        return view('configuracion/usuario_accesos',compact('id'));
     }
     public function getUsuario($id)
     {
@@ -1930,109 +2035,19 @@ public function anular_configuracion_socket($id){
         ->first();
         return response()->json($users);
     }
-    public function getModulos(Request $request)
+    public function getModulos()
     {
-        $data_modulo = [];
-        $data_modulo_padre = [];
-        $data_modulo_hijos = [];
-        $data_modulo_sub_hijos = [];
-        $modulos = DB::table('configuracion.sis_modulo')
-        ->select('sis_modulo.*')
-        ->where([['sis_modulo.estado', '!=', 7]])
-        ->get();
-        foreach ($modulos as $key => $value) {
-            if ($value->id_padre == 0) {
-                array_push($data_modulo_padre, $value);
-            }
+        $modulos =DB::table('configuracion.sis_modulo')->where([['sis_modulo.estado', '=', 1],['sis_modulo.id_padre', '=', 0]])->get();
+        if (sizeof($modulos)>0) {
+            return response()->json([
+                "status"=>200,
+                "modulos"=>$modulos
+            ]);
+        }else{
+            return response()->json([
+                "status"=>404
+            ]);
         }
-        foreach ($data_modulo_padre as $key_item => $item) {
-            foreach ($modulos as $key => $value) {
-
-                if ($value->id_padre == $item->id_modulo) {
-                    array_push($data_modulo_hijos, $value);
-                }
-            }
-        }
-
-        foreach ($data_modulo_hijos as $key_item => $item) {
-            foreach ($modulos as $key => $value) {
-
-                if ($value->id_padre == $item->id_modulo) {
-                    array_push($data_modulo_sub_hijos, $value);
-                }
-            }
-        }
-
-        // $accesos=   DB::table('configuracion.sis_usua')
-        //             ->select(
-        //             'sis_modulo.id_modulo',
-        //             'sis_modulo.tipo_modulo',
-        //             'sis_modulo.id_padre',
-        //             'sis_modulo.descripcion',
-        //             'usuario',
-        //             'nombre_corto',
-        //             'email',
-        //             'sis_accion.descripcion as accion_descripcion',
-        //             'sis_aplicacion.descripcion as aplicacion_descripcion'
-        //             )
-        //             ->where([
-        //                 ['sis_modulo.estado', '!=', 7],
-        //                 ['sis_usua.id_usuario','=',$request->id_usuario],
-        //                 ['sis_acceso.estado','!=',7]
-        //             ])
-        //             ->leftJoin('configuracion.sis_acceso', 'sis_usua.id_usuario', '=', 'sis_acceso.id_usuario')
-        //             ->leftJoin('configuracion.sis_accion', 'sis_acceso.id_accion', '=', 'sis_accion.id_accion')
-        //             ->leftJoin('configuracion.sis_aplicacion', 'sis_accion.id_aplicacion', '=', 'sis_aplicacion.id_aplicacion')
-        //             ->leftJoin('configuracion.sis_modulo', 'sis_aplicacion.id_sub_modulo', '=', 'sis_modulo.id_modulo')
-        //             ->get();
-
-        $accesos = DB::table('configuracion.sis_acceso_atributo')
-            ->select(
-                'sis_acceso_atributo.*'
-                )
-                ->where([
-                    ['sis_acceso_atributo.estado', '!=', 7],
-                    ['sis_acceso_atributo.id_usuario','=',$request->id_usuario],
-                ])
-            ->get();
-        $data_modulo['padre']=$data_modulo_padre;
-        $data_modulo['hijo']=$data_modulo_hijos;
-        $data_modulo['sub_hijo']=$data_modulo_sub_hijos;
-        $data_modulo['accesos']=$accesos;
-        return response()->json($data_modulo);
-    }
-    public function getModulosHijos($id_modulo)
-    {
-        $data_sub_hijos=[];
-        $modulos = DB::table('configuracion.sis_modulo')
-        ->select('sis_modulo.*')
-        ->where([['sis_modulo.id_padre', '=', $id_modulo]])
-        ->get();
-
-        $modulos_general = DB::table('configuracion.sis_modulo')
-        ->select('sis_modulo.*')
-        ->where([['sis_modulo.estado', '!=', 7]])
-        ->get();
-
-        foreach ($modulos as $key => $value) {
-
-            foreach ($modulos_general as $key => $item) {
-                if ($value->id_modulo == $item->id_padre) {
-                    array_push($data_sub_hijos,$item);
-                }
-            }
-
-            // $modulos_sub = DB::table('configuracion.sis_modulo')
-            //             ->select('sis_modulo.*')
-            //             ->where([['sis_modulo.id_padre', '=', $value->id_modulo]])
-            //             ->get();
-            // array_push($data_sub_hijos,$modulos_sub);
-        }
-
-        return response()->json([
-            "modulos_hijo"=>$modulos,
-            "modulos_subhijos"=>$data_sub_hijos
-        ]);
 
     }
     public function asiganrModulos(Request $request)
@@ -2120,6 +2135,129 @@ public function anular_configuracion_socket($id){
         }
         return response()->json($id_acceso_atributo);
         // return response()->json($request);
+    }
+    public function cambiarClave(Request $request)
+    {
+        $usuario = SisUsua::where('estado', 1)
+          ->where('id_usuario', $request->id_usuario)
+          ->update(['clave' => StringHelper::encode5t($request->nueva_clave)]);
+        if ($usuario) {
+            return response()->json([
+                "status"=>200,
+                "success"=>true
+            ]);
+        }else{
+            return response()->json([
+                "status"=>404,
+                "success"=>false
+            ]);
+        }
+
+    }
+    public function viewAccesos($id)
+    {
+        $modulos =DB::table('configuracion.table_configuracion_modulo')->where('estado',1)->where('id_padre',0)->get();
+        return view('configuracion.usuario_accesos', compact('modulos','id'));
+    }
+    public function getModulosAccion(Request $request)
+    {
+        $success=false;
+        $status=400;
+        $sub_modulos =[];
+
+        $array__modulos=[];
+        if ($request->data) {
+            $success=true;
+            $status = 200;
+            $sub_modulos = DB::table('configuracion.table_configuracion_modulo')
+            ->select(
+                'table_configuracion_modulo.id_modulo',
+                'table_configuracion_modulo.descripcion as modulo',
+                'accesos.id_acceso',
+                'accesos.descripcion as acceso'
+            )
+            ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'table_configuracion_modulo.id_modulo','left')
+            ->where('table_configuracion_modulo.estado',1)
+            ->where('table_configuracion_modulo.id_padre',$request->data)
+            ->get();
+            foreach ($sub_modulos as $key => $value) {
+                $value->modulos_hijos=[];
+                if ($value->acceso ===null) {
+
+                    $sub_modulos_hijos = DB::table('configuracion.table_configuracion_modulo')
+                    ->select(
+                        'table_configuracion_modulo.id_modulo',
+                        'table_configuracion_modulo.descripcion as modulo',
+                        'accesos.id_acceso',
+                        'accesos.descripcion as acceso'
+                    )
+                    ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'table_configuracion_modulo.id_modulo')
+                    ->where('table_configuracion_modulo.id_padre',$value->id_modulo)
+                    ->orderBy('table_configuracion_modulo.id_modulo','ASC')
+                    ->get();
+                    if (sizeof($sub_modulos_hijos)>0) {
+                        $value->modulos_hijos = $sub_modulos_hijos;
+                    }
+
+                }
+            }
+        }
+        return response()->json([
+            "success"=>$success,
+            "status"=>$status,
+            "sub_modulos"=>$sub_modulos
+        ]);
+    }
+    public function guardarAccesos(Request $request)
+    {
+        if ($request->id_modulo_padre) {
+            AccesosUsuarios::where('id_usuario',$request->id_usuario)->where('estado',1)->update([
+                "estado"=>0
+            ]);
+            foreach ($request->id_modulo_padre as $key_modulo_padre => $value_modulo_hijos) {
+                foreach ($value_modulo_hijos as $key_modulo_hijo => $value_accesos) {
+                    foreach ($value_accesos as $key_accesos => $value_acceso) {
+                        $accesos_uduario = new AccesosUsuarios;
+                        $accesos_uduario->id_acceso = $value_acceso;
+                        $accesos_uduario->id_usuario = $request->id_usuario;
+                        $accesos_uduario->id_modulo = $key_modulo_hijo;
+                        $accesos_uduario->estado = 1;
+                        $accesos_uduario->id_padre = $key_modulo_padre;
+                        $accesos_uduario->save();
+
+                    }
+
+                }
+
+            }
+            return response()->json([
+                "success"=>true,
+                "status"=>200
+            ]);
+        }else{
+            return response()->json([
+                "success"=>false,
+                "status"=>404
+            ]);
+        }
+
+
+    }
+    public function accesoUsuario($id)
+    {
+        $accesos_uduarios = AccesosUsuarios::where('id_usuario',$id)
+            ->where('estado',1)
+            ->orderBy('id_modulo','ASC')
+            ->get();
+        foreach ($accesos_uduarios as $key => $value) {
+            $value->accesos;
+            $value->accesos->modulos;
+            $value->moduloPadre;
+        }
+        return response()->json([
+            "success"=>true,
+            "data"=>$accesos_uduarios
+        ]);
     }
 }
 

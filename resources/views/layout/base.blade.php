@@ -11,6 +11,8 @@
 	<link rel="icon" type="image/ico" href="{{ asset('images/icono.ico')}}" />
 	<link rel="stylesheet" href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('template/fontawesome/css/all.min.css') }}">
+
+
 	<link rel="stylesheet" href="{{ asset('template/adminlte/css/AdminLTE.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/app.css')}}">
 	<link rel="stylesheet" href="{{ asset('css/skin-okc.css')}}">
@@ -81,7 +83,8 @@
 		</div>
 	</div>
 	<script type="text/javascript">
-		var auth_user = <?php echo $auth_user ?>;
+		var auth_user = <?= $auth_user ?>;
+        // console.log(auth_user);
 	</script>
 	<script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
 	<script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -96,6 +99,8 @@
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
+
+
 	<script>
 		$(document).ready(function() {
 			notificacionesNoLeidas();

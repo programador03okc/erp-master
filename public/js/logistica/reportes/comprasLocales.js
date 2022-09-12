@@ -17,6 +17,11 @@ class ComprasLocales {
         this.ActualParametroFechaDesdeCancelacion= 'SIN_FILTRO';
         this.ActualParametroFechaHastaCancelacion= 'SIN_FILTRO';
         this.ActualParametroRazonSocialProveedor = 'SIN_FILTRO';
+
+        this.ActualParametroGrupo = 'SIN_FILTRO';
+        this.ActualParametroProyecto = 'SIN_FILTRO';
+        this.ActualParametroObservacionOrden = 'SIN_FILTRO';
+        this.ActualParametroEstadoPago = 'SIN_FILTRO';
     }
 
     initializeEventHandler() {
@@ -41,10 +46,10 @@ class ComprasLocales {
             this.updateValorFiltro();
 
             if(this.updateContadorFiltro() ==0){
-                this.mostrar('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
-
+                this.mostrar('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+                
             }else{
-
+                
                 this.mostrar(
                     this.ActualParametroEmpresa,
                     this.ActualParametroSede,
@@ -52,7 +57,11 @@ class ComprasLocales {
                     this.ActualParametroFechaHasta,
                     this.ActualParametroFechaDesdeCancelacion,
                     this.ActualParametroFechaHastaCancelacion,
-                    this.ActualParametroRazonSocialProveedor
+                    this.ActualParametroRazonSocialProveedor,   
+                    this.ActualParametroGrupo,
+                    this.ActualParametroProyecto,
+                    this.ActualParametroObservacionOrden,
+                    this.ActualParametroEstadoPago
                 );
             }
         });
@@ -121,6 +130,32 @@ class ComprasLocales {
         });
     }
 
+    actualizarEstadoCheckDeFiltros(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO', fechaRegistroDesdeCancelacion='SIN_FILTRO',fechaRegistroHastaCancelacion='SIN_FILTRO',razonSocialProveedor='SIN_FILTRO',idGrupo='SIN_FILTRO',idProyecto='SIN_FILTRO',observacionOrden='SIN_FILTRO',estadoPago='SIN_FILTRO'){
+
+        const modalFiltro =document.querySelector("div[id='modal-filtro-reporte-compra-locales']");
+        if(idEmpresa!='SIN_FILTRO' && idEmpresa>0){
+            modalFiltro.querySelector("select[name='empresa']").value= idEmpresa;
+            modalFiltro.querySelector("select[name='empresa']").removeAttribute("readOnly");
+            modalFiltro.querySelector("input[type='checkbox'][name='chkEmpresa']").setAttribute("checked",true);
+        }
+        if(idGrupo!='SIN_FILTRO' && idGrupo>0){
+            modalFiltro.querySelector("select[name='grupo']").value= idGrupo;
+            modalFiltro.querySelector("select[name='grupo']").removeAttribute("readOnly");
+            modalFiltro.querySelector("input[type='checkbox'][name='chkGrupo']").setAttribute("checked",true);
+        }
+        if(observacionOrden!='SIN_FILTRO' && observacionOrden.length >0){
+            modalFiltro.querySelector("input[name='observacionOrden']").value= observacionOrden;
+            modalFiltro.querySelector("input[name='observacionOrden']").removeAttribute("readOnly");
+            modalFiltro.querySelector("input[type='checkbox'][name='chkObservacionOrden']").setAttribute("checked",true);
+        }
+        if(estadoPago!='SIN_FILTRO' && estadoPago >0){
+            modalFiltro.querySelector("select[name='estadoPago']").value= estadoPago;
+            modalFiltro.querySelector("select[name='estadoPago']").removeAttribute("readOnly");
+            modalFiltro.querySelector("input[type='checkbox'][name='chkEstadoPago']").setAttribute("checked",true);
+        }
+
+        this.updateContadorFiltro();
+    }
 
     estadoCheckFiltro(e){
         const modalFiltro =document.querySelector("div[id='modal-filtro-reporte-compra-locales']");
@@ -137,6 +172,33 @@ class ComprasLocales {
                     modalFiltro.querySelector("select[name='sede']").removeAttribute("readOnly")
                 } else {
                     modalFiltro.querySelector("select[name='sede']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkGrupo':
+                if (e.currentTarget.checked == true) {
+                    modalFiltro.querySelector("select[name='grupo']").removeAttribute("readOnly")
+                } else {
+                    modalFiltro.querySelector("select[name='grupo']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkProyecto':
+                if (e.currentTarget.checked == true) {
+                    modalFiltro.querySelector("select[name='proyecto']").removeAttribute("readOnly")
+                } else {
+                    modalFiltro.querySelector("select[name='proyecto']").setAttribute("readOnly", true)
+                }
+            case 'chkObservacionOrden':
+                if (e.currentTarget.checked == true) {
+                    modalFiltro.querySelector("input[name='observacionOrden']").removeAttribute("readOnly")
+                } else {
+                    modalFiltro.querySelector("input[name='observacionOrden']").setAttribute("readOnly", true)
+                }
+                break;
+            case 'chkEstadoPago':
+                if (e.currentTarget.checked == true) {
+                    modalFiltro.querySelector("select[name='estadoPago']").removeAttribute("readOnly")
+                } else {
+                    modalFiltro.querySelector("select[name='estadoPago']").setAttribute("readOnly", true)
                 }
                 break;
             case 'chkFechaRegistro':
@@ -170,12 +232,12 @@ class ComprasLocales {
     }
     updateValorFiltro(){
         const modalFiltro = document.querySelector("div[id='modal-filtro-reporte-compra-locales']");
-        // if(modalFiltro.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
-        //     this.ActualParametroEmpresa=modalFiltro.querySelector("select[name='empresa']").value;
-        // }
-        // if(modalFiltro.querySelector("select[name='sede']").getAttribute("readonly") ==null){
-        //     this.ActualParametroSede=modalFiltro.querySelector("select[name='sede']").value;
-        // }
+        if(modalFiltro.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
+            this.ActualParametroEmpresa=modalFiltro.querySelector("select[name='empresa']").value;
+        }
+        if(modalFiltro.querySelector("select[name='sede']").getAttribute("readonly") ==null){
+            this.ActualParametroSede=modalFiltro.querySelector("select[name='sede']").value;
+        }
 
         if(modalFiltro.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") ==null){
             this.ActualParametroFechaDesde=modalFiltro.querySelector("input[name='fechaRegistroDesde']").value.length>0?modalFiltro.querySelector("input[name='fechaRegistroDesde']").value:'SIN_FILTRO';
@@ -193,6 +255,18 @@ class ComprasLocales {
         if(modalFiltro.querySelector("input[name='razon_social_proveedor']").getAttribute("readonly") ==null){
             this.ActualParametroRazonSocialProveedor=modalFiltro.querySelector("input[name='razon_social_proveedor']").value.length>0?modalFiltro.querySelector("input[name='razon_social_proveedor']").value:'SIN_FILTRO';
         }
+        if(modalFiltro.querySelector("select[name='grupo']").getAttribute("readonly") ==null){
+            this.ActualParametroGrupo=modalFiltro.querySelector("select[name='grupo']").value.length>0?modalFiltro.querySelector("select[name='grupo']").value:'SIN_FILTRO';
+        }
+        if(modalFiltro.querySelector("select[name='proyecto']").getAttribute("readonly") ==null){
+            this.ActualParametroProyecto=modalFiltro.querySelector("select[name='proyecto']").value.length>0?modalFiltro.querySelector("select[name='proyecto']").value:'SIN_FILTRO';
+        }
+        if(modalFiltro.querySelector("input[name='observacionOrden']").getAttribute("readonly") ==null){
+            this.ActualParametroRazonSocialProveedor=modalFiltro.querySelector("input[name='observacionOrden']").value.length>0?modalFiltro.querySelector("input[name='observacionOrden']").value:'SIN_FILTRO';
+        }
+        if(modalFiltro.querySelector("select[name='estadoPago']").getAttribute("readonly") ==null){
+            this.ActualParametroEstadoPago=modalFiltro.querySelector("select[name='estadoPago']").value.length>0?modalFiltro.querySelector("select[name='estadoPago']").value:'SIN_FILTRO';
+        }
     }
 
     updateContadorFiltro(){
@@ -203,14 +277,13 @@ class ComprasLocales {
                 contadorCheckActivo++;
             }
         });
-        document.querySelector("button[id='btnFiltrosListaTransitoOrdenesCompra'] span")?(document.querySelector("button[id='btnFiltrosListaTransitoOrdenesCompra'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo):false
+        document.querySelector("button[id='btnFiltrosListaComprasLocales'] span")?(document.querySelector("button[id='btnFiltrosListaComprasLocales'] span").innerHTML ='<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : '+contadorCheckActivo):false
         return contadorCheckActivo;
     }
 
-    mostrar(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO', fechaRegistroDesdeCancelacion='SIN_FILTRO',fechaRegistroHastaCancelacion='SIN_FILTRO',razonSocialProveedor='SIN_FILTRO') {
-        console.log(
-            razonSocialProveedor
-        );
+    mostrar(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO', fechaRegistroDesdeCancelacion='SIN_FILTRO',fechaRegistroHastaCancelacion='SIN_FILTRO',razonSocialProveedor='SIN_FILTRO',idGrupo='SIN_FILTRO',idProyecto='SIN_FILTRO',observacionOrden='SIN_FILTRO',estadoPago='SIN_FILTRO') {
+
+        this.actualizarEstadoCheckDeFiltros(idEmpresa,idSede, fechaRegistroDesde,fechaRegistroHasta, fechaRegistroDesdeCancelacion,fechaRegistroHastaCancelacion,razonSocialProveedor,idGrupo,idProyecto,observacionOrden,estadoPago);
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
@@ -253,7 +326,13 @@ class ComprasLocales {
                     'idSede':idSede,
                     'fechaRegistroDesde':fechaRegistroDesde,
                     'fechaRegistroHasta':fechaRegistroHasta,
-                    'fechaRegistroDesdeCancelacion':fechaRegistroDesdeCancelacion,'fechaRegistroHastaCancelacion':fechaRegistroHastaCancelacion,'razon_social_proveedor':razonSocialProveedor},
+                    'fechaRegistroDesdeCancelacion':fechaRegistroDesdeCancelacion,'fechaRegistroHastaCancelacion':fechaRegistroHastaCancelacion,'razon_social_proveedor':razonSocialProveedor,
+                    'idGrupo':idGrupo,
+                    'idProyecto':idProyecto,
+                    'observacionOrden':observacionOrden,
+                    'estadoPago':estadoPago
+
+                },
 
                 beforeSend: data => {
 
@@ -287,7 +366,8 @@ class ComprasLocales {
                 { 'data': 'tipo_doc_com', 'name': 'tipo_doc_com', 'className': 'text-center' },
                 { 'data': 'nro_doc_com', 'name': 'nro_doc_com', 'className': 'text-center' },
                 { 'data': 'descripcion_sede_empresa', 'name': 'descripcion_sede_empresa', 'className': 'text-center' },
-                { 'data': 'descripcion_grupo', 'name': 'descripcion_grupo', 'className': 'text-center' }
+                { 'data': 'descripcion_grupo', 'name': 'descripcion_grupo', 'className': 'text-center' },
+                { 'data': 'descripcion_proyecto', 'name': 'descripcion_proyecto', 'className': 'text-left' }
             ],
             'columnDefs': [
 
@@ -331,10 +411,7 @@ class ComprasLocales {
 
 
     DescargarListaComprasLocales(){
-        window.open(`reporte-compras-locales-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroFechaDesdeCancelacion}/${this.ActualParametroFechaHastaCancelacion}/${this.ActualParametroRazonSocialProveedor}`);
-        // this.ActualParametroFechaDesdeCancelacion= 'SIN_FILTRO';
-        // this.ActualParametroFechaHastaCancelacion= 'SIN_FILTRO';
-        // this.ActualParametroRazonSocialProveedor = 'SIN_FILTRO';
+        window.open(`reporte-compras-locales-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroFechaDesdeCancelacion}/${this.ActualParametroFechaHastaCancelacion}/${this.ActualParametroRazonSocialProveedor}/${this.ActualParametroGrupo}/${this.ActualParametroProyecto}/${this.ActualParametroObservacionOrden}/${this.ActualParametroEstadoPago}`);
     }
 
 }

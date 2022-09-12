@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Almacen;
+use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Requerimiento;
 use Illuminate\Support\Facades\DB;
 
 class ReservasAlmacenController extends Controller
@@ -60,13 +62,28 @@ class ReservasAlmacenController extends Controller
         return datatables($lista)->toJson();
     }
 
-    function anularReserva($id_reserva)
-    {
-        $rspta = DB::table('almacen.alm_reserva')
-            ->where('id_reserva', $id_reserva)
-            ->update(['estado' => 7]);
+    // function anularReserva($id_reserva, $id_detalle)
+    // {
+    //     $rspta = DB::table('almacen.alm_reserva')
+    //         ->where('id_reserva', $id_reserva)
+    //         ->update(['estado' => 7]);
 
-        return response()->json($rspta);
+    //     return response()->json($rspta);
+    // }
+    function anularReserva($id_reserva, $id_detalle)
+
+    {
+
+        $rspta = DB::table('almacen.alm_reserva')->where('id_reserva', $id_reserva)->update(['estado' => 7]);
+
+        $Requerimiento = DB::table('almacen.alm_req')
+        ->join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
+        ->where('alm_det_req.id_detalle_requerimiento', $id_detalle)->first();
+        DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($id_detalle);
+        $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR', [$Requerimiento->id_requerimiento]);
+
+        return response()->json(array('respuesta' => $rspta, 'id_req' => $Requerimiento->id_requerimiento, 'estado' => $nuevoEstado));
+
     }
 
     function actualizarReserva(Request $request)

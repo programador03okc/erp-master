@@ -85,7 +85,7 @@ function listarReservasAlmacen(id_usuario) {
             {
                 data: 'codigo_req', name: 'alm_req.codigo', className: "text-center",
                 'render': function (data, type, row) {
-                    return (row['codigo_req'] !== null ? `<a href="/necesidades/requerimiento/elaboracion/index?id=${row['id_requerimiento']}" 
+                    return (row['codigo_req'] !== null ? `<a href="/necesidades/requerimiento/elaboracion/index?id=${row['id_requerimiento']}"
                         target="_blank" title="Abrir Requerimiento">${row['codigo_req'] ?? ''}</a>` : '') +
                         (row['estado_requerimiento'] == 38
                             ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
@@ -125,23 +125,43 @@ function listarReservasAlmacen(id_usuario) {
             },
         ],
         columnDefs: [
+
             { 'aTargets': [0], 'sClass': 'invisible' },
+
             {
+
                 'render': function (data, type, row) {
 
-                    return `${id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93' ?
-                        `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip" 
-                    data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
-                    data-almacen="${row['id_almacen_reserva']}"  data-stock="${row['stock_comprometido']}"
-                    data-codigo="${row['codigo_req']}">
-                    <i class="fas fa-edit"></i></button>`: ''
-                        }
-                    <button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip" 
-                        data-placement="bottom" title="Anular Reserva"  data-id="${row['id_reserva']}">
-                        <i class="fas fa-trash"></i></button>`;
+                    let $btn_editar = (id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93') ?
+                    `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
+
+                        data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
+
+                        data-almacen="${row['id_almacen_reserva']}"  data-stock="${row['stock_comprometido']}"
+
+                        data-codigo="${row['codigo_req']}">
+
+                        <i class="fas fa-edit"></i>
+
+                    </button>`: '';
+
+
+                    let $btn_eliminar = (row['numero'] !== null) ?
+                    `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
+
+                        data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}">
+
+                        <i class="fas fa-trash"></i>
+
+                    </button>`:'';
+
+                    return $btn_editar+$btn_eliminar;
+
 
                 }, targets: 15
+
             }
+
         ],
         'order': [[0, "desc"]],
     });
@@ -223,14 +243,14 @@ $("#reservasAlmacen tbody").on("click", "button.anular", function () {
 
         if (result.isConfirmed) {
             var id = $(this).data("id");
-
+            var id_detalle = $(this).data('detalle');
             $.ajax({
                 type: 'GET',
-                url: 'anularReserva/' + id,
+                url: 'anularReserva/' + id+'/'+id_detalle,
                 dataType: 'JSON',
                 success: function (response) {
                     console.log(response);
-                    if (response > 0) {
+                    if (response.respuesta > 0) {
                         Lobibox.notify("success", {
                             title: false,
                             size: "mini",

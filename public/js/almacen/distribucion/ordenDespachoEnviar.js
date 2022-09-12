@@ -11,6 +11,7 @@ function openOrdenDespachoEnviar(data) {
         $('[name=id_requerimiento]').val(data.id_requerimiento ?? '');
         $('[name=id_oportunidad]').val(data.id_oportunidad ?? '');
         $('#codigo_cdp').text((data.codigo_oportunidad ?? '') + ' - ' + (data.codigo ?? ''));
+        $('[name="codigo"]').val((data.codigo_oportunidad ?? '') + '-' + (data.codigo ?? ''));
 
         var msj = "Por favor hacer seguimiento a este pedido. Vence: " + (formatDate(data.fecha_entrega) ?? '') +
             "\nFECHA DE DESPACHO: \n" +
@@ -64,7 +65,7 @@ function openOrdenDespachoEnviar(data) {
                         console.log('Error devuelto: ' + response.error);
                     }
                 }).always(function () {
-                    if ($submit !== null && $submit !== undefined) {
+                   if ($submit !== null && $submit !== undefined) {
                         $submit.prop('disabled', false);
                         $submit.html('Enviar');
                     }
@@ -142,7 +143,7 @@ function guardarOrdenDespacho(formData) {
         if ($submit !== null && $submit !== undefined) {
             $submit.prop('disabled', false);
             $submit.html('Enviar');
-        }
+        } 
     }).fail(function (jqXHR) {
         Lobibox.notify('error', {
             size: "mini",

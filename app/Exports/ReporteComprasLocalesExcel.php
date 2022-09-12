@@ -6,12 +6,13 @@ use App\Http\Controllers\ReporteLogisticaController;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Carbon\Carbon;
+use phpDocumentor\Reflection\Types\Integer;
 
 class ReporteComprasLocalesExcel implements FromView
 {
 
 
-    public function __construct(string $idEmpresa,string $idSede, string $fechaRegistroDesde, string $fechaRegistroHasta, string $fechaRegistroDesdeCancelacion, string $fechaRegistroHastaCancelacion, string $razonSocialProveedor)
+    public function __construct(string $idEmpresa,string $idSede, string $fechaRegistroDesde, string $fechaRegistroHasta, string $fechaRegistroDesdeCancelacion, string $fechaRegistroHastaCancelacion, string $razonSocialProveedor, string $idGrupo, string $idProyecto, string $observacionOrden, string $estadoPago)
     {
         $this->idEmpresa = $idEmpresa;
         $this->idsede = $idSede;
@@ -20,6 +21,10 @@ class ReporteComprasLocalesExcel implements FromView
         $this->fechaRegistroDesdeCancelacion = $fechaRegistroDesdeCancelacion;
         $this->fechaRegistroHastaCancelacion = $fechaRegistroHastaCancelacion;
         $this->razonSocialProveedor = $razonSocialProveedor;
+        $this->idGrupo = $idGrupo;
+        $this->idProyecto = $idProyecto;
+        $this->observacionOrden = $observacionOrden;
+        $this->estadoPago = $estadoPago;
     }
 
     public function view(): View{
@@ -31,8 +36,12 @@ class ReporteComprasLocalesExcel implements FromView
         $fechaRegistroDesdeCancelacion = $this->fechaRegistroDesdeCancelacion;
         $fechaRegistroHastaCancelacion = $this->fechaRegistroHastaCancelacion;
         $razonSocialProveedor = $this->razonSocialProveedor;
+        $idGrupo =  $this->idGrupo;
+        $idProyecto = $this->idProyecto;
+        $observacionOrden = $this->observacionOrden;
+        $estadoPago = $this->estadoPago;
 
-        $comLocales = (new ReporteLogisticaController)->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor)->orderBy('fecha_emision','desc')->get();
+        $comLocales = (new ReporteLogisticaController)->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago)->orderBy('fecha_emision','desc')->get();
 
         $data=[];
         foreach($comLocales as $element){
@@ -55,7 +64,9 @@ class ReporteComprasLocalesExcel implements FromView
                 'tipo_doc_com'=> $element->tipo_doc_com??'',
                 'nro_doc_com'=> $element->nro_doc_com??'',
                 'descripcion_sede_empresa'=> $element->descripcion_sede_empresa??'',
-                'descripcion_grupo'=> $element->descripcion_grupo??''
+                'descripcion_grupo'=> $element->descripcion_grupo??'',
+                'descripcion_proyecto'=> $element->descripcion_proyecto??'',
+                'descripcion_estado_pago'=> $element->descripcion_estado_pago??''
             ];
         }
         return view('logistica.reportes.view_compras_locales_export', [

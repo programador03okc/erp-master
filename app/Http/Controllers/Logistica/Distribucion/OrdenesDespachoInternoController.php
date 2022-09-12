@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Logistica\Distribucion;
 
+use App\Helpers\NotificacionHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Configuracion\Usuario;
 use App\Models\Distribucion\OrdenDespacho;
+use App\Models\mgcp\CuadroCosto\CuadroCosto;
+use App\Models\mgcp\Oportunidad\Oportunidad;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Debugbar;
 
 class OrdenesDespachoInternoController extends Controller
 {
@@ -173,19 +178,26 @@ class OrdenesDespachoInternoController extends Controller
 
     public function generarDespachoInterno(Request $request)
     {
+
         try {
             DB::beginTransaction();
-
+            $idOd=0;
             $req = DB::table('almacen.alm_req')
                 ->select(
                     'alm_req.*',
                     'despachoInterno.codigo as codigoDespachoInterno',
                     'despachoInterno.id_od',
-                    'oportunidades.codigo_oportunidad'
+                    'oportunidades.codigo_oportunidad',
+                    'adm_contri.razon_social as razon_social_contribuyente',
+                    'sis_sede.descripcion as empreas_sede',
+                    'cc.id_oportunidad'
                 )
                 ->where('alm_req.id_requerimiento', $request->id_requerimiento)
                 ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
                 ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+                ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+                ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+                ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
                 ->leftJoin('almacen.orden_despacho as despachoInterno', function ($join) {
                     $join->on('despachoInterno.id_requerimiento', '=', 'alm_req.id_requerimiento');
                     $join->where('despachoInterno.aplica_cambios', '=', true);
@@ -194,6 +206,7 @@ class OrdenesDespachoInternoController extends Controller
                 ->first();
 
             if ($req !== null) {
+                $idOd=$req->id_od;
                 if ($req->codigoDespachoInterno !== null) {
                     DB::table('almacen.orden_despacho')
                         ->where('id_od', $req->id_od)
@@ -233,6 +246,8 @@ class OrdenesDespachoInternoController extends Controller
                             ],
                             'id_od'
                         );
+                        
+                    $idOd=$id_od;
 
                     //Agrega accion en requerimiento
                     DB::table('almacen.alm_req_obs')
@@ -346,6 +361,30 @@ class OrdenesDespachoInternoController extends Controller
                     $arrayRspta = array(
                         'tipo' => 'success',
                         'mensaje' => 'Se generó correctamente la Orden de Transformación. Para el ' . $req->codigo . ' ' . ($req->codigo_oportunidad !== null ? $req->codigo_oportunidad : '')
+                    );
+                }
+
+                $idUsuarios=[];
+                if (config('app.debug')) {
+                    $correos[] = config('global.correoDebug1');
+                    $idUsuarios[]=Auth::user()->id_usuario;
+                } else {
+                    $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
+                }
+                //$orden_despacho = OrdenDespacho::where('id_requerimiento', $request->id_requerimiento)->first();
+                $idOd= isset($id_od) && $id_od>0?$id_od:(isset($req->id_od) && $req->id_od > 0? $req->id_od:0);
+               // Debugbar::info($idOd);
+                if($idOd>0){
+                    $orden_despacho = OrdenDespacho::find($idOd);
+                    $cuadro = CuadroCosto::where('id_oportunidad', $req->id_oportunidad)->first();
+                    $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+                    NotificacionHelper::notificacionODI(
+                        $idUsuarios,
+                        $orden_despacho->codigo,
+                        $orden_despacho->fecha_despacho,
+                        $oportunidad->codigo_oportunidad,
+                        $req,
+                        trim($request->comentario)
                     );
                 }
             } else {

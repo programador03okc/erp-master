@@ -38,7 +38,7 @@ Gestión de Despachos
                 <div class="row">
                     <div class="col-md-12">
                         <div class="table-responsive">
-                            <table class="mytable table table-condensed table-bordered table-hover table-striped table-okc-view" 
+                            <table class="mytable table table-condensed table-bordered table-hover table-striped table-okc-view"
                                 id="requerimientosEnProceso" style="font-size: 12px;">
                                 <thead>
                                     <tr>
@@ -75,6 +75,37 @@ Gestión de Despachos
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-adjuntos-despacho">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Adjuntos <span id="codigo_adjunto"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12" data-loading="loading">
+                        <table class="table table-striped">
+                            <tbody  data-table="adjuntos-archivos">
+                                <tr>
+                                    <td> Sin adjuntos...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 @include('almacen.distribucion.ordenDespachoContacto')
 @include('almacen.distribucion.ordenDespachoTransportista')
 @include('almacen.distribucion.enviarFacturacion')
@@ -127,7 +158,7 @@ Gestión de Despachos
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
-        
+
         let usuario = '{{Auth::user()->nombre_corto}}';
         console.log(usuario);
         listarRequerimientosPendientes(usuario);

@@ -36,7 +36,6 @@ function detalleFacturasRequerimiento(table_id, id, row) {
         url: "detalleFacturasRequerimientos/" + id,
         dataType: "JSON",
         success: function(response) {
-            console.log(response);
             var html = "";
             var i = 1;
 
@@ -71,20 +70,22 @@ function detalleFacturasRequerimiento(table_id, id, row) {
                                     : "")}</td>
                         <td style="border: none; text-align: center">
                             <div style="display: flex;">
-                                <button type="button" class="ver_doc btn btn-info btn-xs btn-flat" data-toggle="tooltip" 
+                                <button type="button" class="ver_doc btn btn-info btn-xs btn-flat" data-toggle="tooltip"
                                     data-placement="bottom" title="Ver Factura"
                                     onClick="verDocumentoVenta(${
                                         element.id_doc_ven
                                     }, 'requerimiento')">
-                                    <i class="fas fa-file-alt"></i></button>
-                                
+                                <i class="fas fa-file-alt"></i></button>
+                                <button type="button" class="btn btn-success btn-xs btn-flat adjuntar-documentos" title="Adjuntar" data-id-doc="${element.id_doc_ven}" data-id-requerimiento="${id}">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
                             <div/>
                         </td>
                         <td><td/>
                         </tr>`;
                     i++;
                 });
-                var tabla = `<table class="table table-sm" style="border: none;" 
+                var tabla = `<table class="table table-sm" style="border: none;"
                 id="detalle_${table_id}">
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
@@ -103,7 +104,7 @@ function detalleFacturasRequerimiento(table_id, id, row) {
                 <tbody>${html}</tbody>
                 </table>`;
             } else {
-                var tabla = `<table class="table table-sm" style="border: none;" 
+                var tabla = `<table class="table table-sm" style="border: none;"
                 id="detalle_${table_id}">
                 <tbody>
                     <tr><td>No hay registros para mostrar</td></tr>
@@ -118,3 +119,212 @@ function detalleFacturasRequerimiento(table_id, id, row) {
         console.log(errorThrown);
     });
 }
+var array_adjuntos=[];
+$(document).on('click','.adjuntar-documentos',function () {
+    var data_id_doc = $(this).attr('data-id-doc');
+    array_adjuntos = []
+    $('#modal-adjuntos-factura').modal('show');
+    $('[name="id_doc_ven"]').val($(this).attr('data-id-doc'));
+    $('[name="id_requerimiento"]').val($(this).attr('data-id-requerimiento'));
+    $('[data-action="table-body"]').html('');
+    $('[name="adjuntos[]"]').val('');
+
+    verAdjuntos($(this).attr('data-id-requerimiento'),$(this).attr('data-id-doc'));
+});
+
+$(document).on('change','[data-action="adjuntos"]',function () {
+    var file = $(this)[0].files;
+
+    $.each(file, function (index, element) {
+        array_adjuntos.push(element);
+    });
+    pesoArchivos();
+    adjuntosSeleccionados();
+});
+function pesoArchivos() {
+    var peso_archivo= 0,
+    peso_total = 0;
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        peso_archivo=peso_archivo+valueOfElement.size;
+    });
+    peso_total = peso_archivo/(1000000);
+    $('#peso-estimado').text(peso_total.toFixed(2)+'MB');
+
+    if (peso_archivo<=2000000) {
+        $('.guardar-adjuntos').removeAttr('disabled');
+
+    }else{
+        $('.guardar-adjuntos').attr('disabled',true);
+    }
+}
+function adjuntosSeleccionados() {
+    var html='';
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        html+='<tr data-key="'+indexInArray+'">'
+            html+='<td>'
+                html+=valueOfElement.name
+            html+='</td>'
+            html+='<td><buton class="btn btn-danger btn-xs" data-action="eliminar-adjunto" data-key="'+indexInArray+'"><i class="fas fa-trash-alt"></i></button></td>'
+        html+='</tr>'
+    });
+    $('[data-action="table-body"]').html(html);
+}
+$(document).on('click','[data-action="eliminar-adjunto"]',function () {
+    var key_item = $(this).attr('data-key');
+    array_adjuntos = array_adjuntos.filter((item, key) => key !== parseInt(key_item));
+    if (array_adjuntos.length===0) {
+        $('[name="adjuntos[]"]').val('');
+    }
+    adjuntosSeleccionados();
+    pesoArchivos();
+});
+$(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
+    e.preventDefault();
+    var data_forma_adjuntos = new FormData($(this)[0]);
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        data_forma_adjuntos.append('archivos[]', valueOfElement);
+    });
+    Swal.fire({
+        title: 'Adjuntos',
+        text: "¿Está seguro de guardar?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'no',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                url: 'guardar-adjuntos-factura',
+                data: data_forma_adjuntos,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                },
+                success: (response) => {
+                    if (response.status===200) {
+                        array_adjuntos = []
+
+                    }
+                },
+                fail: (jqXHR, textStatus, errorThrown) => {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+
+          },
+      }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire(
+                'Éxito',
+                'Se guardo con éxito',
+                'success'
+            )
+            $('#modal-adjuntos-factura').modal("hide");
+        }
+    })
+
+});
+function verAdjuntos(id_requerimiento,id_doc_venta) {
+    var html='';
+    $('[data-action="ver-table-body"]').html(html);
+    $.ajax({
+        type: 'GET',
+        url: 'ver-adjuntos',
+        data: {
+            id_requerimiento:id_requerimiento,
+            id_doc_venta:id_doc_venta
+        },
+        // processData: false,
+        // contentType: false,
+        dataType: 'JSON',
+        beforeSend: (data) => {
+        },
+        success: (response) => {
+            if (response.status===200) {
+
+                $.each(response.data, function (indexInArray, valueOfElement) {
+                    html+='<tr data-key="'+valueOfElement.id_adjuntos+'">'
+                        html+='<td>'
+                            html+='<a href="/files/tesoreria/adjuntos_facturas/'+valueOfElement.archivo+'" target="_blank">'+valueOfElement.archivo+'</a>'
+                        html+='</td>'
+                        html+='<td>'
+                            html+=''+valueOfElement.fecha_registro
+                        html+='</td>';
+                        if (auth_user.id_usuario==valueOfElement.id_usuario) {
+                            html+='<td><buton class="btn btn-danger btn-xs" data-adjunto="eliminar" data-id="'+valueOfElement.id_adjuntos+'" data-key="'+indexInArray+'"><i class="fas fa-trash-alt"></i></button></td>';
+                        }
+
+                    html+='</tr>'
+                });
+                $('[data-action="ver-table-body"]').html(html);
+            }
+        },
+        fail: (jqXHR, textStatus, errorThrown) => {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    });
+}
+$(document).on('click','[data-adjunto="eliminar"]',function () {
+    var id_adjuntos = $(this).attr('data-id');
+
+    Swal.fire({
+        title: 'Eliminar',
+        text: "¿Está seguro de eliminar?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'no',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                url: 'eliminar-adjuntos',
+                data: {
+                    id_adjuntos:id_adjuntos
+                },
+                // processData: false,
+                // contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                },
+                success: (response) => {
+                    if (response.status===200) {
+                        Swal.fire(
+                            'Éxito',
+                            'Se elimino con éxito',
+                            'success'
+                        )
+                        $('tr[data-key="'+id_adjuntos+'"]').remove();
+                        $('tr[data-key="'+id_adjuntos+'"]').remove();
+                    }
+                },
+                fail: (jqXHR, textStatus, errorThrown) => {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            })
+
+          },
+      }).then((result) => {
+        if (result.isConfirmed) {
+            // Swal.fire(
+            //     'Éxito',
+            //     'Se guardo con éxito',
+            //     'success'
+            // )
+            // $('#modal-adjuntos-factura').modal("hide");
+        }
+    })
+
+});

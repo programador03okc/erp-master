@@ -12,8 +12,10 @@ use App\Http\Controllers\Controller;
 use App\Mail\EmailContactoDespacho;
 use App\Mail\EmailOrdenDespacho;
 use App\Models\Administracion\Periodo;
+use App\models\almacen\AdjuntosDespacho;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Comercial\Cliente;
+use App\models\Configuracion\AdjuntosNotificaciones;
 use App\Models\Configuracion\Usuario;
 use App\Models\Contabilidad\ContactoContribuyente;
 use App\Models\Contabilidad\Contribuyente;
@@ -28,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 use Debugbar;
 
@@ -334,13 +337,13 @@ class OrdenesDespachoExternoController extends Controller
 
     //             $asunto_facturacion = $req->orden_am . ' | ' . $req->nombre . ' | ' . $req->codigo_oportunidad . ' | ' . $req->codigo_empresa;
     //             $contenido_facturacion = '
-    //                 Favor de generar documentación: <br>- ' . ($request->documento == 'Factura' ? $request->documento . '<br>- Guía<br>- Certificado de Garantía<br>- CCI<br>' : '<br>') . ' 
+    //                 Favor de generar documentación: <br>- ' . ($request->documento == 'Factura' ? $request->documento . '<br>- Guía<br>- Certificado de Garantía<br>- CCI<br>' : '<br>') . '
     //                 <br>Requerimiento ' . $req->codigo . '
     //                 <br>Entidad: ' . $req->nombre . '
     //                 <br>Empresa: ' . $req->razon_social . '
     //                 <br>' . $request->contenido . '<br>
     //         <br>' . ($req->id_oc_propia !== null
-    //                 ? ('Ver Orden Física: ' . $req->url_oc_fisica . ' 
+    //                 ? ('Ver Orden Física: ' . $req->url_oc_fisica . '
     //         <br>Ver Orden Electrónica: https://apps1.perucompras.gob.pe//OrdenCompra/obtenerPdfOrdenPublico?ID_OrdenCompra=' . $req->id_oc_propia . '&ImprimirCompleto=1') : '') . '
     //         <br><br>
     //         Saludos,<br>
@@ -406,10 +409,10 @@ class OrdenesDespachoExternoController extends Controller
     //         return response()->json('Algo salio mal');
     //     }
     // }
-    private function enviarOrdenDespacho(Request $request, $oportunidad, $requerimiento)
+    private function enviarOrdenDespacho(Request $request, $oportunidad, $requerimiento,$ordenDespacho)
     {
         $archivosOc = [];
-
+    /* 
         if ($oportunidad !== null) {
             $ordenView = $oportunidad->ordenCompraPropia;
             //Obtencion de archivos en carpeta temporal
@@ -422,13 +425,13 @@ class OrdenesDespachoExternoController extends Controller
             }
         }
         //Guardar archivos subidos
-        if ($request->hasFile('archivos')) {
+      if ($request->hasFile('archivos')) {
             $archivos = $request->file('archivos');
             foreach ($archivos as $archivo) {
                 Storage::putFileAs('mgcp/ordenes-compra/temporal/', $archivo, $archivo->getClientOriginalName());
                 $archivosOc[] = storage_path('app/mgcp/ordenes-compra/temporal/') . $archivo->getClientOriginalName();
             }
-        }
+        }*/
         $correos = [];
         $idUsuarios=[];
         if (config('app.debug')) {
@@ -452,13 +455,14 @@ class OrdenesDespachoExternoController extends Controller
                 $correos[] = Usuario::withTrashed()->find($id)->email;
             }
         }
+        $orden_despacho = OrdenDespacho::where('id_requerimiento', $request->id_requerimiento)->first();
 
-        Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
-        NotificacionHelper::notificacionOrdenDespacho($idUsuarios,$request->mensaje,$oportunidad,$requerimiento);
+        // Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
+        NotificacionHelper::notificacionOrdenDespacho($idUsuarios,$request->mensaje,$oportunidad,$requerimiento,$ordenDespacho);
 
-        foreach ($archivosOc as $archivo) {
-            unlink($archivo);
-        }
+        // foreach ($archivosOc as $archivo) {
+        //   unlink($archivo);
+        //}
     }
 
     public function usuariosDespacho()
@@ -470,6 +474,7 @@ class OrdenesDespachoExternoController extends Controller
 
     public function guardarOrdenDespachoExterno(Request $request)
     {
+
         try {
             DB::beginTransaction();
             $ordenDespacho = null;
@@ -600,7 +605,32 @@ class OrdenesDespachoExternoController extends Controller
                     $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
                 }
 
-                $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento);
+                $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento,$ordenDespacho);
+
+                if ($request->archivos) {
+                    foreach ($request->archivos as $key => $value) {
+                        if ($value != null) {
+                            $fechaHoy = new Carbon();
+                            $sufijo = $fechaHoy->format('YmdHis');
+                            $file = $value->getClientOriginalName();
+                            $codigo = $request->codigo;
+                            $extension = pathinfo($file, PATHINFO_EXTENSION);
+                            $id_requerimiento = $request->id_requerimiento;
+                            $newNameFile = $codigo . '_' . $key . $id_requerimiento . $sufijo . '.' . $extension;
+                            Storage::disk('archivos')->put("logistica/despacho/" . $newNameFile, File::get($value));
+
+                            $adjuntos_notificaciones = new AdjuntosDespacho();
+                            $adjuntos_notificaciones->archivo = $newNameFile;
+                            $adjuntos_notificaciones->estado = 1;
+                            $adjuntos_notificaciones->fecha_registro= date('Y-m-d H:i:s');
+                            $adjuntos_notificaciones->id_requerimiento= $request->id_requerimiento ;
+                            $adjuntos_notificaciones->id_oportunidad=$request->id_oportunidad;
+                            $adjuntos_notificaciones->save();
+
+                        }
+
+                    }
+                }
             }
 
             DB::commit();
@@ -852,7 +882,7 @@ class OrdenesDespachoExternoController extends Controller
                 }
             }
 
-            Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $request->mensaje));
+            // Mail::to($correos)->send(new EmailContactoDespacho($oportunidad, $request->mensaje));
             NotificacionHelper::notificarContactoDespacho($request->mensaje, $idUsuarios);
 
             DB::commit();
@@ -995,7 +1025,7 @@ class OrdenesDespachoExternoController extends Controller
                 'oc_propias_view.tipo',
                 'oc_directas.id_despacho as id_despacho_directa',
                 'oc_propias.id_despacho as id_despacho_propia',
-                DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs 
+                DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs
                 inner join almacen.orden_despacho on
                 (orden_despacho_obs.id_od = orden_despacho.id_od)
                 where   orden_despacho.id_requerimiento = alm_req.id_requerimiento
@@ -1045,7 +1075,7 @@ class OrdenesDespachoExternoController extends Controller
                         'oc_propias_view.tipo',
                         'oc_directas.id_despacho as id_despacho_directa',
                         'oc_propias.id_despacho as id_despacho_propia',
-                        DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs 
+                        DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs
                         inner join almacen.orden_despacho on
                         (orden_despacho_obs.id_od = orden_despacho.id_od)
                         where   orden_despacho.id_requerimiento = alm_req.id_requerimiento
@@ -1437,5 +1467,14 @@ class OrdenesDespachoExternoController extends Controller
             DB::rollBack();
             return array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar la orden. Por favor intente de nuevo', 'error' => $e->getMessage());
         }
+    }
+    public function adjuntosDespacho(Request $request)
+    {
+        $success=false;
+        $adjuntos_despacho = AdjuntosDespacho::where('estado',1)->where('id_oportunidad',$request->id_oportunidad)->where('id_requerimiento',$request->id_requerimiento)->get();
+        if (sizeof($adjuntos_despacho)>0) {
+            $success=true;
+        }
+        return response()->json(['success'=>$success,'data'=>$adjuntos_despacho]);
     }
 }

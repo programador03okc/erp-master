@@ -97,7 +97,7 @@ class RequerimientoHelper
         } catch (Exception $ex) {
             DB::rollBack();
             //Envía por correo el error generado para poder corregirlo
-            Mail::to(config('global.adminEmail'))->send(new ErrorReplicarRequerimiento($cuadro, $ex->getMessage()));
+            // Mail::to(config('global.adminEmail'))->send(new ErrorReplicarRequerimiento($cuadro, $ex->getMessage()));
             return null;
         }
     }

@@ -69,7 +69,7 @@ Atención de Salidas
                             </div>
                         </div>
                     </div>
-                    
+
                     <div id="salidas" class="tab-pane fade ">
                         <form id="formFiltrosSalidasProcesadas" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-salida.salidasProcesadasExcel')}}">
                             @csrf()
@@ -100,12 +100,45 @@ Atención de Salidas
                             </div>
                         </div>
                     </div>
-                        
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-ver-adjuntos" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
+    <div class="modal-dialog" style="width:35%;">
+        <div class="modal-content">
+            <form id="form-guia_ven_create">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">Adjuntos</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <fieldset class="group-table">
+                                <div class="form-group">
+                                    <label for="">Adjuntos Contabilidad</label>
+                                </div>
+                                <table class="table">
+                                    <tbody data-table="ver-table-body">
+
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"data-dismiss="modal" >Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @include('almacen.guias.guia_ven_create')
 @include('almacen.distribucion.despachoDetalle')
 @include('almacen.guias.guia_ven_obs')
