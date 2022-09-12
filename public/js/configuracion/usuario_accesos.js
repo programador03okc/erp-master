@@ -28,6 +28,7 @@ function disableAccesos() {
     $.each(array_disable_accesos, function (index_acceso, value_acceso) {
         $('[data-action="modulo-seleccionado"][data-id-acceso="'+value_acceso+'"]').attr('data-disabled','false');
         $('[data-action="modulo-seleccionado"][data-id-acceso="'+value_acceso+'"]').attr('disabled',true);
+        $('[data-action="modulo-seleccionado"][data-id-acceso="'+value_acceso+'"]').addClass('texto-seleccionado');
     });
     // $this_componente.attr('data-disabled','false');
 }
@@ -127,6 +128,7 @@ $(document).on('click','[data-action="modulo-seleccionado"]',function () {
         if (array_disable_accesos.indexOf(id_acceso)===-1) {
             array_disable_accesos.push(id_acceso);
         }
+        $(this).addClass('texto-seleccionado');
         asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso, acceso, html, data_disable,$this_componente);
 });
 
@@ -134,7 +136,7 @@ function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso
     if (data_disable=='true') {
         $this_componente.attr('data-disabled','false');
         if (array_title.indexOf(id_modulo)===-1) {
-            html+='<div class="col-md-12" data-count="col">'
+            html+='<div class="col-md-12" data-count="col" data-key="'+id_modulo+'">'
                 html+='<label data-id-modulo="'+id_modulo+'">'+titulo+'</label>';
             html+='</div>';
             array_title.push(id_modulo);
@@ -152,7 +154,7 @@ function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso
         html='';
         if (sub_titulo) {
             if (array_sub_title.indexOf(id_sub_modulo)===-1) {
-                html+='<div class="col-md-12" data-count="col-hijo">';
+                html+='<div class="col-md-12" data-count="col-hijo" data-key="'+id_sub_modulo+'">';
                     html+='<label data-id-sub-modulo="'+id_sub_modulo+'">'+sub_titulo+'</label>';
                 html+='</div>';
                 array_sub_title.push(parseInt(id_sub_modulo));
@@ -162,7 +164,7 @@ function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso
         html='';
         if (id_sub_modulo) {
             html+='<div class="col-md-12">'
-                html+='<label class="btn" data-action="disabled-accesos" data-action-id-sub-modulo="'+id_sub_modulo+'" data-id-acceso="'+id_acceso+'">'+acceso+'</label>'
+                html+='<label class="btn" data-action="disabled-accesos" data-action-id-modulo="'+id_modulo+'" data-action-id-sub-modulo="'+id_sub_modulo+'" data-id-acceso="'+id_acceso+'">'+acceso+'</label>'
                 html+='<input type="hidden" value="'+id_acceso+'" name="id_acceso['+id_sub_modulo+'][]" data-input="'+id_acceso+'">'
                 html+='<input type="hidden" value="'+id_acceso+'" name="id_modulo_padre['+id_modulo+']['+id_sub_modulo+'][]" data-input="'+id_acceso+'">'
             html+='</div>';
@@ -178,23 +180,25 @@ $(document).on('click','[data-action="disabled-accesos"]',function () {
     var id_acceso= $(this).attr('data-id-acceso')
     $('[data-id-acceso="'+id_acceso+'"]').attr('data-disabled','true');
     $('[data-id-acceso="'+id_acceso+'"]').removeAttr('disabled');
+    $('[data-id-acceso="'+id_acceso+'"]').removeClass('texto-seleccionado');
     $('[data-input="'+id_acceso+'"]').remove();
     $(this).parent().remove();
 
     var id_modulo = $(this).attr('data-action-id-modulo');
     var id_sub_modulo = $(this).attr('data-action-id-sub-modulo');
-
+    console.log(id_modulo);
+    console.log(id_sub_modulo);
     array_disable_accesos.splice(array_disable_accesos.indexOf(id_acceso),1);
 
-    if ($('[data-count="col-hijo"] div').length===0) {
-        $('[data-count="col-hijo"]').remove();
+    if ($('[data-count="col-hijo"][data-key="'+id_sub_modulo+'"] div').length===0) {
+        $('[data-count="col-hijo"][data-key="'+id_sub_modulo+'"]').remove();
         index_hijo = array_sub_title.indexOf(id_sub_modulo);
         array_sub_title.splice(index_hijo,1);
     }
-    if ($('[data-count="col"] div').length===0) {
+    if ($('[data-count="col"][data-key="'+id_modulo+'"] div').length===0) {
         index = array_title.indexOf(id_modulo);
         array_title.splice(index,1);
-        $('[data-count="col"]').remove();
+        $('[data-count="col"][data-key="'+id_modulo+'"]').remove();
     }
 });
 $(document).on('click','[data-action="guardar"]',function () {

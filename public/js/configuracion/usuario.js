@@ -30,19 +30,17 @@ $(function(){
             {'render':
                 function (data, type, row, meta){
                     return (`<div class="d-flex">
-                            <button type="button" class="btn bg-orange btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar clave" data-calve="change-clave" data-id="${row['id_usuario']}">
+                            <button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip" data-placement="bottom" title="Editar clave" data-calve="change-clave" data-id="${row['id_usuario']}">
                                 <i class="fas fa-key"></i>
                             </button>
-                            <a class="btn bg-orange btn-flat botonList" data-toggle="tooltip" data-placement="bottom"  data-id="${row['id_usuario']}" href="accesos/${row['id_usuario']}">
-                                <i class="fas fa-user-cog"></i>
+                            <a class="btn btn-default btn-flat botonList" data-toggle="tooltip" data-placement="bottom"  data-id="${row['id_usuario']}" href="accesos/${row['id_usuario']}">
+                                <i class="fas fa-user-cog text-black"></i>
                             </a>
 
-                            <button type="button" class="btn bg-primary btn-flat botonList" data-toggle="tooltip"
+                            <button type="button" class="btn bg-orange btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Editar" onclick="editarUsuario(${row['id_usuario']});">
                                 <i class="fas fa-edit"></i></button>
-                            <button type="button" class="btn bg-olive btn-flat botonList" data-toggle="tooltip"
-                                data-placement="bottom" title="Asignar Accesos" onclick="accesoUsuario(${row['id_usuario']});">
-                                <i class="fas fa-user-tag"></i></button>
+
                             <button type="button" class="btn bg-red btn-flat botonList" data-toggle="tooltip"
                                 data-placement="bottom" title="Anular" onclick="anularUsuario(${row['id_usuario']});">
                                 <i class="fas fa-trash-alt"></i></button>
@@ -140,46 +138,21 @@ $(function(){
     });
 });
 
-function actualizarPerfilUsuario(){
-    let id_usuario = document.querySelector("div[id='modal-editar-usuario'] input[name='id_usuario']").value;
-    let nombres = document.querySelector("div[id='modal-editar-usuario'] input[name='nombres']").value;
-    let apellido_paterno = document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_paterno']").value;
-    let apellido_materno = document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_materno']").value;
-    let nombre_corto = document.querySelector("div[id='modal-editar-usuario'] input[name='nombre_corto']").value;
-    let usuario = document.querySelector("div[id='modal-editar-usuario'] input[name='usuario']").value;
-    let contraseña = document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value;
-    let email = document.querySelector("div[id='modal-editar-usuario'] input[name='email']").value;
-    let rol = document.querySelector("div[id='modal-editar-usuario'] select[name='rol']").value;
+$(document).on('submit','[data-form="actualizar-usuario"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
 
-    let  dataPerfil= {
-        id_usuario,
-        nombres,
-        apellido_paterno,
-        apellido_materno,
-        nombre_corto,
-        usuario,
-        contraseña,
-        email,
-        rol
-    };
-    // console.log(dataPerfil);
     $.ajax({
         type: 'POST',
         url:'/configuracion/usuario/perfil',
-        data: dataPerfil,
+        data: data,
         beforeSend: function(){
         },
         success: function(response){
-            // console.log(response);
-            if (response.status == '200') {
-                $('#listaUsuarios').DataTable().ajax.reload();
-                alert('Se actualizó el perfil del usuario');
-            }else {
-                alert('hubo un error, No se puedo actualizar');
-            }
+            console.log(response);
         }
     });
-}
+});
 
 function getPerfilUsuario(id){
     return new Promise(function(resolve, reject) {
@@ -198,26 +171,12 @@ function getPerfilUsuario(id){
 }
 function loadPerfilUsuario(id){
     getPerfilUsuario(id).then(function(res) {
-        // Run this when your request was successful
         if(res.status ==200){
-            // document.querySelector("div[id='modal-editar-usuario'] input[name='id_usuario']").value= id;
-            // document.querySelector("div[id='modal-editar-usuario'] input[name='nombres']").value= res.data.nombres;
-            // document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_paterno']").value= res.data.apellido_paterno;
-            // document.querySelector("div[id='modal-editar-usuario'] input[name='apellido_materno']").value= res.data.apellido_materno;
-            // document.querySelector("div[id='modal-editar-usuario'] input[name='nombre_corto']").value= res.data.nombre_corto;
-            // document.querySelector("div[id='modal-editar-usuario'] input[name='usuario']").value= res.data.usuario;
-            // // document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value= '*'.repeat((res.data.contraseña_decodificada).length);
-            // document.querySelector("div[id='modal-editar-usuario'] input[name='contraseña']").value=  res.data.contraseña_decodificada;
-            // document.querySelector("div[id='modal-editar-usuario'] input[name='email']").value= res.data.email;
-            // document.querySelector("div[id='modal-editar-usuario'] select[name='rol']").value= res.data.id_rol;
-            console.log(res);
-            console.log(res.data.nro_documento);
             $('#modal-editar-usuario [name="nro_documento"]').val(res.data.nro_documento);
             $('#modal-editar-usuario [name="nombres"]').val(res.data.nombres);
             $('#modal-editar-usuario [name="apellido_paterno"]').val(res.data.apellido_paterno);
             $('#modal-editar-usuario [name="apellido_materno"]').val(res.data.apellido_materno);
             $('#modal-editar-usuario [name="fecha_nacimiento"]').val(res.data.fecha_nacimiento);
-
             if (res.data.sexo==='M') {
                 $('#modal-editar-usuario [name="sexo"][value="M"]').attr('checked',true);
             }else{
@@ -228,35 +187,32 @@ function loadPerfilUsuario(id){
             $('#modal-editar-usuario [name="direccion"]').val(res.data.direccion);
             $('#modal-editar-usuario [name="email"]').val(res.data.email);
             $('#modal-editar-usuario [name="brevette"]').val(res.data.brevette);
-
             $('#modal-editar-usuario [name="pais"] [value="'+res.data.id_pais+'"]').attr('selected',true);
             $('#modal-editar-usuario [name="ubigeo"]').val(res.data.ubigeo);
             $('#modal-editar-usuario [name="id_tipo_trabajador"] [value="'+res.data.id_tipo_trabajador+'"]').attr('selected',true);
             $('#modal-editar-usuario [name="id_categoria_ocupacional"] [value="'+res.data.id_categoria_ocupacional+'"]').attr('selected',true);
             $('#modal-editar-usuario [name="id_tipo_planilla"] [value="'+res.data.id_tipo_planilla+'"]').attr('selected',true);
-
             $('#modal-editar-usuario [name="condicion"]').val(res.data.condicion);
             $('#modal-editar-usuario [name="hijos"]').val(res.data.hijos);
             $('#modal-editar-usuario [name="id_pension"]').val(res.data.id_pension);
-
             $('#modal-editar-usuario [name="cuspp"]').val(res.data.cuspp);
             $('#modal-editar-usuario [name="seguro"]').val(res.data.seguro);
-            if (res.data.confianza==='f') {
+            if (res.data.confianza===false) {
                 $('#modal-editar-usuario [name="confianza"][value="f"]').attr('checked',true);
             }else{
                 $('#modal-editar-usuario [name="confianza"][value="t"]').attr('checked',true);
             }
-
             $('#modal-editar-usuario [name="usuario"]').val(res.data.usuario);
-            // $('#modal-editar-usuario [name="clave"]').val(res.data.nro_documento);
             $('#modal-editar-usuario [name="nombre_corto"]').val(res.data.nombre_corto);
             $('#modal-editar-usuario [name="codvent_softlink"]').val(res.data.codvend_softlink);
-
-            // $('#modal-editar-usuario [name="id_grupo[]"]').val(res.data.nro_documento);
-            // $('#modal-editar-usuario [name="id_rol[]"]').val(res.data.nro_documento);
+            $.each(res.data.usuario_grupo, function (index, element) {
+                $('#modal-editar-usuario [name="id_grupo[]"] option[value="'+element.id_grupo+'"]').attr('selected',true);
+            });
+            $.each(res.data.usuario_rol, function (index, element) {
+                $('#modal-editar-usuario [name="id_rol[]"] option[value="'+element.id_rol+'"]').attr('selected',true);
+            });
         }
     }).catch(function(err) {
-        // Run this when promise was rejected via reject()
         console.log(err)
     })
 }
@@ -266,6 +222,7 @@ function editarUsuario(id){
         show: true,
         backdrop: 'static'
     });
+    $('#modal-editar-usuario input[name="id_usuario"]').val(id)
     loadPerfilUsuario(id);
 }
 
