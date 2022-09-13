@@ -58,7 +58,13 @@ $(document).on('change','[data-select="modulos-select"]',function () {
         data: {data:data},
         dataType: 'JSON',
         success: function(response){
-            crearListaAccesos(response);
+            if (response.status===200) {
+                $('[data-accesos="accesos"]').html('');
+                crearListaAccesos(response);
+            }else{
+                $('[data-accesos="accesos"]').html('');
+            }
+
         }
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -72,42 +78,64 @@ function crearListaAccesos(response) {
     var array_modulo_accesos = [],
         array_sub_modulo_accesos = [];
     $.each(response.sub_modulos, function (index, element) {
-        html+='<div class="col-md-12">';
 
-            if (array_modulo_accesos.indexOf(element.id_modulo) ===-1 ) {
-                html+='<label >'+element.modulo+'</label>';
-                array_modulo_accesos.push(element.id_modulo);
-            }
-            if (element.acceso!=null) {
-                html+='<div class="col-md-12">'
-                    html+='<label class="btn" data-action="modulo-seleccionado" data-titulo="'+element.modulo+'" data-id-modulo="'+element.id_modulo+'" data-id-acceso="'+element.id_acceso+'" data-acceso="'+element.acceso+'" data-disabled="true" >'+element.acceso+'</label>'
-                html+='</div>';
-            }else{
-                if (element.modulos_hijos.length>0) {
-                    $.each(element.modulos_hijos, function (index_hijos, element_hijos) {
+        if (array_modulo_accesos.indexOf(element.id_modulo)===-1) {
+            html='';
+            html+='<div class="col-md-12">'
+                // html+='<label data-id-modulo="'+id_modulo+'">'+titulo+'</label>';
+                html+='<label data-element-id-modulo="'+element.id_modulo+'">'+element.modulo+'</label>';
+            html+='</div>';
+            array_modulo_accesos.push(element.id_modulo);
+            $('[data-accesos="accesos"]').append(html);
+            // console.log();
+        }
 
-                        html+='<div class="col-md-12">';
-                            if ( array_sub_modulo_accesos.indexOf(element_hijos.id_modulo) ===-1 ) {
-                                html+='<label >'+element_hijos.modulo+'</label>';
-                                array_sub_modulo_accesos.push(element_hijos.id_modulo);
-                            }
-                            if (element_hijos.acceso!=null) {
-                                html+='<div class="col-md-12">'
-                                    html+='<label class="btn" data-action="modulo-seleccionado" data-titulo="'+element.modulo+'" data-sub-titulo="'+element_hijos.modulo+'" data-id-modulo="'+element.id_modulo+'" data-id-sub-modulo="'+element_hijos.id_modulo+'" data-id-acceso="'+element_hijos.id_acceso+'" data-acceso="'+element_hijos.acceso+'" data-disabled="true">'+element_hijos.acceso+'</label>'
-                                html+='</div>';
-                            }
+        if (element.acceso!=null) {
+            html='';
+            html+='<div class="col-md-12">'
+                html+='<label class="btn" data-action="modulo-seleccionado" data-titulo="'+element.modulo+'" data-id-modulo="'+element.id_modulo+'" data-id-acceso="'+element.id_acceso+'" data-acceso="'+element.acceso+'" data-disabled="true" >'+element.acceso+'</label>'
+            html+='</div>';
+            $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"]').append(html);
+        }
 
-                        html+='</div>';
-                    });
+        if (element.acceso===null && element.modulos_hijos.length>0 ) {
+            $.each(element.modulos_hijos, function (index_hijos, element_hijos) {
 
-                }else{
-                    html+='<div class="col-md-12" >Sin accesos</div>'
+                if ( array_sub_modulo_accesos.indexOf(element_hijos.id_modulo) ===-1 ) {
+                    html='';
+                    html+='<div class="col-md-12">';
+                        html+='<label data-element-id-sub-modulo="'+element_hijos.id_modulo+'">'+element_hijos.modulo+'</label>';
+
+                    html+='</div>';
+                    array_sub_modulo_accesos.push(element_hijos.id_modulo);
+                    $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"]').append(html);
                 }
-            }
+                if (element_hijos.acceso!=null) {
+                    html='';
+                    html+='<div class="col-md-12">'
+                        html+='<label class="btn" data-action="modulo-seleccionado" data-titulo="'+element.modulo+'" data-sub-titulo="'+element_hijos.modulo+'" data-id-modulo="'+element.id_modulo+'" data-id-sub-modulo="'+element_hijos.id_modulo+'" data-id-acceso="'+element_hijos.id_acceso+'" data-acceso="'+element_hijos.acceso+'" data-disabled="true">'+element_hijos.acceso+'</label>'
+                    html+='</div>';
+                    $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"] [data-element-id-sub-modulo="'+element_hijos.id_modulo+'"]').append(html);
+                }else{
+                    html='';
+                    html+='<div class="col-md-12">'
+                        html+='<label class="">Sin accesos</label>'
+                    html+='</div>';
+                    $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"] [data-element-id-sub-modulo="'+element_hijos.id_modulo+'"]').append(html);
+                }
 
-        html+='</div>';
+
+            });
+        }
+        if (element.acceso===null && element.modulos_hijos.length===0 ) {
+            html='';
+            html+='<div class="col-md-12">'
+                html+='<label class="">Sin accesos</label>'
+            html+='</div>';
+            $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"]').append(html);
+        }
+
     });
-    $('[data-accesos="accesos"]').html(html);
     $('[data-accesos="accesos"]').removeClass('text-center');
     disableAccesos();
 }

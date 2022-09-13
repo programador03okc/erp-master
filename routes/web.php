@@ -1110,6 +1110,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('index', 'Logistica\Distribucion\OrdenesDespachoExternoController@view_ordenes_despacho_externo')->name('index');
 				Route::post('listarRequerimientosPendientesDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarRequerimientosPendientesDespachoExterno');
+				Route::get('prueba/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@prueba');
 				Route::post('priorizar', 'Logistica\Distribucion\OrdenesDespachoExternoController@priorizar');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');

@@ -2218,7 +2218,7 @@ public function anular_configuracion_socket($id){
                     )
                     ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'table_configuracion_modulo.id_modulo')
                     ->where('table_configuracion_modulo.id_padre',$value->id_modulo)
-                    ->orderBy('table_configuracion_modulo.id_modulo','ASC')
+                    ->orderBy('modulo','ASC')
                     ->get();
                     if (sizeof($sub_modulos_hijos)>0) {
                         $value->modulos_hijos = $sub_modulos_hijos;
@@ -2235,26 +2235,31 @@ public function anular_configuracion_socket($id){
     }
     public function guardarAccesos(Request $request)
     {
-        if ($request->id_modulo_padre) {
+        // return $request;exit;
+        if ($request->id_usuario) {
+            // return $request;exit;
             AccesosUsuarios::where('id_usuario',$request->id_usuario)->where('estado',1)->update([
                 "estado"=>0
             ]);
-            foreach ($request->id_modulo_padre as $key_modulo_padre => $value_modulo_hijos) {
-                foreach ($value_modulo_hijos as $key_modulo_hijo => $value_accesos) {
-                    foreach ($value_accesos as $key_accesos => $value_acceso) {
-                        $accesos_uduario = new AccesosUsuarios;
-                        $accesos_uduario->id_acceso = $value_acceso;
-                        $accesos_uduario->id_usuario = $request->id_usuario;
-                        $accesos_uduario->id_modulo = $key_modulo_hijo;
-                        $accesos_uduario->estado = 1;
-                        $accesos_uduario->id_padre = $key_modulo_padre;
-                        $accesos_uduario->save();
+            if ($request->id_modulo_padre) {
+                foreach ($request->id_modulo_padre as $key_modulo_padre => $value_modulo_hijos) {
+                    foreach ($value_modulo_hijos as $key_modulo_hijo => $value_accesos) {
+                        foreach ($value_accesos as $key_accesos => $value_acceso) {
+                            $accesos_uduario = new AccesosUsuarios;
+                            $accesos_uduario->id_acceso = $value_acceso;
+                            $accesos_uduario->id_usuario = $request->id_usuario;
+                            $accesos_uduario->id_modulo = $key_modulo_hijo;
+                            $accesos_uduario->estado = 1;
+                            $accesos_uduario->id_padre = $key_modulo_padre;
+                            $accesos_uduario->save();
+
+                        }
 
                     }
 
                 }
-
             }
+
             return response()->json([
                 "success"=>true,
                 "status"=>200
