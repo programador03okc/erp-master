@@ -286,24 +286,52 @@ function addObjAccesoUsuario(id_accion,valor){
 
 
 function anularUsuario(id){
-    var rspta = confirm('¿Está seguro que desea anular éste usuario?');
 
-    if (rspta){
-        $.ajax({
-            type: 'GET',
-            url: 'anular_usuario/'+id,
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-                alert('El usuario ha sido anulado');
-                $('#listaUsuarios').DataTable().ajax.reload();
-            }
-        }).fail( function( jqXHR, textStatus, errorThrown ){
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
-    }
+    // console.log(id);
+    // var id_usuario = id;
+    Swal.fire({
+        title: 'Eliminar',
+        text: "¿Esta seguro de eliminar este registro?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            $.ajax({
+                type: 'GET',
+                url: 'anular_usuario/'+id,
+                dataType: 'JSON',
+                success: function(response){
+                    if (response.status===200) {
+                        Swal.fire(
+                          'Éxito',
+                          'Se elimino con éxito.',
+                          'success'
+                        ).then((result) => {
+                            $('#listaUsuarios').DataTable().ajax.reload();
+                        })
+                    }else{
+                        Swal.fire(
+                            'Error',
+                            'No se pudo eliminar.',
+                            'error'
+                        );
+                    }
+                    //
+                }
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+      })
+
 }
 function getPasswordUserDecode(id){
     return new Promise(function(resolve, reject) {

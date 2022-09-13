@@ -877,11 +877,23 @@ class ConfiguracionController extends Controller{
     }
 
     public function anular_usuario($id){
+
         $usua = DB::table('configuracion.sis_usua')
         ->where('id_usuario',$id)
         ->update(['estado'=>7]);
+        if ($usua) {
+            return response()->json([
+                "success"=>true,
+                "status"=>200
+            ]);
+        } else {
+            return response()->json([
+                "success"=>false,
+                "status"=>404
+            ]);
+        }
 
-        return response()->json($usua);
+
     }
 /* NOTAS DE LANZAMIENTO */
 public function mostrar_notas_lanzamiento_select(){
