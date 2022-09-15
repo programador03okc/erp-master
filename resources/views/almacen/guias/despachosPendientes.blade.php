@@ -109,7 +109,7 @@ Atención de Salidas
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-ver-adjuntos" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width:35%;">
         <div class="modal-content">
-            <form id="form-guia_ven_create">
+            <form id="">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Adjuntos</h3>
@@ -132,7 +132,7 @@ Atención de Salidas
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default"data-dismiss="modal" >Cerrar</button>
+                    {{-- <button type="button" class="btn btn-default"data-dismiss="modal" >Cerrar</button> --}}
                 </div>
             </form>
         </div>

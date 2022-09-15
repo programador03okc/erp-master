@@ -77,6 +77,7 @@ function crearListaAccesos(response) {
     var html="";
     var array_modulo_accesos = [],
         array_sub_modulo_accesos = [];
+
     $.each(response.sub_modulos, function (index, element) {
 
         if (array_modulo_accesos.indexOf(element.id_modulo)===-1) {
@@ -87,7 +88,7 @@ function crearListaAccesos(response) {
             html+='</div>';
             array_modulo_accesos.push(element.id_modulo);
             $('[data-accesos="accesos"]').append(html);
-            // console.log();
+
         }
 
         if (element.acceso!=null) {

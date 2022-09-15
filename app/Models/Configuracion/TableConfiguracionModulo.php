@@ -7,16 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class TableConfiguracionModulo extends Model
 {
     //
-    protected $table = 'configuracion.table_configuracion_modulo';
+    protected $table = 'configuracion.modulos';
     protected $primaryKey = 'id_modulo';
     public $timestamps = false;
 
     public function accesos()
     {
-        return $this->belongsTo(Accesos::class, 'id_modulo', 'id_modulo');
+        return $this->belongsTo(Accesos::class, 'id_modulo', 'id_modulo')->where('estado',1);
     }
     public function accesosUsuarios()
     {
-        return $this->hasOne(AccesosUsuarios::class, 'id_padre', 'id_modulo');
+        return $this->hasOne(AccesosUsuarios::class, 'id_padre', 'id_modulo')->where('estado',1);
     }
 }

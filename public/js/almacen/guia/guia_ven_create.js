@@ -167,7 +167,7 @@ function mostrar_detalle() {
         <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
         <td>
         ${element.control_series ?
-                `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+                `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series"
         onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen});"></i>` : ''}
         </td>
         </tr>`;
@@ -358,7 +358,7 @@ function guardarGuiaVenta(data) {
                 $('#nro_despachos').text(response.nroDespachosPendientes);
             }
             // var id = encode5t(id_salida);
-            // window.open('imprimir_salida/'+id);                
+            // window.open('imprimir_salida/'+id);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

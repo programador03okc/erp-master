@@ -13,12 +13,12 @@ class Accesos extends Model
 
     public function accesoUsuario()
     {
-        return $this->hasOne(AccesosUsuarios::class, 'id_acceso', 'id_acceso');
+        return $this->hasOne(AccesosUsuarios::class, 'id_acceso', 'id_acceso')->where('estado',1);
     }
 
     public function modulos()
     {
-        return $this->hasOne(TableConfiguracionModulo::class, 'id_modulo', 'id_modulo');
+        return $this->hasOne(TableConfiguracionModulo::class, 'id_modulo', 'id_modulo')->where('estado',1);
     }
 
 

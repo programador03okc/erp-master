@@ -2181,7 +2181,7 @@ public function anular_configuracion_socket($id){
         ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
         ->where('id_usuario',$id)
         ->first();
-        $modulos =DB::table('configuracion.table_configuracion_modulo')->where('estado',1)->where('id_padre',0)->get();
+        $modulos =DB::table('configuracion.modulos')->where('estado',1)->where('id_padre',0)->get();
         return view('configuracion.usuario_accesos', compact('modulos','id','usuario'));
     }
     public function getModulosAccion(Request $request)
@@ -2194,30 +2194,31 @@ public function anular_configuracion_socket($id){
         if ($request->data) {
             $success=true;
             $status = 200;
-            $sub_modulos = DB::table('configuracion.table_configuracion_modulo')
+            $sub_modulos = DB::table('configuracion.modulos')
             ->select(
-                'table_configuracion_modulo.id_modulo',
-                'table_configuracion_modulo.descripcion as modulo',
+                'modulos.id_modulo',
+                'modulos.descripcion as modulo',
                 'accesos.id_acceso',
                 'accesos.descripcion as acceso'
             )
-            ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'table_configuracion_modulo.id_modulo','left')
-            ->where('table_configuracion_modulo.estado',1)
-            ->where('table_configuracion_modulo.id_padre',$request->data)
+            ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo','left')
+            ->where('modulos.estado',1)
+            ->where('modulos.id_padre',$request->data)
             ->get();
+
             foreach ($sub_modulos as $key => $value) {
                 $value->modulos_hijos=[];
                 if ($value->acceso ===null) {
 
-                    $sub_modulos_hijos = DB::table('configuracion.table_configuracion_modulo')
+                    $sub_modulos_hijos = DB::table('configuracion.modulos')
                     ->select(
-                        'table_configuracion_modulo.id_modulo',
-                        'table_configuracion_modulo.descripcion as modulo',
+                        'modulos.id_modulo',
+                        'modulos.descripcion as modulo',
                         'accesos.id_acceso',
                         'accesos.descripcion as acceso'
                     )
-                    ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'table_configuracion_modulo.id_modulo')
-                    ->where('table_configuracion_modulo.id_padre',$value->id_modulo)
+                    ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo')
+                    ->where('modulos.id_padre',$value->id_modulo)
                     ->orderBy('modulo','ASC')
                     ->get();
                     if (sizeof($sub_modulos_hijos)>0) {
