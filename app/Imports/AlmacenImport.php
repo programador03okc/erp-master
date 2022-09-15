@@ -78,7 +78,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
                 'registrado_por'    => 1,
                 'fecha_registro'    => new Carbon()
             ], 'id_almacen');
-            
+
             $this->numRows++;
         } else {
             if ($tipo == 2) {
@@ -231,7 +231,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
             }
         }
     }
-    
+
     public function saveSerie($cod_alma, $cod_prod, $serie, $tipo)
     {
         $query_alm = DB::table('almacen.alm_almacen')->where('codigo', $cod_alma)->first();
@@ -250,7 +250,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
                 'fecha_registro'    => new Carbon(),
                 'id_almacen'        => $id_alm
             ], 'id_prod_serie');
-    
+
             $this->numRows++;
         } else {
             if ($tipo == 2) {
@@ -283,24 +283,39 @@ class AlmacenImport implements ToCollection, WithHeadingRow
         // ], 'id_prod_ubi');
 
         $id_pro = ($query_pro != '') ? $query_pro->id_producto : null;
-        
+
         if ($query_alm != null) {
             $codigo = 'INI-'.$query_alm->codigo.'-22-00';
             $queryMov = DB::table('almacen.mov_alm')->where('codigo', $codigo);
-            
+
             if ($queryMov->count() > 0) {
                 $movimiento = $queryMov->first()->id_mov_alm;
 
-                $det = DB::table('almacen.mov_alm_det')->where('id_mov_alm', $movimiento);
-                
-                if ($det->count() > 0) {
-                    DB::table('almacen.mov_alm_det')->where('id_mov_alm', $movimiento)->update([
-                        'cantidad'      => $stock,
-                        'valorizacion'  => $valorizacion,
-                        'costo_promedio'=> $costo_promedio,
-                    ]);
+                if ($id_pro != null) {
+                    $det = DB::table('almacen.mov_alm_det')->where('id_mov_alm', $movimiento)->where('id_producto', $id_pro);
 
-                    $this->numRowsStatus++;
+                    if ($det->count() > 0) {
+                        DB::table('almacen.mov_alm_det')->where('id_mov_alm', $movimiento)->where('id_producto', $id_pro)->update([
+                            'cantidad'      => $stock,
+                            'valorizacion'  => $valorizacion,
+                            'costo_promedio'=> $costo_promedio,
+                        ]);
+
+                        $this->numRowsStatus++;
+                    } else {
+                        DB::table('almacen.mov_alm_det')->insertGetId([
+                            'id_mov_alm'    => $movimiento,
+                            'id_producto'   => $id_pro,
+                            'cantidad'      => $stock,
+                            'valorizacion'  => $valorizacion,
+                            'costo_promedio'=> $costo_promedio,
+                            'usuario'       => 1,
+                            'estado'        => 1,
+                            'fecha_registro'=> new Carbon(),
+                        ], 'id_mov_alm_det');
+
+                        $this->numRows++;
+                    }
                 } else {
                     DB::table('almacen.mov_alm_det')->insertGetId([
                         'id_mov_alm'    => $movimiento,
@@ -315,6 +330,7 @@ class AlmacenImport implements ToCollection, WithHeadingRow
 
                     $this->numRows++;
                 }
+
             } else {
                 $movimiento = DB::table('almacen.mov_alm')->insertGetId([
                     'id_almacen'    => $query_alm->id_almacen,
