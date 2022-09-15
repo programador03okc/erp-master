@@ -166,6 +166,10 @@ Transferencias
                                 class="btn btn-success btn-sm exportar" style="color:#fff !important;" onClick="exportarVentasInternasActualizadas()">
                                 <i class="fas fa-file-excel"></i> Actualizar Ventas Internas
                             </button>
+                            <button data-toggle="tooltip" data-placement="bottom" title="Actualizar Ventas Internas" 
+                                class="btn btn-success btn-sm exportar" style="color:#fff !important;" onClick="exportarValorizacionesIngresos()">
+                                <i class="fas fa-file-excel"></i> Actualizar Ingresos Cambio moneda
+                            </button>
                             @endif
                             <div class="row" style="padding-top:10px;">
                                 <div class="col-md-12">

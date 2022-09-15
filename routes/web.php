@@ -1117,7 +1117,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('listar_ubigeos', 'AlmacenController@listar_ubigeos');
 				Route::post('guardarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
-                Route::get('adjuntos-despacho', 'Logistica\Distribucion\OrdenesDespachoExternoController@adjuntosDespacho');
+				Route::get('adjuntos-despacho', 'Logistica\Distribucion\OrdenesDespachoExternoController@adjuntosDespacho');
 				Route::post('generarDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@generarDespachoInterno');
 				// Route::get('guardarOrdenDespachoExterno/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@guardarOrdenDespachoExterno');
 				Route::post('actualizarOrdenDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@actualizarOrdenDespachoExterno');
@@ -1444,7 +1444,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('actualizaItemsODE/{id}', 'Almacen\Movimiento\SalidasPendientesController@actualizaItemsODE');
 				Route::get('actualizaItemsODI/{id}', 'Almacen\Movimiento\SalidasPendientesController@actualizaItemsODI');
-                Route::get('atencion-ver-adjuntos', 'Almacen\Movimiento\SalidasPendientesController@verAdjuntos');
+				Route::get('atencion-ver-adjuntos', 'Almacen\Movimiento\SalidasPendientesController@verAdjuntos');
 			});
 
 			Route::group(['as' => 'customizacion.', 'prefix' => 'customizacion'], function () {
@@ -1606,6 +1606,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@imprimir_transferencia');
 
 				Route::post('actualizarCostosVentasInternas', 'Tesoreria\Facturacion\VentasInternasController@actualizarCostosVentasInternas');
+				Route::post('actualizarValorizacionesIngresos', 'Tesoreria\Facturacion\VentasInternasController@actualizarValorizacionesIngresos');
 			});
 		});
 
@@ -1874,6 +1875,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('imprimirFichaReporte/{id}', 'Cas\FichaReporteController@imprimirFichaReporte');
 				Route::post('incidenciasExcel', 'Cas\FichaReporteController@incidenciasExcel')->name('incidenciasExcel');
+
+				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
+				Route::post('guardarFichaTecnica', 'Almacen\Movimiento\DevolucionController@guardarFichaTecnica');
 			});
 		});
 	});
@@ -1982,9 +1986,9 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('listado-ventas-internas-exportar-excel', 'Tesoreria\Facturacion\PendientesFacturacionController@listadoVentasInternasExportarExcel');
 			Route::get('listado-ventas-externas-exportar-excel', 'Tesoreria\Facturacion\PendientesFacturacionController@listadoVentasExternasExportarExcel');
 
-            Route::post('guardar-adjuntos-factura', 'Tesoreria\Facturacion\PendientesFacturacionController@guardarAdjuntosFactura');
-            Route::get('ver-adjuntos', 'Tesoreria\Facturacion\PendientesFacturacionController@verAdjuntos');
-            Route::post('eliminar-adjuntos', 'Tesoreria\Facturacion\PendientesFacturacionController@eliminarAdjuntos');
+			Route::post('guardar-adjuntos-factura', 'Tesoreria\Facturacion\PendientesFacturacionController@guardarAdjuntosFactura');
+			Route::get('ver-adjuntos', 'Tesoreria\Facturacion\PendientesFacturacionController@verAdjuntos');
+			Route::post('eliminar-adjuntos', 'Tesoreria\Facturacion\PendientesFacturacionController@eliminarAdjuntos');
 		});
 
 		Route::group(['as' => 'comprobante-compra.', 'prefix' => 'comprobante-compra'], function () {
@@ -2028,15 +2032,15 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario')->name('listarUsuarios');
-        #asignar acceso a los usuarios
-        // Route::get('configuracion/usuarios/accesos/{id}', 'ConfiguracionController@usuarioAcceso')->name('accesos');
-        // Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
+		#asignar acceso a los usuarios
+		// Route::get('configuracion/usuarios/accesos/{id}', 'ConfiguracionController@usuarioAcceso')->name('accesos');
+		// Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
 
 
-        Route::post('usuarios/asignar/modulos', 'ConfiguracionController@asiganrModulos');
-        #----------------------
+		Route::post('usuarios/asignar/modulos', 'ConfiguracionController@asiganrModulos');
+		#----------------------
 		Route::get('listar_usuarios', 'ConfiguracionController@mostrar_usuarios');
-        Route::post('cambiar-clave', 'ConfiguracionController@cambiarClave');
+		Route::post('cambiar-clave', 'ConfiguracionController@cambiarClave');
 		Route::post('guardar_usuarios', 'ConfiguracionController@guardar_usuarios');
 		Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 		Route::get('anular_usuario/{id}', 'ConfiguracionController@anular_usuario');
@@ -2046,13 +2050,13 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('usuarios/asignar', 'ConfiguracionController@usuarioAsignar');
 
-        Route::get('modulos', 'ConfiguracionController@getModulos');
+		Route::get('modulos', 'ConfiguracionController@getModulos');
 
-        Route::get('accesos/{id}', 'ConfiguracionController@viewAccesos')->name('accesos');
-        Route::group(['as' => 'accesos.', 'prefix' => 'accesos'], function () {
-            Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
-            Route::post('guardar-accesos', 'ConfiguracionController@guardarAccesos');
-            Route::get('accesos-usuario/{id}', 'ConfiguracionController@accesoUsuario');
+		Route::get('accesos/{id}', 'ConfiguracionController@viewAccesos')->name('accesos');
+		Route::group(['as' => 'accesos.', 'prefix' => 'accesos'], function () {
+			Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
+			Route::post('guardar-accesos', 'ConfiguracionController@guardarAccesos');
+			Route::get('accesos-usuario/{id}', 'ConfiguracionController@accesoUsuario');
 		});
 
 
@@ -2065,25 +2069,24 @@ Route::group(['middleware' => ['auth']], function () {
 		});
 	});
 
-    // gerencial
-    Route::group(['as' => 'gerencial.', 'prefix' => 'gerencial'], function () {
-        Route::get('index', 'Gerencial\GerencialController@index')->name('index');
+	// gerencial
+	Route::group(['as' => 'gerencial.', 'prefix' => 'gerencial'], function () {
+		Route::get('index', 'Gerencial\GerencialController@index')->name('index');
 
-        Route::get('prueba', 'Gerencial\Cobranza\RegistroController@prueba')->name('prueba');
+		Route::get('prueba', 'Gerencial\Cobranza\RegistroController@prueba')->name('prueba');
 
-        Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
-            Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
-            Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
-            Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros')->name('listar');
-            Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes')->name('listar');
-            Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente')->name('listar');
-            // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
-            // });
-            // Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
+		Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
+			Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
+			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
+			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros')->name('listar');
+			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes')->name('listar');
+			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente')->name('listar');
+			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
+			// });
+			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
 
-            // });
+			// });
 		});
-
 	});
 	Route::get('config', function () {
 		return view('configuracion/main');

@@ -11,6 +11,8 @@ use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class DevolucionController extends Controller
 {
@@ -26,8 +28,18 @@ class DevolucionController extends Controller
 
     public function listarDevoluciones()
     {
-        $lista = DB::table('cas.devolucion')->where('estado', '!=', 7)->get();
+        $lista = DB::table('cas.devolucion')
+            ->select(
+                'devolucion.*',
+                'sis_usua.nombre_corto',
+                'devolucion_estado.descripcion as estado_doc',
+                'devolucion_estado.bootstrap_color'
+            )
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
+            ->join('cas.devolucion_estado', 'devolucion_estado.id_estado', '=', 'devolucion.estado')
+            ->where('devolucion.estado', '!=', 7)->get();
         return datatables($lista)->toJson();
+        // return response()->json($lista);
     }
 
     public function mostrarDevolucion($id)
@@ -233,5 +245,48 @@ class DevolucionController extends Controller
             $tipo = 'warning';
         }
         return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+    }
+
+    function guardarFichaTecnica(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+
+            //Guardar archivos subidos
+            if ($request->hasFile('archivos')) {
+                $archivos = $request->file('archivos');
+
+                foreach ($archivos as $archivo) {
+                    $id_ficha = DB::table('cas.devolucion_ficha')
+                        ->insertGetId([
+                            'id_devolucion' => $request->id_devolucion,
+                            'estado' => 1,
+                        ], 'id_ficha');
+
+                    //obtenemos el nombre del archivo
+                    $extension = pathinfo($archivo->getClientOriginalName(), PATHINFO_EXTENSION);
+                    $nombre = $id_ficha . '.' . 'FICHA' . '.' . $extension;
+
+                    //indicamos que queremos guardar un nuevo archivo en el disco local
+                    File::delete(public_path('cas/devoluciones/fichas/' . $nombre));
+                    Storage::disk('archivos')->put('cas/devoluciones/fichas/' . $nombre, File::get($archivo));
+
+                    DB::table('cas.devolucion_ficha')
+                        ->where('id_ficha', $id_ficha)
+                        ->update(['adjunto' => $nombre]);
+                }
+            }
+
+            $mensaje = 'Se guardó la ficha reporte correctamente';
+            $tipo = 'success';
+
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
     }
 }

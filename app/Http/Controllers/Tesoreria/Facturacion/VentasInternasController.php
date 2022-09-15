@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tesoreria\Facturacion;
 
+use App\Exports\ValorizacionesIngresosActualizadasExport;
 use App\Exports\VentasInternasActualizadasExport;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use Illuminate\Http\Request;
@@ -405,6 +406,103 @@ class VentasInternasController extends Controller
         return Excel::download(new VentasInternasActualizadasExport(
             $lista,
         ), 'VentasInternasActualizadas.xlsx');
+
+        // return response()->json(['nro_lista' => count($lista), 'lista' => $lista]);
+    }
+
+    public function actualizarValorizacionesIngresos()
+    {
+        $detalle = DB::table('almacen.mov_alm_det')
+            ->select(
+                'mov_alm_det.id_mov_alm_det',
+                'mov_alm_det.cantidad',
+                'mov_alm_det.valorizacion',
+                'mov_alm.id_almacen',
+                'mov_alm.codigo',
+                'alm_almacen.descripcion as almacen_descripcion',
+                'doc_com_det.precio_unitario',
+                'alm_prod.codigo as codigo_producto',
+                'alm_prod.id_moneda as id_moneda_producto',
+                'alm_prod.id_moneda_old',
+                'doc_com.moneda as id_moneda_doc',
+                'doc_com.fecha_emision',
+            )
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
+            // ->join('almacen.alm_prod', function ($join) {
+            //     $join->on('alm_prod.id_producto', '=', 'mov_alm_det.id_producto');
+            //     $join->where([['alm_prod.id_moneda', '!=', 'alm_prod.id_moneda_old']]);
+            // })
+            // ->join('almacen.mov_alm_det', 'mov_alm_det.id_producto', '=', 'alm_prod.id_producto')
+            ->join('almacen.doc_com_det', function ($join) {
+                $join->on('doc_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det');
+                $join->where('doc_com_det.estado', '!=', 7);
+            })
+            ->join('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
+            ->join('almacen.mov_alm', function ($join) {
+                $join->on('mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm');
+                $join->where('mov_alm.estado', '!=', 7);
+            })
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
+            ->where([
+                // ['alm_prod.id_moneda', '!=', 'alm_prod.id_moneda_old'],
+                ['mov_alm.id_tp_mov', '=', 1]
+            ])
+            ->whereColumn('alm_prod.id_moneda', '!=', 'alm_prod.id_moneda_old')
+            ->get();
+
+        // return response()->json($detalle);
+        $lista = [];
+
+        foreach ($detalle as $det) {
+            $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $det->fecha_emision]])
+                ->orderBy('fecha', 'DESC')->first();
+
+            $unitario = 0;
+
+            if ($det->id_moneda_producto == $det->id_moneda_doc) { //moneda del producto == moneda del documento
+                $unitario = floatval($det->precio_unitario);
+            } else {
+                if ($det->id_moneda_producto == 1) { //soles
+                    $unitario = floatval($det->precio_unitario) * floatval($tipo_cambio->venta);
+                } else if ($det->id_moneda_producto == 2) { //dolares
+                    $unitario = floatval($det->precio_unitario) / floatval($tipo_cambio->venta);
+                }
+            }
+
+            $unitario_ingreso_actual = floatval($det->valorizacion) / floatval($det->cantidad);
+
+            if (round($unitario_ingreso_actual, 6, PHP_ROUND_HALF_UP) !== round($unitario, 6, PHP_ROUND_HALF_UP)) {
+                $nueva_val = $unitario * floatval($det->cantidad);
+
+                DB::table('almacen.mov_alm_det')
+                    ->where('mov_alm_det.id_mov_alm_det', $det->id_mov_alm_det)
+                    ->update([
+                        'valorizacion' => $nueva_val,
+                        'valorizacion_old' => $det->valorizacion,
+                        'costo_promedio' => $unitario
+                    ]);
+
+                array_push($lista, [
+                    'codigo' => $det->codigo,
+                    'almacen_descripcion' => $det->almacen_descripcion,
+                    'codigo_producto' => $det->codigo_producto,
+                    'cantidad' => $det->cantidad,
+                    'valorizacion' => $det->valorizacion,
+                    'precio_unitario' => $det->precio_unitario,
+                    'id_moneda_producto' => $det->id_moneda_producto,
+                    'id_moneda_old' => $det->id_moneda_old,
+                    'id_moneda_doc' => $det->id_moneda_doc,
+                    'fecha_emision' => $det->fecha_emision,
+                    'nueva_valorizacion' => $nueva_val,
+                    'unitario_anterior' => $unitario_ingreso_actual,
+                    'unitario_nuevo' => $unitario,
+                ]);
+            }
+        }
+
+        return Excel::download(new ValorizacionesIngresosActualizadasExport(
+            $lista,
+        ), 'ValorizacionesIngresos.xlsx');
 
         // return response()->json(['nro_lista' => count($lista), 'lista' => $lista]);
     }
