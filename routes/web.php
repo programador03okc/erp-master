@@ -1605,6 +1605,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_transferencia/{id}', 'Almacen\Movimiento\TransferenciaController@imprimir_transferencia');
 
 				Route::post('actualizarCostosVentasInternas', 'Tesoreria\Facturacion\VentasInternasController@actualizarCostosVentasInternas');
+				Route::post('actualizarValorizacionesIngresos', 'Tesoreria\Facturacion\VentasInternasController@actualizarValorizacionesIngresos');
 			});
 		});
 

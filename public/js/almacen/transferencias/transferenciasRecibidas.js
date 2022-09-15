@@ -481,3 +481,11 @@ function exportarVentasInternasActualizadas() {
     $('body').append(form);
     form.trigger('submit');
 }
+
+function exportarValorizacionesIngresos() {
+    var form = $(`<form action="actualizarValorizacionesIngresos" method="post" target="_blank">
+        <input type="hidden" name="_token" value="${csrf_token}"/>
+        </form>`);
+    $('body').append(form);
+    form.trigger('submit');
+}
