@@ -1110,6 +1110,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('index', 'Logistica\Distribucion\OrdenesDespachoExternoController@view_ordenes_despacho_externo')->name('index');
 				Route::post('listarRequerimientosPendientesDespachoExterno', 'Logistica\Distribucion\OrdenesDespachoExternoController@listarRequerimientosPendientesDespachoExterno');
+				Route::get('prueba/{id}', 'Logistica\Distribucion\OrdenesDespachoExternoController@prueba');
 				Route::post('priorizar', 'Logistica\Distribucion\OrdenesDespachoExternoController@priorizar');
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('listarDetalleTransferencias/{id}', 'Almacen\Movimiento\TransferenciaController@listarDetalleTransferencias');
@@ -2030,7 +2031,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::group(['as' => 'configuracion.', 'prefix' => 'configuracion'], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
-		Route::get('usuarios', 'ConfiguracionController@view_usuario');
+		Route::get('usuarios', 'ConfiguracionController@view_usuario')->name('listarUsuarios');
 		#asignar acceso a los usuarios
 		// Route::get('configuracion/usuarios/accesos/{id}', 'ConfiguracionController@usuarioAcceso')->name('accesos');
 		// Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');

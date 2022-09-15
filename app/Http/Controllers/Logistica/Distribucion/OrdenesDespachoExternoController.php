@@ -412,7 +412,7 @@ class OrdenesDespachoExternoController extends Controller
     private function enviarOrdenDespacho(Request $request, $oportunidad, $requerimiento,$ordenDespacho)
     {
         $archivosOc = [];
-    /* 
+    /*
         if ($oportunidad !== null) {
             $ordenView = $oportunidad->ordenCompraPropia;
             //Obtencion de archivos en carpeta temporal
@@ -1476,5 +1476,148 @@ class OrdenesDespachoExternoController extends Controller
             $success=true;
         }
         return response()->json(['success'=>$success,'data'=>$adjuntos_despacho]);
+    }
+    public function prueba($id)
+    {
+        $data = DB::table('almacen.alm_req')
+            ->select(
+                'alm_req.id_requerimiento',
+                'alm_req.id_tipo_requerimiento',
+                'alm_req.codigo',
+                'alm_req.concepto',
+                'oc_propias_view.fecha_entrega',
+                'alm_req.tiene_transformacion',
+                'alm_req.direccion_entrega',
+                'alm_req.id_ubigeo_entrega',
+                'alm_req.id_almacen',
+                'alm_req.id_sede as sede_requerimiento',
+                'alm_req.telefono',
+                'alm_req.email',
+                'alm_req.id_cliente',
+                'alm_req.id_prioridad',
+                'alm_req.id_contacto',
+                'alm_req.enviar_contacto',
+                'alm_req.estado',
+                'alm_req.estado_despacho',
+                'alm_tp_req.descripcion as tipo_requerimiento_descripcion',
+                'sis_usua.nombre_corto as responsable',
+                'adm_estado_doc.estado_doc',
+                'adm_estado_doc.bootstrap_color',
+                'alm_almacen.descripcion as almacen_descripcion',
+                'sede_req.descripcion as sede_descripcion_req',
+                'adm_contri.id_contribuyente',
+                'adm_contri.nro_documento as cliente_ruc',
+                'adm_contri.razon_social as cliente_razon_social',
+                'orden_despacho.id_od',
+                'orden_despacho.fecha_despacho',
+                'orden_despacho.nro_orden as numero_orden',
+                'orden_despacho.persona_contacto',
+                'orden_despacho.direccion_destino',
+                'orden_despacho.correo_cliente',
+                'orden_despacho.telefono as telefono_od',
+                'orden_despacho.ubigeo_destino',
+                'orden_despacho.codigo as codigo_od',
+                'orden_despacho.estado as estado_od',
+                'orden_despacho.serie as serie_tra',
+                'orden_despacho.numero as numero_tra',
+                'orden_despacho.serie_guia_venta as serie_guia',
+                'orden_despacho.numero_guia_venta as numero_guia',
+                'orden_despacho.fecha_transportista',
+                'orden_despacho.codigo_envio',
+                'orden_despacho.credito',
+                'orden_despacho.importe_flete',
+                'orden_despacho.id_transportista',
+                'orden_despacho.plazo_excedido',
+                'orden_despacho.fecha_entregada',
+                'orden_despacho.fecha_despacho_real',
+                'despachoInterno.id_od as id_despacho_interno',
+                'despachoInterno.codigo as codigo_despacho_interno',
+                'despachoInterno.estado as estado_di',
+                'estado_envio.descripcion as estado_envio',
+                'transportista.razon_social as transportista_razon_social',
+                'guia_ven.serie',
+                'guia_ven.numero',
+                DB::raw("(SELECT COUNT(*) FROM almacen.orden_despacho_obs where
+                            orden_despacho_obs.id_od = orden_despacho.id_od
+                            and orden_despacho.estado != 7) AS count_estados_envios"),
+                DB::raw("(SELECT SUM(orden_despacho_obs.gasto_extra) FROM almacen.orden_despacho_obs where
+                            orden_despacho_obs.id_od = orden_despacho.id_od
+                            and orden_despacho.estado != 7) AS gasto_extra"),
+                DB::raw("(SELECT orden_despacho_obs.adjunto FROM almacen.orden_despacho_obs where
+                            orden_despacho_obs.id_od = orden_despacho.id_od
+                            and (orden_despacho_obs.accion = 8 or orden_despacho_obs.accion = 7 or orden_despacho_obs.accion = 6)
+                            and orden_despacho.estado != 7
+                            order by id_obs desc limit 1) AS adjunto"),
+                'oc_propias_view.nro_orden',
+                'oportunidades.codigo_oportunidad',
+                'oc_propias_view.id as id_oc_propia',
+                'oc_propias_view.tipo',
+                'oc_propias_view.id_oportunidad',
+                'oc_propias_view.id_entidad',
+                'oc_propias_view.estado_oc',
+                'oc_propias_view.moneda_oc',
+                'oc_propias_view.monto_total',
+                'oc_propias_view.fecha_publicacion',
+                'oc_propias_view.estado_aprobacion_cuadro',
+                'oc_propias_view.siaf',
+                'oc_propias_view.orden_compra',
+                'oc_propias_view.occ',
+                'oc_propias_view.tiene_comentarios',
+                'oc_propias_view.nombre_entidad',
+                'oc_propias_view.nombre_largo_responsable',
+                // 'trazabilidad.adjunto',
+                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
+                            alm_det_req.id_requerimiento = alm_req.id_requerimiento
+                            and alm_det_req.estado != 7
+                            and alm_det_req.id_producto is null) AS productos_no_mapeados"),
+                // DB::raw('count(*) as user_count, status')
+                DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
+                            alm_det_req.id_requerimiento = alm_req.id_requerimiento
+                            and alm_det_req.estado != 7
+                            and alm_det_req.id_tipo_item = 1) AS count_productos"),
+            )
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'oportunidades.id')
+            // ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'oc_propias_view.id_oportunidad')
+            // ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id_oportunidad', '=', 'oportunidades.id')
+            // ->leftJoin('almacen.alm_req', 'alm_req.id_cc', '=', 'cc.id')
+            ->leftJoin('almacen.alm_tp_req', 'alm_tp_req.id_tipo_requerimiento', '=', 'alm_req.id_tipo_requerimiento')
+            ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
+            ->leftJoin('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_req.estado_despacho')
+            ->leftJoin('administracion.sis_sede as sede_req', 'sede_req.id_sede', '=', 'alm_req.id_sede')
+            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')
+            ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->leftJoin('almacen.orden_despacho', function ($join) {
+                $join->on('orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                $join->where('orden_despacho.aplica_cambios', '=', false);
+                $join->where('orden_despacho.estado', '!=', 7);
+            })
+            ->leftJoin('almacen.orden_despacho as despachoInterno', function ($join) {
+                $join->on('despachoInterno.id_requerimiento', '=', 'alm_req.id_requerimiento');
+                $join->where('despachoInterno.aplica_cambios', '=', true);
+                $join->where('despachoInterno.estado', '!=', 7);
+            })
+            // ->leftJoin('almacen.orden_despacho_obs as trazabilidad', function ($join) {
+            //     $join->on('trazabilidad.id_od', '=', 'orden_despacho.id_od');
+            //     $join->orderBy('id_obs', 'desc');
+            //     $join->first();
+            // })
+            ->leftJoin('contabilidad.adm_contri as transportista', 'transportista.id_contribuyente', '=', 'orden_despacho.id_transportista')
+            ->leftJoin('administracion.adm_estado_doc as est_od', 'est_od.id_estado_doc', '=', 'orden_despacho.estado')
+            ->leftJoin('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.id_estado_envio')
+            ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od')
+            // ->where(DB::raw('(SELECT COUNT(*) FROM almacen.alm_det_req where
+            //         alm_det_req.id_requerimiento = alm_req.id_requerimiento
+            //         and alm_det_req.estado != 7
+            //         and alm_det_req.id_tipo_item = 1)'), '>', 0)
+            ->where([
+                ['alm_req.estado', '!=', 7]
+                // ['alm_req.observacion', '!=', 'Creado de forma automática por venta interna'],
+                // ['nro_productos', '>', 0]
+            ])
+            ->where('alm_req.codigo',$id)->get();
+        return $data;
     }
 }

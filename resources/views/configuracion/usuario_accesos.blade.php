@@ -7,6 +7,7 @@
 
 @section('estilos')
     <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -20,7 +21,7 @@
 @section('content')
 <div class="page-main" type="usuarios">
     <legend class="mylegend">
-        <h2>Usuarios</h2>
+        <h2>Accesos</h2>
         <ol class="breadcrumb">
             <li>
 
@@ -30,7 +31,7 @@
 
     <div class="box box-danger">
         <div class="box-header">
-            <h3 class="box-title">Accesos</h3>
+            <h3 class="box-title">Nombres y Apellidos : {{$usuario->nombres.' '.$usuario->apellido_paterno.' '.$usuario->apellido_materno}} </h3>
             <div class="pull-right box-tools">
             </div>
         </div>
@@ -40,6 +41,7 @@
                     <div class="form-group">
                         <label for="modulos">Modulos : </label>
                         <select id="modulos" class="form-control" name="modulos" data-select="modulos-select" required>
+                            <option value="">Seleccione...</option>
                             @foreach ($modulos as $modulos)
                                 <option value="{{$modulos->id_modulo}}">{{$modulos->descripcion}}</option>
                             @endforeach
@@ -56,22 +58,34 @@
     <div class="row">
         <div class="col-md-6">
             <div class="box box-primary">
-                <div class="row">
-                    <div class="col-md-12" data-accesos="accesos" style="height: 500px;overflow-y: auto;">
-                        {{-- Accesos --}}
+                <div class="box-header with-border">
+                    <h3 class="box-title">Accesos a seleccionar</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12" data-accesos="accesos" style="height: 500px;overflow-y: auto;">
+                            {{-- Accesos --}}
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
         <div class="col-md-6">
             <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Accesos seleccionados</h3>
+                </div>
                 <form action="" data-form="accesos-seleccionados">
-                    <input type="hidden" name="id_usuario" value="{{$id}}">
-                    <div class="row">
-                        <div class="col-md-12" data-accesos="select-accesos" style="height: 500px;overflow-y: auto;">
-                            {{-- <label for="" data-action="text-selct">Accesos asignados.</label> --}}
+                    <div class="box-body">
+                        <input type="hidden" name="id_usuario" value="{{$id}}">
+                        <div class="row">
+                            <div class="col-md-12" data-accesos="select-accesos" style="height: 500px;overflow-y: auto;">
+                                {{-- <label for="" data-action="text-selct">Accesos asignados.</label> --}}
+                            </div>
                         </div>
                     </div>
+
                 </form>
             </div>
         </div>
