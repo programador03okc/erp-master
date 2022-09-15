@@ -18,59 +18,91 @@ Gestión de incidencias
 @endsection
 
 @section('content')
+<div class="box box-solid">
+    <div class="box-body">
+        <div class="page-main" type="incidencia">
+            {{-- <div class="box">
+                <div class="box-header with-border">
 
-<div class="page-main" type="incidencia">
+                    <h3 class="box-title">Lista de incidencias</h3>
+                    <div class="box-tools pull-right">
 
-    <div class="box">
-        <div class="box-header with-border">
+                    </div>
+                </div>
+                <div class="box-body"> --}}
+            <div class="col-md-12" id="tab-incidencias" style="padding-top:10px;padding-bottom:10px;">
 
-            <h3 class="box-title">Lista de incidencias</h3>
-            <div class="box-tools pull-right">
-
-            </div>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <form id="formFiltrosIncidencias" method="POST" target="_blank"
-                    action="{{route('cas.garantias.fichas.incidenciasExcel')}}">
-                        @csrf()
-                    </form>
-                    <table class="mytable table table-condensed table-bordered table-okc-view"
-                        id="listaIncidencias" style="width:100%;">
-                        <thead>
-                            <tr>
-                                <th hidden></th>
-                                <th>Código</th>
-                                <th>Estado</th>
-                                <th>Empresa</th>
-                                <th>Cliente</th>
-                                <th>Nro Orden</th>
-                                <th>Factura</th>
-                                <th>Nombre contacto</th>
-                                {{-- <th>Telf. contacto</th>
-                                <th>Cargo contacto</th>
-                                <th>Dirección</th>
-                                <th>Horario</th> --}}
-                                <th>Fecha reporte</th>
-                                <th>Responsable</th>
-                                <th>Falla</th>
-                                <th width="70px">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                        <tfoot></tfoot>
-                    </table>
+                <ul class="nav nav-tabs" id="myTabIncidencias">
+                    <li class="active"><a data-toggle="tab" href="#incidencias">Lista de Incidencias</span></a></li>
+                    <li class=""><a data-toggle="tab" href="#devoluciones">Lista de Devoluciones</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="incidencias" class="tab-pane fade in active">
+                        
+                        <div class="row" style="padding-top:10px;">
+                            <div class="col-md-12">
+                                <form id="formFiltrosIncidencias" method="POST" target="_blank"
+                                action="{{route('cas.garantias.fichas.incidenciasExcel')}}">
+                                    @csrf()
+                                </form>
+                                <table class="mytable table table-condensed table-bordered table-okc-view"
+                                    id="listaIncidencias" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th>Código</th>
+                                            <th>Estado</th>
+                                            <th>Empresa</th>
+                                            <th>Cliente</th>
+                                            <th>Nro Orden</th>
+                                            <th>Factura</th>
+                                            <th>Nombre contacto</th>
+                                            {{-- <th>Telf. contacto</th>
+                                            <th>Cargo contacto</th>
+                                            <th>Dirección</th>
+                                            <th>Horario</th> --}}
+                                            <th>Fecha reporte</th>
+                                            <th>Responsable</th>
+                                            <th>Falla</th>
+                                            <th width="70px">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot></tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="devoluciones" class="tab-pane fade ">
+                        
+                        <div class="row" style="padding-top:10px;">
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaDevoluciones">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th width="8%">Código</th>
+                                            <th width="20%">Estado</th>
+                                            <th width="20%">Fecha registro</th>
+                                            <th width="30%">Concepto</th>
+                                            <th width="10%">Elaborado Por</th>
+                                            <th width="6%">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="box-footer">
-
         </div>
     </div>
 </div>
 
 @include('cas.fichasReporte.fichaReporteCreate')
+@include('cas.devoluciones.fichaTecnicaCreate')
 @include('cas.fichasReporte.cierreIncidencia')
 @include('cas.fichasReporte.cancelarIncidencia')
 @include('cas.fichasReporte.verDatosContacto')
@@ -99,6 +131,7 @@ Gestión de incidencias
 <script src="{{ asset('js/cas/fichasReporte/cierreIncidencia.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/cierreIncidencia.js'))}}"></script>
 <script src="{{ asset('js/cas/fichasReporte/cancelarIncidencia.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/cancelarIncidencia.js'))}}"></script>
 <script src="{{ asset('js/cas/fichasReporte/verDetalleReportes.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/verDetalleReportes.js'))}}"></script>
+<script src="{{ asset('js/cas/fichasReporte/gestionDevoluciones.js')}}?v={{filemtime(public_path('js/cas/fichasReporte/gestionDevoluciones.js'))}}"></script>
 
 <script>
     $(document).ready(function() {
@@ -106,6 +139,7 @@ Gestión de incidencias
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
         vista_extendida();
         listarIncidencias();
+        listarDevoluciones();
     });
 </script>
 @endsection
