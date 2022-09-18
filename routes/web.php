@@ -1878,6 +1878,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
 				Route::post('guardarFichaTecnica', 'Almacen\Movimiento\DevolucionController@guardarFichaTecnica');
+				Route::get('verFichasTecnicasAdjuntas/{id}', 'Almacen\Movimiento\DevolucionController@verFichasTecnicasAdjuntas')->name('ver-fichas-tecnicas');
+				Route::get('conformidadDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@conformidadDevolucion')->name('conformidad-devolucion');
 			});
 		});
 	});

@@ -33,13 +33,24 @@ class DevolucionController extends Controller
                 'devolucion.*',
                 'sis_usua.nombre_corto',
                 'devolucion_estado.descripcion as estado_doc',
-                'devolucion_estado.bootstrap_color'
+                'devolucion_estado.bootstrap_color',
+                DB::raw("(SELECT COUNT(*) FROM cas.devolucion_ficha where
+                    devolucion_ficha.id_devolucion = devolucion.id_devolucion
+                    and devolucion_ficha.estado != 7) AS count_fichas"),
+                'usuario_conforme.nombre_corto as usuario_conformidad'
             )
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
+            ->leftJoin('configuracion.sis_usua as usuario_conforme', 'usuario_conforme.id_usuario', '=', 'devolucion.registrado_por')
             ->join('cas.devolucion_estado', 'devolucion_estado.id_estado', '=', 'devolucion.estado')
             ->where('devolucion.estado', '!=', 7)->get();
         return datatables($lista)->toJson();
         // return response()->json($lista);
+    }
+
+    public function verFichasTecnicasAdjuntas($id)
+    {
+        $adjuntos = DB::table('cas.devolucion_ficha')->where([['id_devolucion', '=', $id], ['estado', '!=', 7]])->get();
+        return response()->json($adjuntos);
     }
 
     public function mostrarDevolucion($id)
@@ -219,7 +230,6 @@ class DevolucionController extends Controller
         return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
     }
 
-
     function anularDevolucion($id_devolucion)
     {
         $mov = DB::table('cas.devolucion')
@@ -261,13 +271,13 @@ class DevolucionController extends Controller
                 foreach ($archivos as $archivo) {
                     $id_ficha = DB::table('cas.devolucion_ficha')
                         ->insertGetId([
-                            'id_devolucion' => $request->id_devolucion,
+                            'id_devolucion' => $request->padre_id_devolucion,
                             'estado' => 1,
                         ], 'id_ficha');
 
                     //obtenemos el nombre del archivo
                     $extension = pathinfo($archivo->getClientOriginalName(), PATHINFO_EXTENSION);
-                    $nombre = $id_ficha . '.' . 'FICHA' . '.' . $extension;
+                    $nombre = $request->padre_id_devolucion . '-' . $id_ficha . '-' . $archivo->getClientOriginalName();
 
                     //indicamos que queremos guardar un nuevo archivo en el disco local
                     File::delete(public_path('cas/devoluciones/fichas/' . $nombre));
@@ -288,5 +298,37 @@ class DevolucionController extends Controller
             DB::rollBack();
             return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
+    }
+
+    function conformidadDevolucion($id_devolucion)
+    {
+        $mensaje = '';
+        $tipo = '';
+        $usuario = Auth::user();
+        //valida segun BD
+        $mov = DB::table('cas.devolucion')
+            ->where('id_devolucion', $id_devolucion)
+            ->first();
+        //Si existe ingreso y salida relacionado
+        if ($mov->estado == 1) {
+            DB::table('cas.devolucion')
+                ->where('id_devolucion', $id_devolucion)
+                ->update([
+                    'estado' => 2,
+                    'revisado_por' => $usuario->id_usuario,
+                    'fecha_revision' => new Carbon(),
+                ]);
+            $mensaje = 'Se dió la conformidad correctamente.';
+            $tipo = 'success';
+            //Revisada
+        } else if ($mov->estado == 2) {
+            $mensaje = 'La devolución ya fue revisada.';
+            $tipo = 'warning';
+            //Procesada
+        } else if ($mov->estado == 3) {
+            $mensaje = 'La devolución ya fue procesada.';
+            $tipo = 'warning';
+        }
+        return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
     }
 }

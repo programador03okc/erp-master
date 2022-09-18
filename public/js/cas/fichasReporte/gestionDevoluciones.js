@@ -27,11 +27,7 @@ function listarDevoluciones() {
                 'data': 'codigo',
                 render: function (data, type, row) {
                     return (
-                        `<button type="button" class="detalle btn btn-primary btn-xs" data-toggle="tooltip"
-                            data-placement="bottom" data-id="${row['id_devolucion']}" title="Ver Devolución" >
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        <a href="#" class="devolucion" data-id="${row["id_devolucion"]}">${row["codigo"]}</a>`
+                        `<a href="#" class="devolucion" data-id="${row["id_devolucion"]}">${row["codigo"]}</a>`
                     );
                 }
             },
@@ -48,7 +44,18 @@ function listarDevoluciones() {
                 }
             },
             { 'data': 'observacion' },
+            {
+                'render': function (data, type, row) {
+                    return `<a href="#" onClick="verFichasTecnicasAdjuntas(${row["id_devolucion"]});">${row["count_fichas"]} archivos adjuntos </a>`;
+                }, className: "text-center"
+            },
             { 'data': 'nombre_corto', name: 'sis_usua.nombre_corto' },
+            {
+                'data': 'usuario_conformidad', name: 'usuario_conforme.nombre_corto',
+                'render': function (data, type, row) {
+                    return `${row["usuario_conformidad"]} el ${formatDateHour(row["fecha_revision"])}`;
+                }, className: "text-center"
+            },
             {
                 'render':
                     function (data, type, row) {
@@ -56,11 +63,11 @@ function listarDevoluciones() {
                             return `
                             <div class="btn-group" role="group">
                                 <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip"
-                                data-placement="bottom" data-id="${row['id_incidencia']}" title="Agregar ficha técnica" >
+                                data-placement="bottom" data-id="${row['id_devolucion']}" title="Agregar ficha técnica" >
                                 <i class="fas fa-plus"></i></button>
 
-                                <button type="button" class="cerrar btn btn-primary boton" data-toggle="tooltip"
-                                data-placement="bottom" data-id="${row['id_incidencia']}" title="Conformidad" >
+                                <button type="button" class="conformidad btn btn-primary boton" data-toggle="tooltip"
+                                data-placement="bottom" data-id="${row['id_devolucion']}" title="Conformidad" >
                                 <i class="fas fa-check"></i></button>
 
                             </div>`;
@@ -85,7 +92,48 @@ $('#listaDevoluciones tbody').on("click", "button.agregar", function (e) {
     $('[name=id_ficha]').val('');
     $('.limpiarReporte').val('');
 
-    $('[name=padre_id_devolucion]').val(data.id_incidencia);
+    $('[name=padre_id_devolucion]').val(data.id_devolucion);
+});
+
+$('#listaDevoluciones tbody').on("click", "button.conformidad", function (e) {
+    $(e.preventDefault());
+    var data = $('#listaDevoluciones').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+    Swal.fire({
+        title: "¿Está seguro que dar su conformidad a ésta devolución?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Conforme"
+    }).then(result => {
+        if (result.isConfirmed) {
+            console.log(result);
+            $.ajax({
+                type: 'GET',
+                url: 'conformidadDevolucion/' + data.id_devolucion,
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log(response);
+                    $("#listaDevoluciones").DataTable().ajax.reload(null, false);
+                    Lobibox.notify(response.tipo, {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
+    });
+
 });
 
 $("#form-fichaTecnica").on("submit", function (e) {
@@ -138,4 +186,36 @@ function guardarFichaTecnica() {
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function verFichasTecnicasAdjuntas(id_devolucion) {
+
+    if (id_devolucion !== "") {
+        $('#modal-verFichasTecnicasAdjuntas').modal({
+            show: true
+        });
+        $('#adjuntosFichasTecnicas tbody').html('');
+
+        $.ajax({
+            type: 'GET',
+            url: 'verFichasTecnicasAdjuntas/' + id_devolucion,
+            dataType: 'JSON',
+            success: function (response) {
+                console.log(response);
+                if (response.length > 0) {
+                    var html = '';
+                    response.forEach(function (element) {
+                        html += `<tr>
+                            <td><a target="_blank" href="/files/cas/devoluciones/fichas/${element.adjunto}">${element.adjunto}</a></td>
+                        </tr>`;
+                    });
+                    $('#adjuntosFichasTecnicas tbody').html(html);
+                }
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    }
 }

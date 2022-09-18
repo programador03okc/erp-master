@@ -85,7 +85,9 @@ Gestión de incidencias
                                             <th width="20%">Estado</th>
                                             <th width="20%">Fecha registro</th>
                                             <th width="30%">Concepto</th>
+                                            <th width="30%">Fichas Técnicas</th>
                                             <th width="10%">Elaborado Por</th>
+                                            <th width="10%">Revisado Por</th>
                                             <th width="6%">Acción</th>
                                         </tr>
                                     </thead>
@@ -102,11 +104,12 @@ Gestión de incidencias
 </div>
 
 @include('cas.fichasReporte.fichaReporteCreate')
-@include('cas.devoluciones.fichaTecnicaCreate')
+@include('almacen.devoluciones.fichaTecnicaCreate')
 @include('cas.fichasReporte.cierreIncidencia')
 @include('cas.fichasReporte.cancelarIncidencia')
 @include('cas.fichasReporte.verDatosContacto')
 @include('cas.fichasReporte.verAdjuntosFicha')
+@include('almacen.devoluciones.verFichasTecnicasAdjuntas')
 
 @endsection
 
