@@ -87,23 +87,27 @@ class ReporteSaldosExport implements FromView, WithColumnFormatting, WithStyles
                 }
 
                 $reserva = ($d->cantidad_reserva == null) ? 0 : $d->cantidad_reserva;
-                $data[] = [
-                    'id_producto'           => $d->id_producto,
-                    'id_almacen'            => $d->id_almacen,
-                    'codigo'                => ($d->codigo != null) ?  $d->codigo : '',
-                    'cod_softlink'          => ($d->cod_softlink != null) ?  $d->cod_softlink : '',
-                    'part_number'           => ($d->part_number != null) ?  trim($d->part_number) : '',
-                    'producto'              => trim($d->producto),
-                    'categoria'             => trim($d->categoria),
-                    'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
-                    'valorizacion'          => $saldo_valor,
-                    'costo_promedio'        => $costo_promedio,
-                    'abreviatura'           => ($d->abreviatura != null) ?  $d->abreviatura : '',
-                    'stock'                 => $saldo,
-                    'reserva'               => $reserva,
-                    'disponible'            => ($saldo - $reserva),
-                    'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  $d->almacen_descripcion : '',
-                ];
+                $disponibilidad =($saldo - $reserva);
+                if ($reserva>0 || $disponibilidad>0 || $saldo>0) {
+                    $data[] = [
+                        'id_producto'           => $d->id_producto,
+                        'id_almacen'            => $d->id_almacen,
+                        'codigo'                => ($d->codigo != null) ?  $d->codigo : '',
+                        'cod_softlink'          => ($d->cod_softlink != null) ?  $d->cod_softlink : '',
+                        'part_number'           => ($d->part_number != null) ?  trim($d->part_number) : '',
+                        'producto'              => trim($d->producto),
+                        'categoria'             => trim($d->categoria),
+                        'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
+                        'valorizacion'          => $saldo_valor,
+                        'costo_promedio'        => $costo_promedio,
+                        'abreviatura'           => ($d->abreviatura != null) ?  $d->abreviatura : '',
+                        'stock'                 => $saldo,
+                        'reserva'               => $reserva,
+                        'disponible'            => ($saldo - $reserva),
+                        'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  $d->almacen_descripcion : '',
+                    ];
+                }
+
             }
         }
         return view('almacen.export.reporteSaldos', ['saldos' => $data]);
