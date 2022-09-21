@@ -106,7 +106,7 @@ class SaldosController extends Controller
                     ->orderBy('mov_alm.id_tp_mov', 'asc')
                     ->get();
 
-                // if ($movimientos->count() > 0) {
+                if ($movimientos->count() > 0) {
                 $saldo = 0;
                 $saldo_valor = 0;
                 $costo_promedio = 0;
@@ -146,7 +146,7 @@ class SaldosController extends Controller
                     'disponible'            => ($saldo - $reserva),
                     'almacen_descripcion'   => ($d->almacen_descripcion != null) ? $d->almacen_descripcion : '',
                 ];
-                // }
+                }
             }
         }
         return DataTables::of($data)->make(true);

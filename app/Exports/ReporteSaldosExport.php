@@ -52,7 +52,6 @@ class ReporteSaldosExport implements FromView, WithColumnFormatting, WithStyles
         //     $query = $query->whereIn('alm_prod_ubi.id_almacen', session()->get('filtroAlmacen'));
         // }
         // $query = $query->get();
-
         foreach ($query as $d) {
             $movimientos = DB::table('almacen.mov_alm')
                 ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
