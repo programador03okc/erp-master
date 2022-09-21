@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Almacen\Catalogo;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,12 +24,30 @@ class ProductoController extends Controller
         // $posiciones = $this->mostrar_posiciones_cbo();
         // $ubicaciones = $this->mostrar_ubicaciones_cbo();
         $monedas = AlmacenController::mostrar_moneda_cbo();
-        return view('almacen/producto/producto', compact('tipos', 'categorias', 'clasificaciones', 'subcategorias', 'unidades', 'monedas'));
+
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',65)
+        ->where('accesos_usuarios.id_padre',4)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        return view('almacen/producto/producto', compact('tipos', 'categorias', 'clasificaciones', 'subcategorias', 'unidades', 'monedas','array_accesos_botonera'));
     }
 
     function view_prod_catalogo()
     {
-        return view('almacen/producto/prod_catalogo');
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/producto/prod_catalogo',compact('array_accesos'));
     }
 
     public function mostrar_prods()

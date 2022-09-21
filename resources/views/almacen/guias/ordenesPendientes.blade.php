@@ -201,6 +201,7 @@ Atención de Ingresos
 <script src="{{ asset('js/almacen/guia/guia_transformacion_mapeo.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_transformacion_mapeo.js'))}}"></script>
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';

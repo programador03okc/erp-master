@@ -16,6 +16,7 @@ use App\Models\Almacen\Producto;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\Reserva;
 use App\Models\Almacen\Trazabilidad;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Usuario;
 use App\Models\Configuracion\UsuarioDivision;
 use App\Models\Tesoreria\RequerimientoPago;
@@ -33,11 +34,15 @@ class RevisarAprobarController extends Controller{
 
     function viewListaRequerimientoPagoPendienteParaAprobacion(){
         $gruposUsuario = Auth::user()->getAllGrupo();
-
-        return view('necesidades/revisar_aprobar/lista',compact('gruposUsuario'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('necesidades/revisar_aprobar/lista',compact('gruposUsuario','array_accesos'));
     }
 
-    
+
     public function mostrarListaDeDocumentosPendientes(Request $request)
     // public function mostrarListaDeDocumentosPendientes()
     {
@@ -58,7 +63,7 @@ class RevisarAprobarController extends Controller{
         $divisiones = Division::mostrar();
         $idDivisionList = [];
         foreach ($divisiones as $value) {
-            $idDivisionList[] = $value->id_division; //lista de id del total de divisiones 
+            $idDivisionList[] = $value->id_division; //lista de id del total de divisiones
         }
 
         // $divisionUsuarioNroOrdenUno = Division::mostrarDivisionUsuarioNroOrdenUno();
@@ -79,8 +84,8 @@ class RevisarAprobarController extends Controller{
         // $idSede = $request->idSede;
         // $idGrupo = $request->idGrupo;
         // $idPrioridad = $request->idPrioridad;
-  
-        
+
+
         $documentoTipoRequerimientoBienesYServicios =Documento::join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
         ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
         ->leftJoin('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'adm_documentos_aprob.id_tp_documento')
@@ -109,8 +114,8 @@ class RevisarAprobarController extends Controller{
             'sis_usua.nombre_corto as usuario_nombre_corto',
             'adm_estado_doc.estado_doc as estado_descripcion',
             'adm_estado_doc.bootstrap_color'
-            // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario) 
-            // FROM almacen.alm_det_req 
+            // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
+            // FROM almacen.alm_det_req
             // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
             // alm_det_req.estado != 7) AS monto_total")
         )
@@ -129,7 +134,7 @@ class RevisarAprobarController extends Controller{
         //     return $query->whereRaw('requerimiento_pago.id_prioridad = ' . $idPrioridad);
         // })
         ->get();
-        
+
         $documentoTipoRequerimientoPago =Documento::join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'adm_documentos_aprob.id_doc')
         ->leftJoin('tesoreria.requerimiento_pago_tipo', 'requerimiento_pago.id_requerimiento_pago_tipo', '=', 'requerimiento_pago_tipo.id_requerimiento_pago_tipo')
         ->leftJoin('administracion.adm_tp_docum', 'adm_tp_docum.id_tp_documento', '=', 'adm_documentos_aprob.id_tp_documento')
@@ -173,17 +178,17 @@ class RevisarAprobarController extends Controller{
         //     return $query->whereRaw('alm_req.id_prioridad = ' . $idPrioridad);
         // })
         ->get();
-        
+
 
         $documentosEnUnaLista = $documentoTipoRequerimientoBienesYServicios->merge($documentoTipoRequerimientoPago);
 
-        
+
         $todosLosDocumentos = array_reverse(array_sort($documentosEnUnaLista, function ($value) {
             return $value['adm_documentos_aprob.id_doc_aprob'];
         }));
-        
-        
-    
+
+
+
         $payload = [];
         $mensaje=[];
 
@@ -195,26 +200,26 @@ class RevisarAprobarController extends Controller{
                 $idDocumento = $element->id_doc_aprob;
                 $tipoDocumento = $element->id_tp_documento;
                 $idGrupo = $element->id_grupo;
-               
+
 
                 $idRolUsuarioDocList=[];
                 $allRolUsuarioDocList = Auth::user()->getAllRolUser($element->id_usuario);
                 foreach ($allRolUsuarioDocList as $allroldoc) {
                     $idRolUsuarioDocList[]=$allroldoc->id_rol;
                 }
- 
+
                 $idTipoRequerimiento = $element->id_tipo_requerimiento > 0?$element->id_tipo_requerimiento:null;
                 $idPrioridad = $element->id_prioridad;
                 $idMoneda = $element->id_moneda;
                 $estado = $element->estado !=null ?$element->estado:$element->id_estado;
-                $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division; 
+                $idDivision = $element->division_id !=null ?$element->division_id:$element->id_division;
                 $idTipoRequerimientoPago= $element->id_requerimiento_pago_tipo >0 ?$element->id_requerimiento_pago_tipo:null;
                 $montoTotal= 0;
                 $obtenerMontoTotal = $this->obtenerMontoTotalDocumento($tipoDocumento,$idDocumento);
                 if($obtenerMontoTotal['estado']=='success'){
                     $montoTotal=$obtenerMontoTotal['monto'];
                 }
-                
+
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList);
                 // Debugbar::info($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList);
                 if(count($operaciones)>1){
@@ -246,7 +251,7 @@ class RevisarAprobarController extends Controller{
                     $aprobacionFinalOPendiente = '';
                     $cantidadConSiguienteAprobacion=false;
                     $tieneRolConSiguienteAprobacion='';
-                    
+
                     foreach ($flujoTotal as $flujo) { //obtener rol con privilegio de aprobar sin respetar orden
 
                         if($flujo->aprobar_sin_respetar_orden ==true || $flujo->aprobar_sin_respetar_orden >0){
@@ -258,15 +263,15 @@ class RevisarAprobarController extends Controller{
                     if(count(array_intersect($idRolAprobanteEnCualquierOrdenList,$idRolUsuarioList))>0){
                         $aprobarSinImportarOrden = true;
                     }
-                    
+
 
                     if ($cantidadAprobacionesRealizadas > 0) {
-    
+
                         // si existe data => evaluar si tiene aprobacion / Rechazado / observado.
                         if (in_array($ultimoVoBo->id_vobo, [1, 5])) { // revisado o aprobado
                             // next flujo y rol aprobante
                             $ultimoIdFlujo = $ultimoVoBo->id_flujo;
-    
+
                             foreach ($flujoTotal as $key => $flujo) {
                                 if ($flujo->id_flujo == $ultimoIdFlujo) {
                                     $nroOrdenUltimoFlujo = $flujo->orden;
@@ -295,7 +300,7 @@ class RevisarAprobarController extends Controller{
                                     $nextIdFlujo = $flujo->id_flujo;
                                     $nextIdRolAprobanteList[] = $flujo->id_rol;
                                     $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
-    
+
                                 }
                             }
                         }
@@ -311,30 +316,30 @@ class RevisarAprobarController extends Controller{
                                 $nextIdFlujo = $flujo->id_flujo;
                                 $nextIdRolAprobanteList[] = $flujo->id_rol;
                                 $aprobacionFinalOPendiente = $flujo->orden == $tamañoFlujo ? 'APROBACION_FINAL' : 'PENDIENTE'; // NEXT NRO ORDEN == TAMAÑO FLUJO?
-    
+
                             }
                         }
                     }
                     $numeroOrdenSiguienteAprobacion=0;
                     foreach ($flujoTotal as $flujo) {
                         if ($flujo->id_operacion == $nextIdOperacion) {
-                            if($flujo->orden == (intval($nextNroOrden)+1)){ // si existe una siguiente aprobacion (nro orden + 1 ) 
+                            if($flujo->orden == (intval($nextNroOrden)+1)){ // si existe una siguiente aprobacion (nro orden + 1 )
                                 if(in_array($flujo->id_rol, $idRolUsuarioList) == true){
                                     $cantidadConSiguienteAprobacion=true;
                                     $numeroOrdenSiguienteAprobacion= $flujo->orden;
                                 }
-                                
+
                             }
-                            
+
                         }
                     }
-    
+
                     if($cantidadConSiguienteAprobacion ==true){
                         $tieneRolConSiguienteAprobacion=true;
                     }else{
-                        $tieneRolConSiguienteAprobacion=false;    
+                        $tieneRolConSiguienteAprobacion=false;
                     }
-                    
+
                     $idRolAprobanteIntersectSelected=0;
                     $idRolAprobanteIntersectArray = array_intersect($nextIdRolAprobanteList, $idRolUsuarioList);
                     foreach ($idRolAprobanteIntersectArray as $key => $value) {
@@ -351,7 +356,7 @@ class RevisarAprobarController extends Controller{
                     // Debugbar::info($idRolUsuarioList);
                     // Debugbar::info(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList));
 
-                    if (((count(array_intersect($nextIdRolAprobanteList, $idRolUsuarioList))) > 0) == true || (count(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList))) > 0) {                    
+                    if (((count(array_intersect($nextIdRolAprobanteList, $idRolUsuarioList))) > 0) == true || (count(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList))) > 0) {
 
 
                             $element->setAttribute('id_flujo',$nextIdFlujo);
@@ -368,11 +373,11 @@ class RevisarAprobarController extends Controller{
 
                             if(!(in_array(36,$idRolUsuarioDocList) && (in_array(21,$idRolUsuarioList) || in_array(22,$idRolUsuarioList) ))){ //filtro residente no mostrar a jefes de planificacion y jefe de ejecición de proyectos
                                 $payload[] = $element;
-                            } 
-                            } 
+                            }
+                            }
 
                     }
-                            } 
+                            }
 
                 }
 
@@ -383,7 +388,7 @@ class RevisarAprobarController extends Controller{
     }
 
     public function mostrarListaDeDocumentosAprobados(Request $request){
- 
+
         $allRol = Auth::user()->getAllRol();
         $idRolUsuarioList = [];
         foreach ($allRol as  $rol) {
@@ -395,18 +400,18 @@ class RevisarAprobarController extends Controller{
 
     public function obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento){
         $result = [];
-        
+
         $documento = Documento::where([['id_doc_aprob',$idDocumento],['id_tp_documento',$tipoDocumento]])->first();
 
         if( !empty($documento)){
-            $result =[ 
+            $result =[
                 'id'=> $documento->id_doc,
                 'mensaje'=>'Id encontrado',
                 'estado'=>'success'
         ];
-            
+
         }else{
-            $result =[ 
+            $result =[
             'id'=>0,
             'mensaje'=>'No se encontro un id que haga referencia al id documento',
             'estado'=>'error'
@@ -415,13 +420,13 @@ class RevisarAprobarController extends Controller{
         }
 
         return $result;
-    
+
     }
-    
+
     public function obtenerMontoTotalDocumento($tipoDocumento, $idDocumento){
 
         $montoTotal =0;
-        
+
         if($tipoDocumento ==1){
             $obtenerId = $this->obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento);
             if($obtenerId['estado']=='success'){
@@ -528,7 +533,7 @@ class RevisarAprobarController extends Controller{
         $trazabilidad->save();
 
         return $trazabilidad;
-    
+
     }
 
     private function enviarNotificacionPorAprobacion($requerimiento,$comentario,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad){
@@ -544,7 +549,7 @@ class RevisarAprobarController extends Controller{
             '<li> '.$trazabilidad->descripcion.': ' . ($nombreCompletoUsuarioRevisaAprueba ?? '') . '</li>' .
             (!empty($comentario) ? ('<li> Comentario: ' . $comentario . '</li>') : '') .
             '</ul>' .
-            '<p> *Este correo es generado de manera automática, por favor no responder.</p> 
+            '<p> *Este correo es generado de manera automática, por favor no responder.</p>
         <br> Saludos <br> Módulo de Logística <br> SYSTEM AGILE';
 
         $seNotificaraporEmail = false;
@@ -583,7 +588,7 @@ class RevisarAprobarController extends Controller{
 
                 }
             }
-        }    
+        }
     }
 
     public function registrarRespuesta($accion, $idFlujo, $idDocumento, $idUsuario,$comentario, $idRolAprobante){
@@ -607,7 +612,7 @@ class RevisarAprobarController extends Controller{
         }elseif($accion ==3){
             $mensaje='Documento observado';
             $this->limpiarMapeoDeDocumento($idDocumento);
-            
+
         }
 
         return ['data'=>$aprobacion,'mensaje'=>$mensaje];
@@ -619,7 +624,7 @@ class RevisarAprobarController extends Controller{
             $detalle = DetalleRequerimiento::where('id_requerimiento',$documento->id_doc)->get();
             foreach ($detalle as $value) {
                 $det = DetalleRequerimiento::find($value->id_detalle_requerimiento);
-                
+
                 $cantidadDetalleConProducto = DetalleRequerimiento::where([['id_producto',$det->id_producto],['id_requerimiento','!=',$det->id_requerimiento]])->count();
                 $cantiadReservaConProd = Reserva::where('id_producto',$det->id_producto)->count();
                 if($cantidadDetalleConProducto==0 && $cantiadReservaConProd==0){
@@ -628,7 +633,7 @@ class RevisarAprobarController extends Controller{
                     $prod->save();
                 }
 
-                
+
                 $det->id_producto= null;
                 $det->save();
             }
@@ -673,7 +678,7 @@ class RevisarAprobarController extends Controller{
             // agregar vobo (1= aprobado, 2= rechazado, 3=observado, 5=Revisado)
             $aprobacion= $this->registrarRespuesta($request->accion, $request->idFlujo, $request->idDocumento,$request->idUsuarioAprobante,$request->sustento, $request->idRolAprobante);
 
- 
+
             $montoTotal= 0;
 
             $obtenerMontoTotal = $this->obtenerMontoTotalDocumento($request->idTipoDocumento,$request->idDocumento);
@@ -690,7 +695,7 @@ class RevisarAprobarController extends Controller{
             //  ======= inicio tipo requerimiento b/s =======
             $requerimiento=[];
             $requerimientoPago=[];
-            if($request->idTipoDocumento ==1){ 
+            if($request->idTipoDocumento ==1){
                 if($request->idRequerimiento > 0){
                     $requerimiento = Requerimiento::find($request->idRequerimiento);
                 }else{
@@ -705,14 +710,14 @@ class RevisarAprobarController extends Controller{
 
                 $requerimientoConEstadoActualizado= $this->actualizarEstadoRequerimiento($request->accion,$requerimiento,$request->aprobacionFinalOPendiente);
                 $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$request->aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $request->accion);
-    
+
                 // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
- 
+
             }
             //  ======= fin tipo requerimiento b/s =======
 
             //  ======= inicio tipo requerimiento pago =======
-            if($request->idTipoDocumento ==11){ 
+            if($request->idTipoDocumento ==11){
                 if($request->idRequerimientoPago > 0){
                     $requerimientoPago = RequerimientoPago::find($request->idRequerimientoPago);
                 }else{
@@ -726,29 +731,29 @@ class RevisarAprobarController extends Controller{
 
                 $this->actualizarEstadoRequerimientoPago($request->accion,$requerimientoPago,$request->aprobacionFinalOPendiente);
                 // $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$request->aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $request->accion);
-    
+
                 // $this->enviarNotificacionPorAprobacion($requerimientoPago,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
- 
+
 
             }
             //  ======= fin tipo requerimiento pago =======
 
-            
+
             $accionNext=0;
             $aprobacionFinalOPendiente='';
 
             if($request->tieneRolConSiguienteAprobacion == true){ // si existe un siguiente flujo de aprobacion con el mismo rol
-                if($request->accion==1 || $request->accion ==5){ // si accion es revisar/aprobar, buscar siguientes aprobaciones con mismo rol de usuario para auto aprobación 
+                if($request->accion==1 || $request->accion ==5){ // si accion es revisar/aprobar, buscar siguientes aprobaciones con mismo rol de usuario para auto aprobación
 
                     $allRol = Auth::user()->getAllRol();
                     $idRolUsuarioList = [];
                     foreach ($allRol as  $rol) {
                         $idRolUsuarioList[] = $rol->id_rol;
                     }
-    
+
                     $flujoTotal = Flujo::getIdFlujo($request->idOperacion)['data'];
                     $tamañoFlujo = $flujoTotal ? count($flujoTotal) : 0;
-    
+
                     $ordenActual=0;
                     foreach ($flujoTotal as $flujo) {
                         if($flujo->id_flujo == $request->idFlujo){
@@ -767,12 +772,12 @@ class RevisarAprobarController extends Controller{
                                             $accionNext =1;
                                             $aprobacionFinalOPendiente='APROBACION_FINAL';
                                             $nombreAccion='Aprobado';
-                                            
+
                                         }else{
                                             $accionNext =5;
                                             $aprobacionFinalOPendiente='PENDIENTE';
                                             $nombreAccion='Pendiente Aprobación';
-                                            
+
                                         }
                                         $aprobacion= $this->registrarRespuesta($accionNext, $flujo->id_flujo, $request->idDocumento,$request->idUsuarioAprobante,$request->sustento, $flujo->id_rol);
 
@@ -784,14 +789,14 @@ class RevisarAprobarController extends Controller{
                                         }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
                                             // $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $accionNext);
                                             $this->actualizarEstadoRequerimientoPago($accionNext,$requerimientoPago,$aprobacionFinalOPendiente);
-                                            
+
                                             // $this->enviarNotificacionPorAprobacion($requerimiento,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$trazabilidad);
                                         }
                                     }
                                     $i++;
                                 }
                             }
-    
+
                         }
                     }
                 }

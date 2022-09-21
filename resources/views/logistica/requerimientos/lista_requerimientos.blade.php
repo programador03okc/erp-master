@@ -88,8 +88,10 @@ Listado de requerimientos logísticos
                         </div>
                     </div>
                 </div>
+                {{-- <input type="hidden" name="" value="{{$array_accesos}}"> --}}
                 <div class="box box-widget">
                     <div class="box-body">
+                        {{-- {{ json_encode($array_accesos) }} --}}
                         <div class="table-responsive">
                             <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientosElaborados" width="100%">
                                 <thead>
@@ -180,9 +182,7 @@ Listado de requerimientos logísticos
 <script>
     var roles = JSON.parse('{!!$roles!!}');
     var grupos = JSON.parse('{!!$gruposUsuario!!}');
-
-
-
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         const requerimientoModel = new RequerimientoModel();

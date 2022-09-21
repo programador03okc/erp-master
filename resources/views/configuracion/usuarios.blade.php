@@ -141,7 +141,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="id_estado_civil">Estado civil : </label>
                                 <select id="id_estado_civil" class="form-control" name="id_estado_civil" required>
@@ -152,33 +152,25 @@
 
                                   </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="telefono">Telefono : </label>
                                 <input type="number" class="form-control" id="telefono" name="telefono" required>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="direccion">Direccion : </label>
                                 <input type="text" class="form-control" id="direccion" name="direccion" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="email">Email : </label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="brevette">Brevette : </label>
-                                <input type="text" class="form-control" id="brevette" name="brevette" required>
+                                <label for="email">Email : </label>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -193,6 +185,14 @@
                             </div>
                         </div>
                     </div>
+                    {{-- <div class="row"> --}}
+                        {{-- <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="brevette">Brevette : </label>
+                                <input type="text" class="form-control" id="brevette" name="brevette" required>
+                            </div>
+                        </div> --}}
+                    {{-- </div> --}}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -237,12 +237,12 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="condicion">Condición : </label>
                                 <input type="text" class="form-control" id="condicion" name="condicion" required>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="hijos">Hijos : </label>
@@ -250,8 +250,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                    {{-- <div class="row"> --}}
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="id_pension">Pension : </label>
                                 <select id="id_pension" class="form-control" name="id_pension" required>
@@ -261,22 +261,22 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="col-md-6">
+                        </div> --}}
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="cuspp">Cuspp : </label>
                                 <input type="text" class="form-control" id="cuspp" name="cuspp" required>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                        </div> --}}
+                    {{-- </div> --}}
+                    {{-- <div class="row"> --}}
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="seguro">Seguro : </label>
                                 <input type="text" class="form-control" id="seguro" name="seguro" required>
                             </div>
-                        </div>
-                        <div class="col-md-6">
+                        </div> --}}
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label>Confianza : </label>
                                 <div class="row">
@@ -292,8 +292,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </div> --}}
+                    {{-- </div> --}}
                     <div class="row">
                         <div class="col-md-12">
                             <h4>CREDENCIALES</h4>
@@ -308,25 +308,26 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="clave">Clave : </label>
-                                <input type="password" class="form-control" id="clave" name="clave" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
                                 <label for="nombre_corto">Nombre corto : </label>
                                 <input type="text" class="form-control" id="nombre_corto" name="nombre_corto" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clave">Clave : </label>
+                                <input type="password" class="form-control" id="clave" name="clave" required>
+                            </div>
+                        </div> --}}
+                    </div>
+                    {{-- <div class="row"> --}}
+
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="codvent_softlink">Codvend Softlink : </label>
                                 <input type="text" class="form-control" id="codvent_softlink" name="codvent_softlink" required>
                             </div>
-                        </div>
-                    </div>
+                        </div> --}}
+                    {{-- </div> --}}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -636,7 +637,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="id_estado_civil_modificar">Estado civil : </label>
                                 <select id="id_estado_civil_modificar" class="form-control" name="id_estado_civil" required>
@@ -647,33 +648,26 @@
 
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="telefon_modificaro">Telefono : </label>
                                 <input type="number" class="form-control" id="telefono_modificar" name="telefono" required>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="direccion_modificar">Direccion : </label>
                                 <input type="text" class="form-control" id="direccion_modificar" name="direccion" required>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="email_modificar">Email : </label>
                                 <input type="email" class="form-control" id="email_modificar" name="email" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="brevette_modificar">Brevette : </label>
-                                <input type="text" class="form-control" id="brevette_modificar" name="brevette" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -688,6 +682,14 @@
                             </div>
                         </div>
                     </div>
+                    {{-- <div class="row"> --}}
+                        {{-- <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="brevette_modificar">Brevette : </label>
+                                <input type="text" class="form-control" id="brevette_modificar" name="brevette" required>
+                            </div>
+                        </div> --}}
+                    {{-- </div> --}}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -732,12 +734,12 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="condicion_modificar">Condición : </label>
                                 <input type="text" class="form-control" id="condicion_modificar" name="condicion" required>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="hijos_modificar">Hijos : </label>
@@ -745,8 +747,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                    {{-- <div class="row"> --}}
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="id_pension_modificar">Pension : </label>
                                 <select id="id_pension_modificar" class="form-control" name="id_pension" required>
@@ -756,22 +758,22 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                        <div class="col-md-6">
+                        </div> --}}
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="cuspp_modificar">Cuspp : </label>
                                 <input type="text" class="form-control" id="cuspp_modificar" name="cuspp" required>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                        </div> --}}
+                    {{-- </div> --}}
+                    {{-- <div class="row"> --}}
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="seguro_modificar">Seguro : </label>
                                 <input type="text" class="form-control" id="seguro_modificar" name="seguro" required>
                             </div>
-                        </div>
-                        <div class="col-md-6">
+                        </div> --}}
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label>Confianza : </label>
                                 <div class="row">
@@ -787,8 +789,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </div> --}}
+                    {{-- </div> --}}
                     <div class="row">
                         <div class="col-md-12">
                             <h4>CREDENCIALES</h4>
@@ -803,25 +805,26 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="clave_modificar">Clave : </label>
-                                <input type="password" class="form-control" id="clave_modificar" name="clave" >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
                                 <label for="nombre_corto_modificar">Nombre corto : </label>
                                 <input type="text" class="form-control" id="nombre_corto_modificar" name="nombre_corto" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clave_modificar">Clave : </label>
+                                <input type="password" class="form-control" id="clave_modificar" name="clave" >
+                            </div>
+                        </div> --}}
+                    </div>
+                    {{-- <div class="row"> --}}
+
+                        {{-- <div class="col-md-6">
                             <div class="form-group">
                                 <label for="codvent_softlink_modificar">Codvend Softlink : </label>
                                 <input type="text" class="form-control" id="codvent_softlink_modificar" name="codvent_softlink" required>
                             </div>
-                        </div>
-                    </div>
+                        </div> --}}
+                    {{-- </div> --}}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">

@@ -12,7 +12,6 @@ function accesosUsuario() {
         data: {},
         dataType: 'JSON',
         success: function(response){
-
             if (response.data.length>0) {
                 visualizarAccesos(response);
             }
@@ -35,6 +34,7 @@ function disableAccesos() {
 function visualizarAccesos(response) {
     var html='';
     $.each(response.data, function (index, element) {
+        console.log(element);
         array_disable_accesos.push(element.id_acceso);
         var titulo = (element.id_padre !==0 ?element.modulo_padre.descripcion : element.accesos.modulos.descripcion ),
             sub_titulo  = (element.id_padre !==0 ?element.accesos.modulos.descripcion : null ),

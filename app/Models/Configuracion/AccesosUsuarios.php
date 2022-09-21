@@ -2,6 +2,7 @@
 
 namespace App\models\Configuracion;
 
+use App\Models\Configuracion\SisUsua;
 use Illuminate\Database\Eloquent\Model;
 
 class AccesosUsuarios extends Model
@@ -13,10 +14,14 @@ class AccesosUsuarios extends Model
 
     public function accesos()
     {
-        return $this->hasOne(Accesos::class, 'id_acceso', 'id_acceso')->where('estado',1);
+        return $this->hasOne(Accesos::class, 'id_acceso', 'id_acceso');
     }
     public function moduloPadre()
     {
-        return $this->hasOne(TableConfiguracionModulo::class, 'id_modulo', 'id_padre')->where('estado',1);
+        return $this->hasOne(TableConfiguracionModulo::class, 'id_modulo', 'id_padre');
+    }
+    public function usuario()
+    {
+        return $this->belongsTo(SisUsua::class, 'id_usuario', 'id_usuario')->where('estado',1);
     }
 }

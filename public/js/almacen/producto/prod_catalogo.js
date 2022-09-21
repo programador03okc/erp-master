@@ -1,8 +1,13 @@
 $(function () {
     var vardataTables = funcDatatables();
+    var button_copiar   = (array_accesos.find(element => element === 37)?vardataTables[2][0]:[]),
+        button_excel    = (array_accesos.find(element => element === 39)?vardataTables[2][1]:[]),
+        button_pdf      = (array_accesos.find(element => element === 38)?vardataTables[2][2]:[]),
+        button_imprimir = (array_accesos.find(element => element === 40)?vardataTables[2][3]:[]);
+
     $('#listaProductoCatalogo').dataTable({
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': [button_copiar,button_excel,button_pdf,button_imprimir],
         'language': vardataTables[0],
         // 'processing': true,
         'ajax': 'listar_productos',

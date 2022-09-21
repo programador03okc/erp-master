@@ -25,6 +25,7 @@ class AuthToViewComposer {
 			$autenticado['id_area'] = 'CAMBIAR';//$autIni->trabajador->roles->first()->pivot->id_area;
 			$autenticado['grupos'] = Auth::user()->getAllGrupo();
 			$autenticado['area'] = 'CAMBIAR';//$area->descripcion;
+
 		}
 		$view->with('auth_user', json_encode($autenticado));
 	}

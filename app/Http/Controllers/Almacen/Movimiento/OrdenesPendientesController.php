@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
 use App\Models\Almacen\MovimientoDetalle;
 use App\Models\almacen\Reserva;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -37,9 +38,9 @@ class OrdenesPendientesController extends Controller
     }
     function view_ordenesPendientes()
     {
-        if (!Auth::user()->tieneAccion(83)) {
-            return 'No autorizado';
-        }
+        // if (!Auth::user()->tieneAccion(83)) {
+        //     return 'No autorizado';
+        // }
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc = GenericoAlmacenController::mostrar_tp_doc_cbo();
         $tp_operacion = GenericoAlmacenController::tp_operacion_cbo_ing();
@@ -61,6 +62,12 @@ class OrdenesPendientesController extends Controller
         $nro_oc_pendientes = $this->nroOrdenesPendientes();
         $nro_ot_pendientes = $this->nroTransformacionesPendientes();
 
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+
         return view('almacen/guias/ordenesPendientes', compact(
             'almacenes',
             'tp_doc',
@@ -80,6 +87,7 @@ class OrdenesPendientesController extends Controller
             'fechaActual2',
             'nro_oc_pendientes',
             'nro_ot_pendientes',
+            'array_accesos',
         ));
     }
 
@@ -296,7 +304,7 @@ class OrdenesPendientesController extends Controller
                         doc.estado != 7)
                     WHERE d.id_doc_com = doc.id_doc LIMIT 1) AS id_doc_com"),
 
-            DB::raw("(SELECT COUNT(*) FROM almacen.trans_detalle 
+            DB::raw("(SELECT COUNT(*) FROM almacen.trans_detalle
                     inner join almacen.mov_alm_det on(
                         mov_alm_det.id_guia_com_det = trans_detalle.id_guia_com_det
                     )
@@ -360,44 +368,44 @@ class OrdenesPendientesController extends Controller
         // return datatables($query)->toJson();
         return DataTables::eloquent($data)->filterColumn('ordenes', function ($query, $keyword) {
             $sql_oc = "id_mov_alm IN (
-                SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det 
-                INNER JOIN almacen.guia_com_det ON 
-                guia_com_det.id_guia_com_det=mov_alm_det.id_guia_com_det 
-                INNER JOIN logistica.log_det_ord_compra ON 
+                SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det
+                INNER JOIN almacen.guia_com_det ON
+                guia_com_det.id_guia_com_det=mov_alm_det.id_guia_com_det
+                INNER JOIN logistica.log_det_ord_compra ON
                 log_det_ord_compra.id_detalle_orden=guia_com_det.id_oc_det
-                INNER JOIN logistica.log_ord_compra ON 
+                INNER JOIN logistica.log_ord_compra ON
                 log_ord_compra.id_orden_compra=log_det_ord_compra.id_orden_compra
                 WHERE   CONCAT(UPPER(log_ord_compra.codigo), UPPER(log_ord_compra.codigo_softlink)) LIKE ? )
                 ";
             $query->whereRaw($sql_oc, ['%' . strtoupper($keyword) . '%']);
         })->filterColumn('facturas', function ($query, $keyword) {
             $sql_dc = "id_guia_com IN (
-                SELECT guia_com_det.id_guia_com FROM almacen.guia_com_det 
-                INNER JOIN almacen.doc_com_det ON 
+                SELECT guia_com_det.id_guia_com FROM almacen.guia_com_det
+                INNER JOIN almacen.doc_com_det ON
                 doc_com_det.id_guia_com_det=guia_com_det.id_guia_com_det
-                INNER JOIN almacen.doc_com ON 
+                INNER JOIN almacen.doc_com ON
                 doc_com.id_doc_com=doc_com_det.id_doc
                 WHERE   CONCAT(UPPER(doc_com.serie), UPPER(doc_com.numero)) LIKE ? )
                 ";
             $query->whereRaw($sql_dc, ['%' . strtoupper($keyword) . '%']);
         })->filterColumn('requerimientos', function ($query, $keyword) {
             $sql_req = "id_mov_alm IN (
-                SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det 
-                LEFT JOIN almacen.guia_com_det ON 
-                    guia_com_det.id_guia_com_det=mov_alm_det.id_guia_com_det 
-                LEFT JOIN logistica.log_det_ord_compra ON 
+                SELECT mov_alm_det.id_mov_alm FROM almacen.mov_alm_det
+                LEFT JOIN almacen.guia_com_det ON
+                    guia_com_det.id_guia_com_det=mov_alm_det.id_guia_com_det
+                LEFT JOIN logistica.log_det_ord_compra ON
                     log_det_ord_compra.id_detalle_orden=guia_com_det.id_oc_det
-                LEFT JOIN almacen.alm_det_req ON 
+                LEFT JOIN almacen.alm_det_req ON
                     alm_det_req.id_detalle_requerimiento=log_det_ord_compra.id_detalle_requerimiento
-                LEFT JOIN almacen.alm_req ON 
+                LEFT JOIN almacen.alm_req ON
                     alm_req.id_requerimiento=alm_det_req.id_requerimiento
                 LEFT JOIN almacen.mov_alm ON
                         mov_alm.id_mov_alm=mov_alm_det.id_mov_alm
-                LEFT JOIN almacen.transformacion ON 
-                    transformacion.id_transformacion=mov_alm.id_transformacion 
-                LEFT JOIN almacen.orden_despacho ON 
+                LEFT JOIN almacen.transformacion ON
+                    transformacion.id_transformacion=mov_alm.id_transformacion
+                LEFT JOIN almacen.orden_despacho ON
                     orden_despacho.id_od=transformacion.id_od
-                LEFT JOIN almacen.alm_req as req_trans ON 
+                LEFT JOIN almacen.alm_req as req_trans ON
                     req_trans.id_requerimiento=orden_despacho.id_requerimiento
                 WHERE   mov_alm.id_tp_mov = 1 and mov_alm.estado !=7 and
 								CONCAT(UPPER(req_trans.codigo),UPPER(alm_req.codigo)) LIKE ? )
@@ -483,8 +491,8 @@ class OrdenesPendientesController extends Controller
                 'alm_prod.id_categoria',
                 'sis_moneda.simbolo',
                 DB::raw('(SELECT SUM(guia_com_det.cantidad) FROM almacen.guia_com_det
-                          WHERE guia_com_det.id_oc_det = log_det_ord_compra.id_detalle_orden 
-                            AND guia_com_det.estado != 7) 
+                          WHERE guia_com_det.id_oc_det = log_det_ord_compra.id_detalle_orden
+                            AND guia_com_det.estado != 7)
                           AS suma_cantidad_guias')
             )
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
@@ -2301,7 +2309,7 @@ class OrdenesPendientesController extends Controller
         <html>
             <head>
                 <style type="text/css">
-                *{ 
+                *{
                     font-family: "DejaVu Sans";
                 }
                 table{
@@ -2336,7 +2344,7 @@ class OrdenesPendientesController extends Controller
                 </table>
                 <h3 style="margin:0px; padding:0px;"><center>INGRESO A ALMACÉN</center></h3>
                 <h5><center>' . $ingreso->des_almacen . '</center></h5>
-                
+
                 <table border="0">
                     <tr>
                         <td width=100px>Ingreso N°</td>
@@ -2468,7 +2476,7 @@ class OrdenesPendientesController extends Controller
         $html .= '</tbody>
                 </table>
                 <p style="text-align:right;font-size:11px;">Elaborado por: ' . $ingreso->nom_usuario . ' ' . (new Carbon($ingreso->fecha_registro))->format('d-m-Y H:i') . '</p>
-                
+
             </body>
         </html>';
 
