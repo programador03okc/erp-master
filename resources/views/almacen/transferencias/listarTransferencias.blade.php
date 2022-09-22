@@ -28,14 +28,23 @@ Transferencias
             <div class="col-md-12" id="tab-transferencias" style="padding-top:10px;padding-bottom:10px;">
 
                 <ul class="nav nav-tabs" id="myTabTransferencias">
+                    @if (in_array(123,$array_accesos))
                     <li class="active"><a data-toggle="tab" href="#requerimientos">Transferencias sugeridas <span id="nro_pendientes" class="badge badge-info">{{$nro_pendientes}}</span></a></li>
+                    @endif
+                    @if (in_array(127,$array_accesos))
                     <li class=""><a data-toggle="tab" href="#porEnviar">Transferencias por Enviar <span id="nro_por_enviar" class="badge badge-info">{{$nro_por_enviar}}</span></a></li>
+                    @endif
+                    @if (in_array(131,$array_accesos))
                     <li class=""><a data-toggle="tab" href="#pendientes">Transferencias por Recibir <span id="nro_por_recibir" class="badge badge-info">{{$nro_por_recibir}}</span></a></li>
+                    @endif
+                    @if (in_array(133,$array_accesos))
                     <li class=""><a data-toggle="tab" href="#recibidas">Transferencias Recibidas</a></li>
+                    @endif
                 </ul>
                 <div class="tab-content">
+                    @if (in_array(123,$array_accesos))
                     <div id="requerimientos" class="tab-pane fade in active">
-                        
+
                         <div class="row" style="padding-top:10px;">
                             <div class="col-md-12">
                                 <table class="mytable table table-condensed table-bordered table-okc-view" id="listaRequerimientos">
@@ -56,10 +65,12 @@ Transferencias
                                 </table>
                             </div>
                         </div>
-                        
+
                     </div>
+                    @endif
+                    @if (in_array(127,$array_accesos))
                     <div id="porEnviar" class="tab-pane fade ">
-                        
+
                         {{-- <div class="row">
                             <div class="col-md-2"><label>Almacén Origen:</label></div>
                             <div class="col-md-4">
@@ -71,7 +82,7 @@ Transferencias
                                 </select>
                             </div>
                         </div> --}}
-                        
+
                         <form id="formFiltrosPorEnviar" method="POST" >
                             @csrf()
                             <input type="hidden" name="id_almacen_origen" value="0">
@@ -101,10 +112,12 @@ Transferencias
 
                             </div>
                         </div>
-                        
+
                     </div>
+                    @endif
+                    @if (in_array(131,$array_accesos))
                     <div id="pendientes" class="tab-pane fade ">
-                        
+
                             {{-- <div class="row">
                                 <div class="col-md-2"><label>Almacén Destino:</label></div>
                                 <div class="col-md-4">
@@ -142,10 +155,12 @@ Transferencias
                                     </table>
                                 </div>
                             </div>
-                        
+
                     </div>
+                    @endif
+                    @if (in_array(133,$array_accesos))
                     <div id="recibidas" class="tab-pane fade ">
-                        
+
                             {{-- <div class="row">
                                 <div class="col-md-2"><label>Almacén Destino:</label></div>
                                 <div class="col-md-4">
@@ -161,16 +176,20 @@ Transferencias
                                 @csrf()
                                 <input type="hidden" name="id_almacen_destino_recibida" value="0">
                             </form>
-                            @if (Auth::user()->id_usuario == 3)
-                            <button data-toggle="tooltip" data-placement="bottom" title="Actualizar Ventas Internas" 
+                            {{-- @if (Auth::user()->id_usuario == 3) --}}
+                            @if (in_array(134,$array_accesos))
+                            <button data-toggle="tooltip" data-placement="bottom" title="Actualizar Ventas Internas"
                                 class="btn btn-success btn-sm exportar" style="color:#fff !important;" onClick="exportarVentasInternasActualizadas()">
                                 <i class="fas fa-file-excel"></i> Actualizar Ventas Internas
                             </button>
-                            <button data-toggle="tooltip" data-placement="bottom" title="Actualizar Ventas Internas" 
+                            @endif
+                            @if (in_array(279,$array_accesos))
+                            <button data-toggle="tooltip" data-placement="bottom" title="Actualizar Ventas Internas"
                                 class="btn btn-success btn-sm exportar" style="color:#fff !important;" onClick="exportarValorizacionesIngresos()">
                                 <i class="fas fa-file-excel"></i> Actualizar Ingresos Cambio moneda
                             </button>
                             @endif
+                            {{-- @endif --}}
                             <div class="row" style="padding-top:10px;">
                                 <div class="col-md-12">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaTransferenciasRecibidas">
@@ -195,8 +214,9 @@ Transferencias
                                     </table>
                                 </div>
                             </div>
-                        
+
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -257,5 +277,7 @@ Transferencias
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_series.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
-
+<script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
+</script>
 @endsection

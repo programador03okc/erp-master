@@ -27,41 +27,43 @@ Devolución
 
                 <h3 class="box-title">Devolución N° <span class="badge badge-secondary" id="codigo">CU 00-000</span></h3>
                 <div class="box-tools pull-right">
-
-                    <button type="button" class="btn btn-sm btn-warning nueva-devolucion" data-toggle="tooltip" data-placement="bottom" 
+                    @if (in_array(143,$array_accesos))
+                    <button type="button" class="btn btn-sm btn-warning nueva-devolucion" data-toggle="tooltip" data-placement="bottom"
                         title="Nueva Customización">
                         <i class="fas fa-copy"></i> Nuevo
                     </button>
-
+                    @endif
                     <input id="submit_devolucion" class="btn btn-sm btn-success guardar-devolucion" type="submit" style="display: none;"
                         data-toggle="tooltip" data-placement="bottom" title="Actualizar devolucion" value="Guardar">
-
-                    <button type="button" class="btn btn-sm btn-primary edit-devolucion" 
+                    @if (in_array(144,$array_accesos))
+                    <button type="button" class="btn btn-sm btn-primary edit-devolucion"
                         data-toggle="tooltip" data-placement="bottom" title="Editar devolucion">
                         <i class="fas fa-pencil-alt"></i> Editar
                     </button>
-
-                    <button type="button" class="btn btn-sm btn-danger anular-devolucion" data-toggle="tooltip" data-placement="bottom" 
+                    @endif
+                    @if (in_array(145,$array_accesos))
+                    <button type="button" class="btn btn-sm btn-danger anular-devolucion" data-toggle="tooltip" data-placement="bottom"
                         title="Anular devolucion" onClick="anularDevolucion();">
                         <i class="fas fa-trash"></i> Anular
                     </button>
-
-                    <button type="button" class="btn btn-sm btn-info buscar-devolucion" data-toggle="tooltip" data-placement="bottom" 
+                    @endif
+                    @if (in_array(146,$array_accesos))
+                    <button type="button" class="btn btn-sm btn-info buscar-devolucion" data-toggle="tooltip" data-placement="bottom"
                         title="Buscar historial de registros" onClick="abrirDevolucionModal();">
                         <i class="fas fa-search"></i> Buscar</button>
-
-                    <button type="button" class="btn btn-sm btn-secondary cancelar" data-toggle="tooltip" data-placement="bottom" 
+                        @endif
+                    <button type="button" class="btn btn-sm btn-secondary cancelar" data-toggle="tooltip" data-placement="bottom"
                         title="Cancelar" style="display: none;">
                             Cancelar</button>
-                            
-                    {{-- <button type="button" class="btn btn-sm btn-success procesar-devolucion" data-toggle="tooltip" data-placement="bottom" 
+
+                    {{-- <button type="button" class="btn btn-sm btn-success procesar-devolucion" data-toggle="tooltip" data-placement="bottom"
                         title="Procesar devolucion" onClick="procesardevolucion();">
                         <i class="fas fa-share"></i> Procesar
                     </button> --}}
                 </div>
             </div>
             <div class="box-body">
-            
+
                 <div class="row" style="padding-left: 10px;padding-right: 10px;margin-bottom: 0px;">
                     <div class="col-md-12">
                         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
@@ -71,7 +73,7 @@ Devolución
                             <div class="col-md-4">
                                 <label class="col-sm-4 control-label">Almacén: </label>
                                 <div class="col-sm-8">
-                                    <select class="form-control js-example-basic-single edition limpiardevolucion" 
+                                    <select class="form-control js-example-basic-single edition limpiardevolucion"
                                         name="id_almacen" required>
                                         <option value="">Elija una opción</option>
                                         @foreach ($almacenes as $almacen)
@@ -83,7 +85,7 @@ Devolución
                             <div class="col-md-8">
                                 <label class="col-sm-2 control-label">Comentario: </label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control edition limpiardevolucion" 
+                                    <input type="text" class="form-control edition limpiardevolucion"
                                         name="observacion" required/>
                                 </div>
                             </div>
@@ -94,7 +96,7 @@ Devolución
                     {{-- <div class="col-md-4">
                         <label class="col-sm-4 control-label">Moneda: </label>
                         <div class="col-sm-8">
-                            <select class="form-control js-example-basic-single edition limpiardevolucion" 
+                            <select class="form-control js-example-basic-single edition limpiardevolucion"
                                 name="id_moneda" required>
                                 <option value="">Elija una opción</option>
                                 @foreach ($monedas as $moneda)
@@ -113,7 +115,7 @@ Devolución
                     </div>
                 </div>
             </form>
-        
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-info" style="margin-bottom: 0px;">
@@ -127,8 +129,8 @@ Devolución
                                     <th width='10%'>Cant.</th>
                                     <th>Unid.</th>
                                     <th width='8%' style="padding:0px;">
-                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition" 
-                                        id="addProducto" data-toggle="tooltip" data-placement="bottom" 
+                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition"
+                                        id="addProducto" data-toggle="tooltip" data-placement="bottom"
                                         title="Agregar Producto" onClick="abrirProductos();"></i>
                                     </th>
                                 </tr>
@@ -154,8 +156,8 @@ Devolución
                                     <th>Unit.</th>
                                     <th>Total</th>
                                     <th width='8%' style="padding:0px;">
-                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition" 
-                                        id="addSobrante" data-toggle="tooltip" data-placement="bottom" 
+                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition"
+                                        id="addSobrante" data-toggle="tooltip" data-placement="bottom"
                                         title="Agregar Producto" onClick="agregarProductoSobrante();"></i>
                                     </th>
                                 </tr>
@@ -180,8 +182,8 @@ Devolución
                                     <th>Unit.</th>
                                     <th>Total</th>
                                     <th width='8%' style="padding:0px;">
-                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition" 
-                                        id="addSobrante" data-toggle="tooltip" data-placement="bottom" 
+                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition"
+                                        id="addSobrante" data-toggle="tooltip" data-placement="bottom"
                                         title="Agregar Producto" onClick="agregarProductoTransformado();"></i>
                                     </th>
                                 </tr>

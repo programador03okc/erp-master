@@ -37,6 +37,7 @@ Saldos Actuales
                     <form id="formulario" method="POST">
                         @csrf
                         <div class="row">
+                            @if (in_array(159,$array_accesos))
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <h5>Almacén</h5>
@@ -47,8 +48,10 @@ Saldos Actuales
                                     </select>
                                 </div>
                             </div>
+                            @endif
                             <div class="col-md-8">
                                 <div class="row">
+                                    @if (in_array(159,$array_accesos))
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Hasta</h5>
@@ -60,16 +63,21 @@ Saldos Actuales
                                             <i class="fas fa-search"></i> Procesar
                                         </button>
                                     </div>
+                                    @endif
+                                    @if (in_array(160,$array_accesos))
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-block botones btn-primary export" onclick="exportar();" disabled>
                                             <i class="fas fa-download"></i> Exportar
                                         </button>
                                     </div>
+                                    @endif
+                                    @if (in_array(161,$array_accesos))
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-block botones btn-danger" onclick="exportarSoftLink();">
                                             <i class="fas fa-download"></i> Stock Valorizado
                                         </button>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

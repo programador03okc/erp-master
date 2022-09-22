@@ -30,12 +30,19 @@ Atención de Ingresos
             <div class="col-md-12" id="tab-ordenes" style="padding-top:10px;padding-bottom:10px;">
 
                 <ul class="nav nav-tabs" id="myTabOrdenesPendientes">
+                    @if (in_array(98,$array_accesos))
                     <li class="active"><a data-toggle="tab" href="#pendientes">Ordenes Pendientes <span id="nro_ordenes" class="badge badge-info">{{$nro_oc_pendientes}}</span></a></li>
+                    @endif
+                    @if (in_array(104,$array_accesos))
                     <li class=""><a data-toggle="tab" href="#transformaciones">Transformaciones Pendientes <span id="nro_transformaciones" class="badge badge-info">{{$nro_ot_pendientes}}</span></a></li>
+                    @endif
+                    @if (in_array(105,$array_accesos))
                     <li class=""><a data-toggle="tab" href="#ingresadas">Ingresos Procesados</a></li>
+                    @endif
                 </ul>
 
                 <div class="tab-content">
+                    @if (in_array(98,$array_accesos))
                     <div id="pendientes" class="tab-pane fade in active">
                         <br>
                         <form id="formFiltrosOrdenesPendientes" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
@@ -67,6 +74,8 @@ Atención de Ingresos
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @if (in_array(104,$array_accesos))
                     <div id="transformaciones" class="tab-pane fade ">
                         <br>
                         <div class="row">
@@ -96,6 +105,8 @@ Atención de Ingresos
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @if (in_array(105,$array_accesos))
                     <div id="ingresadas" class="tab-pane fade ">
                         <br>
                         <form id="formFiltrosIngresosProcesados" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ingresosProcesadosExcel')}}">
@@ -135,6 +146,7 @@ Atención de Ingresos
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -205,7 +217,8 @@ Atención de Ingresos
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
-        iniciar('{{Auth::user()->tieneAccion(83)}}');
+        // iniciar('{{Auth::user()->tieneAccion(83)}}');
+        iniciar('1');
         // listarAlmacenes();
     });
 </script>

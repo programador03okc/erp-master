@@ -42,12 +42,12 @@ function listarTransferenciasRecibidas() {
             });
 
             $('#listaTransferenciasRecibidas_wrapper .dt-buttons').append(
-                `<div class="col-md-5" style="text-align: center;margin-top: 7px;"><label>Almacén Destino:</label></div>
-                    <div class="col-md-4" style="display:flex">
-                        <select class="form-control" id="selectAlmacenDestinoRecibido" >
-                            <option value="0" selected>Todos los almacenes</option>
-                        </select>
-                    </div>`
+                ``+(array_accesos.find(element => element === 282)?`<div class="col-md-5" style="text-align: center;margin-top: 7px;"><label>Almacén Destino:</label></div>
+                <div class="col-md-4" style="display:flex">
+                    <select class="form-control" id="selectAlmacenDestinoRecibido" >
+                        <option value="0" selected>Todos los almacenes</option>
+                    </select>
+                </div>`:``)+``
             );
             mostrarAlmacenes('recibido');
             $("#selectAlmacenDestinoRecibido").on("change", function (e) {
@@ -116,20 +116,20 @@ function listarTransferenciasRecibidas() {
                 orderable: false, searchable: false,
                 render: function (data, type, row) {
                     if (valor_permiso == "1") {
-                        return `<div style="display: flex;text-align:center;">
-                            <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
-                                data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                                <i class="fas fa-chevron-down"></i></button>
+                        return `<div style="display: flex;text-align:center;">`+
+                        (array_accesos.find(element => element === 135)?`<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
+                        data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                        <i class="fas fa-chevron-down"></i></button>`:``)+`
                             ${(row['doc_ven'] == '-') ?
-                                `<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip" 
+                                ``+(array_accesos.find(element => element === 137)?`<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row["id_transferencia"]}" data-guia="${row["id_guia_com"]}" data-ing="${row["id_ingreso"]}" title="Anular" >
-                                <i class="fas fa-trash"></i></button>`: ''}
+                                <i class="fas fa-trash"></i></button>`:``)+``: ''}
                             ${row['id_empresa_origen'] !== row['id_empresa_destino'] ?
 
-                                `<button type="button" class="autogenerar btn btn-success boton btn-flat" data-toggle="tooltip" 
-                        data-placement="bottom" data-id="${row["id_doc_ven"]}" data-dc="${row["doc_com"]}" title="Autogenerar Docs de Compra" >
-                        <i class="fas fa-sync-alt"></i></button>`: ''}
-                            
+                                ``+(array_accesos.find(element => element === 136)?`<button type="button" class="autogenerar btn btn-success boton btn-flat" data-toggle="tooltip"
+                                data-placement="bottom" data-id="${row["id_doc_ven"]}" data-dc="${row["doc_com"]}" title="Autogenerar Docs de Compra" >
+                                <i class="fas fa-sync-alt"></i></button>`:``)+``: ''}
+
                             </div>`;
                     }
                 },
@@ -141,8 +141,8 @@ function listarTransferenciasRecibidas() {
             {
                 render: function (data, type, row) {
                     return (row["guia_ven"] == '-' ? row["guia_ven"]
-                        : `<a href="#" class="transferencia" title="Ver Detalle" data-id="${row["id_transferencia"]}" 
-                            data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}" 
+                        : `<a href="#" class="transferencia" title="Ver Detalle" data-id="${row["id_transferencia"]}"
+                            data-cod="${row["codigo"]}" data-guia="${row["guia_com"]}"
                             data-origen="${row["alm_origen_descripcion"]}" data-destino="${row["alm_destino_descripcion"]}">
                             ${row["codigo"]} </a>`
                     );
@@ -368,7 +368,7 @@ function detalle_transferencia(id_transferencia) {
                 <td><span class="label label-${element.bootstrap_color}">${element.estado_doc
                     }</span></td>
                 <td>${element.series
-                        ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+                        ? `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom"
                     title="Ver Series" onClick="listarSeries(${element.id_guia_com_det});"></i>`
                         : ""
                     }</td>
