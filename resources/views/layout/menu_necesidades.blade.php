@@ -12,7 +12,7 @@
         <ul class="treeview-menu">
             {{-- @if(Auth::user()->tieneAplicacion(102)) --}}
             <li><a href="{{route('necesidades.requerimiento.elaboracion.index')}}"><i class="far fa-circle fa-xs"></i> Crear / editar</a></li>
-            @endif
+            {{-- @endif --}}
             {{-- @if(Auth::user()->tieneAplicacion(103)) --}}
             <li><a href="{{route('necesidades.requerimiento.listado.index')}}"><i class="far fa-circle fa-xs"></i> Listado</a></li>
             {{-- @endif --}}
