@@ -31,7 +31,7 @@ Lista de Salidas
             <div class="row">
                 <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                 <div class="col-md-12">
-                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                    <table class="mytable table table-condensed table-bordered table-okc-view"
                         id="listaSalidas">
                         <thead>
                             <tr>
@@ -275,6 +275,7 @@ Lista de Salidas
     <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
     <script src="{{ asset('js/logistica/transportistaModal.js')}}"></script>
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function(){
         seleccionarMenu(window.location);
     });

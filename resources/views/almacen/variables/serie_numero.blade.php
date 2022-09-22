@@ -1,15 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
 
-@if(Auth::user()->tieneAccion(129))
+{{-- @if(Auth::user()->tieneAccion(129)) --}}
     @section('option')
         @include('layout.option')
     @endsection
-@elseif(Auth::user()->tieneAccion(128))
+{{-- @elseif(Auth::user()->tieneAccion(128)) --}}
     @section('option')
         @include('layout.option_historial')
     @endsection
-@endif
+{{-- @endif --}}
 
 @section('cabecera')
 Series-Numeros
@@ -32,7 +32,7 @@ Series-Numeros
     <div class="row">
         <div class="col-md-7">
             <fieldset class="group-table">
-                <table class="mytable table table-hover table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-hover table-condensed table-bordered table-okc-view"
                     id="listaSerieNumero">
                     <thead>
                         <tr>
@@ -78,10 +78,10 @@ Series-Numeros
                     <div class="col-md-12">
                         <h5>Serie-Número</h5>
                         <div class="input-group">
-                            <input type="text" class="form-control activation" name="serie" 
+                            <input type="text" class="form-control activation" name="serie"
                                 onBlur="ceros_serie('serie');" placeholder="0000" disabled="true">
                             <span class="input-group-addon">-</span>
-                            <input type="text" class="form-control activation" name="numero" 
+                            <input type="text" class="form-control activation" name="numero"
                                 onBlur="ceros_numero('numero');" placeholder="0000000" disabled="true">
                         </div>
                     </div>
@@ -118,6 +118,7 @@ Series-Numeros
 
     <script src="{{ asset('js/almacen/variables/serie_numero.js')}}"></script>
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function(){
         seleccionarMenu(window.location);
     });

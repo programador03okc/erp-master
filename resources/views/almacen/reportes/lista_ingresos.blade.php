@@ -29,10 +29,10 @@ Lista de Ingresos
         <h2>Lista de Ingresos</h2>
         <ol class="breadcrumb">
             <li>
-                {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                    data-placement="bottom" title="Descargar Kardex Sunat" 
+                {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip"
+                    data-placement="bottom" title="Descargar Kardex Sunat"
                     onClick="downloadKardexSunat();">Kardex Sunat</button> --}}
-                
+
             </li>
         </ol>
     </legend> -->
@@ -283,6 +283,7 @@ Lista de Ingresos
 <script src="{{ asset('js/logistica/proveedorModal.js')}}"></script>
 <script src="{{ asset('js/logistica/transportistaModal.js')}}"></script>
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
     });

@@ -23,15 +23,17 @@ Detalle de Salidas
         <div class="box-body">
             <div class="row" style="padding-left:0px;padding-right:0px;">
                 <div class="col-md-12">
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ingrese los filtros" 
-                            onClick="open_filtros();">
-                            <i class="fas fa-search"></i>  Filtros</button>
+                    @if (in_array(167,$array_accesos))
+                    <button type="button" class="btn btn-primary" data-toggle="tooltip"
+                    data-placement="bottom" title="Ingrese los filtros"
+                    onClick="open_filtros();">
+                    <i class="fas fa-search"></i>  Filtros</button>
+                    @endif
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                    <table class="mytable table table-condensed table-bordered table-okc-view"
                         id="listaBusquedaSalidas">
                         <thead>
                             <tr>
