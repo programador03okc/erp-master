@@ -2224,6 +2224,24 @@ public function anular_configuracion_socket($id){
                     ->get();
                     if (sizeof($sub_modulos_hijos)>0) {
                         $value->modulos_hijos = $sub_modulos_hijos;
+
+                        foreach ($sub_modulos_hijos as $key_hijos => $value_hijos) {
+                            $value_hijos->modulos_hijos_hijos=[];
+                            $sub_modulos_hijos_tercer_nivel = DB::table('configuracion.modulos')
+                            ->select(
+                                'modulos.id_modulo',
+                                'modulos.descripcion as modulo',
+                                'accesos.id_acceso',
+                                'accesos.descripcion as acceso'
+                            )
+                            ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo')
+                            ->where('modulos.id_padre',$value_hijos->id_modulo)
+                            ->orderBy('modulo','ASC')
+                            ->get();
+                        }
+                        if (sizeof($sub_modulos_hijos_tercer_nivel)>0) {
+                            $value_hijos->modulos_hijos_hijos = $sub_modulos_hijos_tercer_nivel;
+                        }
                     }
 
                 }
