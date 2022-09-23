@@ -47,9 +47,9 @@ class ComprasLocales {
 
             if(this.updateContadorFiltro() ==0){
                 this.mostrar('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
-                
+
             }else{
-                
+
                 this.mostrar(
                     this.ActualParametroEmpresa,
                     this.ActualParametroSede,
@@ -57,7 +57,7 @@ class ComprasLocales {
                     this.ActualParametroFechaHasta,
                     this.ActualParametroFechaDesdeCancelacion,
                     this.ActualParametroFechaHastaCancelacion,
-                    this.ActualParametroRazonSocialProveedor,   
+                    this.ActualParametroRazonSocialProveedor,
                     this.ActualParametroGrupo,
                     this.ActualParametroProyecto,
                     this.ActualParametroObservacionOrden,

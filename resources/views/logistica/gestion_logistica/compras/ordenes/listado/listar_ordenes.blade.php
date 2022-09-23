@@ -26,7 +26,7 @@ Gestión de ordenes
             <div class="col-sm-3">
                 <div class="input-group">
                     <div class="input-group-btn">
-                        <button type="button" class="btn btn-default handleClickTipoVistaPorCabecera" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
+                        @if                         <button type="button" class="btn btn-default handleClickTipoVistaPorCabecera" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
                         <button type="button" class="btn btn-default handleClickTipoVistaPorItem" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items"><i class="fas fa-table"></i> Vista a nivel de Item's</button>
                     </div>
                 </div>
@@ -170,11 +170,7 @@ Gestión de ordenes
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
 <script>
-    window.onload = function() {
-
-        $.fn.dataTable.moment('DD-MM-YYYY HH:mm');
-        $.fn.dataTable.moment('DD-MM-YYYY');
-        const listaOrdenModel = new ListaOrdenModel();
+del();
         const listaOrdenCtrl = new ListaOrdenCtrl(listaOrdenModel);
         const listaOrdenView = new ListaOrdenView(listaOrdenCtrl);
 
