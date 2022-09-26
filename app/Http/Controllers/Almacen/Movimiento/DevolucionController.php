@@ -6,6 +6,7 @@ use App\Http\Controllers\Almacen\Ubicacion\AlmacenController;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Presupuestos\Moneda;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
@@ -23,7 +24,12 @@ class DevolucionController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
-        return view('almacen/devoluciones/devolucion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/devoluciones/devolucion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas','array_accesos'));
     }
 
     function viewDevolucionCas()

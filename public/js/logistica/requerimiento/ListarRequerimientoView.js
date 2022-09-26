@@ -307,10 +307,7 @@ class ListarRequerimientoView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
-        $tablaListaRequerimientosElaborados = $('#ListaRequerimientosElaborados').DataTable({
-            'dom': vardataTables[1],
-            'buttons': [
-                {
+        var button_filtros = (array_accesos.find(element => element === 36)?{
                     text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                     attr: {
                         id: 'btnFiltrosListaRequerimientosElaborados'
@@ -320,18 +317,24 @@ class ListarRequerimientoView {
 
                     },
                     className: 'btn-default btn-sm'
-                },
-                {
-                    text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
-                    attr: {
-                        id: 'btnDescargarListaRequerimientosElaboradosExcel'
-                    },
-                    action: () => {
-                        this.descargarListaRequerimientosElaboradosExcel();
+                } : []);
 
-                    },
-                    className: 'btn-default btn-sm'
-                }
+        var button_descarga = (array_accesos.find(element => element === 19)?{
+            text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+            attr: {
+                id: 'btnDescargarListaRequerimientosElaboradosExcel'
+            },
+            action: () => {
+                this.descargarListaRequerimientosElaboradosExcel();
+
+            },
+            className: 'btn-default btn-sm'
+        }:[])
+        $tablaListaRequerimientosElaborados = $('#ListaRequerimientosElaborados').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [
+                button_filtros,
+                button_descarga
             ],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
@@ -448,10 +451,10 @@ class ListarRequerimientoView {
                         let btnEditar = '';
                         let btnAnular = '';
                         // let btnMandarAPago = '';
-                        let btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row['id_requerimiento'] + '" data-codigo-requerimiento="' + row['codigo'] + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
-                        let btnDetalleRapido = '<button type="button" class="btn btn-xs btn-primary btnVerDetalle handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>';
-                        let btnImprimirEnPdf = '<button type="button" class="btn btn-xs btn-default handleClickImprimirRequerimientoPdf" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Imprimir en PDF" ><i class="fas fa-print fa-xs"></i></button>';
-                        let btnTrazabilidad = '<button type="button" class="btn btn-xs btn-default btnVerTrazabilidad handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>';
+                        let btnVerAdjuntosModal = (array_accesos.find(element => element === 34)?'<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row['id_requerimiento'] + '" data-codigo-requerimiento="' + row['codigo'] + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>':'');
+                        let btnDetalleRapido = (array_accesos.find(element => element === 33)?'<button type="button" class="btn btn-xs btn-primary btnVerDetalle handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>':'');
+                        let btnImprimirEnPdf = (array_accesos.find(element => element === 36)?'<button type="button" class="btn btn-xs btn-default handleClickImprimirRequerimientoPdf" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Imprimir en PDF" ><i class="fas fa-print fa-xs"></i></button>':'');
+                        let btnTrazabilidad = (array_accesos.find(element => element === 35)?'<button type="button" class="btn btn-xs btn-default btnVerTrazabilidad handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>':'');
                         // if(row.estado ==2){
                         //         btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
                         //     }

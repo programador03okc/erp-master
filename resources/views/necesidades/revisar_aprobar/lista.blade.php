@@ -24,11 +24,17 @@ Revisar/aprobar
         <div class="col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="handleClickTabDocumentosPendientesRevisar active"><a href="#documentos_pendientes" aria-controls="documentos_pendientes" role="tab" data-toggle="tab">Documentos para revisar</a></li>
-                <li role="presentation" class="handleClickTabDocumentosAprobados"><a href="#documentos_aprobados" aria-controls="documentos_aprobados" role="tab" data-toggle="tab">Documentos aprobados</a></li>
+                @if (in_array(23, ($array_accesos)))
+                    <li role="presentation" class="handleClickTabDocumentosPendientesRevisar active"><a href="#documentos_pendientes" aria-controls="documentos_pendientes" role="tab" data-toggle="tab">Documentos para revisar</a></li>
+                @endif
+                @if (in_array(24, ($array_accesos)))
+                    <li role="presentation" class="handleClickTabDocumentosAprobados"><a href="#documentos_aprobados" aria-controls="documentos_aprobados" role="tab" data-toggle="tab">Documentos aprobados</a></li>
+                @endif
+
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
+                @if (in_array(23, ($array_accesos)))
                 <div role="tabpanel" class="tab-pane active" id="documentos_pendientes">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -67,6 +73,8 @@ Revisar/aprobar
                         </div>
                     </div>
                 </div>
+                @endif
+                @if (in_array(24, ($array_accesos)))
                 <div role="tabpanel" class="tab-pane" id="documentos_aprobados">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -104,6 +112,7 @@ Revisar/aprobar
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
 
         </div>
@@ -140,7 +149,7 @@ Revisar/aprobar
     }
 
     var gruposUsuario = JSON.parse('{!!$gruposUsuario!!}');
-
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
 

@@ -25,15 +25,17 @@ Detalle de Ingresos
 
                 <div class="row" style="padding-left:0px;padding-right:0px;">
                     <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                                data-placement="bottom" title="Ingrese los filtros" 
-                                onClick="open_filtros();">
-                                <i class="fas fa-search"></i>  Filtros</button>
+                    @if (in_array(166,$array_accesos))
+                    <button type="button" class="btn btn-primary" data-toggle="tooltip"
+                    data-placement="bottom" title="Ingrese los filtros"
+                    onClick="open_filtros();">
+                    <i class="fas fa-search"></i>  Filtros</button>
+                    @endif
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        <table class="mytable table table-condensed table-bordered table-okc-view"
                             id="listaBusquedaIngresos">
                             <thead>
                                 <tr>
@@ -168,7 +170,7 @@ Detalle de Ingresos
                                     <div style="display:flex;">
                                         <input class="oculto" name="id_proveedor"/>
                                         <input class="oculto" name="id_contrib"/>
-                                        <input type="text" class="form-control" name="razon_social" placeholder="Seleccione un proveedor..." 
+                                        <input type="text" class="form-control" name="razon_social" placeholder="Seleccione un proveedor..."
                                             aria-describedby="basic-addon1" required>
                                         <button type="button" class="input-group-text btn-primary" id="basic-addon1" onClick="proveedorModal();">
                                             <i class="fa fa-search"></i>
@@ -209,7 +211,7 @@ Detalle de Ingresos
                             </tr>
                             <tr>
                                 <td></td>
-                                <td>Mostrar Documentos Referenciados: 
+                                <td>Mostrar Documentos Referenciados:
                                     <input type="checkbox" name="referenciado" style="width:30px;margin-top:10px;"/>
                                 </td>
                             </tr>

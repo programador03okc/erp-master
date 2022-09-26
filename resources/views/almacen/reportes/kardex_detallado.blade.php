@@ -26,9 +26,10 @@ Kardex por Producto
 
                 <div class="row">
                     <div class="col-md-12">
+                        @if (in_array(171,$array_accesos))
                         <div class="input-group-okc">
                             <input class="oculto" name="id_producto">
-                            <input type="text" class="form-control" readonly 
+                            <input type="text" class="form-control" readonly
                                 placeholder="Seleccione un producto..." aria-describedby="basic-addon2" name="descripcion">
                             <div class="input-group-append">
                                 <button type="button" class="input-group-text" id="basic-addon2" onClick="productoModal();">
@@ -36,6 +37,7 @@ Kardex por Producto
                                 </button>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
                 <div class="row">
@@ -66,16 +68,18 @@ Kardex por Producto
                         </div>
                     </div>
                 </div>
+                @if (in_array(172,$array_accesos))
                 <div class="row">
                     <div class="col-md-4">
-                        <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                            data-placement="bottom" title="Generar Kardex" 
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip"
+                            data-placement="bottom" title="Generar Kardex"
                             onClick="generar_kardex();">Actualizar Kardex</button>
-                        {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                            data-placement="bottom" title="Exportar Kardex" 
+                        {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip"
+                            data-placement="bottom" title="Exportar Kardex"
                             onClick="download_kardex_excel();">Excel</button> --}}
                     </div>
                 </div>
+                @endif
                 <div class="row">
                     <div class="col-md-12">
                         <table id ="datos_producto" class="table-group">

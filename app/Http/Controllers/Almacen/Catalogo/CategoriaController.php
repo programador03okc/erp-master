@@ -6,6 +6,8 @@ use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\almacen\Catalogo\Categoria;
+use App\models\Configuracion\AccesosUsuarios;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CategoriaController extends Controller
@@ -13,7 +15,21 @@ class CategoriaController extends Controller
     function view_categoria()
     {
         $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
-        return view('almacen/producto/categoria', compact('clasificaciones'));
+
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',62)
+        ->where('accesos_usuarios.id_padre',4)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        // return $array_accesos_botonera;
+        return view('almacen/producto/categoria', compact('clasificaciones','array_accesos_botonera'));
     }
     public static function mostrar_tipos_cbo()
     {

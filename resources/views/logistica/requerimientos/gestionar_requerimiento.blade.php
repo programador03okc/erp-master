@@ -1,15 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_necesidades')
 
-@if(Auth::user()->tieneAccion(102))
+{{-- @if(Auth::user()->tieneAccion(102)) --}}
 @section('option')
 @include('layout.option')
 @endsection
-@elseif(Auth::user()->tieneAccion(103))
+{{-- @elseif(Auth::user()->tieneAccion(103)) --}}
 @section('option')
 @include('layout.option_historial')
 @endsection
-@endif
+{{-- @endif --}}
 
 @section('cabecera')
 Crear / editar requerimiento
@@ -82,11 +82,16 @@ Crear / editar requerimiento
                         <small>Tipo cambio($): <span id="tipo_cambio_compra">{{$tipo_cambio}}</span></small>
                         <span class="label label-default" id="estado_doc"></span>
                         <span class="label label-success" id="nro_occ_softlink"></span>
-                        <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm handleClickImprimirRequerimientoPdf" title="Imprimir requerimiento en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
-                        <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoCabecera" title="Archivos adjuntos" disabled><i class="fas fa-paperclip"></i>
-                            <span class="badge" name="cantidadAdjuntosCabeceraRequerimiento" style="position:absolute; right: 74px; border: solid 0.1px;">0</span>
+                        @if (in_array(30,$array_accesos))
+                            <button type="button" name="btn-imprimir-requerimento-pdf" class="btn btn-info btn-sm handleClickImprimirRequerimientoPdf" title="Imprimir requerimiento en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
+                        @endif
+                        @if (in_array(31,$array_accesos))
+                            <button type="button" name="btn-adjuntos-requerimiento" class="btn btn-sm btn-warning handleClickAdjuntarArchivoCabecera" title="Archivos adjuntos" disabled><i class="fas fa-paperclip"></i>
+                                <span class="badge" name="cantidadAdjuntosCabeceraRequerimiento" style="position:absolute; right: 74px; border: solid 0.1px;">0</span>
                             Adjuntos
-                        </button>
+                            </button>
+                        @endif
+
                     </div>
                 </h4>
                 <fieldset class="group-table">
@@ -299,7 +304,7 @@ Crear / editar requerimiento
                 </fieldset>
             </div>
         </div>
-        
+
         <div class="row">
             <div id="input-group-cdp">
                 <div class="col-md-6">
@@ -401,7 +406,7 @@ Crear / editar requerimiento
 
                                 <!-- <div class="input-group-append">         -->
                                 <button type="button" class="btn-primary" title="Seleccionar Cliente" name="btnCliente" onClick="openCliente();"><i class="fas fa-user-tie"></i></button>
-                                <!-- </div> 
+                                <!-- </div>
                                 <div class="input-group-append"> class="input-group-text         -->
                                 <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" onClick="agregar_cliente();"><i class="fas fa-plus"></i></button>
                                 <!-- </div> -->
@@ -730,7 +735,7 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_detalle_requerimiento.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/mostrar.js') }}?v={{filemtime(public_path('js/logistica/requerimiento/mostrar.js'))}}"></script>
- 
+
 <script src="{{ asset('js/logistica/requerimiento/tipo_formulario.js') }}?v={{filemtime(public_path('js/logistica/requerimiento/tipo_formulario.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script> -->
@@ -770,21 +775,21 @@ Crear / editar requerimiento
     if(id_grupo_usuario_sesion_list.includes(2)){
         hiddeElement('mostrar','form-requerimiento',[
         'input-group-cdp'
-        ]); 
+        ]);
     }else{
         hiddeElement('ocultar','form-requerimiento',[
         'input-group-cdp'
-        ]); 
+        ]);
     }
 
     if(id_grupo_usuario_sesion_list.includes(3)){
         hiddeElement('mostrar','form-requerimiento',[
         'input-group-proyecto'
-        ]); 
+        ]);
     }else{
         hiddeElement('ocultar','form-requerimiento',[
         'input-group-proyecto'
-        ]); 
+        ]);
     }
     autoSelectTipoRequerimientoPorDefecto();
     // grupos.forEach(element => {

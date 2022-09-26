@@ -1,7 +1,6 @@
 @section('sidebar')
 <ul class="sidebar-menu" data-widget="tree">
     <li><a href="{{route('configuracion.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Configuración</span></a></li>
-
     <li class="treeview">
         <a href="#">
             <i class="fas fa-user-cog"></i> <span>Gestión de Accesos</span> <i class="fa fa-angle-left pull-right"></i>

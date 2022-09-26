@@ -33,7 +33,7 @@ Estado de Atención de Requerimientos
             <div class="row" style="padding-top:10px;padding-right:10px;padding-left:10px;">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        <table class="mytable table table-condensed table-bordered table-okc-view"
                             id="requerimientosAlmacen" style="width:100%;">
                             <thead>
                                 <tr>
@@ -86,11 +86,12 @@ Estado de Atención de Requerimientos
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js?') }}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         listarRequerimientosAlmacen('{{Auth::user()->id_usuario}}');
         // $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
-    //     iniciar('{{Auth::user()->tieneAccion(85)}}');
+        // iniciar('{{Auth::user()->tieneAccion(85)}}');
     });
 </script>
 @endsection

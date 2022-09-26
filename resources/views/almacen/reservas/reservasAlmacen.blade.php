@@ -32,11 +32,13 @@ Reservas de almacén
         <div class="page-main" type="reservasAlmacen">
             <div class="row" style="padding-top:10px;padding-right:10px;padding-left:10px;">
                 <div class="col-md-12">
-                    @if (Auth::user()->id_usuario == 3)
+                    {{-- @if (Auth::user()->id_usuario == 3) --}}
+                    @if (in_array(154,$array_accesos))
                     <button id="btn_actualizar_reservas" class="btn btn-default" onClick="actualizarReservas();">Actualizar Reservas</button>
                     @endif
+                    {{-- @endif --}}
                     <div class="table-responsive">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        <table class="mytable table table-condensed table-bordered table-okc-view"
                             id="reservasAlmacen" style="width:100%;">
                             <thead>
                                 <tr>
@@ -89,6 +91,7 @@ Reservas de almacén
 <script src="{{ asset('js/almacen/reservas/reservasAlmacen.js') }}?v={{filemtime(public_path('js/almacen/reservas/reservasAlmacen.js'))}}"></script>
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         listarReservasAlmacen('{{Auth::user()->id_usuario}}');

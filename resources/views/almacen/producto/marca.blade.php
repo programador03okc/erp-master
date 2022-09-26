@@ -1,15 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
 
-@if(Auth::user()->tieneAccion(65))
+{{-- @if(Auth::user()->tieneAccion(65)) --}}
     @section('option')
         @include('layout.option')
     @endsection
-@elseif(Auth::user()->tieneAccion(66))
+{{-- @elseif(Auth::user()->tieneAccion(66)) --}}
     @section('option')
         @include('layout.option_historial')
     @endsection
-@endif
+{{-- @endif --}}
 
 @section('cabecera')
     Marca
@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-condensed table-bordered table-okc-view"
                 id="listaMarcas">
                     <thead>
                         <tr>
@@ -83,7 +83,7 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
-    
+
     <script src="{{ asset('js/almacen/producto/marca.js')}}"></script>
     <script>
     $(document).ready(function(){

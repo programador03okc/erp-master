@@ -1,15 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
 
-@if(Auth::user()->tieneAccion(76))
+{{-- @if(Auth::user()->tieneAccion(76)) --}}
     @section('option')
         @include('layout.option')
     @endsection
-@elseif(Auth::user()->tieneAccion(77))
+{{-- @elseif(Auth::user()->tieneAccion(77)) --}}
     @section('option')
         @include('layout.option_historial')
     @endsection
-@endif
+{{-- @endif --}}
 
 @section('cabecera')
     Posiciones en Almacén
@@ -41,7 +41,7 @@
                                     <div class="row">
                                         <div class="col-md-8">
                                             <h5>Almacén</h5>
-                                            <select class="form-control activation js-example-basic-single" 
+                                            <select class="form-control activation js-example-basic-single"
                                                 name="id_almacen" disabled="true">
                                                 <option value="0">Elija una opción</option>
                                                 @foreach ($almacenes as $alm)
@@ -118,10 +118,10 @@
                                             <fieldset class="group-importes"><legend><h6>Crear Niveles</h6></legend>
                                                 <div class="input-group">
                                                     <span class="input-group-addon"> Desde: </span>
-                                                    <input type="text" name="nivel_desde" class="form-control activation" disabled="true" 
+                                                    <input type="text" name="nivel_desde" class="form-control activation" disabled="true"
                                                     style="text-transform:uppercase;" maxlength="1" onkeypress="return sololetras(event)">
                                                     <span class="input-group-addon"> Hasta: </span>
-                                                    <input type="text" name="nivel_hasta" class="form-control activation" disabled="true" 
+                                                    <input type="text" name="nivel_hasta" class="form-control activation" disabled="true"
                                                     style="text-transform:uppercase;" maxlength="1" onkeypress="return sololetras(event)">
                                                 </div>
                                             </fieldset>
@@ -192,7 +192,7 @@
                                             <h5>Posicion</h5>
                                             <input type="hidden" name="id_posicion" primary="ids">
                                             <input type="text" class="form-control" name="codigo_posicion" disabled="true">
-                                        </div> 
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
@@ -206,7 +206,7 @@
                                             </fieldset>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="col-md-8">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"

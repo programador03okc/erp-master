@@ -48,6 +48,7 @@ Catálogo de Productos
 
 <script src="{{ asset('js/almacen/producto/prod_catalogo.js')}}"></script>
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
     });

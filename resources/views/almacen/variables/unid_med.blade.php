@@ -1,15 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
 
-@if(Auth::user()->tieneAccion(135))
+{{-- @if(Auth::user()->tieneAccion(135)) --}}
     @section('option')
         @include('layout.option')
     @endsection
-@elseif(Auth::user()->tieneAccion(134))
+{{-- @elseif(Auth::user()->tieneAccion(134)) --}}
     @section('option')
         @include('layout.option_historial')
     @endsection
-@endif
+{{-- @endif --}}
 
 @section('cabecera')
     Unidades de Medida
@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-condensed table-bordered table-okc-view"
                 id="listaUnidMed">
                     <thead>
                         <tr>
@@ -95,6 +95,7 @@
 
     <script src="{{ asset('js/almacen/variables/unid_med.js')}}"></script>
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function(){
         seleccionarMenu(window.location);
     });

@@ -2,9 +2,14 @@ $(function(){
     var vardataTables = funcDatatables();
     var form = $('.page-main form[type=register]').attr('id');
 
+    var button_copiar = (array_accesos.find(element => element === 214)?vardataTables[2][0]:[]) ,
+        button_excel = (array_accesos.find(element => element === 215)?vardataTables[2][1]:[]) ,
+        button_pdf = (array_accesos.find(element => element === 216)?vardataTables[2][2]:[]) ,
+        button_imprimir = (array_accesos.find(element => element === 217)?vardataTables[2][3]:[]);
+
     $('#listaUnidMed').dataTable({
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': [button_copiar,button_excel,button_pdf,button_imprimir],
         'language' : vardataTables[0],
         'ajax': 'listar_unidmed',
         'columns': [
@@ -38,7 +43,7 @@ $(function(){
         changeStateButton('historial');
     });
 
-    
+
 });
 
 function mostrar_unidmed(id){

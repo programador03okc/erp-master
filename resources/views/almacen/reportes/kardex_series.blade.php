@@ -23,7 +23,7 @@ Búsqueda sensitiva de Series
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-
+                @if (in_array(173,$array_accesos))
                 <div class="row">
                     <div class="col-md-2">
                         <h5>Serie</h5>
@@ -41,21 +41,23 @@ Búsqueda sensitiva de Series
                         <h5>Descripción</h5>
                         <div class="input-group-okc">
                             <input class="oculto" name="id_producto"/>
-                            <input type="text" class="form-control" placeholder="Ingrese la descripción de un producto..." 
+                            <input type="text" class="form-control" placeholder="Ingrese la descripción de un producto..."
                                 aria-describedby="basic-addon2" name="descripcion"/>
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-4">
-                        <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                            data-placement="bottom" title="Generar Kardex" 
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip"
+                            data-placement="bottom" title="Generar Kardex"
                             onClick="listarKardexSeries();">Actualizar Kardex</button>
                     </div>
                 </div>
+                @endif
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        <table class="mytable table table-condensed table-bordered table-okc-view"
                             id="listaKardexSeries">
                             <thead>
                                 <tr>
@@ -75,7 +77,7 @@ Búsqueda sensitiva de Series
             </div>
         </div>
     </div>
-    
+
 </div>
 @include('almacen.reportes.modalKardexSerie')
 @endsection

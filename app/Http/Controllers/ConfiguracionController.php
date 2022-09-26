@@ -47,6 +47,7 @@ class ConfiguracionController extends Controller{
         return view('configuracion/aplicaciones', compact('modulos'));
     }
     function view_usuario(){
+        // return response()->json(Auth::);
         $modulos = $this->select_modulos();
         $roles=$this->lista_roles();
 
@@ -625,12 +626,12 @@ class ConfiguracionController extends Controller{
         $rrhh_trab->id_tipo_trabajador          = (int) $request->id_tipo_trabajador;
         $rrhh_trab->id_categoria_ocupacional    = (int) $request->id_categoria_ocupacional;
         $rrhh_trab->id_tipo_planilla            = (int) $request->id_tipo_planilla;
-        $rrhh_trab->condicion                   = $request->condicion;
+        // $rrhh_trab->condicion                   = $request->condicion;
         $rrhh_trab->hijos                       = $request->hijos;
-        $rrhh_trab->id_pension                  = (int) $request->id_pension;
-        $rrhh_trab->cuspp                       = $request->cuspp;
-        $rrhh_trab->seguro                      = $request->seguro;
-        $rrhh_trab->confianza                   = $request->confianza;
+        // $rrhh_trab->id_pension                  = (int) $request->id_pension;
+        // $rrhh_trab->cuspp                       = $request->cuspp;
+        // $rrhh_trab->seguro                      = $request->seguro;
+        // $rrhh_trab->confianza                   = $request->confianza;
         // $rrhh_trab->estado                      = 1;
         // $rrhh_trab->fecha_registro = date('Y-m-d H:i:s');
         $rrhh_trab->save();
@@ -640,7 +641,7 @@ class ConfiguracionController extends Controller{
         $rrhh_postu->direccion      = $request->direccion;
         $rrhh_postu->telefono       = (int) $request->telefono;
         $rrhh_postu->correo         = $request->email;
-        $rrhh_postu->brevette       = $request->brevette;
+        // $rrhh_postu->brevette       = $request->brevette;
         $rrhh_postu->id_pais        = (int) $request->pais;
         $rrhh_postu->ubigeo         = $request->ubigeo;
         $rrhh_postu->fecha_registro = date('Y-m-d H:i:s');
@@ -807,7 +808,7 @@ class ConfiguracionController extends Controller{
         $rrhh_perso->apellido_materno       = $request->apellido_materno;
         $rrhh_perso->fecha_nacimiento       = $request->fecha_nacimiento;
         $rrhh_perso->sexo                   = $request->sexo;
-        $rrhh_perso->id_estado_civil        = (int) $request->id_estado_civil;
+        // $rrhh_perso->id_estado_civil        = (int) $request->id_estado_civil;
         $rrhh_perso->estado                 = 1;
         $rrhh_perso->fecha_registro         = date('Y-m-d H:i:s');
         $rrhh_perso->telefono               = (int) $request->telefono;
@@ -820,7 +821,7 @@ class ConfiguracionController extends Controller{
         $rrhh_postu->direccion      = $request->direccion;
         $rrhh_postu->telefono       = (int) $request->telefono;
         $rrhh_postu->correo         = $request->email;
-        $rrhh_postu->brevette       = $request->brevette;
+        // $rrhh_postu->brevette       = $request->brevette;
         $rrhh_postu->id_pais        = (int) $request->pais;
         $rrhh_postu->ubigeo         = $request->ubigeo;
         $rrhh_postu->fecha_registro = date('Y-m-d H:i:s');
@@ -831,12 +832,12 @@ class ConfiguracionController extends Controller{
         $rrhh_trab->id_tipo_trabajador          = (int) $request->id_tipo_trabajador;
         $rrhh_trab->id_categoria_ocupacional    = (int) $request->id_categoria_ocupacional;
         $rrhh_trab->id_tipo_planilla            = (int) $request->id_tipo_planilla;
-        $rrhh_trab->condicion                   = $request->condicion;
+        // $rrhh_trab->condicion                   = $request->condicion;
         $rrhh_trab->hijos                       = $request->hijos;
-        $rrhh_trab->id_pension                  = (int) $request->id_pension;
-        $rrhh_trab->cuspp                       = $request->cuspp;
-        $rrhh_trab->seguro                      = $request->seguro;
-        $rrhh_trab->confianza                   = $request->confianza;
+        // $rrhh_trab->id_pension                  = (int) $request->id_pension;
+        // $rrhh_trab->cuspp                       = $request->cuspp;
+        // $rrhh_trab->seguro                      = $request->seguro;
+        // $rrhh_trab->confianza                   = $request->confianza;
         $rrhh_trab->estado                      = 1;
         $rrhh_trab->fecha_registro = date('Y-m-d H:i:s');
         $rrhh_trab->save();
@@ -844,7 +845,7 @@ class ConfiguracionController extends Controller{
         $sis_usua                   = new SisUsua;
         $sis_usua->id_trabajador    = $rrhh_trab->id_trabajador;
         $sis_usua->usuario          = $request->usuario;
-        $sis_usua->clave            = StringHelper::encode5t($request->clave);
+        $sis_usua->clave            = StringHelper::encode5t('Inicio01');
         $sis_usua->estado           = 1;
         $sis_usua->fecha_registro   = date('Y-m-d H:i:s');
         $sis_usua->nombre_corto     = $request->nombre_corto;
@@ -2035,7 +2036,7 @@ public function anular_configuracion_socket($id){
     public function usuarioAcceso($id)
     {
         # code...
-        return $id;
+        // return $id;
         return view('configuracion/usuario_accesos',compact('id'));
     }
     public function getUsuario($id)
@@ -2280,11 +2281,18 @@ public function anular_configuracion_socket($id){
             ->where('estado',1)
             ->orderBy('id_modulo','ASC')
             ->get();
+
         foreach ($accesos_uduarios as $key => $value) {
             $value->accesos;
-            $value->accesos->modulos;
+            // if ($value->accesos) {
+                $value->accesos->modulos;
+            // }else{
+            //     return $value;
+            // }
             $value->moduloPadre;
+            // return $value;
         }
+        // return $accesos_uduarios;
         return response()->json([
             "success"=>true,
             "data"=>$accesos_uduarios

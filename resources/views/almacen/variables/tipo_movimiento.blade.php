@@ -1,15 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
 
-@if(Auth::user()->tieneAccion(131))
+{{-- @if(Auth::user()->tieneAccion(131)) --}}
     @section('option')
         @include('layout.option')
     @endsection
-@elseif(Auth::user()->tieneAccion(130))
+{{-- @elseif(Auth::user()->tieneAccion(130)) --}}
     @section('option')
         @include('layout.option_historial')
     @endsection
-@endif
+{{-- @endif --}}
 
 @section('cabecera')
 Tipos de Operación
@@ -32,7 +32,7 @@ Tipos de Operación
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-condensed table-bordered table-okc-view"
                 id="listaTipoMov">
                     <thead>
                         <tr>
@@ -101,6 +101,7 @@ Tipos de Operación
 
     <script src="{{ asset('js/almacen/variables/tipo_movimiento.js')}}"></script>
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function(){
         seleccionarMenu(window.location);
     });

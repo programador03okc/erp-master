@@ -112,33 +112,33 @@ function actualizarLista(option=null){
 
 
     var vardataTables = funcDatatables();
+    var button_filtros = (array_accesos.find(element => element === 164)?{
+        text: '<i class="fas fa-filter"></i> Filtros : 0',
+        attr: {
+            id: 'btnFiltros'
+        },
+        action: () => {
+            open_filtros();
+
+        },
+        className: 'btn-default btn-sm'
+    }:[]);
+    var button_descargar_Excel = (array_accesos.find(element => element === 165)?{
+        text: '<i class="far fa-file-excel"></i> Descargar',
+        attr: {
+            id: 'btnDescargarExcel'
+        },
+        action: () => {
+            descargarSalidasExcel();
+
+        },
+        className: 'btn-default btn-sm'
+    }:[]);
+
         $tablaListaSalidas = $('#listaSalidas').DataTable({
         'destroy': true,
         'dom': vardataTables[1],
-        'buttons': [
-            {
-                text: '<i class="fas fa-filter"></i> Filtros : 0',
-                attr: {
-                    id: 'btnFiltros'
-                },
-                action: () => {
-                    open_filtros();
-
-                },
-                className: 'btn-default btn-sm'
-            },
-            {
-                text: '<i class="far fa-file-excel"></i> Descargar',
-                attr: {
-                    id: 'btnDescargarExcel'
-                },
-                action: () => {
-                    descargarSalidasExcel();
-
-                },
-                className: 'btn-default btn-sm'
-            }
-        ],
+        'buttons': [button_filtros,button_descargar_Excel],
         'language' : vardataTables[0],
         "scrollX": true,
         'serverSide': true,
@@ -175,10 +175,10 @@ function actualizarLista(option=null){
             { 'data': 'fecha_registro', 'name': 'mov_alm.fecha_registro', 'className': 'text-center','defaultContent':'' }
         ],
         'columnDefs': [
-            {'render': 
+            {'render':
                 function(data, type, row){
                     var html = '<select class="form-control '+
-                        ((row['revisado'] == 0) ? 'btn-danger' : 
+                        ((row['revisado'] == 0) ? 'btn-danger' :
                         ((row['revisado'] == 1) ? 'btn-success' : 'btn-warning'))+
                         ' " style="font-size:11px;width:85px;padding:3px 4px;" id="revisado">'+
                             '<option value="0" '+(row['revisado'] == 0 ? 'selected' : '')+'>No Revisado</option>'+
@@ -206,7 +206,7 @@ function actualizarLista(option=null){
             //         }
             //     }, targets: 9
             // },
-                {'render': 
+                {'render':
                 function(data, type, row){
                     if (moneda == 4){
                         return 'S/';
@@ -255,7 +255,7 @@ function actualizarLista(option=null){
                         }
                     }
                     return formatDecimal(t);
-             
+
                 }, targets: 14
             },
             {
@@ -387,5 +387,5 @@ function limpiar_cliente(){
 }
 function vista_extendida(){
     let body=document.getElementsByTagName('body')[0];
-    body.classList.add("sidebar-collapse"); 
+    body.classList.add("sidebar-collapse");
 }

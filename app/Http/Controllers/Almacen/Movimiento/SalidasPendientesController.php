@@ -12,6 +12,7 @@ use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
+use App\models\Configuracion\AccesosUsuarios;
 use App\models\contabilidad\Adjuntos;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -29,9 +30,14 @@ class SalidasPendientesController extends Controller
         $usuarios = AlmacenController::select_usuarios();
         $motivos_anu = AlmacenController::select_motivo_anu();
         $nro_od_pendientes = $this->nroDespachosPendientes();
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
         return view(
             'almacen/guias/despachosPendientes',
-            compact('tp_operacion', 'clasificaciones', 'usuarios', 'motivos_anu', 'nro_od_pendientes')
+            compact('tp_operacion', 'clasificaciones', 'usuarios', 'motivos_anu', 'nro_od_pendientes','array_accesos')
         );
     }
 

@@ -1,15 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
 
-@if(Auth::user()->tieneAccion(74))
+{{-- @if(Auth::user()->tieneAccion(74)) --}}
 @section('option')
 @include('layout.option')
 @endsection
-@elseif(Auth::user()->tieneAccion(75))
+{{-- @elseif(Auth::user()->tieneAccion(75)) --}}
 @section('option')
 @include('layout.option_historial')
 @endsection
-@endif
+{{-- @endif --}}
 
 @section('cabecera')
 Almacenes

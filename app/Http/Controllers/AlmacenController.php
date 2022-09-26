@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReporteIngresosExcel;
 use App\Exports\ReporteSalidasExcel;
+use App\models\Configuracion\AccesosUsuarios;
 use Exception;
 
 date_default_timezone_set('America/Lima');
@@ -154,11 +155,46 @@ class AlmacenController extends Controller
     // }
     function view_tipo_movimiento()
     {
-        return view('almacen/variables/tipo_movimiento');
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',85)
+        ->where('accesos_usuarios.id_padre',39)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        return view('almacen/variables/tipo_movimiento',compact('array_accesos','array_accesos_botonera'));
     }
     function view_unid_med()
     {
-        return view('almacen/variables/unid_med');
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',87)
+        ->where('accesos_usuarios.id_padre',39)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        return view('almacen/variables/unid_med',compact('array_accesos','array_accesos_botonera'));
     }
 
     function view_guia_compra()
@@ -227,20 +263,47 @@ class AlmacenController extends Controller
     }
     function view_kardex_general()
     {
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
         $empresas = AlmacenController::select_empresa();
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
-        return view('almacen/reportes/kardex_general', compact('almacenes', 'empresas'));
+        return view('almacen/reportes/kardex_general', compact('almacenes', 'empresas', 'array_accesos'));
     }
     function view_kardex_detallado()
     {
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
         $empresas = AlmacenController::select_empresa();
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
-        return view('almacen/reportes/kardex_detallado', compact('almacenes', 'empresas'));
+        return view('almacen/reportes/kardex_detallado', compact('almacenes', 'empresas','array_accesos'));
     }
     function view_tipo_doc_almacen()
     {
         $tp_doc = $this->mostrar_tp_doc_cbo();
-        return view('almacen/variables/tipo_doc_almacen', compact('tp_doc'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',86)
+        ->where('accesos_usuarios.id_padre',39)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        return view('almacen/variables/tipo_doc_almacen', compact('tp_doc','array_accesos_botonera','array_accesos'));
     }
     function view_ingresos()
     {
@@ -249,7 +312,12 @@ class AlmacenController extends Controller
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_ing();
         $tp_operacion = $this->tp_operacion_cbo_ing();
         $usuarios = $this->select_almaceneros();
-        return view('almacen/reportes/lista_ingresos', compact('almacenes', 'empresas', 'tp_doc_almacen', 'tp_operacion', 'usuarios'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/reportes/lista_ingresos', compact('almacenes', 'empresas', 'tp_doc_almacen', 'tp_operacion', 'usuarios','array_accesos'));
     }
     function view_salidas()
     {
@@ -258,28 +326,62 @@ class AlmacenController extends Controller
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
         $tp_operacion = AlmacenController::tp_operacion_cbo_sal();
         $usuarios = $this->select_almaceneros();
-        return view('almacen/reportes/lista_salidas', compact('almacenes', 'empresas', 'tp_doc_almacen', 'tp_operacion', 'usuarios'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/reportes/lista_salidas', compact('almacenes', 'empresas', 'tp_doc_almacen', 'tp_operacion', 'usuarios','array_accesos'));
     }
     function view_busqueda_ingresos()
     {
         $empresas = AlmacenController::select_empresa();
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_ing();
-        return view('almacen/reportes/busqueda_ingresos', compact('almacenes', 'empresas', 'tp_doc_almacen'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/reportes/busqueda_ingresos', compact('almacenes', 'empresas', 'tp_doc_almacen','array_accesos'));
     }
     function view_busqueda_salidas()
     {
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
         $empresas = AlmacenController::select_empresa();
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
-        return view('almacen/reportes/busqueda_salidas', compact('almacenes', 'empresas', 'tp_doc_almacen'));
+        return view('almacen/reportes/busqueda_salidas', compact('almacenes', 'empresas', 'tp_doc_almacen','array_accesos'));
     }
 
     function view_serie_numero()
     {
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',84)
+        ->where('accesos_usuarios.id_padre',39)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+
         $tipos = $this->select_cont_tp_doc();
         $sedes = AlmacenController::mostrar_sedes_cbo();
-        return view('almacen/variables/serie_numero', compact('tipos', 'sedes'));
+
+        return view('almacen/variables/serie_numero', compact('tipos', 'sedes','array_accesos','array_accesos_botonera'));
     }
     function view_docs_prorrateo()
     {
@@ -1129,7 +1231,7 @@ class AlmacenController extends Controller
                 $ocs = DB::table('almacen.doc_com_guia')
                     ->where('id_guia_com', $request->id_guia_com)
                     ->update(['estado' => 7]);
-                //Anula detalle 
+                //Anula detalle
                 $detalle = DB::table('almacen.guia_com_det')
                     ->where('id_guia_com', $request->id_guia_com)->get();
 
@@ -1209,7 +1311,7 @@ class AlmacenController extends Controller
             $ocs = DB::table('almacen.doc_com_guia')
                 ->where('id_guia_com', $request->id_guia_com)
                 ->update(['estado' => 7]);
-            //Anula detalle 
+            //Anula detalle
             $detalle = DB::table('almacen.guia_com_det')
                 ->where('id_guia_com', $request->id_guia_com)->get();
 
@@ -1430,7 +1532,7 @@ class AlmacenController extends Controller
             }
             //cambiar estado guiacom
             DB::table('almacen.guia_com')
-                ->where('id_guia', $id_guia)->update(['estado' => 9]); //Procesado    
+                ->where('id_guia', $id_guia)->update(['estado' => 9]); //Procesado
         }
 
         return response()->json($id_ingreso);
@@ -2244,7 +2346,7 @@ class AlmacenController extends Controller
                 <td>' . $guia->fecha_guia . '</td>
                 <td>' . $guia->razon_social . '</td>
                 <td>' . $guia->des_motivo . '</td>
-                <td><i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
+                <td><i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom"
                     title="Anular Guia" onClick="anular_guia(' . $guia->id_guia_ven . ',' . $guia->id_doc_ven_guia . ');"></i>
                 </td>
             </tr>';
@@ -2304,31 +2406,31 @@ class AlmacenController extends Controller
             ->get();
         $html = '';
         foreach ($detalle as $det) {
-            // <td>'.($det->guia_tp_doc_almacen !== null ? 
+            // <td>'.($det->guia_tp_doc_almacen !== null ?
             // ($det->guia_tp_doc_almacen.'-'.$det->guia_serie.'-'.$det->guia_numero) : '').'</td>
 
             $html .= '
             <tr id="det-' . $det->id_doc_det . '">
                 <td>' . $det->codigo . '</td>
                 <td>' . $det->descripcion . '</td>
-                <td><input type="number" class="input-data right" name="cantidad" 
-                    value="' . $det->cantidad . '" onChange="calcula_total(' . $det->id_doc_det . ');" 
+                <td><input type="number" class="input-data right" name="cantidad"
+                    value="' . $det->cantidad . '" onChange="calcula_total(' . $det->id_doc_det . ');"
                     disabled="true"/>
                 </td>
                 <td>' . $det->abreviatura . '</td>
-                <td><input type="number" class="input-data right" name="precio_unitario" 
-                    value="' . $det->precio_unitario . '" onChange="calcula_total(' . $det->id_doc_det . ');" 
+                <td><input type="number" class="input-data right" name="precio_unitario"
+                    value="' . $det->precio_unitario . '" onChange="calcula_total(' . $det->id_doc_det . ');"
                     disabled="true"/>
                 </td>
-                <td><input type="number" class="input-data right" name="porcen_dscto" 
-                    value="' . $det->porcen_dscto . '" onChange="calcula_dscto(' . $det->id_doc_det . ');" 
+                <td><input type="number" class="input-data right" name="porcen_dscto"
+                    value="' . $det->porcen_dscto . '" onChange="calcula_dscto(' . $det->id_doc_det . ');"
                     disabled="true"/>
                 </td>
-                <td><input type="number" class="input-data right" name="total_dscto" 
-                    value="' . $det->total_dscto . '" onChange="calcula_total(' . $det->id_doc_det . ');" 
+                <td><input type="number" class="input-data right" name="total_dscto"
+                    value="' . $det->total_dscto . '" onChange="calcula_total(' . $det->id_doc_det . ');"
                     disabled="true"/>
                 </td>
-                <td><input type="number" class="input-data right" name="precio_total" 
+                <td><input type="number" class="input-data right" name="precio_total"
                     value="' . $det->precio_total . '" disabled="true"/>
                 </td>
                 <td style="display:flex;">
@@ -2784,15 +2886,15 @@ class AlmacenController extends Controller
                 'alm_prod.estado as estado_producto',
                 'log_servi.estado as estado_servicio',
                 // 'alm_prod.codigo',
-                DB::raw("(CASE 
-                WHEN alm_item.id_servicio isNUll THEN alm_prod.codigo 
-                WHEN alm_item.id_producto isNUll THEN log_servi.codigo 
+                DB::raw("(CASE
+                WHEN alm_item.id_servicio isNUll THEN alm_prod.codigo
+                WHEN alm_item.id_producto isNUll THEN log_servi.codigo
                 ELSE 'nulo' END) AS codigo
                 "),
                 // 'alm_prod.descripcion',
-                DB::raw("(CASE 
-                WHEN alm_item.id_servicio isNUll THEN alm_prod.descripcion 
-                WHEN alm_item.id_producto isNUll THEN log_servi.descripcion 
+                DB::raw("(CASE
+                WHEN alm_item.id_servicio isNUll THEN alm_prod.descripcion
+                WHEN alm_item.id_producto isNUll THEN log_servi.descripcion
                 ELSE 'nulo' END) AS descripcion
                 "),
                 'alm_und_medida.abreviatura',
@@ -2826,9 +2928,9 @@ class AlmacenController extends Controller
                         'alm_prod_ubi.id_prod_ubi',
                         'alm_prod_ubi.stock',
                         'alm_prod_ubi.costo_promedio',
-                        DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
-                        WHERE alm_det_req.estado=19 
-                        AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
+                        DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req
+                        WHERE alm_det_req.estado=19
+                        AND alm_det_req.id_producto=alm_prod_ubi.id_producto
                         AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen) as cantidad_reserva")
                     )
                     ->where([
@@ -2922,9 +3024,9 @@ class AlmacenController extends Controller
                         'alm_prod_ubi.id_prod_ubi',
                         'alm_prod_ubi.stock',
                         'alm_prod_ubi.costo_promedio',
-                        DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req 
-                        WHERE alm_det_req.estado=19 
-                        AND alm_det_req.id_producto=alm_prod_ubi.id_producto 
+                        DB::raw("(SELECT SUM(alm_det_req.cantidad) FROM almacen.alm_det_req
+                        WHERE alm_det_req.estado=19
+                        AND alm_det_req.id_producto=alm_prod_ubi.id_producto
                         AND alm_det_req.id_almacen_reserva=alm_prod_ubi.id_almacen) as cantidad_reserva")
                     )
                     ->where([
@@ -3459,7 +3561,7 @@ class AlmacenController extends Controller
                 $html .= '
                     <tr>
                         <td><input type="checkbox" checked></td>
-                        <td hidden><input name="id" style="display:none;" 
+                        <td hidden><input name="id" style="display:none;"
                         value="' . (isset($d->id_mov_alm_det) ? ('ing-' . $d->id_mov_alm_det)
                     : (isset($d->id_detalle_requerimiento) ? ('req-' . $d->id_detalle_requerimiento)
                         : (isset($d->id_doc_det) ? ('doc-' . $d->id_doc_det) : ''))) . '"/></td>
@@ -4378,7 +4480,7 @@ class AlmacenController extends Controller
         <html>
             <head>
                 <style type="text/css">
-                *{ 
+                *{
                     font-family: "DejaVu Sans";
                 }
                 table{
@@ -5288,7 +5390,7 @@ class AlmacenController extends Controller
         <html>
             <head>
                 <style type="text/css">
-                *{ 
+                *{
                     font-family: "DejaVu Sans";
                 }
                 table{
@@ -5336,7 +5438,7 @@ class AlmacenController extends Controller
                     <h3 style="margin:0px;"><center>' . $ingreso->tp_doc_descripcion . '</center></h3>
                 </div>
                 <h5 style="margin:5px;"><center>' . $revisado . '</center></h5>
-                
+
                 <table border="0" style="border:1px #212121 dashed;padding:3px;">
                     <tr>
                         <td width=120px class="subtitle">Sucursal / Almacén</td>
@@ -5705,7 +5807,7 @@ class AlmacenController extends Controller
 
     //         $unit = round(($costo_total/$cantidad),4,PHP_ROUND_HALF_UP);
 
-    //         $html .= 
+    //         $html .=
     //         '<tr id="det-'.$id_guia_com_det.'">
     //             <td>'.$oc.'</td>
     //             <td>'.$codigo.'</td>
@@ -5827,7 +5929,7 @@ class AlmacenController extends Controller
     //                     'id_prorrateo'=>$request->id_prorrateo,
     //                     'id_guia_com_det'=>$id,
     //                     'importe'=>$adicional,
-    //                     'fecha_registro'=>date('Y-m-d H:i:s')                       
+    //                     'fecha_registro'=>date('Y-m-d H:i:s')
     //                 ],
     //                     'id_prorrateo_det'
     //                 );
@@ -5855,7 +5957,7 @@ class AlmacenController extends Controller
     //         ->where('id_guia_com_det',$id_guia_com_det)
     //         ->first();
 
-    //         //Calcula el nuevo unitario adicional 
+    //         //Calcula el nuevo unitario adicional
     //         $nuevo = $unit - $det->unitario;
     //         $nuevo_adic = ($nuevo < 0 ? 0 : $nuevo);
     //         $total = ($det->unitario + $nuevo_adic) * $det->cantidad;
@@ -5871,7 +5973,7 @@ class AlmacenController extends Controller
     //         ->where([['id_guia_com_det','=',$id_guia_com_det],['estado','!=',7]])
     //         ->first();
 
-    //         //Actualiza valorizacion 
+    //         //Actualiza valorizacion
     //         if (isset($ing)){
     //             $valor = ($det->unitario + $nuevo_adic) * $ing->cantidad;
     //             $update = DB::table('almacen.mov_alm_det')
@@ -6326,22 +6428,22 @@ class AlmacenController extends Controller
                 'log_valorizacion_cotizacion.porcentaje_descuento',
                 'log_valorizacion_cotizacion.monto_descuento',
                 'log_valorizacion_cotizacion.subtotal',
-                DB::raw("(CASE 
-        WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.descripcion 
-        WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.descripcion 
-        WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.descripcion 
+                DB::raw("(CASE
+        WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.descripcion
+        WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.descripcion
+        WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.descripcion
         ELSE 'nulo' END) AS descripcion
         "),
-                DB::raw("(CASE 
-        WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.codigo 
-        WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.codigo 
-        WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.codigo 
+                DB::raw("(CASE
+        WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_prod.codigo
+        WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN log_servi.codigo
+        WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN equipo.codigo
         ELSE 'nulo' END) AS codigo
         "),
-                DB::raw("(CASE 
+                DB::raw("(CASE
         WHEN alm_item.id_servicio isNUll AND alm_item.id_equipo isNull THEN alm_und_medida.abreviatura
-        WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN 'serv' 
-        WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN 'und' 
+        WHEN alm_item.id_producto isNUll AND alm_item.id_equipo isNull THEN 'serv'
+        WHEN alm_item.id_servicio isNUll AND alm_item.id_producto isNull THEN 'und'
         ELSE 'nulo' END) AS unidad_medida
         ")
             )
@@ -6696,7 +6798,7 @@ class AlmacenController extends Controller
         <html>
             <head>
                 <style type="text/css">
-                *{ 
+                *{
                     font-family: "DejaVu Sans";
                 }
                 table{
@@ -6795,7 +6897,7 @@ class AlmacenController extends Controller
         <html>
             <head>
                 <style type="text/css">
-                *{ 
+                *{
                     font-family: "DejaVu Sans";
                 }
                 table{

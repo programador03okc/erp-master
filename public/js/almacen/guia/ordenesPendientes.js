@@ -38,22 +38,24 @@ var table;
 
 function listarOrdenesPendientes() {
     var vardataTables = funcDatatables();
+    var button_ingresar_guia = (array_accesos.find(element => element === 99)?{
+        text: ' Ingresar Guía',
+        action: function () {
+            open_guia_create_seleccionadas();
+        }, className: 'btn-primary disabled btnIngresarGuia'
+    }:[]);
+
+    var button_exportar_excel = (array_accesos.find(element => element === 100)?{
+        text: ' Exportar Excel',
+        action: function () {
+            exportarOrdenesPendientes();
+        }, className: 'btn-success btnExportarOrdenesPendientes'
+    }:[]);
 
     let botones = [];
-    if (acceso == '1') {
-        botones.push({
-            text: ' Ingresar Guía',
-            action: function () {
-                open_guia_create_seleccionadas();
-            }, className: 'btn-primary disabled btnIngresarGuia'
-        },
-            {
-                text: ' Exportar Excel',
-                action: function () {
-                    exportarOrdenesPendientes();
-                }, className: 'btn-success btnExportarOrdenesPendientes'
-            });
-    }
+    // if (acceso == '1') {
+        botones.push(button_ingresar_guia,button_exportar_excel);
+    // }
 
     $("#ordenesPendientes").on('search.dt', function () {
         $('#ordenesPendientes_filter input').prop('disabled', true);
@@ -99,14 +101,14 @@ function listarOrdenesPendientes() {
             const $form = $('#formFiltrosOrdenesPendientes');
             $('#ordenesPendientes_wrapper .dt-buttons').append(
                 `<div style="display:flex">
-                    <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaInicio" 
-                        value="${$form.find('input[name=ordenes_fecha_inicio]').val()}"/>
-                    <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaFin" 
-                        value="${$form.find('input[name=ordenes_fecha_fin]').val()}"/>
+                    `+(array_accesos.find(element => element === 101)?`
+                    <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaInicio"
+                    value="${$form.find('input[name=ordenes_fecha_inicio]').val()}"/>
+                    <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaFin"
+                    value="${$form.find('input[name=ordenes_fecha_fin]').val()}"/>
                     <select class="form-control" id="selectOrdenPendienteSede">
                         <option value="0" selected>Mostrar Todos</option>
-                    </select>
-                    
+                    </select>`:``)+`
                 </div>`
             );
             $('input.date-picker').datepicker({
@@ -225,23 +227,22 @@ function listarOrdenesPendientes() {
                 searchable: false,
                 orderable: false,
                 render: function (data, type, row) {
-                    if (acceso == "1") {
+                    // if (acceso == "1") {
                         return `<div style="display:flex;">
-                            <button type="button" class="ver-detalle btn btn-default boton btn-flat" data-toggle="tooltip" 
-                                data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
-                                <i class="fas fa-chevron-down"></i></button>
-                                
-                            <button type="button" class="guia btn btn-info boton btn-flat" data-toggle="tooltip" 
-                                data-placement="bottom" title="Generar Guía" >
-                                <i class="fas fa-sign-in-alt"></i></button>
-                            </div>`;
-                    } else {
-                        return (
-                            `<button type="button" class="ver-detalle btn btn-default boton" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
-                            <i class="fas fa-chevron-down"></i></button>`
-                        );
-                    }
+                        `+(array_accesos.find(element => element === 102)?`<button type="button" class="ver-detalle btn btn-default boton btn-flat" data-toggle="tooltip"
+                        data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
+                        <i class="fas fa-chevron-down"></i></button>`:``)+`
+                        `+(array_accesos.find(element => element === 103)?`<button type="button" class="guia btn btn-info boton btn-flat" data-toggle="tooltip"
+                        data-placement="bottom" title="Generar Guía" >
+                        <i class="fas fa-sign-in-alt"></i></button>
+                    </div>`:``)+``;
+                    // } else {
+                    //     return (
+                    //         `<button type="button" class="ver-detalle btn btn-default boton" data-toggle="tooltip"
+                    //         data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
+                    //         <i class="fas fa-chevron-down"></i></button>`
+                    //     );
+                    // }
                 },
                 targets: 9
             }
