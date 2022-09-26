@@ -767,8 +767,11 @@ class ConfiguracionController extends Controller{
         ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
         ->where('id_usuario',$id)
         ->first();
-        $data->usuarioGrupo;
-        $data->usuarioRol;
+        // $data->usuarioGrupo;
+        if (sizeof($data->usuarioGrupo)>0) {
+            $data->usuarioGrupo;
+        }else{$data->usuarioGrupo=[];}
+        $data->usuarioRol = (sizeof($data->usuarioRol)>0) ? $data->usuarioRol : [] ;
         // $grupo = Grupo::get();
         // $rol = Rol::where("estado",1)->get();
         return response()->json([
