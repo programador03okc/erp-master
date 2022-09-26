@@ -2192,6 +2192,7 @@ public function anular_configuracion_socket($id){
         $sub_modulos =[];
 
         $array__modulos=[];
+
         if ($request->data) {
             $success=true;
             $status = 200;
@@ -2204,6 +2205,7 @@ public function anular_configuracion_socket($id){
             )
             ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo','left')
             ->where('modulos.estado',1)
+            // ->where('modulos.id_padre',18)
             ->where('modulos.id_padre',$request->data)
             ->get();
 
@@ -2219,29 +2221,39 @@ public function anular_configuracion_socket($id){
                         'accesos.descripcion as acceso'
                     )
                     ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo')
+                    ->where('modulos.estado',1)
                     ->where('modulos.id_padre',$value->id_modulo)
+                    // ->where('modulos.id_padre',89)
                     ->orderBy('modulo','ASC')
                     ->get();
+
                     if (sizeof($sub_modulos_hijos)>0) {
                         $value->modulos_hijos = $sub_modulos_hijos;
 
-                        foreach ($sub_modulos_hijos as $key_hijos => $value_hijos) {
-                            $value_hijos->modulos_hijos_hijos=[];
-                            $sub_modulos_hijos_tercer_nivel = DB::table('configuracion.modulos')
-                            ->select(
-                                'modulos.id_modulo',
-                                'modulos.descripcion as modulo',
-                                'accesos.id_acceso',
-                                'accesos.descripcion as acceso'
-                            )
-                            ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo')
-                            ->where('modulos.id_padre',$value_hijos->id_modulo)
-                            ->orderBy('modulo','ASC')
-                            ->get();
-                        }
-                        if (sizeof($sub_modulos_hijos_tercer_nivel)>0) {
-                            $value_hijos->modulos_hijos_hijos = $sub_modulos_hijos_tercer_nivel;
-                        }
+                        // foreach ($sub_modulos_hijos as $key_hijos => $value_hijos) {
+                        //     $value_hijos->modulos_hijos_hijos=[];
+                        //     if ($value_hijos->acceso ===null) {
+                        //         $sub_modulos_hijos_tercer_nivel = DB::table('configuracion.modulos')
+                        //         ->select(
+                        //             'modulos.id_modulo',
+                        //             'modulos.descripcion as modulo',
+                        //             'accesos.id_acceso',
+                        //             'accesos.descripcion as acceso'
+                        //         )
+                        //         ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo')
+                        //         ->where('modulos.id_padre',$value_hijos->id_modulo)
+                        //         ->where('modulos.estado',1)
+                        //         ->orderBy('modulo','ASC')
+                        //         ->get();
+
+                        //         if (sizeof($sub_modulos_hijos_tercer_nivel)>0) {
+                        //             $value_hijos->modulos_hijos_hijos = $sub_modulos_hijos_tercer_nivel;
+                        //         }
+                        //     }
+
+                        // }
+
+
                     }
 
                 }

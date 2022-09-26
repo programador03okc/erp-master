@@ -518,12 +518,12 @@ function listarRequerimientosPendientes(permiso) {
                         //         ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
                         //             ? "warning"
                         //             : "default"
-                        //         } boton" data-toggle="tooltip" 
+                        //         } boton" data-toggle="tooltip"
                         //         data-placement="bottom" data-id="${row["id_od"]
                         //         }" data-cod="${row["codigo_od"]
                         //         }" title="Adjuntar Boleta/Factura" >
                         //         <i class="fas fa-paperclip"></i></button>
-                        //     <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
+                        //     <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip"
                         //         data-placement="bottom" data-id="${row["id_od"]
                         //         }" data-cod="${row["codigo_od"]
                         //         }" title="Anular Orden Despacho" >
@@ -531,11 +531,11 @@ function listarRequerimientosPendientes(permiso) {
                         //         : "") +
                         // (row["estado"] == 9
                         //     ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
-                        //         ? "warning" : "default"} boton" data-toggle="tooltip" data-placement="bottom" data-id="${row["id_od"]}" 
+                        //         ? "warning" : "default"} boton" data-toggle="tooltip" data-placement="bottom" data-id="${row["id_od"]}"
                         //         data-cod="${row["codigo_od"]}" title="Adjuntar Boleta/Factura" >
                         //         <i class="fas fa-paperclip"></i></button>` : "") +
-                        // `<button type="button" class="facturar btn btn-${row["enviar_facturacion"] ? "info" : "default"} 
-                        // boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación" 
+                        // `<button type="button" class="facturar btn btn-${row["enviar_facturacion"] ? "info" : "default"}
+                        // boton" data-toggle="tooltip" data-placement="bottom" title="Enviar a Facturación"
                         // data-id="${row["id_requerimiento"]}" data-cod="${row["codigo"]}">
                         // <i class="fas fa-check"></i></button>`
                     );
@@ -866,12 +866,12 @@ function listarRequerimientosEnTransformacion(permiso) {
                             //         '<i class="fas fa-sign-in-alt"></i></button>'
                             //         : row["id_od"] !== null && row["estado_od"] == 1
                             //             ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
-                            //                 ? "warning" : "default"} boton" data-toggle="tooltip" 
+                            //                 ? "warning" : "default"} boton" data-toggle="tooltip"
                             //     data-placement="bottom" data-id="${row["id_od"]
                             //             }" data-cod="${row["codigo_od"]
                             //             }" title="Adjuntar Boleta/Factura" >
                             //     <i class="fas fa-paperclip"></i></button>
-                            // <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip" 
+                            // <button type="button" class="anular_od btn btn-danger boton" data-toggle="tooltip"
                             //     data-placement="bottom" data-id="${row["id_od"]
                             //             }" data-cod="${row["codigo_od"]
                             //             }" title="Anular Orden Despacho" >
@@ -881,7 +881,7 @@ function listarRequerimientosEnTransformacion(permiso) {
                             //     ? `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
                             //         ? "warning"
                             //         : "default"
-                            //     } boton" data-toggle="tooltip" 
+                            //     } boton" data-toggle="tooltip"
                             // data-placement="bottom" data-id="${row["id_od"]
                             //     }" data-cod="${row["codigo_od"]
                             //     }" title="Adjuntar Boleta/Factura" >
@@ -1050,10 +1050,10 @@ function listarOrdenesPendientes() {
             {
                 render: function (data, type, row) {
                     return `<button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
-                        ? "warning" : "default"} boton" data-toggle="tooltip" data-placement="bottom" data-id="${row["id_od"]}" 
+                        ? "warning" : "default"} boton" data-toggle="tooltip" data-placement="bottom" data-id="${row["id_od"]}"
                         data-cod="${row["codigo"]}" title="Adjuntar Boleta/Factura" >
                                 <i class="fas fa-paperclip"></i></button>
-                            <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            <button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip"
                                 data-placement="bottom" title="Ver Detalle" data-id="${row["id_requerimiento"]}">
                                 <i class="fas fa-chevron-down"></i></button>`;
                 }
@@ -1261,7 +1261,7 @@ function listarGruposDespachados(permiso) {
                         // 'data-placement="bottom" title="Ver Detalle" >'+
                         // '<i class="fas fa-list-ul"></i></button>'+
                         return (
-                            `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                            `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip"
                             data-placement="bottom" title="Ver Detalle" data-id="${row["id_requerimiento"]
                             }">
                             <i class="fas fa-chevron-down"></i></button>
@@ -1269,7 +1269,7 @@ function listarGruposDespachados(permiso) {
                         <button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
                                 ? "warning"
                                 : "default"
-                            } boton" data-toggle="tooltip" 
+                            } boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row["id_od"]
                             }" data-cod="${row["codigo_od"]
                             }" title="Adjuntar Boleta/Factura" >
@@ -1306,14 +1306,14 @@ function listarGruposDespachados(permiso) {
                                 : "")
                         );
                     } else {
-                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" 
+                        return `<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip"
                             data-placement="bottom" title="Ver Detalle" data-id="${row["id_requerimiento"]
                             }">
                             <i class="fas fa-chevron-down"></i></button>
                         <button type="button" class="adjuntar btn btn-${row["count_despacho_adjuntos"] > 0
                                 ? "warning"
                                 : "default"
-                            } boton" data-toggle="tooltip" 
+                            } boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row["id_od"]
                             }" data-cod="${row["codigo_od"]
                             }" title="Adjuntar Boleta/Factura" >
@@ -1625,17 +1625,17 @@ function listarGruposDespachadosPendientesCargo(permiso) {
                     if (permiso == "1") {
                         return `
                         <div style="display:flex;">
-                            <button type="button" class="estados btn btn-primary btn-flat boton" data-toggle="tooltip" 
+                            <button type="button" class="estados btn btn-primary btn-flat boton" data-toggle="tooltip"
                             data-placement="bottom" title="Ver Detalle" data-id="${row["id_od"]}">
                             <i class="fas fa-chevron-down"></i></button>
 
-                            <button type="button" class="nuevo btn btn-info btn-flat  boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row["id_od"]}" data-codod="${row["codigo_od"]}" 
+                            <button type="button" class="nuevo btn btn-info btn-flat  boton" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row["id_od"]}" data-codod="${row["codigo_od"]}"
                             data-idreq="${row["id_requerimiento"]}" data-estreq="${row["estado_od"]}" title="Nuevo Estado">
                             <i class="fas fa-map-marker-alt"></i></button>
-                            
-                            <button type="button" class="no_conforme btn btn-danger btn-flat  boton" data-toggle="tooltip" 
-                            data-placement="bottom" data-id="${row["id_od_grupo_detalle"]}" data-od="${row["id_od"]}" 
+
+                            <button type="button" class="no_conforme btn btn-danger btn-flat  boton" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row["id_od_grupo_detalle"]}" data-od="${row["id_od"]}"
                             data-idreq="${row["id_requerimiento"]}" data-cod-req="${row["codigo_req"]}" data-concepto="${row["concepto"]}" title="Revertir" >
                             <i class="fas fa-backspace"></i></button>
                         </div>`;
@@ -1653,8 +1653,8 @@ function listarGruposDespachadosPendientesCargo(permiso) {
     });
 }
 {
-    /* <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip" 
-data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}" 
+    /* <button type="button" class="conforme btn btn-success boton" data-toggle="tooltip"
+data-placement="bottom" data-id="${row['id_od_grupo_detalle']}" data-od="${row['id_od']}"
 data-idreq="${row['id_requerimiento']}" data-cod-req="${row['codigo_req']}" data-concepto="${row['concepto']}" title="Confirmar Entrega" >
 <i class="fas fa-check"></i></button> */
 }

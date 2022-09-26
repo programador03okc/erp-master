@@ -17,7 +17,7 @@ class OrdenesServicio {
     initializeEventHandler() {
 
     }
-    
+
     descargarListaOrdenesServicio(){
         window.open(`reporte-ordenes-servicio-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}`);
 
@@ -27,22 +27,21 @@ class OrdenesServicio {
     mostrar(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO') {
         let that = this;
         vista_extendida();
-        var vardataTables = funcDatatables();
+        var vardataTables = funcDatatables(),
+            button_descargar = (array_accesos.find(element => element === 275)?{
+                text: '<i class="far fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnDescargarListaOrdenesServicio'
+                },
+                action: () => {
+                    this.descargarListaOrdenesServicio();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
         $tablaListaOrdenesServicio= $('#listaOrdenesServicio').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<i class="far fa-file-excel"></i> Descargar',
-                    attr: {
-                        id: 'btnDescargarListaOrdenesServicio'
-                    },
-                    action: () => {
-                        this.descargarListaOrdenesServicio();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
-            ],
+            'buttons': [button_descargar],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,
@@ -54,7 +53,7 @@ class OrdenesServicio {
                 'data':{'idEmpresa':idEmpresa,'idSede':idSede,'fechaRegistroDesde':fechaRegistroDesde,'fechaRegistroHasta':fechaRegistroHasta},
 
                 beforeSend: data => {
-    
+
                     $("#listaOrdenesServicio").LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
@@ -98,8 +97,8 @@ class OrdenesServicio {
                         return fechaPlazoEntrega;
                     }, targets: 6
                 },
-   
- 
+
+
 
             ],
             'initComplete': function () {
@@ -118,10 +117,10 @@ class OrdenesServicio {
                     $tablaListaOrdenesServicio.search($input.val()).draw();
                 })
                 //Fin boton de busqueda
-                
+
             },
             "drawCallback": function( settings ) {
- 
+
                 //Botón de búsqueda
                 $('#listaOrdenesServicio_filter input').prop('disabled', false);
                 $('#btnBuscar').html('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>').prop('disabled', false);

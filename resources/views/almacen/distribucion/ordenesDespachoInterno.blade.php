@@ -37,14 +37,20 @@ Gestión de Despachos Internos
                     </div>
                     <div class="col-md-2">
                     <div style="display:flex;">
-                        <button class="btn btn-default btn-flat" onClick="listarDespachosInternos()"><i class="fas fa-sync-alt"></i> Actualizar</button>
+                        @if (in_array(268,$array_accesos))
+                           <button class="btn btn-default btn-flat" onClick="listarDespachosInternos()"><i class="fas fa-sync-alt"></i> Actualizar</button>
+                        @endif
+                        @if (in_array(269,$array_accesos))
                         <button class="btn btn-default btn-flat" onClick="pasarProgramadasAlDiaSiguiente()"><i class="fas fa-undo-alt"></i> Pasar programadas para mañana</button>
+                        @endif
+                        @if (in_array(270,$array_accesos))
                         <button class="btn btn-default btn-flat" onClick="listarPendientesAnteriores()"><i class="fas fa-tasks"></i> Pendientes anteriores</button>
+                        @endif
                     </div>
                     </div>
                 </div>
-                
-                    
+
+
                 <div class="row">
 
                     <div class="col-md-3">
@@ -57,7 +63,7 @@ Gestión de Despachos Internos
                             <div class="card-body" id="listaProgramados"></div>
                         </div>
                     </div>
-    
+
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-header" style="margin-bottom: 15px;">
@@ -70,7 +76,7 @@ Gestión de Despachos Internos
                                     <div class="inner">
                                         <h5>OKC2110040 - BANCO DE LA NACION</h5>
                                     </div>
-                                    <a href="#" class="small-box-footer"> 
+                                    <a href="#" class="small-box-footer">
                                         <i class="fa fa-arrow-circle-left"></i>
                                         <i class="fa fa-arrow-circle-right"></i>
                                     </a>
@@ -89,7 +95,7 @@ Gestión de Despachos Internos
                             <div class="card-body" id="listaProceso"></div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-header" style="margin-bottom: 15px;">

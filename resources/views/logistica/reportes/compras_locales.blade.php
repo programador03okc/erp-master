@@ -171,7 +171,7 @@ Reporte de compras locales
                                 </label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control handleUpdateValorFiltro" name="observacionOrden" value="COMPRA LOCAL" readOnly>
-                                    
+
                                 </div>
                             </div>
                             <div class="form-group">
@@ -254,6 +254,7 @@ Reporte de compras locales
 
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         const comprasLocales = new ComprasLocales();

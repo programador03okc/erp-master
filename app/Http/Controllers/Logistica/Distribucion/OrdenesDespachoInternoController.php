@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Logistica\Distribucion;
 use App\Helpers\NotificacionHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Usuario;
 use App\Models\Distribucion\OrdenDespacho;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
@@ -18,7 +19,12 @@ class OrdenesDespachoInternoController extends Controller
 {
     function view_ordenes_despacho_interno()
     {
-        return view('almacen/distribucion/ordenesDespachoInterno');
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/distribucion/ordenesDespachoInterno',compact('array_accesos'));
     }
 
     public function listarRequerimientosPendientesDespachoInterno(Request $request)
@@ -246,7 +252,7 @@ class OrdenesDespachoInternoController extends Controller
                             ],
                             'id_od'
                         );
-                        
+
                     $idOd=$id_od;
 
                     //Agrega accion en requerimiento

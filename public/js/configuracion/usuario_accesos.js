@@ -34,7 +34,7 @@ function disableAccesos() {
 function visualizarAccesos(response) {
     var html='';
     $.each(response.data, function (index, element) {
-        console.log(element);
+
         array_disable_accesos.push(element.id_acceso);
         var titulo = (element.id_padre !==0 ?element.modulo_padre.descripcion : element.accesos.modulos.descripcion ),
             sub_titulo  = (element.id_padre !==0 ?element.accesos.modulos.descripcion : null ),
@@ -76,7 +76,8 @@ $(document).on('change','[data-select="modulos-select"]',function () {
 function crearListaAccesos(response) {
     var html="";
     var array_modulo_accesos = [],
-        array_sub_modulo_accesos = [];
+        array_sub_modulo_accesos = [],
+        array_sub_sub_modulos_accesos=[];
 
     $.each(response.sub_modulos, function (index, element) {
         // nivel 1
@@ -118,21 +119,41 @@ function crearListaAccesos(response) {
                         html+='<label class="btn" data-action="modulo-seleccionado" data-titulo="'+element.modulo+'" data-sub-titulo="'+element_hijos.modulo+'" data-id-modulo="'+element.id_modulo+'" data-id-sub-modulo="'+element_hijos.id_modulo+'" data-id-acceso="'+element_hijos.id_acceso+'" data-acceso="'+element_hijos.acceso+'" data-disabled="true">'+element_hijos.acceso+'</label>'
                     html+='</div>';
                     $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"] [data-element-id-sub-modulo="'+element_hijos.id_modulo+'"]').append(html);
-                }else{
+                }
+
+                // if (element_hijos.acceso===null && element_hijos.modulos_hijos_hijos.length>0) {
+                //     $.each(element_hijos.modulos_hijos_hijos, function (index_hijos_hijos, element_hijos_hijos) {
+                //         if (array_sub_sub_modulos_accesos.indexOf(element_hijos_hijos.id_modulo) ===-1) {
+                //             html='';
+                //             html+='<div class="col-md-12">';
+                //                 html+='<label data-element-id-sub-modulo="'+element_hijos_hijos.id_modulo+'">'+element_hijos_hijos.modulo+'</label>';
+                //             html+='</div>';
+                //             array_sub_sub_modulos_accesos.push(element_hijos_hijos.id_modulo);
+                //             $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"] [data-element-id-sub-modulo="'+element_hijos.id_modulo+'"]').append(html);
+                //         }
+                //         if (element_hijos_hijos.acceso!=null) {
+                //             html='';
+                //             html+='<div class="col-md-12">'
+                //                 html+='<label class="btn" data-action="modulo-seleccionado" data-titulo="'+element.modulo+'" data-sub-titulo="'+element_hijos.modulo+'" data-sub-sub-titulo="'+element_hijos_hijos.modulo+'" data-id-modulo="'+element.id_modulo+'" data-id-sub-modulo="'+element_hijos.id_modulo+'" data-id-sub-sub-modulo="'+element_hijos_hijos.id_modulo+'" data-id-acceso="'+element_hijos.id_acceso+'" data-acceso="'+element_hijos_hijos.acceso+'" data-disabled="true">'+element_hijos_hijos.acceso+'</label>'
+                //             html+='</div>';
+                //             $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"] [data-element-id-sub-modulo="'+element_hijos.id_modulo+'"]').append(html);
+                //         }
+                //     });
+                // }
+                if (element_hijos.acceso===null && element_hijos.modulos_hijos_hijos.length===0) {
                     html='';
                     html+='<div class="col-md-12">'
-                        html+='<label class="">Sin accesos</label>'
+                        html+='<label class="">Sin accesos nivel 2</label>'
                     html+='</div>';
                     $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"] [data-element-id-sub-modulo="'+element_hijos.id_modulo+'"]').append(html);
                 }
-
 
             });
         }
         if (element.acceso===null && element.modulos_hijos.length===0 ) {
             html='';
             html+='<div class="col-md-12">'
-                html+='<label class="">Sin accesos</label>'
+                html+='<label class="">Sin accesos nivel 1</label>'
             html+='</div>';
             $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"]').append(html);
         }
