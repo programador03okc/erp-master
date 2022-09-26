@@ -10,6 +10,7 @@ function iniciar(permiso) {
     listarIngresos();
     // actualizarFiltrosPendientes();
     listarOrdenesPendientes();
+
     oc_seleccionadas = [];
 
     $('#myTabOrdenesPendientes a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -21,6 +22,9 @@ function iniciar(permiso) {
         }
         else if (tab == '#transformaciones') {
             listarTransformaciones();
+        }
+        else if (tab == '#devoluciones') {
+            listarDevoluciones();
         }
         else if (tab == '#ingresadas') {
             $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);

@@ -16,6 +16,7 @@ function open_guia_create(data, $fila) {
     $('[name=id_od]').val('');
     $('[name=id_requerimiento]').val('');
     $('[name=id_transformacion]').val('');
+    $('[name=id_devolucion]').val('');
     $('[name=serie]').val('');
     $('[name=numero]').val('');
     $('[name=fecha_emision]').val(fecha_actual());
@@ -28,14 +29,14 @@ function open_guia_create(data, $fila) {
         $('#titulo').text('Ingresar Hoja de Importación');
         $('[name=id_operacion]').val(18);
         $('[name=nombre_operacion]').val('IMPORTACIÓN');
-    } else 
-    if (data.id_tp_documento == 13) { // orden de devolución
-        $('#titulo').text('Ingresar Hoja de Devolución');
-        $('[name=id_operacion]').val(24);// INGRESO POR DEVOLUCIÓN DEL CLIENTE
-        $('[name=nombre_operacion]').val('INGRESO POR DEVOLUCIÓN DEL CLIENTE');
-    } else {
-        $('#titulo').text('Ingresar Guía de Compra');
-    }
+    } else
+        if (data.id_tp_documento == 13) { // orden de devolución
+            $('#titulo').text('Ingresar Hoja de Devolución');
+            $('[name=id_operacion]').val(24);// INGRESO POR DEVOLUCIÓN DEL CLIENTE
+            $('[name=nombre_operacion]').val('INGRESO POR DEVOLUCIÓN DEL CLIENTE');
+        } else {
+            $('#titulo').text('Ingresar Guía de Compra');
+        }
 
     $('#serie').text('');
     $('#numero').text('');
@@ -44,6 +45,8 @@ function open_guia_create(data, $fila) {
 
     $(".orden_transformacion").html('');
     $(".transformacion").hide();
+    $(".devolucion").hide();
+    $(".compra").show();
 
     var data = 'oc_seleccionadas=' + JSON.stringify([data.id_orden_compra]);
     listar_detalle_ordenes_seleccionadas(data);
@@ -265,7 +268,7 @@ $("#form-guia_create").on("submit", function (e) {
                 'series': element.series
             });
         });
-    } else {
+    } else if (ope == 2 || ope == 18) {
         $("#detalleOrdenSeleccionadas input[type=checkbox]:checked").each(function () {
             var id = $(this).val();
             var tipo = $(this).data('tipo');
@@ -298,17 +301,69 @@ $("#form-guia_create").on("submit", function (e) {
                 'series': series
             });
         });
+    } else {
+        detalle_devolucion.forEach(function (element) {
+            if (element.control_series) {
+                if (element.series.length == 0) {
+                    validaCampos += 'Es necesario que agregue series al producto ' + (element.cod_prod) + '.\n';
+                }
+                else if (element.series.length > 0 && element.series.length < parseFloat(element.cantidad)) {
+                    var dif = parseFloat(element.cantidad) - element.series.length;
+                    validaCampos += 'El producto ' + (element.cod_prod) + ' requiere que se agreguen ' + dif + ' series.\n';
+                }
+            }
+
+            detalle.push({
+                'id': element.id_detalle,
+                'id_producto': element.id_producto,
+                'id_unidad_medida': element.id_unidad_medida,
+                'control_series': element.control_series,
+                'cantidad': element.cantidad,
+                'id_moneda': element.id_moneda,
+                'unitario': element.valor_unitario,
+                'series': element.series
+            });
+        });
     }
     console.log(detalle);
     if (validaCampos.length > 0) {
         Swal.fire(validaCampos, "", "warning");
     } else {
         var tra = $('[name=id_transformacion]').val();
+        var dev = $('[name=id_devolucion]').val();
         var no_procede = 0;
 
         if (tra !== '') {
             var mnd = $('[name=moneda_transformacion]').val();
             var tipo = $('[name=tipo_cambio_transformacion]').val();
+
+            if (mnd == '') {
+                Lobibox.notify("warning", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Debe ingresar una moneda para el cálculo.'
+                });
+                no_procede++;
+            }
+            if (tipo == '') {
+                Lobibox.notify("warning", {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Debe ingresar un tipo de cambio para el cálculo.'
+                });
+                no_procede++;
+            }
+        }
+
+        if (dev !== '') {
+            var mnd = $('[name=moneda_devolucion]').val();
+            var tipo = $('[name=tipo_cambio_devolucion]').val();
 
             if (mnd == '') {
                 Lobibox.notify("warning", {
@@ -362,7 +417,6 @@ function guardar_guia_create(data) {
 
     $("#submit_guia").attr('disabled', 'true');
 
-
     $.ajax({
         type: 'POST',
         url: 'guardar_guia_com_oc',// para ordenes y transformaciones
@@ -388,9 +442,14 @@ function guardar_guia_create(data) {
                     msg: 'Ingreso Almacén generado con éxito.'
                 });
                 var tra = $('[name=id_transformacion]').val();
+                var dev = $('[name=id_devolucion]').val();
                 if (tra !== '') {
                     listarTransformaciones();
-                } else {
+                }
+                else if (dev !== '') {
+                    listarDevoluciones();
+                }
+                else {
                     Swal.fire({
                         title: "¿Desea ingresar ahora el documento de compra?",
                         icon: "info",
@@ -409,6 +468,7 @@ function guardar_guia_create(data) {
                 }
                 $('#nro_ordenes').text(response.nroOrdenesPendientes);
                 $('#nro_transformaciones').text(response.nroTransformacionesPendientes);
+                $('#nro_devoluciones').text(response.nroDevolucionesPendientes);
                 $('#modal-guia_create').modal('hide');
             }
         }
@@ -467,8 +527,12 @@ function abrirProducto(id_producto) {
 
 function actualizarDetalle() {
     var id_tr = $('[name=id_transformacion]').val();
+    var id_dev = $('[name=id_devolucion]').val();
+
     if (id_tr !== '') {
         listar_detalle_transformacion(id_tr);
+    } else if (id_dev !== '') {
+        listar_detalle_devolucion(id_dev);
     } else {
         var id_oc = $('[name=id_orden_compra]').val();
         if (id_oc == '') {

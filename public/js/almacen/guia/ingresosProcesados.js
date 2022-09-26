@@ -125,11 +125,6 @@ function listarIngresos() {
                         ?
                         `<a href="#" class="verIngreso" data-id="${row["id_mov_alm"]}" >
                         ${row["codigo"]}</a>`
-                        // '<label class="lbl-codigo" title="Abrir Ingreso" onClick="abrir_ingreso(' +
-                        // row["id_mov_alm"] +
-                        // ')">' +
-                        // row["codigo"] +
-                        // "</label>"
                         : "";
                 }
             },
@@ -149,7 +144,16 @@ function listarIngresos() {
             { data: "ordenes", orderable: false },//dta
             { data: "facturas", orderable: false },//dta
             { data: "requerimientos", orderable: false },
-            // { data: "codigo_trans", name: "trans.codigo" },
+            {
+                'data': 'codigo_devolucion',
+                render: function (data, type, row) {
+                    if (row["id_devolucion"] !== null) {
+                        return (`<a href="#" class="devolucion" data-id="${row["id_devolucion"]}">${row["codigo_devolucion"]}</a>`);
+                    } else {
+                        return '';
+                    }
+                }
+            },
             { data: "id_mov_alm", searchable: false }
         ],
         columnDefs: [
@@ -175,7 +179,6 @@ function listarIngresos() {
             },
             {
                 render: function (data, type, row) {
-                    console.log(row.ordenes_compra_ids);
                     var ocs = '';
                     row.ordenes_compra_ids.forEach(element => {
                         ocs += `<a href="#" class="verOrden" data-id="${element.id_orden_compra}" >
@@ -238,7 +241,7 @@ function listarIngresos() {
                         );
                     }
                 },
-                targets: 13
+                targets: 14
             }
         ],
         select: "multi",
@@ -283,8 +286,7 @@ $("#listaIngresosAlmacen tbody").on("click", "button.transferencia", function ()
     var id_guia_com = $(this).data("guia");
     // console.log(data);
     ver_transferencia(id_guia_com);
-}
-);
+});
 
 $("#listaIngresosAlmacen tbody").on("click", "button.detalle", function () {
     // var id_guia_com = $(this).data("id");
@@ -294,10 +296,10 @@ $("#listaIngresosAlmacen tbody").on("click", "button.detalle", function () {
     open_detalle_movimiento(data);
 });
 
-// function abrir_ingreso(id_mov_alm) {
-//     var id = encode5t(id_mov_alm);
-//     window.open("imprimir_ingreso/" + id);
-// }
+$("#listaIngresosAlmacen tbody").on("click", "a.devolucion", function () {
+    var id = $(this).data("id");
+    abrirDevolucion(id);
+});
 
 $("#listaIngresosAlmacen tbody").on("click", "button.anular", function () {
     var id_mov_alm = $(this).data("id");
@@ -357,6 +359,7 @@ function anular_ingreso(data) {
                 $("#listaIngresosAlmacen").DataTable().ajax.reload(null, false);
                 $('#nro_ordenes').text(response.nroOrdenesPendientes);
                 $('#nro_transformaciones').text(response.nroTransformacionesPendientes);
+                $('#nro_devoluciones').text(response.nroDevolucionesPendientes);
             }
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {

@@ -13,6 +13,7 @@ function open_transformacion_guia_create(data) {
     $('[name=id_sede]').val(data.id_sede);
     $('[name=id_transformacion]').val(data.id_transformacion);
     $('[name=id_orden_compra]').val('');
+    $('[name=id_devolucion]').val('');
     $('[name=id_od]').val(data.id_od);
     $('[name=id_requerimiento]').val(data.id_requerimiento);
     $('[name=serie]').val(data.serie);
@@ -32,6 +33,8 @@ function open_transformacion_guia_create(data) {
     ${data.codigo}</label>
     </div>`);
     $(".transformacion").show();
+    $(".devolucion").hide();
+    $(".compra").hide();
     $('[name=moneda_transformacion]').val('');
     $('[name=tipo_cambio_transformacion]').val('');
 
@@ -244,6 +247,7 @@ $("[name=fecha_almacen]").on('change', function () {
         success: function (response) {
             console.log(response);
             $('[name=tipo_cambio_transformacion]').val(response);
+            $('[name=tipo_cambio_devolucion]').val(response);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

@@ -27,7 +27,7 @@ function listarDevoluciones() {
                 'data': 'codigo',
                 render: function (data, type, row) {
                     return (
-                        `<a href="#" class="devolucion" data-id="${row["id_devolucion"]}">${row["codigo"]}</a>`
+                        `<a href="#" class="ver-devolucion" data-id="${row["id_devolucion"]}">${row["codigo"]}</a>`
                     );
                 }
             },
@@ -93,6 +93,12 @@ $('#listaDevoluciones tbody').on("click", "button.agregar", function (e) {
     $('.limpiarReporte').val('');
 
     $('[name=padre_id_devolucion]').val(data.id_devolucion);
+});
+
+$("#listaDevoluciones tbody").on("click", "a.ver-devolucion", function () {
+    var id = $(this).data("id");
+    console.log('id_devolucion ' + id);
+    abrirDevolucion(id);
 });
 
 $('#listaDevoluciones tbody').on("click", "button.conformidad", function (e) {
@@ -218,4 +224,12 @@ function verFichasTecnicasAdjuntas(id_devolucion) {
             console.log(errorThrown);
         });
     }
+}
+
+function abrirDevolucion(id_devolucion) {
+    console.log('abrirDevolucion' + id_devolucion);
+    localStorage.setItem("id_devolucion", id_devolucion);
+    // location.assign("/logistica/almacen/customizacion/hoja-transformacion/index");
+    var win = window.open("/cas/garantias/devolucionCas/index", '_blank');
+    win.focus();
 }

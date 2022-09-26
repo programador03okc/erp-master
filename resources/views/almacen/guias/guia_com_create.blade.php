@@ -11,6 +11,7 @@
                     <input type="text" class="oculto" name="id_proveedor">
                     <input type="text" class="oculto" name="id_sede">
                     <input type="text" class="oculto" name="id_transformacion">
+                    <input type="text" class="oculto" name="id_devolucion">
                     <input type="text" class="oculto" name="id_od">
                     <input type="text" class="oculto" name="id_requerimiento">
                     <div class="row">
@@ -41,16 +42,24 @@
                             <select class="form-control js-example-basic-single" name="id_almacen" id="id_almacen" required>
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3 compra">
                             <h5>Tipo de Operación</h5>
                             <input type="text" class="oculto" name="id_operacion" >
                             <input type="text" class="form-control" name="nombre_operacion" disabled>
-                            {{-- <select class="form-control js-example-basic-single" name="id_operacion" readOnly required>
-                                <option value="0">Elija una opción</option>
+                        </div>
+                        <div class="col-md-3 transformacion">
+                            <h5>Tipo de Operación</h5>
+                            <input type="text" class="oculto" name="id_operacion" >
+                            <input type="text" class="form-control" name="nombre_operacion" disabled>
+                        </div>
+                        <div class="col-md-3 devolucion">
+                            <h5>Tipo de Operación</h5>
+                            <select class="form-control js-example-basic-single" name="id_operacion" required>
+                                <option value="">Elija una opción</option>
                                 @foreach ($tp_operacion as $tp)
                                 <option value="{{$tp->id_operacion}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
                                 @endforeach
-                            </select> --}}
+                            </select>
                         </div>
                         <div class="col-md-3">
                             <h5>Clasif. de los Bienes y Servicios</h5>
@@ -71,6 +80,18 @@
                                     @endforeach
                                 </select>
                                 <input type="number" class="form-control" name="tipo_cambio_transformacion" step="0.0001" readonly/>
+                            </div>
+                        </div>
+                        <div class="col-md-2 devolucion">
+                            <h5>Moneda/Tipo cambio</h5>
+                            <div style="display: flex;">
+                                <select class="form-control" name="moneda_devolucion" >
+                                    <option value="">Elija una opción</option>
+                                    @foreach ($monedas as $clas)
+                                    <option value="{{$clas->id_moneda}}">{{$clas->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                                <input type="number" class="form-control" name="tipo_cambio_devolucion" step="0.0001" readonly/>
                             </div>
                         </div>
                         <div class="col-md-1 orden_transformacion">

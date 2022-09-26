@@ -1,5 +1,5 @@
 @extends('layout.main')
-@include('layout.menu_almacen')
+@include('layout.menu_cas')
 
 @section('cabecera')
 Orden Devolución
@@ -11,7 +11,7 @@ Orden Devolución
 
 @section('breadcrumb')
 <ol class="breadcrumb">
-    <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacén</a></li>
+    <li><a href="{{route('cas.index')}}"><i class="fas fa-tachometer-alt"></i> Servicios CAS</a></li>
     <li>Movimientos</li>
     <li class="active">@yield('cabecera')</li>
 </ol>

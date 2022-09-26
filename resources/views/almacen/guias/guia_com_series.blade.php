@@ -14,6 +14,7 @@
                 <input type="text" class="oculto" name="id_producto_sobrante" />
                 <input type="text" class="oculto" name="id_producto_transformado" />
                 <input type="text" class="oculto" name="id_detalle_transformacion" />
+                <input type="text" class="oculto" name="id_detalle_devolucion" />
                 <input type="text" class="oculto" name="id_almacen_detalle" />
                 <input type="text" class="oculto" name="edit" />
                 <input type="text" class="oculto" name="anulados" />

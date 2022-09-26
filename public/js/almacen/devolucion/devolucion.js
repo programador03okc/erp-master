@@ -1,4 +1,5 @@
 let items = [];
+let salidas = [];
 let incidencias = [];
 let ventas = [];
 let usuarioSession = '';
@@ -37,8 +38,8 @@ $(".nueva-devolucion").on('click', function () {
     $(".limpiarTexto").text("");
 
     $("#listaProductosDevolucion tbody").html("");
-    $("#listaVentas tbody").html("");
-    $("#listaIncidencias tbody").html("");
+    $("#listaSalidasDevolucion tbody").html("");
+    $("#listaIncidenciasDevolucion tbody").html("");
 
     items = [];
     incidencias = [];
@@ -70,8 +71,8 @@ $(".cancelar").on('click', function () {
     $(".limpiarTexto").text("");
 
     $("#listaProductosDevolucion tbody").html("");
-    $("#listaVentas tbody").html("");
-    $("#listaIncidencias tbody").html("");
+    $("#listaSalidasDevolucion tbody").html("");
+    $("#listaIncidenciasDevolucion tbody").html("");
 
     items = [];
     incidencias = [];
@@ -152,17 +153,17 @@ $("#form-devolucion").on("submit", function (e) {
 
         if (result.isConfirmed) {
             let detalle = [];
-
             items.forEach(function (element) {
-
                 detalle.push({
                     'id_detalle': element.id_detalle,
+                    'id_salida_detalle': (element.id_salida_detalle !== undefined ? element.id_salida_detalle : null),
                     'id_producto': element.id_producto,
                     'cantidad': element.cantidad,
                     'estado': element.estado,
                 });
             });
-            data += '&items=' + JSON.stringify(detalle);
+            data += '&items=' + JSON.stringify(detalle) +
+                '&incidencias=' + JSON.stringify(incidencias);
             console.log(data);
             guardarDevolucion(data);
         }
@@ -219,8 +220,13 @@ function guardarDevolucion(data) {
             $('.imprimir-salida').hide();
 
             $("[name=modo]").val("");
-            $("[name=id_devolucion]").val(response.devolucion.id_transformacion);
-            $("#codigo").text(response.devolucion.codigo);
+            $("[name=id_devolucion]").val(response.devolucion.id_devolucion);
+            $('#codigo').text(response.devolucion.codigo);
+            $('#estado').text(response.devolucion.estado_descripcion);
+            $('#estado').removeClass();
+            $('#estado').addClass('label label-' + response.devolucion.bootstrap_color);
+            $('#nombre_registrado_por').text(response.devolucion.nombre_corto);
+            $('#fecha_registro').text(response.devolucion.fecha_registro);
 
             $("#submit_devolucion").attr('disabled', false);
         }
@@ -232,6 +238,15 @@ function guardarDevolucion(data) {
 }
 //obs: si se cambia el almacen debe borrarse los items
 function mostrarDevolucion(id) {
+
+    $("#listaProductosDevolucion tbody").html("");
+    $("#listaSalidasDevolucion tbody").html("");
+    $("#listaIncidenciasDevolucion tbody").html("");
+
+    items = [];
+    incidencias = [];
+    ventas = [];
+
     $.ajax({
         type: 'GET',
         url: 'mostrarDevolucion/' + id,
@@ -242,13 +257,27 @@ function mostrarDevolucion(id) {
             $('[name=id_almacen]').val(response.devolucion.id_almacen);
             $('[name=id_usuario]').val(response.devolucion.registrado_por);
             $('[name=observacion]').val(response.devolucion.observacion);
+            $('[name=id_proveedor]').val(response.devolucion.id_proveedor);
+            $('[name=id_cliente]').val(response.devolucion.id_cliente);
+            $('[name=id_contribuyente]').val(response.devolucion.id_contribuyente);
+            $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social);
+            $('[name=tipo]').val(response.devolucion.tipo);
 
             $('#codigo').text(response.devolucion.codigo);
+            $('#estado').text(response.devolucion.estado_descripcion);
+            $('#estado').removeClass();
+            $('#estado').addClass('label label-' + response.devolucion.bootstrap_color);
             $('#nombre_registrado_por').text(response.devolucion.nombre_corto);
             $('#fecha_registro').text(response.devolucion.fecha_registro);
 
             items = response.detalle;
+            salidas = response.salidas;
+            incidencias = response.incidencias;
+
             mostrarProductos();
+            mostrarSalidas();
+            mostrarIncidencias();
+
             $(".edition").attr('disabled', 'true');
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -294,12 +323,8 @@ function anularDevolucion() {
                         $(".limpiarTexto").text("");
 
                         $("#listaProductosDevolucion tbody").html("");
-                        $("#listaVentas tbody").html("");
-                        $("#listaIncidencias tbody").html("");
-
-                        items_base = [];
-                        items_sobrante = [];
-                        items_transformado = [];
+                        $("#listaSalidasDevolucion tbody").html("");
+                        $("#listaIncidenciasDevolucion tbody").html("");
 
                         $("[name=modo]").val("");
                         $("[name=id_devolucion]").val("");

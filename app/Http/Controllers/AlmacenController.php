@@ -338,6 +338,16 @@ class AlmacenController extends Controller
             ->get();
         return $data;
     }
+
+    public static function tp_operacion_ids($ids)
+    {
+        $data = DB::table('almacen.tp_ope')
+            ->select('tp_ope.id_operacion', 'tp_ope.cod_sunat', 'tp_ope.descripcion')
+            ->whereIn('tp_ope.id_operacion', $ids)
+            ->get();
+        return $data;
+    }
+
     public static function tp_operacion_cbo_sal()
     {
         $data = DB::table('almacen.tp_ope')

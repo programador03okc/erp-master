@@ -42,7 +42,7 @@ class OrdenesPendientesController extends Controller
         }
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc = GenericoAlmacenController::mostrar_tp_doc_cbo();
-        $tp_operacion = GenericoAlmacenController::tp_operacion_cbo_ing();
+        $tp_operacion = GenericoAlmacenController::tp_operacion_ids([5, 24]);
         $clasificaciones_guia = GenericoAlmacenController::mostrar_guia_clas_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $motivos_anu = GenericoAlmacenController::select_motivo_anu();
@@ -60,6 +60,7 @@ class OrdenesPendientesController extends Controller
 
         $nro_oc_pendientes = $this->nroOrdenesPendientes();
         $nro_ot_pendientes = $this->nroTransformacionesPendientes();
+        $nro_dev_pendientes = $this->nroDevolucionesPendientes();
 
         return view('almacen/guias/ordenesPendientes', compact(
             'almacenes',
@@ -80,6 +81,7 @@ class OrdenesPendientesController extends Controller
             'fechaActual2',
             'nro_oc_pendientes',
             'nro_ot_pendientes',
+            'nro_dev_pendientes'
         ));
     }
 
@@ -107,6 +109,13 @@ class OrdenesPendientesController extends Controller
             })
             ->where([['transformacion.estado', '=', 10]])->count();
         return $nro_ot_pendientes;
+    }
+
+    public function nroDevolucionesPendientes()
+    {
+        $nro_dev_pendientes = DB::table('cas.devolucion')
+            ->where([['devolucion.estado', '=', 2]])->count();
+        return $nro_dev_pendientes;
     }
 
     function sedesPorUsuario()
@@ -279,7 +288,7 @@ class OrdenesPendientesController extends Controller
             'guia_com.fecha_almacen as fecha_almacen_guia',
             'guia_com.comentario',
             'tp_ope.descripcion as operacion_descripcion',
-            // 'trans.codigo as codigo_trans',
+            'devolucion.codigo as codigo_devolucion',
             DB::raw("(SELECT count(distinct id_doc_com) FROM almacen.doc_com AS d
                     INNER JOIN almacen.guia_com_det AS guia
                         on(guia.id_guia_com = mov_alm.id_guia_com)
@@ -325,7 +334,7 @@ class OrdenesPendientesController extends Controller
                             od.estado != 1) AS count_despachos_oc")
         )
             ->leftJoin('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
-            // ->leftJoin('almacen.trans', 'trans.id_transferencia', '=', 'mov_alm.id_transferencia')
+            ->leftJoin('cas.devolucion', 'devolucion.id_devolucion', '=', 'mov_alm.id_devolucion')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
             ->join('administracion.sis_sede as sede_guia', 'sede_guia.id_sede', '=', 'alm_almacen.id_sede')
             ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com.id_proveedor')
@@ -741,6 +750,7 @@ class OrdenesPendientesController extends Controller
                         'id_guia_com' => $id_guia,
                         'id_operacion' => $request->id_operacion,
                         'id_transformacion' => ($request->id_transformacion !== null ? $request->id_transformacion : null),
+                        'id_devolucion' => ($request->id_devolucion !== null ? $request->id_devolucion : null),
                         'revisado' => 0,
                         'usuario' => $id_usuario,
                         'estado' => 1,
@@ -915,6 +925,7 @@ class OrdenesPendientesController extends Controller
                                 'id_producto' => $id_producto,
                                 // 'id_posicion' => $det->id_posicion,
                                 'cantidad' => $det->cantidad,
+                                'costo_promedio' => floatval($unitario),
                                 'valorizacion' => (floatval($unitario) * floatval($det->cantidad)),
                                 'usuario' => $id_usuario,
                                 'id_guia_com_det' => $id_guia_com_det,
@@ -982,8 +993,8 @@ class OrdenesPendientesController extends Controller
                             'fecha_registro' => $fecha_registro
                         ]);
                 }
-                //Ingreso por compra guia compra
-                else {
+                //Ingreso por compra guia compra o importacion
+                else if ($request->id_operacion == '2' || $request->id_operacion == '18') {
                     $ids_ocd = [];
 
                     foreach ($detalle_oc as $d) {
@@ -1078,6 +1089,7 @@ class OrdenesPendientesController extends Controller
                                 'id_mov_alm' => $id_ingreso,
                                 'id_producto' => $det->id_producto,
                                 'cantidad' => $cantidad,
+                                'costo_promedio' => floatval($unitario),
                                 'valorizacion' => (floatval($unitario) * floatval($cantidad)),
                                 'usuario' => $id_usuario,
                                 'id_guia_com_det' => $id_guia_com_det,
@@ -1094,6 +1106,79 @@ class OrdenesPendientesController extends Controller
                     //actualiza estado oc padre
                     $this->actualizaEstadoPadres($padres_oc, $padres_req);
                 }
+                //Ingreso por devolucion de cliente o proveedor
+                else if ($request->id_operacion == '24' || $request->id_operacion == '5') {
+
+                    DB::table('cas.devolucion')
+                        ->where('id_devolucion', $request->id_devolucion)
+                        ->update(['estado' => 3]);
+
+                    $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
+                        ->orderBy('fecha', 'DESC')->first();
+
+                    foreach ($detalle_oc as $det) {
+
+                        if ($det->id_moneda == $request->moneda_devolucion) {
+                            $unitario = $det->unitario;
+                        } else {
+                            if ($det->id_moneda == 1) { //soles
+                                $unitario = $det->unitario * $tipo_cambio->venta;
+                            } else { //dolares
+                                $unitario = $det->unitario / $tipo_cambio->venta;
+                            }
+                        }
+                        //Guardo los items de la guia
+                        $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
+                            [
+                                "id_guia_com" => $id_guia,
+                                "id_producto" => $det->id_producto,
+                                "cantidad" => $det->cantidad,
+                                "id_unid_med" => $det->id_unidad_medida,
+                                "usuario" => $id_usuario,
+                                "id_devolucion_detalle" => $det->id,
+                                "unitario" => floatval($unitario),
+                                "total" => (floatval($unitario) * floatval($det->cantidad)),
+                                "unitario_adicional" => 0,
+                                'estado' => 1,
+                                'fecha_registro' => $fecha_registro,
+                            ],
+                            'id_guia_com_det'
+                        );
+
+                        if ($det->series !== null) {
+                            //agrega series
+                            foreach ($det->series as $serie) {
+                                DB::table('almacen.alm_prod_serie')->insert(
+                                    [
+                                        'id_prod' => $det->id_producto,
+                                        'id_almacen' => $request->id_almacen,
+                                        'serie' => $serie,
+                                        'estado' => 1,
+                                        'fecha_registro' => $fecha_registro,
+                                        'id_guia_com_det' => $id_guia_com_det
+                                    ]
+                                );
+                            }
+                        }
+                        //Guardo los items del ingreso
+                        DB::table('almacen.mov_alm_det')->insertGetId(
+                            [
+                                'id_mov_alm' => $id_ingreso,
+                                'id_producto' => $det->id_producto,
+                                'cantidad' => $det->cantidad,
+                                'costo_promedio' => floatval($unitario),
+                                'valorizacion' => (floatval($unitario) * floatval($det->cantidad)),
+                                'usuario' => $id_usuario,
+                                'id_guia_com_det' => $id_guia_com_det,
+                                'estado' => 1,
+                                'fecha_registro' => $fecha_registro,
+                            ],
+                            'id_mov_alm_det'
+                        );
+
+                        OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen);
+                    }
+                }
             }
             DB::commit();
             return response()->json([
@@ -1101,7 +1186,8 @@ class OrdenesPendientesController extends Controller
                 'mensaje' => 'Se proceso el ingreso correctamente.',
                 'id_ingreso' => $id_ingreso, 'id_guia' => $id_guia,
                 'nroOrdenesPendientes' => $this->nroOrdenesPendientes(),
-                'nroTransformacionesPendientes' => $this->nroTransformacionesPendientes(), 200
+                'nroTransformacionesPendientes' => $this->nroTransformacionesPendientes(),
+                'nroDevolucionesPendientes' => $this->nroDevolucionesPendientes(), 200
             ]);
         } catch (\PDOException $e) {
             // Woopsy
@@ -1680,6 +1766,12 @@ class OrdenesPendientesController extends Controller
                                     ->update(['estado' => 10]); //finalizado
                             }
 
+                            if ($ing->id_devolucion !== null) {
+                                DB::table('cas.devolucion')
+                                    ->where('id_devolucion', $ing->id_devolucion)
+                                    ->update(['estado' => 2]); //revisado
+                            }
+
                             $requerimientos = [];
 
                             foreach ($detalle as $det) {
@@ -1787,6 +1879,12 @@ class OrdenesPendientesController extends Controller
                                 ->update(['estado' => 10]); //finalizado
                         }
 
+                        if ($ing->id_devolucion !== null) {
+                            DB::table('cas.devolucion')
+                                ->where('id_devolucion', $ing->id_devolucion)
+                                ->update(['estado' => 2]); //revisado
+                        }
+
                         $msj = 'Se anuló correctamente. No se encontró items de dicho ingreso ' . count($detalle);
                         $tipo = 'success';
                     }
@@ -1803,6 +1901,7 @@ class OrdenesPendientesController extends Controller
                 'tipo' => $tipo,
                 'mensaje' => $msj,
                 'nroOrdenesPendientes' => $this->nroOrdenesPendientes(),
+                'nroDevolucionesPendientes' => $this->nroDevolucionesPendientes(),
                 'nroTransformacionesPendientes' => $this->nroTransformacionesPendientes(), 200
             ]);
         } catch (\PDOException $e) {

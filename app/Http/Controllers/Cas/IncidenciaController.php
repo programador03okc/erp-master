@@ -116,7 +116,23 @@ class IncidenciaController extends Controller
 
     function listarIncidencias()
     {
-        $lista = Incidencia::with('contribuyente', 'responsable', 'estado')->where([['estado', '!=', 7]]);
+        // $lista = Incidencia::with('contribuyente', 'responsable', 'estado')->where([['estado', '!=', 7]]);
+        $lista = DB::table('cas.incidencia')
+            ->select(
+                'incidencia.id_incidencia',
+                'incidencia.codigo',
+                'incidencia.fecha_reporte',
+                'adm_contri.razon_social',
+                'adm_contri.id_contribuyente',
+                'sis_usua.nombre_corto',
+                'incidencia_estado.descripcion as estado_descripcion',
+            )
+            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'incidencia.id_responsable')
+            ->leftjoin('cas.incidencia_estado', 'incidencia_estado.id_estado', '=', 'incidencia.estado')
+            ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'incidencia.id_empresa')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
+            ->where([['incidencia.estado', '!=', 7]])
+            ->get();
         return datatables($lista)->toJson();
     }
 

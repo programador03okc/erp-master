@@ -14,14 +14,6 @@ function listarTransformaciones() {
         },
         columns: [
             { data: "id_transformacion" },
-            // { data: "orden_am", name: "oc_propias.orden_am" },
-            // {
-            //     data: "codigo_oportunidad",
-            //     name: "oportunidades.codigo_oportunidad"
-            // },
-            // { data: "oportunidad", name: "oportunidades.oportunidad" },
-            // { data: "nombre", name: "entidades.nombre" },
-            // { data: "codigo" },
             {
                 data: "codigo",
                 render:
@@ -36,13 +28,6 @@ function listarTransformaciones() {
             { data: "observacion", name: "transformacion.observacion" },
             { data: "cod_req", name: "alm_req.codigo", className: "text-center" },
             { data: "cod_od", name: "orden_despacho.codigo", className: "text-center" },
-            // {
-            //     render: function (data, type, row) {
-            //         return row["serie"] !== null
-            //             ? row["serie"] + "-" + row["numero"]
-            //             : "";
-            //     }
-            // },
             {
                 render: function (data, type, row) {
                     if (acceso == "1") {
@@ -51,14 +36,6 @@ function listarTransformaciones() {
                             'data-placement="bottom" title="Ingresar Guía" >' +
                             '<i class="fas fa-sign-in-alt"></i></button>'
                         );
-
-                        // '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        // 'data-placement="bottom" title="Ver Detalle" >'+
-                        // '<i class="fas fa-list-ul"></i></button>';
-                    } else {
-                        // return '<button type="button" class="detalle btn btn-primary boton" data-toggle="tooltip" '+
-                        //     'data-placement="bottom" title="Ver Detalle" >'+
-                        //     '<i class="fas fa-list-ul"></i></button>';
                     }
                 }
             }
@@ -69,17 +46,13 @@ function listarTransformaciones() {
 }
 
 $("#listaTransformaciones tbody").on("click", "button.guia", function () {
-    var data = $("#listaTransformaciones")
-        .DataTable()
-        .row($(this).parents("tr"))
-        .data();
+    var data = $("#listaTransformaciones").DataTable().row($(this).parents("tr")).data();
     open_transformacion_guia_create(data);
 });
 
 function abrir_transformacion(id_transformacion) {
     console.log('abrir_transformacio' + id_transformacion);
     localStorage.setItem("id_transfor", id_transformacion);
-    // location.assign("/logistica/almacen/customizacion/hoja-transformacion/index");
     var win = window.open("/cas/customizacion/hoja-transformacion/index", '_blank');
     // Cambiar el foco al nuevo tab (punto opcional)
     win.focus();

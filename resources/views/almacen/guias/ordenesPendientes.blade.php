@@ -32,6 +32,7 @@ Atención de Ingresos
                 <ul class="nav nav-tabs" id="myTabOrdenesPendientes">
                     <li class="active"><a data-toggle="tab" href="#pendientes">Ordenes Pendientes <span id="nro_ordenes" class="badge badge-info">{{$nro_oc_pendientes}}</span></a></li>
                     <li class=""><a data-toggle="tab" href="#transformaciones">Transformaciones Pendientes <span id="nro_transformaciones" class="badge badge-info">{{$nro_ot_pendientes}}</span></a></li>
+                    <li class=""><a data-toggle="tab" href="#devoluciones">Devoluciones Pendientes <span id="nro_devoluciones" class="badge badge-info">{{$nro_dev_pendientes}}</span></a></li>
                     <li class=""><a data-toggle="tab" href="#ingresadas">Ingresos Procesados</a></li>
                 </ul>
 
@@ -96,6 +97,29 @@ Atención de Ingresos
                             </div>
                         </div>
                     </div>
+                    <div id="devoluciones" class="tab-pane fade ">
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaDevoluciones" style="width:100px;">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th>Código</th>
+                                            <th>Fecha registro</th>
+                                            <th>Concepto</th>
+                                            <th>Fichas Técnicas</th>
+                                            <th>Elaborado Por</th>
+                                            <th>Revisado Por</th>
+                                            <th width="6%">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot></tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <div id="ingresadas" class="tab-pane fade ">
                         <br>
                         <form id="formFiltrosIngresosProcesados" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ingresosProcesadosExcel')}}">
@@ -125,7 +149,7 @@ Atención de Ingresos
                                             <th>OC SoftLink</th>
                                             <th>Facturas</th>
                                             <th>Requerim.</th>
-                                            {{-- <th>Transferencia</th> --}}
+                                            <th>Devolución</th>
                                             <th width="100px"></th>
                                         </tr>
                                     </thead>
@@ -154,6 +178,7 @@ Atención de Ingresos
 @include('almacen.guias.guia_com_ver')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('logistica.requerimientos.mapeo.mapeoAsignarProducto')
+@include('almacen.devoluciones.verFichasTecnicasAdjuntas')
 
 @endsection
 
@@ -181,6 +206,7 @@ Atención de Ingresos
 
 <script src="{{ asset('js/almacen/guia/ordenesPendientes.js?')}}?v={{filemtime(public_path('js/almacen/guia/ordenesPendientes.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/transformacionesPendientes.js?')}}?v={{filemtime(public_path('js/almacen/guia/transformacionesPendientes.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/devolucionesPendientes.js?')}}?v={{filemtime(public_path('js/almacen/guia/devolucionesPendientes.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/ingresosProcesados.js')}}?v={{filemtime(public_path('js/almacen/guia/ingresosProcesados.js'))}}"></script>
 
 <script src="{{ asset('js/almacen/guia/ordenes_ver_detalle.js')}}?v={{filemtime(public_path('js/almacen/guia/ordenes_ver_detalle.js'))}}"></script>
@@ -199,6 +225,7 @@ Atención de Ingresos
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 <script src="{{ asset('js/logistica/mapeo/mapeoAsignarProducto.js')}}?v={{filemtime(public_path('js/logistica/mapeo/mapeoAsignarProducto.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_transformacion_mapeo.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_transformacion_mapeo.js'))}}"></script>
+<script src="{{ asset('js/almacen/devolucion/verFichasTecnicas.js')}}?v={{filemtime(public_path('js/almacen/devolucion/verFichasTecnicas.js'))}}"></script>
 
 <script>
     $(document).ready(function() {

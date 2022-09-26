@@ -25,12 +25,12 @@ function mostrarProductos() {
     items.forEach(sel => {
         if (sel.estado == 1) {
             row += `<tr>
-                <td>${sel.codigo}</td>
-                <td>${sel.part_number !== null ? sel.part_number : ''}</td>
+                <td style="text-align:center">${sel.codigo}</td>
+                <td style="text-align:center">${sel.part_number !== null ? sel.part_number : ''}</td>
                 <td>${sel.descripcion}</td>
                 <td><input type="number" class="form-control edition calcula" name="cantidad" id="cantidad" 
                     data-id="${sel.id_producto}" value="${sel.cantidad}"></td>
-                <td>${sel.unid_med}</td>
+                <td style="text-align:center">${sel.unid_med}</td>
                 <td>
                     <i class="fas fa-trash icon-tabla red boton delete" data-id="${sel.id_producto}"
                         data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>

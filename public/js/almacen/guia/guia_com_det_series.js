@@ -28,6 +28,7 @@ function agrega_series(id_oc_det) {
     $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val(id_oc_det);
     $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_detalle_devolucion]').val('');
     $('[name=id_trans_detalle]').val('');
     $('[name=id_producto_sobrante]').val('');
     $('[name=id_producto_transformado]').val('');
@@ -61,6 +62,41 @@ function agrega_series_transformacion(id) {
     $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val(id);
+    $('[name=id_detalle_devolucion]').val('');
+    $('[name=id_trans_detalle]').val('');
+    $('[name=id_producto_sobrante]').val('');
+    $('[name=id_producto_transformado]').val('');
+    $('[name=serie_prod]').val('');
+    $('.cabecera').show();
+}
+
+function agrega_series_devolucion(id) {
+    const $modal = $('#modal-guia_com_barras');
+    $modal.modal({
+        show: true
+    });
+    //Limpieza para seleccionar archivo
+    $modal.find('input[type=file]').val(null);
+    $modal.find('div.bootstrap-filestyle').find('input[type=text]').val('');
+
+    $('#listaBarras tbody').html('');
+    json_series = [];
+
+    var json = detalle_devolucion.find(element => element.id_detalle == id);
+    console.log(json);
+
+    if (json !== null) {
+        if (json.series.length > 0) {
+            json_series = json.series;
+            cargar_series();
+        }
+    }
+    cant_items = (json !== null ? json.cantidad : 0);
+
+    $('[name=id_guia_com_det]').val('');
+    $('[name=id_oc_det]').val('');
+    $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_detalle_devolucion]').val(id);
     $('[name=id_trans_detalle]').val('');
     $('[name=id_producto_sobrante]').val('');
     $('[name=id_producto_transformado]').val('');
@@ -92,6 +128,7 @@ function agrega_series_producto(id) {
     $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_detalle_devolucion]').val('');
     $('[name=id_trans_detalle]').val('');
     $('[name=id_producto_sobrante]').val(id);
     $('[name=id_producto_transformado]').val('');
@@ -123,6 +160,7 @@ function agrega_series_guia(id_guia_com_det, cantidad, id_producto, id_almacen) 
     $('[name=id_guia_com_det]').val(id_guia_com_det);
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_detalle_devolucion]').val('');
     $('[name=id_trans_detalle]').val('');
     $('[name=id_producto]').val(id_producto);
     $('[name=id_producto_sobrante]').val('');
@@ -161,6 +199,7 @@ function agrega_series_sobrante(id, cantidad) {
     $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_detalle_devolucion]').val('');
     $('[name=id_trans_detalle]').val('');
     $('[name=id_producto_sobrante]').val(id);
     $('[name=id_producto_transformado]').val('');
@@ -196,6 +235,7 @@ function agrega_series_transformado(id, cantidad) {
     $('[name=id_guia_com_det]').val('');
     $('[name=id_oc_det]').val('');
     $('[name=id_detalle_transformacion]').val('');
+    $('[name=id_detalle_devolucion]').val('');
     $('[name=id_trans_detalle]').val('');
     $('[name=id_producto_sobrante]').val('');
     $('[name=id_producto_transformado]').val(id);
@@ -300,6 +340,7 @@ function guardar_series_compra() {
     var id_sobrante = $('[name=id_producto_sobrante]').val();
     var id_transformado = $('[name=id_producto_transformado]').val();
     var id_detalle_transformacion = $('[name=id_detalle_transformacion]').val();
+    var id_detalle_devolucion = $('[name=id_detalle_devolucion]').val();
     var edit = $('[name=edit]').val();
 
     if (id_oc_det !== '') {
@@ -358,6 +399,17 @@ function guardar_series_compra() {
         console.log(json);
         console.log(items_transformado);
         mostrarProductoTransformado();
+        $('#modal-guia_com_barras').modal('hide');
+    }
+    else if (id_detalle_devolucion !== '') {
+        var json = detalle_devolucion.find(element => element.id_detalle == id_detalle_devolucion);
+
+        if (json !== null) {
+            json.series = json_series;
+        }
+        console.log(json);
+        console.log(detalle_devolucion);
+        mostrar_detalle_devolucion();
         $('#modal-guia_com_barras').modal('hide');
     }
     else if (id_guia_com_det !== '' && edit == 'true') {

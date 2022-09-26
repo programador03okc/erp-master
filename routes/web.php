@@ -1412,6 +1412,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('sedesPorUsuarioArray', 'Almacen\Movimiento\OrdenesPendientesController@sedesPorUsuarioArray');
 				Route::get('getTipoCambioVenta/{fec}', 'Almacen\Movimiento\TransformacionController@getTipoCambioVenta');
 				Route::get('pruebaOrdenesPendientesLista', 'Almacen\Movimiento\OrdenesPendientesController@pruebaOrdenesPendientesLista');
+
+				Route::get('listarDevolucionesRevisadas', 'Almacen\Movimiento\DevolucionController@listarDevolucionesRevisadas');
+				Route::get('listarDetalleDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@listarDetalleDevolucion');
+				Route::get('verFichasTecnicasAdjuntas/{id}', 'Almacen\Movimiento\DevolucionController@verFichasTecnicasAdjuntas')->name('ver-fichas-tecnicas');
 			});
 
 			Route::group(['as' => 'pendientes-salida.', 'prefix' => 'pendientes-salida'], function () {
@@ -1473,11 +1477,15 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Almacen\Movimiento\DevolucionController@viewDevolucion')->name('index');
 				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
 				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
+				Route::get('mostrarContribuyentes', 'Almacen\Movimiento\DevolucionController@mostrarContribuyentes');
 				Route::get('mostrarDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@mostrarDevolucion');
 				Route::post('guardarDevolucion', 'Almacen\Movimiento\DevolucionController@guardarDevolucion');
 				Route::post('actualizarDevolucion', 'Almacen\Movimiento\DevolucionController@actualizarDevolucion');
 				Route::get('validarEdicion/{id}', 'Almacen\Movimiento\DevolucionController@validarEdicion');
 				Route::get('anularDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@anularDevolucion');
+				Route::get('listarSalidasVenta/{alm}/{id}', 'Almacen\Movimiento\DevolucionController@listarSalidasVenta');
+				Route::get('obtenerSalidaDetalle/{id}', 'Almacen\Movimiento\DevolucionController@obtenerSalidaDetalle');
+				Route::get('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
 			});
 
 			Route::group(['as' => 'prorrateo.', 'prefix' => 'prorrateo'], function () {
@@ -1839,7 +1847,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'incidencias.', 'prefix' => 'incidencias'], function () {
 
 				Route::get('index', 'Cas\IncidenciaController@view_incidencia')->name('index');
-				Route::post('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
+				Route::get('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
 				Route::get('mostrarIncidencia/{id}', 'Cas\IncidenciaController@mostrarIncidencia');
 				Route::get('listarSalidasVenta', 'Cas\IncidenciaController@listarSalidasVenta');
 
@@ -1858,6 +1866,22 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('imprimirIncidencia/{id}', 'Cas\IncidenciaController@imprimirIncidencia');
 				Route::get('imprimirFichaAtencionBlanco/{id}', 'Cas\IncidenciaController@imprimirFichaAtencionBlanco');
+			});
+
+			Route::group(['as' => 'devolucionCas.', 'prefix' => 'devolucionCas'], function () {
+				//Devoluciones
+				Route::get('index', 'Almacen\Movimiento\DevolucionController@viewDevolucionCas')->name('index');
+				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
+				Route::get('mostrarContribuyentes', 'Almacen\Movimiento\DevolucionController@mostrarContribuyentes');
+				Route::get('mostrarDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@mostrarDevolucion');
+				Route::post('guardarDevolucion', 'Almacen\Movimiento\DevolucionController@guardarDevolucion');
+				Route::post('actualizarDevolucion', 'Almacen\Movimiento\DevolucionController@actualizarDevolucion');
+				Route::get('validarEdicion/{id}', 'Almacen\Movimiento\DevolucionController@validarEdicion');
+				Route::get('anularDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@anularDevolucion');
+				Route::get('listarSalidasVenta/{alm}/{id}', 'Almacen\Movimiento\DevolucionController@listarSalidasVenta');
+				Route::get('obtenerSalidaDetalle/{id}', 'Almacen\Movimiento\DevolucionController@obtenerSalidaDetalle');
+				Route::get('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
 			});
 
 			Route::group(['as' => 'fichas.', 'prefix' => 'fichas'], function () {
