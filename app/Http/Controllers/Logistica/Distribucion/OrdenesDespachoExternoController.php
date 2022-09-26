@@ -15,6 +15,7 @@ use App\Models\Administracion\Periodo;
 use App\models\almacen\AdjuntosDespacho;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Comercial\Cliente;
+use App\models\Configuracion\AccesosUsuarios;
 use App\models\Configuracion\AdjuntosNotificaciones;
 use App\Models\Configuracion\Usuario;
 use App\Models\Contabilidad\ContactoContribuyente;
@@ -48,7 +49,12 @@ class OrdenesDespachoExternoController extends Controller
                 ['id_estado', '<=', 8]
             ])
             ->get();
-        return view('almacen/distribucion/ordenesDespachoExterno', compact('estados'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/distribucion/ordenesDespachoExterno', compact('estados','array_accesos'));
     }
 
     public function listarDespachosExternos(Request $request)

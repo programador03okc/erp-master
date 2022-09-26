@@ -28,11 +28,16 @@ Requerimientos pendientes
             <div>
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="handleClickTabRequerimientosPendientes active"><a href="#requerimientos_pendientes" aria-controls="requerimientos_pendientes" role="tab" data-toggle="tab">Requerimientos pendientes</a></li>
+                    @if (in_array(218,$array_accesos))
+                        <li role="presentation" class="handleClickTabRequerimientosPendientes active"><a href="#requerimientos_pendientes" aria-controls="requerimientos_pendientes" role="tab" data-toggle="tab">Requerimientos pendientes</a></li>
+                    @endif
+                    @if (in_array(219,$array_accesos))
                     <li role="presentation" class="handleClickTabRequerimientosAtendidos"><a href="#requerimientos_atendidos"  aria-controls="requerimientos_atendidos" role="tab" data-toggle="tab" >Requerimientos atendidos</a></li>
+                    @endif
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
+                    @if (in_array(218,$array_accesos))
                     <div role="tabpanel" class="tab-pane active" id="requerimientos_pendientes">
                         <div class="panel panel-default">
                             <div class="panel-body">
@@ -70,6 +75,8 @@ Requerimientos pendientes
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @if (in_array(219,$array_accesos))
                     <div role="tabpanel" class="tab-pane" id="requerimientos_atendidos">
                         <div class="panel panel-default">
                             <div class="panel-body">
@@ -104,6 +111,7 @@ Requerimientos pendientes
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -163,7 +171,7 @@ Requerimientos pendientes
 
 
 <script>
-
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
 
         $.fn.dataTable.moment('DD-MM-YYYY HH:mm');
