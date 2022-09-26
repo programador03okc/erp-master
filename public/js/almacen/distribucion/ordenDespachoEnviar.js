@@ -113,10 +113,10 @@ function guardar_orden_despacho() {
     $submit.prop('disabled', 'true');
     $submit.html('Enviando...');
     let formData = new FormData(document.getElementById("form-orden_despacho_enviar"));
-    guardarOrdenDespacho(formData);
+    guardarOrdenDespacho(formData,$submit);
 }
 
-function guardarOrdenDespacho(formData) {
+function guardarOrdenDespacho(formData,$submit) {
     $.ajax({
         type: 'POST',
         url: 'guardarOrdenDespachoExterno',
@@ -141,6 +141,7 @@ function guardarOrdenDespacho(formData) {
         }
     }).always(function () {
         if ($submit !== null && $submit !== undefined) {
+            console.log($submit);
             $submit.prop('disabled', false);
             $submit.html('Enviar');
         } 

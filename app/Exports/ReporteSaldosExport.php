@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Http\Controllers\Almacen\Reporte\SaldosController;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromView;
@@ -15,41 +16,42 @@ class ReporteSaldosExport implements FromView, WithColumnFormatting, WithStyles
 {
     public function view(): View
     {
-        $nfecha = session()->get('filtroFecha') . ' 23:59:59';
-        $ft_fecha = date('Y-m-d', strtotime($nfecha));
+        $query = (new SaldosController)->reporteSaldosLista()->get();
 
-        $query = DB::table('almacen.alm_prod_ubi')
-            ->select(
-                'alm_prod_ubi.*',
-                'alm_prod.codigo',
-                'alm_prod.cod_softlink',
-                'alm_prod.descripcion AS producto',
-                'alm_und_medida.abreviatura',
-                'alm_prod.part_number',
-                'alm_cat_prod.descripcion AS categoria',
-                'sis_moneda.simbolo',
-                'alm_prod.id_moneda',
-                'alm_prod.id_unidad_medida',
-                'alm_almacen.descripcion AS almacen_descripcion',
-                DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
-                    FROM almacen.alm_reserva 
-                    WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
-                    AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen 
-                    AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17)
-                    AND alm_reserva.fecha_registro <= '" . $ft_fecha . "') AS cantidad_reserva")
-            )
-            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
-            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
-            ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
-            ->where([['alm_prod_ubi.estado', '=', 1], ['alm_prod.estado', '=', 1]]);
+        // $nfecha = session()->get('filtroFecha') . ' 23:59:59';
+        // $ft_fecha = date('Y-m-d', strtotime($nfecha));
 
-        if (session()->has('filtroAlmacen')) {
-            $query = $query->whereIn('alm_prod_ubi.id_almacen', session()->get('filtroAlmacen'));
-        }
-        $query = $query->get();
+        // $query = DB::table('almacen.alm_prod_ubi')
+        //     ->select(
+        //         'alm_prod_ubi.*',
+        //         'alm_prod.codigo',
+        //         'alm_prod.cod_softlink',
+        //         'alm_prod.descripcion AS producto',
+        //         'alm_und_medida.abreviatura',
+        //         'alm_prod.part_number',
+        //         'alm_cat_prod.descripcion AS categoria',
+        //         'sis_moneda.simbolo',
+        //         'alm_prod.id_moneda',
+        //         'alm_prod.id_unidad_medida',
+        //         'alm_almacen.descripcion AS almacen_descripcion',
+        //         DB::raw("(SELECT SUM(alm_reserva.stock_comprometido)
+        //             FROM almacen.alm_reserva
+        //             WHERE alm_reserva.id_producto = alm_prod_ubi.id_producto
+        //             AND alm_reserva.id_almacen_reserva = alm_prod_ubi.id_almacen
+        //             AND (alm_reserva.estado = 1 OR alm_reserva.estado = 17)
+        //             AND alm_reserva.fecha_registro <= '" . $ft_fecha . "') AS cantidad_reserva")
+        //     )
+        //     ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
+        //     ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
+        //     ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        //     ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+        //     ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
+        //     ->where([['alm_prod_ubi.estado', '=', 1], ['alm_prod.estado', '=', 1]]);
 
+        // if (session()->has('filtroAlmacen')) {
+        //     $query = $query->whereIn('alm_prod_ubi.id_almacen', session()->get('filtroAlmacen'));
+        // }
+        // $query = $query->get();
         foreach ($query as $d) {
             $movimientos = DB::table('almacen.mov_alm')
                 ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
@@ -85,23 +87,27 @@ class ReporteSaldosExport implements FromView, WithColumnFormatting, WithStyles
                 }
 
                 $reserva = ($d->cantidad_reserva == null) ? 0 : $d->cantidad_reserva;
-                $data[] = [
-                    'id_producto'           => $d->id_producto,
-                    'id_almacen'            => $d->id_almacen,
-                    'codigo'                => ($d->codigo != null) ?  $d->codigo : '',
-                    'cod_softlink'          => ($d->cod_softlink != null) ?  $d->cod_softlink : '',
-                    'part_number'           => ($d->part_number != null) ?  trim($d->part_number) : '',
-                    'producto'              => trim($d->producto),
-                    'categoria'             => trim($d->categoria),
-                    'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
-                    'valorizacion'          => $saldo_valor,
-                    'costo_promedio'        => $costo_promedio,
-                    'abreviatura'           => ($d->abreviatura != null) ?  $d->abreviatura : '',
-                    'stock'                 => $saldo,
-                    'reserva'               => $reserva,
-                    'disponible'            => ($saldo - $reserva),
-                    'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  $d->almacen_descripcion : '',
-                ];
+                $disponibilidad =($saldo - $reserva);
+                if ($reserva>0 || $disponibilidad>0 || $saldo>0) {
+                    $data[] = [
+                        'id_producto'           => $d->id_producto,
+                        'id_almacen'            => $d->id_almacen,
+                        'codigo'                => ($d->codigo != null) ?  $d->codigo : '',
+                        'cod_softlink'          => ($d->cod_softlink != null) ?  $d->cod_softlink : '',
+                        'part_number'           => ($d->part_number != null) ?  trim($d->part_number) : '',
+                        'producto'              => trim($d->producto),
+                        'categoria'             => trim($d->categoria),
+                        'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
+                        'valorizacion'          => $saldo_valor,
+                        'costo_promedio'        => $costo_promedio,
+                        'abreviatura'           => ($d->abreviatura != null) ?  $d->abreviatura : '',
+                        'stock'                 => $saldo,
+                        'reserva'               => $reserva,
+                        'disponible'            => ($saldo - $reserva),
+                        'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  $d->almacen_descripcion : '',
+                    ];
+                }
+
             }
         }
         return view('almacen.export.reporteSaldos', ['saldos' => $data]);
