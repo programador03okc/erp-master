@@ -117,6 +117,9 @@ Atención de Ingresos
                                             <th hidden></th>
                                             <th>Código</th>
                                             <th>Fecha registro</th>
+                                            <th>Tipo</th>
+                                            <th>Razón Social</th>
+                                            <th>Almacén</th>
                                             <th>Concepto</th>
                                             <th>Fichas Técnicas</th>
                                             <th>Elaborado Por</th>

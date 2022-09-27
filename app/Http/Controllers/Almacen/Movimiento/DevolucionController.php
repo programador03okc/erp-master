@@ -24,12 +24,12 @@ class DevolucionController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
-        $array_accesos=[];
-        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
-            array_push($array_accesos,$value->id_acceso);
+            array_push($array_accesos, $value->id_acceso);
         }
-        return view('almacen/devoluciones/devolucion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas','array_accesos'));
+        return view('almacen/devoluciones/devolucion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas', 'array_accesos'));
     }
 
     function viewDevolucionCas()
@@ -56,7 +56,8 @@ class DevolucionController extends Controller
                 'usuario_conforme.nombre_corto as usuario_conformidad',
                 'log_prove.id_proveedor',
                 'adm_contri.razon_social',
-                'alm_almacen.id_sede'
+                'alm_almacen.id_sede',
+                'alm_almacen.descripcion as almacen_descripcion',
             )
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'devolucion.id_almacen')
@@ -92,7 +93,8 @@ class DevolucionController extends Controller
                 'usuario_conforme.nombre_corto as usuario_conformidad',
                 'log_prove.id_proveedor',
                 'adm_contri.razon_social',
-                'alm_almacen.id_sede'
+                'alm_almacen.id_sede',
+                'alm_almacen.descripcion as almacen_descripcion',
             )
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'devolucion.id_almacen')

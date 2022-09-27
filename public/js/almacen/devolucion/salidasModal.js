@@ -17,8 +17,8 @@ $(function () {
             'codigo': data.codigo,
             'estado': 1,
         });
-        mostrarSalidas();
         obtenerSalida(data.id_mov_alm);
+        mostrarSalidas();
         $("#modal-salidas").modal("hide");
     });
 });

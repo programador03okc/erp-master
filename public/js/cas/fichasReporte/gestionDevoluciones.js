@@ -43,10 +43,17 @@ function listarDevoluciones() {
                     return (row['fecha_registro'] !== undefined ? formatDate(row['fecha_registro']) : '');
                 }
             },
+            { 'data': 'tipo' },
+            { 'data': 'razon_social', name: 'adm_contri.razon_social' },
+            { 'data': 'almacen_descripcion', name: 'alm_almacen.descripcion' },
             { 'data': 'observacion' },
             {
                 'render': function (data, type, row) {
-                    return `<a href="#" onClick="verFichasTecnicasAdjuntas(${row["id_devolucion"]});">${row["count_fichas"]} archivos adjuntos </a>`;
+                    if (row["count_fichas"] > 0) {
+                        return `<a href="#" onClick="verFichasTecnicasAdjuntas(${row["id_devolucion"]});">${row["count_fichas"]} archivos adjuntos </a>`;
+                    } else {
+                        return ''
+                    }
                 }, className: "text-center"
             },
             { 'data': 'nombre_corto', name: 'sis_usua.nombre_corto' },
@@ -72,7 +79,11 @@ function listarDevoluciones() {
 
                             </div>`;
                         } else {
-                            return '';
+                            return `<div class="btn-group" role="group">
+                            <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row['id_devolucion']}" title="Agregar ficha técnica" >
+                            <i class="fas fa-plus"></i></button>
+                            </div>`;
                         }
                     }, className: "text-center"
             }
