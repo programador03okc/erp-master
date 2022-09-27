@@ -116,7 +116,7 @@ function crearListaAccesos(response) {
                 html+='<input class="form-check-input" type="checkbox" name="nivel_1" id="selecionar'+index+'" data-check="selector-check" data-id-modulo="'+element.id_modulo+'" value="1" >'
                 html+='<label for="selecionar'+index+'"> '+ element.modulo+'</label>';
                 html+='<div class="box-tools pull-right">'
-                    html+='<button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target="#collapse'+index+'" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-minus"></i></button>'
+                    html+='<button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target="#collapse'+index+'" aria-expanded="false" aria-controls="collapseExample" data-action="box-tool"><i class="fa fa-plus"></i></button>'
                 html+='</div>'
                 html+='<div class="collapse" id="collapse'+index+'">'
                     html+='<div class="card card-body" data-element-id-modulo="'+element.id_modulo+'">'
@@ -356,5 +356,16 @@ $(document).on('change','[data-check="selector-check"]',function () {
         // } else {
         //     $('[data-action="modulo-seleccionado"][data-id-sub-modulo="'+id_modulo+'"]').click()
         // }
+    }
+});
+$(document).on('click','[data-action="box-tool"]',function () {
+    // $(this).find('i').remove();
+    var success=$(this).attr('aria-expanded');
+    if (success=='true') {
+        $(this).find('i').remove();
+        $(this).html('<i class="fa fa-minus"></i>');
+    }else{
+        $(this).find('i').remove();
+        $(this).html('<i class="fa fa-plus"></i>');
     }
 });
