@@ -23,13 +23,37 @@ function accesosUsuario() {
     })
 }
 function disableAccesos() {
+    var count_label=0,
+        count_suma=0;
 
     $.each(array_disable_accesos, function (index_acceso, value_acceso) {
         $('[data-action="modulo-seleccionado"][data-id-acceso="'+value_acceso+'"]').attr('data-disabled','false');
         $('[data-action="modulo-seleccionado"][data-id-acceso="'+value_acceso+'"]').attr('disabled',true);
         $('[data-action="modulo-seleccionado"][data-id-acceso="'+value_acceso+'"]').addClass('texto-seleccionado');
     });
-    // $this_componente.attr('data-disabled','false');
+
+
+    array_sub_title.forEach(element => {
+        count_label = $('.card.card-body[data-element-id-sub-modulo="'+element+'"] > div.col-md-12 label[data-disabled="true"]').length;
+        count_suma=count_suma+count_label;
+        if (count_label===0) {
+            $('[data-check="selector-check"][data-id-modulo="'+element+'"]').prop('checked',true);
+            $('[data-check="selector-check"][data-id-modulo="'+element+'"]').prop('disabled',true);
+            if ($('[data-check="selector-check"][data-id-modulo="'+element+'"]').closest('.card.card-body > div.col-md-12 input[type="checkbox"]').is(':not(:checked)')===false && count_suma===0) {
+                $('[data-check="selector-check"][data-id-modulo="'+element+'"]').closest('div.card.card-body').closest('div.col-md-12').find('input[name="nivel_1"]').prop('checked',true);
+                $('[data-check="selector-check"][data-id-modulo="'+element+'"]').closest('div.card.card-body').closest('div.col-md-12').find('input[name="nivel_1"]').prop('disabled',true);
+            }
+        }
+    });
+    count_label=0;
+    count_suma=0;
+    array_title.forEach(element => {
+        count_label = $('.card.card-body[data-element-id-modulo="'+element+'"] > div.col-md-12 label[data-disabled="true"]').length;
+        if (count_label===0) {
+            $('[data-check="selector-check"][data-id-modulo="'+element+'"]').prop('checked',true);
+            $('[data-check="selector-check"][data-id-modulo="'+element+'"]').prop('disabled',true);
+        }
+    });
 }
 function visualizarAccesos(response) {
     var html='';
@@ -83,9 +107,21 @@ function crearListaAccesos(response) {
         // nivel 1
         if (array_modulo_accesos.indexOf(element.id_modulo)===-1) {
             html='';
+            // html+='<div class="col-md-12">'
+            //     // html+='<label data-id-modulo="'+id_modulo+'">'+titulo+'</label>';
+            //     html+='<label data-element-id-modulo="'+element.id_modulo+'">'+element.modulo+'</label>';
+            // html+='</div>';
             html+='<div class="col-md-12">'
                 // html+='<label data-id-modulo="'+id_modulo+'">'+titulo+'</label>';
-                html+='<label data-element-id-modulo="'+element.id_modulo+'">'+element.modulo+'</label>';
+                html+='<input class="form-check-input" type="checkbox" name="nivel_1" id="selecionar'+index+'" data-check="selector-check" data-id-modulo="'+element.id_modulo+'" value="1" >'
+                html+='<label for="selecionar'+index+'"> '+ element.modulo+'</label>';
+                html+='<div class="box-tools pull-right">'
+                    html+='<button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target="#collapse'+index+'" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-minus"></i></button>'
+                html+='</div>'
+                html+='<div class="collapse" id="collapse'+index+'">'
+                    html+='<div class="card card-body" data-element-id-modulo="'+element.id_modulo+'">'
+                    html+='</div>'
+                html+='</div>'
             html+='</div>';
             array_modulo_accesos.push(element.id_modulo);
             $('[data-accesos="accesos"]').append(html);
@@ -95,7 +131,8 @@ function crearListaAccesos(response) {
         if (element.acceso!=null) {
             html='';
             html+='<div class="col-md-12">'
-                html+='<label class="btn" data-action="modulo-seleccionado" data-titulo="'+element.modulo+'" data-id-modulo="'+element.id_modulo+'" data-id-acceso="'+element.id_acceso+'" data-acceso="'+element.acceso+'" data-disabled="true" >'+element.acceso+'</label>'
+                // html+='<input class="form-check-input" type="checkbox" name="acceso_nivel_1" id="acceso_'+element.id_acceso+'">'
+                html+='<label for="acceso_'+element.id_acceso+'" class="btn" data-action="modulo-seleccionado" data-titulo="'+element.modulo+'" data-id-modulo="'+element.id_modulo+'" data-id-acceso="'+element.id_acceso+'" data-acceso="'+element.acceso+'" data-disabled="true" >'+element.acceso+'</label>'
             html+='</div>';
             $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"]').append(html);
         }
@@ -107,8 +144,14 @@ function crearListaAccesos(response) {
                 if ( array_sub_modulo_accesos.indexOf(element_hijos.id_modulo) ===-1 ) {
                     html='';
                     html+='<div class="col-md-12">';
-                        html+='<label data-element-id-sub-modulo="'+element_hijos.id_modulo+'">'+element_hijos.modulo+'</label>';
+                        html+='<input class="form-check-input" type="checkbox" name="nivel_2" id="selecionar'+element_hijos.id_modulo+'" data-check="selector-check" data-id-modulo="'+element_hijos.id_modulo+'" value="2">'
+                        html+='<label for="selecionar'+element_hijos.id_modulo+'" >'+element_hijos.modulo+'</label>';
+                        html+='<div ></div>'
 
+                        html+='<div class="collapse in" id="collapse'+index+'">'
+                            html+='<div class="card card-body" data-element-id-sub-modulo="'+element_hijos.id_modulo+'">'
+                        html+='</div>'
+                html+='</div>'
                     html+='</div>';
                     array_sub_modulo_accesos.push(element_hijos.id_modulo);
                     $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"]').append(html);
@@ -121,25 +164,6 @@ function crearListaAccesos(response) {
                     $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"] [data-element-id-sub-modulo="'+element_hijos.id_modulo+'"]').append(html);
                 }
 
-                // if (element_hijos.acceso===null && element_hijos.modulos_hijos_hijos.length>0) {
-                //     $.each(element_hijos.modulos_hijos_hijos, function (index_hijos_hijos, element_hijos_hijos) {
-                //         if (array_sub_sub_modulos_accesos.indexOf(element_hijos_hijos.id_modulo) ===-1) {
-                //             html='';
-                //             html+='<div class="col-md-12">';
-                //                 html+='<label data-element-id-sub-modulo="'+element_hijos_hijos.id_modulo+'">'+element_hijos_hijos.modulo+'</label>';
-                //             html+='</div>';
-                //             array_sub_sub_modulos_accesos.push(element_hijos_hijos.id_modulo);
-                //             $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"] [data-element-id-sub-modulo="'+element_hijos.id_modulo+'"]').append(html);
-                //         }
-                //         if (element_hijos_hijos.acceso!=null) {
-                //             html='';
-                //             html+='<div class="col-md-12">'
-                //                 html+='<label class="btn" data-action="modulo-seleccionado" data-titulo="'+element.modulo+'" data-sub-titulo="'+element_hijos.modulo+'" data-sub-sub-titulo="'+element_hijos_hijos.modulo+'" data-id-modulo="'+element.id_modulo+'" data-id-sub-modulo="'+element_hijos.id_modulo+'" data-id-sub-sub-modulo="'+element_hijos_hijos.id_modulo+'" data-id-acceso="'+element_hijos.id_acceso+'" data-acceso="'+element_hijos_hijos.acceso+'" data-disabled="true">'+element_hijos_hijos.acceso+'</label>'
-                //             html+='</div>';
-                //             $('[data-accesos="accesos"] [data-element-id-modulo="'+element.id_modulo+'"] [data-element-id-sub-modulo="'+element_hijos.id_modulo+'"]').append(html);
-                //         }
-                //     });
-                // }
                 if (element_hijos.acceso===null && element_hijos.modulos_hijos_hijos.length===0) {
                     html='';
                     html+='<div class="col-md-12">'
@@ -173,7 +197,8 @@ $(document).on('click','[data-action="modulo-seleccionado"]',function () {
         html        ='',
         array_title_length = array_title.length,
         data_disable=$(this).attr('data-disabled'),
-        $this_componente=$(this);
+        $this_componente=$(this),
+        count_label  = (id_sub_modulo)?$('.card.card-body[data-element-id-sub-modulo="'+id_sub_modulo+'"] > div.col-md-12 label[data-disabled="true"]').length:$('.card.card-body[data-element-id-modulo="'+id_modulo+'"] > div.col-md-12 label[data-disabled="true"]').length;
 
         // array_title.splice(index,1);
         if (array_disable_accesos.indexOf(id_acceso)===-1) {
@@ -181,6 +206,24 @@ $(document).on('click','[data-action="modulo-seleccionado"]',function () {
         }
         $(this).addClass('texto-seleccionado');
         asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso, acceso, html, data_disable,$this_componente);
+
+        // $.each($(this).closest('div.col-md-12').closest('.card.card-body').children(), function (index, element) {
+        //     console.log(element);
+        // });
+        if (count_label===1 || count_label===0) {
+            if (id_sub_modulo) {
+                $('[data-check="selector-check"][data-id-modulo="'+id_sub_modulo+'"]').prop('checked',true);
+                $('[data-check="selector-check"][data-id-modulo="'+id_sub_modulo+'"]').prop('disabled',true);
+                if ($('.card.card-body[data-element-id-modulo="'+id_modulo+'"] > div.col-md-12 input[type="checkbox"]').is(':not(:checked)')===false) {
+                    $('[data-check="selector-check"][data-id-modulo="'+id_modulo+'"]').prop('checked',true);
+                    $('[data-check="selector-check"][data-id-modulo="'+id_modulo+'"]').prop('disabled',true);
+                }
+                // console.log($('.card.card-body[data-element-id-modulo="'+id_modulo+'"] > div.col-md-12 input[type="checkbox"]').is(':not(:checked)'));
+            } else {
+                $('[data-check="selector-check"][data-id-modulo="'+id_modulo+'"]').click();
+            }
+        }
+        // console.log($('.card.card-body[data-element-id-sub-modulo="57"] > div.col-md-12 label[data-disabled="true"]').length);
 });
 
 function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso, acceso, html, data_disable,$this_componente) {
@@ -237,9 +280,8 @@ $(document).on('click','[data-action="disabled-accesos"]',function () {
 
     var id_modulo = $(this).attr('data-action-id-modulo');
     var id_sub_modulo = $(this).attr('data-action-id-sub-modulo');
-    console.log(id_modulo);
-    console.log(id_sub_modulo);
-    array_disable_accesos.splice(array_disable_accesos.indexOf(id_acceso),1);
+
+    array_disable_accesos.splice(array_disable_accesos.indexOf(parseInt(id_acceso)),1);
 
     if ($('[data-count="col-hijo"][data-key="'+id_sub_modulo+'"] div').length===0) {
         $('[data-count="col-hijo"][data-key="'+id_sub_modulo+'"]').remove();
@@ -251,6 +293,12 @@ $(document).on('click','[data-action="disabled-accesos"]',function () {
         array_title.splice(index,1);
         $('[data-count="col"][data-key="'+id_modulo+'"]').remove();
     }
+
+    $('[data-check="selector-check"][data-id-modulo="'+id_modulo+'"]').prop('disabled',false);
+    $('[data-check="selector-check"][data-id-modulo="'+id_modulo+'"]').prop('checked', false);
+    $('[data-check="selector-check"][data-id-modulo="'+id_sub_modulo+'"]').prop('disabled',false);
+    $('[data-check="selector-check"][data-id-modulo="'+id_sub_modulo+'"]').prop('checked', false);
+
 });
 $(document).on('click','[data-action="guardar"]',function () {
     var data = $('[data-form="accesos-seleccionados"]').serialize();
@@ -288,4 +336,25 @@ $(document).on('click','[data-action="guardar"]',function () {
         }
     })
 
+});
+$(document).on('change','[data-check="selector-check"]',function () {
+    var id_modulo = $(this).attr('data-id-modulo');
+
+    if($(this).prop("checked") == true) {
+        if ($(this).val()==1) {
+            $('[data-action="modulo-seleccionado"][data-id-modulo="'+id_modulo+'"]').click();
+            $('[data-element-id-modulo="'+id_modulo+'"]').find('[name="nivel_2"]').click();
+        } else {
+            $('[data-action="modulo-seleccionado"][data-id-sub-modulo="'+id_modulo+'"]').click()
+        }
+        $(this).attr('disabled','true');
+    }else{
+        // if ($(this).val()==1) {
+        //     $('[data-action="modulo-seleccionado"][data-id-modulo="'+id_modulo+'"]').click()
+        //     $('[data-element-id-modulo="'+id_modulo+'"]').find('[name="nivel_2"]').click();
+
+        // } else {
+        //     $('[data-action="modulo-seleccionado"][data-id-sub-modulo="'+id_modulo+'"]').click()
+        // }
+    }
 });
