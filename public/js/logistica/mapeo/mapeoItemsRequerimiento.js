@@ -332,7 +332,7 @@ function openAsignarProducto(partnumber, desc, id, type) {
     $('#modal-mapeoAsignarProducto').modal('show');
     $('[href="#seleccionar"]').tab('show');
     $('#submit_mapeoAsignarProducto').removeAttr('disabled');
-    console.log("disabled here");
+
     $(".nav-tabs a[href='#crear']").on("click", function(e) {
         Swal.fire({
             title: "Para crear nuevo productos contactar con el responsable de mantenimiento de catálogo",
