@@ -155,6 +155,7 @@ Gestión de Despachos
 <script src="{{ asset('js/almacen/transferencias/transportistaModal.js?')}}?v={{filemtime(public_path('js/almacen/transferencias/transportistaModal.js'))}}"></script>
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';

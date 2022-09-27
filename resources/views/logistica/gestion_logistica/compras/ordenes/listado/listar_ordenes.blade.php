@@ -26,14 +26,18 @@ Gestión de ordenes
             <div class="col-sm-3">
                 <div class="input-group">
                     <div class="input-group-btn">
-                        @if                         <button type="button" class="btn btn-default handleClickTipoVistaPorCabecera" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
-                        <button type="button" class="btn btn-default handleClickTipoVistaPorItem" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items"><i class="fas fa-table"></i> Vista a nivel de Item's</button>
+                        @if (in_array(243,$array_accesos))
+                            <button type="button" class="btn btn-default handleClickTipoVistaPorCabecera" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
+                        @endif
+                        @if (in_array(250,$array_accesos))
+                            <button type="button" class="btn btn-default handleClickTipoVistaPorItem" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items"><i class="fas fa-table"></i> Vista a nivel de Item's</button>
+                        @endif
                     </div>
                 </div>
             </div>
 
         </div>
-
+        @if (in_array(243,$array_accesos))
         <div class="row" id="contenedor-tabla-nivel-cabecera">
             <div class="col-sm-12">
                 <div class="box box-widget">
@@ -68,7 +72,8 @@ Gestión de ordenes
                 </div>
             </div>
         </div>
-
+        @endif
+        @if (in_array(250,$array_accesos))
         <div class="row" id="contenedor-tabla-nivel-item">
             <div class="col-sm-12">
                 <div class="box box-widget">
@@ -108,7 +113,7 @@ Gestión de ordenes
                 </div>
             </div>
         </div>
-
+        @endif
     </fieldset>
 </div>
 
@@ -170,7 +175,12 @@ Gestión de ordenes
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
 <script>
-del();
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
+    window.onload = function() {
+
+        $.fn.dataTable.moment('DD-MM-YYYY HH:mm');
+        $.fn.dataTable.moment('DD-MM-YYYY');
+        const listaOrdenModel = new ListaOrdenModel();
         const listaOrdenCtrl = new ListaOrdenCtrl(listaOrdenModel);
         const listaOrdenView = new ListaOrdenView(listaOrdenCtrl);
 

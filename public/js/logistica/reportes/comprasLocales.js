@@ -286,33 +286,32 @@ class ComprasLocales {
         this.actualizarEstadoCheckDeFiltros(idEmpresa,idSede, fechaRegistroDesde,fechaRegistroHasta, fechaRegistroDesdeCancelacion,fechaRegistroHastaCancelacion,razonSocialProveedor,idGrupo,idProyecto,observacionOrden,estadoPago);
         let that = this;
         vista_extendida();
-        var vardataTables = funcDatatables();
+        var vardataTables = funcDatatables(),
+            button_filtro=(array_accesos.find(element => element === 276)?{
+                text: '<i class="fas fa-filter"></i> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaComprasLocales'
+                },
+                action: () => {
+                    this.abrirModalFiltrosListaComprasLocales();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descarga=(array_accesos.find(element => element === 277)?{
+                text: '<i class="far fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnDescargarListaComprasLocales'
+                },
+                action: () => {
+                    this.DescargarListaComprasLocales();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
         $tablaListaComprasLocales= $('#listaComprasLocales').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<i class="fas fa-filter"></i> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltrosListaComprasLocales'
-                    },
-                    action: () => {
-                        this.abrirModalFiltrosListaComprasLocales();
-
-                    },
-                    className: 'btn-default btn-sm'
-                },
-                {
-                    text: '<i class="far fa-file-excel"></i> Descargar',
-                    attr: {
-                        id: 'btnDescargarListaComprasLocales'
-                    },
-                    action: () => {
-                        this.DescargarListaComprasLocales();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
-            ],
+            'buttons': [button_filtro,button_descarga],
             'language': vardataTables[0],
             'order': [[10, 'desc']],
             'bLengthChange': false,

@@ -60,7 +60,7 @@
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
- 
+
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
@@ -72,16 +72,17 @@
 
 
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
         $(document).ready(function() {
             seleccionarMenu(window.location);
-            
+
             const proveedorModel = new ProveedorModel();
             const proveedorController = new ProveedorCtrl(proveedorModel);
             const listarProveedorView = new ListarProveedorView(proveedorController);
-            
+
             listarProveedorView.mostrar();
             listarProveedorView.initializeEventHandler();
-                
+
         });
     </script>
 @endsection

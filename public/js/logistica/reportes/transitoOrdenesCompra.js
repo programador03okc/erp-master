@@ -47,7 +47,7 @@ class TransitoOrdenesCompra {
     }
 
     getDataSelectSede(id_empresa){
-        
+
         return new Promise(function(resolve, reject) {
             if(id_empresa >0){
                 $.ajax({
@@ -55,7 +55,7 @@ class TransitoOrdenesCompra {
                     url: `listar-sedes-por-empresa/` + id_empresa,
                     dataType: 'JSON',
                     success(response) {
-                        resolve(response) // Resolve promise and go to then() 
+                        resolve(response) // Resolve promise and go to then()
                     },
                     error: function(err) {
                     reject(err) // Reject the promise and go to catch()
@@ -65,7 +65,7 @@ class TransitoOrdenesCompra {
                     resolve(false);
                 }
             });
-    } 
+    }
 
     handleChangeFiltroEmpresa(event) {
         let id_empresa = event.target.value;
@@ -157,33 +157,32 @@ class TransitoOrdenesCompra {
     mostrar(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO') {
         let that = this;
         vista_extendida();
-        var vardataTables = funcDatatables();
+        var vardataTables = funcDatatables(),
+            button_filtro=(array_accesos.find(element => element === 280)?{
+                text: '<i class="fas fa-filter"></i> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaTransitoOrdenesCompra'
+                },
+                action: () => {
+                    this.abrirModalFiltrosListaTransitoOrdenesCompra();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar=(array_accesos.find(element => element === 274)?{
+                text: '<i class="far fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnDescargarListaTransitoOrdenesCompra'
+                },
+                action: () => {
+                    this.DescargarListaTransitoOrdenesCompra();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
         $tablaListaTransitoOrdenesCompra= $('#listaTransitoOrdenesCompra').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<i class="fas fa-filter"></i> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltrosListaTransitoOrdenesCompra'
-                    },
-                    action: () => {
-                        this.abrirModalFiltrosListaTransitoOrdenesCompra();
-
-                    },
-                    className: 'btn-default btn-sm'
-                },
-                {
-                    text: '<i class="far fa-file-excel"></i> Descargar',
-                    attr: {
-                        id: 'btnDescargarListaTransitoOrdenesCompra'
-                    },
-                    action: () => {
-                        this.DescargarListaTransitoOrdenesCompra();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
-            ],
+            'buttons': [button_filtro,button_descargar],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,
@@ -195,7 +194,7 @@ class TransitoOrdenesCompra {
                 'data':{'idEmpresa':idEmpresa,'idSede':idSede,'fechaRegistroDesde':fechaRegistroDesde,'fechaRegistroHasta':fechaRegistroHasta},
 
                 beforeSend: data => {
-    
+
                     $("#listaOrdenesCompra").LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
@@ -272,7 +271,7 @@ class TransitoOrdenesCompra {
                     $tablaListaTransitoOrdenesCompra.search($input.val()).draw();
                 })
                 //Fin boton de busqueda
-                
+
             },
             "drawCallback": function( settings ) {
                 // if($tablaListaTransitoOrdenesCompra.rows().data().length==0){
@@ -283,7 +282,7 @@ class TransitoOrdenesCompra {
                 //         sound: false,
                 //         delayIndicator: false,
                 //         msg: `No se encontro data disponible para mostrar`
-                //         }); 
+                //         });
                 // }
                 //Botón de búsqueda
                 $('#listaTransitoOrdenesCompra_filter input').prop('disabled', false);
