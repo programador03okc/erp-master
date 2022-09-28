@@ -37,8 +37,8 @@ Atención de Ingresos
                     <li class=""><a data-toggle="tab" href="#transformaciones">Transformaciones Pendientes <span id="nro_transformaciones" class="badge badge-info">{{$nro_ot_pendientes}}</span></a></li>
                     @endif
                     <li class=""><a data-toggle="tab" href="#devoluciones">Devoluciones Pendientes <span id="nro_devoluciones" class="badge badge-info">{{$nro_dev_pendientes}}</span></a></li>
-                    <li class=""><a data-toggle="tab" href="#ingresadas">Ingresos Procesados</a></li>
                     @if (in_array(105,$array_accesos))
+                    <li class=""><a data-toggle="tab" href="#ingresadas">Ingresos Procesados</a></li>
                     @endif
                 </ul>
 
@@ -133,7 +133,7 @@ Atención de Ingresos
                             </div>
                         </div>
                     </div>
-                    {{-- @if (in_array(105,$array_accesos)) --}}
+                    @if (in_array(105,$array_accesos))
                     <div id="ingresadas" class="tab-pane fade ">
                         <br>
                         <form id="formFiltrosIngresosProcesados" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ingresosProcesadosExcel')}}">
@@ -173,7 +173,7 @@ Atención de Ingresos
                             </div>
                         </div>
                     </div>
-                    {{-- @endif --}}
+                    @endif
                 </div>
             </div>
         </div>
