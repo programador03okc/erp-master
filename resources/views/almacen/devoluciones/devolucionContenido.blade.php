@@ -74,10 +74,10 @@
                             <div class="col-md-4">
                                 <label class="col-sm-4 control-label">Tipo: </label>
                                 <div class="col-sm-8">
-                                    <select class="form-control js-example-basic-single edition limpiardevolucion" 
-                                        name="tipo" required>
+                                    <select class="form-control js-example-basic-single" 
+                                        name="tipo" required readOnly>
                                         <option value="">Elija una opción</option>
-                                        <option value="cliente">Cliente</option>
+                                        <option value="cliente" selected>Cliente</option>
                                         <option value="proveedor">Proveedor</option>
                                     </select>
                                 </div>
