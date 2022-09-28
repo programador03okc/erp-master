@@ -4458,21 +4458,22 @@ class OrdenController extends Controller
             $codigoOrden= $request->codigo_orden;
             $idAdjuntoList = $request->id_adjunto;
             $archivoAdjuntoList =$request->archivoAdjuntoRequerimientoCabeceraFileGuardar1;
-            // $nombreRealAdjunto = $request->nombre_real_adjunto;
+            $nombreRealAdjunto = $request->nombre_real_adjunto;
             $fechaEmisionAdjuntoList = $request->fecha_emision_adjunto;
+            $nroComprobanteAdjuntoList = $request->nro_comprobante_adjunto;
             $idCategoriaAdjuntoList = $request->categoria_adjunto;
-            // $accionAdjunto = $request->accion;
+            $accionAdjunto = $request->accion;
             // $estadoAdjunto = 1;
             // $adjuntoComprobanteContableLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar3 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar3) : 0;
             // $adjuntoComprobanteBancarioLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar4) : 0;
 
             $idAdjunto=[];
             if ($adjuntoOtrosAdjuntosLength > 0) {
-                $idAdjunto[] = $this->subirYRegistrarArchivoCabeceraRequerimiento($idOrden,$codigoOrden,$idAdjuntoList,$archivoAdjuntoList,$fechaEmisionAdjuntoList,$idCategoriaAdjuntoList);
+                $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($idOrden,$codigoOrden,$idAdjuntoList,$archivoAdjuntoList,$fechaEmisionAdjuntoList,$nroComprobanteAdjuntoList,$idCategoriaAdjuntoList,$accionAdjunto);
             }
             $estado_accion = 'error';
             if (count($idAdjunto) > 0) {
-                $mensaje = 'Adjuntos guardos';
+                $mensaje = 'Adjuntos guardados';
                 $estado_accion = 'success';
             } else {
                 $mensaje = 'Hubo un problema y no se pudo guardo los adjuntos'.count($idAdjunto);
@@ -4487,34 +4488,67 @@ class OrdenController extends Controller
         }
     }
 
-    function subirYRegistrarArchivoCabeceraRequerimiento($idOrden,$codigoOrden,$idAdjuntoList,$archivoAdjuntoList,$fechaEmisionAdjuntoList,$idCategoriaAdjuntoList)
+    function subirYRegistrarArchivoLogistico($idOrden,$codigoOrden,$idAdjuntoList,$archivoAdjuntoList,$fechaEmisionAdjuntoList,$nroComprobanteAdjuntoList,$idCategoriaAdjuntoList,$accionAdjunto)
     {
 
         $idList = [];
         foreach ($archivoAdjuntoList as $key => $archivo) {
             if ($archivo != null) {
-                $fechaHoy = new Carbon();
-                $sufijo = $fechaHoy->format('YmdHis');
-                $file = $archivo->getClientOriginalName();
-                $codigo = $codigoOrden;
-                $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile = $codigo . '_' . $key . $idCategoriaAdjuntoList[$key] . $sufijo . '.' . $extension;
-                // Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
-                Storage::disk('archivos')->put("logistica/comporbantes_proveedor/".$newNameFile, File::get($archivo));
 
-                $idAdjunto = DB::table('logistica.adjuntos_logisticos')->insertGetId(
-                    [
-                        'id_orden'              => $idOrden,
-                        'archivo'               => $newNameFile,
-                        'estado'                => 1,
-                        'categoria_adjunto_id'  => $idCategoriaAdjuntoList[$key],
-                        'fecha_emision'         => $fechaEmisionAdjuntoList[$key],
-                        'fecha_registro'        => $fechaHoy
-                    ],
-                    'id_adjunto'
-                );
+                if($accionAdjunto[$key]=="GUARDAR"){
+                    $fechaHoy = new Carbon();
+                    $sufijo = $fechaHoy->format('YmdHis');
+                    $file = $archivo->getClientOriginalName();
+                    $codigo = $codigoOrden;
+                    $extension = pathinfo($file, PATHINFO_EXTENSION);
+                    $newNameFile = $codigo . '_' . $key . $idCategoriaAdjuntoList[$key] . $sufijo . '.' . $extension;
+                    // Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
+                    Storage::disk('archivos')->put("logistica/comporbantes_proveedor/".$newNameFile, File::get($archivo));
+                    // if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)){
+                    // } 
+                    $idAdjunto = DB::table('logistica.adjuntos_logisticos')->insertGetId(
+                        [
+                            'id_orden'              => $idOrden,
+                            'archivo'               => $newNameFile,
+                            'estado'                => 1,
+                            'categoria_adjunto_id'  => $idCategoriaAdjuntoList[$key],
+                            'fecha_emision'         => $fechaEmisionAdjuntoList[$key],
+                            'nro_comprobante'       => $nroComprobanteAdjuntoList[$key],
+                            'fecha_registro'        => $fechaHoy
+                        ],
+                        'id_adjunto'
+                    );
+    
+                    $idList[] = $idAdjunto;
 
-                $idList[] = $idAdjunto;
+                }elseif($accionAdjunto[$key]=="ACTUALIZAR"){
+                    
+                    $idAdjunto = DB::table('logistica.adjuntos_logisticos')
+                    ->where('id_adjunto', $idAdjuntoList[$key])
+                    ->update(
+                        [
+                            'estado'                => 1,
+                            'categoria_adjunto_id'  => $idCategoriaAdjuntoList[$key],
+                            'fecha_emision'         => $fechaEmisionAdjuntoList[$key],
+                            'nro_comprobante'       => $nroComprobanteAdjuntoList[$key]
+                        ]
+                    );
+
+                    $idList[] = $idAdjunto;
+
+                }elseif($accionAdjunto[$key]=="ANULAR"){
+                    
+                    $idAdjunto = DB::table('logistica.adjuntos_logisticos')
+                    ->where('id_adjunto', $idAdjuntoList[$key])
+                    ->update(
+                        [
+                            'estado' => 7
+                        ]
+                    );
+                    $idList[] = $idAdjunto;
+
+                }
+
             }
         }
 
@@ -4523,9 +4557,9 @@ class OrdenController extends Controller
     public function listarArchivosOrder($id_order)
     {
         return DB::table('logistica.adjuntos_logisticos')
-            ->select('adjuntos_logisticos.archivo','adjuntos_logisticos.fecha_emision','adjuntos_logisticos.fecha_registro', 'categoria_adjunto.descripcion')
+            ->select('adjuntos_logisticos.*', 'categoria_adjunto.descripcion')
             ->join('logistica.categoria_adjunto', 'adjuntos_logisticos.categoria_adjunto_id', '=', 'categoria_adjunto.id_categoria_adjunto')
-            ->where('adjuntos_logisticos.id_orden', $id_order)
+            ->where([['adjuntos_logisticos.id_orden', $id_order],['adjuntos_logisticos.estado', 1]])
             ->get();
     }
 }
