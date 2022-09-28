@@ -113,6 +113,7 @@ Gestión de incidencias
 @include('cas.fichasReporte.verDatosContacto')
 @include('cas.fichasReporte.verAdjuntosFicha')
 @include('almacen.devoluciones.verFichasTecnicasAdjuntas')
+@include('almacen.devoluciones.devolucionRevisar')
 
 @endsection
 

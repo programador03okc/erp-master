@@ -60,31 +60,34 @@ function listarDevoluciones() {
             {
                 'data': 'usuario_conformidad', name: 'usuario_conforme.nombre_corto',
                 'render': function (data, type, row) {
-                    return `${row["usuario_conformidad"]} el ${formatDateHour(row["fecha_revision"])}`;
+                    if (row["estado"] !== 1) {
+                        return `${row["usuario_conformidad"]} el ${formatDateHour(row["fecha_revision"])}`;
+                    } else {
+                        return '';
+                    }
                 }, className: "text-center"
             },
             {
                 'render':
                     function (data, type, row) {
-                        if (row['estado'] == 1 || row['estado'] == 2) {
-                            return `
-                            <div class="btn-group" role="group">
-                                <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip"
-                                data-placement="bottom" data-id="${row['id_devolucion']}" title="Agregar ficha técnica" >
-                                <i class="fas fa-plus"></i></button>
-
-                                <button type="button" class="conformidad btn btn-primary boton" data-toggle="tooltip"
-                                data-placement="bottom" data-id="${row['id_devolucion']}" title="Conformidad" >
-                                <i class="fas fa-check"></i></button>
-
-                            </div>`;
-                        } else {
-                            return `<div class="btn-group" role="group">
+                        return `
+                        <div class="btn-group" role="group">
                             <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row['id_devolucion']}" title="Agregar ficha técnica" >
                             <i class="fas fa-plus"></i></button>
-                            </div>`;
-                        }
+
+                            ${row['estado'] == 1 ?
+                                `<button type="button" class="conformidad btn btn-primary boton" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row['id_devolucion']}" title="Conformidad" >
+                            <i class="fas fa-check"></i></button>`
+
+                                : row['estado'] == 2 ?
+                                    `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row['id_devolucion']}" title="Revertir conformidad" >
+                            <i class="fas fa-backspace"></i></button>`
+                                    : ''
+                            }
+                        </div>`;
                     }, className: "text-center"
             }
         ],
@@ -112,10 +115,54 @@ $("#listaDevoluciones tbody").on("click", "a.ver-devolucion", function () {
     abrirDevolucion(id);
 });
 
+$('#listaDevoluciones tbody').on("click", "button.revertir", function (e) {
+    $(e.preventDefault());
+    var id = $(this).data("id");
+    console.log(id);
+    $.ajax({
+        type: 'GET',
+        url: 'revertirConformidad/' + id,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            $("#listaDevoluciones").DataTable().ajax.reload(null, false);
+            Lobibox.notify(response.tipo, {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response.mensaje
+            });
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});
+
 $('#listaDevoluciones tbody').on("click", "button.conformidad", function (e) {
     $(e.preventDefault());
     var data = $('#listaDevoluciones').DataTable().row($(this).parents("tr")).data();
     console.log(data);
+    $('#modal-devolucionRevisar').modal({
+        show: true
+    });
+    $("[name=id_devolucion]").val(data.id_devolucion);
+    $("[name=comentario_revision]").val('');
+    $("[name=responsable_revision]").val('');
+});
+
+$("#form-devolucionRevisar").on("submit", function (e) {
+    console.log('submit');
+    e.preventDefault();
+    var data = $(this).serialize();
+    console.log(data);
+    revisarDevolucion(data);
+});
+
+function revisarDevolucion(data) {
     Swal.fire({
         title: "¿Está seguro que dar su conformidad a ésta devolución?",
         icon: "warning",
@@ -128,8 +175,9 @@ $('#listaDevoluciones tbody').on("click", "button.conformidad", function (e) {
         if (result.isConfirmed) {
             console.log(result);
             $.ajax({
-                type: 'GET',
-                url: 'conformidadDevolucion/' + data.id_devolucion,
+                type: 'POST',
+                url: 'conformidadDevolucion',
+                data: data,
                 dataType: 'JSON',
                 success: function (response) {
                     console.log(response);
@@ -142,6 +190,7 @@ $('#listaDevoluciones tbody').on("click", "button.conformidad", function (e) {
                         delayIndicator: false,
                         msg: response.mensaje
                     });
+                    $('#modal-devolucionRevisar').modal('hide');
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
@@ -150,8 +199,7 @@ $('#listaDevoluciones tbody').on("click", "button.conformidad", function (e) {
             });
         }
     });
-
-});
+}
 
 $("#form-fichaTecnica").on("submit", function (e) {
     e.preventDefault();
