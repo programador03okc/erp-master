@@ -954,7 +954,7 @@ class RequerimientoView {
             obj.target.closest('div').classList.add("has-error");
         }
 
-        if (obj.target.value == 6) { // se seleccionó el tipo de requerimiento de "atención de garantías"
+        if (obj.target.value == 6 || obj.target.value == 7) { // se seleccionó el tipo de requerimiento de "atención de garantías" o "Otros"
             this.actualizarEstadoBotonProductoTransformado('ACTIVAR');
             document.querySelector("div[id='input-group-incidencia']").removeAttribute('hidden');
         } else {
