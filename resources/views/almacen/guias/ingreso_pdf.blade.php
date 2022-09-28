@@ -255,7 +255,7 @@ use Carbon\Carbon;
                 $total += $valorizacion;
                 $moneda = $prod->moneda_doc!==null ? $prod->moneda_doc : 
                     ($prod->moneda_oc!==null?$prod->moneda_oc :
-                        ($prod->id_moneda == 1 ? 'S/' : '$'));
+                        ($prod->moneda_dev!==null?$prod->moneda_dev:($prod->id_moneda == 1 ? 'S/' : '$')));
 
                 $adic_valor = DB::table('almacen.guia_com_prorrateo_det')
                     ->where([['id_guia_com_det','=',$prod->id_guia_com_det],

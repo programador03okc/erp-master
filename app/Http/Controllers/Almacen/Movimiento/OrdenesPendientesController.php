@@ -1117,12 +1117,16 @@ class OrdenesPendientesController extends Controller
                 //Ingreso por devolucion de cliente o proveedor
                 else if ($request->id_operacion == '24' || $request->id_operacion == '5') {
 
-                    DB::table('cas.devolucion')
-                        ->where('id_devolucion', $request->id_devolucion)
-                        ->update(['estado' => 3]);
-
                     $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
                         ->orderBy('fecha', 'DESC')->first();
+
+                    DB::table('cas.devolucion')
+                        ->where('id_devolucion', $request->id_devolucion)
+                        ->update([
+                            'estado' => 3,
+                            'id_moneda' => $request->moneda_devolucion,
+                            'tipo_cambio' => $tipo_cambio->venta,
+                        ]);
 
                     foreach ($detalle_oc as $det) {
 
@@ -1144,8 +1148,8 @@ class OrdenesPendientesController extends Controller
                                 "id_unid_med" => $det->id_unidad_medida,
                                 "usuario" => $id_usuario,
                                 "id_devolucion_detalle" => $det->id,
-                                "unitario" => floatval($unitario),
-                                "total" => (floatval($unitario) * floatval($det->cantidad)),
+                                "unitario" => floatval($det->unitario),
+                                "total" => (floatval($det->unitario) * floatval($det->cantidad)),
                                 "unitario_adicional" => 0,
                                 'estado' => 1,
                                 'fecha_registro' => $fecha_registro,
