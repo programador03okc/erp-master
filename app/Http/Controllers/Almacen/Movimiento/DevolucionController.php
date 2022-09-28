@@ -684,7 +684,7 @@ class DevolucionController extends Controller
     {
         $lista = DB::table('contabilidad.adm_contri')
             ->select('adm_contri.*')
-            ->where('estado', 1)->get();
+            ->where('estado', 1);
 
         return datatables($lista)->toJson();
     }

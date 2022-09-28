@@ -1477,7 +1477,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Almacen\Movimiento\DevolucionController@viewDevolucion')->name('index');
 				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
 				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
-				Route::get('mostrarContribuyentes', 'Almacen\Movimiento\DevolucionController@mostrarContribuyentes');
+				Route::post('mostrarContribuyentes', 'Almacen\Movimiento\DevolucionController@mostrarContribuyentes');
 				Route::get('mostrarDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@mostrarDevolucion');
 				Route::post('guardarDevolucion', 'Almacen\Movimiento\DevolucionController@guardarDevolucion');
 				Route::post('actualizarDevolucion', 'Almacen\Movimiento\DevolucionController@actualizarDevolucion');
