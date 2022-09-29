@@ -48,9 +48,11 @@ class Facturacion {
                 },
                 {
                     render: function (data, type, row) {
-                        return formatDate(row["fecha_emision"]);
+                        return (row["fecha_emision"]);
                     },
-                    className: "text-center"
+                    className: "text-center",
+                    data: "fecha_emision",
+                    name: "guia_ven.fecha_emision",
                 },
                 {
                     data: "sede_descripcion",
@@ -184,7 +186,7 @@ class Facturacion {
                 {
                     data: "fecha_facturacion",
                     render: function (data, type, row) {
-                        return (row["fecha_facturacion"] !== null ? formatDate(row["fecha_facturacion"]) : '');
+                        return (row["fecha_facturacion"] !== null ? (row["fecha_facturacion"]) : '');
                     },
                     className: "text-center"
                 },

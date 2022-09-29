@@ -33,7 +33,7 @@
                         </div>
                         <div class="col-md-2">
                             <h5>Fecha Vencimiento</h5>
-                            <input type="date" class="form-control" name="fecha_vencimiento">
+                            <input type="date" class="form-control calcular-fecha" name="fecha_vencimiento">
                         </div>
                         <div class="col-md-3">
                             <h5>Empresa</h5>
@@ -79,9 +79,9 @@
                         <div class="col-md-3">
                             <h5>Condición de compra</h5>
                             <div style="display:flex;">
-                                <select class="form-control group-elemento" name="id_condicion" style="width:150px;" required>
+                                <select class="form-control group-elemento calcular-fecha" name="id_condicion" style="width:150px;" required>
                                     @foreach ($condiciones as $con)
-                                    <option value="{{$con->id_condicion_pago}}">{{$con->descripcion}}</option>
+                                    <option value="{{$con->id_condicion_pago}}" {{ $con->id_condicion_pago===1?'selected': ''}} >{{$con->descripcion}}</option>
                                     @endforeach
                                 </select>
                                 <input type="text" name="credito_dias" class="form-control group-elemento" style="text-align: right;" />

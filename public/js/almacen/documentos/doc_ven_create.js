@@ -335,7 +335,7 @@ function mostrarListaItems() {
         </td>
         <td>${element.abreviatura}</td>
         <td>
-            <input type="number" style="text-align:right" class="form-control  unitario" value="${element.precio}" 
+            <input type="number" style="text-align:right" class="form-control  unitario" value="${element.precio}"
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
@@ -344,7 +344,7 @@ function mostrarListaItems() {
         <td  style="text-align:right">${formatNumber.decimal(element.sub_total, "", -10)}</td>
         <td>
             <input type="number"  style="text-align:right" class="form-control  porcentaje_dscto" value="${element.porcentaje_dscto
-            }" 
+            }"
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
@@ -352,7 +352,7 @@ function mostrarListaItems() {
         </td>
         <td>
             <input type="number" style="text-align:right" class="form-control  total_dscto" value="${element.total_dscto
-            }" 
+            }"
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
@@ -360,8 +360,8 @@ function mostrarListaItems() {
         </td>
         <td  style="text-align:right">${formatNumber.decimal(element.total, "", -10)}</td>
         <td>
-        <button type="button" class="quitar btn btn-danger btn-xs" data-toggle="tooltip" 
-            data-placement="bottom" title="Quitar item" 
+        <button type="button" class="quitar btn btn-danger btn-xs" data-toggle="tooltip"
+            data-placement="bottom" title="Quitar item"
             data-id="${element.id_detalle_requerimiento !== undefined
                 ? element.id_detalle_requerimiento
                 : element.id_guia_ven_det
@@ -592,3 +592,22 @@ function guardar_doc_create(data) {
         console.log(errorThrown);
     });
 }
+$(document).on('change','.calcular-fecha',function () {
+    var fecha_emision = new Date($('input[name="fecha_emision_doc"]').val().split('/').reverse().join('-')).getTime() ,
+        fecha_vencimiento= new Date($('input[name="fecha_vencimiento"]').val().split('/').reverse().join('-')).getTime(),
+        numero_dias=0;
+
+    if ($('select[name="id_condicion"]').val()==2 && fecha_emision<=fecha_vencimiento) {
+
+        numero_dias = fecha_emision - fecha_vencimiento;
+        numero_dias = numero_dias/(1000*60*60*24)
+        numero_dias = numero_dias*-1;
+        $('input[name="credito_dias"]').val(numero_dias);
+    }else{
+        $('input[name="credito_dias"]').val(0);
+        // $('name="fecha_vencimiento"').val(new Date());
+    }
+    console.log($(this).val());
+
+
+});

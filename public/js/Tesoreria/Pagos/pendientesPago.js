@@ -61,8 +61,8 @@
                 { data: 'persona' },
                 {
                     'render': function (data, type, row) {
-                        return (row['fecha_registro'] !== null ? formatDate(row['fecha_registro']) : '');
-                    }, 'className': 'text-center', 'searchable': false
+                        return (row['fecha_registro'] !== null ? (row['fecha_registro']) : '');
+                    }, 'className': 'text-center', 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro',
                 },
                 // { 'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta' },
                 { 'data': 'simbolo', 'name': 'sis_moneda.simbolo', 'className': 'text-center' },
@@ -219,8 +219,8 @@
                 {
                     'data': 'fecha_solicitud_pago',
                     'render': function (data, type, row) {
-                        return (row['fecha_solicitud_pago'] !== null ? formatDateHour(row['fecha_solicitud_pago']) : '');
-                    }, 'className': 'text-center', 'searchable': false
+                        return (row['fecha_solicitud_pago'] !== null ? row['fecha_solicitud_pago'] : '');
+                    }, 'className': 'text-center', 'searchable': true
                 },
                 // { 'data': 'condicion_pago', 'name': 'log_cdn_pago.descripcion' },
                 // { 'data': 'nro_cuenta', 'name': 'adm_cta_contri.nro_cuenta' },
