@@ -146,7 +146,7 @@ function listarReservasAlmacen(id_usuario) {
                     </button>`: '';
 
 
-                    let $btn_eliminar = (row['numero'] !== null) ?
+                    let $btn_eliminar = (row['numero'] == null) ?
                     `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
 
                         data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}">
