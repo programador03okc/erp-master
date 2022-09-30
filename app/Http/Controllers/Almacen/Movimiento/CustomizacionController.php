@@ -22,7 +22,13 @@ class CustomizacionController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
+        // $array_accesos = [];
+        // $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        // foreach ($accesos_usuario as $key => $value) {
+        //     array_push($array_accesos, $value->id_acceso);
+        // }
         return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+        // return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas', 'array_accesos'));
     }
 
     public function obtenerTipoCambio($fecha, $id_moneda)
