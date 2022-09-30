@@ -6,6 +6,7 @@ use App\Http\Controllers\Almacen\Ubicacion\AlmacenController;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Presupuestos\Moneda;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
@@ -21,7 +22,12 @@ class CustomizacionController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
-        return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
+        return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas', 'array_accesos'));
     }
 
     public function obtenerTipoCambio($fecha, $id_moneda)
@@ -839,6 +845,25 @@ class CustomizacionController extends Controller
                         ],
                         'id_mov_alm_det'
                     );
+                    //Obtengo el registro de la tabla producto ubicacion
+                    $ubi = DB::table('almacen.alm_prod_ubi')
+                        ->where([
+                            ['id_producto', '=', $item->id_producto],
+                            ['id_almacen', '=', $transformacion->id_almacen]
+                        ])
+                        ->first();
+                    //si no existe guardo una nueva relacion 
+                    if ($ubi == null) {
+                        DB::table('almacen.alm_prod_ubi')->insert([
+                            'id_producto' => $item->id_producto,
+                            'id_almacen' => $transformacion->id_almacen,
+                            'stock' => 0,
+                            'valorizacion' => 0,
+                            'costo_promedio' => 0,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+                    }
                 }
 
                 //Genera el codigo de ingreso
@@ -902,6 +927,26 @@ class CustomizacionController extends Controller
                         ],
                         'id_mov_alm_det'
                     );
+
+                    //Obtengo el registro de la tabla producto ubicacion
+                    $ubi = DB::table('almacen.alm_prod_ubi')
+                        ->where([
+                            ['id_producto', '=', $item->id_producto],
+                            ['id_almacen', '=', $transformacion->id_almacen]
+                        ])
+                        ->first();
+                    //si no existe guardo una nueva relacion 
+                    if ($ubi == null) {
+                        DB::table('almacen.alm_prod_ubi')->insert([
+                            'id_producto' => $item->id_producto,
+                            'id_almacen' => $transformacion->id_almacen,
+                            'stock' => 0,
+                            'valorizacion' => 0,
+                            'costo_promedio' => 0,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+                    }
                 }
 
                 $transformados = DB::table('almacen.transfor_transformado')
@@ -940,6 +985,25 @@ class CustomizacionController extends Controller
                         ],
                         'id_mov_alm_det'
                     );
+                    //Obtengo el registro de la tabla producto ubicacion
+                    $ubi = DB::table('almacen.alm_prod_ubi')
+                        ->where([
+                            ['id_producto', '=', $item->id_producto],
+                            ['id_almacen', '=', $transformacion->id_almacen]
+                        ])
+                        ->first();
+                    //si no existe guardo una nueva relacion 
+                    if ($ubi == null) {
+                        DB::table('almacen.alm_prod_ubi')->insert([
+                            'id_producto' => $item->id_producto,
+                            'id_almacen' => $transformacion->id_almacen,
+                            'stock' => 0,
+                            'valorizacion' => 0,
+                            'costo_promedio' => 0,
+                            'estado' => 1,
+                            'fecha_registro' => date('Y-m-d H:i:s')
+                        ]);
+                    }
                 }
 
                 $mensaje = 'La customización se procesó correctamente.';
