@@ -65,7 +65,7 @@ function obtenerSalida(id_salida) {
 }
 
 function mostrarSalidas() {
-    $("#listaSalidas tbody").html('');
+    $("#listaSalidasDevolucion tbody").html('');
     var row = '';
 
     salidas.forEach(sel => {
@@ -82,11 +82,11 @@ function mostrarSalidas() {
             </tr>`;
         }
     })
-    $("#listaSalidas tbody").html(row);
+    $("#listaSalidasDevolucion tbody").html(row);
 }
 
 // Delete row on delete button click
-$('#listaSalidas tbody').on("click", ".delete", function () {
+$('#listaSalidasDevolucion tbody').on("click", ".delete", function () {
     var anula = confirm("¿Esta seguro que desea anular ésta salida?");
 
     if (anula) {

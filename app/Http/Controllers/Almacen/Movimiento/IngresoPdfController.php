@@ -74,6 +74,7 @@ class IngresoPdfController extends Controller
                 'log_ord_compra.codigo_softlink',
                 'doc_com.fecha_emision',
                 'doc_com_det.precio_unitario',
+                'dev_moneda.simbolo as moneda_dev',
                 'doc_moneda.simbolo as moneda_doc',
                 'oc_moneda.simbolo as moneda_oc',
                 DB::raw("(cont_tp_doc.abreviatura) || '-' ||(doc_com.serie) || '-' || (doc_com.numero) as doc")
@@ -100,6 +101,12 @@ class IngresoPdfController extends Controller
                 $join->on('doc_com.id_doc_com', '=', 'doc_com_det.id_doc');
                 $join->where('doc_com.estado', '!=', 7);
             })
+            ->leftjoin('cas.devolucion_detalle', function ($join) {
+                $join->on('devolucion_detalle.id_detalle', '=', 'guia_com_det.id_devolucion_detalle');
+                $join->where('devolucion_detalle.estado', '!=', 7);
+            })
+            ->leftjoin('cas.devolucion', 'devolucion.id_devolucion', '=', 'devolucion_detalle.id_devolucion')
+            ->leftjoin('configuracion.sis_moneda as dev_moneda', 'dev_moneda.id_moneda', '=', 'devolucion.id_moneda')
             ->leftjoin('configuracion.sis_moneda as doc_moneda', 'doc_moneda.id_moneda', '=', 'doc_com.moneda')
             ->leftjoin('configuracion.sis_moneda as oc_moneda', 'oc_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->leftjoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')

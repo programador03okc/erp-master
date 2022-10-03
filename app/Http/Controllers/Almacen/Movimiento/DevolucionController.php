@@ -6,6 +6,7 @@ use App\Http\Controllers\Almacen\Ubicacion\AlmacenController;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Presupuestos\Moneda;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
@@ -23,6 +24,11 @@ class DevolucionController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
+        // $array_accesos = [];
+        // $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        // foreach ($accesos_usuario as $key => $value) {
+        //     array_push($array_accesos, $value->id_acceso);
+        // }
         return view('almacen/devoluciones/devolucion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
     }
 
@@ -50,12 +56,13 @@ class DevolucionController extends Controller
                 'usuario_conforme.nombre_corto as usuario_conformidad',
                 'log_prove.id_proveedor',
                 'adm_contri.razon_social',
-                'alm_almacen.id_sede'
+                'alm_almacen.id_sede',
+                'alm_almacen.descripcion as almacen_descripcion',
             )
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'devolucion.id_almacen')
             // ->join('configuracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
-            ->leftJoin('configuracion.sis_usua as usuario_conforme', 'usuario_conforme.id_usuario', '=', 'devolucion.registrado_por')
+            ->leftJoin('configuracion.sis_usua as usuario_conforme', 'usuario_conforme.id_usuario', '=', 'devolucion.revisado_por')
             ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'devolucion.id_cliente')
             ->leftjoin('contabilidad.adm_contri', function ($join) {
                 $join->on('adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente');
@@ -86,12 +93,13 @@ class DevolucionController extends Controller
                 'usuario_conforme.nombre_corto as usuario_conformidad',
                 'log_prove.id_proveedor',
                 'adm_contri.razon_social',
-                'alm_almacen.id_sede'
+                'alm_almacen.id_sede',
+                'alm_almacen.descripcion as almacen_descripcion',
             )
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'devolucion.id_almacen')
             // ->join('configuracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
-            ->leftJoin('configuracion.sis_usua as usuario_conforme', 'usuario_conforme.id_usuario', '=', 'devolucion.registrado_por')
+            ->leftJoin('configuracion.sis_usua as usuario_conforme', 'usuario_conforme.id_usuario', '=', 'devolucion.revisado_por')
             ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'devolucion.id_cliente')
             ->leftjoin('contabilidad.adm_contri', function ($join) {
                 $join->on('adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente');
@@ -602,44 +610,81 @@ class DevolucionController extends Controller
         }
     }
 
-    function conformidadDevolucion($id_devolucion)
+    function conformidadDevolucion(Request $request)
     {
-        $mensaje = '';
-        $tipo = '';
-        $usuario = Auth::user();
-        //valida segun BD
-        $mov = DB::table('cas.devolucion')
-            ->where('id_devolucion', $id_devolucion)
-            ->first();
-        //Si existe ingreso y salida relacionado
-        if ($mov->estado == 1) {
-            DB::table('cas.devolucion')
-                ->where('id_devolucion', $id_devolucion)
-                ->update([
-                    'estado' => 2,
-                    'revisado_por' => $usuario->id_usuario,
-                    'fecha_revision' => new Carbon(),
-                ]);
-            $mensaje = 'Se dió la conformidad correctamente.';
-            $tipo = 'success';
-            //Revisada
-        } else if ($mov->estado == 2) {
-            $mensaje = 'La devolución ya fue revisada.';
-            $tipo = 'warning';
-            //Procesada
-        } else if ($mov->estado == 3) {
-            $mensaje = 'La devolución ya fue procesada.';
-            $tipo = 'warning';
+        try {
+            DB::beginTransaction();
+
+            $mensaje = '';
+            $tipo = '';
+            //valida segun BD
+            $mov = DB::table('cas.devolucion')
+                ->where('id_devolucion', $request->id_devolucion)
+                ->first();
+            //Si existe ingreso y salida relacionado
+            if ($mov->estado == 1) {
+                DB::table('cas.devolucion')
+                    ->where('id_devolucion', $request->id_devolucion)
+                    ->update([
+                        'estado' => 2,
+                        'revisado_por' => $request->responsable_revision,
+                        'comentario_revision' => $request->comentario_revision,
+                        'fecha_revision' => new Carbon(),
+                    ]);
+                $mensaje = 'Se dió la conformidad correctamente.';
+                $tipo = 'success';
+                //Revisada
+            } else if ($mov->estado == 2) {
+                $mensaje = 'La devolución ya fue revisada.';
+                $tipo = 'warning';
+                //Procesada
+            } else if ($mov->estado == 3) {
+                $mensaje = 'La devolución ya fue procesada.';
+                $tipo = 'warning';
+            }
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al procesar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
-        return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
     }
 
+    function revertirConformidad($id_devolucion)
+    {
+        try {
+            DB::beginTransaction();
+            $mensaje = '';
+            $tipo = '';
+            //valida segun BD
+            $dev = DB::table('cas.devolucion')
+                ->where('id_devolucion', $id_devolucion)
+                ->first();
+            //Si existe ingreso y salida relacionado
+            if ($dev->estado !== 3) {
+                DB::table('cas.devolucion')
+                    ->where('id_devolucion', $id_devolucion)
+                    ->update(['estado' => 1]);
+                $mensaje = 'Se dió revertió correctamente.';
+                $tipo = 'success';
+                //Revisada
+            } else {
+                $mensaje = 'La devolución ya fue procesada.';
+                $tipo = 'warning';
+            }
+            DB::commit();
+            return response()->json(['tipo' => $tipo, 'mensaje' => $mensaje]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al procesar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
 
     public function mostrarContribuyentes()
     {
         $lista = DB::table('contabilidad.adm_contri')
             ->select('adm_contri.*')
-            ->where('estado', 1)->get();
+            ->where('estado', 1);
 
         return datatables($lista)->toJson();
     }

@@ -40,7 +40,11 @@ function listarContribuyentes() {
         buttons: botones,
         language: vardataTables[0],
         bDestroy: true,
-        ajax: "mostrarContribuyentes",
+        serverSide: true,
+        ajax: {
+            url: "mostrarContribuyentes",
+            type: "POST"
+        },
         columns: [
             { data: "id_contribuyente" },
             { data: "nro_documento" },

@@ -25,10 +25,17 @@ function listarDevoluciones() {
                     return (row['fecha_registro'] !== undefined ? formatDate(row['fecha_registro']) : '');
                 }
             },
+            { 'data': 'tipo' },
+            { 'data': 'razon_social', name: 'adm_contri.razon_social' },
+            { 'data': 'almacen_descripcion', name: 'alm_almacen.descripcion' },
             { 'data': 'observacion' },
             {
                 'render': function (data, type, row) {
-                    return `<a href="#" onClick="verFichasTecnicasAdjuntas(${row["id_devolucion"]});">${row["count_fichas"]} archivos adjuntos </a>`;
+                    if (row["count_fichas"] > 0) {
+                        return `<a href="#" onClick="verFichasTecnicasAdjuntas(${row["id_devolucion"]});">${row["count_fichas"]} archivos adjuntos </a>`;
+                    } else {
+                        return ''
+                    }
                 }, className: "text-center"
             },
             { 'data': 'nombre_corto', name: 'sis_usua.nombre_corto' },

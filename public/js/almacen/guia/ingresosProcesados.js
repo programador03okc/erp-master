@@ -3,19 +3,22 @@ let tableIngresos;
 function listarIngresos() {
     var vardataTables = funcDatatables();
     let botones = [];
+    var button_ingresar_comprobante = {//(array_accesos.find(element => element === 106) ? {
+        text: ' Ingresar Comprobante',
+        action: function () {
+            open_doc_create_seleccionadas();
+        }, className: 'btn-primary disabled btnIngresarComprobante'
+    }
+    // } : []);
+    var button_exportar_excel = {//(array_accesos.find(element => element === 107) ? {
+        text: ' Exportar Excel',
+        action: function () {
+            exportarIngresosProcesados();
+        }, className: 'btn-success btnExportarIngresosProcesados'
+    }
+    // } : []);
     if (acceso == '1') {
-        botones.push({
-            text: ' Ingresar Comprobante',
-            action: function () {
-                open_doc_create_seleccionadas();
-            }, className: 'btn-primary disabled btnIngresarComprobante'
-        },
-            {
-                text: ' Exportar Excel',
-                action: function () {
-                    exportarIngresosProcesados();
-                }, className: 'btn-success btnExportarIngresosProcesados'
-            });
+        botones.push(button_ingresar_comprobante, button_exportar_excel);
     }
 
     $("#listaIngresosAlmacen").on('search.dt', function () {
@@ -62,14 +65,13 @@ function listarIngresos() {
             const $form = $('#formFiltrosIngresosProcesados');
             $('#listaIngresosAlmacen_wrapper .dt-buttons').append(
                 `<div style="display:flex">
-                    <input type="text" class="form-control date-picker" size="10" id="txtIngresoProcesadoFechaInicio" 
-                        value="${$form.find('input[name=ingreso_fecha_inicio]').val()}"/>
-                    <input type="text" class="form-control date-picker" size="10" id="txtIngresoProcesadoFechaFin" 
-                        value="${$form.find('input[name=ingreso_fecha_fin]').val()}"/>
-                    <select class="form-control" id="selectIngresoProcesadoSede">
-                        <option value="0" selected>Mostrar Todos</option>
-                    </select>
-                    
+                <input type="text" class="form-control date-picker" size="10" id="txtIngresoProcesadoFechaInicio"
+                    value="${$form.find('input[name=ingreso_fecha_inicio]').val()}"/>
+                <input type="text" class="form-control date-picker" size="10" id="txtIngresoProcesadoFechaFin"
+                    value="${$form.find('input[name=ingreso_fecha_fin]').val()}"/>
+                <select class="form-control" id="selectIngresoProcesadoSede">
+                    <option value="0" selected>Mostrar Todos</option>
+                </select>
                 </div>`
             );
             $('input.date-picker').datepicker({
@@ -145,7 +147,7 @@ function listarIngresos() {
             { data: "facturas", orderable: false },//dta
             { data: "requerimientos", orderable: false },
             {
-                'data': 'codigo_devolucion',
+                'data': 'codigo_devolucion', name: 'devolucion.codigo',
                 render: function (data, type, row) {
                     if (row["id_devolucion"] !== null) {
                         return (`<a href="#" class="devolucion" data-id="${row["id_devolucion"]}">${row["codigo_devolucion"]}</a>`);
@@ -210,23 +212,25 @@ function listarIngresos() {
                 render: function (data, type, row) {
                     if (acceso == "1") {
                         return (
-                            (row['id_guia_com'] == null && row['id_transformacion'] !== null ? ''
-                                : `<div style="display:flex;"><button type="button" class="detalle btn btn-primary btn-xs btn-flat " data-toggle="tooltip" 
-                                data-placement="bottom" title="Editar Ingreso" data-id="${row["id_guia_com"]}" data-cod="${row["codigo"]}">
-                                <i class="fas fa-edit"></i></button>`) +
-                            `${(row["id_operacion"] == 21) ? ""
+                            ((row['id_guia_com'] == null && row['id_transformacion'] !== null ? ''
+                                : `<div style="display:flex;"><button type="button" class="detalle btn btn-primary btn-xs btn-flat " data-toggle="tooltip"
+                            data-placement="bottom" title="Editar Ingreso" data-id="${row["id_guia_com"]}" data-cod="${row["codigo"]}">
+                            <i class="fas fa-edit"></i></button>`))
+                            +
+                            (`${(row["id_operacion"] == 21) ? ""
                                 : row["count_facturas"] > 0 ? ""
-                                    : `<button type="button" class="anular btn btn-danger btn-xs btn-flat " data-toggle="tooltip" 
-                                                data-placement="bottom" title="Anular Ingreso" data-id="${row["id_mov_alm"]}" 
-                                                data-guia="${row["id_guia_com"]}" data-oc="${row["id_orden_compra"]}">
-                                                <i class="fas fa-trash"></i></button>`
-                            }` +
-                            (row["id_operacion"] == 2 || row["id_operacion"] == 18
+                                    : `<button type="button" class="anular btn btn-danger btn-xs btn-flat " data-toggle="tooltip"
+                                             data-placement="bottom" title="Anular Ingreso" data-id="${row["id_mov_alm"]}"
+                                             data-guia="${row["id_guia_com"]}" data-oc="${row["id_orden_compra"]}">
+                                             <i class="fas fa-trash"></i></button>`
+                                }`)
+                            +
+                            ((row["id_operacion"] == 2 || row["id_operacion"] == 18
                                 ? `<button type="button" class="${row["count_facturas"] > 0 ? "ver_doc" : "doc"} btn btn-${row["count_facturas"] > 0 ? "info" : "default"
                                 } btn-xs btn-flat" data-toggle="tooltip" data-placement="bottom" title="Generar Factura" data-guia="${row["id_guia_com"]
                                 }" data-doc="${row["id_doc_com"]}"><i class="fas fa-file-medical"></i></button>
-                                </div>`
-                                : "</div>")
+                            </div>`
+                                : "</div>"))
                         );
                     } else {
                         return (
