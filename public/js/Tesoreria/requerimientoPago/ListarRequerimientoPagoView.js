@@ -510,45 +510,58 @@ class ListarRequerimientoPagoView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
+        const button_crear_nuevo_requerimiento = (array_accesos.find(element => element === 20)?{
+                text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+                attr: {
+                    id: 'btnNuevoRequerimientoPago',
+                    title: 'Crear nuevo requerimiento de pago',
+                },
+                action: () => {
+                    this.nuevoRequerimientoPago();
+
+                },
+                className: 'btn-success btn-sm'
+            }:[]),
+            button_filtros = (array_accesos.find(element => element === 21)?{
+                text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaRequerimientosElaborados',
+                    disabled: false
+                },
+                action: () => {
+                    this.abrirModalFiltrosRequerimientosElaborados();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel = (array_accesos.find(element => element === 22)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                attr: {
+                    id: 'btnDescargarListaRequerimientosElaboradosExcel'
+                },
+                action: () => {
+                    this.descargarListaRequerimientosElaboradosExcel();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
         $tablaListaRequerimientoPago = $('#ListaRequerimientoPago').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
-                    attr: {
-                        id: 'btnNuevoRequerimientoPago',
-                        title: tieneAccionCrearRequerimientoPago > 0 ? 'Crear nuevo requerimiento de pago' : 'No tiene persmiso para crear un requerimiento de pago',
-                        disabled: tieneAccionCrearRequerimientoPago > 0 ? false : true
-                    },
-                    action: () => {
-                        this.nuevoRequerimientoPago();
+            'buttons': [button_crear_nuevo_requerimiento
+                // {
+                //     text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+                //     attr: {
+                //         id: 'btnNuevoRequerimientoPago',
+                //         title: tieneAccionCrearRequerimientoPago > 0 ? 'Crear nuevo requerimiento de pago' : 'No tiene persmiso para crear un requerimiento de pago',
+                //         disabled: tieneAccionCrearRequerimientoPago > 0 ? false : true
+                //     },
+                //     action: () => {
+                //         this.nuevoRequerimientoPago();
 
-                    },
-                    className: 'btn-success btn-sm'
-                },
-                {
-                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltrosListaRequerimientosElaborados',
-                        disabled: false
-                    },
-                    action: () => {
-                        this.abrirModalFiltrosRequerimientosElaborados();
-
-                    },
-                    className: 'btn-default btn-sm'
-                },
-                {
-                    text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
-                    attr: {
-                        id: 'btnDescargarListaRequerimientosElaboradosExcel'
-                    },
-                    action: () => {
-                        this.descargarListaRequerimientosElaboradosExcel();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
+                //     },
+                //     className: 'btn-success btn-sm'
+                // }
+                ,button_filtros,button_descargar_excel
             ],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
@@ -633,13 +646,13 @@ class ListarRequerimientoPagoView {
 
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
-                        let btnVerEnModal = '<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>';
-                        let btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
+                        let btnVerEnModal = (array_accesos.find(element => element === 13)?'<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>':'');
+                        let btnVerAdjuntosModal = (array_accesos.find(element => element === 31)?'<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>':'');
                         let btnEditar = '<button type="button" class="btn btn-xs btn-warning  handleClickEditarRequerimientoPago" name="btnEditarRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
                         let btnAnular = '<button type="button" class="btn btn-xs btn-danger  handleClickAnularRequerimientoPago" name="btnAnularRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Anular"><i class="fas fa-ban fa-xs"></i></button>';
-                        let btnImprimirEnPdf = `<button type="button" class="btn btn-xs btn-default handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
+                        let btnImprimirEnPdf = (array_accesos.find(element => element === 30)?`<button type="button" class="btn btn-xs btn-default handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
                         <i class="fas fa-print"></i>
-                        </button>`;
+                        </button>`:'');
 
                         let botonera = containerOpenBrackets + btnVerEnModal + btnImprimirEnPdf;
                         if (row.id_usuario == auth_user.id_usuario && (row.id_estado == 1 || row.id_estado == 3)) {

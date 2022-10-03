@@ -299,7 +299,7 @@ Crear / editar requerimiento
                 </fieldset>
             </div>
         </div>
-        
+
         <div class="row">
             <div id="input-group-cdp">
                 <div class="col-md-6">
@@ -401,7 +401,7 @@ Crear / editar requerimiento
 
                                 <!-- <div class="input-group-append">         -->
                                 <button type="button" class="btn-primary" title="Seleccionar Cliente" name="btnCliente" onClick="openCliente();"><i class="fas fa-user-tie"></i></button>
-                                <!-- </div> 
+                                <!-- </div>
                                 <div class="input-group-append"> class="input-group-text         -->
                                 <button type="button" class="btn-success" title="Agregar Cliente" name="btnAddCliente" onClick="agregar_cliente();"><i class="fas fa-plus"></i></button>
                                 <!-- </div> -->
@@ -730,7 +730,7 @@ Crear / editar requerimiento
 <script src="{{ asset('js/logistica/requerimiento/historial.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_detalle_requerimiento.js') }}"></script>
 <script src="{{ asset('js/logistica/requerimiento/mostrar.js') }}?v={{filemtime(public_path('js/logistica/requerimiento/mostrar.js'))}}"></script>
- 
+
 <script src="{{ asset('js/logistica/requerimiento/tipo_formulario.js') }}?v={{filemtime(public_path('js/logistica/requerimiento/tipo_formulario.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/cabecera_detalle.js') }}"></script>
 <!-- <script src="{{ asset('js/logistica/requerimiento/inicializar.js') }}"></script> -->
@@ -770,21 +770,21 @@ Crear / editar requerimiento
     if(id_grupo_usuario_sesion_list.includes(2)){
         hiddeElement('mostrar','form-requerimiento',[
         'input-group-cdp'
-        ]); 
+        ]);
     }else{
         hiddeElement('ocultar','form-requerimiento',[
         'input-group-cdp'
-        ]); 
+        ]);
     }
 
     if(id_grupo_usuario_sesion_list.includes(3)){
         hiddeElement('mostrar','form-requerimiento',[
         'input-group-proyecto'
-        ]); 
+        ]);
     }else{
         hiddeElement('ocultar','form-requerimiento',[
         'input-group-proyecto'
-        ]); 
+        ]);
     }
     autoSelectTipoRequerimientoPorDefecto();
     // grupos.forEach(element => {

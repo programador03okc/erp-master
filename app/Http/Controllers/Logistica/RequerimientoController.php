@@ -90,7 +90,12 @@ class RequerimientoController extends Controller
         $categoria_adjunto = CategoriaAdjunto::mostrar();
         $tipo_cambio = (new SaldosController)->tipo_cambio_compra(new Carbon());
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones','array_accesos'));
     }
 
 
