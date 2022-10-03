@@ -40,6 +40,7 @@ use App\Models\Almacen\Almacen;
 use App\Models\Almacen\Producto;
 use App\Models\Almacen\RequerimientoLogisticoView;
 use App\Models\Almacen\Transferencia;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
@@ -1661,8 +1662,12 @@ class RequerimientoController extends Controller
         $prioridades = Prioridad::mostrar();
         $estados = Estado::mostrar();
 
-
-        return view('logistica/requerimientos/lista_requerimientos', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades', 'estados'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('logistica/requerimientos/lista_requerimientos', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades', 'estados','array_accesos'));
     }
 
 
