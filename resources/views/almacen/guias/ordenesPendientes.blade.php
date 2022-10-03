@@ -75,8 +75,7 @@ Atención de Ingresos
                             </div>
                         </div>
                     </div>
-                    {{-- @endif
-                    @if (in_array(104,$array_accesos)) --}}
+                    {{-- @endif @if (in_array(104,$array_accesos)) --}}
                     <div id="transformaciones" class="tab-pane fade ">
                         <br>
                         <div class="row">
@@ -243,7 +242,6 @@ Atención de Ingresos
 <script src="{{ asset('js/almacen/devolucion/verFichasTecnicas.js')}}?v={{filemtime(public_path('js/almacen/devolucion/verFichasTecnicas.js'))}}"></script>
 
 <script>
-    // var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';

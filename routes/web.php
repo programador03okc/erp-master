@@ -1477,7 +1477,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Almacen\Movimiento\DevolucionController@viewDevolucion')->name('index');
 				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
 				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
-				Route::get('mostrarContribuyentes', 'Almacen\Movimiento\DevolucionController@mostrarContribuyentes');
+				Route::post('mostrarContribuyentes', 'Almacen\Movimiento\DevolucionController@mostrarContribuyentes');
 				Route::get('mostrarDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@mostrarDevolucion');
 				Route::post('guardarDevolucion', 'Almacen\Movimiento\DevolucionController@guardarDevolucion');
 				Route::post('actualizarDevolucion', 'Almacen\Movimiento\DevolucionController@actualizarDevolucion');
@@ -1873,7 +1873,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Almacen\Movimiento\DevolucionController@viewDevolucionCas')->name('index');
 				Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
 				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
-				Route::get('mostrarContribuyentes', 'Almacen\Movimiento\DevolucionController@mostrarContribuyentes');
+				Route::post('mostrarContribuyentes', 'Almacen\Movimiento\DevolucionController@mostrarContribuyentes');
 				Route::get('mostrarDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@mostrarDevolucion');
 				Route::post('guardarDevolucion', 'Almacen\Movimiento\DevolucionController@guardarDevolucion');
 				Route::post('actualizarDevolucion', 'Almacen\Movimiento\DevolucionController@actualizarDevolucion');
@@ -1903,7 +1903,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
 				Route::post('guardarFichaTecnica', 'Almacen\Movimiento\DevolucionController@guardarFichaTecnica');
 				Route::get('verFichasTecnicasAdjuntas/{id}', 'Almacen\Movimiento\DevolucionController@verFichasTecnicasAdjuntas')->name('ver-fichas-tecnicas');
-				Route::get('conformidadDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@conformidadDevolucion')->name('conformidad-devolucion');
+				Route::post('conformidadDevolucion', 'Almacen\Movimiento\DevolucionController@conformidadDevolucion')->name('conformidad-devolucion');
+				Route::get('revertirConformidad/{id}', 'Almacen\Movimiento\DevolucionController@revertirConformidad')->name('revertir-devolucion');
 			});
 		});
 	});
@@ -2079,6 +2080,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('modulos', 'ConfiguracionController@getModulos');
 
 		Route::get('accesos/{id}', 'ConfiguracionController@viewAccesos')->name('accesos');
+        Route::get('prueba', 'ConfiguracionController@prueba');
 		Route::group(['as' => 'accesos.', 'prefix' => 'accesos'], function () {
 			Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
 			Route::post('guardar-accesos', 'ConfiguracionController@guardarAccesos');
