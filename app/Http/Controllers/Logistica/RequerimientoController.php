@@ -95,7 +95,21 @@ class RequerimientoController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones','array_accesos'));
+
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',65)
+        ->where('accesos_usuarios.id_padre',4)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        $modulo = 'necesidades';
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones','array_accesos','array_accesos_botonera','modulo'));
     }
 
 
