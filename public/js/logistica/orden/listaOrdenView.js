@@ -184,7 +184,7 @@ class ListaOrdenView {
                                 'id':element.id_adjunto,
                                 'category':element.categoria_adjunto_id,
                                 'fecha_emision':element.fecha_emision,
-                                'nro_comprobante':element.nro_comprobante,
+                                'nro_comprobante':(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:""),
                                 'nameFile':element.archivo,
                                 'action':'',
                                 'file':[element.id_adjunto]
@@ -201,7 +201,7 @@ class ListaOrdenView {
                                 htmlAdjunto+='</td>'
 
                                 htmlAdjunto+='<td>'
-                                    htmlAdjunto+='<span name="nro_comprobante_text">'+element.nro_comprobante+'</span><input type="text" class="form-control handleChangeNroComprobante oculto" name="nro_comprobante"  placeholder="Nro comprobante" value="'+element.nro_comprobante+'">'
+                                    htmlAdjunto+='<span name="nro_comprobante_text">'+(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:"")+'</span><input type="text" class="form-control handleChangeNroComprobante oculto" name="nro_comprobante"  placeholder="Nro comprobante" value="'+element.nro_comprobante+'">'
                                 htmlAdjunto+='</td>'
 
                                 htmlAdjunto+='<td>'
@@ -2193,8 +2193,8 @@ class ListaOrdenView {
             let html = '';
             html = `<tr id="${payload.id}" style="text-align:center">
             <td style="text-align:left;">${payload.nameFile}</td>
-            <td style="text-align:left;"><input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" placeholder="Fecha emisión"  value="${moment().format("YYYY-MM-DD")}" required></td>
-            <td style="text-align:left;"><input type="text" class="form-control handleChangeNroComprobante" name="nro_comprobante"  placeholder="Nro comprobante" required></td>
+            <td style="text-align:left;"><input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" placeholder="Fecha emisión"  value="${moment().format("YYYY-MM-DD")}"></td>
+            <td style="text-align:left;"><input type="text" class="form-control handleChangeNroComprobante" name="nro_comprobante"  placeholder="Nro comprobante"></td>
             <td>
                 <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
             `;
