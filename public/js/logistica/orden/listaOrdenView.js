@@ -174,23 +174,73 @@ class ListaOrdenView {
             $('#modal-adjuntar-orden').modal('show');
             this.obteneAdjuntosOrden(data_id).then((res) => {
 
-                let htmlPago = '';
+                let htmlAdjunto = '';
                 // console.log(res.length);
                 if (res.length > 0) {
                     (res).forEach(element => {
 
-                            htmlPago+= '<tr>'
-                                htmlPago+='<td>'
-                                    htmlPago+='<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>'
-                                htmlPago+='</td>'
+                        tempArchivoAdjuntoRequerimientoCabeceraList.push(
+                            {
+                                'id':element.id_adjunto,
+                                'category':element.categoria_adjunto_id,
+                                'fecha_emision':element.fecha_emision,
+                                'nro_comprobante':element.nro_comprobante,
+                                'nameFile':element.archivo,
+                                'action':'',
+                                'file':[element.id_adjunto]
+                        }
+                        );
 
-                                htmlPago+='<td>'
-                                    htmlPago+=''+element.fecha_emision+''
-                                htmlPago+='</td>'
+                            htmlAdjunto+= '<tr id="'+element.id_adjunto+'">'
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+='<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>'
+                                htmlAdjunto+='</td>'
 
-                                htmlPago+='<td>'
-                                    htmlPago+=''+element.descripcion+''
-                                htmlPago+='</td>'
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+='<span name="fecha_emision_text">'+element.fecha_emision+'</span><input type="date" class="form-control handleChangeFechaEmision oculto" name="fecha_emision" placeholder="Fecha emisión"  value="'+element.fecha_emision+'">'
+                                htmlAdjunto+='</td>'
+
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+='<span name="nro_comprobante_text">'+element.nro_comprobante+'</span><input type="text" class="form-control handleChangeNroComprobante oculto" name="nro_comprobante"  placeholder="Nro comprobante" value="'+element.nro_comprobante+'">'
+                                htmlAdjunto+='</td>'
+
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+=''+element.descripcion+''
+                                htmlAdjunto+='</td>'
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+='<div style="display:flex;"><button type="button" class="btn btn-sm btn-warning boton handleClickEditarAdjuntoProveedor" title="Editar" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-edit"></i> </button>'
+                                    htmlAdjunto+='<button type="button" class="btn btn-sm btn-danger boton handleClickAnularAdjuntoProveedor" title="Anular" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-trash"></i> </button></div>'
+                                htmlAdjunto+='</td>'
+                            htmlAdjunto+= '</tr>'
+
+                    });
+                }else{
+                    htmlAdjunto = `<tr>
+                    <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
+                    </tr>`;
+                }
+                $('#form-adjunto-orden #body_adjuntos_logisticos').html(htmlAdjunto)
+
+
+            }).catch(function (err) {
+                console.log(err)
+            })
+
+            this.obteneAdjuntosPago(data_id).then((res) => {
+
+                let htmlPago = '';
+                console.log(res.data);
+                if (res.data.length > 0) {
+                    (res.data).forEach(element => {
+
+                            htmlPago+= '<tr id="'+element.id_orden+'">'
+
+                                element.adjuntos.forEach(nombreAdjunto => {
+                                    htmlPago+='<td>'
+                                        htmlPago+='<a href="/files/tesoreria/pagos/'+nombreAdjunto+'" target="_blank">'+nombreAdjunto+'</a>'
+                                    htmlPago+='</td>'
+                                    
+                                });
                             htmlPago+= '</tr>'
 
                     });
@@ -199,7 +249,7 @@ class ListaOrdenView {
                     <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
                     </tr>`;
                 }
-                $('#form-adjunto-orden #body_archivos_requerimiento_compra_detalle').html(htmlPago)
+                $('#form-adjunto-orden #body_adjuntos_pago').html(htmlPago)
 
 
             }).catch(function (err) {
@@ -221,6 +271,15 @@ class ListaOrdenView {
 
         $('#modal-adjuntar-orden').on("change", "input.handleChangeFechaEmision", (e) => {
             this.actualizarFechaEmisionDeAdjunto(e.currentTarget);
+        });
+        $('#modal-adjuntar-orden').on("change", "input.handleChangeNroComprobante", (e) => {
+            this.actualizarNroComprobanteDeAdjunto(e.currentTarget);
+        });
+        $('#modal-adjuntar-orden').on("click", "button.handleClickEditarAdjuntoProveedor", (e) => {
+            this.editarAdjuntoProveedor(e.currentTarget);
+        });
+        $('#modal-adjuntar-orden').on("click", "button.handleClickAnularAdjuntoProveedor", (e) => {
+            this.anularAdjuntoProveedor(e.currentTarget);
         });
 
     }
@@ -1986,6 +2045,7 @@ class ListaOrdenView {
                             id: this.makeId(),
                             category: 1, //default: otros adjuntos
                             fecha_emision: moment().format('YYYY-MM-DD'), 
+                            nro_comprobante: '',
                             nameFile: file.name,
                             action: 'GUARDAR',
                             file: file
@@ -2029,6 +2089,51 @@ class ListaOrdenView {
                 tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'GUARDAR';
             }
     
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un error inesperado al intentar cambiar la categoría del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                'error'
+            );
+        }
+    }
+
+    editarAdjuntoProveedor(obj){
+        obj.closest("tr").querySelector("input[name='fecha_emision']").classList.remove("oculto");
+        obj.closest("tr").querySelector("span[name='fecha_emision_text']").classList.add("oculto");
+        obj.closest("tr").querySelector("input[name='nro_comprobante']").classList.remove("oculto");
+        obj.closest("tr").querySelector("span[name='nro_comprobante_text']").classList.add("oculto");
+    }
+
+    anularAdjuntoProveedor(obj){
+        if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
+            let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ANULAR';
+            obj.closest('tr').classList.add("gb-danger");
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un error inesperado al intentar cambiar la categoría del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                'error'
+            );
+        }
+    }
+
+    actualizarNroComprobanteDeAdjunto(obj) {
+
+        if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
+            let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoCabeceraList[indice].nro_comprobante = obj.value;
+            if (tempArchivoAdjuntoRequerimientoCabeceraList[indice].id > 0) {
+
+            }
+            var regExp = /[a-zA-Z]/g; //expresión regular
+            if (regExp.test(tempArchivoAdjuntoRequerimientoCabeceraList[indice].id) == false) {
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ACTUALIZAR';
+            } else {
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'GUARDAR';
+            }
+
         } else {
             Swal.fire(
                 '',
@@ -2088,7 +2193,8 @@ class ListaOrdenView {
             let html = '';
             html = `<tr id="${payload.id}" style="text-align:center">
             <td style="text-align:left;">${payload.nameFile}</td>
-            <td style="text-align:left;"><input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision"  value="${moment().format("YYYY-MM-DD")}" required></td>
+            <td style="text-align:left;"><input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" placeholder="Fecha emisión"  value="${moment().format("YYYY-MM-DD")}" required></td>
+            <td style="text-align:left;"><input type="text" class="form-control handleChangeNroComprobante" name="nro_comprobante"  placeholder="Nro comprobante" required></td>
             <td>
                 <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
             `;
@@ -2159,14 +2265,15 @@ class ListaOrdenView {
 
             if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
                 tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
-                    if(element.action =='GUARDAR'){
+                    
                         formData.append(`id_adjunto[]`, element.id);
                         formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
+                        formData.append(`nro_comprobante_adjunto[]`, element.nro_comprobante);
                         formData.append(`categoria_adjunto[]`, element.category);
                         formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
                         formData.append(`nombre_real_adjunto[]`, element.nameFile);
-                        formData.append(`accion[]`, 'GUARDAR');
-                    }
+                        formData.append(`accion[]`, element.action);
+                    
                 });
             }
 
@@ -2249,6 +2356,31 @@ class ListaOrdenView {
                 },
                 error: function (err) {
                     // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                    reject(err)
+                }
+            });
+        });
+    }
+
+    obteneAdjuntosPago(idOrden) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `listar-archivos-adjuntos-pago-requerimiento/${idOrden}`,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                $('#modal-adjuntar-orden #adjuntosPago').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+                success(response) {
+                    $('#modal-adjuntar-orden #adjuntosPago').LoadingOverlay("hide", true);
+                    resolve(response);
+                },
+                error: function (err) {
+                    $('#modal-adjuntar-orden #adjuntosPago').LoadingOverlay("hide", true);
                     reject(err)
                 }
             });
