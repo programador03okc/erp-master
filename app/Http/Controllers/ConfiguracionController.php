@@ -2280,11 +2280,18 @@ public function anular_configuracion_socket($id){
             ->where('estado',1)
             ->orderBy('id_modulo','ASC')
             ->get();
+
         foreach ($accesos_uduarios as $key => $value) {
             $value->accesos;
-            $value->accesos->modulos;
+            if ($value->accesos) {
+                $value->accesos->modulos;
+            }//else{
+                // return $value;
+            // }
             $value->moduloPadre;
+            // return $value;
         }
+        // return $accesos_uduarios;
         return response()->json([
             "success"=>true,
             "data"=>$accesos_uduarios
