@@ -37,11 +37,29 @@
                         </div>
                     </fieldset>
                     <fieldset class="group-table">
-                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos Items requerimiento</strong></h5>
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos logísticos</strong></h5>
                         <div class="row">
                             <div class="col-md-12">
                                 <table id="adjuntosDetalle" class="mytable table table-condensed table-bordered table-okc-view">
-                                    <tbody id="body_archivos_requerimiento_compra_detalle"></tbody>
+                                    <thead>
+                                        <th>Archivo</th>
+                                        <th>Fecha emisión</th>
+                                        <th>Nro comprobante</th>
+                                        <th>Tipo</th>
+                                        <th>Acción</th>
+                                    </thead>
+                                    <tbody id="body_adjuntos_logisticos"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="group-table">
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos Pago</strong></h5>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="adjuntosPago" class="mytable table table-condensed table-bordered table-okc-view">
+
+                                    <tbody id="body_adjuntos_pago"></tbody>
                                 </table>
                             </div>
                         </div>
