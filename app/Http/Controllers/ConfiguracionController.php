@@ -8,6 +8,7 @@ use App\Models\Configuracion\Modulo;
 use App\Models\Configuracion\Pais as ConfiguracionPais;
 use App\Models\Configuracion\Rol;
 use App\Models\Configuracion\SisUsua;
+use App\models\Configuracion\TableConfiguracionModulo;
 use App\models\Configuracion\UsuarioGrupo;
 use App\models\Configuracion\UsuarioRol;
 use App\models\rrhh\rrhh_categoria_ocupacional;
@@ -47,6 +48,7 @@ class ConfiguracionController extends Controller{
         return view('configuracion/aplicaciones', compact('modulos'));
     }
     function view_usuario(){
+        // return response()->json(Auth::);
         $modulos = $this->select_modulos();
         $roles=$this->lista_roles();
 
@@ -625,12 +627,12 @@ class ConfiguracionController extends Controller{
         $rrhh_trab->id_tipo_trabajador          = (int) $request->id_tipo_trabajador;
         $rrhh_trab->id_categoria_ocupacional    = (int) $request->id_categoria_ocupacional;
         $rrhh_trab->id_tipo_planilla            = (int) $request->id_tipo_planilla;
-        $rrhh_trab->condicion                   = $request->condicion;
+        // $rrhh_trab->condicion                   = $request->condicion;
         $rrhh_trab->hijos                       = $request->hijos;
-        $rrhh_trab->id_pension                  = (int) $request->id_pension;
-        $rrhh_trab->cuspp                       = $request->cuspp;
-        $rrhh_trab->seguro                      = $request->seguro;
-        $rrhh_trab->confianza                   = $request->confianza;
+        // $rrhh_trab->id_pension                  = (int) $request->id_pension;
+        // $rrhh_trab->cuspp                       = $request->cuspp;
+        // $rrhh_trab->seguro                      = $request->seguro;
+        // $rrhh_trab->confianza                   = $request->confianza;
         // $rrhh_trab->estado                      = 1;
         // $rrhh_trab->fecha_registro = date('Y-m-d H:i:s');
         $rrhh_trab->save();
@@ -640,7 +642,7 @@ class ConfiguracionController extends Controller{
         $rrhh_postu->direccion      = $request->direccion;
         $rrhh_postu->telefono       = (int) $request->telefono;
         $rrhh_postu->correo         = $request->email;
-        $rrhh_postu->brevette       = $request->brevette;
+        // $rrhh_postu->brevette       = $request->brevette;
         $rrhh_postu->id_pais        = (int) $request->pais;
         $rrhh_postu->ubigeo         = $request->ubigeo;
         $rrhh_postu->fecha_registro = date('Y-m-d H:i:s');
@@ -766,8 +768,11 @@ class ConfiguracionController extends Controller{
         ->join('rrhh.rrhh_perso', 'rrhh_postu.id_persona', '=', 'rrhh_perso.id_persona')
         ->where('id_usuario',$id)
         ->first();
-        $data->usuarioGrupo;
-        $data->usuarioRol;
+        // $data->usuarioGrupo;
+        if (sizeof($data->usuarioGrupo)>0) {
+            $data->usuarioGrupo;
+        }else{$data->usuarioGrupo=[];}
+        $data->usuarioRol = (sizeof($data->usuarioRol)>0) ? $data->usuarioRol : [] ;
         // $grupo = Grupo::get();
         // $rol = Rol::where("estado",1)->get();
         return response()->json([
@@ -778,8 +783,7 @@ class ConfiguracionController extends Controller{
 
 
     public function mostrar_usuarios(){
-        $response = SisUsua::where('estado',1)
-        ->select(
+        $response = SisUsua::select(
             'sis_usua.id_usuario',
             'sis_usua.nombre_corto',
             'sis_usua.usuario',
@@ -807,7 +811,7 @@ class ConfiguracionController extends Controller{
         $rrhh_perso->apellido_materno       = $request->apellido_materno;
         $rrhh_perso->fecha_nacimiento       = $request->fecha_nacimiento;
         $rrhh_perso->sexo                   = $request->sexo;
-        $rrhh_perso->id_estado_civil        = (int) $request->id_estado_civil;
+        // $rrhh_perso->id_estado_civil        = (int) $request->id_estado_civil;
         $rrhh_perso->estado                 = 1;
         $rrhh_perso->fecha_registro         = date('Y-m-d H:i:s');
         $rrhh_perso->telefono               = (int) $request->telefono;
@@ -820,7 +824,7 @@ class ConfiguracionController extends Controller{
         $rrhh_postu->direccion      = $request->direccion;
         $rrhh_postu->telefono       = (int) $request->telefono;
         $rrhh_postu->correo         = $request->email;
-        $rrhh_postu->brevette       = $request->brevette;
+        // $rrhh_postu->brevette       = $request->brevette;
         $rrhh_postu->id_pais        = (int) $request->pais;
         $rrhh_postu->ubigeo         = $request->ubigeo;
         $rrhh_postu->fecha_registro = date('Y-m-d H:i:s');
@@ -831,12 +835,12 @@ class ConfiguracionController extends Controller{
         $rrhh_trab->id_tipo_trabajador          = (int) $request->id_tipo_trabajador;
         $rrhh_trab->id_categoria_ocupacional    = (int) $request->id_categoria_ocupacional;
         $rrhh_trab->id_tipo_planilla            = (int) $request->id_tipo_planilla;
-        $rrhh_trab->condicion                   = $request->condicion;
+        // $rrhh_trab->condicion                   = $request->condicion;
         $rrhh_trab->hijos                       = $request->hijos;
-        $rrhh_trab->id_pension                  = (int) $request->id_pension;
-        $rrhh_trab->cuspp                       = $request->cuspp;
-        $rrhh_trab->seguro                      = $request->seguro;
-        $rrhh_trab->confianza                   = $request->confianza;
+        // $rrhh_trab->id_pension                  = (int) $request->id_pension;
+        // $rrhh_trab->cuspp                       = $request->cuspp;
+        // $rrhh_trab->seguro                      = $request->seguro;
+        // $rrhh_trab->confianza                   = $request->confianza;
         $rrhh_trab->estado                      = 1;
         $rrhh_trab->fecha_registro = date('Y-m-d H:i:s');
         $rrhh_trab->save();
@@ -844,7 +848,7 @@ class ConfiguracionController extends Controller{
         $sis_usua                   = new SisUsua;
         $sis_usua->id_trabajador    = $rrhh_trab->id_trabajador;
         $sis_usua->usuario          = $request->usuario;
-        $sis_usua->clave            = StringHelper::encode5t($request->clave);
+        $sis_usua->clave            = StringHelper::encode5t('Inicio01');
         $sis_usua->estado           = 1;
         $sis_usua->fecha_registro   = date('Y-m-d H:i:s');
         $sis_usua->nombre_corto     = $request->nombre_corto;
@@ -2035,7 +2039,7 @@ public function anular_configuracion_socket($id){
     public function usuarioAcceso($id)
     {
         # code...
-        return $id;
+        // return $id;
         return view('configuracion/usuario_accesos',compact('id'));
     }
     public function getUsuario($id)
@@ -2191,6 +2195,7 @@ public function anular_configuracion_socket($id){
         $sub_modulos =[];
 
         $array__modulos=[];
+
         if ($request->data) {
             $success=true;
             $status = 200;
@@ -2203,6 +2208,7 @@ public function anular_configuracion_socket($id){
             )
             ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo','left')
             ->where('modulos.estado',1)
+            // ->where('modulos.id_padre',18)
             ->where('modulos.id_padre',$request->data)
             ->get();
 
@@ -2218,11 +2224,39 @@ public function anular_configuracion_socket($id){
                         'accesos.descripcion as acceso'
                     )
                     ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo')
+                    ->where('modulos.estado',1)
                     ->where('modulos.id_padre',$value->id_modulo)
+                    // ->where('modulos.id_padre',89)
                     ->orderBy('modulo','ASC')
                     ->get();
+
                     if (sizeof($sub_modulos_hijos)>0) {
                         $value->modulos_hijos = $sub_modulos_hijos;
+
+                        // foreach ($sub_modulos_hijos as $key_hijos => $value_hijos) {
+                        //     $value_hijos->modulos_hijos_hijos=[];
+                        //     if ($value_hijos->acceso ===null) {
+                        //         $sub_modulos_hijos_tercer_nivel = DB::table('configuracion.modulos')
+                        //         ->select(
+                        //             'modulos.id_modulo',
+                        //             'modulos.descripcion as modulo',
+                        //             'accesos.id_acceso',
+                        //             'accesos.descripcion as acceso'
+                        //         )
+                        //         ->join('configuracion.accesos', 'accesos.id_modulo', '=', 'modulos.id_modulo')
+                        //         ->where('modulos.id_padre',$value_hijos->id_modulo)
+                        //         ->where('modulos.estado',1)
+                        //         ->orderBy('modulo','ASC')
+                        //         ->get();
+
+                        //         if (sizeof($sub_modulos_hijos_tercer_nivel)>0) {
+                        //             $value_hijos->modulos_hijos_hijos = $sub_modulos_hijos_tercer_nivel;
+                        //         }
+                        //     }
+
+                        // }
+
+
                     }
 
                 }
@@ -2283,10 +2317,10 @@ public function anular_configuracion_socket($id){
 
         foreach ($accesos_uduarios as $key => $value) {
             $value->accesos;
-            if ($value->accesos) {
+            // if ($value->accesos) {
                 $value->accesos->modulos;
-            }//else{
-                // return $value;
+            // }else{
+            //     return $value;
             // }
             $value->moduloPadre;
             // return $value;
@@ -2295,6 +2329,69 @@ public function anular_configuracion_socket($id){
         return response()->json([
             "success"=>true,
             "data"=>$accesos_uduarios
+        ]);
+    }
+    public function prueba()
+    {
+        $data_usuarios = SisUsua::whereIn('id_usuario',[111,73,108,9,31,130,61,127,31,131,128,99,9,73,130,61])->get();
+        $modulo = TableConfiguracionModulo::where('estado',1)->where('id_padre',47)->get();
+        foreach ($modulo as $key => $value) {
+            $value->accesosAll ;
+            if (sizeof($value->accesosAll)===0) {
+                $value->modulo_nivel2 = TableConfiguracionModulo::where('estado',1)->where('id_padre',$value->id_modulo)->get();
+                foreach ($value->modulo_nivel2 as $key_nivel2 => $value_nivel2) {
+                    $value_nivel2->accesosAll ;
+                }
+            }
+        }
+
+        $array_accesos_usuarios = array();
+
+        foreach ($modulo as $key_modulo => $value) {
+            if (sizeof($value->accesosAll)>0) {
+                foreach ($value->accesosAll as $key_accesos => $value_accesos) {
+                    array_push($array_accesos_usuarios, (object)array(
+                        "id_acceso" =>  $value_accesos->id_acceso,
+                        "id_usuario"=>  111,
+                        "estado"    =>  1,
+                        "id_modulo" =>  $value_accesos->id_modulo,
+                        "id_padre"  =>  0,
+                    ));
+                }
+
+            }
+            if ( isset($value->modulo_nivel2) &&sizeof($value->modulo_nivel2)>0) {
+                foreach ($value->modulo_nivel2 as $key_nivel2 => $value_nivel2) {
+                    foreach ($value_nivel2->accesosAll as $key_accesos => $value_accesos) {
+                        array_push($array_accesos_usuarios,(object)array(
+                            "id_acceso" =>  $value_accesos->id_acceso,
+                            "id_usuario"=>  111,
+                            "estado"    =>  1,
+                            "id_modulo" =>  $value_accesos->id_modulo,
+                            "id_padre"  =>  $value_nivel2->id_padre,
+                        ));
+                    }
+                }
+
+            }
+        }
+
+        foreach ($data_usuarios as $key_usuario => $value_usuario) {
+            foreach ($array_accesos_usuarios as $key_accesos => $value_accesos) {
+                // return $value_accesos->id_acceso;
+                $accesos_usuarios = new AccesosUsuarios;
+                $accesos_usuarios->id_acceso    =   $value_accesos->id_acceso;
+                $accesos_usuarios->id_usuario   =   $value_usuario->id_usuario;
+                $accesos_usuarios->estado       =   $value_accesos->estado;
+                $accesos_usuarios->id_modulo    =   $value_accesos->id_modulo;
+                $accesos_usuarios->id_padre     =   $value_accesos->id_padre;
+                $accesos_usuarios->save();
+            }
+        }
+
+        return response()->json([
+            "success"=>true,
+            "status"=>200
         ]);
     }
 }
