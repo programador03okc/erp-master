@@ -101,8 +101,8 @@ class RequerimientoController extends Controller
         ->select('accesos.*')
         ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
         ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
-        ->where('accesos_usuarios.id_modulo',65)
-        ->where('accesos_usuarios.id_padre',4)
+        ->where('accesos_usuarios.id_modulo',57)
+        ->where('accesos_usuarios.id_padre',54)
         ->get();
         foreach ($accesos_botonera as $key => $value) {
             $value->accesos;
