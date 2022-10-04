@@ -2,6 +2,8 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\StringHelper;
+use App\Models\Configuracion\Acceso;
+use App\models\Configuracion\Accesos;
 use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Modulo;
@@ -2333,64 +2335,73 @@ public function anular_configuracion_socket($id){
     }
     public function prueba()
     {
-        // data de usuarios de necesidades
-        $data_usuarios = SisUsua::whereIn('id_usuario',[111,73,108,9,31,130,61,127,31,131,128,99,9,73,130,61])->get();
-        // data de usuarios de logistica
-        $modulo = TableConfiguracionModulo::where('estado',1)->where('id_padre',47)->get();
-        foreach ($modulo as $key => $value) {
-            $value->accesosAll ;
-            if (sizeof($value->accesosAll)===0) {
-                $value->modulo_nivel2 = TableConfiguracionModulo::where('estado',1)->where('id_padre',$value->id_modulo)->get();
-                foreach ($value->modulo_nivel2 as $key_nivel2 => $value_nivel2) {
-                    $value_nivel2->accesosAll ;
-                }
-            }
+        // // data de usuarios de necesidades
+        // $data_usuarios = SisUsua::whereIn('id_usuario',[111,73,108,9,31,130,61,127,31,131,128,99,9,73,130,61])->get();
+        // // data de usuarios de logistica
+        // $modulo = TableConfiguracionModulo::where('estado',1)->where('id_padre',47)->get();
+        // foreach ($modulo as $key => $value) {
+        //     $value->accesosAll ;
+        //     if (sizeof($value->accesosAll)===0) {
+        //         $value->modulo_nivel2 = TableConfiguracionModulo::where('estado',1)->where('id_padre',$value->id_modulo)->get();
+        //         foreach ($value->modulo_nivel2 as $key_nivel2 => $value_nivel2) {
+        //             $value_nivel2->accesosAll ;
+        //         }
+        //     }
+        // }
+
+        // $array_accesos_usuarios = array();
+
+        // foreach ($modulo as $key_modulo => $value) {
+        //     if (sizeof($value->accesosAll)>0) {
+        //         foreach ($value->accesosAll as $key_accesos => $value_accesos) {
+        //             array_push($array_accesos_usuarios, (object)array(
+        //                 "id_acceso" =>  $value_accesos->id_acceso,
+        //                 "id_usuario"=>  111,
+        //                 "estado"    =>  1,
+        //                 "id_modulo" =>  $value_accesos->id_modulo,
+        //                 "id_padre"  =>  0,
+        //             ));
+        //         }
+
+        //     }
+        //     if ( isset($value->modulo_nivel2) &&sizeof($value->modulo_nivel2)>0) {
+        //         foreach ($value->modulo_nivel2 as $key_nivel2 => $value_nivel2) {
+        //             foreach ($value_nivel2->accesosAll as $key_accesos => $value_accesos) {
+        //                 array_push($array_accesos_usuarios,(object)array(
+        //                     "id_acceso" =>  $value_accesos->id_acceso,
+        //                     "id_usuario"=>  111,
+        //                     "estado"    =>  1,
+        //                     "id_modulo" =>  $value_accesos->id_modulo,
+        //                     "id_padre"  =>  $value_nivel2->id_padre,
+        //                 ));
+        //             }
+        //         }
+
+        //     }
+        // }
+
+        // foreach ($data_usuarios as $key_usuario => $value_usuario) {
+        //     foreach ($array_accesos_usuarios as $key_accesos => $value_accesos) {
+        //         // return $value_accesos->id_acceso;
+        //         $accesos_usuarios = new AccesosUsuarios;
+        //         $accesos_usuarios->id_acceso    =   $value_accesos->id_acceso;
+        //         $accesos_usuarios->id_usuario   =   $value_usuario->id_usuario;
+        //         $accesos_usuarios->estado       =   $value_accesos->estado;
+        //         $accesos_usuarios->id_modulo    =   $value_accesos->id_modulo;
+        //         $accesos_usuarios->id_padre     =   $value_accesos->id_padre;
+        //         $accesos_usuarios->save();
+        //     }
+        // }
+        $data_accesos_descripcion=array();
+        $accesos = Accesos::get();
+        foreach ($accesos as $key => $value) {
+            array_push($data_accesos_descripcion,array("descripcion"=>ucfirst($value->descripcion)));
+            Accesos::where('id_acceso', $value->id_acceso)
+            ->update(['descripcion' => ucfirst($value->descripcion)]);
         }
-
-        $array_accesos_usuarios = array();
-
-        foreach ($modulo as $key_modulo => $value) {
-            if (sizeof($value->accesosAll)>0) {
-                foreach ($value->accesosAll as $key_accesos => $value_accesos) {
-                    array_push($array_accesos_usuarios, (object)array(
-                        "id_acceso" =>  $value_accesos->id_acceso,
-                        "id_usuario"=>  111,
-                        "estado"    =>  1,
-                        "id_modulo" =>  $value_accesos->id_modulo,
-                        "id_padre"  =>  0,
-                    ));
-                }
-
-            }
-            if ( isset($value->modulo_nivel2) &&sizeof($value->modulo_nivel2)>0) {
-                foreach ($value->modulo_nivel2 as $key_nivel2 => $value_nivel2) {
-                    foreach ($value_nivel2->accesosAll as $key_accesos => $value_accesos) {
-                        array_push($array_accesos_usuarios,(object)array(
-                            "id_acceso" =>  $value_accesos->id_acceso,
-                            "id_usuario"=>  111,
-                            "estado"    =>  1,
-                            "id_modulo" =>  $value_accesos->id_modulo,
-                            "id_padre"  =>  $value_nivel2->id_padre,
-                        ));
-                    }
-                }
-
-            }
-        }
-
-        foreach ($data_usuarios as $key_usuario => $value_usuario) {
-            foreach ($array_accesos_usuarios as $key_accesos => $value_accesos) {
-                // return $value_accesos->id_acceso;
-                $accesos_usuarios = new AccesosUsuarios;
-                $accesos_usuarios->id_acceso    =   $value_accesos->id_acceso;
-                $accesos_usuarios->id_usuario   =   $value_usuario->id_usuario;
-                $accesos_usuarios->estado       =   $value_accesos->estado;
-                $accesos_usuarios->id_modulo    =   $value_accesos->id_modulo;
-                $accesos_usuarios->id_padre     =   $value_accesos->id_padre;
-                $accesos_usuarios->save();
-            }
-        }
-
+        $foo = 'nields dylan';
+        $foo = ucfirst($foo);
+        return $data_accesos_descripcion;exit;
         return response()->json([
             "success"=>true,
             "status"=>200
