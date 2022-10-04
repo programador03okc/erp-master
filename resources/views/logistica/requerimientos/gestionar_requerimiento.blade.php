@@ -1,15 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_necesidades')
 
-@if(Auth::user()->tieneAccion(102))
+{{-- @if(Auth::user()->tieneAccion(102)) --}}
 @section('option')
 @include('layout.option')
 @endsection
-@elseif(Auth::user()->tieneAccion(103))
+{{-- @elseif(Auth::user()->tieneAccion(103)) --}}
 @section('option')
 @include('layout.option_historial')
 @endsection
-@endif
+{{-- @endif --}}
 
 @section('cabecera')
 Crear / editar requerimiento
