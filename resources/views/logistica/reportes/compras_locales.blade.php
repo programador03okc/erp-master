@@ -43,9 +43,12 @@ Reporte de compras locales
                                         <th style="text-align:center; width:5%;">Fecha de presentación del comprobante de pago.</th>
                                         <th style="text-align:center; width:5%;">Fecha de cancelación del comprobante de pago</th>
                                         <th style="text-align:center; width:5%;">Tiempo de cancelación(# días)</th>
+                                        <th style="text-align:center; width:8%;">Cantidad</th>
                                         <th style="text-align:center; width:10%;">Moneda</th>
-                                        <th style="text-align:center; width:10%;">Monto Soles inc IGV</th>
-                                        <th style="text-align:center; width:10%;">Monto Dólares inc IGV</th>
+                                        <th style="text-align:center; width:10%;">Precio Soles</th>
+                                        <th style="text-align:center; width:10%;">Precio Dólares</th>
+                                        <th style="text-align:center; width:10%;">Monto Total Soles inc IGV</th>
+                                        <th style="text-align:center; width:10%;">Monto Total Dólares inc IGV</th>
                                         <th style="text-align:center; width:10%;">Tipo de Comprobante de Pago</th>
                                         <th style="text-align:center; width:10%;">N° Comprobante de Pago</th>
                                         <th style="text-align:center; width:10%;">Empresa - sede</th>
