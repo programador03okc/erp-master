@@ -43,6 +43,7 @@ Reporte de compras locales
                                         <th style="text-align:center; width:5%;">Fecha de presentación del comprobante de pago.</th>
                                         <th style="text-align:center; width:5%;">Fecha de cancelación del comprobante de pago</th>
                                         <th style="text-align:center; width:5%;">Tiempo de cancelación(# días)</th>
+                                        <th style="text-align:center; width:8%;">Cantidad</th>
                                         <th style="text-align:center; width:10%;">Moneda</th>
                                         <th style="text-align:center; width:10%;">Precio Soles</th>
                                         <th style="text-align:center; width:10%;">Precio Dólares</th>

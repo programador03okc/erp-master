@@ -13,7 +13,10 @@
         <th>Fecha de presentación del comprobante de pago.</th>
         <th>Fecha de cancelación del comprobante de pago</th>
         <th>Tiempo de cancelación(# días)</th>
+        <th>Cantidad</th>
         <th>Moneda</th>
+        <th>Precio Soles</th>
+        <th>Precio Dolares</th>
         <th>Monto Soles inc IGV</th>
         <th>Monto Dólares inc IGV</th>
         <th>Tipo de Comprobante de Pago</th>
@@ -41,7 +44,10 @@
             <td>{{ $compras['fecha_emision_comprobante_contribuyente'] }}</td>
             <td>{{ $compras['fecha_pago'] }}</td>
             <td>{{ $compras['tiempo_cancelacion'] }}</td>
-            <td>{{ $compras['moneda_doc_com'] }}</td>
+            <td>{{ $compras['cantidad'] }}</td>
+            <td>{{ $compras['moneda_orden'] }}</td>
+            <td>{{ $compras['total_precio_soles_item'] }}</td>
+            <td>{{ $compras['total_precio_dolares_item'] }}</td>
             <td>{{ $compras['total_a_pagar_soles'] }}</td>
             <td>{{ $compras['total_a_pagar_dolares'] }}</td>
             <td>{{ $compras['tipo_doc_com'] }}</td>

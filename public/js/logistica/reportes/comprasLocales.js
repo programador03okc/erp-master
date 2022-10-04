@@ -360,6 +360,7 @@ class ComprasLocales {
                 { 'data': 'fecha_emision_comprobante_contribuyente', 'name': 'fecha_emision_comprobante_contribuyente', 'className': 'text-center' },
                 { 'data': 'fecha_pago', 'name': 'fecha_pago', 'className': 'text-center' },
                 { 'data': 'tiempo_cancelacion', 'name': 'tiempo_cancelacion', 'className': 'text-center' },
+                { 'data': 'cantidad', 'name': 'cantidad', 'className': 'text-center' },
                 { 'data': 'moneda_orden', 'name': 'moneda_orden', 'className': 'text-center' },
                 { 'data': 'total_precio_soles_item', 'name': 'total_precio_soles_item', 'className': 'text-center' },
                 { 'data': 'total_precio_dolares_item', 'name': 'total_precio_dolares_item', 'className': 'text-center' },
