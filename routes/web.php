@@ -2082,7 +2082,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('modulos', 'ConfiguracionController@getModulos');
 
 		Route::get('accesos/{id}', 'ConfiguracionController@viewAccesos')->name('accesos');
+        // scripts a ejecutar
         Route::get('prueba', 'ConfiguracionController@prueba');
+        Route::get('scripts/{var}', 'ConfiguracionController@scripts');
+        // ----fin de scripts
 		Route::group(['as' => 'accesos.', 'prefix' => 'accesos'], function () {
 			Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
 			Route::post('guardar-accesos', 'ConfiguracionController@guardarAccesos');
