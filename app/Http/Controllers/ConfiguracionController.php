@@ -2404,6 +2404,7 @@ public function anular_configuracion_socket($id){
             $id_modulo=0;
             $data_usuarios=[];
             $modulo=[];
+            $script=null;
             switch ($variable) {
                 case '1':
                     // logistica
@@ -2460,7 +2461,21 @@ public function anular_configuracion_socket($id){
                 }
             }
 
-            return $array_accesos_usuarios;exit;
+            // return $array_accesos_usuarios;exit;
+
+            foreach ($data_usuarios as $key_usuario => $value_usuario) {
+                foreach ($array_accesos_usuarios as $key_accesos => $value_accesos) {
+                    // return $value_accesos->id_acceso;
+                    $accesos_usuarios = new AccesosUsuarios;
+                    $accesos_usuarios->id_acceso    =   $value_accesos->id_acceso;
+                    $accesos_usuarios->id_usuario   =   $value_usuario->id_usuario;
+                    $accesos_usuarios->estado       =   $value_accesos->estado;
+                    $accesos_usuarios->id_modulo    =   $value_accesos->id_modulo;
+                    $accesos_usuarios->id_padre     =   $value_accesos->id_padre;
+                    $accesos_usuarios->save();
+                }
+            }
+
             return response()->json([
                 "succes"=>true,
                 "status"=>200
