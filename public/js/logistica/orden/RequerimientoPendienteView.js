@@ -261,7 +261,7 @@ class RequerimientoPendienteView {
             var cantidadTipoProducto = data.cantidad_tipo_producto;
             var cantidadTipoServicio = data.cantidad_tipo_servicio;
             // console.log(data);
-            // Determine whether row ID is in the list of selected row IDs 
+            // Determine whether row ID is in the list of selected row IDs
             var index = $.inArray(rowId, reqTrueList);
 
 
@@ -498,34 +498,32 @@ class RequerimientoPendienteView {
 
     renderRequerimientoPendienteList(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', reserva = 'SIN_FILTRO', orden = 'SIN_FILTRO') {
         let that = this;
+        const button_nueva_orden = (array_accesos.find(element => element === 228)?{
+                text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nueva orden',
+                attr: {
+                    disabled: true,
+                    id: 'btnCrearOrdenCompra'
+                },
+                action: () => {
+                    this.crearOrdenCompra();
 
+                },
+                className: 'btn-warning btn-sm'
+            }:[]),
+            button_filtro = (array_accesos.find(element => element === 229)?{
+                text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosRequerimientosPendientes'
+                },
+                action: () => {
+                    this.abrirModalFiltrosRequerimientosPendientes();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
         $tablaListaRequerimientosPendientes = $('#listaRequerimientosPendientes').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nueva orden',
-                    attr: {
-                        disabled: true,
-                        id: 'btnCrearOrdenCompra'
-                    },
-                    action: () => {
-                        this.crearOrdenCompra();
-
-                    },
-                    className: 'btn-warning btn-sm'
-                },
-                {
-                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltrosRequerimientosPendientes'
-                    },
-                    action: () => {
-                        this.abrirModalFiltrosRequerimientosPendientes();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
-            ],
+            'buttons': [button_nueva_orden,button_filtro],
             'language': vardataTables[0],
             'order': [[3, 'desc']],
             'bLengthChange': false,
@@ -606,7 +604,7 @@ class RequerimientoPendienteView {
                         //                 idObservacionLogistica=element.id_aprobacion??0;
                         //             }
                         //         });
-                        
+
                         let tieneTransformacion = row.tiene_transformacion;
                         let cantidadItemBase = row.cantidad_items_base;
                         if (tieneTransformacion == true && cantidadItemBase == 0) {
@@ -635,7 +633,7 @@ class RequerimientoPendienteView {
                             let btnExportarExcel = '<button type="button" class="btn btn-default btn-xs handleClickSolicitudCotizacionExcel" name="btnSolicitudCotizacionExcel" title="Solicitud cotización excel" data-id-requerimiento="' + row.id_requerimiento + '" style="color:green;" ><i class="far fa-file-excel"></i></button>';
                             // if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
                                 // btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row['id_requerimiento'] + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
-                                
+
 
                             // }
                             if (row.count_mapeados > 0) {
@@ -740,7 +738,7 @@ class RequerimientoPendienteView {
                 //             '',
                 //             'No puede generar una orden si el requerimiento esta por regularizar',
                 //             'warning'
-                //         ); 
+                //         );
                 //     }
                 //     if (this.dataset.mapeados == 0) {
                 //         this.checked = false;
@@ -1180,7 +1178,7 @@ class RequerimientoPendienteView {
             tr.classList.add('shown');
             // try datatable stuff
             oInnerTable = $('#listaRequerimientosPendientes_' + iTableCounter).dataTable({
-                //    data: sections, 
+                //    data: sections,
                 autoWidth: true,
                 deferRender: true,
                 info: false,
@@ -1213,7 +1211,7 @@ class RequerimientoPendienteView {
             tr.classList.add('shown');
             // try datatable stuff
             oInnerTable = $('#listaRequerimientosPendientes_' + iTableCounter).dataTable({
-                //    data: sections, 
+                //    data: sections,
                 autoWidth: true,
                 deferRender: true,
                 info: false,
@@ -1318,7 +1316,7 @@ class RequerimientoPendienteView {
                 (element.adjunto_detalle_requerimiento).forEach(adjuntoItem => {
                     cantidadAdjuntosDetalleRequerimiento++;
                 });
-                //                
+                //
                 html += `<tr>
                         <td style="border: none; text-align:center;" data-part-number="${element.part_number}" data-producto-part-number="${element.producto_part_number}">${(element.producto_part_number != null ? element.producto_part_number : (element.part_number != null ? element.part_number : ''))} ${element.tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''}</td>
                         <td style="border: none; text-align:left;">${element.producto_codigo != null ? element.producto_codigo : ''}</td>
@@ -1340,7 +1338,7 @@ class RequerimientoPendienteView {
                         </tr>`;
                 // }
             });
-            var tabla = `<table class="table table-condensed table-bordered" 
+            var tabla = `<table class="table table-condensed table-bordered"
                 id="detalle_${table_id}">
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
@@ -1362,7 +1360,7 @@ class RequerimientoPendienteView {
                 <tbody style="background: #e7e8ea;">${html}</tbody>
                 </table>`;
         } else {
-            var tabla = `<table class="table table-sm" style="border: none;" 
+            var tabla = `<table class="table table-sm" style="border: none;"
                 id="detalle_${table_id}">
                 <tbody>
                     <tr><td>No hay registros para mostrar</td></tr>
@@ -1425,7 +1423,7 @@ class RequerimientoPendienteView {
                         </tr>`;
                 // }
             });
-            var tabla = `<table class="table table-condensed table-bordered" 
+            var tabla = `<table class="table table-condensed table-bordered"
                 id="detalle_${table_id}">
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
@@ -1447,7 +1445,7 @@ class RequerimientoPendienteView {
                 <tbody style="background: #e7e8ea;">${html}</tbody>
                 </table>`;
         } else {
-            var tabla = `<table class="table table-sm" style="border: none;" 
+            var tabla = `<table class="table table-sm" style="border: none;"
                 id="detalle_${table_id}">
                 <tbody>
                     <tr><td>No hay registros para mostrar</td></tr>
@@ -1675,27 +1673,27 @@ class RequerimientoPendienteView {
 
                             if (document.querySelector("li[class~='handleClickTabRequerimientosAtendidos']").classList.contains("active") == true) {
                                 return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                                <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
-                                    data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                                <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva"
+                                    data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}"
                                     data-almacen-requerimiento="${document.querySelector("span[id='almacen_requerimiento']").textContent}"
-                                    data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
+                                    data-id-detalle-requerimiento="${row.id_detalle_requerimiento}"
                                     title="Historial reserva" ><i class="fas fa-eye fa-xs"></i></button>
                                 </div></center>`;
                             } else {
 
                                 return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                                <button type="button" class="btn btn-xs btn-success btnNuevaReserva handleClickAbrirModalNuevaReserva" 
-                                    data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                                <button type="button" class="btn btn-xs btn-success btnNuevaReserva handleClickAbrirModalNuevaReserva"
+                                    data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}"
                                     data-almacen-requerimiento="${document.querySelector("span[id='almacen_requerimiento']").textContent}"
-                                    data-id-requerimiento="${row.id_requerimiento}" 
-                                    data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
-                                    data-id-producto="${row.id_producto}" 
+                                    data-id-requerimiento="${row.id_requerimiento}"
+                                    data-id-detalle-requerimiento="${row.id_detalle_requerimiento}"
+                                    data-id-producto="${row.id_producto}"
                                     title="Nueva reserva" ><i class="fas fa-box fa-xs"></i></button>
-                                <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva" 
-                                    data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}" 
+                                <button type="button" class="btn btn-xs btn-info btnHistorialReserva handleClickAbrirModaHistorialReserva"
+                                    data-codigo-requerimiento="${document.querySelector("span[id='codigo_requerimiento']").textContent}"
                                     data-almacen-requerimiento="${document.querySelector("span[id='almacen_requerimiento']").textContent}"
-                                    data-id-detalle-requerimiento="${row.id_detalle_requerimiento}" 
-                                    data-id-producto="${row.id_producto}" 
+                                    data-id-detalle-requerimiento="${row.id_detalle_requerimiento}"
+                                    data-id-producto="${row.id_producto}"
                                     title="Historial reserva" ><i class="fas fa-eye fa-xs"></i></button>
                                 </div></center>`;
                             }
@@ -1763,9 +1761,9 @@ class RequerimientoPendienteView {
             "createdRow": function (row, data, dataIndex) {
                 $(row.childNodes[2]).css('width', '280px');
 
-                // $(row.childNodes[7]).css('background-color', '#586c86');  
+                // $(row.childNodes[7]).css('background-color', '#586c86');
                 // $(row.childNodes[7]).css('font-weight', 'bold');
-                // $(row.childNodes[8]).css('background-color', '#586c86');  
+                // $(row.childNodes[8]).css('background-color', '#586c86');
                 // $(row.childNodes[8]).css('font-weight', 'bold');
 
             }
@@ -1831,7 +1829,7 @@ class RequerimientoPendienteView {
         } else {
             document.querySelector("tbody[id='bodyListaHistorialReservaProducto']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td colspan="5" style="text-align:center;">(Sin reservas)</td>
-    
+
             </tr>`);
         }
     }
@@ -1910,7 +1908,7 @@ class RequerimientoPendienteView {
     //             processData: false,
     //             contentType: false,
     //             dataType: 'JSON',
-    //             beforeSend:  (data)=> { 
+    //             beforeSend:  (data)=> {
 
     //             },
     //             success: (response) =>{
@@ -1967,12 +1965,12 @@ class RequerimientoPendienteView {
 
                 {
                     render: function (data, type, row) {
-                        
+
                         return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                    <button type="button" class="btn btn-xs btn-success handleClickSeleccionarAlmacenParaReserva" 
-                        data-id-almacen="${row.id_almacen ?? ''}" 
-                        data-almacen-requerimiento="${row.codigo}-${row.descripcion}" 
-                        data-stock-disponible="${(row.stock - row.cantidad_stock_comprometido)}" 
+                    <button type="button" class="btn btn-xs btn-success handleClickSeleccionarAlmacenParaReserva"
+                        data-id-almacen="${row.id_almacen ?? ''}"
+                        data-almacen-requerimiento="${row.codigo}-${row.descripcion}"
+                        data-stock-disponible="${(row.stock - row.cantidad_stock_comprometido)}"
                         title="Agregar y guardar" ${(row.stock - row.cantidad_stock_comprometido)==0?'disabled':''} >Seleccionar</button>
                     </div></center>`;
 
@@ -2041,7 +2039,7 @@ class RequerimientoPendienteView {
         } else {
             document.querySelector("tbody[id='bodyListaConReserva']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
             <td colspan="5" style="text-align:center;">(Sin reservas)</td>
-    
+
             </tr>`);
             document.querySelector("table[id='listaConReserva'] label[name='totalReservado']").textContent = 0;
 
@@ -2486,9 +2484,9 @@ class RequerimientoPendienteView {
                     row.insertCell(7).innerHTML = element.nombre_autor ? element.nombre_autor : '';
                     row.insertCell(8).innerHTML = element.fecha_creacion ? element.fecha_creacion : '';
                     row.insertCell(9).innerHTML = `<button class="btn btn-xs btn-default" data-id="${element.id}"
-                        onclick="requerimientoPendienteCtrl.procesarItemParaCompraDetalleCuadroCostos(this,${element.id});" 
-                        title="Agregar Item" 
-                        style="background-color:#714fa7; 
+                        onclick="requerimientoPendienteCtrl.procesarItemParaCompraDetalleCuadroCostos(this,${element.id});"
+                        title="Agregar Item"
+                        style="background-color:#714fa7;
                         color:white;">
                         <i class="fas fa-plus"></i>
                         </button>`;
@@ -2875,7 +2873,7 @@ class RequerimientoPendienteView {
                     'warning'
                 );
                 obj.value = maximaCantidadToleradaParaAnular;
-    
+
             }
             obj.closest('tr').querySelector("input[class~='cantidadVirtual']").value=parseFloat(cantidadOriginal- obj.value);
         }
@@ -3064,7 +3062,7 @@ class RequerimientoPendienteView {
         if (validacion.estado == 'success') {
             let formData = new FormData($('#form-gestionar-estado-requerimiento')[0]);
             // for (var pair of formData.entries()) {
-            //     console.log(pair[0]+ ', ' + pair[1]); 
+            //     console.log(pair[0]+ ', ' + pair[1]);
             // }
             $.ajax({
                 type: 'POST',
@@ -3107,13 +3105,13 @@ class RequerimientoPendienteView {
                             cancelButtonColor: '#d33',
                             cancelButtonText: 'Cancelar',
                             confirmButtonText: 'Si, actualizar'
-                
+
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 // inicio
                                 document.querySelector("input[name='forzarActualizarEstadoRequerimiento']").value ='SI';
                                 this.actualizarGestionEstadoRequerimiento();
-                                // fin    
+                                // fin
                             }
                         })
                     }
@@ -3543,7 +3541,7 @@ class RequerimientoPendienteView {
 
     }
 
- 
+
 
     // verTodoAdjuntos(obj) {
 
@@ -3589,7 +3587,7 @@ class RequerimientoPendienteView {
         for (let index = 0; index < allTab.length; index++) {
             if(allTab[index].classList.contains("active")==true){
                 return allTab[index].classList[0];
-            }  
+            }
         }
     }
 
@@ -3599,7 +3597,7 @@ class RequerimientoPendienteView {
             'codigo_requerimiento':(obj.dataset.codigoRequerimiento).toString(),
             // 'id_observacion_logisica':parseInt(obj.dataset.idObservacionLogistica)??0
         }
- 
+
         if (payload.id_requerimiento > 0) {
             Swal.fire({
                 title: `Esta seguro que desea observar el requerimiento logístico: ${payload.codigo_requerimiento}`,
@@ -3639,10 +3637,10 @@ class RequerimientoPendienteView {
                                         delayIndicator: false,
                                         msg: res.mensaje
                                     });
-                                    
+
                                     if(this.obtenerTabActivo() =='handleClickTabRequerimientosPendientes'){
                                         this.tabRequerimientosPendientes();
-                                        
+
                                     }else if(this.obtenerTabActivo()=='handleClickTabRequerimientosAtendidos'){
                                         this.tabRequerimientosAtendidos();
                                     }

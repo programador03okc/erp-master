@@ -163,7 +163,7 @@ Requerimientos pendientes
 
 
 <script>
-
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
 
         $.fn.dataTable.moment('DD-MM-YYYY HH:mm');

@@ -25,6 +25,7 @@ use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Comercial\CuadroCosto\CcAmFila;
 use App\Models\Comercial\CuadroCosto\CuadroCosto;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Moneda;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
@@ -77,6 +78,12 @@ class ComprasPendientesController extends Controller
         $tipos = AlmacenController::mostrar_tipos_cbo();
         $almacenes = Almacen::mostrar();
 
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+
         return view(
             'logistica/gestion_logistica/compras/pendientes/vista_pendientes',
             compact(
@@ -94,7 +101,8 @@ class ComprasPendientesController extends Controller
                 'unidades_medida',
                 'monedas',
                 'tipos',
-                'almacenes'
+                'almacenes',
+                'array_accesos'
             )
         );
     }
