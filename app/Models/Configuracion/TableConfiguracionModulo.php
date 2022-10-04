@@ -19,4 +19,8 @@ class TableConfiguracionModulo extends Model
     {
         return $this->hasOne(AccesosUsuarios::class, 'id_padre', 'id_modulo');
     }
+    public function accesosAll()
+    {
+        return $this->hasMany(Accesos::class, 'id_modulo', 'id_modulo');
+    }
 }
