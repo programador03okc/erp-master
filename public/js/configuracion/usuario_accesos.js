@@ -11,10 +11,16 @@ function accesosUsuario() {
         url: 'accesos-usuario/'+$('[name="id_usuario"]').val(),
         data: {},
         dataType: 'JSON',
+        beforeSend : function(){
+            $('[data-select="modulos-select"]').attr('disabled',true);
+            $('[data-form="accesos-seleccionados"] .loading').html('<div class="overlay"><i class="fa fa-spinner fa-spin"></i></div>');
+        },
         success: function(response){
             if (response.data.length>0) {
                 visualizarAccesos(response);
             }
+            $('[data-select="modulos-select"]').removeAttr('disabled');
+            $('[data-form="accesos-seleccionados"] .loading').remove();
         }
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -81,6 +87,10 @@ $(document).on('change','[data-select="modulos-select"]',function () {
         url: 'get/modulos',
         data: {data:data},
         dataType: 'JSON',
+        beforeSend : function(){
+            $('[data-select="modulos-select"]').attr('disabled',true);
+            $('[data-accesos="accesos"]').html('<div class="overlay"><i class="fa fa-spinner fa-spin"></i></div>');
+        },
         success: function(response){
             if (response.status===200) {
                 $('[data-accesos="accesos"]').html('');
@@ -88,6 +98,8 @@ $(document).on('change','[data-select="modulos-select"]',function () {
             }else{
                 $('[data-accesos="accesos"]').html('');
             }
+            $('[data-select="modulos-select"]').removeAttr('disabled');
+            $('[data-accesos="accesos"]').find('div.overlay').remove();
 
         }
     }).fail( function(jqXHR, textStatus, errorThrown) {

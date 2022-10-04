@@ -2061,6 +2061,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario')->name('listarUsuarios');
+        Route::post('validar-documento', 'ConfiguracionController@validarDocumento');
+        Route::post('validar-usuario', 'ConfiguracionController@validarUsuario');
 		#asignar acceso a los usuarios
 		// Route::get('configuracion/usuarios/accesos/{id}', 'ConfiguracionController@usuarioAcceso')->name('accesos');
 		// Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');

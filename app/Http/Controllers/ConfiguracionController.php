@@ -2487,5 +2487,39 @@ public function anular_configuracion_socket($id){
             ]);
         }
     }
+    public function validarDocumento(Request $request)
+    {
+        if ($request->documento!==null) {
+            $documento = rrhh_perso::where('nro_documento',$request->documento)->first();
+            if ($documento) {
+                return response()->json([
+                    "success"=>true,
+                    "status"=>200
+                ]);
+            }else{
+                return response()->json([
+                    "success"=>false,
+                    "status"=>404
+                ]);
+            }
+        }
+    }
+    public function validarUsuario(Request $request)
+    {
+        if ($request->usuario!==null) {
+            $documento = SisUsua::where('usuario',$request->usuario)->first();
+            if ($documento) {
+                return response()->json([
+                    "success"=>true,
+                    "status"=>200
+                ]);
+            }else{
+                return response()->json([
+                    "success"=>false,
+                    "status"=>404
+                ]);
+            }
+        }
+    }
 }
 
