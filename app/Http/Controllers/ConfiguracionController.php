@@ -2333,7 +2333,9 @@ public function anular_configuracion_socket($id){
     }
     public function prueba()
     {
+        // data de usuarios de necesidades
         $data_usuarios = SisUsua::whereIn('id_usuario',[111,73,108,9,31,130,61,127,31,131,128,99,9,73,130,61])->get();
+        // data de usuarios de logistica
         $modulo = TableConfiguracionModulo::where('estado',1)->where('id_padre',47)->get();
         foreach ($modulo as $key => $value) {
             $value->accesosAll ;
