@@ -108,6 +108,7 @@ Listado de requerimientos de pago
 
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     function updateUM(val) {
         val.options[val.selectedIndex].setAttribute("selected", "");
     }

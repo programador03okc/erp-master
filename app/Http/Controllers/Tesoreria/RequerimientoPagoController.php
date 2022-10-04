@@ -16,6 +16,7 @@ use App\Models\Administracion\Prioridad;
 use App\Models\Administracion\Estado;
 use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
@@ -77,7 +78,11 @@ class RequerimientoPagoController extends Controller
         $nombreUsuario = Auth::user()->trabajador->postulante->persona->nombre_completo;
 
         $estados = Estado::mostrar();
-
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
         return view(
             'tesoreria/requerimiento_pago/lista',
             compact(
@@ -98,7 +103,8 @@ class RequerimientoPagoController extends Controller
                 'idUsuario',
                 'idTrabajador',
                 'nombreUsuario',
-                'estados'
+                'estados',
+                'array_accesos'
             )
         );
     }
@@ -260,7 +266,7 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_trabajador = $request->id_trabajador > 0 ? $request->id_trabajador : null;
 
             $requerimientoPago->save();
-            
+
             $requerimientoPago->archivo_adjunto = $request->archivo_adjunto;
             $requerimientoPago->fecha_emision_adjunto = $request->fecha_emision_adjunto;
             $requerimientoPago->categoria_adjunto = $request->categoria_adjunto;
@@ -348,7 +354,7 @@ class RequerimientoPagoController extends Controller
         if ($adjuntoAdjuntosLength >  0) {
             $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago,$fechaEmisionAdjuntoList, $idCategoriaAdjuntoList, $requerimientoPago->archivo_adjunto, $codigoRequerimientoPago);
         }
-        
+
     }
 
 
@@ -359,13 +365,13 @@ class RequerimientoPagoController extends Controller
         $requerimientoPago = RequerimientoPago::where("id_requerimiento_pago", $request->id_requerimiento_pago)->first();
 
         $adjuntoAdjuntosLength = $request->archivo_adjunto != null ? count($request->archivo_adjunto) : 0;
-  
+
 
         $idAdjuntoList = $request->id_adjunto;
         $fechaEmisionAdjuntoList = $request->fecha_emision_adjunto;
         $idCategoriaAdjuntoList = $request->categoria_adjunto;
         // $accionAdjunto = $request->accion;
-    
+
 
 
         $idAdjunto=[];
@@ -576,7 +582,7 @@ class RequerimientoPagoController extends Controller
             if (($requerimientoPago->archivo_adjunto != null ? (count($requerimientoPago->archivo_adjunto)) : 0) > 0) {
                 $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago,$requerimientoPago->fecha_emision_adjunto, $requerimientoPago->archivo_adjunto, $requerimientoPago->adjuntoOtrosAdjuntosGuardar, $requerimientoPago->codigo);
             }
-        
+
 
 
             // adjuntos cabecera - actualizar, anular adjuntos en tabla

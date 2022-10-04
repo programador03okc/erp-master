@@ -1,3 +1,14 @@
 .texto-seleccionado{
     text-decoration: line-through !important;
 }
+.overflow-y{
+    height: 575px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.overflow-y::-webkit-scrollbar:vertical {
+    width:5px;
+}
+.overflow-y::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+}

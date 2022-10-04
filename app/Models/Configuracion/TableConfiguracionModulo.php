@@ -13,10 +13,14 @@ class TableConfiguracionModulo extends Model
 
     public function accesos()
     {
-        return $this->belongsTo(Accesos::class, 'id_modulo', 'id_modulo')->where('estado',1);
+        return $this->belongsTo(Accesos::class, 'id_modulo', 'id_modulo');
     }
     public function accesosUsuarios()
     {
-        return $this->hasOne(AccesosUsuarios::class, 'id_padre', 'id_modulo')->where('estado',1);
+        return $this->hasOne(AccesosUsuarios::class, 'id_padre', 'id_modulo');
+    }
+    public function accesosAll()
+    {
+        return $this->hasMany(Accesos::class, 'id_modulo', 'id_modulo');
     }
 }

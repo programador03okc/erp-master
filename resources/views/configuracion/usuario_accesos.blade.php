@@ -57,13 +57,13 @@
     </div>
     <div class="row">
         <div class="col-md-6">
-            <div class="box box-primary">
+            <div class="box box-primary overflow-y">
                 <div class="box-header with-border">
                     <h3 class="box-title">Accesos a seleccionar</h3>
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-12" data-accesos="accesos" style="height: 500px;overflow-y: auto;">
+                        <div class="col-md-12" data-accesos="accesos">
                             {{-- Accesos --}}
                         </div>
                     </div>
@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="box box-success">
+            <div class="box box-success overflow-y">
                 <div class="box-header with-border">
                     <h3 class="box-title">Accesos seleccionados</h3>
                 </div>
@@ -80,7 +80,7 @@
                     <div class="box-body">
                         <input type="hidden" name="id_usuario" value="{{$id}}">
                         <div class="row">
-                            <div class="col-md-12" data-accesos="select-accesos" style="height: 500px;overflow-y: auto;">
+                            <div class="col-md-12" data-accesos="select-accesos">
                                 {{-- <label for="" data-action="text-selct">Accesos asignados.</label> --}}
                             </div>
                         </div>
