@@ -26,9 +26,9 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{route('cas.garantias.incidencias.index')}}"> Registro de incidencia </a></li>
-            @if (in_array(Auth::user()->id_usuario,[1,3,27,17,77,93,64,8]))
+            {{-- @if (in_array(Auth::user()->id_usuario,[1,3,27,17,77,93,64,8])) --}}
             <li><a href="{{route('cas.garantias.devolucionCas.index')}}"> Devolución </a></li>
-            @endif
+            {{-- @endif --}}
             <li><a href="{{route('cas.garantias.fichas.index')}}"> Gestión de incidencias </a></li>
         </ul>
     </li>
