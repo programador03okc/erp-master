@@ -51,7 +51,7 @@
             <td>{{ $compras['total_a_pagar_soles'] }}</td>
             <td>{{ $compras['total_a_pagar_dolares'] }}</td>
             <td>{{ $compras['tipo_doc_com'] }}</td>
-            <td>{{ $compras['nro_doc_com'] }}</td>
+            <td>{{ $compras['nro_comprobante'] }}</td>
             <td>{{ $compras['descripcion_sede_empresa'] }}</td>
             <td>{{ $compras['descripcion_grupo'] }}</td>
             <td>{{ $compras['descripcion_proyecto'] }}</td>
