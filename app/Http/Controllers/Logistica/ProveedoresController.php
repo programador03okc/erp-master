@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Logistica;
 
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Distrito;
 use App\Models\Configuracion\Moneda;
 use App\Models\Configuracion\Pais;
@@ -39,8 +40,12 @@ class ProveedoresController extends Controller
         $tipo_cuenta = TipoCuenta::mostrar();
         $monedas = Moneda::mostrar();
 
-
-        return view('logistica/gestion_logistica/proveedores/lista_proveedores', compact('paises', 'tipoDocumentos', 'tipoContribuyentes', 'bancos', 'tipo_cuenta', 'monedas'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('logistica/gestion_logistica/proveedores/lista_proveedores', compact('paises', 'tipoDocumentos', 'tipoContribuyentes', 'bancos', 'tipo_cuenta', 'monedas','array_accesos'));
     }
 
     public function obtenerDataListado()
@@ -74,7 +79,7 @@ class ProveedoresController extends Controller
 
             if (isset($contribuyenteExistente)) {
                 // $mensaje='Ya se encuentra registrado un contribuyente con la misma razón social / número de documento.';
-                // $status='warning'; 
+                // $status='warning';
                 $proveedorExistente = Proveedor::where([['id_contribuyente', $contribuyenteExistente->id_contribuyente]])->first();
                 if (isset($proveedorExistente) && ($proveedorExistente->id_proveedor > 0)) {
                     if ($proveedorExistente->estado == 1) {
@@ -272,7 +277,7 @@ class ProveedoresController extends Controller
                     }
                 }
             }
-    
+
             if (isset($request->idContacto)) {
                 $countContacto = count($request->idContacto);
 
@@ -370,7 +375,7 @@ class ProveedoresController extends Controller
             $proveedor = Proveedor::where("id_proveedor", $request->idProveedor)->first();
             $contribuyente = Contribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first();
             // $contactoProveedor = ContactoContribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first();
-            // $cuentaBancariaProveedor = CuentaContribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first(); 
+            // $cuentaBancariaProveedor = CuentaContribuyente::where("id_contribuyente", $proveedor->id_contribuyente)->first();
 
             $contribuyente->estado = 7;
             $contribuyente->save();
@@ -400,7 +405,7 @@ class ProveedoresController extends Controller
             $mensaje = '';
             $tipoEstado='';
 
- 
+
             $contribuyente = Contribuyente::with(['tipoContribuyente',
             'proveedor',
             'tipoDocumentoIdentidad',
@@ -428,9 +433,9 @@ class ProveedoresController extends Controller
             if ((!empty($contribuyente))) {
                 $mensaje = 'Se encontró una coincidencia con el mismo número de documento';
                 $tipoEstado='success';
-            } 
+            }
 
-        
+
             DB::commit();
             return response()->json(['data' => $contribuyente, 'tipo_estado'=>$tipoEstado, 'mensaje' => $mensaje]);
         } catch (Exception $e) {

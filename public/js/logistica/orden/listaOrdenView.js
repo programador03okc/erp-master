@@ -1613,7 +1613,7 @@ class ListaOrdenView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
-        const button_filtro = (array_accesos.find(element => element === 38)?{
+        const button_filtro = (array_accesos.find(element => element === 287)?{
                 text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                 attr: {
                     id: 'btnFiltrosListaOrdenesElaboradas',
@@ -1625,7 +1625,7 @@ class ListaOrdenView {
                 },
                 className: 'btn-default btn-sm'
             }:[]),
-            button_descargar_excel = (array_accesos.find(element => element === 38)?{
+            button_descargar_excel = (array_accesos.find(element => element === 244)?{
                 text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
                 attr: {
                     id: 'btnDescargarListaOrdenesElaboradasExcel',
@@ -1750,18 +1750,18 @@ class ListaOrdenView {
                             // }
 
                             let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
-                            let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>';
+                            let btnImprimirOrden = (array_accesos.find(element => element === 252)?'<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>':'');
 
                             let btnAnularOrden = '';
                             if (row.fecha_ultimo_ingreso_almacen != null || [5,6,8,9].includes(row.estado_pago) ==true) {
-                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-default boton" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>';
+                                btnAnularOrden = (array_accesos.find(element => element === 248)?'<button type="button" class="btn btn-sm btn-default boton" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>':'');
                             } else {
-                                btnAnularOrden = '<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '"><i class="fas fa-backspace fa-xs"></i></button>';
+                                btnAnularOrden = (array_accesos.find(element => element === 248)?'<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '"><i class="fas fa-backspace fa-xs"></i></button>':'');
                             }
-                            let btnVerDetalle = `<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id}">
+                            let btnVerDetalle = (array_accesos.find(element => element === 245)?`<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id}">
                                                 <i class="fas fa-chevron-down"></i>
-                                                </button>`;
-                            let btnEnviarAPago = `<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
+                                                </button>`:'');
+                            let btnEnviarAPago = (array_accesos.find(element => element === 247)?`<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
                                 data-id-orden-compra="${row.id ?? ''}"
                                 data-codigo-orden="${row.codigo ?? ''}"
                                 data-id-proveedor="${row.id_proveedor ?? ''}"
@@ -1776,9 +1776,9 @@ class ListaOrdenView {
                                 data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"
                                 data-comentario-pago="${row.comentario_pago ?? ''}" >
                                     <i class="fas fa-money-check-alt fa-xs"></i>
-                                </button>`;
+                                </button>`:'');
 
-                            let btnAdjuntar = `<button type="button"  class="btn btn-default adjuntar-archivos" data-toggle="tooltip" title="Adjuntar archivos" data-codigo="${row.codigo}" data-id="${row.id}" data-codigo="${row.codigo}" ><i class="fas fa-paperclip fa-xs"></i></button>`;
+                            let btnAdjuntar = (array_accesos.find(element => element === 249)?`<button type="button"  class="btn btn-default adjuntar-archivos" data-toggle="tooltip" title="Adjuntar archivos" data-codigo="${row.codigo}" data-id="${row.id}" data-codigo="${row.codigo}" ><i class="fas fa-paperclip fa-xs"></i></button>`:'');
                             let containerCloseBrackets = '</div>';
                             return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnEnviarAPago + btnAnularOrden + btnAdjuntar + containerCloseBrackets);
 
@@ -1849,35 +1849,34 @@ class ListaOrdenView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
+        const button_filtro = (array_accesos.find(element => element === 288)?{
+                text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaItemsOrdenesElaboradas',
+                    disabled: true
+                },
+                action: () => {
+                    // this.abrirModalFiltrosRequerimientosElaborados();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel= (array_accesos.find(element => element === 251)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                attr: {
+                    id: 'btnDescargarListaItemsOrdenesElaboradasExcel',
+                    disabled: false
+
+                },
+                action: () => {
+                    this.exportarListaOrdenesElaboradasNivelDetalleExcel();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
         $tablaListaItemsOrdenesElaborados = $('#listaItemsOrden').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltrosListaItemsOrdenesElaboradas',
-                        disabled: true
-                    },
-                    action: () => {
-                        // this.abrirModalFiltrosRequerimientosElaborados();
-
-                    },
-                    className: 'btn-default btn-sm'
-                },
-                {
-                    text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
-                    attr: {
-                        id: 'btnDescargarListaItemsOrdenesElaboradasExcel',
-                        disabled: false
-
-                    },
-                    action: () => {
-                        this.exportarListaOrdenesElaboradasNivelDetalleExcel();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
-            ],
+            'buttons': [button_filtro,button_descargar_excel],
             'language': vardataTables[0],
             'order': [[15, 'desc']],
             'bLengthChange': false,
@@ -1955,8 +1954,8 @@ class ListaOrdenView {
                         function (data, type, row, meta) {
 
                             let containerOpenBrackets = '<div class="btn-group btn-group-xs" role="group" style="margin-bottom: 5px;display: flex;flex-direction: row;flex-wrap: nowrap;">';
-                            let btnImprimirOrden = '<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden + '"><i class="fas fa-file-download fa-xs"></i></button>';
-                            let btnDocumentosVinculados = '<button type="button" class="btn btn-sm btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden + '"><i class="fas fa-folder fa-xs"></i></button>';
+                            let btnImprimirOrden = (array_accesos.find(element => element === 246)?'<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" name="btnGenerarOrdenRequerimientoPDF" title="Abrir orden PDF" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden + '"><i class="fas fa-file-download fa-xs"></i></button>':'');
+                            let btnDocumentosVinculados = (array_accesos.find(element => element === 253)?'<button type="button" class="btn btn-sm btn-primary boton handleClickDocumentosVinculados" name="btnDocumentosVinculados" title="Ver documentos vinculados" data-id-requerimiento="' + row.id_requerimiento + '"  data-codigo-requerimiento="' + row.codigo_requerimiento + '" data-id-orden-compra="' + row.id_orden + '"><i class="fas fa-folder fa-xs"></i></button>':'');
                             let containerCloseBrackets = '</div>';
 
                             return (containerOpenBrackets + btnImprimirOrden + btnDocumentosVinculados + containerCloseBrackets);

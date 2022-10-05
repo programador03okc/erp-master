@@ -12,7 +12,7 @@ class ListarProveedorView {
     }
 
     initializeEventHandler() {
-    
+
         // ver
         $('#form-listaProveedores').on("click", "button.handleClickVerDetalleProveedor", (e) => {
             this.verProveedor(e.currentTarget);
@@ -98,7 +98,7 @@ class ListarProveedorView {
         });
         //fin modal contacto
 
-        //  modal cuenta bancaria 
+        //  modal cuenta bancaria
         $('#modal-agregar-cuenta-bancaria').on("click", "button.handleClickAgregarCuentaBancaria", () => {
             this.agregarCuentaBancariaAProveedor();
         });
@@ -185,20 +185,20 @@ class ListarProveedorView {
     mostrar() {
         vista_extendida();
         var vardataTables = funcDatatables();
+        const button_nuevo = (array_accesos.find(element => element === 254)?{
+                text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+                attr:  {
+                    id: 'btnCrearProveedor'
+                },
+                action: ()=>{
+                    this.nuevoProveedor();
+
+                },
+                className: 'btn-success btn-sm'
+            }:[]);
         $tablaListaProveedores = $('#listaProveedores').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
-                    attr:  {
-                        id: 'btnCrearProveedor'
-                    },
-                    action: ()=>{
-                        this.nuevoProveedor();
-
-                    },
-                    className: 'btn-success btn-sm'
-                },
+            'buttons': [button_nuevo,
                 // {
                 //     text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                 //     attr:  {
@@ -250,9 +250,9 @@ class ListarProveedorView {
                     'render': function (data, type, row) {
 
                         return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
-                            <button type="button" class="btn btn-xs btn-info btnVerDetalle handleClickVerDetalleProveedor" data-id-proveedor="${row.id_proveedor}" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>
-                            <button type="button" class="btn btn-xs btn-warning btnEditarProveedor handleClickEditarProveedor" data-id-proveedor="${row.id_proveedor}" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>
-                            <button type="button" class="btn btn-xs btn-danger btnAnularProveedor handleClickAnularProveedor" data-id-proveedor="${row.id_proveedor}" title="Anular" ><i class="fas fa-times fa-xs"></i></button>
+                            `+(array_accesos.find(element => element === 255)?`<button type="button" class="btn btn-xs btn-info btnVerDetalle handleClickVerDetalleProveedor" data-id-proveedor="${row.id_proveedor}" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>`:``)+
+                            (array_accesos.find(element => element === 256)?`<button type="button" class="btn btn-xs btn-warning btnEditarProveedor handleClickEditarProveedor" data-id-proveedor="${row.id_proveedor}" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>`:``)+
+                            (array_accesos.find(element => element === 257)?`<button type="button" class="btn btn-xs btn-danger btnAnularProveedor handleClickAnularProveedor" data-id-proveedor="${row.id_proveedor}" title="Anular" ><i class="fas fa-times fa-xs"></i></button>`:``)+`
                         </div></center>`;
                     }, targets: 9
                 },
@@ -347,7 +347,7 @@ class ListarProveedorView {
         $("#form-agregar-cuenta-bancaria-proveedor")[0].reset();
 
     }
-    
+
     agregarAdjuntoProveedor() {
         $('#modal-agregar-adjunto-proveedor').modal({
             show: true,
@@ -422,7 +422,7 @@ class ListarProveedorView {
                     data:{'nroDocumento':nroDocumento,'tipoDocumento':tipoDocumento},
                     dataType: 'JSON',
                     beforeSend: data => {
-            
+
                         $("input[name='nroDocumento']").LoadingOverlay("show", {
                             imageAutoResize: true,
                             progress: true,
@@ -431,9 +431,9 @@ class ListarProveedorView {
                     },
                     success: (response) => {
                         $("input[name='nroDocumento']").LoadingOverlay("hide", true);
-        
+
                         console.log(response);
-                        
+
                             if(response.tipo_estado=='success'){
                                 if(response.data!=null){
                                     document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value = true;
@@ -442,7 +442,7 @@ class ListarProveedorView {
                                     document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Editar Proveedor';
                                     document.querySelector("button[id='btnGuardarProveedor']").classList.add("oculto");
                                     document.querySelector("button[id='btnActualizarProveedor']").classList.remove("oculto");
-                            
+
                                 }
                                 Lobibox.notify(response.tipo_estado, {
                                     title: false,
@@ -457,17 +457,17 @@ class ListarProveedorView {
                                 document.querySelector("div[id='modal-proveedor'] input[name='contribuyenteEncontrado']").value = false;
                                 document.querySelector("div[id='modal-proveedor'] h3[class='modal-title']").textContent = 'Nuevo Proveedor';
                                 document.querySelector("form[id='form-proveedor']").setAttribute("type", "register");
-        
+
                                 $("#form-proveedor")[0].reset();
                                 this.limpiarTabla('listaContactoProveedor');
                                 this.limpiarTabla('listaCuentaBancariasProveedor');
                                 document.querySelector("div[id='modal-proveedor'] input[name='nroDocumento']").value= tempNueroDocumentoIngresado;
                             }
-        
+
                     }
                 }).fail((jqXHR, textStatus, errorThrown) => {
                     $("input[name='nroDocumento']").LoadingOverlay("hide", true);
-        
+
                     Swal.fire(
                         '',
                         'Hubo un problema al intentar obtener la data del contribuyente, por favor vuelva a intentarlo.',
@@ -478,7 +478,7 @@ class ListarProveedorView {
                     console.log(errorThrown);
                 });
             }
-        
+
     }
 
     ponerMayusculaRazonSocial(e) {
@@ -544,11 +544,11 @@ class ListarProveedorView {
             this.objectBtnEditionEstablecimiento.closest("tr").querySelector("span[name='descripcionUbigeoEstablecimiento']").textContent= validado.data.descripcionUbigeoEstablecimiento;
             this.objectBtnEditionEstablecimiento.closest("tr").querySelector("input[name='horarioEstablecimiento[]']").value= validado.data.horarioEstablecimiento;
             this.objectBtnEditionEstablecimiento.closest("tr").querySelector("span[name='horarioEstablecimiento']").textContent= validado.data.horarioEstablecimiento;
- 
-            
+
+
         }
     }
-    
+
     agregarEstablecimientoAProveedor() {
         let validado = this.validarModalAgregarEstablecimiento();
 
@@ -680,7 +680,7 @@ class ListarProveedorView {
                         <button type="button" class="btn btn-xs btn-danger btnAnularContacto handleClickAnularContacto" title="Anular"><i class="fas fa-times fa-xs"></i></button>
                     </div>
                     </td>
-      
+
                     </tr>`);
             });
         } else {
@@ -848,7 +848,7 @@ class ListarProveedorView {
             this.objectBtnEditionCuenta.closest("tr").querySelector("span[name='nroCuentaInterbancaria']").textContent= validado.data.nroCuentaInterbancaria;
             this.objectBtnEditionCuenta.closest("tr").querySelector("input[name='swift[]']").value= validado.data.swift;
             this.objectBtnEditionCuenta.closest("tr").querySelector("span[name='swift']").textContent= validado.data.swift;
-            
+
         }
     }
 
@@ -889,7 +889,7 @@ class ListarProveedorView {
         document.querySelector("div[id='modal-agregar-cuenta-bancaria'] input[name='nroCuentaInterbancaria']").value=obj.closest("tr").querySelector("input[name='nroCuentaInterbancaria[]']").value;
         document.querySelector("div[id='modal-agregar-cuenta-bancaria'] input[name='swift']").value=obj.closest("tr").querySelector("input[name='swift[]']").value;
 
- 
+
     }
     editarEstablecimientoProveedor(obj){
         this.objectBtnEditionEstablecimiento= obj;
@@ -905,14 +905,14 @@ class ListarProveedorView {
         document.querySelector("div[id='modal-agregar-establecimiento'] input[name='descripcionUbigeoEstablecimiento']").value=obj.closest("tr").querySelector("input[name='descripcionUbigeoEstablecimiento[]']").value;
         document.querySelector("div[id='modal-agregar-establecimiento'] input[name='horarioEstablecimiento']").value=obj.closest("tr").querySelector("input[name='horarioEstablecimiento[]']").value;
 
- 
+
     }
 
     construirTablaCuentaBancariaProveedor(data) {
         if (data.length > 0) {
             (data).forEach(element => {
                 document.querySelector("tbody[id='bodylistaCuentasBancariasProveedor']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-                    <td> 
+                    <td>
                         <input type="hidden" name="idCuenta[]" value="0">
                         <input type="hidden" name="idBanco[]" value="${(element.idBanco != null && element.idBanco != '') ? element.idBanco : ''}"><input type="hidden" name="nombreBanco[]" value="${(element.nombreBanco != null && element.nombreBanco != '') ? element.nombreBanco : ''}"> <span name="nombreBanco">${(element.nombreBanco != null && element.nombreBanco != '') ? element.nombreBanco : ''}</span> </td>
                     <td><input type="hidden" name="idTipoCuenta[]" value="${(element.idTipoCuenta != null && element.idTipoCuenta != '') ? element.idTipoCuenta : ''}"><span name="nombreTipoCuenta">${(element.nombreTipoCuenta != null && element.nombreTipoCuenta != '') ? element.nombreTipoCuenta : ''}</span></td>
@@ -1070,7 +1070,7 @@ class ListarProveedorView {
                         this.limpiarTabla('listaContactoProveedor');
                         this.limpiarTabla('listaCuentaBancariasProveedor');
                         $('#modal-proveedor').modal('hide');
-                        $tablaListaProveedores.ajax.reload(null,false);                
+                        $tablaListaProveedores.ajax.reload(null,false);
 
 
                     } else {
@@ -1105,7 +1105,7 @@ class ListarProveedorView {
     }
     anularProveedor(obj) {
         let idProveedor = obj.dataset.idProveedor;
-        
+
         Swal.fire({
             title: 'Esta seguro que desea anular este proveedor?',
             text: "No podrás revertir esto",
@@ -1128,7 +1128,7 @@ class ListarProveedorView {
                     contentType: false,
                     dataType: 'JSON',
                     beforeSend: (data) => { // Are not working with dataType:'jsonp'
-    
+
                         $('#wrapper-okc').LoadingOverlay("show", {
                             imageAutoResize: true,
                             progress: true,
@@ -1139,7 +1139,7 @@ class ListarProveedorView {
                         // console.log(response);
                         if (response.id_proveedor > 0) {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
-    
+
                             Lobibox.notify('success', {
                                 title: false,
                                 size: 'mini',
@@ -1149,7 +1149,7 @@ class ListarProveedorView {
                                 msg: `Proveedor anulado`
                             });
                             obj.closest("tr").remove();
-    
+
                         } else {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
                             console.log(response);
@@ -1158,7 +1158,7 @@ class ListarProveedorView {
                                 'Lo sentimos hubo un problema en el servidor al intentar anular el proveedor, por favor vuelva a intentarlo',
                                 'error'
                             );
-    
+
                         }
                     },
                     fail: (jqXHR, textStatus, errorThrown) => {
@@ -1168,7 +1168,7 @@ class ListarProveedorView {
                             'Lo sentimos hubo un error en el servidor al intentar anular el proveedor, por favor vuelva a intentarlo',
                             'error'
                         );
-    
+
                         console.log(jqXHR);
                         console.log(textStatus);
                         console.log(errorThrown);
@@ -1258,7 +1258,7 @@ class ListarProveedorView {
                         <button type="button" class="btn btn-xs btn-danger btnAnularEstablecimiento handleClickAnularEstablecimiento" title="Anular"><i class="fas fa-times fa-xs"></i></button>
                     </div>
                     </td>
-      
+
                     </tr>`);
             });
         } else {
@@ -1287,7 +1287,7 @@ class ListarProveedorView {
                         <button type="button" class="btn btn-xs btn-danger btnAnularContacto handleClickAnularContacto" title="Anular"><i class="fas fa-times fa-xs"></i></button>
                     </div>
                     </td>
-      
+
                     </tr>`);
             });
         } else {
