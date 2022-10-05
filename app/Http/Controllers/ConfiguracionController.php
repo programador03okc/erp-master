@@ -785,7 +785,8 @@ class ConfiguracionController extends Controller{
 
 
     public function mostrar_usuarios(){
-        $response = SisUsua::select(
+        $response = SisUsua::where('estado',1)->where('deleted_at',null)
+        ->select(
             'sis_usua.id_usuario',
             'sis_usua.nombre_corto',
             'sis_usua.usuario',
