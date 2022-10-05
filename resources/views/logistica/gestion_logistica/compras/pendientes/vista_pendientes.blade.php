@@ -11,6 +11,7 @@ Requerimientos pendientes
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -117,7 +118,7 @@ Requerimientos pendientes
                 @else
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="alert alert-danger" role="alert">
+                        <div class="alert alert-danger pulse" role="alert">
                             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                             <span class="sr-only">Error de Accesos:</span>
                             Solicite los accesos

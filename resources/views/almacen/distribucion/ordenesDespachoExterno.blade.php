@@ -13,6 +13,7 @@ Gestión de Despachos
 <link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
 <link rel="stylesheet" href="{{ asset('css/stepperHorizontal.css')}}">
 <link rel="stylesheet" href="{{ asset('css/stepper.css')}}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -79,7 +80,7 @@ Gestión de Despachos
     @else
     <div class="row">
         <div class="col-md-12">
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger pulse" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                 <span class="sr-only">Error de Accesos:</span>
                 Solicite los accesos
