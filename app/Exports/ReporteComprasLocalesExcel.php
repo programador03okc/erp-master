@@ -65,7 +65,7 @@ class ReporteComprasLocalesExcel implements FromView
                 'total_a_pagar_soles'=> $element->total_a_pagar_soles??'',
                 'total_a_pagar_dolares'=> $element->total_a_pagar_dolares??'',
                 'tipo_doc_com'=> $element->tipo_doc_com??'',
-                'nro_doc_com'=> $element->nro_doc_com??'',
+                'nro_comprobante'=> $element->nro_comprobante??'',
                 'descripcion_sede_empresa'=> $element->descripcion_sede_empresa??'',
                 'descripcion_grupo'=> $element->descripcion_grupo??'',
                 'descripcion_proyecto'=> $element->descripcion_proyecto??'',
