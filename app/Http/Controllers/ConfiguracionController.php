@@ -2336,7 +2336,7 @@ public function anular_configuracion_socket($id){
     public function prueba()
     {
         // data de usuarios de necesidades
-        $data_usuarios = SisUsua::whereIn('id_usuario',[135,124,18,132,59,129,8,65,123,122,1,119,40,2,62,114,113,112,109,66,107,106,97,93,77,91,85,78,60,33,75,53,4,6,64,125,58,56,54,50,48,38,37,36,126,22,32,16,27,26,24,21,20,17,10,5,3,14])->get();
+        $data_usuarios = SisUsua::whereIn('id_usuario',[135,124,18,132,59,129,8,65,123,122,1,119,40,2,62,114,113,112,109,66,107,106,97,93,77,91,85,78,60,33,75,53,4,6,64,125,58,56,54,50,48,38,37,36,126,22,32,16,27,26,24,21,20,17,10,5,3,14,111,73,108,9,31,130,61,127,131,128,99])->get();
         // data de usuarios de logistica
         $modulo = TableConfiguracionModulo::where('estado',1)->where('id_padre',47)->get();
         foreach ($modulo as $key => $value) {

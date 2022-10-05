@@ -216,6 +216,7 @@ $(document).on('click','[data-action="modulo-seleccionado"]',function () {
         if (array_disable_accesos.indexOf(id_acceso)===-1) {
             array_disable_accesos.push(id_acceso);
         }
+
         $(this).addClass('texto-seleccionado');
         asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso, acceso, html, data_disable,$this_componente);
 
@@ -241,12 +242,13 @@ $(document).on('click','[data-action="modulo-seleccionado"]',function () {
 function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso, acceso, html, data_disable,$this_componente) {
     if (data_disable=='true') {
         $this_componente.attr('data-disabled','false');
-        if (array_title.indexOf(id_modulo)===-1) {
+        if (array_title.indexOf(parseInt(id_modulo))===-1) {
             html+='<div class="col-md-12" data-count="col" data-key="'+id_modulo+'">'
                 html+='<label data-id-modulo="'+id_modulo+'">'+titulo+'</label>';
             html+='</div>';
-            array_title.push(id_modulo);
+            array_title.push(parseInt(id_modulo));
             $('[data-accesos="select-accesos"]').append(html);
+
         }
         html='';
         if (!sub_titulo) {
@@ -297,11 +299,11 @@ $(document).on('click','[data-action="disabled-accesos"]',function () {
 
     if ($('[data-count="col-hijo"][data-key="'+id_sub_modulo+'"] div').length===0) {
         $('[data-count="col-hijo"][data-key="'+id_sub_modulo+'"]').remove();
-        index_hijo = array_sub_title.indexOf(id_sub_modulo);
+        index_hijo = array_sub_title.indexOf(parseInt(id_sub_modulo));
         array_sub_title.splice(index_hijo,1);
     }
     if ($('[data-count="col"][data-key="'+id_modulo+'"] div').length===0) {
-        index = array_title.indexOf(id_modulo);
+        index = array_title.indexOf(parseInt(id_modulo));
         array_title.splice(index,1);
         $('[data-count="col"][data-key="'+id_modulo+'"]').remove();
     }
