@@ -72,6 +72,12 @@ class ComprasLocales {
         $('#modal-filtro-reporte-compra-locales').on("click", "input[type=checkbox]", (e) => {
             this.estadoCheckFiltro(e);
         });
+        $('#listaComprasLocales').on("click", "label.handleClickVerAdjuntosLogisticos", (e) => {
+            this.verAdjuntosLogisticos(e.currentTarget);
+        });
+        $('#listaComprasLocales').on("click", "label.handleClickVerAdjuntosDePago", (e) => {
+            this.verAdjuntosDePago(e.currentTarget);
+        });
     }
 
     abrirModalFiltrosListaComprasLocales(){
@@ -348,8 +354,12 @@ class ComprasLocales {
 
             },
             'columns': [
-                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
-                { 'data': 'codigo_requerimiento', 'name': 'codigo_requerimiento', 'className': 'text-center' },
+                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center','render': function (data, type, row){
+                    return `<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${row.id_orden_compra}" target="_blank">${row.codigo}</a>`;
+                }},
+                { 'data': 'codigo_requerimiento', 'name': 'codigo_requerimiento', 'className': 'text-center','render': function (data, type, row){
+                    return `<a href="/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/${row.id_requerimiento}/0" target="_blank">${row.codigo_requerimiento}</a>`;
+                }},
                 { 'data': 'codigo_producto', 'name': 'codigo_producto', 'className': 'text-center' },
                 { 'data': 'descripcion', 'name': 'descripcion', 'className': 'text-center' },
                 { 'data': 'rubro_contribuyente', 'name': 'rubro_contribuyente', 'className': 'text-center' },
@@ -357,8 +367,12 @@ class ComprasLocales {
                 { 'data': 'nro_documento_contribuyente', 'name': 'nro_documento_contribuyente', 'className': 'text-center' },
                 { 'data': 'direccion_contribuyente', 'name': 'direccion_contribuyente', 'className': 'text-center' },
                 { 'data': 'ubigeo_contribuyente', 'name': 'ubigeo_contribuyente', 'className': 'text-center' },
-                { 'data': 'fecha_emision_comprobante_contribuyente', 'name': 'fecha_emision_comprobante_contribuyente', 'className': 'text-center' },
-                { 'data': 'fecha_pago', 'name': 'fecha_pago', 'className': 'text-center' },
+                { 'data': 'fecha_emision_comprobante_contribuyente', 'name': 'fecha_emision_comprobante_contribuyente', 'className': 'text-center','render': function (data, type, row){
+                    return `<label class="lbl-codigo handleClickVerAdjuntosLogisticos" data-id-orden="${row.id_orden_compra}">${row.fecha_emision_comprobante_contribuyente}</label>`;
+                } },
+                { 'data': 'fecha_pago', 'name': 'fecha_pago', 'className': 'text-center','render': function (data, type, row){
+                    return `<label class="lbl-codigo handleClickVerAdjuntosDePago" data-id-orden="${row.id_orden_compra}">${row.fecha_pago}</label>`;
+                }  },
                 { 'data': 'tiempo_cancelacion', 'name': 'tiempo_cancelacion', 'className': 'text-center' },
                 { 'data': 'cantidad', 'name': 'cantidad', 'className': 'text-center' },
                 { 'data': 'moneda_orden', 'name': 'moneda_orden', 'className': 'text-center' },
@@ -367,7 +381,7 @@ class ComprasLocales {
                 { 'data': 'total_a_pagar_soles', 'name': 'total_a_pagar_soles', 'className': 'text-center' },
                 { 'data': 'total_a_pagar_dolares', 'name': 'total_a_pagar_dolares', 'className': 'text-center' },
                 { 'data': 'tipo_doc_com', 'name': 'tipo_doc_com', 'className': 'text-center' },
-                { 'data': 'nro_doc_com', 'name': 'nro_doc_com', 'className': 'text-center' },
+                { 'data': 'nro_comprobante', 'name': 'nro_comprobante', 'className': 'text-center'},
                 { 'data': 'descripcion_sede_empresa', 'name': 'descripcion_sede_empresa', 'className': 'text-center' },
                 { 'data': 'descripcion_grupo', 'name': 'descripcion_grupo', 'className': 'text-center' },
                 { 'data': 'descripcion_proyecto', 'name': 'descripcion_proyecto', 'className': 'text-left' }
@@ -416,5 +430,135 @@ class ComprasLocales {
     DescargarListaComprasLocales(){
         window.open(`reporte-compras-locales-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroFechaDesdeCancelacion}/${this.ActualParametroFechaHastaCancelacion}/${this.ActualParametroRazonSocialProveedor}/${this.ActualParametroGrupo}/${this.ActualParametroProyecto}/${this.ActualParametroObservacionOrden}/${this.ActualParametroEstadoPago}`);
     }
+    
+
+    verAdjuntosLogisticos(obj){
+        console.log(obj.dataset.idOrden);
+        document.querySelector("div[id='modal-lista-adjuntos'] span[id='modal-title']").textContent = "logísticos";
+        $('#modal-lista-adjuntos #listaAdjuntos').html(`<tr> <td style="text-align:center;" colspan="3"></td></tr>`);
+
+        $('#modal-lista-adjuntos').modal({
+            show: true,
+            backdrop: 'true'
+        });
+
+        this.obteneAdjuntosLogisticos(obj.dataset.idOrden).then((res) => {
+
+            let htmlAdjunto = '';
+            if (res.length > 0) {
+                (res).forEach(element => {
+
+                        htmlAdjunto+= '<tr id="'+element.id_adjunto+'">'
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+='<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>'
+                            htmlAdjunto+='</td>'
+                        htmlAdjunto+= '</tr>'
+
+                });
+            }else{
+                htmlAdjunto = `<tr>
+                <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
+                </tr>`;
+            }
+            $('#modal-lista-adjuntos #listaAdjuntos').html(htmlAdjunto)
+
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+
+    verAdjuntosDePago(obj){
+
+        document.querySelector("div[id='modal-lista-adjuntos'] span[id='modal-title']").textContent = "de pago";
+        $('#modal-lista-adjuntos #listaAdjuntos').html(`<tr> <td style="text-align:center;" colspan="3"></td></tr>`);
+        $('#modal-lista-adjuntos').modal({
+            show: true,
+            backdrop: 'true'
+        });
+
+        this.obteneAdjuntosPago(obj.dataset.idOrden).then((res) => {
+
+            let htmlPago = '';
+            console.log(res.data);
+            if (res.data.length > 0) {
+                (res.data).forEach(element => {
+
+                        htmlPago+= '<tr id="'+element.id_orden+'">'
+
+                            element.adjuntos.forEach(nombreAdjunto => {
+                                htmlPago+='<td>'
+                                    htmlPago+='<a href="/files/tesoreria/pagos/'+nombreAdjunto+'" target="_blank">'+nombreAdjunto+'</a>'
+                                htmlPago+='</td>'
+                                
+                            });
+                        htmlPago+= '</tr>'
+
+                });
+            }else{
+                htmlPago = `<tr>
+                <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
+                </tr>`;
+            }
+            $('#modal-lista-adjuntos #listaAdjuntos').html(htmlPago)
+
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+
+
+    obteneAdjuntosPago(idOrden) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `listar-archivos-adjuntos-pago-requerimiento/${idOrden}`,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                $('#modal-lista-adjuntos').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+                success(response) {
+                    $('#modal-lista-adjuntos').LoadingOverlay("hide", true);
+                    resolve(response);
+                },
+                error: function (err) {
+                    $('#modal-lista-adjuntos').LoadingOverlay("hide", true);
+                    reject(err)
+                }
+            });
+        });
+    }
+
+    obteneAdjuntosLogisticos(id_orden) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `listar-archivos-adjuntos-orden/${id_orden}`,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("show", {
+                //     imageAutoResize: true,
+                //     progress: true,
+                //     imageColor: "#3c8dbc"
+                // });
+            },
+                success(response) {
+                    // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                    resolve(response);
+                },
+                error: function (err) {
+                    // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                    reject(err)
+                }
+            });
+        });
+    }
+
+
 
 }

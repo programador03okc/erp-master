@@ -238,6 +238,7 @@ Reporte de compras locales
     </div>
 </div>
 
+@include('logistica.reportes.modal_lista_adjuntos')
 
 @endsection
 
