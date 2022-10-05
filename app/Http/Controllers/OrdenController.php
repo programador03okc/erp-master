@@ -982,8 +982,12 @@ class OrdenController extends Controller
         $monedas = Moneda::mostrar();
         $tipos_documentos = Identidad::mostrar();
 
-
-        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('prioridades', 'empresas', 'grupos', 'estados', 'tiposDestinatario', 'bancos', 'tipo_cuenta', 'monedas', 'tipos_documentos'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('logistica/gestion_logistica/compras/ordenes/listado/listar_ordenes', compact('prioridades', 'empresas', 'grupos', 'estados', 'tiposDestinatario', 'bancos', 'tipo_cuenta', 'monedas', 'tipos_documentos','array_accesos'));
     }
 
     function consult_doc_aprob($id_doc, $tp_doc)

@@ -170,6 +170,7 @@ Gestión de ordenes
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     window.onload = function() {
 
         $.fn.dataTable.moment('DD-MM-YYYY HH:mm');

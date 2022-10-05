@@ -239,7 +239,7 @@ class ListaOrdenView {
                                     htmlPago+='<td>'
                                         htmlPago+='<a href="/files/tesoreria/pagos/'+nombreAdjunto+'" target="_blank">'+nombreAdjunto+'</a>'
                                     htmlPago+='</td>'
-                                    
+
                                 });
                             htmlPago+= '</tr>'
 
@@ -1613,35 +1613,34 @@ class ListaOrdenView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
+        const button_filtro = (array_accesos.find(element => element === 38)?{
+                text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaOrdenesElaboradas',
+                    disabled: true
+                },
+                action: () => {
+                    // this.abrirModalFiltrosRequerimientosElaborados();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel = (array_accesos.find(element => element === 38)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                attr: {
+                    id: 'btnDescargarListaOrdenesElaboradasExcel',
+                    disabled: false
+
+                },
+                action: () => {
+                    this.exportarListaOrdenesElaboradasNivelCabeceraExcel();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
         $tablaListaOrdenesElaborados = $('#listaOrdenes').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltrosListaOrdenesElaboradas',
-                        disabled: true
-                    },
-                    action: () => {
-                        // this.abrirModalFiltrosRequerimientosElaborados();
-
-                    },
-                    className: 'btn-default btn-sm'
-                },
-                {
-                    text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
-                    attr: {
-                        id: 'btnDescargarListaOrdenesElaboradasExcel',
-                        disabled: false
-
-                    },
-                    action: () => {
-                        this.exportarListaOrdenesElaboradasNivelCabeceraExcel();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
-            ],
+            'buttons': [button_filtro,button_descargar_excel],
             'language': vardataTables[0],
             'order': [[6, 'desc']],
             'bLengthChange': false,
@@ -2044,7 +2043,7 @@ class ListaOrdenView {
                         let payload = {
                             id: this.makeId(),
                             category: 1, //default: otros adjuntos
-                            fecha_emision: moment().format('YYYY-MM-DD'), 
+                            fecha_emision: moment().format('YYYY-MM-DD'),
                             nro_comprobante: '',
                             nameFile: file.name,
                             action: 'GUARDAR',
@@ -2080,7 +2079,7 @@ class ListaOrdenView {
             let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
             tempArchivoAdjuntoRequerimientoCabeceraList[indice].fecha_emision = obj.value;
             if (tempArchivoAdjuntoRequerimientoCabeceraList[indice].id > 0) {
-    
+
             }
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoCabeceraList[indice].id) == false) {
@@ -2088,7 +2087,7 @@ class ListaOrdenView {
             } else {
                 tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'GUARDAR';
             }
-    
+
         } else {
             Swal.fire(
                 '',
@@ -2265,7 +2264,7 @@ class ListaOrdenView {
 
             if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
                 tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
-                    
+
                         formData.append(`id_adjunto[]`, element.id);
                         formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
                         formData.append(`nro_comprobante_adjunto[]`, element.nro_comprobante);
@@ -2273,7 +2272,7 @@ class ListaOrdenView {
                         formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
                         formData.append(`nombre_real_adjunto[]`, element.nameFile);
                         formData.append(`accion[]`, element.action);
-                    
+
                 });
             }
 
