@@ -1,7 +1,7 @@
 @section('sidebar')
 <ul class="sidebar-menu" data-widget="tree">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Logística</span></a></li>
-    @if(Auth::user()->tieneSubModuloPadre(48))
+    {{-- @if(Auth::user()->tieneSubModuloPadre(48)) --}}
     <li class=" treeview ">
         <a href="#">
             <i class="fas fa-truck-loading"></i> <span>Compras</span>
@@ -10,21 +10,21 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            @if(Auth::user()->tieneSubModulo(25))
-            @if(Auth::user()->tieneAplicacion(108))
+            {{-- @if(Auth::user()->tieneSubModulo(25))
+            @if(Auth::user()->tieneAplicacion(108)) --}}
             <li><a href="{{route('logistica.gestion-logistica.compras.pendientes.index')}}"><i class="far fa-circle fa-xs"></i> Req. Pendientes</a></li>
-            @endif
-            @endif
+            {{-- @endif
+            @endif --}}
 
-            @if(Auth::user()->tieneSubModulo(25))
-                @if(Auth::user()->tieneAplicacion(108))
+            {{-- @if(Auth::user()->tieneSubModulo(25))
+                @if(Auth::user()->tieneAplicacion(108)) --}}
                 <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.elaborar.index')}}"><i class="far fa-circle fa-xs"></i> Orden de compra / servicio</a></li>
-            
-                @endif
-                @if(Auth::user()->tieneAplicacion(109))
+
+                {{-- @endif
+                @if(Auth::user()->tieneAplicacion(109)) --}}
                     <li><a href="{{route('logistica.gestion-logistica.compras.ordenes.listado.index')}}"><i class="far fa-circle fa-xs"></i> Gestión de ordenes</a></li>
-                @endif
-            @endif
+                {{-- @endif
+            @endif --}}
             <!-- <li><a href="{{route('logistica.distribucion.ordenes-transformacion.index')}}"><i class="far fa-circle fa-xs"></i> Envío de transformaciones </a></li> -->
 
             @if(Auth::user()->tieneSubModulo(28))
@@ -78,8 +78,8 @@
             @endif
         </ul>
     </li>
-    @endif
-    @if(Auth::user()->tieneSubModuloPadre(48))
+    {{-- @endif --}}
+    {{-- @if(Auth::user()->tieneSubModuloPadre(48)) --}}
     <li class=" treeview ">
         <a href="#">
             <i class="fas fa-address-book"></i> <span>Proveedores</span>
@@ -91,9 +91,9 @@
             <li><a href="{{route('logistica.gestion-logistica.proveedores.index')}}"><i class="far fa-circle fa-xs"></i> Lista de proveedores</a></li>
         </ul>
     </li>
-    @endif
+    {{-- @endif --}}
 
-    @if(Auth::user()->tieneSubModulo(20))
+    {{-- @if(Auth::user()->tieneSubModulo(20)) --}}
     <li class="treeview">
         <a href="#"><i class="fas fa-truck"></i> <span> Despachos</span>
             <span class="pull-right-container">
@@ -101,13 +101,13 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            @if(Auth::user()->tieneAplicacion(80))
+            {{-- @if(Auth::user()->tieneAplicacion(80)) --}}
             <li><a href="{{route('logistica.distribucion.ordenes-despacho-externo.index')}}"><i class="far fa-circle fa-xs"></i> Despachos Externos </a></li>
             <li><a href="{{route('logistica.distribucion.ordenes-despacho-interno.index')}}"><i class="far fa-circle fa-xs"></i> Despachos Internos </a></li>
-            @endif
+            {{-- @endif --}}
 </ul>
 </li>
-@endif
+{{-- @endif --}}
 @if(Auth::user()->tieneSubModuloPadre(49))
 <li class="treeview">
     <a href="#"><i class="fas fa-boxes"></i> Activos
@@ -197,7 +197,7 @@
 </li>
 @endif
 
-@if(Auth::user()->tieneSubModuloPadre(48))
+{{-- @if(Auth::user()->tieneSubModuloPadre(48)) --}}
 <li class="treeview">
     <a href="#">
         <i class="fas fa-chart-bar"></i> <span>Reportes</span>
@@ -212,6 +212,6 @@
         <li><a href="{{route('logistica.gestion-logistica.reportes.compras-locales')}}"><i class="far fa-circle fa-xs"></i> Compras locales</a></li>
     </ul>
 </li>
-@endif
+{{-- @endif --}}
 </ul>
 @endsection

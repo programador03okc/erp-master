@@ -27,12 +27,18 @@ Requerimientos pendientes
         <div class="col-md-12">
             <div>
                 <!-- Nav tabs -->
+                @if (in_array(218,$array_accesos) || in_array(219,$array_accesos) )
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="handleClickTabRequerimientosPendientes active"><a href="#requerimientos_pendientes" aria-controls="requerimientos_pendientes" role="tab" data-toggle="tab">Requerimientos pendientes</a></li>
+                    @if (in_array(218,$array_accesos))
+                        <li role="presentation" class="handleClickTabRequerimientosPendientes active"><a href="#requerimientos_pendientes" aria-controls="requerimientos_pendientes" role="tab" data-toggle="tab">Requerimientos pendientes</a></li>
+                    @endif
+                    @if (in_array(219,$array_accesos))
                     <li role="presentation" class="handleClickTabRequerimientosAtendidos"><a href="#requerimientos_atendidos"  aria-controls="requerimientos_atendidos" role="tab" data-toggle="tab" >Requerimientos atendidos</a></li>
+                    @endif
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
+                    @if (in_array(218,$array_accesos))
                     <div role="tabpanel" class="tab-pane active" id="requerimientos_pendientes">
                         <div class="panel panel-default">
                             <div class="panel-body">
@@ -70,6 +76,8 @@ Requerimientos pendientes
                             </div>
                         </div>
                     </div>
+                    @endif
+                    @if (in_array(219,$array_accesos))
                     <div role="tabpanel" class="tab-pane" id="requerimientos_atendidos">
                         <div class="panel panel-default">
                             <div class="panel-body">
@@ -104,7 +112,19 @@ Requerimientos pendientes
                             </div>
                         </div>
                     </div>
+                    @endif
                 </div>
+                @else
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="alert alert-danger" role="alert">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            <span class="sr-only">Error de Accesos:</span>
+                            Solicite los accesos
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>

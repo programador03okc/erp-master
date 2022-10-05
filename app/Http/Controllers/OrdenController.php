@@ -39,7 +39,7 @@ use App\Models\Almacen\Requerimiento;
 use App\Models\almacen\Transformacion;
 use App\Models\Almacen\UnidadMedida;
 use App\Models\Comercial\CuadroCosto\CcAmFila;
-
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Configuracion\Notificacion;
@@ -132,7 +132,20 @@ class OrdenController extends Controller
         $empresas = $this->select_mostrar_empresas();
         $rubros = $this->select_mostrar_rubos();
 
-        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('empresas','rubros', 'bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',91)
+        ->where('accesos_usuarios.id_padre',89)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        $modulo='logistica';
+        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('empresas','rubros', 'bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas','modulo','array_accesos_botonera'));
     }
 
     function lista_contactos_proveedor($id_proveedor)
@@ -4482,7 +4495,7 @@ class OrdenController extends Controller
                     // Storage::disk('archivos')->put("necesidades/requerimientos/bienes_servicios/cabecera/" . $newNameFile, File::get($archivo));
                     Storage::disk('archivos')->put("logistica/comporbantes_proveedor/".$newNameFile, File::get($archivo));
                     // if (preg_match('/[A-Za-z].*[0-9]|[0-9].*[A-Za-z]/', $id)){
-                    // } 
+                    // }
                     $idAdjunto = DB::table('logistica.adjuntos_logisticos')->insertGetId(
                         [
                             'id_orden'              => $idOrden,
@@ -4495,11 +4508,11 @@ class OrdenController extends Controller
                         ],
                         'id_adjunto'
                     );
-    
+
                     $idList[] = $idAdjunto;
 
                 }elseif($accionAdjunto[$key]=="ACTUALIZAR"){
-                    
+
                     $idAdjunto = DB::table('logistica.adjuntos_logisticos')
                     ->where('id_adjunto', $idAdjuntoList[$key])
                     ->update(
@@ -4514,7 +4527,7 @@ class OrdenController extends Controller
                     $idList[] = $idAdjunto;
 
                 }elseif($accionAdjunto[$key]=="ANULAR"){
-                    
+
                     $idAdjunto = DB::table('logistica.adjuntos_logisticos')
                     ->where('id_adjunto', $idAdjuntoList[$key])
                     ->update(
@@ -4598,5 +4611,5 @@ class OrdenController extends Controller
     }
 
 
-    
+
 }
