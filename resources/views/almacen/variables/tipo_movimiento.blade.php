@@ -17,6 +17,7 @@ Tipos de Operación
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -29,10 +30,13 @@ Tipos de Operación
 
 @section('content')
 <div class="page-main" type="tipoMov">
+
+
+    @if (sizeof($array_accesos_botonera)!==0 || in_array(192,$array_accesos) ||in_array(193,$array_accesos)||in_array(194,$array_accesos)||in_array(195,$array_accesos))
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-condensed table-bordered table-okc-view"
                 id="listaTipoMov">
                     <thead>
                         <tr>
@@ -84,6 +88,16 @@ Tipos de Operación
             </form>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 @endsection
 
@@ -101,6 +115,7 @@ Tipos de Operación
 
     <script src="{{ asset('js/almacen/variables/tipo_movimiento.js')}}"></script>
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function(){
         seleccionarMenu(window.location);
     });

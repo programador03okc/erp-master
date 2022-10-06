@@ -56,6 +56,29 @@
                 <button type="button" class="btn-okc" id="btnCancelar"><i class="fas fa-times fa-lg"></i> Cancelar</button>
                 @endif
             @break
+            @case('almacen')
+                @if (in_array(1,$array_accesos_botonera))
+                <button type="button" class="btn-okc" id="btnNuevo"><i class="fas fa-file fa-lg"></i> Nuevo</button>
+                @endif
+                @if (in_array(2,$array_accesos_botonera))
+                <button type="submit" class="btn-okc" id="btnGuardar"><i class="fas fa-save fa-lg"></i> Guardar</button>
+                @endif
+                @if (in_array(3,$array_accesos_botonera))
+                <button type="submit" class="btn-okc" id="btnEditar"><i class="fas fa-edit fa-lg"></i> Editar</button>
+                @endif
+                @if (in_array(4,$array_accesos_botonera))
+                <button type="submit" class="btn-okc" id="btnAnular"><i class="fas fa-trash fa-lg"></i> Anular</button>
+                @endif
+                @if (in_array(5,$array_accesos_botonera))
+                <button type="button" class="btn-okc" id="btnHistorial"><i class="fas fa-folder fa-lg"></i> Historial</button>
+                @endif
+                @if (in_array(6,$array_accesos_botonera))
+                <button type="button" class="btn-okc" id="btnCopiar" disabled ><i class="fas fa-copy fa-lg"></i> Copiar</button>
+                @endif
+                @if (in_array(7,$array_accesos_botonera))
+                <button type="button" class="btn-okc" id="btnCancelar"><i class="fas fa-times fa-lg"></i> Cancelar</button>
+                @endif
+            @break
             @default
         @endswitch
     @else

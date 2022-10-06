@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
 use App\Models\Almacen\MovimientoDetalle;
 use App\Models\almacen\Reserva;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -62,11 +63,11 @@ class OrdenesPendientesController extends Controller
         $nro_ot_pendientes = $this->nroTransformacionesPendientes();
         $nro_dev_pendientes = $this->nroDevolucionesPendientes();
 
-        // $array_accesos = [];
-        // $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
-        // foreach ($accesos_usuario as $key => $value) {
-        //     array_push($array_accesos, $value->id_acceso);
-        // }
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
 
         return view('almacen/guias/ordenesPendientes', compact(
             'almacenes',
@@ -88,7 +89,7 @@ class OrdenesPendientesController extends Controller
             'nro_oc_pendientes',
             'nro_ot_pendientes',
             'nro_dev_pendientes',
-            // 'array_accesos',
+            'array_accesos',
         ));
     }
 

@@ -14,7 +14,9 @@
 @section('cabecera')
     Posiciones en Almacén
 @endsection
-
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
+@endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
   <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
@@ -25,6 +27,8 @@
 
 @section('content')
 <div class="page-main" type="ubicacion">
+
+    @if (sizeof($array_accesos_botonera)!==0)
     <div class="row">
         <div class="col-md-12" id="tab-ubicacion">
             <ul class="nav nav-tabs" id="myTab">
@@ -41,7 +45,7 @@
                                     <div class="row">
                                         <div class="col-md-8">
                                             <h5>Almacén</h5>
-                                            <select class="form-control activation js-example-basic-single" 
+                                            <select class="form-control activation js-example-basic-single"
                                                 name="id_almacen" disabled="true">
                                                 <option value="0">Elija una opción</option>
                                                 @foreach ($almacenes as $alm)
@@ -118,10 +122,10 @@
                                             <fieldset class="group-importes"><legend><h6>Crear Niveles</h6></legend>
                                                 <div class="input-group">
                                                     <span class="input-group-addon"> Desde: </span>
-                                                    <input type="text" name="nivel_desde" class="form-control activation" disabled="true" 
+                                                    <input type="text" name="nivel_desde" class="form-control activation" disabled="true"
                                                     style="text-transform:uppercase;" maxlength="1" onkeypress="return sololetras(event)">
                                                     <span class="input-group-addon"> Hasta: </span>
-                                                    <input type="text" name="nivel_hasta" class="form-control activation" disabled="true" 
+                                                    <input type="text" name="nivel_hasta" class="form-control activation" disabled="true"
                                                     style="text-transform:uppercase;" maxlength="1" onkeypress="return sololetras(event)">
                                                 </div>
                                             </fieldset>
@@ -192,7 +196,7 @@
                                             <h5>Posicion</h5>
                                             <input type="hidden" name="id_posicion" primary="ids">
                                             <input type="text" class="form-control" name="codigo_posicion" disabled="true">
-                                        </div> 
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
@@ -206,7 +210,7 @@
                                             </fieldset>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
                                 <div class="col-md-8">
                                     <table class="mytable table table-condensed table-bordered table-okc-view" width="100%"
@@ -230,6 +234,16 @@
             </div>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 @include('almacen.ubicacion.almacenModal')
 @include('almacen.ubicacion.estanteModal')

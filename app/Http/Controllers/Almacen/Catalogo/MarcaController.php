@@ -10,14 +10,28 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Almacen\Catalogo\Marca;
+use App\models\Configuracion\AccesosUsuarios;
 
 class MarcaController extends Controller
 {
     function viewMarca()
     {
-        return view('almacen/producto/marca');
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',64)
+        ->where('accesos_usuarios.id_padre',4)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        $modulo='almacen';
+        return view('almacen/producto/marca',compact('modulo','array_accesos_botonera'));
     }
-    
+
     public static function mostrar_subcategorias_cbo()
     {
         $data = Marca::select('alm_subcat.id_subcategoria', 'alm_subcat.descripcion')
@@ -128,7 +142,7 @@ class MarcaController extends Controller
             $fecha = date('Y-m-d H:i:s');
             $des = strtoupper($request->descripcion);
             $msj = '';
-            
+
             $count = Marca::where([['descripcion', '=', $des], ['estado', '=', 1]])
             ->count();
             if ($count == 0) {
@@ -139,7 +153,7 @@ class MarcaController extends Controller
                 $subcategoria->fecha_registro = new Carbon();
                 $subcategoria->registrado_por = Auth::user()->id_usuario;
                 $subcategoria->save();
-    
+
                 $msj = 'Se guardó la marca correctamente';
                 $status= 200;
                 $tipo='success';
@@ -155,6 +169,6 @@ class MarcaController extends Controller
             DB::rollBack();
             return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
         }
-    
+
     }
 }

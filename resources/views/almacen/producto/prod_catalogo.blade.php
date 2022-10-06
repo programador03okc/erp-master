@@ -4,34 +4,52 @@
 @section('cabecera')
 Catálogo de Productos
 @endsection
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
+@endsection
 
 @section('content')
 <div class="page-main" type="producto">
-    <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;padding-top: 10px;">
-        <div class="row">
-            <div class="col-md-12">
-                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaProductoCatalogo">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Clasificación</th>
-                            <th>Código Softlink</th>
-                            <th>Categoría</th>
-                            <th>Cód. Cat. Softlink</th>
-                            <th>Subcatgoría</th>
-                            <th>Cód. SubCat. Softlink</th>
-                            <th>Marca</th>
-                            <th>Código Agile</th>
-                            <th>Part Number</th>
-                            <th>Descripción</th>
-                            <th>Unid. Med.</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+
+        @if (in_array(37,$array_accesos) || in_array(38,$array_accesos) || in_array(39,$array_accesos) || in_array(40,$array_accesos))
+        <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;padding-top: 10px;">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaProductoCatalogo">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Clasificación</th>
+                                <th>Código Softlink</th>
+                                <th>Categoría</th>
+                                <th>Cód. Cat. Softlink</th>
+                                <th>Subcatgoría</th>
+                                <th>Cód. SubCat. Softlink</th>
+                                <th>Marca</th>
+                                <th>Código Agile</th>
+                                <th>Part Number</th>
+                                <th>Descripción</th>
+                                <th>Unid. Med.</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+        @else
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger pulse" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error de Accesos:</span>
+                    Solicite los accesos
+                </div>
+            </div>
+        </div>
+        @endif
+
+
 </div>
 @endsection
 
@@ -48,6 +66,7 @@ Catálogo de Productos
 
 <script src="{{ asset('js/almacen/producto/prod_catalogo.js')}}"></script>
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
     });

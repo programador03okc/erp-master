@@ -10,6 +10,7 @@ Estado de Atención de Requerimientos
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 <style>
     #despachosPendientes_filter,
     #despachosEntregados_filter{
@@ -27,13 +28,15 @@ Estado de Atención de Requerimientos
 @endsection
 
 @section('content')
+
+@if (in_array(158,$array_accesos) || in_array(157,$array_accesos) )
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="requerimientosAlmacen">
             <div class="row" style="padding-top:10px;padding-right:10px;padding-left:10px;">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        <table class="mytable table table-condensed table-bordered table-okc-view"
                             id="requerimientosAlmacen" style="width:100%;">
                             <thead>
                                 <tr>
@@ -60,6 +63,16 @@ Estado de Atención de Requerimientos
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @include('almacen.transferencias.verTransferenciasPorRequerimiento')
 @include('almacen.reportes.cambioRequerimiento')
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_orden_de_requerimiento')
@@ -86,6 +99,7 @@ Estado de Atención de Requerimientos
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js?') }}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         listarRequerimientosAlmacen('{{Auth::user()->id_usuario}}');

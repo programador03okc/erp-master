@@ -44,12 +44,13 @@ function listarDespachosPendientes(permiso) {
     var vardataTables = funcDatatables();
     let botones = [];
     // if (acceso == '1') {
-    botones.push({
+    const button_descargar_excel = (array_accesos.find(element => element === 113)?{
         text: ' Exportar a Excel',
         action: function () {
             exportarDespachosPendientes();
         }, className: 'btn-success btnExportarPendientes'
-    });
+    }:[]);
+    botones.push(button_descargar_excel);
     // }
 
     $("#despachosPendientes").on('search.dt', function () {
@@ -183,16 +184,17 @@ function listarDespachosPendientes(permiso) {
             {
                 'render': function (data, type, row) {
 
-                    return `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
-                            data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                            <i class="fas fa-chevron-down"></i></button>` +
-
+                    return ``+(array_accesos.find(element => element === 114)?`<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
+                    data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                    <i class="fas fa-chevron-down"></i></button>`:[]) +
+                        (array_accesos.find(element => element === 115)?
                         `<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip"
                             data-placement="bottom" title="Generar Guía"
                             ${(row['estado_requerimiento'] == 39 || row['estado_requerimiento'] == 38) ? 'disabled' : ''} >
-                            <i class="fas fa-sign-in-alt"></i></button>`+
+                            <i class="fas fa-sign-in-alt"></i></button>`:[])+
+                        (array_accesos.find(element => element === 116)?
                         `<button type="button" class="btn btn-success btn-flat boton ver-adjuntos" title="Ver Adjuntos" data-id="${row['id_requerimiento']}" data-codigo="${row['codigo_req']}">
-                            <i class="fas fa-file-archive"></i></button>`
+                            <i class="fas fa-file-archive"></i></button>`:[])
 
                 }, targets: 9
             }
@@ -301,12 +303,13 @@ $('#despachosPendientes tbody').on('click', 'td button.detalle', function () {
 function listarDespachosEntregados(permiso) {
     var vardataTables = funcDatatables();
     let botones = [];
-    botones.push({
+    const button_descargr_excel=(array_accesos.find(element => element === 37)?{
         text: ' Exportar Excel',
         action: function () {
             exportarSalidasProcesadas();
         }, className: 'btn-success btnExportarSalidasProcesadas'
-    });
+    }:[]);
+    botones.push(button_descargr_excel);
     $('#despachosEntregados').DataTable({
         'dom': vardataTables[1],
         'buttons': botones,
@@ -414,29 +417,30 @@ function listarDespachosEntregados(permiso) {
                         if (row['estado'] !== 7) {
                             return `<div style="display:flex;">
                                     ${row['id_guia_ven'] == null && row['id_transformacion'] !== null ? '' :
-                                    `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
-                                        data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                        data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>
-
-                                        <button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip"
+                                    (array_accesos.find(element => element === 119)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
+                                    data-placement="bottom" title="Editar Guía de Salidaa" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                    data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>`:``)+
+                                    (array_accesos.find(element => element === 120)?
+                                    `<button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip"
                                         data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
-                                        <i class="fas fa-print"></i></button>
+                                        <i class="fas fa-print"></i></button>`:``)+
+                                    (array_accesos.find(element => element === 121)?`
                                     <button type="button" class="btn btn-success btn-flat boton ver-adjuntos" title="Ver Adjuntos" data-id="${row['id_requerimiento']}">
                                         <i class="fas fa-file-archive"></i></button>
-                                        `}
+                                        `:``)}
 
                                     ${(row['id_guia_ven'] == null && row['id_transformacion'] !== null)
                                     || row['estado_od'] == 21 || row['estado_od'] == 1 ?
-                                    `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
+                                    (array_accesos.find(element => element === 122)?`<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
                                         data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                        data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>` : ''}
+                                        data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>`:``) : ''}
                                 </div>`;
                         } else {
-                            return `<button type="button" class="anulacion btn btn-default btn-flat boton" data-toggle="tooltip"
+                            return (array_accesos.find(element => element === 281)?`<button type="button" class="anulacion btn btn-default btn-flat boton" data-toggle="tooltip"
                                 data-placement="bottom" title="Ver datos de la Anulación" data-id="${row['id_mov_alm']}"
                                 data-fecha="${row['fecha_anulacion']}" data-comentario="${row['comentario_anulacion']}"
                                 data-usuario="${row['usuario_anulacion_nombre']}"
-                                ><i class="fas fa-eye"></i></button>`;
+                                ><i class="fas fa-eye"></i></button>`:``);
                         }
                     } else {
                         return '';

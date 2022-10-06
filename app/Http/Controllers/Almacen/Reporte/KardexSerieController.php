@@ -4,13 +4,20 @@ namespace App\Http\Controllers\Almacen\Reporte;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class KardexSerieController extends Controller
 {
     function view_kardex_series()
     {
-        return view('almacen/reportes/kardex_series');
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/reportes/kardex_series',compact('array_accesos'));
     }
 
     public function listar_serie_productos($serie, $descripcion, $codigo, $part_number)
@@ -222,7 +229,7 @@ class KardexSerieController extends Controller
             <tr>
                 <th>Moneda</th>
                 <td>' . $producto->des_moneda . '</td>
-            
+
             </tr>
             ';
         return json_encode($html);

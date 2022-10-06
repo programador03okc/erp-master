@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Almacen\Movimiento;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -21,9 +22,22 @@ class ProrrateoCostosController extends Controller
         $tipos_prorrateo = DB::table('almacen.tipo_prorrateo')
             ->where('estado', 1)->get();
 
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',73)
+        ->where('accesos_usuarios.id_padre',17)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        $modulo = 'almacen';
         return view(
             'almacen/prorrateo/doc_prorrateo',
-            compact('tp_prorrateo', 'tp_doc', 'monedas', 'sis_identidad', 'tipos_prorrateo')
+            compact('tp_prorrateo', 'tp_doc', 'monedas', 'sis_identidad', 'tipos_prorrateo','array_accesos_botonera','modulo')
         );
     }
 
@@ -123,7 +137,7 @@ class ProrrateoCostosController extends Controller
                           LIMIT 1) AS tipo_cambio_orden"),
                 DB::raw("(SELECT tc.venta FROM contabilidad.cont_tp_cambio AS tc
                           WHERE tc.fecha <= guia_com.fecha_almacen
-                            AND tc.moneda = 2 
+                            AND tc.moneda = 2
                             LIMIT 1) AS tipo_cambio_ingreso")
 
             )
@@ -611,7 +625,7 @@ class ProrrateoCostosController extends Controller
                           LIMIT 1) AS tipo_cambio_orden"),
                 DB::raw("(SELECT tc.venta FROM contabilidad.cont_tp_cambio AS tc
                           WHERE tc.fecha <= guia_com.fecha_almacen
-                            AND tc.moneda = 2 
+                            AND tc.moneda = 2
                             LIMIT 1) AS tipo_cambio_ingreso")
             )
             ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'guia_com_prorrateo_det.id_guia_com_det')

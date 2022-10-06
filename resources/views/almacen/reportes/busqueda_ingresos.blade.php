@@ -7,6 +7,7 @@ Detalle de Ingresos
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -19,21 +20,26 @@ Detalle de Ingresos
 
 @section('content')
 <div class="page-main" type="busqueda_ingresos">
-    <div class="box box-solid">
+
+    @if (in_array(166,$array_accesos))
+<div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
 
                 <div class="row" style="padding-left:0px;padding-right:0px;">
                     <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                                data-placement="bottom" title="Ingrese los filtros" 
+                        @if (in_array(166,$array_accesos))
+                            <button type="button" class="btn btn-primary" data-toggle="tooltip"
+                                data-placement="bottom" title="Ingrese los filtros"
                                 onClick="open_filtros();">
                                 <i class="fas fa-search"></i>  Filtros</button>
+                        @endif
+
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        <table class="mytable table table-condensed table-bordered table-okc-view"
                             id="listaBusquedaIngresos">
                             <thead>
                                 <tr>
@@ -63,7 +69,16 @@ Detalle de Ingresos
             </div>
         </div>
     </div>
-
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-busq_filtros">
@@ -168,7 +183,7 @@ Detalle de Ingresos
                                     <div style="display:flex;">
                                         <input class="oculto" name="id_proveedor"/>
                                         <input class="oculto" name="id_contrib"/>
-                                        <input type="text" class="form-control" name="razon_social" placeholder="Seleccione un proveedor..." 
+                                        <input type="text" class="form-control" name="razon_social" placeholder="Seleccione un proveedor..."
                                             aria-describedby="basic-addon1" required>
                                         <button type="button" class="input-group-text btn-primary" id="basic-addon1" onClick="proveedorModal();">
                                             <i class="fa fa-search"></i>
@@ -209,7 +224,7 @@ Detalle de Ingresos
                             </tr>
                             <tr>
                                 <td></td>
-                                <td>Mostrar Documentos Referenciados: 
+                                <td>Mostrar Documentos Referenciados:
                                     <input type="checkbox" name="referenciado" style="width:30px;margin-top:10px;"/>
                                 </td>
                             </tr>
@@ -240,6 +255,7 @@ Detalle de Ingresos
 
     <script src="{{ asset('js/almacen/reporte/busqueda_ingresos.js')}}"></script>
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function(){
         seleccionarMenu(window.location);
     });

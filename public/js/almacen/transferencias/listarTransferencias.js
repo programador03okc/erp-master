@@ -58,13 +58,13 @@ function listarRequerimientosPendientes() {
     });
 
     let botones = [];
-
-    botones.push({
+    const button_nueva_transferencia  = (array_accesos.find(element => element === 124)?{
         text: ' Nueva Transferencia',
         action: function () {
             openNuevaTransferencia();
         }, className: 'btn-success btnTransferenciaCreate'
-    });
+    }:[]);
+    botones.push(button_nueva_transferencia);
 
     $tableRequerimientos = $("#listaRequerimientos").DataTable({
         dom: vardataTables[1],
@@ -139,17 +139,17 @@ function listarRequerimientosPendientes() {
             },
             {
                 render: function (data, type, row) {
-                    return `<div style="display:flex;">
-                            <button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
-                                data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                                <i class="fas fa-chevron-down"></i></button>
-                            <button type="button" class="transferencia btn btn-success btn-flat boton" data-toggle="tooltip"
-                                data-placement="bottom" ${(row['estado'] == 39 || row['estado'] == 38) ? 'disabled' : ''} 
-                                data-id="${row["id_requerimiento"]}"
-                                data-sede="${row["id_sede"]}" 
-                                title="Crear Transferencia(s)" >
-                                <i class="fas fa-exchange-alt"></i></button>
-                            </div>`;
+                    return `<div style="display:flex;">`+
+                    (array_accesos.find(element => element === 125)?`<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
+                    data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                    <i class="fas fa-chevron-down"></i></button>`:'')+
+                    (array_accesos.find(element => element === 126)?`<button type="button" class="transferencia btn btn-success btn-flat boton" data-toggle="tooltip"
+                    data-placement="bottom" ${(row['estado'] == 39 || row['estado'] == 38) ? 'disabled' : ''}
+                    data-id="${row["id_requerimiento"]}"
+                    data-sede="${row["id_sede"]}"
+                    title="Crear Transferencia(s)" >
+                    <i class="fas fa-exchange-alt"></i></button>`:[])+`
+                    </div>`;
                 },
                 className: "text-center", orderable: false
             }
@@ -226,14 +226,15 @@ $('#listaRequerimientos tbody').on('click', 'td button.detalle', function () {
 function listarTransferenciasPorEnviar() {
 
     let botones = [];
+    const button_ingresar_guia = (array_accesos.find(element => element === 278)?{
+        text: ' Ingresar Guía',
+        toolbar: 'Seleccione varias transferencias para una Guía.',
+        action: function () {
+            openGuiaTransferenciaCreate();
+        }, className: 'btn-success btn-flat'
+    }:[]);
     if (valor_permiso == '1') {
-        botones.push({
-            text: ' Ingresar Guía',
-            toolbar: 'Seleccione varias transferencias para una Guía.',
-            action: function () {
-                openGuiaTransferenciaCreate();
-            }, className: 'btn-success btn-flat'
-        });
+        botones.push(button_ingresar_guia);
     }
 
     $("#listaTransferenciasPorEnviar").on('search.dt', function () {
@@ -356,15 +357,14 @@ function listarTransferenciasPorEnviar() {
                     if (valor_permiso == "1") {
                         return `<div style="display: flex;text-align:center;">
                         ${row["estado"] == 1
-                                ? `<button type="button" class="guia btn btn-primary boton btn-flat" data-toggle="tooltip" 
-                                    data-placement="bottom" data-id="${row["id_transferencia"]}" data-cod="${row["id_requerimiento"]}" 
-                                    title="Generar Guía" ><i class="fas fa-sign-in-alt"></i></button>
+                                ? (array_accesos.find(element => element === 129)?`<button type="button" class="guia btn btn-primary boton btn-flat" data-toggle="tooltip"
+                                data-placement="bottom" data-id="${row["id_transferencia"]}" data-cod="${row["id_requerimiento"]}"
+                                title="Generar Guía" ><i class="fas fa-sign-in-alt"></i></button>`:``)+
+                                (array_accesos.find(element => element === 130)?`<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip"
+                                data-placement="bottom" data-id="${row["id_transferencia"]}" data-cod="${row["id_requerimiento"]}" title="Anular Transferencia" >
+                                <i class="fas fa-trash"></i></button>`:``)+``
 
-                                <button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip" 
-                                    data-placement="bottom" data-id="${row["id_transferencia"]}" data-cod="${row["id_requerimiento"]}" title="Anular Transferencia" >
-                                    <i class="fas fa-trash"></i></button>`
-
-                                : `<button type="button" class="anularSalida btn btn-danger boton btn-flat" data-toggle="tooltip" 
+                                : `<button type="button" class="anularSalida btn btn-danger boton btn-flat" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row["id_guia_ven"]}" data-id-salida="${row["id_salida"]}" title="Anular Salida" >
                                 <i class="fas fa-trash"></i></button>`}
                         <div/>`;
@@ -596,8 +596,7 @@ function listarTransferenciasPorRecibir() {
             $("#btnBuscarPorRecibir").on("click", e => {
                 tablePorRecibir.search($input.val()).draw();
             });
-
-            $('#listaTransferenciasPorRecibir_wrapper .dt-buttons').append(
+            (array_accesos.find(element => element === 132)? $('#listaTransferenciasPorRecibir_wrapper .dt-buttons').append(
                 `<div class="col-md-5" style="text-align: center;margin-top: 7px;">
                     <label>Almacén Destino:</label>
                 </div>
@@ -606,7 +605,8 @@ function listarTransferenciasPorRecibir() {
                         <option value="0" selected>Todos los almacenes</option>
                     </select>
                 </div>`
-            );
+            ):'')
+
             mostrarAlmacenes('destino');
             $("#selectAlmacenDestino").on("change", function (e) {
                 var alm = $(this).val();
@@ -668,7 +668,7 @@ function listarTransferenciasPorRecibir() {
                     if (valor_permiso == "1") {
                         return (row["id_guia_ven"] !== null
                             ? `<div style="display: flex;text-align:center;">
-                                <button type="button" class="atender btn btn-success boton btn-flat" data-toggle="tooltip" 
+                                <button type="button" class="atender btn btn-success boton btn-flat" data-toggle="tooltip"
                                 data-placement="bottom" title="Recibir" >
                                 <i class="fas fa-share"></i></button>
                             </div>`

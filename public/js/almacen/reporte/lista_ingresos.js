@@ -117,41 +117,40 @@ function actualizarLista(option=null){
         let id_proveedor_tra = $('[name=id_proveedor_tra]').val();
         tra = (id_proveedor_tra !== '' ? id_proveedor_tra : 0);
 
-     
 
-    
+
+
     var vardataTables = funcDatatables();
+    const button_filtros = (array_accesos.find(element => element === 162)?{
+            text: '<i class="fas fa-filter"></i> Filtros : 0',
+            attr: {
+                id: 'btnFiltros'
+            },
+            action: () => {
+                open_filtros();
+
+            },
+            className: 'btn-default btn-sm'
+        }:[]),
+        button_descargar_excel = (array_accesos.find(element => element === 163)?{
+            text: '<i class="far fa-file-excel"></i> Descargar',
+            attr: {
+                id: 'btnDescargarExcel'
+            },
+            action: () => {
+                descargarIngresosExcel();
+
+            },
+            className: 'btn-default btn-sm'
+        }:[]);
     $tablalistaIngresos = $('#listaIngresos').DataTable({
         'destroy': true,
         'dom': vardataTables[1],
-        'buttons': [
-            {
-                text: '<i class="fas fa-filter"></i> Filtros : 0',
-                attr: {
-                    id: 'btnFiltros'
-                },
-                action: () => {
-                    open_filtros();
-
-                },
-                className: 'btn-default btn-sm'
-            },
-            {
-                text: '<i class="far fa-file-excel"></i> Descargar',
-                attr: {
-                    id: 'btnDescargarExcel'
-                },
-                action: () => {
-                    descargarIngresosExcel();
-
-                },
-                className: 'btn-default btn-sm'
-            }
-        ],
+        'buttons': [button_filtros,button_descargar_excel],
         'language' : vardataTables[0],
         // 'pageLength': 10,
         "scrollX": true,
-      
+
 
         'serverSide': true,
         'ajax': {
@@ -170,8 +169,8 @@ function actualizarLista(option=null){
             { 'data': 'nro_documento', 'name': 'adm_contri.nro_documento', 'className': 'text-center'},
             { 'data': 'razon_social', 'name': 'adm_contri.razon_social', 'className': 'text-center'},
             { 'data': 'ordenes_compra', 'name': 'ordenes_compra', 'className': 'text-center',"searchable": false }, // ordenes_compra
-            { 'data': 'comprobantes.empresa_sede', 'name': 'comprobantes.empresa_sede', 'className': 'text-center', "searchable": false }, 
-            { 'data': 'comprobantes.moneda', 'name': 'comprobantes.moneda', 'className': 'text-center', "searchable": false }, 
+            { 'data': 'comprobantes.empresa_sede', 'name': 'comprobantes.empresa_sede', 'className': 'text-center', "searchable": false },
+            { 'data': 'comprobantes.moneda', 'name': 'comprobantes.moneda', 'className': 'text-center', "searchable": false },
             { 'data': 'comprobantes.montos.sub_total', 'name': 'comprobantes.montos.sub_total', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total
             { 'data': 'comprobantes.montos.total_igv', 'name': 'comprobantes.montos.total_igv', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total_igv
             { 'data': 'comprobantes.montos.total_a_pagar', 'name': 'comprobantes.montos.total_a_pagar', 'defaultContent':'', 'className': 'text-center', "searchable": false }, // total_a_pagar
@@ -191,7 +190,7 @@ function actualizarLista(option=null){
             {
                 'render': function (data, type, row) {
                     var html = '<select class="form-control '+
-                    ((row['revisado'] == 0) ? 'btn-danger' : 
+                    ((row['revisado'] == 0) ? 'btn-danger' :
                     ((row['revisado'] == 1) ? 'btn-success' : 'btn-warning'))+
                     ' " style="font-size:11px;width:85px;padding:3px 4px;" id="revisado">'+
                         '<option value="0" '+(row['revisado'] == 0 ? 'selected' : '')+'>No Revisado</option>'+
@@ -221,7 +220,7 @@ function actualizarLista(option=null){
                     return  $.number(row.comprobantes.montos.total_a_pagar,2);
                 }, targets: 14
             }
- 
+
         ],
         'initComplete': function () {
             updateContadorFiltro();
@@ -246,11 +245,11 @@ function actualizarLista(option=null){
     // $('[name=no_revisado]').change(function(){
     //     if($(this).prop('checked') == true) {
     //         tabla.column(1).search( 0 ).draw();
-    //         // var data = tabla.rows().data(); 
-    //         // data.each(function (value, index) { 
+    //         // var data = tabla.rows().data();
+    //         // data.each(function (value, index) {
     //         //     console.log('Data in index: ' + index);
     //         //     console.log(value);
-    //         // }); 
+    //         // });
     //         // tabla.column(1).data().filter( function ( value, index ) {
     //         //     console.log('value'+value+' index'+index);
     //         //     console.log(value !== 1);
@@ -345,5 +344,5 @@ function botones(tbody, tabla){
 }
 function vista_extendida(){
     let body=document.getElementsByTagName('body')[0];
-    body.classList.add("sidebar-collapse"); 
+    body.classList.add("sidebar-collapse");
 }

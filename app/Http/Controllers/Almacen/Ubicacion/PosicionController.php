@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Almacen\Ubicacion;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
+use App\models\Configuracion\AccesosUsuarios;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PosicionController extends Controller
@@ -13,7 +15,20 @@ class PosicionController extends Controller
         $almacenes = GenericoAlmacenController::mostrar_almacenes_cbo();
         $estantes = $this->mostrar_estantes_cbo();
         $niveles = $this->mostrar_niveles_cbo();
-        return view('almacen/ubicacion/ubicacion', compact('almacenes','estantes','niveles'));
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',68)
+        ->where('accesos_usuarios.id_padre',14)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        $modulo='almacen';
+        return view('almacen/ubicacion/ubicacion', compact('almacenes','estantes','niveles','array_accesos_botonera','modulo'));
     }
     public function mostrar_estantes_cbo(){
         $data = DB::table('almacen.alm_ubi_estante')
@@ -83,12 +98,12 @@ class PosicionController extends Controller
         ->where('id_almacen',$request->id_almacen)
         ->first();
 
-        for ($i=$desde; $i<=$hasta; $i++) { 
+        for ($i=$desde; $i<=$hasta; $i++) {
             $codigo = $almacen->codigo."-".GenericoAlmacenController::leftZero(2,$i);
 
             $exist = DB::table('almacen.alm_ubi_estante')
                 ->where('codigo',$codigo)->get()->count();
-            
+
             if ($exist === 0){
                 $data = DB::table('almacen.alm_ubi_estante')->insertGetId([
                     'id_almacen' => $id_almacen,
@@ -174,7 +189,7 @@ class PosicionController extends Controller
     }
     public function guardar_niveles(Request $request){
         $abc = [0=>'A',1=>'B',2=>'C',3=>'D',4=>'E',5=>'F',6=>'G',7=>'H',8=>'I',9=>'J',10=>'K',11=>'L',12=>'M',13=>'N',14=>'O',15=>'P',16=>'Q',17=>'R',18=>'S',19=>'T',20=>'U',21=>'V',22=>'W',23=>'X',24=>'Y',25=>'Z'];
-        
+
         $desde = array_search(strtoupper($request->desde),$abc);
         $hasta = array_search(strtoupper($request->hasta),$abc);
         $i = 0;
@@ -277,7 +292,7 @@ class PosicionController extends Controller
 
             $exist = DB::table('almacen.alm_ubi_posicion')
                 ->where('codigo',$codigo)->get()->count();
-            
+
             if ($exist === 0){
                 $data = DB::table('almacen.alm_ubi_posicion')->insertGetId([
                     'id_nivel' => $request->id_nivel,
@@ -297,7 +312,7 @@ class PosicionController extends Controller
             ->update(['estado' => 7]);
         return response()->json($data);
     }
-    
+
     public function almacen_posicion($id)
     {
         $data = DB::table('almacen.alm_ubi_posicion')

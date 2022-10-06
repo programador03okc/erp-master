@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen\Almacen;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
+use App\models\Configuracion\AccesosUsuarios;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ReservasAlmacenController extends Controller
@@ -17,7 +19,12 @@ class ReservasAlmacenController extends Controller
         //     return 'No autorizado';
         // }
         $almacenes = Almacen::where('estado', 1)->orderBy('codigo')->get();
-        return view('almacen/reservas/reservasAlmacen', compact('almacenes'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/reservas/reservasAlmacen', compact('almacenes','array_accesos'));
     }
 
     function listarReservasAlmacen()

@@ -17,9 +17,14 @@ $(function(){
 });
 function listar_series_numeros(){
     var vardataTables = funcDatatables();
+    console.log(vardataTables[2]);
+    const button_copiar= (array_accesos.find(element => element === 181)?vardataTables[2][0]:[]),
+        button_descargar_excel= (array_accesos.find(element => element === 182)?vardataTables[2][1]:[]),
+        button_descargar_pdf= (array_accesos.find(element => element === 183)?vardataTables[2][2]:[]),
+        button_imprimir= (array_accesos.find(element => element === 184)?vardataTables[2][3]:[]);
     $('#listaSerieNumero').dataTable({
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': [button_copiar,button_descargar_excel,button_descargar_pdf,button_imprimir],
         'language' : vardataTables[0],
         'ajax': 'listar_series_numeros',
         'columns': [
@@ -73,7 +78,7 @@ function save_serie_numero(data, action){
                 alert(response);
                 changeStateButton('guardar');
                 $('#form-serie_numero').attr('type', 'register');
-                changeStateInput('form-serie_numero', true);                
+                changeStateInput('form-serie_numero', true);
                 $('.boton').removeClass('desactiva');
                 $('#listaSerieNumero').DataTable().ajax.reload();
             }
@@ -110,11 +115,11 @@ function ceros_numero(numero){
     if (numero == 'numero'){
         var num = $('[name=numero]').val();
         $('[name=numero]').val(leftZero(7,num));
-    } 
+    }
 }
 function ceros_serie(serie){
     if (serie == 'serie'){
         var se = $('[name=serie]').val();
         $('[name=serie]').val(leftZero(4,se));
-    } 
+    }
 }

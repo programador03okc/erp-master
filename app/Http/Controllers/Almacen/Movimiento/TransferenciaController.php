@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen\Almacen;
 use App\Models\almacen\Reserva;
 use App\Models\Almacen\Transferencia;
+use App\models\Configuracion\AccesosUsuarios;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,11 @@ class TransferenciaController extends Controller
         $nro_pendientes = $this->nroPendientes();
         $nro_por_enviar = $this->nroPorEnviar();
         $nro_por_recibir = $this->nroPorRecibir();
-
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
         return view(
             'almacen/transferencias/listarTransferencias',
             compact(
@@ -43,7 +48,8 @@ class TransferenciaController extends Controller
                 'nro_pendientes',
                 'todos_almacenes',
                 'nro_por_enviar',
-                'nro_por_recibir'
+                'nro_por_recibir',
+                'array_accesos'
             )
         );
     }
@@ -1030,7 +1036,7 @@ class TransferenciaController extends Controller
             DB::beginTransaction();
             $id_tp_doc_almacen = 2; //guia venta
             $operacion_transferencia = 11; //salida por transferencia
-            $operacion_venta = 1; //venta 
+            $operacion_venta = 1; //venta
             $fecha_registro = new Carbon();
             $fecha = new Carbon();
             $usuario = Auth::user()->id_usuario;
