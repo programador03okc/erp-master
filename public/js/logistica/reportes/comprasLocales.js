@@ -168,61 +168,76 @@ class ComprasLocales {
         switch (e.currentTarget.getAttribute('name')) {
             case 'chkEmpresa':
                 if (e.currentTarget.checked == true) {
-                    modalFiltro.querySelector("select[name='empresa']").removeAttribute("readOnly")
+                    modalFiltro.querySelector("select[name='empresa']").removeAttribute("readOnly");
                 } else {
-                    modalFiltro.querySelector("select[name='empresa']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("select[name='empresa']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("select[name='empresa']").value = 'SIN_FILTRO';
                 }
                 break;
             case 'chkSede':
                 if (e.currentTarget.checked == true) {
-                    modalFiltro.querySelector("select[name='sede']").removeAttribute("readOnly")
+                    modalFiltro.querySelector("select[name='sede']").removeAttribute("readOnly");
                 } else {
-                    modalFiltro.querySelector("select[name='sede']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("select[name='sede']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("select[name='sede']").value = 'SIN_FILTRO';
+
                 }
                 break;
             case 'chkGrupo':
                 if (e.currentTarget.checked == true) {
-                    modalFiltro.querySelector("select[name='grupo']").removeAttribute("readOnly")
+                    modalFiltro.querySelector("select[name='grupo']").removeAttribute("readOnly");
                 } else {
-                    modalFiltro.querySelector("select[name='grupo']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("select[name='grupo']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("select[name='grupo']").value = 'SIN_FILTRO';
+
                 }
                 break;
             case 'chkProyecto':
                 if (e.currentTarget.checked == true) {
-                    modalFiltro.querySelector("select[name='proyecto']").removeAttribute("readOnly")
+                    modalFiltro.querySelector("select[name='proyecto']").removeAttribute("readOnly");
                 } else {
-                    modalFiltro.querySelector("select[name='proyecto']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("select[name='proyecto']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("select[name='proyecto']").value = 'SIN_FILTRO';
+
                 }
             case 'chkObservacionOrden':
                 if (e.currentTarget.checked == true) {
-                    modalFiltro.querySelector("input[name='observacionOrden']").removeAttribute("readOnly")
+                    modalFiltro.querySelector("input[name='observacionOrden']").removeAttribute("readOnly");
                 } else {
-                    modalFiltro.querySelector("input[name='observacionOrden']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("input[name='observacionOrden']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("input[name='observacionOrden']").value = 'SIN_FILTRO';
                 }
                 break;
             case 'chkEstadoPago':
                 if (e.currentTarget.checked == true) {
-                    modalFiltro.querySelector("select[name='estadoPago']").removeAttribute("readOnly")
+                    modalFiltro.querySelector("select[name='estadoPago']").removeAttribute("readOnly");
                 } else {
-                    modalFiltro.querySelector("select[name='estadoPago']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("select[name='estadoPago']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("select[name='estadoPago']").value = 'SIN_FILTRO';
+
                 }
                 break;
             case 'chkFechaRegistro':
                 if (e.currentTarget.checked == true) {
-                    modalFiltro.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly")
-                    modalFiltro.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly")
+                    modalFiltro.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly");
+                    modalFiltro.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly");
                 } else {
-                    modalFiltro.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
-                    modalFiltro.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("input[name='fechaRegistroDesde']").value = 'SIN_FILTRO';
+                    modalFiltro.querySelector("input[name='fechaRegistroHasta']").value = 'SIN_FILTRO';
+
                 }
                 break;
             case 'chkFechaCancelacion':
                 if (e.currentTarget.checked == true) {
-                    modalFiltro.querySelector("input[name='fechaCancelacionDesde']").removeAttribute("readOnly")
-                    modalFiltro.querySelector("input[name='fechaCancelacionHasta']").removeAttribute("readOnly")
+                    modalFiltro.querySelector("input[name='fechaCancelacionDesde']").removeAttribute("readOnly");
+                    modalFiltro.querySelector("input[name='fechaCancelacionHasta']").removeAttribute("readOnly");
                 } else {
-                    modalFiltro.querySelector("input[name='fechaCancelacionDesde']").setAttribute("readOnly", true)
-                    modalFiltro.querySelector("input[name='fechaCancelacionHasta']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("input[name='fechaCancelacionDesde']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("input[name='fechaCancelacionHasta']").setAttribute("readOnly", true);
+                    modalFiltro.querySelector("input[name='fechaCancelacionDesde']").value = 'SIN_FILTRO';
+                    modalFiltro.querySelector("input[name='fechaCancelacionHasta']").value = 'SIN_FILTRO';
                 }
                 break;
             case 'chkRazonSocialProveedor':
@@ -230,6 +245,7 @@ class ComprasLocales {
                     modalFiltro.querySelector("input[name='razon_social_proveedor']").removeAttribute("readOnly")
                 } else {
                     modalFiltro.querySelector("input[name='razon_social_proveedor']").setAttribute("readOnly", true)
+                    modalFiltro.querySelector("input[name='razon_social_proveedor']").value = 'SIN_FILTRO';
                 }
                 break;
             default:
@@ -268,7 +284,7 @@ class ComprasLocales {
             this.ActualParametroProyecto=modalFiltro.querySelector("select[name='proyecto']").value.length>0?modalFiltro.querySelector("select[name='proyecto']").value:'SIN_FILTRO';
         }
         if(modalFiltro.querySelector("input[name='observacionOrden']").getAttribute("readonly") ==null){
-            this.ActualParametroRazonSocialProveedor=modalFiltro.querySelector("input[name='observacionOrden']").value.length>0?modalFiltro.querySelector("input[name='observacionOrden']").value:'SIN_FILTRO';
+            this.ActualParametroObservacionOrden=modalFiltro.querySelector("input[name='observacionOrden']").value.length>0?modalFiltro.querySelector("input[name='observacionOrden']").value:'SIN_FILTRO';
         }
         if(modalFiltro.querySelector("select[name='estadoPago']").getAttribute("readonly") ==null){
             this.ActualParametroEstadoPago=modalFiltro.querySelector("select[name='estadoPago']").value.length>0?modalFiltro.querySelector("select[name='estadoPago']").value:'SIN_FILTRO';
