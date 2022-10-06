@@ -239,12 +239,12 @@ class ReporteLogisticaController extends Controller{
 
 	public function obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago){
 		$data = ComprasLocalesView::when(($idEmpresa > 0), function ($query) use($idEmpresa) {
-			$sedes= Sede::where('id_empresa',$idEmpresa)->get();
 			$idSedeList=[];
+			$sedes= Sede::where('id_empresa',$idEmpresa)->get();
 			foreach($sedes as $sede){
 				$idSedeList[]=$sede->id_sede;
 			}
-            return $query->whereIn('id_sede', $idSedeList);
+            return $query->whereIn('id_sede',$idSedeList);
         })
         ->when(($idSede > 0), function ($query) use($idSede) {
             return $query->where('id_sede',$idSede);
@@ -276,7 +276,7 @@ class ReporteLogisticaController extends Controller{
             return $query->where('compras_locales_view.id_grupo' ,'=',$idGrupo);
         })
         ->when((($idProyecto != 'SIN_FILTRO')), function ($query) use($idProyecto) {
-            return $query->where('compras_locales_view.razon_social_contribuyente' ,'=',$idProyecto);
+            return $query->where('compras_locales_view.id_proyecto' ,'=',$idProyecto);
         })
         ->when((($observacionOrden != 'SIN_FILTRO')), function ($query) use($observacionOrden) {
 			return $query->where('compras_locales_view.observacion_orden' ,'like','%'.$observacionOrden.'%');
