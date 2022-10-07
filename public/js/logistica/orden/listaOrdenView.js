@@ -2107,7 +2107,7 @@ class ListaOrdenView {
         if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
             let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
             tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ANULAR';
-            obj.closest('tr').classList.add("gb-danger");
+            obj.closest('tr').classList.add("bg-danger");
         } else {
             Swal.fire(
                 '',
@@ -2270,8 +2270,8 @@ class ListaOrdenView {
                         formData.append(`categoria_adjunto[]`, element.category);
                         formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
                         formData.append(`nombre_real_adjunto[]`, element.nameFile);
-                        formData.append(`accion[]`, element.action);
-
+                        formData.append(`accion[]`, element.accion);
+                    
                 });
             }
 

@@ -133,6 +133,7 @@ function listarReservasAlmacen(id_usuario) {
                 'render': function (data, type, row) {
 
                     let $btn_editar = (id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93') ?
+                    ((row['estado']===1)?
                     (array_accesos.find(element => element === 155)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
 
                     data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
@@ -143,11 +144,11 @@ function listarReservasAlmacen(id_usuario) {
 
                     <i class="fas fa-edit"></i>
 
-                    </button>`:``)
+                    </button>`:``):``)
                     : '';
 
 
-                    let $btn_eliminar = (row['numero'] == null) ?
+                    let $btn_eliminar = (row['numero'] == null && row['estado']===1) ?
                     (array_accesos.find(element => element === 37)?`<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
 
                     data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}">
