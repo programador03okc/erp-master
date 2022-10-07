@@ -6,7 +6,9 @@
 @section('cabecera')
 Gestión de ordenes
 @endsection
-
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
+@endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
@@ -20,96 +22,112 @@ Gestión de ordenes
 <div class="page-main" type="listar_ordenes" id="listar_ordenes">
     <legend class="mylegend">
     </legend>
-
-    <fieldset class="group-table">
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="input-group">
-                    <div class="input-group-btn">
-                       <button type="button" class="btn btn-default handleClickTipoVistaPorCabecera" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
-                        <button type="button" class="btn btn-default handleClickTipoVistaPorItem" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items"><i class="fas fa-table"></i> Vista a nivel de Item's</button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="row" id="contenedor-tabla-nivel-cabecera">
-            <div class="col-sm-12">
-                <div class="box box-widget">
-                    <div class="box-body">
-                        <div class="table-responsive">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes">
-                                <thead>
-                                <tr>
-                                <th>cod. ord.</th>
-                                <th>Cod. softlink</th>
-                                <th>Cod. req.</th>
-                                <th>Cod. CDP</th>
-                                <th>Empresa - sede</th>
-                                <th>Mnd.</th>
-                                <th>Fech. emisión</th>
-                                <th>Fech. llegada</th>
-                                <th>Tiempo Atención Log.</th>
-                                <th>Proveedor</th>
-                                <th>Condicón</th>
-                                <th>Estado de orden</th>
-                                <th>Estado del pago</th>
-                                <th>Importe total orden</th>
-                                <th>Importe total CDP</th>
-                                <th>Acción</th>
-                                </tr>
-
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+    @if (in_array(33,$array_accesos) || in_array(19,$array_accesos) || in_array(36,$array_accesos) || in_array(35,$array_accesos) || in_array(34,$array_accesos) || in_array(18,$array_accesos))
+        <fieldset class="group-table">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            @if (in_array(243,$array_accesos))
+                            <button type="button" class="btn btn-default handleClickTipoVistaPorCabecera" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
+                            @endif
+                            @if (in_array(250,$array_accesos))
+                            <button type="button" class="btn btn-default handleClickTipoVistaPorItem" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items"><i class="fas fa-table"></i> Vista a nivel de Item's</button>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row" id="contenedor-tabla-nivel-item">
-            <div class="col-sm-12">
-                <div class="box box-widget">
-                    <div class="box-body">
-                        <div class="table-responsive">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" id="listaItemsOrden" style="font-size: 0.9rem;">
-                                <thead>
+            @if (in_array(243,$array_accesos))
+            <div class="row" id="contenedor-tabla-nivel-cabecera">
+                <div class="col-sm-12">
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes">
+                                    <thead>
                                     <tr>
-                                        <th>cod. ord.</th>
-                                        <th>Cod. req.</th>
-                                        <th>Cod OC Soft.</th>
-                                        <th>Concepto Req.</th>
-                                        <th>Cliente</th>
-                                        <th>Proveedor</th>
-                                        <th>Marca</th>
-                                        <th>Categoría</th>
-                                        <th>Cod. prod.</th>
-                                        <th>Part number</th>
-                                        <th>Cod. soft.</th>
-                                        <th>Descripción</th>
-                                        <th>Cantidad</th>
-                                        <th>Und. medida</th>
-                                        <th>Precio Un.</th>
-                                        <th>Precio Un. CDP</th>
-                                        <th>Fecha emisión ord.</th>
-                                        <th>Plazo entrega</th>
-                                        <th>Fecha ingreso almacén</th>
-                                        <th>Empresa - sede</th>
-                                        <th>Estado</th>
-                                        <th style="width:5%">Acción</th>
+                                    <th>cod. ord.</th>
+                                    <th>Cod. softlink</th>
+                                    <th>Cod. req.</th>
+                                    <th>Cod. CDP</th>
+                                    <th>Empresa - sede</th>
+                                    <th>Mnd.</th>
+                                    <th>Fech. emisión</th>
+                                    <th>Fech. llegada</th>
+                                    <th>Tiempo Atención Log.</th>
+                                    <th>Proveedor</th>
+                                    <th>Condicón</th>
+                                    <th>Estado de orden</th>
+                                    <th>Estado del pago</th>
+                                    <th>Importe total orden</th>
+                                    <th>Importe total CDP</th>
+                                    <th>Acción</th>
                                     </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+            @endif
+            @if (in_array(250,$array_accesos))
+            <div class="row" id="contenedor-tabla-nivel-item">
+                <div class="col-sm-12">
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaItemsOrden" style="font-size: 0.9rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>cod. ord.</th>
+                                            <th>Cod. req.</th>
+                                            <th>Cod OC Soft.</th>
+                                            <th>Concepto Req.</th>
+                                            <th>Cliente</th>
+                                            <th>Proveedor</th>
+                                            <th>Marca</th>
+                                            <th>Categoría</th>
+                                            <th>Cod. prod.</th>
+                                            <th>Part number</th>
+                                            <th>Cod. soft.</th>
+                                            <th>Descripción</th>
+                                            <th>Cantidad</th>
+                                            <th>Und. medida</th>
+                                            <th>Precio Un.</th>
+                                            <th>Precio Un. CDP</th>
+                                            <th>Fecha emisión ord.</th>
+                                            <th>Plazo entrega</th>
+                                            <th>Fecha ingreso almacén</th>
+                                            <th>Empresa - sede</th>
+                                            <th>Estado</th>
+                                            <th style="width:5%">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+        </fieldset>
+    @else
+       <div class="row">
+           <div class="col-md-12">
+               <div class="alert alert-danger pulse" role="alert">
+                   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                   <span class="sr-only">Error de Accesos:</span>
+                   Solicite los accesos
+               </div>
+           </div>
+       </div>
+       @endif
 
-    </fieldset>
 </div>
 
 
@@ -170,6 +188,7 @@ Gestión de ordenes
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     window.onload = function() {
 
         $.fn.dataTable.moment('DD-MM-YYYY HH:mm');

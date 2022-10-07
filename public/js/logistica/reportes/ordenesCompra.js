@@ -40,7 +40,7 @@ class OrdenesCompra {
             backdrop: 'true'
         });
     }
-    
+
     descargarListaOrdenesCompra(){
         window.open(`reporte-ordenes-compra-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}`);
         // $.ajax({
@@ -49,7 +49,7 @@ class OrdenesCompra {
         //     dataType: 'JSON',
         //     data:{'idSede':1},
         //     success(response) {
-        //         resolve(response) // Resolve promise and go to then() 
+        //         resolve(response) // Resolve promise and go to then()
         //     },
         //     error: function(err) {
         //     reject(err) // Reject the promise and go to catch()
@@ -59,7 +59,7 @@ class OrdenesCompra {
     }
 
     getDataSelectSede(id_empresa){
-        
+
         return new Promise(function(resolve, reject) {
             if(id_empresa >0){
                 $.ajax({
@@ -67,7 +67,7 @@ class OrdenesCompra {
                     url: `listar-sedes-por-empresa/` + id_empresa,
                     dataType: 'JSON',
                     success(response) {
-                        resolve(response) // Resolve promise and go to then() 
+                        resolve(response) // Resolve promise and go to then()
                     },
                     error: function(err) {
                     reject(err) // Reject the promise and go to catch()
@@ -77,7 +77,7 @@ class OrdenesCompra {
                     resolve(false);
                 }
             });
-    } 
+    }
 
     handleChangeFiltroEmpresa(event) {
         let id_empresa = event.target.value;
@@ -170,32 +170,31 @@ class OrdenesCompra {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
+        const button_filtros = (array_accesos.find(element => element === 271)?{
+                text: '<i class="fas fa-filter"></i> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaOrdenesCompra'
+                },
+                action: () => {
+                    this.abrirModalFiltrosListaOrdenesCompra();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel  = (array_accesos.find(element => element === 272)?{
+                text: '<i class="far fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnDescargarListaOrdenesCompra'
+                },
+                action: () => {
+                    this.descargarListaOrdenesCompra();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
         $tablaListaOrdenesCompra= $('#listaOrdenesCompra').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<i class="fas fa-filter"></i> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltrosListaOrdenesCompra'
-                    },
-                    action: () => {
-                        this.abrirModalFiltrosListaOrdenesCompra();
-
-                    },
-                    className: 'btn-default btn-sm'
-                },
-                {
-                    text: '<i class="far fa-file-excel"></i> Descargar',
-                    attr: {
-                        id: 'btnDescargarListaOrdenesCompra'
-                    },
-                    action: () => {
-                        this.descargarListaOrdenesCompra();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
-            ],
+            'buttons': [button_filtros,button_descargar_excel ],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,
@@ -207,7 +206,7 @@ class OrdenesCompra {
                 'data':{'idEmpresa':idEmpresa,'idSede':idSede,'fechaRegistroDesde':fechaRegistroDesde,'fechaRegistroHasta':fechaRegistroHasta},
 
                 beforeSend: data => {
-    
+
                     $("#listaOrdenesCompra").LoadingOverlay("show", {
                         imageAutoResize: true,
                         progress: true,
@@ -272,7 +271,7 @@ class OrdenesCompra {
                         // console.log(row.cuadro_costo);
                         let fecha_aprobacion_cc = (row.cuadro_costo)!=null && ((row.cuadro_costo).length) >0 ?(row.cuadro_costo)[0].fecha_aprobacion:'';
                         let fecha_oc = row.fecha_formato != null ?row.fecha_formato:'';
-                        let dias_restantes = moment(fecha_oc, 'DD-MM-YYYY').diff(moment(fecha_aprobacion_cc, 'DD-MM-YYYY'), 'days'); 
+                        let dias_restantes = moment(fecha_oc, 'DD-MM-YYYY').diff(moment(fecha_aprobacion_cc, 'DD-MM-YYYY'), 'days');
                         // console.log(dias_restantes);
                         return dias_restantes;
                     }, targets: 9
@@ -284,7 +283,7 @@ class OrdenesCompra {
                         let fecha_oc = row.fecha != null ?row.fecha:'';
                         let dias_restantes = moment(fecha_oc, 'DD-MM-YYYY').diff(moment(fecha_aprobacion_cc, 'DD-MM-YYYY'), 'days');
 
-                        
+
                         return (dias_restantes <=1?'ATENDIDO A TIEMPO':'ATENDIDO FUERA DE TIEMPO');
                     }, targets: 10
                 },
@@ -308,7 +307,7 @@ class OrdenesCompra {
                         // var fechaPlazo = moment(fecha_formt).add(plazo, 'days')._d;
                         // var nuevoformatoFechaFechaPlazo=moment(fechaPlazo).format("DD-MM-YYYY");
                         // var fechaPlazo_format = moment(fecha).add(fecha_formt, 'days').format("DD-MM-YYYY").toString();
-                        
+
                         // var fechaDif = moment(fechaPlazo).diff(fecha,'days');
                         // console.log(fecha);
                         // console.log(fecha_formt);
@@ -335,14 +334,14 @@ class OrdenesCompra {
                         return fechaPlazoEntrega;
                     }, targets: 14
                 },
-   
+
                 // {
                 //     'render': function (data, type, row) {
                 //         // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
                 //         return `<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion==true?'<i class="fas fa-random text-danger" title="Con transformación"></i>':''} `;
                 //     }, targets: 2
                 // },
- 
+
                 // {
                 //     'render': function (data, type, row) {
                 //         switch (row['estado']) {
@@ -368,7 +367,7 @@ class OrdenesCompra {
                 //         }
                 //     }, targets: 12, className: 'text-center'
                 // },
- 
+
                 // {
                 //     'render': function (data, type, row) {
                 //         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
@@ -411,7 +410,7 @@ class OrdenesCompra {
                     $tablaListaOrdenesCompra.search($input.val()).draw();
                 })
                 //Fin boton de busqueda
-                
+
             },
             "drawCallback": function( settings ) {
                 // if($tablaListaOrdenesCompra.rows().data().length==0){
@@ -422,7 +421,7 @@ class OrdenesCompra {
                 //         sound: false,
                 //         delayIndicator: false,
                 //         msg: `No se encontro data disponible para mostrar`
-                //         }); 
+                //         });
                 // }
                 //Botón de búsqueda
                 $('#listaOrdenesCompra_filter input').prop('disabled', false);

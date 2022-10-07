@@ -10,6 +10,7 @@ Reporte de compras locales
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -22,6 +23,7 @@ Reporte de compras locales
 
 @section('content')
 <div class="page-main" type="reporte_compras_locales">
+    @if (in_array(276,$array_accesos)||in_array(277,$array_accesos))
     <div class="row">
         <div class="col-md-12">
             <fieldset class="group-table">
@@ -65,6 +67,17 @@ Reporte de compras locales
             </fieldset>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error de Accesos:</span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 
@@ -174,7 +187,7 @@ Reporte de compras locales
                                 </label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control handleUpdateValorFiltro" name="observacionOrden" value="COMPRA LOCAL" readOnly>
-                                    
+
                                 </div>
                             </div>
                             <div class="form-group">
@@ -258,6 +271,7 @@ Reporte de compras locales
 
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         const comprasLocales = new ComprasLocales();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Sede;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
 use App\Models\Logistica\ComprasLocalesView;
 use App\Models\Logistica\Orden;
@@ -15,6 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Dompdf\Dompdf;
+use Illuminate\Support\Facades\Auth;
+
 // use Maatwebsite\Excel\Facades\Excel;
 
 class ReporteLogisticaController extends Controller{
@@ -23,20 +26,34 @@ class ReporteLogisticaController extends Controller{
     public function viewReporteOrdenesCompra(){
 		$empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
-
-		return view('logistica/reportes/ordenes_compra',compact('empresas','grupos'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+		return view('logistica/reportes/ordenes_compra',compact('empresas','grupos','array_accesos'));
 	}
     public function viewReporteOrdenesServicio(){
 		$empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
-
-		return view('logistica/reportes/ordenes_servicio',compact('empresas','grupos'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+		return view('logistica/reportes/ordenes_servicio',compact('empresas','grupos','array_accesos'));
 	}
 
     public function viewReporteTransitoOrdenesCompra(){
 		$empresas = Empresa::mostrar();
         $grupos = Grupo::mostrar();
-		return view('logistica/reportes/transito_ordenes_compra',compact('empresas','grupos'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+
+		return view('logistica/reportes/transito_ordenes_compra',compact('empresas','grupos','array_accesos'));
 	}
 
 
@@ -212,8 +229,12 @@ class ReporteLogisticaController extends Controller{
         $proyectos = Proyecto::mostrar();
         $estadosPago = RequerimientoPagoEstados::mostrar();
         $fechaActual = new Carbon();
-
-		return view('logistica/reportes/compras_locales',compact('empresas','grupos','proyectos','estadosPago','fechaActual'));
+    $array_accesos=[];
+    $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+    foreach ($accesos_usuario as $key => $value) {
+        array_push($array_accesos,$value->id_acceso);
+    }
+		return view('logistica/reportes/compras_locales',compact('empresas','grupos','proyectos','estadosPago','fechaActual','array_accesos'));
 	}
 
 	public function listaComprasLocales(Request $request){

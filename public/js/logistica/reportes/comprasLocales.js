@@ -309,32 +309,31 @@ class ComprasLocales {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
+        const button_filtro = (array_accesos.find(element => element === 276)?{
+                text: '<i class="fas fa-filter"></i> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaComprasLocales'
+                },
+                action: () => {
+                    this.abrirModalFiltrosListaComprasLocales();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel = (array_accesos.find(element => element === 277)?{
+                text: '<i class="far fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnDescargarListaComprasLocales'
+                },
+                action: () => {
+                    this.DescargarListaComprasLocales();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
         $tablaListaComprasLocales= $('#listaComprasLocales').DataTable({
             'dom': vardataTables[1],
-            'buttons': [
-                {
-                    text: '<i class="fas fa-filter"></i> Filtros : 0',
-                    attr: {
-                        id: 'btnFiltrosListaComprasLocales'
-                    },
-                    action: () => {
-                        this.abrirModalFiltrosListaComprasLocales();
-
-                    },
-                    className: 'btn-default btn-sm'
-                },
-                {
-                    text: '<i class="far fa-file-excel"></i> Descargar',
-                    attr: {
-                        id: 'btnDescargarListaComprasLocales'
-                    },
-                    action: () => {
-                        this.DescargarListaComprasLocales();
-
-                    },
-                    className: 'btn-default btn-sm'
-                }
-            ],
+            'buttons': [button_filtro,button_descargar_excel],
             'language': vardataTables[0],
             'order': [[10, 'desc']],
             'bLengthChange': false,
@@ -446,7 +445,7 @@ class ComprasLocales {
     DescargarListaComprasLocales(){
         window.open(`reporte-compras-locales-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroFechaDesdeCancelacion}/${this.ActualParametroFechaHastaCancelacion}/${this.ActualParametroRazonSocialProveedor}/${this.ActualParametroGrupo}/${this.ActualParametroProyecto}/${this.ActualParametroObservacionOrden}/${this.ActualParametroEstadoPago}`);
     }
-    
+
 
     verAdjuntosLogisticos(obj){
         console.log(obj.dataset.idOrden);
@@ -506,7 +505,7 @@ class ComprasLocales {
                                 htmlPago+='<td>'
                                     htmlPago+='<a href="/files/tesoreria/pagos/'+nombreAdjunto+'" target="_blank">'+nombreAdjunto+'</a>'
                                 htmlPago+='</td>'
-                                
+
                             });
                         htmlPago+= '</tr>'
 
