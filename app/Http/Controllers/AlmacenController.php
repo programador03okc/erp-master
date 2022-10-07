@@ -15,7 +15,10 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReporteIngresosExcel;
 use App\Exports\ReporteSalidasExcel;
+use App\Exports\ReporteStockSeriesExcel;
+use App\Models\Almacen\StockSeriesView;
 use Exception;
+use Yajra\DataTables\Facades\DataTables;
 
 date_default_timezone_set('America/Lima');
 
@@ -6904,7 +6907,42 @@ class AlmacenController extends Controller
         $output['data'] = $data;
         return response()->json($output);
     }
+    
+    function view_stock_series()
+    {
+        return view('almacen/reportes/stock_series');
+    }
 
+    
+    public function obtener_data_stock_series(){
+        $data = StockSeriesView::where('estado','!=',7)->orderBy('fecha_ingreso','desc')->get();
+        return $data;
+    
+    }
+    public function listar_stock_series(){
+        $data = StockSeriesView::where('estado','!=',7);
+        return DataTables::of($data)
+        ->editColumn('fecha_ingreso', function ($data) {
+            return date('d-m-Y', strtotime($data->fecha_ingreso));
+        })
+        ->editColumn('guia_fecha_emision', function ($data) {
+            return date('d-m-Y', strtotime($data->guia_fecha_emision));
+        })
+        ->filterColumn('fecha_ingreso', function ($query, $keyword) {
+            $keywords = date('Y-m-d', strtotime($keyword));
+            $query->where('stock_series_view.fecha_ingreso', '>=', $keywords.' 00:00:00')->where('stock_series_view.fecha_ingreso', '<=', $keywords.' 23:59:59');
+        })
+        ->filterColumn('guia_fecha_emision', function ($query, $keyword) {
+            $keywords = date('Y-m-d', strtotime($keyword));
+            $query->where('stock_series_view.guia_fecha_emision', '>=', $keywords.' 00:00:00')->where('stock_series_view.guia_fecha_emision', '<=', $keywords.' 23:59:59');
+        })
+        ->make(true);
+    }
+
+    public function exportar_stock_series_excel()
+    {
+        return Excel::download(new ReporteStockSeriesExcel(), 'stock_series.xlsx');
+    }
 
     ////////////////////////////////////////
     public static function leftZero($lenght, $number)

@@ -1726,6 +1726,14 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'AlmacenController@view_docs_prorrateo')->name('index');
 				Route::get('listar_documentos_prorrateo', 'AlmacenController@listar_documentos_prorrateo');
 			});
+
+			Route::group(['as' => 'stock-series.', 'prefix' => 'stock-serie'], function () {
+
+				Route::get('index', 'AlmacenController@view_stock_series')->name('index');
+				Route::post('listar_stock_series', 'AlmacenController@listar_stock_series');
+				Route::get('exportar_excel', 'AlmacenController@exportar_stock_series_excel');
+
+			});
 		});
 
 		Route::group(['as' => 'variables.', 'prefix' => 'variables'], function () {

@@ -133,6 +133,9 @@
             @if(Auth::user()->tieneAplicacion(96))
             <li><a href="{{route('almacen.reportes.kardex-series.index')}}"> Kardex de Series </a></li>
             @endif
+            @if(Auth::user()->tieneAplicacion(96)) <!-- !TO-DO: falta crear su propio acceso -->
+            <li><a href="{{route('almacen.reportes.stock-series.index')}}"> Stock de Series </a></li>
+            @endif
             <!-- @if(Auth::user()->tieneAplicacion(97))
             <li><a href="{{route('almacen.reportes.documentos-prorrateo.index')}}"> Documentos de Prorrateo </a></li>
             @endif -->
