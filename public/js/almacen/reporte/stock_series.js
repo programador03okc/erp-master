@@ -48,7 +48,9 @@ function listar_stock_series(){
             { 'data': 'serie', 'name': 'serie' },
             { 'data': 'descripcion', 'name': 'descripcion' },
             { 'data': 'unidad_medida', 'name': 'unidad_medida' },
-            { 'data': 'afecto_igv', 'name': 'afecto_igv' },
+            {'data': 'afecto_igv', 'name': 'afecto_igv','render': function (data, type, row){
+                return (row['afecto_igv'])?'SI':'NO';
+            }},
             { 'data': 'fecha_ingreso', 'name': 'fecha_ingreso' },
             { 'data': 'guia_fecha_emision', 'name': 'guia_fecha_emision' },
             { 'data': 'documento_compra', 'name': 'documento_compra' }
