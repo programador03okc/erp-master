@@ -33,8 +33,8 @@ Cobranzas
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-12 table-responsive">
-                    <table class="mytable table table-striped table-condensed table-bordered" id="listar-registros">
+                <div class="col-md-12 ">
+                    <table class="mytable table table-striped table-condensed table-bordered table-responsive" id="listar-registros">
                         <thead>
                             <tr>
                                 <th></th>
