@@ -1514,7 +1514,8 @@ Route::group(['middleware' => ['auth']], function () {
 				//Pendientes de Salida
 				Route::get('index', 'Almacen\Movimiento\ReservasAlmacenController@viewReservasAlmacen')->name('index');
 				Route::post('listarReservasAlmacen', 'Almacen\Movimiento\ReservasAlmacenController@listarReservasAlmacen')->name('listarReservasAlmacen');
-				Route::get('anularReserva/{id}/{id_detalle}', 'Almacen\Movimiento\ReservasAlmacenController@anularReserva');
+				// Route::get('anularReserva/{id}/{id_detalle}', 'Almacen\Movimiento\ReservasAlmacenController@anularReserva');
+				Route::post('anularReserva', 'Almacen\Movimiento\ReservasAlmacenController@anularReserva');
 				Route::post('actualizarReserva', 'Almacen\Movimiento\ReservasAlmacenController@actualizarReserva');
 				Route::get('actualizarReservas', 'Almacen\Movimiento\ReservasAlmacenController@actualizarReservas');
 			});

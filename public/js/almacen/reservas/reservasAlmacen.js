@@ -149,11 +149,11 @@ function listarReservasAlmacen(id_usuario) {
                     : '';
 
 
-                    let $btn_eliminar = (row['numero'] == null && row['estado']===1) ?
+                    let $btn_eliminar = (row['numero'] == null && row['estado']===1 || row['id_tipo_requerimiento']===4) ?
 
                     `<button data-numero="${row['numero']}" type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
 
-                        data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}">
+                        data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-id-tipo-requerimiento="${row['id_tipo_requerimiento']}"  data-detalle="${row['id_detalle_requerimiento']}">
 
                         <i class="fas fa-trash"></i>
 
@@ -248,10 +248,12 @@ $("#reservasAlmacen tbody").on("click", "button.anular", function () {
 
         if (result.isConfirmed) {
             var id = $(this).data("id");
-            var id_detalle = $(this).data('detalle');
+            var id_detalle = $(this).data('detalle'),
+                id_tipo_requerimiento = $(this).attr('data-id-tipo-requerimiento');
             $.ajax({
-                type: 'GET',
-                url: 'anularReserva/' + id+'/'+id_detalle,
+                type: 'POST',
+                url: 'anularReserva',
+                data:{id_tipo_requerimiento:id_tipo_requerimiento,id:id,id_detalle:id_detalle},
                 dataType: 'JSON',
                 success: function (response) {
                     console.log(response);
