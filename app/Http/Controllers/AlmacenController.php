@@ -6915,8 +6915,27 @@ class AlmacenController extends Controller
 
     
     public function obtener_data_stock_series(){
-        $data = StockSeriesView::where('estado','!=',7)->orderBy('fecha_ingreso','desc')->get();
+        set_time_limit(0);
+
+        $stockSeries = StockSeriesView::where('estado','!=',7)->orderBy('fecha_ingreso','desc')->get();
+
+        $data=[];
+        foreach($stockSeries as $element){
+            $data[]=[
+                'almacen'=>$element->almacen??'',
+                'codigo_producto'=>$element->codigo_producto??'',
+                'part_number'=>$element->part_number??'',
+                'serie'=>$element->serie??'',
+                'descripcion'=>$element->descripcion??'',
+                'unidad_medida'=>$element->unidad_medida??'',
+                'afecto_igv'=>$element->afecto_igv??'',
+                'fecha_ingreso'=>$element->fecha_ingreso??'',
+                'guia_fecha_emision'=>$element->guia_fecha_emision??'',
+                'documento_compra'=>$element->documento_compra??''
+            ];
+        }
         return $data;
+        // return response()->json($data);
     
     }
     public function listar_stock_series(){

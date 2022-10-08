@@ -1731,6 +1731,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('index', 'AlmacenController@view_stock_series')->name('index');
 				Route::post('listar_stock_series', 'AlmacenController@listar_stock_series');
+				Route::get('prueba_exportar_excel', 'AlmacenController@obtener_data_stock_series');
 				Route::get('exportar_excel', 'AlmacenController@exportar_stock_series_excel');
 
 			});
