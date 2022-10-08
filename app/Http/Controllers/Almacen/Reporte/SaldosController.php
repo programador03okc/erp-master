@@ -7,6 +7,7 @@ use App\Exports\ReporteSaldosExport;
 use App\Exports\ValorizacionExport;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Almacen;
+use App\models\Configuracion\AccesosUsuarios;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -24,7 +25,14 @@ class SaldosController extends Controller
     {
         $fecha = new Carbon();
         $almacenes = DB::table('almacen.alm_almacen')->where('estado', 1)->orderBy('codigo', 'asc')->get();
-        return view('almacen/reportes/saldos', get_defined_vars());
+
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+
+        return view('almacen/reportes/saldos', get_defined_vars(),compact('array_accesos'));
     }
 
     public function filtrar(Request $request)

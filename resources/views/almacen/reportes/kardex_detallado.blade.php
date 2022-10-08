@@ -7,6 +7,7 @@ Kardex por Producto
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -20,15 +21,17 @@ Kardex por Producto
 @section('content')
 <div class="page-main" type="kardex_detallado">
 
+
+    @if (in_array(172,$array_accesos) || in_array(171,$array_accesos) )
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-
+                @if (in_array(171,$array_accesos))
                 <div class="row">
                     <div class="col-md-12">
                         <div class="input-group-okc">
                             <input class="oculto" name="id_producto">
-                            <input type="text" class="form-control" readonly 
+                            <input type="text" class="form-control" readonly
                                 placeholder="Seleccione un producto..." aria-describedby="basic-addon2" name="descripcion">
                             <div class="input-group-append">
                                 <button type="button" class="input-group-text" id="basic-addon2" onClick="productoModal();">
@@ -38,6 +41,7 @@ Kardex por Producto
                         </div>
                     </div>
                 </div>
+                @endif
                 <div class="row">
                     <div class="col-md-3">
                         <h5>Empresas</h5>
@@ -66,16 +70,18 @@ Kardex por Producto
                         </div>
                     </div>
                 </div>
+                @if (in_array(172,$array_accesos))
                 <div class="row">
                     <div class="col-md-4">
-                        <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                            data-placement="bottom" title="Generar Kardex" 
+                        <button type="button" class="btn btn-primary" data-toggle="tooltip"
+                            data-placement="bottom" title="Generar Kardex"
                             onClick="generar_kardex();">Actualizar Kardex</button>
-                        {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                            data-placement="bottom" title="Exportar Kardex" 
+                        {{-- <button type="submit" class="btn btn-success" data-toggle="tooltip"
+                            data-placement="bottom" title="Exportar Kardex"
                             onClick="download_kardex_excel();">Excel</button> --}}
                     </div>
                 </div>
+                @endif
                 <div class="row">
                     <div class="col-md-12">
                         <table id ="datos_producto" class="table-group">
@@ -121,6 +127,16 @@ Kardex por Producto
             </div>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 @include('almacen.producto.productoModal')
 @endsection

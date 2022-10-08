@@ -27,7 +27,12 @@ class CustomizacionController extends Controller
         // foreach ($accesos_usuario as $key => $value) {
         //     array_push($array_accesos, $value->id_acceso);
         // }
-        return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas','array_accesos'));
         // return view('almacen/customizacion/customizacion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas', 'array_accesos'));
     }
 
@@ -853,7 +858,7 @@ class CustomizacionController extends Controller
                             ['id_almacen', '=', $transformacion->id_almacen]
                         ])
                         ->first();
-                    //si no existe guardo una nueva relacion 
+                    //si no existe guardo una nueva relacion
                     if ($ubi == null) {
                         DB::table('almacen.alm_prod_ubi')->insert([
                             'id_producto' => $item->id_producto,
@@ -936,7 +941,7 @@ class CustomizacionController extends Controller
                             ['id_almacen', '=', $transformacion->id_almacen]
                         ])
                         ->first();
-                    //si no existe guardo una nueva relacion 
+                    //si no existe guardo una nueva relacion
                     if ($ubi == null) {
                         DB::table('almacen.alm_prod_ubi')->insert([
                             'id_producto' => $item->id_producto,
@@ -993,7 +998,7 @@ class CustomizacionController extends Controller
                             ['id_almacen', '=', $transformacion->id_almacen]
                         ])
                         ->first();
-                    //si no existe guardo una nueva relacion 
+                    //si no existe guardo una nueva relacion
                     if ($ubi == null) {
                         DB::table('almacen.alm_prod_ubi')->insert([
                             'id_producto' => $item->id_producto,

@@ -29,12 +29,14 @@ Producto
 @endsection
 
 @section('content')
+
+@if (sizeof($array_accesos_botonera)!==0)
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="producto">
             <!-- <legend class="mylegend">
                 <h2>Producto</h2>
-                
+
             </legend> -->
             <div class="col-md-12" id="tab-producto" style="padding-right:0px;padding-left:0px">
                 <ul class="nav nav-tabs" id="myTab">
@@ -59,7 +61,7 @@ Producto
                                                 <img id="img" src="{{ asset('images/product-default.png')}}">
                                             </div>
                                             <div class="row">
-                                                <input type="file" name="imagen" id="imagen" class="filestyle" data-buttonName="btn-primary" 
+                                                <input type="file" name="imagen" id="imagen" class="filestyle" data-buttonName="btn-primary"
                                                 data-buttonText="Seleccionar imagen" data-size="sm" data-iconName="fa fa-folder-open">
                                             </div>
                                         </div>
@@ -110,7 +112,7 @@ Producto
                                                 <li><label id="subcat_descripcion"></label></li>
                                                 <li><span id="estado" class="label "></span></li>
                                                 <li>
-                                                    <button type="button" class="btn btn-success btn-sm btn-flat" onClick="migrarProductoSoftlink();" 
+                                                    <button type="button" class="btn btn-success btn-sm btn-flat" onClick="migrarProductoSoftlink();"
                                                         data-toggle="tooltip" data-placement="bottom" title="Migrar producto a Softlink">
                                                         Migrar a Softlink <i class="fas fa-step-forward"></i> </button>
                                                 </li>
@@ -310,7 +312,16 @@ Producto
         </div>
     </div>
 </div>
-
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @include('almacen.producto.subcategoriaModal')
 @include('almacen.producto.productoModal')
 @endsection

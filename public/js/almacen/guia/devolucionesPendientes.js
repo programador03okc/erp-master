@@ -50,10 +50,10 @@ function listarDevoluciones() {
                     function (data, type, row) {
                         if (row['estado'] == 1 || row['estado'] == 2) {
                             return `
-                            <div class="btn-group" role="group">
-                                <button type="button" class="guiadev btn btn-info boton" data-toggle="tooltip"
-                                data-placement="bottom" data-id="${row['id_devolucion']}" title="Ingresar Guía" >
-                                <i class="fas fa-sign-in-alt"></i></button>
+                            <div class="btn-group" role="group">`+
+                            (array_accesos.find(element => element === 296)?`<button type="button" class="guiadev btn btn-info boton" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row['id_devolucion']}" title="Ingresar Guía" >
+                            <i class="fas fa-sign-in-alt"></i></button>`:``)+`
                             </div>`;
                         } else {
                             return '';
@@ -217,7 +217,7 @@ function mostrar_detalle_devolucion() {
             <td width="8%">
                 ${element.control_series ?
                 `<input type="text" class="oculto" id="series" value="${element.series}" data-partnumber="${element.part_number}"/>
-                        <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series" 
+                        <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series"
                         onClick="agrega_series_devolucion(${"'" + element.id_detalle + "'"});"></i>` : ''}
                 </td>
             </tr>`;

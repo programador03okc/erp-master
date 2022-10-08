@@ -10,6 +10,7 @@ Reservas de almacén
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 <style>
     #despachosPendientes_filter,
     #despachosEntregados_filter{
@@ -27,6 +28,8 @@ Reservas de almacén
 @endsection
 
 @section('content')
+
+@if (in_array(155,$array_accesos) || in_array(156,$array_accesos) || in_array(154,$array_accesos))
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="reservasAlmacen">
@@ -36,7 +39,7 @@ Reservas de almacén
                     <button id="btn_actualizar_reservas" class="btn btn-default" onClick="actualizarReservas();">Actualizar Reservas</button>
                     @endif
                     <div class="table-responsive">
-                        <table class="mytable table table-condensed table-bordered table-okc-view" 
+                        <table class="mytable table table-condensed table-bordered table-okc-view"
                             id="reservasAlmacen" style="width:100%;">
                             <thead>
                                 <tr>
@@ -67,6 +70,16 @@ Reservas de almacén
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @include('almacen.reservas.editarReserva')
 @endsection
 
@@ -89,6 +102,7 @@ Reservas de almacén
 <script src="{{ asset('js/almacen/reservas/reservasAlmacen.js') }}?v={{filemtime(public_path('js/almacen/reservas/reservasAlmacen.js'))}}"></script>
 
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         listarReservasAlmacen('{{Auth::user()->id_usuario}}');

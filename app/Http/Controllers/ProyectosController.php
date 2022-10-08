@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Comercial\ClienteController;
 use App\Http\Controllers\Proyectos\Catalogos\GenericoController;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Presupuestos\CentroCosto;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -217,7 +218,7 @@ class ProyectosController extends Controller
             ->get();
         return response()->json($data);
     }
-    
+
     // public function delete_iu($id)
     // {
     //     DB::table('proyectos.proy_iu')
@@ -227,13 +228,13 @@ class ProyectosController extends Controller
     //     return response()->json($data);
     // }
 
-    
 
-   
-    
-    
 
-    
+
+
+
+
+
 
     public function listar_opciones_sin_preseje()
     {
@@ -250,7 +251,7 @@ class ProyectosController extends Controller
                 ->where([['proy_op_com.estado', '!=', 7]])
                 ->orderBy('proy_op_com.codigo','desc')
                 ->get();
-        
+
         $lista = [];
         foreach($opciones as $d){
             $preseje = DB::table('proyectos.proy_presup')
@@ -273,17 +274,17 @@ class ProyectosController extends Controller
     {
         $data = DB::table('proyectos.proy_op_com')
             ->select('proy_op_com.*', 'adm_contri.razon_social',
-            DB::raw('(SELECT presup_totales.sub_total FROM finanzas.presup 
+            DB::raw('(SELECT presup_totales.sub_total FROM finanzas.presup
             INNER JOIN finanzas.presup_totales ON(
                 presup.id_presup = presup_totales.id_presup
             )
-            WHERE presup.id_op_com = proy_op_com.id_op_com 
+            WHERE presup.id_op_com = proy_op_com.id_op_com
               AND presup.tp_presup = 3) AS sub_total_propuesta'))
-            // DB::raw('(SELECT proy_presup_importe.sub_total FROM proyectos.proy_presup 
+            // DB::raw('(SELECT proy_presup_importe.sub_total FROM proyectos.proy_presup
             // INNER JOIN proyectos.proy_presup_importe ON(
             //     proy_presup.id_presupuesto = proy_presup_importe.id_presupuesto
             // )
-            // WHERE proy_presup.id_op_com = proy_op_com.id_op_com 
+            // WHERE proy_presup.id_op_com = proy_op_com.id_op_com
             //   AND proy_presup.id_tp_presupuesto = 1) AS sub_total_presint'))
             ->leftjoin('comercial.com_cliente','proy_op_com.cliente','=','com_cliente.id_cliente')
             ->leftjoin('contabilidad.adm_contri','com_cliente.id_contribuyente','=','adm_contri.id_contribuyente')
@@ -292,7 +293,7 @@ class ProyectosController extends Controller
         return response()->json($data);
     }
 
-    
+
     //LECCIONES APRENDIDAS
     public function mostrar_lecciones(Request $request,$id)
     {
@@ -380,7 +381,7 @@ class ProyectosController extends Controller
             ->where([['proy_proyecto.estado','=',1],//elaborado
                     ['proy_proyecto.empresa','=',$emp]])
             ->get();
-        
+
         $lista = [];
 
         //Nro de flujos que necesita para aprobar el proyecto
@@ -448,13 +449,13 @@ class ProyectosController extends Controller
     {
         $id_aprobacion = DB::table('administracion.adm_aprobacion')->insertGetId(
             [
-                'id_flujo'=>$request->id_flujo, 
-                'id_doc_aprob'=>$request->id_doc_aprob, 
-                'id_vobo'=>$request->id_vobo, 
-                'id_usuario'=>$request->id_usuario, 
-                'id_area'=>$request->id_area, 
-                'fecha_vobo'=>$request->fecha_vobo, 
-                'detalle_observacion'=>$request->detalle_observacion, 
+                'id_flujo'=>$request->id_flujo,
+                'id_doc_aprob'=>$request->id_doc_aprob,
+                'id_vobo'=>$request->id_vobo,
+                'id_usuario'=>$request->id_usuario,
+                'id_area'=>$request->id_area,
+                'fecha_vobo'=>$request->fecha_vobo,
+                'detalle_observacion'=>$request->detalle_observacion,
                 'id_rol'=>$request->id_rol
             ],
                 'id_aprobacion'
@@ -509,7 +510,7 @@ class ProyectosController extends Controller
                 ->select('proy_contrato.*','proy_contrato.nro_contrato',
                 'proy_contrato.importe','proy_proyecto.descripcion','adm_contri.razon_social',
                 'sis_moneda.simbolo','proy_proyecto.id_op_com','proy_proyecto.empresa',
-                DB::raw("(SELECT proy_presup.codigo FROM proyectos.proy_presup WHERE 
+                DB::raw("(SELECT proy_presup.codigo FROM proyectos.proy_presup WHERE
                 proy_presup.id_proyecto=proy_proyecto.id_proyecto AND proy_presup.id_tp_presupuesto=2 AND proy_presup.estado!=7) as cod_preseje"))
                 ->join('proyectos.proy_proyecto','proy_proyecto.id_proyecto','=','proy_contrato.id_proyecto')
                 ->leftjoin('proyectos.proy_presup','proy_presup.id_proyecto','=','proy_proyecto.id_proyecto')
@@ -582,7 +583,7 @@ class ProyectosController extends Controller
                 'nivel' => 3,
                 'estado' => 1
             ]);
-            
+
             $id_proyecto = DB::table('proyectos.proy_proyecto')->insertGetId(
                 [
                     'tp_proyecto' => $request->tp_proyecto,
@@ -626,24 +627,24 @@ class ProyectosController extends Controller
             //obtenemos el campo file definido en el formulario
             $file = $request->file('primer_adjunto');
             if (isset($file)){
-                //obtenemos el nombre del archivo 
+                //obtenemos el nombre del archivo
                 $extension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
                 $nombre = $id_contrato.'.'.$request->nro_contrato_proy.'.'.$extension;
                 //indicamos que queremos guardar un nuevo archivo en el disco local
                 File::delete(public_path('proyectos/contratos/'.$nombre));
                 Storage::disk('archivos')->put('proyectos/contratos/'.$nombre,File::get($file));
-                
+
                 $update = DB::table('proyectos.proy_contrato')
                     ->where('id_contrato', $id_contrato)
-                    ->update(['archivo_adjunto' => $nombre]); 
+                    ->update(['archivo_adjunto' => $nombre]);
             } else {
                 $nombre = null;
             }
-            
+
             DB::commit();
             // return response()->json($msj);
             return response()->json($id_proyecto);
-            
+
         } catch (\PDOException $e) {
             DB::rollBack();
         }
@@ -668,7 +669,7 @@ class ProyectosController extends Controller
         ]);
         return response()->json($data);
     }
-    
+
     public function anular_proyecto(Request $request,$id)
     {
         $data = DB::table('proyectos.proy_proyecto')->where('id_proyecto', $id)
@@ -677,7 +678,7 @@ class ProyectosController extends Controller
     }
 
 
-    
+
     public function listar_proyectos_activos()
     {
         $data = DB::table('proyectos.proy_proyecto')
@@ -690,9 +691,9 @@ class ProyectosController extends Controller
     }
 
     public function listar_partidas($id_grupo,$id_proyecto=null){
-        
-        if($id_proyecto != null || $id_proyecto != ''){ 
-            
+
+        if($id_proyecto != null || $id_proyecto != ''){
+
             // $presup = DB::table('proyectos.proy_presup')
             // ->select('presup.*')
             // ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'proy_presup.id_presup')
@@ -746,7 +747,7 @@ class ProyectosController extends Controller
                 '.$p->descripcion.' </h5>
                 <div id="pres-'.$p->id_presup.'" class="oculto" style="width:100%;">
                     <table class="table table-bordered partidas" width="100%">
-                        <tbody> 
+                        <tbody>
                 ';
                 foreach($titulos as $ti){
                     $html .='
@@ -780,7 +781,7 @@ class ProyectosController extends Controller
     public function mostrar_presupuestos_cabecera()
     {
         $data = DB::table('proyectos.proy_presup')
-            ->select('proy_presup.id_presupuesto','proy_presup.codigo','proy_op_com.descripcion', 
+            ->select('proy_presup.id_presupuesto','proy_presup.codigo','proy_op_com.descripcion',
             'adm_contri.razon_social')
             ->join('proyectos.proy_op_com','proy_op_com.id_op_com','=','proy_presup.id_op_com')
             ->join('comercial.com_cliente','proy_op_com.cliente','=','com_cliente.id_cliente')
@@ -802,7 +803,7 @@ class ProyectosController extends Controller
             ->join('proyectos.proy_contrato','proy_contrato.id_contrato','=','proy_presup.id_contrato')
             ->join('proyectos.proy_proyecto','proy_proyecto.id_proyecto','=','proy_contrato.id_proyecto')
             ->join('proyectos.proy_unid_program','proy_unid_program.id_unid_program','=','proy_proyecto.unid_program')
-            
+
             ->join('comercial.com_cliente','proy_op_com.cliente','=','com_cliente.id_cliente')
             ->join('contabilidad.adm_contri','com_cliente.id_contribuyente','=','adm_contri.id_contribuyente')
             ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','proy_presup.moneda')
@@ -823,7 +824,7 @@ class ProyectosController extends Controller
             // ->join('proyectos.proy_contrato','proy_contrato.id_contrato','=','proy_presup.id_contrato')
             // ->join('proyectos.proy_proyecto','proy_proyecto.id_proyecto','=','proy_contrato.id_proyecto')
             // ->join('proyectos.proy_unid_program','proy_unid_program.id_unid_program','=','proy_proyecto.unid_program')
-            
+
             ->join('comercial.com_cliente','proy_op_com.cliente','=','com_cliente.id_cliente')
             ->join('contabilidad.adm_contri','com_cliente.id_contribuyente','=','adm_contri.id_contribuyente')
             ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','proy_presup.moneda')
@@ -952,10 +953,10 @@ class ProyectosController extends Controller
                     $query->where('proy_obs.id_cd_partida', $id);
                 }
                 else if ($origen === "ci"){
-                    $query->where('proy_obs.id_ci_detalle', $id);         
+                    $query->where('proy_obs.id_ci_detalle', $id);
                 }
                 else if ($origen === "gg"){
-                    $query->where('proy_obs.id_gg_detalle', $id);           
+                    $query->where('proy_obs.id_gg_detalle', $id);
                 }
             })
         ->orderBy('proy_obs.fecha_registro')
@@ -966,7 +967,7 @@ class ProyectosController extends Controller
     public function listar_trabajadores()
     {
         $data = DB::table('rrhh.rrhh_trab')
-                ->select('rrhh_trab.*', 'rrhh_perso.nro_documento', 
+                ->select('rrhh_trab.*', 'rrhh_perso.nro_documento',
                 DB::raw("concat(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno, ' ' ,rrhh_perso.apellido_materno) AS nombre_trabajador"))
                 ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
                 ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
@@ -1038,7 +1039,7 @@ class ProyectosController extends Controller
                 ],
                     'id_residente'
                 );
-    
+
             $ids = explode(',',$request->id_res_con);
             $proy = explode(',',$request->id_proyecto);
             $carg = explode(',',$request->id_cargo);
@@ -1046,14 +1047,14 @@ class ProyectosController extends Controller
             $ffin = explode(',',$request->fecha_fin);
             $part = explode(',',$request->participacion);
             $count = count($ids);
-    
+
             for ($i=0; $i<$count; $i++){
                 $id_proy     = $proy[$i];
                 $id_cargo    = $carg[$i];
                 $fec_inicio  = $fini[$i];
                 $fec_fin     = $ffin[$i];
                 $parti       = $part[$i];
-                
+
                 DB::table('proyectos.proy_res_proy')->insert(
                     [
                         'id_residente'     => $id_residente,
@@ -1068,7 +1069,7 @@ class ProyectosController extends Controller
                         'usuario_registro' => $id_usuario
                     ]
                 );
-            }    
+            }
         }
 
         return response()->json($id_residente);
@@ -1242,7 +1243,7 @@ class ProyectosController extends Controller
             $id_proyecto    = $request->c_id_proyecto[$i];
             $fecha_registro = $request->c_fecha_registro[$i];
             $estado         = $request->c_estado[$i];
-            
+
             DB::table('proyectos.proy_porta_detalle')->insert(
                 [
                     // 'id_detalle'     => $id_detalle,
@@ -1279,7 +1280,7 @@ class ProyectosController extends Controller
             $id_proyecto    = $request->c_id_proyecto[$i];
             $fecha_registro = $request->c_fecha_registro[$i];
             $estado         = $request->c_estado[$i];
-            
+
             if ($id_detalle === 0){
                 DB::table('proyectos.proy_porta_detalle')->insert(
                     [
@@ -1328,23 +1329,23 @@ class ProyectosController extends Controller
                 ->join('proyectos.proy_cd','proy_cd.id_presupuesto','=','proy_presup.id_presupuesto')
                 ->join('proyectos.proy_ci','proy_ci.id_presupuesto','=','proy_presup.id_presupuesto')
                 ->join('proyectos.proy_gg','proy_gg.id_presupuesto','=','proy_presup.id_presupuesto')
-                ->join('proyectos.proy_op_com','proy_op_com.id_op_com','=','proy_presup.id_op_com')                
+                ->join('proyectos.proy_op_com','proy_op_com.id_op_com','=','proy_presup.id_op_com')
                 ->join('comercial.com_cliente','proy_op_com.cliente','=','com_cliente.id_cliente')
                 ->join('contabilidad.adm_contri','com_cliente.id_contribuyente','=','adm_contri.id_contribuyente')
                 ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','proy_presup.moneda')
                 ->where([['proy_presup.id_presupuesto', '=', $id_presupuesto]])
                 ->first();
-                
+
         $part_cd = DB::table('proyectos.proy_cd_partida')
             ->select('proy_cd_partida.id_partida','proy_cd_partida.codigo','proy_cd_partida.descripcion',
             'proy_cd_partida.cantidad','proy_cd_partida.importe_unitario','proy_cd_partida.importe_parcial',
             'proy_cd_partida.cod_compo','alm_und_medida.abreviatura','proy_cu_partida.rendimiento',
             'proy_cd_pcronog.dias','proy_cd_pcronog.fecha_inicio','proy_cd_pcronog.fecha_fin',
-                DB::raw('(SELECT SUM(metrado_actual) FROM proyectos.proy_cd_pvalori 
+                DB::raw('(SELECT SUM(metrado_actual) FROM proyectos.proy_cd_pvalori
                     WHERE id_partida = proy_cd_partida.id_partida) AS metrado_anterior'),
-                DB::raw('(SELECT SUM(porcen_actual) FROM proyectos.proy_cd_pvalori 
+                DB::raw('(SELECT SUM(porcen_actual) FROM proyectos.proy_cd_pvalori
                     WHERE id_partida = proy_cd_partida.id_partida) AS porcen_anterior'),
-                DB::raw('(SELECT SUM(costo_actual) FROM proyectos.proy_cd_pvalori 
+                DB::raw('(SELECT SUM(costo_actual) FROM proyectos.proy_cd_pvalori
                     WHERE id_partida = proy_cd_partida.id_partida) AS costo_anterior'),
                 DB::raw('0 as metrado_actual'), DB::raw('0 as porcen_actual'), DB::raw('0 as costo_actual'),
                 DB::raw('0 as metrado_saldo'), DB::raw('0 as porcen_saldo'), DB::raw('0 as costo_saldo'))
@@ -1362,11 +1363,11 @@ class ProyectosController extends Controller
             'proy_ci_detalle.importe_parcial','proy_ci_detalle.cod_compo','alm_und_medida.abreviatura',
             'proy_cu_partida.rendimiento','proy_ci_pcronog.dias','proy_ci_pcronog.fecha_inicio',
             'proy_ci_pcronog.fecha_fin',
-                DB::raw('(SELECT SUM(metrado_actual) FROM proyectos.proy_ci_pvalori 
+                DB::raw('(SELECT SUM(metrado_actual) FROM proyectos.proy_ci_pvalori
                     WHERE id_partida = proy_ci_detalle.id_ci_detalle) AS metrado_anterior'),
-                DB::raw('(SELECT SUM(porcen_actual) FROM proyectos.proy_ci_pvalori 
+                DB::raw('(SELECT SUM(porcen_actual) FROM proyectos.proy_ci_pvalori
                     WHERE id_partida = proy_ci_detalle.id_ci_detalle) AS porcen_anterior'),
-                DB::raw('(SELECT SUM(costo_actual) FROM proyectos.proy_ci_pvalori 
+                DB::raw('(SELECT SUM(costo_actual) FROM proyectos.proy_ci_pvalori
                     WHERE id_partida = proy_ci_detalle.id_ci_detalle) AS costo_anterior'),
                 DB::raw('0 as metrado_actual'), DB::raw('0 as porcen_actual'), DB::raw('0 as costo_actual'),
                 DB::raw('0 as metrado_saldo'), DB::raw('0 as porcen_saldo'), DB::raw('0 as costo_saldo'))
@@ -1384,11 +1385,11 @@ class ProyectosController extends Controller
             'proy_gg_detalle.importe_parcial','proy_gg_detalle.cod_compo','alm_und_medida.abreviatura',
             'proy_cu_partida.rendimiento','proy_gg_pcronog.dias','proy_gg_pcronog.fecha_inicio',
             'proy_gg_pcronog.fecha_fin',
-                DB::raw('(SELECT SUM(metrado_actual) FROM proyectos.proy_gg_pvalori 
+                DB::raw('(SELECT SUM(metrado_actual) FROM proyectos.proy_gg_pvalori
                     WHERE id_partida = proy_gg_detalle.id_gg_detalle) AS metrado_anterior'),
-                DB::raw('(SELECT SUM(porcen_actual) FROM proyectos.proy_gg_pvalori 
+                DB::raw('(SELECT SUM(porcen_actual) FROM proyectos.proy_gg_pvalori
                     WHERE id_partida = proy_gg_detalle.id_gg_detalle) AS porcen_anterior'),
-                DB::raw('(SELECT SUM(costo_actual) FROM proyectos.proy_gg_pvalori 
+                DB::raw('(SELECT SUM(costo_actual) FROM proyectos.proy_gg_pvalori
                     WHERE id_partida = proy_gg_detalle.id_gg_detalle) AS costo_anterior'),
                 DB::raw('0 as metrado_actual'), DB::raw('0 as porcen_actual'), DB::raw('0 as costo_actual'),
                 DB::raw('0 as metrado_saldo'), DB::raw('0 as porcen_saldo'), DB::raw('0 as costo_saldo'))
@@ -1430,7 +1431,7 @@ class ProyectosController extends Controller
             $array = [];
             array_push($componentes_cd,$nuevo_comp);
         }
-        
+
         $compo_ci = DB::table('proyectos.proy_ci_compo')
             ->select('proy_ci_compo.*')
                 ->where([['proy_ci_compo.id_ci', '=', $presupuesto->id_ci]])
@@ -1456,7 +1457,7 @@ class ProyectosController extends Controller
                 "total_comp"=>$total,
                 "partidas"=>$array
             ];
-            
+
             $array = [];
             array_push($componentes_ci,$nuevo_comp);
         }
@@ -1486,7 +1487,7 @@ class ProyectosController extends Controller
                 "total_comp"=>$total,
                 "partidas"=>$array
             ];
-            
+
             $array = [];
             array_push($componentes_gg,$nuevo_comp);
         }
@@ -1497,7 +1498,7 @@ class ProyectosController extends Controller
 
         return response()->json(["presupuesto"=>$presupuesto,"cd"=>$cd,"ci"=>$ci,"gg"=>$gg]);
     }*/
-    
+
     //NUEVO ERP
     public function listar_contratos_proy($id){
         $data = DB::table('proyectos.proy_contrato')
@@ -1523,7 +1524,7 @@ class ProyectosController extends Controller
                     <td>'.$d->importe.'</td>
                     <td><a href="'.$file.'" target="_blank">'.$d->archivo_adjunto.'</a></td>
                     <td style="display:flex;">
-                        <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
+                        <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom"
                         title="Anular Item" onClick="anular_contrato('.$d->id_contrato.');"></i>
                     </td>
                 </tr>';
@@ -1556,16 +1557,16 @@ class ProyectosController extends Controller
             //indicamos que queremos guardar un nuevo archivo en el disco local
             File::delete(public_path('proyectos/contratos/'.$nombre));
             Storage::disk('archivos')->put('proyectos/contratos/'.$nombre,File::get($file));
-            
+
             $update = DB::table('proyectos.proy_contrato')
                 ->where('id_contrato', $id_contrato)
-                ->update(['archivo_adjunto' => $nombre]); 
+                ->update(['archivo_adjunto' => $nombre]);
         } else {
             $nombre = null;
         }
         return response()->json($id_contrato);
     }
-    
+
     public function abrir_adjunto($file_name){
         $file_path = public_path('files/proyectos/contratos/'.$file_name);
         // $result = File::exists('files/proyectos/contratos/'.$file_name);
@@ -1575,7 +1576,7 @@ class ProyectosController extends Controller
             return response()->json("No existe dicho archivo!");
         }
     }
-    
+
     public function anular_contrato($id_contrato){
         $data = DB::table('proyectos.proy_contrato')
             ->where('proy_contrato.id_contrato', $id_contrato)
@@ -1639,7 +1640,7 @@ class ProyectosController extends Controller
                 if ($comp->codigo == $partida->cod_padre){
                     $fecha_emision = $partida->fecha_emision;
                     $fecha_fin = date("Y-m-d",strtotime($partida->fecha_emision."+ ".round(1,0,PHP_ROUND_HALF_UP)." days"));
-                    
+
                     $nuevo = [
                         'id_partida' => $partida->id_partida,
                         'id_presupuesto' => $partida->id_presup,
@@ -1676,7 +1677,7 @@ class ProyectosController extends Controller
             if ($partida->cod_padre == null){
                 $fecha_emision = $partida->fecha_emision;
                 $fecha_fin = date("Y-m-d",strtotime($partida->fecha_emision."+ ".round(1,0,PHP_ROUND_HALF_UP)." days"));
-                
+
                 $nuevo = [
                     'id_partida' => $partida->id_partida,
                     'id_presupuesto' => $partida->id_presup,
@@ -1698,7 +1699,7 @@ class ProyectosController extends Controller
                 $i++;
             }
         }
-        
+
         $presup = DB::table('finanzas.presup')->where('id_presup',$id_presupuesto)->first();
 
         return response()->json(['lista'=>$lista,'unid_program'=>$presup->unid_program_crono,
@@ -1798,7 +1799,7 @@ class ProyectosController extends Controller
                 ['presup_titu.estado', '!=', 7]])
         ->orderBy('presup_titu.codigo')
         ->get();
-        
+
         return response()->json(['partidas'=>$part_cd,'titulos'=>$compo_cd]);
     }
 
@@ -1846,7 +1847,7 @@ class ProyectosController extends Controller
                     'fecha_registro'=>date('Y-m-d'),
                     'estado'=>1
                 ]);
-            } 
+            }
             else {
                 $crono = DB::table('proyectos.presup_par_crono')
                 ->where([['id_partida','=',$id]])
@@ -1872,7 +1873,7 @@ class ProyectosController extends Controller
                     ]);
 
         return response()->json($id_crono);
-    }   
+    }
 
     public function mostrar_cronoval_propuesta($id_propuesta)
     {
@@ -1887,14 +1888,14 @@ class ProyectosController extends Controller
                      ['presup_par_crono.estado', '=', 1]])
             ->orderBy('presup_par_crono.nro_orden')
             ->get();
-            
+
         $titulos = DB::table('finanzas.presup_titu')
             ->select('presup_titu.*')
             ->where([['presup_titu.id_presup', '=', $id_propuesta],
                      ['presup_titu.estado', '!=', 7]])
             ->orderBy('presup_titu.codigo')
             ->get();
-    
+
         $lista = [];
         $list_par = [];
         $fini = null;
@@ -1930,7 +1931,7 @@ class ProyectosController extends Controller
             array_push($lista, $nuevo_comp);
             $list_par = [];
         }
-    
+
         foreach($partidas as $par){
             if ($par->cod_padre == null){
                 if ($ffin == null){
@@ -1948,7 +1949,7 @@ class ProyectosController extends Controller
                     }
                 }
                 array_push($lista, $par);
-            } 
+            }
         }
         $total = DB::table('finanzas.presup_totales')
         ->select('presup_totales.*','sis_moneda.simbolo')
@@ -1956,7 +1957,7 @@ class ProyectosController extends Controller
         ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','presup.moneda')
         ->where('presup_totales.id_presup',$id_propuesta)->first();
 
-        return response()->json([ 'lista'=>$lista, 'fecha_inicio'=>$fini, 'fecha_fin'=>$ffin, 
+        return response()->json([ 'lista'=>$lista, 'fecha_inicio'=>$fini, 'fecha_fin'=>$ffin,
         'total'=>$total->sub_total, 'moneda'=>$total->simbolo ]);
     }
 
@@ -1973,19 +1974,19 @@ class ProyectosController extends Controller
                      ['presup_par_crono.estado', '=', 1]])
             ->orderBy('presup_par_crono.nro_orden')
             ->get();
-            
+
         $titulos = DB::table('finanzas.presup_titu')
             ->select('presup_titu.*')
             ->where([['presup_titu.id_presup', '=', $id_propuesta],
                      ['presup_titu.estado', '!=', 7]])
             ->orderBy('presup_titu.codigo')
             ->get();
-    
+
         $lista = [];
         $list_par = [];
         $fini = null;
         $ffin = null;
-        
+
         foreach($titulos as $ti){
             foreach($partidas as $par){
                 if ($ti->codigo == $par->cod_padre){
@@ -2030,7 +2031,7 @@ class ProyectosController extends Controller
             array_push($lista, $nuevo_comp);
             $list_par = [];
         }
-    
+
         foreach($partidas as $par){
             if ($par->cod_padre == null){
                 if ($ffin == null){
@@ -2061,7 +2062,7 @@ class ProyectosController extends Controller
                     'periodos' => (isset($periodos) ? $periodos : [])
                 ];
                 array_push($lista, $nuevo_par);
-            } 
+            }
         }
         $total = DB::table('finanzas.presup_totales')
         ->select('presup_totales.*','presup.cantidad_cronoval','presup.unid_program_cronoval','sis_moneda.simbolo')
@@ -2069,8 +2070,8 @@ class ProyectosController extends Controller
         ->join('configuracion.sis_moneda','sis_moneda.id_moneda','=','presup.moneda')
         ->where('presup_totales.id_presup',$id_propuesta)->first();
 
-        return response()->json([ 'lista'=>$lista, 'fecha_inicio'=>$fini, 'fecha_fin'=>$ffin, 
-        'total'=>$total->sub_total, 'moneda'=>$total->simbolo, 'cantidad'=>$total->cantidad_cronoval, 
+        return response()->json([ 'lista'=>$lista, 'fecha_inicio'=>$fini, 'fecha_fin'=>$ffin,
+        'total'=>$total->sub_total, 'moneda'=>$total->simbolo, 'cantidad'=>$total->cantidad_cronoval,
         'unid_program'=>$total->unid_program_cronoval ]);
     }
 
@@ -2101,7 +2102,7 @@ class ProyectosController extends Controller
                     'fecha_registro'=>date('Y-m-d H:i:s'),
                     'estado'=>1
                 ]);
-            } 
+            }
             else {
                 $data = DB::table('proyectos.presup_par_cronoval')
                 ->where('id_pcronoval',$id)
@@ -2121,7 +2122,7 @@ class ProyectosController extends Controller
             $fin = explode(',',$request->pffin);
             $tot = explode(',',$request->ptotal);
             $cnt = count($nro);
-    
+
             for ($j=0; $j<$cnt; $j++){
                 $nr = $nro[$j];
                 $nd = $ndias[$j];
@@ -2152,9 +2153,9 @@ class ProyectosController extends Controller
                    'unid_program_cronoval'=>$request->unid_program ]);
 
         return response()->json($data);
-    }   
+    }
 
-    
+
     public function solo_cd($id_pres){
         $data = $this->cd($id_pres);
         return $data['array'];
@@ -2170,7 +2171,7 @@ class ProyectosController extends Controller
             ->where([['id_tp_presupuesto','=',2],['id_proyecto','=',$request->id_proyecto],
                     ['estado','!=',7],['id_presupuesto','!=',$request->id_presupuesto]])
                     ->count();
-    
+
             $data = DB::table('proyectos.proy_presup')
                 ->where('id_presupuesto',$request->id_presupuesto)
                 ->update([
@@ -2259,7 +2260,7 @@ class ProyectosController extends Controller
                     ],
                         'id_presupuesto'
                 );
-        
+
                 DB::table('proyectos.proy_presup_importe')->insert(
                     [
                         'id_presupuesto' => $id_presupuesto,
@@ -2276,7 +2277,7 @@ class ProyectosController extends Controller
                         'total_presupuestado' => $presint->total_presupuestado
                     ]
                 );
-        
+
                 $presint_cd_com = DB::table('proyectos.proy_cd_compo')
                     ->where([['id_cd','=',$presint->id_presupuesto],
                             ['estado','!=',7]])
@@ -2289,7 +2290,7 @@ class ProyectosController extends Controller
                     ->where([['id_gg','=',$presint->id_presupuesto],
                             ['estado','!=',7]])
                     ->get();
-        
+
                 foreach($presint_cd_com as $com)
                 {
                     DB::table('proyectos.proy_cd_compo')->insertGetId([
@@ -2350,7 +2351,7 @@ class ProyectosController extends Controller
                     ->where([['id_gg','=',$presint->id_presupuesto],
                             ['estado','!=',7]])
                     ->get();
-        
+
                 foreach($presint_cd_par as $par)
                 {
                     DB::table('proyectos.proy_cd_partida')->insertGetId([
@@ -2441,7 +2442,7 @@ class ProyectosController extends Controller
             }
             $update = DB::table('proyectos.proy_contrato')
             ->where('id_contrato', $request->id_contrato)
-            ->update(['archivo_adjunto' => $namefile]);    
+            ->update(['archivo_adjunto' => $namefile]);
         }
 
         if ($update){
@@ -2453,7 +2454,7 @@ class ProyectosController extends Controller
         return response()->json($array);
     }
     */
-   
+
 //////////////////////////////////////////
 /////////Finanzas - Presupuesto
 
@@ -2500,7 +2501,7 @@ class ProyectosController extends Controller
 
         if ($tp_presup == 1){
             $tp = 'EB';
-        } 
+        }
         else if ($tp_presup == 2){
             $tp = 'PI';
         }
@@ -2513,7 +2514,7 @@ class ProyectosController extends Controller
         else if ($tp_presup == 5){
             $tp = 'P'.$gru;
         }
-        
+
         $result = $tp."-".$anio."-".$number;
         return $result;
     }
@@ -2568,14 +2569,14 @@ class ProyectosController extends Controller
             ->orderBy('presup_par.codigo')
             ->get()
             ->toArray();
-            
+
         $titulos = DB::table('finanzas.presup_titu')
             ->select('presup_titu.*')
             ->where([['presup_titu.id_presup', '=', $id],
                      ['presup_titu.estado', '=', 1]])
             ->orderBy('presup_titu.codigo')
             ->get();
-    
+
         $nuevos_titulos = [];
         $array = [];
         $html = '';
@@ -2588,20 +2589,20 @@ class ProyectosController extends Controller
                 <td></td>
                 <td>'.$titu->codigo.'</td>
                 <td>
-                    <input type="text" class="input-data" name="descripcion" 
+                    <input type="text" class="input-data" name="descripcion"
                     value="'.$titu->descripcion.'" disabled="true"/>
                 </td>
                 <td></td>
                 <td style="display:flex;">
-                    <i class="fas fa-plus-square icon-tabla green boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-plus-square icon-tabla green boton" data-toggle="tooltip" data-placement="bottom"
                         title="Agregar Título" onClick="agregar_titulo('.$codigo.')"></i>
-                    <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom"
                         title="Agregar Partida" onClick="pardetModal('.$codigo.');"></i>
-                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom"
                         title="Editar Título" onClick="editar_titulo('.$titu->id_titulo.');"></i>
-                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom"
                         title="Guardar Título" onClick="update_titulo('.$titu->id_titulo.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom"
                         title="Anular Título" onClick="anular_titulo('.$titu->id_titulo.','.$codigo.');"></i>
                 </td>
                 <td hidden>'.$titu->cod_padre.'</td>
@@ -2618,7 +2619,7 @@ class ProyectosController extends Controller
                         </td>
                         <td id="pd-'.(isset($par->id_pardet) ? $par->id_pardet : '').'">'.$par->codigo.'</td>
                         <td>'.$par->descripcion.'</td>
-                        <td><input type="text" class="input-data" style="width:50px;" name="relacionado" 
+                        <td><input type="text" class="input-data" style="width:50px;" name="relacionado"
                             value="'.$par->relacionado.'" disabled="true"/></td>
                         <td style="display:flex;">
                         <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" title="Editar Item" onClick="editar_partida('.$par->id_partida.');"></i>
@@ -2742,7 +2743,7 @@ class ProyectosController extends Controller
             'porcentaje_utilidad' => $request->porcentaje_utilidad,
             'importe_utilidad' => $request->importe_utilidad,
         ]);
-        
+
         $this->actualiza_padres($request->id_presup, $request->cod_padre);
         $this->totales_propuesta($request->id_presup);
 
@@ -2810,7 +2811,7 @@ class ProyectosController extends Controller
             ->orderBy('presup_par.codigo')
             ->get()
             ->toArray();
-            
+
         $titulos = DB::table('finanzas.presup_titu')
             ->select('presup_titu.*')
             ->where([['presup_titu.id_presup', '=', $id],
@@ -2862,7 +2863,7 @@ class ProyectosController extends Controller
 
                         if ($det_oc->suma_req > 0){
                             $html .='<td>
-                            <i class="fas fa-list-alt btn-info visible boton" data-toggle="tooltip" data-placement="bottom" 
+                            <i class="fas fa-list-alt btn-info visible boton" data-toggle="tooltip" data-placement="bottom"
                             title="Ver Detalle Consumido" onClick="ver_detalle_partida('.$par->id_partida.','."'".$par->codigo.' '.$par->descripcion."'".','.$par->importe_total.');"></i>
                             </td>';
                         } else {
@@ -2871,7 +2872,7 @@ class ProyectosController extends Controller
                     } else {
                         $html .= '<td></td><td></td><td></td>';
                     }
-                    
+
                     $html .='</tr>';
                 }
             }
@@ -2881,7 +2882,7 @@ class ProyectosController extends Controller
     }
 
     public function download_propuesta($id){
-        
+
         $partidas = DB::table('finanzas.presup_par')
             ->select('presup_par.*','presup_pardet.descripcion as pardet_descripcion','alm_und_medida.abreviatura',
             'presup_parobs.descripcion as obs')
@@ -2893,14 +2894,14 @@ class ProyectosController extends Controller
             ->orderBy('presup_par.codigo')
             ->get()
             ->toArray();
-            
+
         $titulos = DB::table('finanzas.presup_titu')
             ->select('presup_titu.*')
             ->where([['presup_titu.id_presup', '=', $id],
                      ['presup_titu.estado', '=', 1]])
             ->orderBy('presup_titu.codigo')
             ->get();
-    
+
         $detalle = '';
         $total = 0;
         $utilidad = 0;
@@ -2950,7 +2951,7 @@ class ProyectosController extends Controller
         <html>
             <head>
             <style type="text/css">
-                *{ 
+                *{
                     font-family: Calibri;
                 }
                 body{
@@ -3046,8 +3047,8 @@ class ProyectosController extends Controller
             ->where([['presup_par.cod_padre', '=', $ti->codigo],
                     ['presup_par.id_presup', '=', $id_presup],
                     ['presup_par.estado', '=', 1]])
-            ->first();    
-            
+            ->first();
+
             if (isset($part->suma_partidas)){
                 //Actualiza totales de los padres
                 $update = DB::table('finanzas.presup_titu')
@@ -3091,7 +3092,7 @@ class ProyectosController extends Controller
             ->where([['id_presup','=',$pres->id_presup],['relacionado','like','CI%']])
             ->orderBy('relacionado','asc')
             ->get();
-    
+
             // $data = DB::table('proyectos.proy_ci_compo')
             // ->insertGetId([
             //     'id_ci' => $id_presupuesto,
@@ -3104,12 +3105,12 @@ class ProyectosController extends Controller
             // ],
             //     'id_ci_compo'
             // );
-    
+
             foreach($titulos as $d){
                 $codigo = substr($d->relacionado, 2, (strlen($d->relacionado)-2));
                 $tiene = strstr($d->relacionado, '.', true);
                 $padre = (strlen($tiene) > 0 ? substr($tiene, 2, strlen($tiene)) : '');
-    
+
                 $data = DB::table('proyectos.proy_ci_compo')
                 ->insertGetId([
                     'id_ci' => $id_presupuesto,
@@ -3172,7 +3173,7 @@ class ProyectosController extends Controller
         ->first();
         return response()->json($data);
     }
-    
+
     public function copiar_partidas_presint($id_presupuesto, $id_presup)
     {
         $part_cd = DB::table('proyectos.proy_cd_partida')
@@ -3320,7 +3321,7 @@ class ProyectosController extends Controller
                 'total_propuesta' => $request->total_propuesta
             ]);
             // $totales = DB::table('finanzas.presup_totales')->where('id_presup',$id_presup)->first();
-            
+
             // return response()->json(['data'=>$id_presup,'totales'=>$totales]);
         }
         return response()->json($id_presup);
@@ -3343,7 +3344,7 @@ class ProyectosController extends Controller
             $this->totales_propuesta($request->id_presup);
 
             $totales = DB::table('finanzas.presup_totales')->where('id_presup',$request->id_presup)->first();
-            
+
             return response()->json(['data'=>$data,'totales'=>$totales]);
         }
         return response()->json($data);
@@ -3403,7 +3404,7 @@ class ProyectosController extends Controller
             $porcentaje_igv = 0;
             if ($imp->porcen_igv > 0){
                 $porcentaje_igv = $imp->porcen_igv;
-            } 
+            }
             else {
                 $igv = DB::table('contabilidad.cont_impuesto')
                 ->where([['codigo','=','IGV'],['estado','=',1]])
@@ -3414,7 +3415,7 @@ class ProyectosController extends Controller
             //actualiza total igv
             $total_igv = $total * $porcentaje_igv / 100;
             $total_propuesta = $total + $total_igv;
-            
+
             DB::table('finanzas.presup_totales')->where('id_presup',$id_presup)
             ->update([  'sub_total'=>$totales->suma_partidas,
                         'importe_utilidad'=>$importe_uti,
@@ -3440,9 +3441,9 @@ class ProyectosController extends Controller
     public function listar_propuestas_preseje(){
         $tp_propuesta = 3;
         $data = DB::table('finanzas.presup')
-        ->select('presup.*',DB::raw('(SELECT proy_presup.id_presupuesto FROM proyectos.proy_presup WHERE 
+        ->select('presup.*',DB::raw('(SELECT proy_presup.id_presupuesto FROM proyectos.proy_presup WHERE
                 proy_presup.id_op_com = presup.id_op_com and
-                proy_presup.id_tp_presupuesto = 2 and 
+                proy_presup.id_tp_presupuesto = 2 and
                 proy_presup.estado != 7
                 order by proy_presup.version desc limit 1) AS id_presupuesto'))
         ->where([['presup.tp_presup','=',$tp_propuesta],
@@ -3499,14 +3500,14 @@ class ProyectosController extends Controller
             ->orderBy('presup_par.codigo')
             ->get()
             ->toArray();
-            
+
         $titulos = DB::table('finanzas.presup_titu')
             ->select('presup_titu.*')
             ->where([['presup_titu.id_presup', '=', $id],
                      ['presup_titu.estado', '=', 1]])
             ->orderBy('presup_titu.codigo')
             ->get();
-    
+
         $nuevos_titulos = [];
         $array = [];
         $html = '';
@@ -3517,10 +3518,10 @@ class ProyectosController extends Controller
             $codigo = "'".$titu->codigo."'";
             $html .= '
             <tr id="ti-'.$titu->id_titulo.'" class="green success" >
-                <td></td> 
+                <td></td>
                 <td><strong>'.$titu->codigo.'</strong></td>
                 <td>
-                    <input type="text" class="input-data" name="descripcion" 
+                    <input type="text" class="input-data" name="descripcion"
                         value="'.$titu->descripcion.'" disabled="true"/>
                 </td>
                 <td></td>
@@ -3530,15 +3531,15 @@ class ProyectosController extends Controller
                 <td></td>
                 <td></td>
                 <td style="display:flex;">
-                    <i class="fas fa-plus-square icon-tabla green boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-plus-square icon-tabla green boton" data-toggle="tooltip" data-placement="bottom"
                         title="Agregar Título" onClick="agregar_titulo('.$codigo.')"></i>
-                    <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom"
                         title="Agregar Partida" onClick="agregar_partida('.$codigo.');"></i>
-                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-pen-square icon-tabla blue visible boton" data-toggle="tooltip" data-placement="bottom"
                         title="Editar Título" onClick="editar_titulo('.$titu->id_titulo.');"></i>
-                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-save icon-tabla green oculto boton" data-toggle="tooltip" data-placement="bottom"
                         title="Guardar Título" onClick="update_titulo('.$titu->id_titulo.');"></i>
-                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom" 
+                    <i class="fas fa-trash icon-tabla red boton" data-toggle="tooltip" data-placement="bottom"
                         title="Anular Título" onClick="anular_titulo('.$titu->id_titulo.','."'".$titu->codigo."'".');"></i>
                 </td>
                 <td hidden>'.$titu->cod_padre.'</td>
@@ -3555,7 +3556,7 @@ class ProyectosController extends Controller
                         </td>
                         <td id="pd-'.(isset($par->id_pardet) ? $par->id_pardet : '').'">'.$par->codigo.'</td>
                         <td>
-                            <input type="text" class="input-data" name="descripcion" 
+                            <input type="text" class="input-data" name="descripcion"
                                 value="'.($par->descripcion !== null ? $par->descripcion : $par->des_pardet).'" disabled="true"/>
                         </td>
                         <td>
@@ -3609,7 +3610,7 @@ class ProyectosController extends Controller
                     <td></td>
                     <td id="pd-'.(isset($par->id_pardet) ? $par->id_pardet : '').'">'.$par->codigo.'</td>
                     <td>
-                        <input type="text" class="input-data" name="descripcion" 
+                        <input type="text" class="input-data" name="descripcion"
                             value="'.($par->descripcion !== null ? $par->descripcion : $par->des_pardet).'" disabled="true"/>
                     </td>
                     <td>
@@ -3654,7 +3655,7 @@ class ProyectosController extends Controller
                 </tr>';
             }
         }
-        
+
         return json_encode($html);
     }
 
@@ -3696,7 +3697,7 @@ class ProyectosController extends Controller
             //obtiene el codigo
             $padre = substr($cid->codigo,0,strlen($cid->codigo)-2);
             $nuevo_codigo = $padre.$this->leftZero(2,$nuevo);
-            
+
             //obtener el anterior y sumarle una posicion
             $ant = DB::table('finanzas.presup_par')
             ->where([['id_presup','=',$cid->id_presup],
@@ -3714,7 +3715,7 @@ class ProyectosController extends Controller
                 ->where('id_partida',$id_partida)
                 ->update(['codigo' => $nuevo_codigo]);
             }
-        } 
+        }
         else {
             $anterior = intval(substr($cid->codigo,-5,2));
             //resta ultimo numero
@@ -3730,7 +3731,7 @@ class ProyectosController extends Controller
                     ['estado','!=',7],
                     ['id_presup','=',$cid->id_presup]])
             ->count();
-            
+
             $cod = $nue_padre.'.'.$this->leftZero(2,($count+1));
 
             if (isset($cod)){
@@ -3768,7 +3769,7 @@ class ProyectosController extends Controller
         ->first();
         //codigo actual
         $codigo = $cid->codigo;
-        //obtiene ultimo numero 
+        //obtiene ultimo numero
         $ultimo = intval(substr($cid->codigo,-2,2));
         $update = 0;
         $padre = substr($cid->codigo,0,strlen($cid->codigo)-3);
@@ -3799,7 +3800,7 @@ class ProyectosController extends Controller
                 ->where('id_partida',$id_partida)
                 ->update(['codigo' => $nuevo_codigo]);
             }
-        } 
+        }
         else {
             //obtiene padre actual
             $padre_actual = intval(substr($cid->codigo,-5,2));
@@ -3808,14 +3809,14 @@ class ProyectosController extends Controller
             //obtiene el codigo
             $nuevo_padre = substr($cid->codigo,0,strlen($cid->codigo)-5).$this->leftZero(2,$nue);
             $nuevo_codigo = $nuevo_padre.'.'.$this->leftZero(2,1);
-            
+
             if (isset($nuevo_codigo)){
                 // actualiza los hijos del nuevo padre
                 $hijos = DB::table('finanzas.presup_par')
                 ->where([['cod_padre','=',$nuevo_padre],['estado','!=',7],['id_presup','=',$cid->id_presup]])
                 ->orderBy('codigo','asc')
                 ->get();
-                
+
                 $i = 1;
                 foreach($hijos as $h){
                     $i++;
@@ -3878,7 +3879,7 @@ class ProyectosController extends Controller
             'proy_presup_importe.sub_total','proy_presup_importe.total_igv')
             ->join('proyectos.proy_presup_importe','proy_presup_importe.id_presupuesto','=','proy_presup.id_presupuesto')
             ->where([['proy_presup.id_op_com','=',$op->id_op_com],
-                     ['proy_presup.id_tp_presupuesto','=',2],//Pres. Ejecucion         
+                     ['proy_presup.id_tp_presupuesto','=',2],//Pres. Ejecucion
                      ['proy_presup.estado','=',8]])//Emitido
             ->first();
 
@@ -3914,7 +3915,7 @@ class ProyectosController extends Controller
                                     ['log_det_ord_compra.estado','!=',7],
                                     ['alm_det_req.estado','!=',7]])
                             ->first();
-                            
+
                             if (isset($det_oc)){
                                 $total_oc_sin_igv += $det_oc->suma_sin_igv;
                                 // $total_oc_con_igv += $det_oc->suma_con_igv;
@@ -4040,7 +4041,7 @@ class ProyectosController extends Controller
 
         $lista = [];
         $list_par = [];
-        
+
         foreach($titulos as $ti){
             foreach($partidas as $par){
                 if ($ti->codigo == $par->cod_padre){
@@ -4102,9 +4103,9 @@ class ProyectosController extends Controller
                     'avance_actual' => 0
                 ];
                 array_push($lista, $nuevo_par);
-            } 
+            }
         }
-        
+
         return response()->json(['periodo'=>$periodo,'presup'=>$presup,'lista'=>$lista]);
     }
 
@@ -4159,7 +4160,7 @@ class ProyectosController extends Controller
 
         $lista = [];
         $list_par = [];
-        
+
         foreach($titulos as $ti){
             foreach($partidas as $par){
                 if ($ti->codigo == $par->cod_padre){
@@ -4236,7 +4237,7 @@ class ProyectosController extends Controller
                     'avance_actual' => (isset($valori) ? floatval($valori->avance_metrado) : 0)
                 ];
                 array_push($lista, $nuevo_par);
-            } 
+            }
         }
         return response()->json(['total'=>(isset($periodo) ? $periodo->total : 0),'presup'=>$presup,'lista'=>$lista]);
     }
@@ -4246,17 +4247,17 @@ class ProyectosController extends Controller
         $usuario = Auth::user()->id_usuario;
         $id_valorizacion = DB::table('proyectos.proy_valori')->insertGetId(
             [
-                'id_presup' => $request->id_presup, 
-                'fecha_valorizacion' => $request->fecha_valorizacion, 
-                'id_residente' => $request->id_residente, 
-                'numero' => $request->numero, 
-                'fecha_inicio' => $request->fecha_inicio, 
-                'fecha_fin' => $request->fecha_fin, 
-                'id_periodo' => $request->id_periodo, 
-                'total' => $request->total, 
-                'usuario_registro' => $usuario, 
-                'estado' => 1, 
-                'fecha_registro' => date('Y-m-d H:i:s'), 
+                'id_presup' => $request->id_presup,
+                'fecha_valorizacion' => $request->fecha_valorizacion,
+                'id_residente' => $request->id_residente,
+                'numero' => $request->numero,
+                'fecha_inicio' => $request->fecha_inicio,
+                'fecha_fin' => $request->fecha_fin,
+                'id_periodo' => $request->id_periodo,
+                'total' => $request->total,
+                'usuario_registro' => $usuario,
+                'estado' => 1,
+                'fecha_registro' => date('Y-m-d H:i:s'),
             ],
                 'id_valorizacion'
             );
@@ -4265,12 +4266,12 @@ class ProyectosController extends Controller
         $par = explode(',',$request->id_partida);
         $ava = explode(',',$request->avance_actual);
         $count = count($ids);
-        
+
         for ($i=0; $i<$count; $i++){
             $id = $ids[$i];
             $pa = $par[$i];
             $av = $ava[$i];
-            
+
             DB::table('proyectos.proy_valori_par')
             ->insert([
                 'id_valorizacion'=>$id_valorizacion,
@@ -4299,18 +4300,18 @@ class ProyectosController extends Controller
 
         return response()->json($id_valorizacion);
     }
-    
+
     public function update_valorizacion(Request $request)
     {
         $data = DB::table('proyectos.proy_valori')
         ->where('id_valorizacion',$request->id_valorizacion)
         ->update([
-            'fecha_valorizacion' => $request->fecha_valorizacion, 
-            // 'id_residente' => $request->id_residente, 
-            // 'fecha_inicio' => $request->fecha_inicio, 
-            // 'fecha_fin' => $request->fecha_fin, 
-            // 'id_periodo' => $request->id_periodo, 
-            'total' => $request->total, 
+            'fecha_valorizacion' => $request->fecha_valorizacion,
+            // 'id_residente' => $request->id_residente,
+            // 'fecha_inicio' => $request->fecha_inicio,
+            // 'fecha_fin' => $request->fecha_fin,
+            // 'id_periodo' => $request->id_periodo,
+            'total' => $request->total,
         ]);
 
         $ids = explode(',',$request->id_valori_par);
@@ -4323,12 +4324,12 @@ class ProyectosController extends Controller
             $id = $ids[$i];
             $pa = $par[$i];
             $av = $ava[$i];
-            
+
             if ($id !== '0'){
                 $data = DB::table('proyectos.proy_valori_par')
                 ->where('id_valori_par',$id)
                 ->update([ 'avance_metrado'=>$av ]);
-            } 
+            }
             else {
                 $data = DB::table('proyectos.proy_valori_par')
                 ->insert([
@@ -4338,7 +4339,7 @@ class ProyectosController extends Controller
                     'usuario_registro'=>$usuario,
                     'fecha_registro'=>date('Y-m-d H:i:s'),
                     'estado'=>1
-                ]);    
+                ]);
             }
         }
         return response()->json($data);
@@ -4368,7 +4369,7 @@ class ProyectosController extends Controller
             DB::table('proyectos.presup_periodos')
             ->where('id_periodo',$valori->id_periodo)
             ->update(['estado'=>1]);//Elaborado
-    
+
             DB::table('finanzas.presup')
             ->where('id_presup',$valori->id_presup)
             ->update(['estado'=>1]);//Elaborado
@@ -4390,7 +4391,7 @@ class ProyectosController extends Controller
         ->where([['id_presup','=',$id_presup],['estado','!=',7]])
         ->orderBy('numero','asc')
         ->get();
-        
+
 
         $pres_programado = DB::table('proyectos.proy_presup_periodos')
         ->where([['id_presupuesto','=',$id_presupuesto],['estado','!=',7]])
@@ -4443,20 +4444,20 @@ class ProyectosController extends Controller
         $dias = 30;//dias en un mes
         $data = DB::table('proyectos.proy_proyecto')
         ->select('proy_proyecto.codigo','proy_proyecto.descripcion','proy_proyecto.importe',
-        DB::raw('(CASE 
-                    WHEN proy_proyecto.unid_program = 4 THEN proy_proyecto.plazo_ejecucion 
-                    WHEN proy_proyecto.unid_program = 1 THEN (proy_proyecto.plazo_ejecucion / '.$dias.') 
+        DB::raw('(CASE
+                    WHEN proy_proyecto.unid_program = 4 THEN proy_proyecto.plazo_ejecucion
+                    WHEN proy_proyecto.unid_program = 1 THEN (proy_proyecto.plazo_ejecucion / '.$dias.')
                  ELSE ((proy_proyecto.plazo_ejecucion * proy_unid_program.dias) / '.$dias.') END) AS cant_mes'),
-        DB::raw("(SELECT proy_valori.total 
+        DB::raw("(SELECT proy_valori.total
                     FROM proyectos.proy_valori
                     WHERE proy_valori.id_presup = presup.id_presup
-                    AND proy_valori.estado != 7 
+                    AND proy_valori.estado != 7
                     ORDER BY numero desc LIMIT 1
                     ) AS actual_ejecutado"),
-        DB::raw("(SELECT SUM(proy_valori.total) 
+        DB::raw("(SELECT SUM(proy_valori.total)
                     FROM proyectos.proy_valori
                     WHERE proy_valori.id_presup = presup.id_presup
-                    AND proy_valori.estado != 7 
+                    AND proy_valori.estado != 7
                     ) AS acumulado_ejecutado"),
         DB::raw("(SELECT SUM(presup_periodos.total)
                     FROM proyectos.presup_periodos
@@ -4470,7 +4471,7 @@ class ProyectosController extends Controller
         //                             presup_par.estado = 1
         //                     )
         //             INNER JOIN almacen.alm_det_req ON(
-        //                         alm_det_req.partida = presup_par.id_partida 
+        //                         alm_det_req.partida = presup_par.id_partida
         //                     )
         //             WHERE proy_presup.id_proyecto = proy_proyecto.id_proyecto
         //             AND proy_presup.cronograma = true
@@ -4486,7 +4487,7 @@ class ProyectosController extends Controller
                  ['presup.tp_presup','=',3]
                 ])
         ->get();
-        
+
         $nro_opciones = DB::table('proyectos.proy_op_com')
         ->where([['estado','!=',7]])
         ->count();
@@ -4501,6 +4502,6 @@ class ProyectosController extends Controller
     }
 
     ////////////////////////////////////////
-    
+
 
 }

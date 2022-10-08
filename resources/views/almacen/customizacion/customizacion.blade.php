@@ -7,6 +7,7 @@ Customización
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -18,7 +19,7 @@ Customización
 @endsection
 
 @section('content')
-
+@if (in_array(138,$array_accesos) || in_array(139,$array_accesos) || in_array(140,$array_accesos) || in_array(141,$array_accesos)|| in_array(142,$array_accesos))
 <div class="page-main" type="customizacion">
 
     <div class="box">
@@ -27,48 +28,51 @@ Customización
 
                 <h3 class="box-title">Customización N° <span class="badge badge-secondary" id="codigo">CU 00-000</span></h3>
                 <div class="box-tools pull-right">
-
-                    <button type="button" class="btn btn-sm btn-warning nueva-customizacion" data-toggle="tooltip" data-placement="bottom" 
+                    @if (in_array(138,$array_accesos))
+                    <button type="button" class="btn btn-sm btn-warning nueva-customizacion" data-toggle="tooltip" data-placement="bottom"
                         title="Nueva Customización">
                         <i class="fas fa-copy"></i> Nuevo
                     </button>
-
+                    @endif
                     <input id="submit_customizacion" class="btn btn-sm btn-success guardar-customizacion" type="submit" style="display: none;"
                         data-toggle="tooltip" data-placement="bottom" title="Actualizar customizacion" value="Guardar">
-
-                    <button type="button" class="btn btn-sm btn-primary edit-customizacion" 
+                    @if (in_array(139,$array_accesos))
+                    <button type="button" class="btn btn-sm btn-primary edit-customizacion"
                         data-toggle="tooltip" data-placement="bottom" title="Editar customizacion">
                         <i class="fas fa-pencil-alt"></i> Editar
                     </button>
-
-                    <button type="button" class="btn btn-sm btn-danger anular-customizacion" data-toggle="tooltip" data-placement="bottom" 
+                    @endif
+                    @if (in_array(140,$array_accesos))
+                    <button type="button" class="btn btn-sm btn-danger anular-customizacion" data-toggle="tooltip" data-placement="bottom"
                         title="Anular customizacion" onClick="anularCustomizacion();">
                         <i class="fas fa-trash"></i> Anular
                     </button>
-
-                    <button type="button" class="btn btn-sm btn-info buscar-customizacion" data-toggle="tooltip" data-placement="bottom" 
+                    @endif
+                    @if (in_array(141,$array_accesos))
+                    <button type="button" class="btn btn-sm btn-info buscar-customizacion" data-toggle="tooltip" data-placement="bottom"
                         title="Buscar historial de registros" onClick="transformacionModal('C');">
                         <i class="fas fa-search"></i> Buscar</button>
-
-                    <button type="button" class="btn btn-sm btn-secondary cancelar" data-toggle="tooltip" data-placement="bottom" 
+                    @endif
+                    <button type="button" class="btn btn-sm btn-secondary cancelar" data-toggle="tooltip" data-placement="bottom"
                         title="Cancelar" style="display: none;">
                             Cancelar</button>
-                            
-                    <button type="button" class="btn btn-sm btn-success procesar-customizacion" data-toggle="tooltip" data-placement="bottom" 
+                    @if (in_array(142,$array_accesos))
+                    <button type="button" class="btn btn-sm btn-success procesar-customizacion" data-toggle="tooltip" data-placement="bottom"
                         title="Procesar customizacion" onClick="procesarCustomizacion();">
                         <i class="fas fa-share"></i> Procesar
                     </button>
+                    @endif
 
-                    <button type="button" class="btn btn-sm btn-default imprimir-ingreso" data-toggle="tooltip" data-placement="bottom" 
+                    <button type="button" class="btn btn-sm btn-default imprimir-ingreso" data-toggle="tooltip" data-placement="bottom"
                         title="Imprimir Ingreso" onClick="imprimirIngreso();"><i class="fas fa-file-pdf"></i> Ingreso</button>
 
-                    <button type="button" class="btn btn-sm btn-default imprimir-salida" data-toggle="tooltip" data-placement="bottom" 
+                    <button type="button" class="btn btn-sm btn-default imprimir-salida" data-toggle="tooltip" data-placement="bottom"
                         title="Imprimir Salida" onClick="imprimirSalida();"><i class="fas fa-file-pdf"></i> Salida</button>
 
                 </div>
             </div>
             <div class="box-body">
-            
+
                 <div class="row" style="padding-left: 10px;padding-right: 10px;margin-bottom: 0px;">
                     <div class="col-md-12">
                         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
@@ -80,7 +84,7 @@ Customización
                             <div class="col-md-4">
                                 <label class="col-sm-4 control-label">Almacén: </label>
                                 <div class="col-sm-8">
-                                    <select class="form-control js-example-basic-single edition limpiarCustomizacion" 
+                                    <select class="form-control js-example-basic-single edition limpiarCustomizacion"
                                         name="id_almacen" required>
                                         <option value="">Elija una opción</option>
                                         @foreach ($almacenes as $almacen)
@@ -92,7 +96,7 @@ Customización
                             <div class="col-md-8">
                                 <label class="col-sm-2 control-label">Comentario: </label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control edition limpiarCustomizacion" 
+                                    <input type="text" class="form-control edition limpiarCustomizacion"
                                         name="observacion" required/>
                                 </div>
                             </div>
@@ -103,7 +107,7 @@ Customización
                     <div class="col-md-4">
                         <label class="col-sm-4 control-label">Responsable: </label>
                         <div class="col-sm-8">
-                            <select class="form-control js-example-basic-single edition limpiarCustomizacion" 
+                            <select class="form-control js-example-basic-single edition limpiarCustomizacion"
                                 name="id_usuario" required>
                                 <option value="">Elija una opción</option>
                                 @foreach ($usuarios as $usuario)
@@ -127,7 +131,7 @@ Customización
                     <div class="col-md-4">
                         <label class="col-sm-4 control-label">Moneda: </label>
                         <div class="col-sm-8">
-                            <select class="form-control js-example-basic-single edition limpiarCustomizacion" 
+                            <select class="form-control js-example-basic-single edition limpiarCustomizacion"
                                 name="id_moneda" required>
                                 <option value="">Elija una opción</option>
                                 @foreach ($monedas as $moneda)
@@ -148,7 +152,7 @@ Customización
                     </div>
                 </div>
             </form>
-        
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="panel panel-info" style="margin-bottom: 0px;">
@@ -165,11 +169,11 @@ Customización
                                     <th>Unit.</th>
                                     <th>Total</th>
                                     <th width='8%' style="padding:0px;">
-                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition" 
-                                        id="addProductoBase" data-toggle="tooltip" data-placement="bottom" 
+                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition"
+                                        id="addProductoBase" data-toggle="tooltip" data-placement="bottom"
                                         title="Agregar Producto" onClick="agregarProductoBase();"></i>
-                                        <i class="fas fa-sync-alt icon-tabla boton add-new-sobrante edition" 
-                                        id="addProductoBase" data-toggle="tooltip" data-placement="bottom" 
+                                        <i class="fas fa-sync-alt icon-tabla boton add-new-sobrante edition"
+                                        id="addProductoBase" data-toggle="tooltip" data-placement="bottom"
                                         title="Obtener el costo promedio actual" onClick="actualizarCostosBase();"></i>
                                     </th>
                                 </tr>
@@ -195,8 +199,8 @@ Customización
                                     <th>Unit.</th>
                                     <th>Total</th>
                                     <th width='8%' style="padding:0px;">
-                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition" 
-                                        id="addSobrante" data-toggle="tooltip" data-placement="bottom" 
+                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition"
+                                        id="addSobrante" data-toggle="tooltip" data-placement="bottom"
                                         title="Agregar Producto" onClick="agregarProductoSobrante();"></i>
                                     </th>
                                 </tr>
@@ -221,8 +225,8 @@ Customización
                                     <th>Unit.</th>
                                     <th>Total</th>
                                     <th width='8%' style="padding:0px;">
-                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition" 
-                                        id="addSobrante" data-toggle="tooltip" data-placement="bottom" 
+                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition"
+                                        id="addSobrante" data-toggle="tooltip" data-placement="bottom"
                                         title="Agregar Producto" onClick="agregarProductoTransformado();"></i>
                                     </th>
                                 </tr>
@@ -249,7 +253,7 @@ Customización
                                     <th>Descripción</th>
                                     <th width='15%'>Total</th>
                                     <th style="padding:0px;">
-                                        <i class="fas fa-plus-square icon-tabla green boton add-new-servicio edition" 
+                                        <i class="fas fa-plus-square icon-tabla green boton add-new-servicio edition"
                                         id="addServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Servicio"></i>
                                     </th>
                                 </tr>
@@ -271,7 +275,7 @@ Customización
                                     <th>Unit.</th>
                                     <th>Total</th>
                                     <th style="padding:0px;">
-                                        <i class="fas fa-plus-square icon-tabla green boton add-new-indirecto edition" 
+                                        <i class="fas fa-plus-square icon-tabla green boton add-new-indirecto edition"
                                         id="addCostoIndirecto" data-toggle="tooltip" data-placement="bottom" title="Agregar Indirecto"></i>
                                     </th>
                                 </tr>
@@ -284,6 +288,17 @@ Customización
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
+
 @include('almacen.customizacion.transformacionModal')
 @include('almacen.customizacion.transformacionProcesar')
 @include('almacen.customizacion.productoCatalogoModal')

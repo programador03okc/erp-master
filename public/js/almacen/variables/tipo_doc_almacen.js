@@ -1,10 +1,13 @@
 $(function(){
     var vardataTables = funcDatatables();
     var form = $('.page-main form[type=register]').attr('id');
-
+    const button_copiar= (array_accesos.find(element => element === 203)?vardataTables[2][0]:[]),
+    button_descargar_excel= (array_accesos.find(element => element === 204)?vardataTables[2][1]:[]),
+    button_descargar_pdf= (array_accesos.find(element => element === 205)?vardataTables[2][2]:[]),
+    button_imprimir= (array_accesos.find(element => element === 206)?vardataTables[2][3]:[]);
     $('#listaTiposDocsAlmacen').dataTable({
         'dom': vardataTables[1],
-        'buttons': vardataTables[2],
+        'buttons': [button_copiar,button_descargar_excel,button_descargar_pdf,button_imprimir],
         'language' : vardataTables[0],
         'ajax': 'listar_tp_docs',
         'columns': [
@@ -32,7 +35,7 @@ $(function(){
         mostrar_tipo_doc(id);
         changeStateButton('historial');
     });
-    
+
 });
 
 function mostrar_tipo_doc(id){
@@ -49,7 +52,7 @@ function mostrar_tipo_doc(id){
             $('[name=descripcion]').val(response[0].descripcion);
             $('[name=tipo]').val(response[0].tipo);
             $('[name=abreviatura]').val(response[0].abreviatura);
-            
+
         }
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

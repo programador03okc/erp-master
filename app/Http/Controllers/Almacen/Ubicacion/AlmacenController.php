@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
+use App\models\Configuracion\AccesosUsuarios;
 
 class AlmacenController extends Controller
 {
@@ -14,7 +15,20 @@ class AlmacenController extends Controller
     {
         $sedes = GenericoAlmacenController::mostrar_sedes_cbo();
         $tipos = GenericoAlmacenController::mostrar_tp_almacen_cbo();
-        return view('almacen/ubicacion/almacenes', compact('sedes', 'tipos'));
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',67)
+        ->where('accesos_usuarios.id_padre',14)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        $modulo='almacen';
+        return view('almacen/ubicacion/almacenes', compact('sedes', 'tipos','modulo','array_accesos_botonera'));
     }
 
     public static function mostrar_almacenes_cbo()

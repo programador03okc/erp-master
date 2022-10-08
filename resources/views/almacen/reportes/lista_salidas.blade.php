@@ -8,6 +8,7 @@ Lista de Salidas
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 <style>
     .dataTables_scrollBody thead tr[role="row"]{
     visibility: collapse !important;
@@ -25,13 +26,13 @@ Lista de Salidas
 
 @section('content')
 <div class="page-main" type="lista_salidas">
-
+    @if (in_array(164,$array_accesos) || in_array(165,$array_accesos) )
     <div class="box box-solid">
         <div class="box-body">
             <div class="row">
                 <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                 <div class="col-md-12">
-                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                    <table class="mytable table table-condensed table-bordered table-okc-view"
                         id="listaSalidas">
                         <thead>
                             <tr>
@@ -92,6 +93,17 @@ Lista de Salidas
             </div>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
+
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-filtros">
@@ -275,6 +287,7 @@ Lista de Salidas
     <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
     <script src="{{ asset('js/logistica/transportistaModal.js')}}"></script>
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function(){
         seleccionarMenu(window.location);
     });

@@ -10,6 +10,7 @@ Atención de Salidas
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 <style>
     #despachosPendientes_filter,
     #despachosEntregados_filter{
@@ -27,15 +28,22 @@ Atención de Salidas
 @endsection
 
 @section('content')
+
+@if (in_array(117,$array_accesos) || in_array(112,$array_accesos))
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="despachosPendientes">
             <div class="col-md-12" id="tab-despachosPendientes" style="padding-top:10px;padding-bottom:10px;">
                 <ul class="nav nav-tabs" id="myTabDespachosPendientes">
+                    @if (in_array(112,$array_accesos))
                     <li class="active"><a data-toggle="tab" href="#pendientes">Despachos Pendientes <span id="nro_despachos" class="badge badge-info">{{$nro_od_pendientes}}</span></a></li>
+                    @endif
+                    @if (in_array(117,$array_accesos))
                     <li class=""><a data-toggle="tab" href="#salidas">Salidas Procesadas</a></li>
+                    @endif
                 </ul>
                 <div class="tab-content">
+                    @if (in_array(112,$array_accesos))
                     <div id="pendientes" class="tab-pane fade in active">
                         <form id="formFiltrosSalidasPendientes" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-salida.salidasPendientesExcel')}}">
                             @csrf()
@@ -69,7 +77,8 @@ Atención de Salidas
                             </div>
                         </div>
                     </div>
-
+                    @endif
+                    @if (in_array(117,$array_accesos))
                     <div id="salidas" class="tab-pane fade ">
                         <form id="formFiltrosSalidasProcesadas" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-salida.salidasProcesadasExcel')}}">
                             @csrf()
@@ -100,12 +109,22 @@ Atención de Salidas
                             </div>
                         </div>
                     </div>
-
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-ver-adjuntos" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width:35%;">
         <div class="modal-content">
@@ -174,6 +193,7 @@ Atención de Salidas
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';

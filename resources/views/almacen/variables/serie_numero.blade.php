@@ -29,10 +29,12 @@ Series-Numeros
 
 @section('content')
 <div class="page-main" type="serie_numero">
+
+    @if (sizeof($array_accesos_botonera)!==0 || in_array(181,$array_accesos) ||in_array(182,$array_accesos)||in_array(183,$array_accesos)||in_array(184,$array_accesos))
     <div class="row">
         <div class="col-md-7">
             <fieldset class="group-table">
-                <table class="mytable table table-hover table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-hover table-condensed table-bordered table-okc-view"
                     id="listaSerieNumero">
                     <thead>
                         <tr>
@@ -78,10 +80,10 @@ Series-Numeros
                     <div class="col-md-12">
                         <h5>Serie-Número</h5>
                         <div class="input-group">
-                            <input type="text" class="form-control activation" name="serie" 
+                            <input type="text" class="form-control activation" name="serie"
                                 onBlur="ceros_serie('serie');" placeholder="0000" disabled="true">
                             <span class="input-group-addon">-</span>
-                            <input type="text" class="form-control activation" name="numero" 
+                            <input type="text" class="form-control activation" name="numero"
                                 onBlur="ceros_numero('numero');" placeholder="0000000" disabled="true">
                         </div>
                     </div>
@@ -101,7 +103,18 @@ Series-Numeros
             </form>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
+
 @endsection
 
 @section('scripts')
@@ -118,6 +131,7 @@ Series-Numeros
 
     <script src="{{ asset('js/almacen/variables/serie_numero.js')}}"></script>
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function(){
         seleccionarMenu(window.location);
     });

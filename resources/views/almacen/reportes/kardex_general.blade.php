@@ -6,6 +6,7 @@
 @section('estilos')
     <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
     <style>
         button.botones {
             margin-top: 35px;
@@ -29,25 +30,30 @@
 
 @section('content')
 <div class="page-main" type="kardex_general">
-    
+    @if (in_array(168,$array_accesos)||in_array(169,$array_accesos)||in_array(170,$array_accesos))
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
 
                 <div class="row" style="padding-left:0px;padding-right:0px;">
                     <div class="col-md-12">
-                        <button type="submit" class="btn btn-success" data-toggle="tooltip" 
-                            data-placement="bottom" title="Descargar Kardex Sunat" 
+                        @if (in_array(168,$array_accesos))
+                        <button type="submit" class="btn btn-success" data-toggle="tooltip"
+                            data-placement="bottom" title="Descargar Kardex Sunat"
                             onClick="exportar();"> <i class="fas fa-file-excel"></i> Exportar Excel
                         </button>
-                        <button type="submit" class="btn btn-primary" data-toggle="tooltip" 
-                            data-placement="bottom" title="Descargar Kardex Sunat" 
+                        @endif
+                        @if (in_array(169,$array_accesos))
+                        <button type="submit" class="btn btn-primary" data-toggle="tooltip"
+                            data-placement="bottom" title="Descargar Kardex Sunat"
                             onClick="downloadKardexSunat();"> <i class="fas fa-download"></i> Kardex Sunat
                         </button>
-                        <button type="button" class="btn btn-default" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ingrese los filtros" 
+                        @endif
+                        @if (in_array(170,$array_accesos))
+                        <button type="button" class="btn btn-default" data-toggle="tooltip"
+                            data-placement="bottom" title="Ingrese los filtros"
                             onClick="open_filtros();"> <i class="fas fa-filter"></i> Filtros
-                        </button>
+                        </button>@endif
                     </div>
                 </div>
                 <div class="row">
@@ -89,7 +95,16 @@
             </div>
         </div>
     </div>
-
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 @include('almacen.reportes.kardex_filtro')
 @endsection

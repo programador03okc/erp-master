@@ -15,6 +15,9 @@
     Unidades de Medida
 @endsection
 
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
+@endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
   <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
@@ -25,10 +28,12 @@
 
 @section('content')
 <div class="page-main" type="unidmed">
+
+@if (sizeof($array_accesos_botonera)!==0 || in_array(214,$array_accesos) ||in_array(215,$array_accesos)||in_array(216,$array_accesos)||in_array(217,$array_accesos))
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-condensed table-bordered table-okc-view"
                 id="listaUnidMed">
                     <thead>
                         <tr>
@@ -78,6 +83,16 @@
             </form>
         </div>
     </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 </div>
 @endsection
 
@@ -95,6 +110,7 @@
 
     <script src="{{ asset('js/almacen/variables/unid_med.js')}}"></script>
     <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function(){
         seleccionarMenu(window.location);
     });

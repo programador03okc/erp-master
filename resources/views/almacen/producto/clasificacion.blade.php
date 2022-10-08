@@ -14,7 +14,9 @@
 @section('cabecera')
     Clasificación
 @endsection
-
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
+@endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
   <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
@@ -24,10 +26,12 @@
 @endsection
 
 @section('content')<div class="page-main" type="clasificacion">
+
+    @if (sizeof($array_accesos_botonera)!==0)
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
-                <table class="mytable table table-condensed table-bordered table-okc-view" 
+                <table class="mytable table table-condensed table-bordered table-okc-view"
                 id="listaClasificacion">
                     <thead>
                         <tr>
@@ -73,6 +77,16 @@
             </form>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 @endsection
 
@@ -87,7 +101,7 @@
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-    
+
     <script src="{{ asset('js/almacen/producto/clasificacion_producto.js')}}"></script>
     <script>
     $(document).ready(function(){

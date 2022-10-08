@@ -84,7 +84,7 @@ function listarRequerimientosAlmacen(id_usuario) {
             {
                 data: 'codigo', className: "text-center",
                 'render': function (data, type, row) {
-                    return (row['codigo'] !== null ? `<a href="/necesidades/requerimiento/elaboracion/index?id=${row['id_requerimiento']}" 
+                    return (row['codigo'] !== null ? `<a href="/necesidades/requerimiento/elaboracion/index?id=${row['id_requerimiento']}"
                         target="_blank" title="Abrir Requerimiento">${row['codigo'] ?? ''}</a>` : '') +
                         (row['estado'] == 38
                             ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
@@ -111,10 +111,10 @@ function listarRequerimientosAlmacen(id_usuario) {
                     return (row['codigo_despacho_interno'] ?? '') + (row['codigo_transformacion'] !== null ? `<br>
                     ${id_usuario == '3' || id_usuario == '17' || id_usuario == '93' ?
                             `<button type="button" class="anular_odi btn btn-danger btn-flat btn-xs" data-toggle="tooltip"
-                        data-placement="bottom" title="Anular Despacho Interno" data-id="${row['id_despacho_interno']}" 
+                        data-placement="bottom" title="Anular Despacho Interno" data-id="${row['id_despacho_interno']}"
                         data-codigo="${row['codigo_despacho_interno']}" data-idreq="${row['id_requerimiento']}">
                         <i class="fas fa-trash"></i></button>`: ''}<br>
-                        <label class="lbl-codigo" title="Abrir Transformación" 
+                        <label class="lbl-codigo" title="Abrir Transformación"
                     onClick="abrir_transformacion(${row['id_transformacion']})">${row['codigo_transformacion']}</label>
                     ` : '')
                         + (row['estado_di'] ?? '');
@@ -125,7 +125,7 @@ function listarRequerimientosAlmacen(id_usuario) {
                 'render': function (data, type, row) {
                     return (row['codigo_despacho_externo'] !== null ? row['codigo_despacho_externo'] + `<br>
                     <button type="button" class="anular_ode btn btn-danger btn-flat btn-xs" data-toggle="tooltip"
-                        data-placement="bottom" title="Anular Despacho Externo" data-id="${row['id_despacho_externo']}" 
+                        data-placement="bottom" title="Anular Despacho Externo" data-id="${row['id_despacho_externo']}"
                         data-codigo="${row['codigo_despacho_externo']}" data-idreq="${row['id_requerimiento']}">
                         <i class="fas fa-trash"></i></button>` : '');
                 }
@@ -142,20 +142,20 @@ function listarRequerimientosAlmacen(id_usuario) {
             {
                 'render': function (data, type, row) {
 
-                    return `<button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
+                    return (array_accesos.find(element => element === 157)?`<button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
                     data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                    <i class="fas fa-chevron-down"></i></button>
-                    
+                    <i class="fas fa-chevron-down"></i></button>`:``)+`
+
                     ${row['count_transferencias'] > 0 ?
                             `<button type="button" class="transferencia btn btn-success btn-flat btn-xs " data-toggle="tooltip"
                     data-placement="bottom" title="Ver transferencias" data-id="${row['id_requerimiento']}">
                     <i class="fas fa-exchange-alt"></i></button>`: ''
                         }
-                        
-                    <button type="button" class="cambio btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
-                    data-placement="bottom" title="Cambio de almacén" data-id="${row['id_requerimiento']}" 
+
+                    `+(array_accesos.find(element => element === 158)?`<button type="button" class="cambio btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
+                    data-placement="bottom" title="Cambio de almacén" data-id="${row['id_requerimiento']}"
                     data-almacen="${row['id_almacen']}" data-codigo="${row['codigo']}">
-                    <i class="fas fa-sync-alt"></i></button>`;
+                    <i class="fas fa-sync-alt"></i></button>`:``)+``;
 
                 }, targets: 11
             }

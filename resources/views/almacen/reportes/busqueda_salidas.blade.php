@@ -7,6 +7,7 @@ Detalle de Salidas
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -19,19 +20,22 @@ Detalle de Salidas
 
 @section('content')
 <div class="page-main" type="busqueda_salidas">
+    @if (in_array(167,$array_accesos))
     <div class="box box-solid">
         <div class="box-body">
             <div class="row" style="padding-left:0px;padding-right:0px;">
                 <div class="col-md-12">
-                <button type="button" class="btn btn-primary" data-toggle="tooltip" 
-                            data-placement="bottom" title="Ingrese los filtros" 
+                    @if (in_array(167,$array_accesos))
+                    <button type="button" class="btn btn-primary" data-toggle="tooltip"
+                            data-placement="bottom" title="Ingrese los filtros"
                             onClick="open_filtros();">
                             <i class="fas fa-search"></i>  Filtros</button>
+                    @endif
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                    <table class="mytable table table-condensed table-bordered table-okc-view"
                         id="listaBusquedaSalidas">
                         <thead>
                             <tr>
@@ -60,6 +64,16 @@ Detalle de Salidas
             </div>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-busq_filtros">

@@ -11,6 +11,7 @@ Prorrateo de Costos
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -22,7 +23,7 @@ Prorrateo de Costos
 @endsection
 
 @section('content')
-
+@if (sizeof($array_accesos_botonera)!==0)
 <div class="page-main" type="prorrateo">
     <!-- <div class="row"> -->
     <div class="box box-solid">
@@ -30,7 +31,7 @@ Prorrateo de Costos
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
 
                 <form id="form-prorrateo" type="register"  form="formulario">
-                    
+
                     <input class="oculto" name="id_prorrateo" primary="ids"/>
                     <div class="row">
                         <div class="col-md-12">
@@ -52,7 +53,7 @@ Prorrateo de Costos
                                         </div>
                                     </div>
 
-                                    <h4 style="display:flex;justify-content: space-between;">Ingreso(s) por Compra 
+                                    <h4 style="display:flex;justify-content: space-between;">Ingreso(s) por Compra
                                         <div>
                                             <span class="label" id="estado_doc">&nbsp;</span>
                                             <span style="color:blue;" id="codigo"></span>
@@ -81,10 +82,10 @@ Prorrateo de Costos
                                                 <th>Importe Prorrateado</th>
                                                 <th style="background-color: rgb(30, 139, 255);">Importe en kardex</th>
                                                 <th>
-                                                    <!-- <i class="fas fa-plus-square icon-tabla green boton " 
-                                                        data-toggle="tooltip" data-placement="bottom" 
+                                                    <!-- <i class="fas fa-plus-square icon-tabla green boton "
+                                                        data-toggle="tooltip" data-placement="bottom"
                                                         title="Agregar Guia Compra" onClick="guia_compraModal();"></i> -->
-                                                    <button type="button" class="btn btn-success btn-xs boton activation" data-toggle="tooltip" 
+                                                    <button type="button" class="btn btn-success btn-xs boton activation" data-toggle="tooltip"
                                                         data-placement="bottom" title="Agregar Guía Compra" onClick="guia_compraModal();">
                                                         <i class="fas fa-plus"></i></button>
                                                 </th>
@@ -148,10 +149,10 @@ Prorrateo de Costos
                             </div> -->
                         </div>
                     </div>
-                    
+
                     <div class="row" style="padding-top:10px;padding-bottom:10px;">
                         <div class="col-md-12" >
-                        
+
                             <!-- <div class="panel panel-default">
                                 <div class="panel-heading">Documentos Adicionales</div> -->
                                 <h4 style="display:flex;justify-content: space-between;">Documento(s) Adicionales </h4>
@@ -172,10 +173,10 @@ Prorrateo de Costos
                                                 <th>Importe Aplicado</th>
                                                 <th>Tipo Prorrateo</th>
                                                 <th>
-                                                    <!-- <i class="fas fa-plus-square icon-tabla green boton" 
-                                                        data-toggle="tooltip" data-placement="bottom" 
+                                                    <!-- <i class="fas fa-plus-square icon-tabla green boton"
+                                                        data-toggle="tooltip" data-placement="bottom"
                                                         title="Agregar Documento de Prorrateo" onClick="open_doc_prorrateo();"></i> -->
-                                                    <button type="button" class="btn btn-success btn-xs boton activation" data-toggle="tooltip" 
+                                                    <button type="button" class="btn btn-success btn-xs boton activation" data-toggle="tooltip"
                                                         data-placement="bottom" title="Agregar Documento de Prorrateo" onClick="open_doc_prorrateo();">
                                                         <i class="fas fa-plus"></i></button>
                                                 </th>
@@ -193,6 +194,17 @@ Prorrateo de Costos
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
+
 @include('almacen.prorrateo.doc_prorrateo_create')
 @include('logistica.cotizaciones.proveedorModal')
 @include('almacen.prorrateo.agregarProveedor')
@@ -214,7 +226,7 @@ Prorrateo de Costos
     <script src="{{ asset('js/almacen/prorrateo/agregarProveedor.js')}}?v={{filemtime(public_path('js/almacen/prorrateo/agregarProveedor.js'))}}"></script>
     <script src="{{ asset('js/almacen/guia/guia_compraModal.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_compraModal.js'))}}"></script>
     <script src="{{ asset('js/almacen/prorrateo/doc_prorrateoModal.js')}}?v={{filemtime(public_path('js/almacen/prorrateo/doc_prorrateoModal.js'))}}"></script>
-    
+
     <script>
         vista_extendida();
     </script>

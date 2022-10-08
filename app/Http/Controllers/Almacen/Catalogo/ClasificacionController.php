@@ -6,13 +6,28 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\almacen\Catalogo\Clasificacion;
 use App\Models\Almacen\Producto;
+use App\models\Configuracion\AccesosUsuarios;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ClasificacionController extends Controller
 {
     function view_clasificacion()
     {
-        return view('almacen/producto/clasificacion');
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',61)
+        ->where('accesos_usuarios.id_padre',4)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        $modulo='almacen';
+        return view('almacen/producto/clasificacion',compact('array_accesos_botonera','modulo'));
     }
     public static function mostrar_clasificaciones_cbo()
     {

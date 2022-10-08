@@ -7,6 +7,7 @@ Saldos Actuales
 
 @section('estilos')
     <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
     <style>
         button.botones {
             margin-top: 35px;
@@ -29,6 +30,8 @@ Saldos Actuales
 @endsection
 
 @section('content')
+
+@if (in_array(159,$array_accesos) || in_array(160,$array_accesos) || in_array(161,$array_accesos))
 <div class="page-main" type="saldos">
     <div class="box box-solid">
         <div class="box-body">
@@ -37,6 +40,7 @@ Saldos Actuales
                     <form id="formulario" method="POST">
                         @csrf
                         <div class="row">
+                            @if (in_array(159,$array_accesos))
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <h5>Almacén</h5>
@@ -47,29 +51,38 @@ Saldos Actuales
                                     </select>
                                 </div>
                             </div>
+                            @endif
+
                             <div class="col-md-8">
                                 <div class="row">
+                                    @if (in_array(159,$array_accesos))
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <h5>Hasta</h5>
                                             <input type="date" name="fecha" class="form-control text-center" value="{{ $fecha->format('Y-m-d') }}">
                                         </div>
                                     </div>
+
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-block botones btn-success" onclick="procesar();">
                                             <i class="fas fa-search"></i> Procesar
                                         </button>
                                     </div>
+                                    @endif
+                                    @if (in_array(160,$array_accesos))
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-block botones btn-primary export" onclick="exportar();" disabled>
                                             <i class="fas fa-download"></i> Exportar
                                         </button>
                                     </div>
+                                    @endif
+                                    @if (in_array(161,$array_accesos))
                                     <div class="col-md-3">
                                         <button type="button" class="btn btn-block botones btn-danger" onclick="exportarSoftLink();">
                                             <i class="fas fa-download"></i> Stock Valorizado
                                         </button>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -107,6 +120,16 @@ Saldos Actuales
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @include('almacen.reportes.verRequerimientoReservas')
 @endsection
 

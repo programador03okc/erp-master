@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\almacen\Catalogo\Categoria;
 use App\Models\almacen\Catalogo\Clasificacion;
 use App\Models\Almacen\Catalogo\SubCategoria;
+use App\models\Configuracion\AccesosUsuarios;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SubCategoriaController extends Controller
@@ -16,7 +18,23 @@ class SubCategoriaController extends Controller
     {
         $clasificaciones = Clasificacion::where('estado', 1)->get();
         $tipos = Categoria::where('estado', 1)->get();
-        return view('almacen/producto/subCategoria', compact('tipos', 'clasificaciones'));
+
+        $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',63)
+        ->where('accesos_usuarios.id_padre',4)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        $modulo='almacen';
+
+        return view('almacen/producto/subCategoria', compact('tipos', 'clasificaciones','modulo','array_accesos_botonera'));
     }
 
     public function mostrarSubCategoriasPorCategoria($id_tipo)
