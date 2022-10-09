@@ -20,7 +20,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
 use App\Models\Almacen\MovimientoDetalle;
 use App\Models\almacen\Reserva;
-use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -63,11 +62,11 @@ class OrdenesPendientesController extends Controller
         $nro_ot_pendientes = $this->nroTransformacionesPendientes();
         $nro_dev_pendientes = $this->nroDevolucionesPendientes();
 
-        $array_accesos = [];
-        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
-        foreach ($accesos_usuario as $key => $value) {
-            array_push($array_accesos, $value->id_acceso);
-        }
+        // $array_accesos = [];
+        // $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        // foreach ($accesos_usuario as $key => $value) {
+        //     array_push($array_accesos, $value->id_acceso);
+        // }
 
         return view('almacen/guias/ordenesPendientes', compact(
             'almacenes',
@@ -89,7 +88,7 @@ class OrdenesPendientesController extends Controller
             'nro_oc_pendientes',
             'nro_ot_pendientes',
             'nro_dev_pendientes',
-            'array_accesos',
+            // 'array_accesos',
         ));
     }
 
@@ -861,13 +860,21 @@ class OrdenesPendientesController extends Controller
 
                             if ($id_requerimiento !== null) {
                                 //Realiza la reserva en el requerimiento con item tiene transformacion
-                                $det_req = DB::table('almacen.alm_det_req')
-                                    ->where([
-                                        ['id_requerimiento', '=', $id_requerimiento],
-                                        ['tiene_transformacion', '=', true],
-                                        ['id_producto', '=', $det->id_producto]
-                                    ])
+                                // $det_req = DB::table('almacen.alm_det_req')
+                                //     ->where([
+                                //         ['id_requerimiento', '=', $id_requerimiento],
+                                //         ['tiene_transformacion', '=', true],
+                                //         ['id_producto', '=', $det->id_producto]
+                                //     ])
+                                //     ->first();
+
+                                $det_req = DB::table('almacen.transfor_transformado')
+                                    ->select('alm_det_req.*')
+                                    ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_transformado.id_od_detalle')
+                                    ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+                                    ->where('transfor_transformado.id_transformado', $det->id)
                                     ->first();
+
                                 //realiza la reserva del transformado
                                 DB::table('almacen.alm_det_req')
                                     ->where('id_detalle_requerimiento', $det_req->id_detalle_requerimiento)
