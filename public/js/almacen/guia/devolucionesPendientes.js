@@ -45,6 +45,7 @@ function listarDevoluciones() {
                     return `${row["usuario_conformidad"]} el ${formatDateHour(row["fecha_revision"])}`;
                 }, className: "text-center"
             },
+            { 'data': 'comentario_revision' },
             {
                 'render':
                     function (data, type, row) {
@@ -101,7 +102,7 @@ function open_devolucion_guia_create(data) {
 
     $('#detalleOrdenSeleccionadas tbody').html('');
     cargar_almacenes(data.id_sede, data.id_almacen);
-    $("#id_almacen").attr('disabled', 'true');
+    $("#id_almacen").removeAttr("disabled");
     $('[name=comentario]').val('');
 
     $(".orden_transformacion").html(`<h5></h5>

@@ -113,7 +113,8 @@ Atención de Ingresos
                                             <th>Concepto</th>
                                             <th>Fichas Técnicas</th>
                                             <th>Elaborado Por</th>
-                                            <th>Revisado Por</th>
+                                            <th>Confirmado Por</th>
+                                            <th>Comentario</th>
                                             <th width="6%">Acción</th>
                                         </tr>
                                     </thead>
