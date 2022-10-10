@@ -148,7 +148,11 @@ class RegistroPagoController extends Controller
                         and log_det_ord_compra.estado != 7) AS suma_total"),
             DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
                         WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
-                        and registro_pago.estado != 7) AS suma_pagado")
+                        and registro_pago.estado != 7) AS suma_pagado"),
+            DB::raw("(SELECT COUNT(adjuntos_logisticos.id_adjunto)
+                    FROM logistica.adjuntos_logisticos
+                    WHERE  adjuntos_logisticos.id_orden = log_ord_compra.id_orden_compra AND
+                    adjuntos_logisticos.estado != 7) AS cantidad_adjuntos_logisticos")
         )
             ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')

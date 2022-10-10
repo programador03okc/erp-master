@@ -17,6 +17,7 @@ function openRegistroPago(data) {
     var motivo = data.data('motivo');
     var comentarioPagoLogistica = data.data('comentarioPagoLogistica');
     var observacionRequerimiento = data.data('observacionRequerimiento');
+    var cantidadAdjuntosLogisticos = data.data('cantidadAdjuntosLogisticos');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
     console.log(data);
@@ -34,12 +35,19 @@ function openRegistroPago(data) {
         $('[name=id_oc]').val('');
         $('[name=id_doc_com]').val('');
         $('[name=titulo_motivo]').text('Motivo:');
+
+        document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_adjunto_logistica']").classList.add("oculto");
+
     }
     else if (tipo == 'orden') {
         $('[name=id_requerimiento_pago]').val('');
         $('[name=id_oc]').val(id);
         $('[name=id_doc_com]').val('');
         $('[name=titulo_motivo]').text('Forma de pago:');
+
+        document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_adjunto_logistica']").classList.remove("oculto");
+        document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_adjunto_logistica'] label[name='adjuntoslogistica']").textContent=`Ver(${cantidadAdjuntosLogisticos})`;
+
     }
     else if (tipo == 'comprobante') {
         $('[name=id_requerimiento_pago]').val('');
