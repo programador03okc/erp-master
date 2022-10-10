@@ -152,9 +152,9 @@ function listarReservasAlmacen(id_usuario) {
 
                     (array_accesos.find(element => element === 37)?`<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
 
-                    data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}">
+                    data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}" data-id-tipo-requerimiento="${row['id_tipo_requerimiento']}">
 
-                        data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-id-tipo-requerimiento="${row['id_tipo_requerimiento']}"  data-detalle="${row['id_detalle_requerimiento']}">
+
 
                         <i class="fas fa-trash"></i>
 
