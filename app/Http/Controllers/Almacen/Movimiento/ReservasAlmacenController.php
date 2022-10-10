@@ -40,6 +40,7 @@ class ReservasAlmacenController extends Controller
                 'alm_req.codigo as codigo_req',
                 'alm_req.estado as estado_requerimiento',
                 'alm_req.tiene_transformacion',
+                'alm_req.id_tipo_requerimiento',
                 'adm_estado_doc.estado_doc',
                 'adm_estado_doc.bootstrap_color',
                 'sis_usua.nombre_corto',
@@ -77,17 +78,23 @@ class ReservasAlmacenController extends Controller
 
     //     return response()->json($rspta);
     // }
-    function anularReserva($id_reserva, $id_detalle)
+    function anularReserva(Request $request)
 
     {
+        $id_reserva = $request->id;
+        $id_detalle=$request->id_detalle;
+
 
         $rspta = DB::table('almacen.alm_reserva')->where('id_reserva', $id_reserva)->update(['estado' => 7]);
-
         $Requerimiento = DB::table('almacen.alm_req')
         ->join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
         ->where('alm_det_req.id_detalle_requerimiento', $id_detalle)->first();
-        DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($id_detalle);
-        $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR', [$Requerimiento->id_requerimiento]);
+        $nuevoEstado=[];
+
+        if (intval($request->id_tipo_requerimiento)!==4) {
+            DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($id_detalle);
+            $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR', [$Requerimiento->id_requerimiento]);
+        }
 
         return response()->json(array('respuesta' => $rspta, 'id_req' => $Requerimiento->id_requerimiento, 'estado' => $nuevoEstado));
 

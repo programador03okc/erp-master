@@ -186,7 +186,7 @@ class ListaOrdenView {
                                 'fecha_emision':element.fecha_emision,
                                 'nro_comprobante':(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:""),
                                 'nameFile':element.archivo,
-                                'action':'',
+                                'accion':'',
                                 'file':[element.id_adjunto]
                         }
                         );
@@ -2045,7 +2045,7 @@ class ListaOrdenView {
                             fecha_emision: moment().format('YYYY-MM-DD'),
                             nro_comprobante: '',
                             nameFile: file.name,
-                            action: 'GUARDAR',
+                            accion: 'GUARDAR',
                             file: file
                         };
                         this.addToTablaArchivosRequerimientoCabecera(payload);
@@ -2082,9 +2082,9 @@ class ListaOrdenView {
             }
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoCabeceraList[indice].id) == false) {
-                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ACTUALIZAR';
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ACTUALIZAR';
             } else {
-                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'GUARDAR';
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'GUARDAR';
             }
 
         } else {
@@ -2127,9 +2127,9 @@ class ListaOrdenView {
             }
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoCabeceraList[indice].id) == false) {
-                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ACTUALIZAR';
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ACTUALIZAR';
             } else {
-                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'GUARDAR';
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'GUARDAR';
             }
 
         } else {
@@ -2245,7 +2245,7 @@ class ListaOrdenView {
         } else {
             if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
                 let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.dataset.id);
-                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ELIMINAR';
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ELIMINAR';
             } else {
                 Swal.fire(
                     '',

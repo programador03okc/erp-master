@@ -342,7 +342,7 @@ class RequerimientoView {
                     'error'
                 );
             })
-            // 
+            //
 
             if (data.hasOwnProperty('det_req')) {
                 if (data['requerimiento'][0].estado == 7 || data['requerimiento'][0].estado == 2) {
@@ -563,12 +563,12 @@ class RequerimientoView {
             if (dataDetalleRequerimiento[i].id_tipo_item == 1) { // producto
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${dataDetalleRequerimiento[i].estado}" style="text-align:center; background-color:${dataDetalleRequerimiento[i].estado == 7 ? '#f5e4e4' : ''}; ">
                 <td></td>
-                <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${dataDetalleRequerimiento[i].descripcion_partida ?? '(NO SELECCIONADO)'}" >${dataDetalleRequerimiento[i].codigo_partida ?? ''}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
+                <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${dataDetalleRequerimiento[i].descripcion_partida ?? '(NO SELECCIONADO)'}" >${dataDetalleRequerimiento[i].codigo_partida ?? ''}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button>
                     <div class="form-group">
                         <input type="text" class="partida" name="idPartida[]" value="${dataDetalleRequerimiento[i].id_partida}" hidden>
                     </div>
                 </td>
-                <td><p class="descripcion-centro-costo" title="${dataDetalleRequerimiento[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}">${dataDetalleRequerimiento[i].codigo_centro_costo ?? '(NO SELECCIONADO)'} </p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
+                <td><p class="descripcion-centro-costo" title="${dataDetalleRequerimiento[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}">${dataDetalleRequerimiento[i].codigo_centro_costo ?? '(NO SELECCIONADO)'} </p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button>
                     <div class="form-group">
                         <input type="text" class="centroCosto" name="idCentroCosto[]" value="${dataDetalleRequerimiento[i].id_centro_costo}" hidden>
                     </div>
@@ -593,7 +593,7 @@ class RequerimientoView {
                     <div class="form-group">
                         <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${dataDetalleRequerimiento[i].precio_unitario ?? ''}" placeholder="Precio U." ${hasDisabledInput}>
                     </div>
-                </td>  
+                </td>
                 <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                 <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${dataDetalleRequerimiento[i].motivo ?? ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${dataDetalleRequerimiento[i].motivo ?? ''}</textarea></td>
                 <td>
@@ -602,8 +602,8 @@ class RequerimientoView {
                         <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
                         <button type="button" class="btn btn-warning btn-xs  handleClickAdjuntarArchivoItem"  data-id="${idFila}" name="btnAdjuntarArchivoItem[]" title="Adjuntos" >
                             <i class="fas fa-paperclip"></i>
-                            <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>    
-                        </button> 
+                            <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>
+                        </button>
                         <button type="button" class="btn btn-danger btn-xs activation handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ${hasDisabledInput}><i class="fas fa-trash-alt"></i></button>
                         <button type="button" class="btn ${dataDetalleRequerimiento[i].tiene_transformacion ==true?'btn-success':'btn-default'} btn-xs handleClickAsignarComoProductoTransformado" name="btnAsignarComoProductoTransformado[]" title="sin transformación" style="display:${dataCabeceraRequerimiento[0]['id_tipo_requerimiento']==6?'block':'none'};"><i class="fas fa-random"></i></button>
                     </div>
@@ -612,12 +612,12 @@ class RequerimientoView {
             } else { // servicio
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${dataDetalleRequerimiento[i].estado}" style="text-align:center;  background-color:${dataDetalleRequerimiento[i].estado == 7 ? '#f5e4e4' : ''};">
                     <td></td>
-                    <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${dataDetalleRequerimiento[i].descripcion_partida != null ? dataDetalleRequerimiento[i].descripcion_partida : '(NO SELECCIONADO)'}" >${dataDetalleRequerimiento[i].codigo_partida != null ? dataDetalleRequerimiento[i].codigo_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button> 
+                    <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${dataDetalleRequerimiento[i].descripcion_partida != null ? dataDetalleRequerimiento[i].descripcion_partida : '(NO SELECCIONADO)'}" >${dataDetalleRequerimiento[i].codigo_partida != null ? dataDetalleRequerimiento[i].codigo_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button>
                         <div class="form-group">
                             <input type="text" class="partida" name="idPartida[]" value="${dataDetalleRequerimiento[i].id_partida}" hidden>
                         </div>
                     </td>
-                    <td><p class="descripcion-centro-costo" title="${dataDetalleRequerimiento[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}">${dataDetalleRequerimiento[i].codigo_centro_costo ?? '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button> 
+                    <td><p class="descripcion-centro-costo" title="${dataDetalleRequerimiento[i].descripcion_centro_costo ?? '(NO SELECCIONADO)'}">${dataDetalleRequerimiento[i].codigo_centro_costo ?? '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary activation handleClickCargarModalCentroCostos" name="centroCostos" ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" ${hasDisabledInput} >Seleccionar</button>
                         <div class="form-group">
                             <input type="text" class="centroCosto" name="idCentroCosto[]" value="${dataDetalleRequerimiento[i].id_centro_costo}" hidden>
                         </div>
@@ -636,7 +636,7 @@ class RequerimientoView {
                     <td>
                         <div class="form-group">
                             <input class="form-control activation input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdateCantidadItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" value="${dataDetalleRequerimiento[i].precio_unitario ?? ''}"  placeholder="Precio U." ${hasDisabledInput}>
-                        </div>  
+                        </div>
                     </td>
                     <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
                     <td><textarea class="form-control activation input-sm" name="motivo[]"  value="${dataDetalleRequerimiento[i].motivo ?? ''}" placeholder="Motivo de requerimiento de item (opcional)" ${hasDisabledInput} >${dataDetalleRequerimiento[i].motivo ?? ''}</textarea></td>
@@ -646,8 +646,8 @@ class RequerimientoView {
                             <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
                             <button type="button" class="btn btn-warning btn-xs  handleClickAdjuntarArchivoItem"  data-id="${idFila}" name="btnAdjuntarArchivoItem[]" title="Adjuntos">
                                 <i class="fas fa-paperclip"></i>
-                                <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>    
-                            </button> 
+                                <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>
+                            </button>
                             <button type="button" class="btn btn-danger btn-xs activation handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ${hasDisabledInput} ><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </td>
@@ -1014,12 +1014,12 @@ class RequerimientoView {
 
         document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
         <td></td>
-        <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
+        <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button>
             <div class="form-group">
                 <input type="text" class="partida" name="idPartida[]" hidden>
             </div>
         </td>
-        <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
+        <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button>
             <div class="form-group">
                 <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
             </div>
@@ -1043,7 +1043,7 @@ class RequerimientoView {
         <td>
             <div class="form-group">
                 <input class="form-control input-sm precio text-right handleBurUpdateSubtotal handleBlurUpdatePrecioItem handleBlurCalcularPresupuestoUtilizadoYSaldoPorPartida" type="number" min="0" name="precioUnitario[]" placeholder="Precio U."></td>
-            </div>  
+            </div>
         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
         <td><textarea class="form-control input-sm" name="motivo[]" placeholder="Motivo de requerimiento de item (opcional)"></textarea></td>
         <td>
@@ -1052,8 +1052,8 @@ class RequerimientoView {
                 <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
                 <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]" data-id="${idFila}" title="Adjuntos" >
                     <i class="fas fa-paperclip"></i>
-                    <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
-                </button> 
+                    <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
+                </button>
                 <button type="button" class="btn btn-danger btn-xs handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar"  ><i class="fas fa-trash-alt"></i></button>
                 <button type="button" class="btn btn-default btn-xs handleClickAsignarComoProductoTransformado" name="btnAsignarComoProductoTransformado[]" title="sin transformación" style="display:${document.querySelector("select[name='tipo_requerimiento']").value==6?"block":"none"};"><i class="fas fa-random"></i></button>
             </div>
@@ -1079,12 +1079,12 @@ class RequerimientoView {
 
         document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
         <td></td>
-        <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button> 
+        <td><p class="descripcion-partida">(NO SELECCIONADO)</p><button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button>
             <div class="form-group">
                 <input type="text" class="partida" name="idPartida[]" hidden>
             </div>
             </td>
-            <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button> 
+            <td><p class="descripcion-centro-costo" title="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.descripcion : '(NO SELECCIONADO)'}">${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.codigo : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-primary handleClickCargarModalCentroCostos" name="centroCostos"  ${tempCentroCostoSelected != undefined ? 'disabled' : ''} title="${tempCentroCostoSelected != undefined ? 'El centro de costo esta asignado a un proyecto' : ''}" >Seleccionar</button>
             <div class="form-group">
                 <input type="text" class="centroCosto" name="idCentroCosto[]" value="${tempCentroCostoSelected != undefined ? tempCentroCostoSelected.id : ''}" hidden>
             </div>
@@ -1114,7 +1114,7 @@ class RequerimientoView {
                 <input type="hidden" class="idRegister" name="idRegister[]" value="${idFila}">
                 <button type="button" class="btn btn-warning btn-xs handleClickAdjuntarArchivoItem" name="btnAdjuntarArchivoItem[]"  data-id="${idFila}" title="Adjuntos" >
                     <i class="fas fa-paperclip"></i>
-                    <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>    
+                    <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
                 </button>
                 <button type="button" class="btn btn-danger btn-xs handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ><i class="fas fa-trash-alt"></i></button>
             </div>
@@ -1245,7 +1245,7 @@ class RequerimientoView {
 
     }
 
-    // partidas 
+    // partidas
     cargarModalPartidas(obj) {
 
         tempObjectBtnPartida = obj.target;
@@ -1288,15 +1288,15 @@ class RequerimientoView {
         let html = '';
         let isVisible = '';
         data['presupuesto'].forEach(presupuesto => {
-            html += ` 
+            html += `
             <div id='${presupuesto.codigo}' class="panel panel-primary" style="width:100%; overflow: auto;">
                 <h5 class="panel-heading handleClickapertura" data-id-presup="${presupuesto.id_presup}" style="margin: 0; cursor: pointer;">
                 <i class="fas fa-chevron-right"></i>
-                    &nbsp; ${presupuesto.descripcion} 
+                    &nbsp; ${presupuesto.descripcion}
                 </h5>
                 <div id="pres-${presupuesto.id_presup}" class="oculto" style="width:100%;">
                     <table class="table table-bordered table-condensed partidas" id="listaPartidas" width="100%" style="font-size:0.9em">
-                        <tbody> 
+                        <tbody>
             `;
 
             data['titulos'].forEach(titulo => {
@@ -1529,7 +1529,7 @@ class RequerimientoView {
                 <div id='${index}' class="panel panel-primary" style="width:100%; overflow: auto;">
                 <h5 class="panel-heading handleClickapertura" style="margin: 0; cursor: pointer;" data-id-presup="${index}">
                 <i class="fas fa-chevron-right"></i>
-                    &nbsp; ${padre.descripcion} 
+                    &nbsp; ${padre.descripcion}
                 </h5>
                 <div id="pres-${index}" class="oculto" style="width:100%;">
                     <table class="table table-bordered table-condensed partidas" id='listaCentroCosto' width="" style="font-size:0.9em">
@@ -1626,7 +1626,7 @@ class RequerimientoView {
         this.calcularTotal();
     }
 
-    //adjunto cabecera requerimiento 
+    //adjunto cabecera requerimiento
 
 
 
@@ -2577,6 +2577,6 @@ class RequerimientoView {
             conSinTransformacionText.textContent="";
 
         }
-     
+
     }
 }
