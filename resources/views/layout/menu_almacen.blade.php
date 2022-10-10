@@ -81,9 +81,9 @@
             <li><a href="{{route('almacen.transferencias.gestion-transferencias.index')}}"> Transferencias </a></li>
             {{-- @endif --}}
             <li><a href="{{route('almacen.movimientos.customizacion.index')}}"> Customización </a></li>
-            {{-- @if (in_array(Auth::user()->id_usuario,[1,3,27,17,64,16,110,119,93,77])) --}}
-            {{-- <li><a href="{{route('almacen.movimientos.devolucion.index')}}"> Devolución </a></li> --}}
-            {{-- @endif --}}
+            @if (in_array(Auth::user()->id_usuario,[1,3,27,17,64,16,118,119,93,77]))
+            <li><a href="{{route('almacen.movimientos.devolucion.index')}}"> Devolución </a></li>
+            @endif
             <li><a href="{{route('almacen.movimientos.prorrateo.index')}}"> Prorrateo de Costos </a></li>
             <li><a href="{{route('almacen.movimientos.reservas.index')}}"> Reservas de almacén </a></li>
             <li><a href="{{route('almacen.movimientos.requerimientos-almacen.index')}}"> Estado de Requerimientos </a></li>
@@ -132,6 +132,9 @@
             {{-- @endif --}}
             {{-- @if(Auth::user()->tieneAplicacion(96)) --}}
             <li><a href="{{route('almacen.reportes.kardex-series.index')}}"> Kardex de Series </a></li>
+            {{-- @endif--}}
+            {{-- @if(Auth::user()->tieneAplicacion(96)) --}} <!-- !TO-DO: falta crear su propio acceso -->
+            <li><a href="{{route('almacen.reportes.stock-series.index')}}"> Stock de Series </a></li>
             {{-- @endif --}}
             <!-- @if(Auth::user()->tieneAplicacion(97))
             <li><a href="{{route('almacen.reportes.documentos-prorrateo.index')}}"> Documentos de Prorrateo </a></li>
