@@ -2126,9 +2126,15 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
 			Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
 			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
-			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros')->name('listar');
-			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes')->name('listar');
-			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente')->name('listar');
+			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
+			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
+			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente');
+
+            Route::get('provincia/{id_departamento}', 'Gerencial\Cobranza\RegistroController@provincia')->name('cliente');
+            Route::get('distrito/{id_provincia}', 'Gerencial\Cobranza\RegistroController@distrito')->name('cliente');
+            Route::get('get-cliente/{id_cliente}', 'Gerencial\Cobranza\RegistroController@getCliente')->name('cliente');
+            Route::get('buscar-cdp/{cdp}', 'Gerencial\Cobranza\RegistroController@getCDP')->name('cliente');
+            Route::get('buscar-factura/{factura}', 'Gerencial\Cobranza\RegistroController@getFactura')->name('cliente');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			// });
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {

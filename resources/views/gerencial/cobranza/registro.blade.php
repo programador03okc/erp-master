@@ -77,6 +77,16 @@ Cobranzas
 				<div class="modal-body">
                     <input type="hidden" name="id" id="id">
                     <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="periodo">Periodo</label>
+                                <select name="periodo" id="periodo" class="form-control input-sm" onchange="cambiarPeriodos(this.value);">
+                                    @foreach ($periodo as $item)
+                                        <option value="{{$item->id_periodo }}">{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="empresa">Empresa</label>
@@ -110,16 +120,6 @@ Cobranzas
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="periodo">Periodo</label>
-                                <select name="periodo" id="periodo" class="form-control input-sm" onchange="cambiarPeriodos(this.value);">
-                                    @foreach ($periodo as $item)
-                                        <option value="{{$item->id_periodo }}">{{$item->descripcion}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-5">
@@ -145,7 +145,7 @@ Cobranzas
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="cdp">Cuadro de Presup.</label>
-                                <input type="text" class="form-control input-sm text-center" name="cdp" id="cdp" placeholder="N° CDP">
+                                <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -159,7 +159,7 @@ Cobranzas
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="fact">Factura</label>
-                                <input type="text" class="form-control input-sm text-center" name="fact" id="fact" required placeholder="N° Fact">
+                                <input type="text" class="form-control input-sm text-center buscar-factura" name="fact" id="fact" required placeholder="N° Fact">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -339,6 +339,44 @@ Cobranzas
 					<button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<div class="modal-body">
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Pais :</h5>
+                            <select name="pais" id="nuevo_pais" class="form-control">
+                                <option value="">Seleccione...</option>
+                                @foreach ($pais as $items)
+                                    <option value="{{ $items->id_pais }}">{{ $items->descripcion }}</option>
+                                @endforeach
+                            </select>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Departamento :</h5>
+                            <select name="departamento" id="nuevo_provincia" data-select="departamento-select" class="form-control">
+                                <option value="">Seleccione...</option>
+                                @foreach ($departamento as $items)
+                                    <option value="{{ $items->id_dpto }}">{{ $items->descripcion }}</option>
+                                @endforeach
+                            </select>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Provincia :</h5>
+                            <select name="provincia" id="nuevo_provincia" class="form-control" data-select="provincia-select">
+                                <option value="">Seleccione...</option>
+                            </select>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Distrito :</h5>
+                            <select name="distrito" id="nuevo_distrito" class="form-control">
+                                <option value="">Seleccione...</option>
+                            </select>
+						</div>
+					</div>
 					<div class="row">
 						<div class="col-md-12">
 							<h5>RUC/DNI</h5>
@@ -370,6 +408,30 @@ Cobranzas
 					<button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<div class="modal-body">
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Pais :</h5>
+                            <select name="pais" id="edit_pais">
+                                <option value="">Seleccione...</option>
+                            </select>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Provincia :</h5>
+                            <select name="provincia" id="edit_provincia">
+                                <option value="">Seleccione...</option>
+                            </select>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Distrito :</h5>
+                            <select name="distrito" id="edit_distrito">
+                                <option value="">Seleccione...</option>
+                            </select>
+						</div>
+					</div>
 					<div class="row">
 						<input type="hidden" class="form-control input-sm" name="edit_id" id="edit_id">
 						<div class="col-md-12">

@@ -141,11 +141,27 @@ $('#tabla-clientes tbody').on('click', 'tr', function(){
         $(this).removeClass('selected');
         document.querySelector("button[id='edit_customer']").setAttribute('disabled',true)
         document.querySelector("button[id='btnAgregarCliente']").setAttribute('disabled',true)
+        console.log('seleccion if');
     } else {
         $('#tablaClientes').dataTable().$('tr.selected').removeClass('selected');
         $(this).addClass('selected');
         document.querySelector("button[id='edit_customer']").removeAttribute('disabled')
         document.querySelector("button[id='btnAgregarCliente']").removeAttribute('disabled')
+
+        $.ajax({
+            type: 'GET',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: 'get-cliente/'+$(this)[0].firstChild.innerHTML,
+            data: {},
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+            }
+        }).fail( function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        })
     }
     var id = $(this)[0].firstChild.innerHTML;
     var nombre = $(this)[0].childNodes[1].textContent;
@@ -161,8 +177,9 @@ function ModalAddNewCustomer() {
 }
 function ModalEditCustomer(){
     $('#modal-editar-cliente').modal({show: true});
-    document.querySelector("div[id='modal-editar-cliente'] input[id='edit_ruc_dni_cliente']").value = tempClienteSelected.ruc;
-    document.querySelector("div[id='modal-editar-cliente'] input[id='edit_cliente']").value = tempClienteSelected.nombre;
+    document.querySelector("div[id='modal-editar-cliente'] input[id='edit_ubigeo_cliente']").value = tempClienteSelected.ubigeo;
+    document.querySelector("div[id='modal-editar-cliente'] input[id='edit_ruc_dni_cliente']").value = tempClienteSelected.nro_documento;
+    document.querySelector("div[id='modal-editar-cliente'] input[id='edit_cliente']").value = tempClienteSelected.razon_social;
     document.querySelector("div[id='modal-editar-cliente'] input[id='edit_id']").value = tempClienteSelected.id;
 
 }
@@ -199,7 +216,7 @@ function SaveNewCustomer(){
                     data: data,
                     dataType: 'JSON',
                     success: function(response){
-                        console.log(response);
+                        $('#tabla-clientes').DataTable().ajax.reload();
                     }
                 }).fail( function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
@@ -224,3 +241,94 @@ function SaveNewCustomer(){
         }
     })
 }
+$(document).on('change','[data-select="departamento-select"]',function () {
+    var id_departamento = $(this).val()
+        this_select = $(this).closest('div.modal-body').find('div [name="provincia"]'),
+        html='';
+
+    $.ajax({
+        type: 'get',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'provincia/'+id_departamento,
+        data: {},
+        dataType: 'JSON',
+        success: function(response){
+            if (response.status===200) {
+                $.each(response.data, function (index, element) {
+                    html+='<option value="'+element.id_prov+'">'+element.descripcion+'</option>'
+                });
+                console.log(this_select);
+                // $('[data-form="guardar-cliente"] [name="provincia"]').html(html);
+                this_select.html(html);
+            }
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+
+$(document).on('change','[data-select="provincia-select"]',function () {
+    var id_provincia = $(this).val(),
+        this_select = $(this).closest('div.modal-body').find('div [name="distrito"]'),
+        html='';
+
+    $.ajax({
+        type: 'get',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'distrito/'+id_provincia,
+        data: {},
+        dataType: 'JSON',
+        success: function(response){
+            if (response.status===200) {
+                $.each(response.data, function (index, element) {
+                    html+='<option value="'+element.id_dis+'">'+element.descripcion+'</option>'
+                });
+                this_select.html(html);
+            }
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+$(document).on('change','.buscar-registro',function () {
+    const cdp = $(this).val();
+    $.ajax({
+        type: 'get',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'buscar-cdp/'+cdp,
+        data: {},
+        dataType: 'JSON',
+        success: function(response){
+            if (response.status===200) {
+                console.log(response);
+            }
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+$(document).on('change','.buscar-factura',function () {
+    const factura = $(this).val();
+    $.ajax({
+        type: 'get',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'buscar-factura/'+factura,
+        data: {},
+        dataType: 'JSON',
+        success: function(response){
+            if (response.status===200) {
+                console.log(response);
+            }
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});

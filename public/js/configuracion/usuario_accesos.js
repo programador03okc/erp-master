@@ -244,7 +244,16 @@ function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso
         $this_componente.attr('data-disabled','false');
         if (array_title.indexOf(parseInt(id_modulo))===-1) {
             html+='<div class="col-md-12" data-count="col" data-key="'+id_modulo+'">'
-                html+='<label data-id-modulo="'+id_modulo+'">'+titulo+'</label>';
+                html+='<label >'+titulo+'</label>';
+
+                html+='<div class="box-tools pull-right">'
+                    html+='<button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target="#collapse'+id_modulo+'" aria-expanded="false" aria-controls="collapseExample" data-action="box-tool"><i class="fa fa-plus"></i></button>'
+                html+='</div>'
+
+                html+='<div class="collapse" id="collapse'+id_modulo+'">'
+                    html+='<div class="card card-body" data-id-modulo="'+id_modulo+'">'
+                    html+='</div>'
+                html+='</div>'
             html+='</div>';
             array_title.push(parseInt(id_modulo));
             $('[data-accesos="select-accesos"]').append(html);
