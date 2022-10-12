@@ -76,7 +76,7 @@ function mostrarSalidas() {
                 <td style="text-align:center">${sel.razon_social}</td>
                 <td style="text-align:center">${sel.codigo}</td>
                 <td>
-                    <i class="fas fa-trash icon-tabla red boton delete" data-id="${sel.id_mov_alm}"
+                    <i class="fas fa-trash icon-tabla red boton delete" data-id="${sel.id_salida}"
                         data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
                 </td>
             </tr>`;
@@ -94,8 +94,16 @@ $('#listaSalidasDevolucion tbody').on("click", ".delete", function () {
 
         if (id_mov_alm !== '') {
             salidas.forEach(sal => {
-                if (sal.id_mov_alm == id_mov_alm) {
-                    sal.estado = 7;
+                if (sal.id_salida == id_mov_alm) {
+                    if (sal.id == 0) {
+                        let index = salidas.findIndex(function (item, i) {
+                            return item.id == sal.id &&
+                                item.id_salida == id_mov_alm;
+                        });
+                        salidas.splice(index, 1);
+                    } else {
+                        sal.estado = 7;
+                    }
                 }
             });
             console.log(salidas);

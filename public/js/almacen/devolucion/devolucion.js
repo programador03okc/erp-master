@@ -1,7 +1,6 @@
 let items = [];
 let salidas = [];
 let incidencias = [];
-let ventas = [];
 let usuarioSession = '';
 let usuarioNombreSession = '';
 
@@ -43,7 +42,7 @@ $(".nueva-devolucion").on('click', function () {
 
     items = [];
     incidencias = [];
-    ventas = [];
+    salidas = [];
 
     $("[name=modo]").val("edicion");
     $("[name=id_devolucion]").val("");
@@ -76,7 +75,7 @@ $(".cancelar").on('click', function () {
 
     items = [];
     incidencias = [];
-    ventas = [];
+    salidas = [];
 
     $("[name=modo]").val("");
     $("[name=id_devolucion]").val("");
@@ -162,8 +161,18 @@ $("#form-devolucion").on("submit", function (e) {
                     'estado': element.estado,
                 });
             });
+            let salidas_venta = [];
+            salidas.forEach(function (element) {
+                salidas_venta.push({
+                    'id': element.id,
+                    'id_devolucion': element.id_devolucion,
+                    'id_salida': element.id_salida,
+                    'estado': element.estado,
+                });
+            });
             data += '&items=' + JSON.stringify(detalle) +
-                '&incidencias=' + JSON.stringify(incidencias);
+                '&incidencias=' + JSON.stringify(incidencias) +
+                '&salidas=' + JSON.stringify(salidas_venta);
             console.log(data);
             guardarDevolucion(data);
         }
@@ -228,6 +237,8 @@ function guardarDevolucion(data) {
             $('#nombre_registrado_por').text(response.devolucion.nombre_corto);
             $('#fecha_registro').text(response.devolucion.fecha_registro);
 
+            mostrarDevolucion(response.devolucion.id_devolucion)
+
             $("#submit_devolucion").attr('disabled', false);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -245,7 +256,7 @@ function mostrarDevolucion(id) {
 
     items = [];
     incidencias = [];
-    ventas = [];
+    salidas = [];
 
     $.ajax({
         type: 'GET',
@@ -269,6 +280,8 @@ function mostrarDevolucion(id) {
             $('#estado').addClass('label label-' + response.devolucion.bootstrap_color);
             $('#nombre_registrado_por').text(response.devolucion.nombre_corto);
             $('#fecha_registro').text(response.devolucion.fecha_registro);
+            $('#nombre_revisado_por').text(response.devolucion.nombre_revisado);
+            $('#comentario_revision').text(response.devolucion.comentario_revision);
 
             items = response.detalle;
             salidas = response.salidas;
