@@ -32,15 +32,15 @@ Atención de Salidas
         <div class="page-main" type="despachosPendientes">
             <div class="col-md-12" id="tab-despachosPendientes" style="padding-top:10px;padding-bottom:10px;">
                 <ul class="nav nav-tabs" id="myTabDespachosPendientes">
-                    @if (in_array(112,$array_accesos))
+                    {{-- @if (in_array(112,$array_accesos)) --}}
                     <li class="active"><a data-toggle="tab" href="#pendientes">Despachos Pendientes <span id="nro_despachos" class="badge badge-info">{{$nro_od_pendientes}}</span></a></li>
-                    @endif
-                    @if (in_array(117,$array_accesos))
+                    {{-- @endif
+                    @if (in_array(117,$array_accesos)) --}}
                     <li class=""><a data-toggle="tab" href="#salidas">Salidas Procesadas</a></li>
-                    @endif
+                    {{-- @endif --}}
                 </ul>
                 <div class="tab-content">
-                    @if (in_array(112,$array_accesos))
+                    {{-- @if (in_array(112,$array_accesos)) --}}
                     <div id="pendientes" class="tab-pane fade in active">
                         <form id="formFiltrosSalidasPendientes" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-salida.salidasPendientesExcel')}}">
                             @csrf()
@@ -74,8 +74,8 @@ Atención de Salidas
                             </div>
                         </div>
                     </div>
-                    @endif
-                    @if (in_array(117,$array_accesos))
+                    {{-- @endif
+                    @if (in_array(117,$array_accesos)) --}}
                     <div id="salidas" class="tab-pane fade ">
                         <form id="formFiltrosSalidasProcesadas" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-salida.salidasProcesadasExcel')}}">
                             @csrf()
@@ -106,7 +106,7 @@ Atención de Salidas
                             </div>
                         </div>
                     </div>
-                    @endif
+                    {{-- @endif --}}
                 </div>
             </div>
         </div>
