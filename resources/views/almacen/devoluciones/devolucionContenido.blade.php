@@ -100,18 +100,6 @@
                     </div>
                 </div>
                 <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
-                    {{-- <div class="col-md-4">
-                        <label class="col-sm-4 control-label">Moneda: </label>
-                        <div class="col-sm-8">
-                            <select class="form-control js-example-basic-single edition limpiardevolucion" 
-                                name="id_moneda" required>
-                                <option value="">Elija una opción</option>
-                                @foreach ($monedas as $moneda)
-                                <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div> --}}
                     <div class="col-md-4">
                         <label>Registrado por:</label>
                         <span id="nombre_registrado_por" class="limpiarTexto"></span>
@@ -119,6 +107,16 @@
                     <div class="col-md-4">
                         <label>Fecha registro:</label>
                         <span id="fecha_registro" class="limpiarTexto"></span>
+                    </div>
+                </div>
+                <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
+                    <div class="col-md-4">
+                        <label>Revisado por:</label>
+                        <span id="nombre_revisado_por" class="limpiarTexto"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Comentario de conformidad:</label>
+                        <span id="comentario_revision" class="limpiarTexto"></span>
                     </div>
                 </div>
             </form>

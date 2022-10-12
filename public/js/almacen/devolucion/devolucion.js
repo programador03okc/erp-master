@@ -280,6 +280,8 @@ function mostrarDevolucion(id) {
             $('#estado').addClass('label label-' + response.devolucion.bootstrap_color);
             $('#nombre_registrado_por').text(response.devolucion.nombre_corto);
             $('#fecha_registro').text(response.devolucion.fecha_registro);
+            $('#nombre_revisado_por').text(response.devolucion.nombre_revisado);
+            $('#comentario_revision').text(response.devolucion.comentario_revision);
 
             items = response.detalle;
             salidas = response.salidas;

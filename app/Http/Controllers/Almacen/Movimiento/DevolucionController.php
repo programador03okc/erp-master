@@ -128,6 +128,7 @@ class DevolucionController extends Controller
             ->select(
                 'devolucion.*',
                 'sis_usua.nombre_corto',
+                'usu_revisado.nombre_corto as nombre_revisado',
                 'proveedor.id_contribuyente',
                 'proveedor.razon_social as proveedor_razon_social',
                 'cliente.razon_social as cliente_razon_social',
@@ -139,6 +140,7 @@ class DevolucionController extends Controller
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'devolucion.id_cliente')
             ->leftjoin('contabilidad.adm_contri as cliente', 'cliente.id_contribuyente', '=', 'devolucion.registrado_por')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
+            ->leftjoin('configuracion.sis_usua as usu_revisado', 'usu_revisado.id_usuario', '=', 'devolucion.revisado_por')
             ->join('cas.devolucion_estado', 'devolucion_estado.id_estado', '=', 'devolucion.estado')
             ->where('id_devolucion', $id)->first();
 
