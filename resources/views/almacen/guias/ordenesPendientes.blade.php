@@ -233,7 +233,7 @@ Atención de Ingresos
 <script src="{{ asset('js/almacen/devolucion/verFichasTecnicas.js')}}?v={{filemtime(public_path('js/almacen/devolucion/verFichasTecnicas.js'))}}"></script>
 
 <script>
-    
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
