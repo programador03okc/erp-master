@@ -334,9 +334,9 @@ $(document).on('change','.buscar-registro',function () {
                 $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
                 $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
 
-                // $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
-                // $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
-                // $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
+                $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
+                $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
+                $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
                 console.log(response);
             }
         }
