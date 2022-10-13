@@ -118,13 +118,15 @@ class IncidenciaController extends Controller
     {
         // $lista = Incidencia::with('contribuyente', 'responsable', 'estado')->where([['estado', '!=', 7]]);
         $lista = DB::table('cas.incidencia')
-            ->select(
+        ->select(
                 'incidencia.id_incidencia',
                 'incidencia.codigo',
                 'incidencia.fecha_reporte',
                 'adm_contri.razon_social',
                 'adm_contri.id_contribuyente',
                 'sis_usua.nombre_corto',
+                'incidencia.factura',
+                'incidencia.falla_reportada',
                 'incidencia_estado.descripcion as estado_descripcion',
             )
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'incidencia.id_responsable')

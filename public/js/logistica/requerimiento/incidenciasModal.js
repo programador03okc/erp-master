@@ -30,10 +30,10 @@ function listarIncidencias() {
         columns: [
             { data: "id_incidencia" },
             { data: "codigo" },
-            { data: "cliente", name: 'contribuyente.razon_social' },
+            { data: "razon_social" },
             { data: "factura" },
             { data: "falla_reportada" },
-            { data: 'estado.descripcion' }
+            { data: 'estado_descripcion',name :'incidencia_estado.descripcion' }
         ],
         columnDefs: [{ aTargets: [0], sClass: "invisible" }],
         order: [[0, "desc"]]
