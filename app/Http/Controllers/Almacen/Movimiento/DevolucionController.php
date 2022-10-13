@@ -24,12 +24,12 @@ class DevolucionController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
-        // $array_accesos = [];
-        // $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
-        // foreach ($accesos_usuario as $key => $value) {
-        //     array_push($array_accesos, $value->id_acceso);
-        // }
-        return view('almacen/devoluciones/devolucion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
+        return view('almacen/devoluciones/devolucion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas', 'array_accesos'));
     }
 
     function viewDevolucionCas()
@@ -128,6 +128,7 @@ class DevolucionController extends Controller
             ->select(
                 'devolucion.*',
                 'sis_usua.nombre_corto',
+                'usu_revisado.nombre_corto as nombre_revisado',
                 'proveedor.id_contribuyente',
                 'proveedor.razon_social as proveedor_razon_social',
                 'cliente.razon_social as cliente_razon_social',
@@ -139,6 +140,7 @@ class DevolucionController extends Controller
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'devolucion.id_cliente')
             ->leftjoin('contabilidad.adm_contri as cliente', 'cliente.id_contribuyente', '=', 'devolucion.registrado_por')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
+            ->leftjoin('configuracion.sis_usua as usu_revisado', 'usu_revisado.id_usuario', '=', 'devolucion.revisado_por')
             ->join('cas.devolucion_estado', 'devolucion_estado.id_estado', '=', 'devolucion.estado')
             ->where('id_devolucion', $id)->first();
 
@@ -156,32 +158,31 @@ class DevolucionController extends Controller
             ->where('devolucion_detalle.id_devolucion', $id)
             ->where('devolucion_detalle.estado', 1)->get();
 
-        $salidas = DB::table('cas.devolucion_detalle')
+        $salidas = DB::table('cas.devolucion_venta')
             ->select(
-                'mov_alm.id_mov_alm',
+                'devolucion_venta.id',
+                'devolucion_venta.id_devolucion',
+                'devolucion_venta.id_salida',
                 'mov_alm.codigo',
                 'mov_alm.estado',
                 DB::raw("(concat(guia_ven.serie,'-',guia_ven.numero) ) as serie_numero_guia"),
                 'adm_contri.razon_social',
                 DB::raw("(select concat(dv.serie,'-', dv.numero) from almacen.doc_ven as dv 
                 inner join almacen.doc_ven_det as d on(
-                d.id_doc=dv.id_doc_ven)
+                    d.id_doc=dv.id_doc_ven)
                 inner join almacen.guia_ven_det as g on(
-                g.id_guia_ven_det=d.id_guia_ven_det)
+                    g.id_guia_ven_det=d.id_guia_ven_det)
                 where g.id_guia_ven=mov_alm.id_guia_ven
                 group by concat(dv.serie,'-', dv.numero)
-                limit 1) AS serie_numero_doc")
+                    limit 1) AS serie_numero_doc")
             )
-            ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm_det', '=', 'devolucion_detalle.id_salida_detalle')
-            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'devolucion_venta.id_salida')
             ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-            ->whereNotNull('devolucion_detalle.id_salida_detalle')
-            ->where('devolucion_detalle.id_devolucion', $id)
-            ->where('devolucion_detalle.estado', 1)
-            ->distinct()
+            ->where('devolucion_venta.id_devolucion', $id)
+            ->where('devolucion_venta.estado', 1)
             ->get();
 
         $incidencias = DB::table('cas.devolucion_incidencia')
@@ -368,6 +369,18 @@ class DevolucionController extends Controller
                 );
             }
 
+            $salidas = json_decode($request->salidas);
+
+            foreach ($salidas as $sal) {
+                DB::table('cas.devolucion_venta')->insert(
+                    [
+                        'id_devolucion' => $id_devolucion,
+                        'id_salida' => $sal->id_salida,
+                        'estado' => 1,
+                    ]
+                );
+            }
+
             $devolucion = DB::table('cas.devolucion')->where('id_devolucion', $id_devolucion)->first();
             $mensaje = 'Se guardó la devolución correctamente';
             $tipo = 'success';
@@ -503,6 +516,26 @@ class DevolucionController extends Controller
                         [
                             'id_devolucion' => $request->id_devolucion,
                             'id_incidencia' => $inc->id_incidencia,
+                            'estado' => 1,
+                        ]
+                    );
+                }
+            }
+
+            $salidas = json_decode($request->salidas);
+
+            foreach ($salidas as $sal) {
+                if ($sal->id > 0) {
+                    if ($sal->estado == 7) {
+                        DB::table('cas.devolucion_venta')
+                            ->where('id', $sal->id)
+                            ->update(['estado' => $sal->estado]);
+                    }
+                } else {
+                    DB::table('cas.devolucion_venta')->insert(
+                        [
+                            'id_devolucion' => $request->id_devolucion,
+                            'id_salida' => $sal->id_salida,
                             'estado' => 1,
                         ]
                     );

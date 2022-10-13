@@ -100,12 +100,20 @@
                                 <label style="font-size: 14px;" name="cta_cci"></label>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-2 oculto" id="contenedor_comentario_pago_logistica">
+                        <div class="row oculto" id="contenedor_comentario_pago_logistica">
+                            <div class="col-md-2">
                                 <span style="font-size: 14px;">Comentario pago logística: </span>
                             </div>
                             <div class="col-md-10">
                                 <label style="font-size: 14px;" name="comentario_pago_logistica"></label>
+                            </div>
+                        </div>
+                        <div class="row" id="contenedor_adjunto_logistica">
+                            <div class="col-md-3" style="width:auto;">
+                                <span style="font-size: 14px;">Adjuntos logística: </span>
+                            </div>
+                            <div class="col-md-9">
+                                <label class="lbl-codigo handleClickVerAdjuntosLogisticos" style="font-size: 14px;" name="adjuntoslogistica">Ver</label>
                             </div>
                         </div>
                     </fieldset>

@@ -8,9 +8,12 @@ $(function () {
             $(this).addClass("eventClick");
         }
         var data = $('#listaSalidasVenta').DataTable().row($(this)).data();
+        var id_dev = $('[name=id_devolucion]').val();
 
         salidas.push({
-            'id_mov_alm': data.id_mov_alm,
+            'id': 0,
+            'id_devolucion': (id_dev == '' ? 0 : id_dev),
+            'id_salida': data.id_mov_alm,
             'serie_numero_guia': data.serie_numero_guia,
             'serie_numero_doc': data.serie_numero_doc,
             'razon_social': data.razon_social,
