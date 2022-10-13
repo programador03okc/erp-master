@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
+use App\Gerencial\Cobranza as GerencialCobranza;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Model\Gerencial\CobranzaAgil;
 use App\Models\Administracion\Periodo;
 use App\Models\Comercial\Cliente as ComercialCliente;
 use App\Models\Configuracion\Departamento;
@@ -177,24 +179,104 @@ class RegistroController extends Controller
             "data"=>$cliente_erp
         ]);
     }
-    public function getCDP($cdp)
-    {
-        return response()->json([
-            "success"=>true,
-            "status"=>200,
-            "data"=>$cdp
-        ]);
-    }
     public function getFactura($factura)
     {
         $factura = explode('-',$factura);
         $serie  = $factura[0];
         $numero = $factura[1];
-        $factura = DB::table('almacen.guia_ven')->where('serie',$serie)->where('numero',$numero)->first();
+        $factura = DB::table('almacen.doc_ven')->where('doc_ven.estado',1)->where('doc_ven.serie',$serie)->where('doc_ven.numero',$numero)
+        ->select(
+            'doc_ven.*',
+
+        )
+        ->join('almacen.doc_ven_det', 'doc_ven_det.id_doc', '=', 'doc_ven.id_doc_ven')
+        ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven_Det', '=', 'doc_ven_det.id_doc')
+        ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'guia_ven_det.id_guia_ven')
+        ->orderByDesc('doc_ven.id_doc_ven')
+        ->first();
         return response()->json([
             "success"=>true,
             "status"=>200,
             "data"=>$factura
+        ]);
+    }
+    public function getRegistro($data, $tipo)
+    {
+
+        $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view');
+        if ($tipo==='oc') {
+            $cliente_gerencial->where('requerimiento_logistico_view.nro_orden',$data);
+        }
+        if ($tipo === 'cdp') {
+            $cliente_gerencial->where('requerimiento_logistico_view.codigo_oportunidad',$data);
+        }
+        $cliente_gerencial = $cliente_gerencial
+        ->select(
+            'requerimiento_logistico_view.id_moneda',
+            'alm_req.id_requerimiento',
+            'trans.id_transferencia',
+            'guia_ven.id_guia_ven',
+            'guia_ven_det.id_guia_ven_det',
+            // 'doc_ven_det.id_doc_det'
+        )
+        ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+        ->join('almacen.trans', 'trans.id_requerimiento', '=', 'alm_req.id_requerimiento')
+        ->join('almacen.guia_ven', 'guia_ven.id_transferencia', '=', 'trans.id_transferencia')
+        ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven', '=', 'guia_ven.id_guia_ven')
+        // ->join('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
+        ->first();
+        if ($cliente_gerencial) {
+            return response()->json([
+                "success"=>true,
+                "status"=>200,
+                "data"=>$cliente_gerencial
+            ]);
+        }else{
+            return response()->json([
+                "success"=>false,
+                "status"=>404,
+                "data"=>[]
+            ]);
+        }
+
+    }
+    public function guardarRegistroCobranza(Request $request)
+    {
+        $data = $request;
+        $empresa = Empresa::where('estado',1)->where('')->get();
+        $cobranza = new Cobranza();
+
+        $cobranza->id_empresa       = $request->empresa;
+        $cobranza->id_sector        = $request->sector;
+        $cobranza->id_cliente       = $request->cliente;
+        $cobranza->factura          = $request->fact;
+        $cobranza->uu_ee            = $request->ue;
+        $cobranza->fuente_financ    = $request->ff;
+        $cobranza->oc               = $request->oc;
+        $cobranza->siaf             = $request->siaf;
+        $cobranza->fecha_emision    = $request->fecha_emi;
+        $cobranza->fecha_recepcion  = $request->fecha_rec;
+        $cobranza->moneda           = $request->moneda;
+        $cobranza->importe          = $request->importe;
+        $cobranza->id_estado_doc    = $request->estado_doc;
+        $cobranza->id_tipo_tramite  = $request->tramite;
+        $cobranza->vendedor         = $request->nom_vendedor;
+        // $cobranza->estado           = $request->empresa;
+        $cobranza->fecha_registro   = date('Y-m-d H:i:s');
+        $cobranza->id_area          = $request->area;
+        $cobranza->id_periodo       = $request->periodo;
+        $cobranza->ocam             = $request->ocam;
+        // $cobranza->codigo_empresa   = $request->empresa;
+        $cobranza->categoria        = $request->categ;
+        $cobranza->cdp              = $request->cdp;
+        $cobranza->plazo_credito    = $request->plazo_credito;
+        // $cobranza->id_vent          = $request->empresa;
+
+        $cobranza->save();
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$request
         ]);
     }
 }

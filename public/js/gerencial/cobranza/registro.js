@@ -294,25 +294,7 @@ $(document).on('change','[data-select="provincia-select"]',function () {
         console.log(errorThrown);
     })
 });
-$(document).on('change','.buscar-registro',function () {
-    const cdp = $(this).val();
-    $.ajax({
-        type: 'get',
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'buscar-cdp/'+cdp,
-        data: {},
-        dataType: 'JSON',
-        success: function(response){
-            if (response.status===200) {
-                console.log(response);
-            }
-        }
-    }).fail( function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    })
-});
+// busca por factura
 $(document).on('change','.buscar-factura',function () {
     const factura = $(this).val();
     $.ajax({
@@ -323,6 +305,11 @@ $(document).on('change','.buscar-factura',function () {
         dataType: 'JSON',
         success: function(response){
             if (response.status===200) {
+                $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
+                $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.moneda+'"]').attr('selected','true');
+                $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
+                $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
+                $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
                 console.log(response);
             }
         }
@@ -331,4 +318,135 @@ $(document).on('change','.buscar-factura',function () {
         console.log(textStatus);
         console.log(errorThrown);
     })
+});
+// busca por oc y cdp
+$(document).on('change','.buscar-registro',function () {
+    const input = $(this).val();
+    const tipo = $(this).data('action');
+    $.ajax({
+        type: 'get',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'buscar-registro/'+input+'/'+tipo,
+        data: {},
+        dataType: 'JSON',
+        success: function(response){
+            if (response.status===200) {
+                $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
+                $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
+
+                // $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
+                // $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
+                // $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
+                console.log(response);
+            }
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+function searchSource(){
+    $('#modal-fue-fin').modal({show: true, backdrop: 'static'});
+    $('#modal-fue-fin').on('shown.bs.modal', function(){
+        $('[name=fuente]').select();
+    });
+}
+function fuenteFinan(value){
+    $('#rubro').empty();
+    $('#rubro').append('<option value="" disabled selected>Elija una opción</option>');
+    var opcion;
+    if (value == 1){
+        opcion = '<option value="00">RECURSOS ORDINARIOS</option>';
+    }else if(value == 2){
+        opcion = '<option value="09">RECURSOS DIRECTAMENTE RECAUDADOS</option>';
+    }else if(value == 3){
+        opcion = '<option value="19">RECURSOS POR OPERACIONES OFICIALES DE CREDITO</option>';
+    }else if(value == 4){
+        opcion = '<option value="13">DONACIONES Y TRANSFERENCIAS</option>';
+    }else if(value == 5){
+        opcion = '<option value="04">CONTRIBUCIONES A FONDOS</option><option value="07">FONDO DE COMPENSACION MUNICIPAL</option><option value="08">IMPUESTOS MUNICIPALES</option><option value="18">CANON Y SOBRECANON, REGALIAS, RENTA DE ADUANAS Y PARTICIPACIONES</option>';
+    }
+    $('#rubro').append(opcion);
+}
+function selectSource(){
+    var fuente = $('#fuente').val();
+    var rubro = $('#rubro').val();
+    var text = fuente.concat('-', rubro);
+    $('#ff').val(text);
+    $('#modal-fue-fin').modal('hide');
+}
+$('#formulario').on('submit', function(){
+    var data = $(this).serialize();
+    var form = $(this).attr('form');
+    var type = $(this).attr('type');
+    var page = 'formulario';
+    // var ask = confirm('¿Desea guardar este registro?');
+
+    var url;
+    var msj;
+
+    Swal.fire({
+        title: 'Guardar',
+        text: "¿Esta seguro de guardar este registro?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            $.ajax({
+                type: 'POST',
+                url: 'guardar-registro-cobranza',
+                dataType: 'JSON',
+                data:data,
+                success: function(response){
+                    if (response.status===200) {
+                        Swal.fire(
+                          'Éxito',
+                          'Se elimino con éxito.',
+                          'success'
+                        ).then((result) => {
+                            $('#listaUsuarios').DataTable().ajax.reload();
+                        })
+                    }else{
+                        Swal.fire(
+                            'Error',
+                            'No se pudo eliminar.',
+                            'error'
+                        );
+                    }
+                    //
+                }
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+      }).then((result) => {
+    })
+    // if (ask == true){
+    //     switch(form){
+    //         case 'cobranza':
+    //             var table = '#tablaCobranza';
+    //             if (type == 'register'){
+    //                 var url = baseUrl + 'cobranza/register';
+    //                 var msj = 'Cobranza agregada con éxito.';
+    //                 actionForms(data, table, url, msj, page);
+    //                 return false;
+    //             }else if(type == 'edition'){
+    //                 var url = baseUrl + 'cobranza/edition/updateData';
+    //                 var msj = 'Cobranza editada con éxito.';
+    //                 actionForms(data, table, url, msj, page);
+    //                 return false;
+    //             }
+
+    //     }
+    // }else{
+    //     return false;
+    // }
 });

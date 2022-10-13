@@ -77,16 +77,6 @@ Cobranzas
 				<div class="modal-body">
                     <input type="hidden" name="id" id="id">
                     <div class="row">
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="periodo">Periodo</label>
-                                <select name="periodo" id="periodo" class="form-control input-sm" onchange="cambiarPeriodos(this.value);">
-                                    @foreach ($periodo as $item)
-                                        <option value="{{$item->id_periodo }}">{{$item->descripcion}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="empresa">Empresa</label>
@@ -120,6 +110,16 @@ Cobranzas
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="periodo">Periodo</label>
+                                <select name="periodo" id="periodo" class="form-control input-sm" onchange="cambiarPeriodos(this.value);">
+                                    @foreach ($periodo as $item)
+                                        <option value="{{$item->id_periodo }}">{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-5">
@@ -139,13 +139,13 @@ Cobranzas
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="oc">Orden de Compra</label>
-                                <input type="text" class="form-control input-sm text-center" name="oc" id="oc" required placeholder="N° OC">
+                                <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC" data-action="oc">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="cdp">Cuadro de Presup.</label>
-                                <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP">
+                                <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp">
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -195,7 +195,7 @@ Cobranzas
                                         <option value="1" selected>S/.</option>
                                         <option value="2">$</option>
                                     </select>
-                                    <input type="text" class="form-control input-sm number text-right" name="importe" id="importe" required placeholder="0.00">
+                                    <input type="number" class="form-control input-sm number text-right" name="importe" id="importe" required placeholder="0.00">
                                 </div>
                             </div>
                         </div>
@@ -285,7 +285,7 @@ Cobranzas
 	</div>
 </div>
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-buscar-cliente">
-	<div class="modal-dialog" style="width: 50%;">
+	<div class="modal-dialog" style="width: 70%;">
 		<div class="modal-content">
 			<form class="formPage" type="search">
 				<div class="modal-header">
@@ -452,6 +452,47 @@ Cobranzas
 
 				</div>
 			</form>
+		</div>
+	</div>
+</div>
+<!-- Modal Fuente Financiamiento -->
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-fue-fin">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 class="modal-title">Clasificador</h3>
+				<button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-12">
+								<h5>Fuente Financiamiento</h5>
+								<select class="form-control input-sm" name="fuente" id="fuente" onchange="fuenteFinan(this.value);">
+									<option value="" disabled selected>Elija una opción</option>
+									<option value="1">RECURSOS ORDINARIOS</option>
+									<option value="2">RECURSOS DIRECTAMENTE RECAUDADOS</option>
+									<option value="3">RECURSOS POR OPERACIONES OFICIALES DE CREDITO</option>
+									<option value="4">DONACIONES Y TRANSFERENCIAS</option>
+									<option value="5">RECURSOS DETERMINADOS</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<h5>Rubro</h5>
+								<select class="form-control input-sm" name="rubro" id="rubro">
+									<option value="" disabled selected>Elija una opción</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm btn-success" onclick="selectSource();">Seleccionar <span class="fa fa-download"></span></button>
+			</div>
 		</div>
 	</div>
 </div>

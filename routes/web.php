@@ -2130,11 +2130,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
 			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente');
 
-            Route::get('provincia/{id_departamento}', 'Gerencial\Cobranza\RegistroController@provincia')->name('cliente');
-            Route::get('distrito/{id_provincia}', 'Gerencial\Cobranza\RegistroController@distrito')->name('cliente');
-            Route::get('get-cliente/{id_cliente}', 'Gerencial\Cobranza\RegistroController@getCliente')->name('cliente');
-            Route::get('buscar-cdp/{cdp}', 'Gerencial\Cobranza\RegistroController@getCDP')->name('cliente');
-            Route::get('buscar-factura/{factura}', 'Gerencial\Cobranza\RegistroController@getFactura')->name('cliente');
+            Route::get('provincia/{id_departamento}', 'Gerencial\Cobranza\RegistroController@provincia');
+            Route::get('distrito/{id_provincia}', 'Gerencial\Cobranza\RegistroController@distrito');
+            Route::get('get-cliente/{id_cliente}', 'Gerencial\Cobranza\RegistroController@getCliente');
+            Route::get('buscar-factura/{factura}', 'Gerencial\Cobranza\RegistroController@getFactura');
+            Route::get('buscar-registro/{input}/{tipo}', 'Gerencial\Cobranza\RegistroController@getRegistro');
+            // registro de cobranza
+            Route::post('guardar-registro-cobranza', 'Gerencial\Cobranza\RegistroController@guardarRegistroCobranza');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			// });
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
