@@ -332,6 +332,20 @@ function openAsignarProducto(partnumber, desc, id, type) {
     $('#modal-mapeoAsignarProducto').modal('show');
     $('[href="#seleccionar"]').tab('show');
     $('#submit_mapeoAsignarProducto').removeAttr('disabled');
+
+    $(".nav-tabs a[href='#crear']").on("click", function(e) {
+        Swal.fire({
+            title: "Para crear nuevos productos contactar con el responsable de mantenimiento de catálogo",
+            icon: "info",
+        }).then (function() {
+            window.open('/almacen/catalogos/productos/index', '_blank');
+        });
+        e.preventDefault();
+        return false;
+
+    
+    });
+
 }
 
 $("#form-mapeoItemsRequerimiento").on("submit", function (e) {
