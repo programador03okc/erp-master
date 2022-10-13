@@ -186,6 +186,7 @@ Gestión de ordenes
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+<script src="{{ asset('template/plugins/jquery-number/jquery.number.min.js') }}"></script>
 
 <script>
     var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
@@ -199,6 +200,8 @@ Gestión de ordenes
 
         listaOrdenView.init();
         listaOrdenView.initializeEventHandler();
+        $('[name=monto_a_pagar]').number( true, 2 );
+        $('[name=saldo]').number( true, 2 );
 
     };
 </script>

@@ -100,6 +100,10 @@ class ListaOrdenView {
         $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeCuenta", (e) => {
             this.actualizarIdCuentaBancariaDeInput(e.currentTarget);
         });
+        
+        $('#modal-enviar-solicitud-pago').on("keyup", "input.handleKeyUpCalcularSaldo", (e) => {
+            this.calcularSaldo();
+        });
 
         $('#listaDestinatariosEncontrados').on("click", "tr.handleClickSeleccionarDestinatario", (e) => {
             this.seleccionarDestinatario(e.currentTarget);
@@ -282,6 +286,7 @@ class ListaOrdenView {
             this.anularAdjuntoProveedor(e.currentTarget);
         });
 
+        
     }
 
     limpiarTabla(idElement) {
@@ -576,8 +581,8 @@ class ListaOrdenView {
                     <td style="border: none;">${element.descripcion ? element.descripcion : (element.descripcion_adicional ? element.descripcion_adicional : '')}</td>
                     <td style="border: none;">${element.cantidad ? element.cantidad : ''}</td>
                     <td style="border: none;">${element.abreviatura ? element.abreviatura : ''}</td>
-                    <td style="border: none;">${element.moneda_simbolo}${$.number(element.precio, 2)}</td>
-                    <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad * element.precio), 2)}</td>
+                    <td style="border: none;">${element.moneda_simbolo}${$.number(element.precio, 2,".",",")}</td>
+                    <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad * element.precio), 2,".",",")}</td>
                     <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
 
                     </tr>`;
@@ -989,6 +994,11 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='saldo']").value = '';
+        
         let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
         if (selectCuenta != null) {
             while (selectCuenta.children.length > 0) {
@@ -1014,15 +1024,24 @@ class ListaOrdenView {
             show: true,
             backdrop: 'static'
         });
-
+        console.log(obj.dataset.montoAPagoOrden);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = 1;
+
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").setAttribute("data-monto-total",obj.dataset.montoTotalOrden);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =(obj.dataset.montoAPagoOrden != null && parseFloat(obj.dataset.montoAPagoOrden) > 0)?obj.dataset.montoAPagoOrden:obj.dataset.montoTotalOrden ;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").value = obj.dataset.simboloMonedaOrden+' '+$.number(obj.dataset.montoTotalOrden,2,".",",");
+        // document.querySelector("div[id='modal-enviar-solicitud-pago'] div[name='simboloMoneda']").textContent = obj.dataset.simboloMonedaOrden;
+        $( "div[name*='simboloMoneda']" ).text(obj.dataset.simboloMonedaOrden);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
+        this.calcularSaldo();
+
 
         if (obj.dataset.estadoPago == 8) {
-            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago;
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago>0?obj.dataset.idPrioridadPago:1;
             document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = obj.dataset.idTipoDestinatarioPago;
 
             if (obj.dataset.idTipoDestinatarioPago == 1) {
@@ -1048,6 +1067,8 @@ class ListaOrdenView {
         } else {
             this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor)
         }
+
+        this.obtenerMontosParaPago(obj.dataset.idOrdenCompra);
 
     }
 
@@ -1096,6 +1117,27 @@ class ListaOrdenView {
         }).catch(function (err) {
             console.log(err)
         })
+    }
+    obtenerMontosParaPago(idOrden) {
+        console.log(idOrden);
+        // this.getContribuyentePorIdProveedor(idOrden).then((res) => {
+        //     // console.log(res);
+        //     if (res.tipo_estado == 'success') {
+        //         tempDataProveedorParaPago = res.data;
+        //         this.llenarInputsDeDestinatario(res.data);
+        //     } else {
+        //         Lobibox.notify(res.tipo_estado, {
+        //             title: false,
+        //             size: 'mini',
+        //             rounded: true,
+        //             sound: false,
+        //             delayIndicator: false,
+        //             msg: res.mensaje
+        //         });
+        //     }
+        // }).catch(function (err) {
+        //     console.log(err)
+        // })
     }
 
     llenarInputsDeDestinatario(data) {
@@ -1502,6 +1544,16 @@ class ListaOrdenView {
             );
         }
     }
+
+    calcularSaldo(){
+
+        // let montoPagar = obj.value!=null?(parseFloat((obj.value).replace(",",""))):0;
+        let montoPagar = (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value)!=null?(parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value).replace(",",""))):0;
+        let montoTotal = document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").dataset.montoTotal!=null ?(parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").dataset.montoTotal)):0;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='saldo']").value= $.number(parseFloat(montoTotal -montoPagar),2,".",",");
+    }
+
+
     buscarDestinatarioPorNombre(obj) {
         let nombreDestinatario = obj.value;
         let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value);
@@ -1721,7 +1773,7 @@ class ListaOrdenView {
                 { 'data': 'descripcion_estado_pago', 'name': 'descripcion_estado_pago','className': 'text-center' },
                 { 'data': 'monto_total', 'className': 'text-right',
                     render: function (data, type, row) {
-                        return row.simbolo_moneda + $.number(row.monto_total,2);
+                        return row.simbolo_moneda + $.number(row.monto_total,2,".",",");
                     }
                 },
                 {
@@ -1764,6 +1816,9 @@ class ListaOrdenView {
                             let btnEnviarAPago = (array_accesos.find(element => element === 247)?`<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
                                 data-id-orden-compra="${row.id ?? ''}"
                                 data-codigo-orden="${row.codigo ?? ''}"
+                                data-monto-total-orden="${row.monto_total ?? ''}"
+                                data-monto-a-pago-orden="${row.monto_a_pago ?? ''}"
+                                data-simbolo-moneda-orden="${row.simbolo_moneda ?? ''}"
                                 data-id-proveedor="${row.id_proveedor ?? ''}"
                                 data-id-cuenta-principal="${row.id_cta_principal ?? ''}"
                                 data-estado-pago="${row.estado_pago ?? ''}"
@@ -1925,12 +1980,12 @@ class ListaOrdenView {
                 { 'data': 'abreviatura_unidad_medida_det_orden', 'name': 'abreviatura_unidad_medida_det_orden' },
                 { 'data': 'precio', 'className': 'text-right',
                 render: function (data, type, row) {
-                    return row.simbolo_moneda_orden + $.number(row.precio,2);
+                    return row.simbolo_moneda_orden + $.number(row.precio,2,".",",");
                     }
                 },
                 { 'data': 'cc_fila_precio', 'className': 'text-right',
                 render: function (data, type, row) {
-                    return (row.cc_moneda =='s'?'S/':(row.cc_moneda=='d'?'$':'')) + $.number(row.cc_fila_precio,2);
+                    return (row.cc_moneda =='s'?'S/':(row.cc_moneda=='d'?'$':'')) + $.number(row.cc_fila_precio,2,".",",");
                     }
                 },
                 { 'data': 'fecha_emision', 'name': 'fecha_emision','className': 'text-center' },
@@ -2235,7 +2290,7 @@ class ListaOrdenView {
             tamañoTotalArchivoParaSubir+=element.size;
 
         });
-            document.querySelector("div[id='modal-adjuntar-orden'] span[id='tamaño_total_archivos_para_subir']").textContent= $.number((tamañoTotalArchivoParaSubir/1000000),2)+'MB';
+            document.querySelector("div[id='modal-adjuntar-orden'] span[id='tamaño_total_archivos_para_subir']").textContent= $.number((tamañoTotalArchivoParaSubir/1000000),2,".",",")+'MB';
     }
     eliminarAdjuntoRequerimientoCompraCabecera(obj){
         obj.closest("tr").remove();

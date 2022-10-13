@@ -46,7 +46,7 @@
                                     <input class="oculto" name="id_proveedor">
                                     <input type="text" class="form-control" name="tipo_documento_identidad" placeholder="Tipo" style="width:25%;" disabled>
                                     <input type="text" class="form-control handleBlurBuscarDestinatarioPorNumeroDocumento" name="nro_documento" placeholder="Nro documento" style="width: 75%">
-                                    <input type="text" class="form-control handleKeyUpBuscarDestinatarioPorNombre handleFocusInputNombreDestinatario handleFocusOutInputNombreDestinatario" name="nombre_destinatario" placeholder="Nombre destinatario" >
+                                    <input type="text" class="form-control handleKeyUpBuscarDestinatarioPorNombre handleFocusInputNombreDestinatario handleFocusOutInputNombreDestinatario" name="nombre_destinatario" placeholder="Nombre destinatario">
                                     <button type="button" class="btn btn-sm btn-flat btn-primary" id="btnAgregarNuevoDestiantario" onClick="modalNuevoDestinatario();" disabled>
                                         <i class="fa fa-plus"></i>
                                     </button>
@@ -74,7 +74,7 @@
                                     <input class="oculto" name="id_cuenta_contribuyente">
                                     <select class="form-control activation handleCheckStatusValue handleChangeCuenta" name="id_cuenta">
                                     </select>
-                                    <button type="button" class="btn btn-sm btn-flat btn-primary"  title="Agregar cuenta bancaria" onClick="modalNuevaCuentaDestinatario();">
+                                    <button type="button" class="btn btn-sm btn-flat btn-primary" title="Agregar cuenta bancaria" onClick="modalNuevaCuentaDestinatario();">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-flat btn-default handleClickInfoAdicionalCuentaSeleccionada">
@@ -84,7 +84,63 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <h5>Monto Total:</h5>
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda"></div>
+                                    <input type="text" class="form-control" name="monto_total" data-monto-total="" placeholder="Monto total" readOnly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <h5>Monto a pagar:</h5>
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda"></div>
+                                    <input type="text" class="form-control handleKeyUpCalcularSaldo" name="monto_a_pagar" placeholder="Monto a pagar">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <h5>Saldo:</h5>
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda"></div>
+                                    <input type="text" class="form-control" name="saldo" placeholder="Saldo" readOnly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <h5>Adjuntar:</h5>
+                                <input type="file"  multiple="multiple" class="filestyle handleChangeAgregarAdjunto" name="nombre_archivo" placeholder="Seleccionar" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo" data-size="sm" data-iconName="fa fa-folder-open" accept="application/pdf,image/*" />
+                                <div style="display:flex; justify-content: space-between;">
+                                    <h6>Máximo 1 archivos de seleccion y con un máximo de 100MB por subida.</h6>
+                                    <h6>Carga actual: <span class="label label-default" id="tamaño_total_archivos_para_subir">0MB</span></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                        <fieldset class="group-table">
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos logísticos</strong></h5>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="adjuntosDetalle" class="mytable table table-condensed table-bordered table-okc-view" style="width: 100%;">
+                                    <thead>
+                                        <tr><th>Archivo</th>
+                                        <th>Fecha emisión</th>
+                                        <th>Nro comprobante</th>
+                                        <th>Tipo</th>
+                                        <th>Acción</th>
+                                    </tr></thead>
+                                    <tbody id="body_adjuntos_logisticos">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                        </div>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <h5>Comentario:</h5>
