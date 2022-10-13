@@ -217,13 +217,13 @@ class RegistroController extends Controller
             'trans.id_transferencia',
             'guia_ven.id_guia_ven',
             'guia_ven_det.id_guia_ven_det',
-            // 'doc_ven_det.id_doc_det'
+            'doc_ven_det.id_doc_det'
         )
         ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
         ->join('almacen.trans', 'trans.id_requerimiento', '=', 'alm_req.id_requerimiento')
         ->join('almacen.guia_ven', 'guia_ven.id_transferencia', '=', 'trans.id_transferencia')
         ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven', '=', 'guia_ven.id_guia_ven')
-        // ->join('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
+        ->join('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
         ->first();
         if ($cliente_gerencial) {
             return response()->json([
