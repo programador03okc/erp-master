@@ -40,23 +40,6 @@ class RegistroController extends Controller
 
         $pais = Pais::get();
         $departamento = Departamento::get();
-
-        $obtener_listado = Requerimiento::where('alm_req.enviar_facturacion','t')->where('doc_ven.estado',1)
-        ->select(
-            'alm_req.id_requerimiento',
-            'alm_req.fecha_registro as fecha_registro_requerimiento',
-            'alm_req.codigo',
-            'alm_det_req.id_detalle_requerimiento',
-            'doc_ven_det.id_doc_det',
-            'doc_ven.id_doc_ven',
-            'doc_ven.fecha_emision',
-            'doc_ven.serie',
-            'doc_ven.numero'
-        )
-        ->join('almacen.alm_det_req' , 'alm_det_req.id_requerimiento', '=' ,'alm_req.id_requerimiento')
-        ->join('almacen.doc_ven_det' , 'doc_ven_det.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
-        ->join('almacen.doc_ven' , 'doc_ven.id_doc_ven' ,'=' ,'doc_ven_det.id_doc')
-        ->get();
         return view('gerencial/cobranza/registro',compact('sector','tipo_ramite','empresa','periodo','estado_documento', 'pais', 'departamento'));
     }
     public function listarRegistros()
@@ -305,5 +288,37 @@ class RegistroController extends Controller
             "status"=>200,
             "data"=>$request
         ]);
+    }
+    public function actualizarDocVentReq()
+    {
+        $success=false;
+        $status=404;
+        $obtener_listado = Requerimiento::where('alm_req.enviar_facturacion','t')->where('doc_ven.estado',1)
+        ->where('alm_req.traslado',1)
+        ->select(
+            'alm_req.id_requerimiento',
+            'alm_req.fecha_registro as fecha_registro_requerimiento',
+            'alm_req.codigo',
+            'alm_det_req.id_detalle_requerimiento',
+            'doc_ven_det.id_doc_det',
+            'doc_ven.id_doc_ven',
+            'doc_ven.fecha_emision',
+            'doc_ven.serie',
+            'doc_ven.numero'
+        )
+        ->join('almacen.alm_det_req' , 'alm_det_req.id_requerimiento', '=' ,'alm_req.id_requerimiento')
+        ->join('almacen.doc_ven_det' , 'doc_ven_det.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+        ->join('almacen.doc_ven' , 'doc_ven.id_doc_ven' ,'=' ,'doc_ven_det.id_doc')
+        ->get();
+
+        if ($obtener_listado) {
+            $success=true;
+            $status=200;
+        }
+        return response()->json([
+            "success"=>$success,
+            "status"=>$status,
+            "data"=>$obtener_listado
+        ])
     }
 }
