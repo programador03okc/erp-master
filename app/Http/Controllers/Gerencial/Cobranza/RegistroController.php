@@ -44,10 +44,12 @@ class RegistroController extends Controller
         $obtener_listado = Requerimiento::where('alm_req.enviar_facturacion','t')->where('doc_ven.estado',1)
         ->select(
             'alm_req.id_requerimiento',
+            'alm_req.fecha_registro as fecha_registro_requerimiento',
             'alm_req.codigo',
             'alm_det_req.id_detalle_requerimiento',
             'doc_ven_det.id_doc_det',
             'doc_ven.id_doc_ven',
+            'doc_ven.fecha_emision',
             'doc_ven.serie',
             'doc_ven.numero'
         )
