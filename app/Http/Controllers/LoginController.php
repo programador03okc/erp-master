@@ -44,7 +44,7 @@ class LoginController extends Controller{
             $rutas = '';
 
             if ($id===169) {
-                if (Auth::user()->id_usuario===1) {
+                if (in_array(Auth::user()->id_usuario, [1,31,6,129])) {
                     $html .=
                     '<div class="col-md-3">
                         <div class="panel panel-default">
