@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Gerencial\CobranzaAgil;
 use App\Models\Administracion\Periodo;
+use App\Models\Almacen\Requerimiento;
 use App\Models\Comercial\Cliente as ComercialCliente;
 use App\Models\Configuracion\Departamento;
 use App\Models\Configuracion\Distrito;
@@ -39,6 +40,21 @@ class RegistroController extends Controller
 
         $pais = Pais::get();
         $departamento = Departamento::get();
+
+        $obtener_listado = Requerimiento::where('alm_req.enviar_facturacion','t')->where('doc_ven.estado',1)
+        ->select(
+            'alm_req.id_requerimiento',
+            'alm_req.codigo',
+            'alm_det_req.id_detalle_requerimiento',
+            'doc_ven_det.id_doc_det',
+            'doc_ven.id_doc_ven',
+            'doc_ven.serie',
+            'doc_ven.numero'
+        )
+        ->join('almacen.alm_det_req' , 'alm_det_req.id_requerimiento', '=' ,'alm_req.id_requerimiento')
+        ->join('almacen.doc_ven_det' , 'doc_ven_det.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+        ->join('almacen.doc_ven' , 'doc_ven.id_doc_ven' ,'=' ,'doc_ven_det.id_doc')
+        ->get();
         return view('gerencial/cobranza/registro',compact('sector','tipo_ramite','empresa','periodo','estado_documento', 'pais', 'departamento'));
     }
     public function listarRegistros()
