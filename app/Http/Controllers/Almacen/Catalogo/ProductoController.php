@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Debugbar;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductosExport;
 
 class ProductoController extends Controller
 {
@@ -25,30 +27,29 @@ class ProductoController extends Controller
         // $ubicaciones = $this->mostrar_ubicaciones_cbo();
         $monedas = AlmacenController::mostrar_moneda_cbo();
 
-        $array_accesos_botonera=array();
-        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
-        ->select('accesos.*')
-        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
-        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
-        ->where('accesos_usuarios.id_modulo',65)
-        ->where('accesos_usuarios.id_padre',4)
-        ->get();
+        $array_accesos_botonera = array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado', '=', 1)
+            ->select('accesos.*')
+            ->join('configuracion.accesos', 'accesos.id_acceso', '=', 'accesos_usuarios.id_acceso')
+            ->where('accesos_usuarios.id_usuario', Auth::user()->id_usuario)
+            ->where('accesos_usuarios.id_modulo', 65)
+            ->where('accesos_usuarios.id_padre', 4)
+            ->get();
         foreach ($accesos_botonera as $key => $value) {
             $value->accesos;
-            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+            array_push($array_accesos_botonera, $value->accesos->accesos_grupo);
         }
-        $modulo='almacen';
-        return view('almacen/producto/producto', compact('tipos', 'categorias', 'clasificaciones', 'subcategorias', 'unidades', 'monedas','array_accesos_botonera','modulo'));
+        return view('almacen/producto/producto', compact('tipos', 'categorias', 'clasificaciones', 'subcategorias', 'unidades', 'monedas', 'array_accesos_botonera'));
     }
 
     function view_prod_catalogo()
     {
-        $array_accesos=[];
-        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
-            array_push($array_accesos,$value->id_acceso);
+            array_push($array_accesos, $value->id_acceso);
         }
-        return view('almacen/producto/prod_catalogo',compact('array_accesos'));
+        return view('almacen/producto/prod_catalogo', compact('array_accesos'));
     }
 
     public function mostrar_prods()
@@ -293,17 +294,28 @@ class ProductoController extends Controller
     public function update_producto(Request $request)
     {
         $msj = '';
-        $des = strtoupper($request->descripcion);
+        $des = strtoupper(trim($request->descripcion));
+        $pn = trim($request->part_number);
 
-        $count = DB::table('almacen.alm_prod')
-            ->where([['descripcion', '=', $des], ['part_number', '=', $request->part_number], ['estado', '=', 1]])
-            ->count();
+        $actual = DB::table('almacen.alm_prod')
+            ->where('id_producto', $request->id_producto)
+            ->first();
+
+        if ($pn !== null && $pn !== '') {
+            $count = DB::table('almacen.alm_prod')
+                ->where([['part_number', '=', $pn], ['estado', '=', 1], ['id_producto', '!=', $actual->id_producto]])
+                ->count();
+        } else if ($des !== null && $des !== '') {
+            $count = DB::table('almacen.alm_prod')
+                ->where([['descripcion', '=', $des], ['estado', '=', 1], ['id_producto', '!=', $actual->id_producto]])
+                ->count();
+        }
 
         $id_item = 0;
         $id_producto = $request->id_producto;
 
-        if ($count <= 1) {
-            $data = DB::table('almacen.alm_prod')
+        if ($count == 0) {
+            DB::table('almacen.alm_prod')
                 ->where('id_producto', $id_producto)
                 ->update([
                     'part_number' => $request->part_number,
@@ -599,6 +611,9 @@ class ProductoController extends Controller
                 'alm_prod.codigo',
                 'alm_prod.cod_softlink',
                 'alm_prod.descripcion',
+                'sis_moneda.simbolo',
+                DB::raw("CASE WHEN series=true THEN 'SI'
+                        ELSE 'NO' END  AS series"),
                 'alm_und_medida.abreviatura',
                 'alm_subcat.cod_softlink as cod_sub_cat',
                 'alm_subcat.descripcion as subcat_descripcion',
@@ -614,8 +629,45 @@ class ProductoController extends Controller
             ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
             ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->get();
         $output['data'] = $data;
         return response()->json($output);
+    }
+
+    public function productosExcel()
+    {
+        $productos = DB::table('almacen.alm_prod')
+            ->select(
+                'alm_prod.id_producto',
+                'alm_prod.part_number',
+                'alm_prod.codigo',
+                'alm_prod.cod_softlink',
+                'alm_prod.descripcion',
+                'alm_prod.notas',
+                'alm_prod.series',
+                'alm_prod.fecha_registro',
+                'sis_moneda.simbolo',
+                'alm_und_medida.abreviatura',
+                'alm_subcat.descripcion as subcat_descripcion',
+                'alm_cat_prod.descripcion as cat_descripcion',
+                'alm_tp_prod.descripcion as tipo_descripcion',
+                'alm_clasif.descripcion as clasif_descripcion',
+                'sis_usua.nombre_corto'
+            )
+            ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+            ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+            ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
+            ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
+            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_prod.id_usuario')
+            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
+            ->where('alm_prod.estado', 1)
+            ->get();
+
+        // return response()->json($productos);
+        return Excel::download(new ProductosExport(
+            $productos,
+        ), 'Catalogo de Productos.xlsx');
     }
 }
