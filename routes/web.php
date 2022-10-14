@@ -2683,3 +2683,9 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('editar_area', 'AdministracionController@actualizar_area');
 	Route::get('anular_area/{id}', 'AdministracionController@anular_area');
 });
+
+Route::group(['as' => 'power-bi.', 'prefix' => 'power-bi'], function () {
+	Route::get('ventas', function () { return view('power-bi/ventas'); })->name('ventas');
+	Route::get('cobranzas', function () { return view('power-bi/cobranzas'); })->name('cobranzas');
+	Route::get('inventario', function () { return view('power-bi/inventario'); })->name('inventario');
+});

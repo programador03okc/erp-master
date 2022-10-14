@@ -50,7 +50,7 @@ class LoginController extends Controller{
                         <div class="panel panel-default">
                             <div class="panel-heading">Módulo</div>
                             <div class="panel-body">
-                                <h4><a class="panel-link" href="'.$link.'/index">'.$name.'</a></h4>
+                                <h4><a class="panel-link" href="'.$link.'">'.$name.'</a></h4>
                             </div>
                         </div>
                     </div>';
