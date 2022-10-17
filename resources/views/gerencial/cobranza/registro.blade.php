@@ -11,6 +11,9 @@ Cobranzas
         display: flex;
         justify-content: start;
     }
+    .selecionar{
+        cursor: pointer;
+    }
 </style>
 @endsection
 
@@ -84,7 +87,7 @@ Cobranzas
                                 <select class="form-control input-sm" name="empresa" id="empresa" required>
                                     <option value="" disabled selected>Elija una opción</option>
                                     @foreach ($empresa as $item)
-                                        <option value="{{$item->id_empresa }}">{{$item->nombre}}</option>
+                                        <option value="{{$item->id_contribuyente }}">{{$item->razon_social }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -532,6 +535,8 @@ Cobranzas
                                     <th>#</th>
                                     <th>OC</th>
                                     <th>CDP</th>
+                                    <th>DOCUMENTO</th>
+                                    <th>FECHE EMISION</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -541,6 +546,7 @@ Cobranzas
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-primary btn-seleccionar" data-id="" disabled>Seleccionar</button>
             </div>
         </div>
     </div>

@@ -35,7 +35,14 @@ class RegistroController extends Controller
         # code...
         $sector             = Sector::where('estado',1)->get();
         $tipo_ramite        = TipoTramite::where('estado',1)->get();
-        $empresa            = Empresa::where('estado',1)->get();
+        $empresa            = DB::table('administracion.adm_empresa')
+        ->select(
+            'adm_empresa.id_contribuyente',
+            'adm_empresa.codigo',
+            'adm_contri.razon_social'
+        )
+        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+        ->get();
         $periodo            = Periodo::where('estado',1)->get();
         $estado_documento   = EstadoDocumento::where('estado',1)->get();
 
@@ -318,8 +325,7 @@ class RegistroController extends Controller
             'requerimiento_logistico_view.nro_orden',
             'doc_vent_req.id_documento_venta_requerimiento',
             'doc_ven.id_doc_ven',
-            'doc_ven_det.id_doc_det',
-
+            // 'doc_ven_det.id_doc_det',
             'doc_ven.serie',
             'doc_ven.numero',
             'doc_ven.fecha_emision',
@@ -329,25 +335,60 @@ class RegistroController extends Controller
 
         )
         ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
-
-        ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')
-        ->join('almacen.doc_ven_det', 'doc_ven_det.id_doc', '=', 'doc_ven.id_doc_ven')
-        ->first();
-        $output=['data'=>$cliente_gerencial];
-        return $output;
-        // if ($cliente_gerencial) {
-        //     return response()->json([
-        //         "success"=>true,
-        //         "status"=>200,
-        //         "data"=>$cliente_gerencial
-        //     ]);
-        // }else{
-        //     return response()->json([
-        //         "success"=>false,
-        //         "status"=>404,
-        //         "data"=>[]
-        //     ]);
+        ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta');
+        // ->join('almacen.doc_ven_det', 'doc_ven_det.id_doc', '=', 'doc_ven.id_doc_ven');
+        return datatables($cliente_gerencial)->toJson();
+    }
+    public function selecconarRequerimiento($id_requerimiento)
+    {
+        $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view')
+        // if ($tipo==='oc') {
+        //     $cliente_gerencial->where('requerimiento_logistico_view.nro_orden',$data);
         // }
+        // if ($tipo === 'cdp') {
+        //     $cliente_gerencial->where('requerimiento_logistico_view.codigo_oportunidad',$data);
+        // }
+        // $cliente_gerencial = $cliente_gerencial
+        ->where('requerimiento_logistico_view.id_requerimiento_logistico',$id_requerimiento)
+        ->select(
+            'requerimiento_logistico_view.id_requerimiento_logistico',
+            'requerimiento_logistico_view.codigo_oportunidad',
+            'requerimiento_logistico_view.nro_orden',
+
+            'doc_vent_req.id_documento_venta_requerimiento',
+            'doc_ven.id_doc_ven',
+
+            'doc_ven.serie',
+            'doc_ven.numero',
+            'doc_ven.fecha_emision',
+            'doc_ven.credito_dias',
+            'doc_ven.total_a_pagar',
+            // 'doc_ven.modena'
+            'adm_contri.nro_documento',
+            'adm_contri.razon_social',
+            'com_cliente.id_cliente'
+
+        )
+        ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+        ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')
+
+        ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+        ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+        ->first();
+        if ($cliente_gerencial) {
+            return response()->json([
+                "status"=>200,
+                "success"=>true,
+                "data"=>$cliente_gerencial
+            ]);
+        }else{
+            return response()->json([
+                "status"=>400,
+                "success"=>false,
+                "data"=>$cliente_gerencial
+            ]);
+        }
 
     }
 }

@@ -425,53 +425,98 @@ $(document).on('click','[data-action="actualizar"]',function () {
 $(document).on('click','.modal-lista-procesadas',function () {
     const input = $(this).closest('div').find('input').val();
     const action = $(this).closest('div').find('input').data('action');
-    console.log(input);
+
     if (input) {
         $('#lista-procesadas').modal('show');
+        $('#lista-procesadas .btn-seleccionar').attr('disabled','true');
         listarRegistrosProcesadas(input, action);
     }
 
 });
 function listarRegistrosProcesadas(input, action) {
-    // $.ajax({
-    //     type: 'get',
-    //     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-    //     url: 'buscar-registro/'+input+'/'+action,
-    //     data: {},
-    //     dataType: 'JSON',
-    //     success: function(response){
-    //         console.log(response);
-    //         if (response.status===200) {
-    //             $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
-    //             $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
-
-    //             $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
-    //             $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
-    //             $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
-
-    //         }
-    //     }
-    // }).fail( function(jqXHR, textStatus, errorThrown) {
-    //     console.log(jqXHR);
-    //     console.log(textStatus);
-    //     console.log(errorThrown);
-    // })
 
     var vardataTables = funcDatatables();
 
-    $('#lista-ventas-procesadas').dataTable({
-        'language' : vardataTables[0],
-        "processing": true,
-        "bDestroy": true,
-        'ajax': 'buscar-registro/'+input+'/'+action,
-        'columns': [
-            {'data': 'id_requerimiento_logistico', "name":"id_requerimiento_logistico"},
-            {'data': 'nro_orden', "name":"nro_orden"},
-            {'data': 'codigo_oportunidad', "name":"codigo_oportunidad"},
+
+    $("#lista-ventas-procesadas").DataTable({
+        dom: vardataTables[1],
+        buttons: [],
+        language: vardataTables[0],
+        destroy: true,
+        pageLength: 20,
+        lengthChange: false,
+        serverSide: true,
+        ajax: {
+            url: 'buscar-registro/'+input+'/'+action,
+            type: "GET"
+        },
+        columns: [
+            { data: "id_requerimiento_logistico", name:"requerimiento_logistico_view.id_requerimiento_logistico"
+             },
+            { data: "nro_orden", className: "text-center selecionar",
+                render: function (data, type, row) {
+                    return ('<input type="hidden" value="'+row['id_requerimiento_logistico']+'">'+row['nro_orden']+'')
+                }
+            },
+            { data: "codigo_oportunidad", className: "text-center selecionar",
+                render: function (data, type, row) {
+                    return ('<input type="hidden" value="'+row['id_requerimiento_logistico']+'">'+row['codigo_oportunidad']+'')
+                }
+            },
+            {
+                render: function (data, type, row) {
+                    return ('<input type="hidden" value="'+row['id_requerimiento_logistico']+'">'+row['serie']+'-'+row['numero']);
+                },
+                className: "text-center selecionar",
+            },
+            { data: "fecha_emision", className: "text-center selecionar",
+                render: function (data, type, row) {
+                    return ('<input type="hidden" value="'+row['id_requerimiento_logistico']+'">'+row['fecha_emision']+'')
+                }
+            },
+
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
-        'order': [
-            [0, 'desc']
-        ]
+        order: [[1, "desc"]],
+        columnDefs: [{ aTargets: [0], sClass: "invisible" }]
     });
 }
+$(document).on('click','.selecionar',function () {
+    const id_requerimiento = $(this).find('input').val();
+    if (id_requerimiento) {
+        $('#lista-procesadas .btn-seleccionar').removeAttr('disabled');
+        $('#lista-procesadas .btn-seleccionar').attr('data-id',id_requerimiento);
+    }
+
+});
+$(document).on('click','#lista-procesadas .btn-seleccionar',function () {
+    const id_requerimiento = $(this).data('id');
+    $.ajax({
+        type: 'get',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'seleccionar-registro/'+id_requerimiento,
+        data: {},
+        dataType: 'JSON',
+        success: function(response){
+            console.log(response);
+            if (response.status===200) {
+                $('#lista-procesadas').modal('hide');
+                $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
+                $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
+
+                $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
+                $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
+                $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
+                $('#formulario .modal-body input[name="oc"]').val(response.data.nro_orden)
+                $('#formulario .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
+
+                $('#formulario .modal-body input[name="id_cliente"]').val(response.data.id_cliente)
+                $('#formulario .modal-body input[name="cliente"]').val(response.data.razon_social)
+
+            }
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
