@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Gerencial\CobranzaAgil;
 use App\Models\Administracion\Periodo;
+use App\Models\almacen\DocVentReq;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Comercial\Cliente as ComercialCliente;
 use App\Models\Configuracion\Departamento;
@@ -201,55 +202,6 @@ class RegistroController extends Controller
             "data"=>$factura
         ]);
     }
-    public function getRegistro($data, $tipo)
-    {
-
-        $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view');
-        if ($tipo==='oc') {
-            $cliente_gerencial->where('requerimiento_logistico_view.nro_orden',$data);
-        }
-        if ($tipo === 'cdp') {
-            $cliente_gerencial->where('requerimiento_logistico_view.codigo_oportunidad',$data);
-        }
-        $cliente_gerencial = $cliente_gerencial
-        ->select(
-            'requerimiento_logistico_view.id_moneda',
-            'alm_req.id_requerimiento',
-            'trans.id_transferencia',
-            'guia_ven.id_guia_ven',
-            'guia_ven_det.id_guia_ven_det',
-            'doc_ven_det.id_doc_det',
-            'doc_ven.id_doc_ven',
-            'doc_ven.modena',
-            'doc_ven.sub_total',
-            'doc_ven.total_a_pagar',
-            'doc_ven.fecha_registro',
-            'doc_ven.fecha_emision',
-            'doc_ven.credito_dias',
-
-        )
-        ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
-        ->join('almacen.trans', 'trans.id_requerimiento', '=', 'alm_req.id_requerimiento')
-        ->join('almacen.guia_ven', 'guia_ven.id_transferencia', '=', 'trans.id_transferencia')
-        ->join('almacen.guia_ven_det', 'guia_ven_det.id_guia_ven', '=', 'guia_ven.id_guia_ven')
-        ->join('almacen.doc_ven_det', 'doc_ven_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det')
-        ->join('almacen.doc_ven', 'doc_ven.id_doc_ven','=','doc_ven_det.id_doc')
-        ->first();
-        if ($cliente_gerencial) {
-            return response()->json([
-                "success"=>true,
-                "status"=>200,
-                "data"=>$cliente_gerencial
-            ]);
-        }else{
-            return response()->json([
-                "success"=>false,
-                "status"=>404,
-                "data"=>[]
-            ]);
-        }
-
-    }
     public function guardarRegistroCobranza(Request $request)
     {
         $data = $request;
@@ -293,7 +245,9 @@ class RegistroController extends Controller
     {
         $success=false;
         $status=404;
-        $obtener_listado = Requerimiento::where('alm_req.enviar_facturacion','t')->where('doc_ven.estado',1)
+        $json_obtener_listado=[];
+        $array_id=[];
+        $obtener_listado = DB::table('almacen.alm_req')->where('alm_req.enviar_facturacion','t')->where('doc_ven.estado',1)
         ->where('alm_req.traslado',1)
         ->select(
             'alm_req.id_requerimiento',
@@ -309,16 +263,91 @@ class RegistroController extends Controller
         ->join('almacen.alm_det_req' , 'alm_det_req.id_requerimiento', '=' ,'alm_req.id_requerimiento')
         ->join('almacen.doc_ven_det' , 'doc_ven_det.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
         ->join('almacen.doc_ven' , 'doc_ven.id_doc_ven' ,'=' ,'doc_ven_det.id_doc')
+        // ->groupBy('alm_req.id_requerimiento')
         ->get();
 
-        if ($obtener_listado) {
+        if (sizeof($obtener_listado)>0) {
             $success=true;
             $status=200;
+
+            foreach ($obtener_listado as $key => $value) {
+                if (!in_array($value->id_requerimiento, $array_id) )
+                {
+                    array_push($json_obtener_listado,(object) array(
+                        "id_requerimiento"=>$value->id_requerimiento,
+                        "id_doc_ven"=>$value->id_doc_ven,
+                    ));
+                    array_push($array_id,$value->id_requerimiento);
+                }
+            }
+            foreach ($json_obtener_listado as $key => $value) {
+                $doc_vent_req = new DocVentReq();
+                $doc_vent_req->id_requerimiento = $value->id_requerimiento;
+                $doc_vent_req->id_doc_venta = $value->id_doc_ven;
+                $doc_vent_req->estado = 1;
+                $doc_vent_req->save();
+            }
+            DB::table('almacen.alm_req')->where('traslado',1)->update([
+                'traslado'=>2
+            ]);
         }
         return response()->json([
             "success"=>$success,
             "status"=>$status,
-            "data"=>$obtener_listado
-        ])
+            "data"=>$json_obtener_listado
+        ]);
+    }
+    public function listarVentasProcesas()
+    {
+        # code...
+    }
+    public function getRegistro($data, $tipo)
+    {
+
+        $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view');
+        if ($tipo==='oc') {
+            $cliente_gerencial->where('requerimiento_logistico_view.nro_orden',$data);
+        }
+        if ($tipo === 'cdp') {
+            $cliente_gerencial->where('requerimiento_logistico_view.codigo_oportunidad',$data);
+        }
+        $cliente_gerencial = $cliente_gerencial
+        ->select(
+            'requerimiento_logistico_view.id_requerimiento_logistico',
+            'requerimiento_logistico_view.codigo_oportunidad',
+            'requerimiento_logistico_view.nro_orden',
+            'doc_vent_req.id_documento_venta_requerimiento',
+            'doc_ven.id_doc_ven',
+            'doc_ven_det.id_doc_det',
+
+            'doc_ven.serie',
+            'doc_ven.numero',
+            'doc_ven.fecha_emision',
+            'doc_ven.credito_dias',
+            'doc_ven.total_a_pagar',
+            // 'doc_ven.modena'
+
+        )
+        ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+
+        ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')
+        ->join('almacen.doc_ven_det', 'doc_ven_det.id_doc', '=', 'doc_ven.id_doc_ven')
+        ->first();
+        $output=['data'=>$cliente_gerencial];
+        return $output;
+        // if ($cliente_gerencial) {
+        //     return response()->json([
+        //         "success"=>true,
+        //         "status"=>200,
+        //         "data"=>$cliente_gerencial
+        //     ]);
+        // }else{
+        //     return response()->json([
+        //         "success"=>false,
+        //         "status"=>404,
+        //         "data"=>[]
+        //     ]);
+        // }
+
     }
 }

@@ -6,6 +6,7 @@ var userNickname= '';
 $(document).ready(function () {
     // list();
     listarRegistros();
+    actualizarDocVentReq();
 });
 function list() {
     $.ajax({
@@ -88,7 +89,7 @@ function listarRegistros() {
                 className: "text-center"
             }
         ],
-        order: [[0, "desc"]],
+        // order: [[0, "desc"]],
         columnDefs: [{ aTargets: [0], sClass: "invisible" }]
     });
 
@@ -319,33 +320,6 @@ $(document).on('change','.buscar-factura',function () {
         console.log(errorThrown);
     })
 });
-// busca por oc y cdp
-$(document).on('change','.buscar-registro',function () {
-    const input = $(this).val();
-    const tipo = $(this).data('action');
-    $.ajax({
-        type: 'get',
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'buscar-registro/'+input+'/'+tipo,
-        data: {},
-        dataType: 'JSON',
-        success: function(response){
-            if (response.status===200) {
-                $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
-                $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
-
-                $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
-                $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
-                $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
-                console.log(response);
-            }
-        }
-    }).fail( function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    })
-});
 function searchSource(){
     $('#modal-fue-fin').modal({show: true, backdrop: 'static'});
     $('#modal-fue-fin').on('shown.bs.modal', function(){
@@ -429,24 +403,75 @@ $('#formulario').on('submit', function(){
           allowOutsideClick: () => !Swal.isLoading()
       }).then((result) => {
     })
-    // if (ask == true){
-    //     switch(form){
-    //         case 'cobranza':
-    //             var table = '#tablaCobranza';
-    //             if (type == 'register'){
-    //                 var url = baseUrl + 'cobranza/register';
-    //                 var msj = 'Cobranza agregada con éxito.';
-    //                 actionForms(data, table, url, msj, page);
-    //                 return false;
-    //             }else if(type == 'edition'){
-    //                 var url = baseUrl + 'cobranza/edition/updateData';
-    //                 var msj = 'Cobranza editada con éxito.';
-    //                 actionForms(data, table, url, msj, page);
-    //                 return false;
-    //             }
-
-    //     }
-    // }else{
-    //     return false;
-    // }
 });
+function actualizarDocVentReq() {
+    $.ajax({
+        type: 'GET',
+        url: 'actualizar-ven-doc-req',
+        dataType: 'JSON',
+        data:{},
+        success: function(response){
+
+        }
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+$(document).on('click','[data-action="actualizar"]',function () {
+    actualizarDocVentReq();
+});
+$(document).on('click','.modal-lista-procesadas',function () {
+    const input = $(this).closest('div').find('input').val();
+    const action = $(this).closest('div').find('input').data('action');
+    console.log(input);
+    if (input) {
+        $('#lista-procesadas').modal('show');
+        listarRegistrosProcesadas(input, action);
+    }
+
+});
+function listarRegistrosProcesadas(input, action) {
+    // $.ajax({
+    //     type: 'get',
+    //     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+    //     url: 'buscar-registro/'+input+'/'+action,
+    //     data: {},
+    //     dataType: 'JSON',
+    //     success: function(response){
+    //         console.log(response);
+    //         if (response.status===200) {
+    //             $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
+    //             $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
+
+    //             $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
+    //             $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
+    //             $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
+
+    //         }
+    //     }
+    // }).fail( function(jqXHR, textStatus, errorThrown) {
+    //     console.log(jqXHR);
+    //     console.log(textStatus);
+    //     console.log(errorThrown);
+    // })
+
+    var vardataTables = funcDatatables();
+
+    $('#lista-ventas-procesadas').dataTable({
+        'language' : vardataTables[0],
+        "processing": true,
+        "bDestroy": true,
+        'ajax': 'buscar-registro/'+input+'/'+action,
+        'columns': [
+            {'data': 'id_requerimiento_logistico', "name":"id_requerimiento_logistico"},
+            {'data': 'nro_orden', "name":"nro_orden"},
+            {'data': 'codigo_oportunidad', "name":"codigo_oportunidad"},
+        ],
+        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible'}],
+        'order': [
+            [0, 'desc']
+        ]
+    });
+}

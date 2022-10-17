@@ -29,6 +29,7 @@ Cobranzas
             <h3 class="box-title">Lista de registro</h3>
             <div class="pull-right box-tools">
                 <button type="button" class="btn btn-success" title="Nuevo Usuario" data-action="nuevo-registro">Nuevo registro</button>
+                <button class="btn btn-primary" data-action="actualizar"><i class="fa fa-refresh"></i> Actualizar</button>
             </div>
         </div>
         <div class="box-body">
@@ -139,13 +140,29 @@ Cobranzas
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="oc">Orden de Compra</label>
-                                <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC" data-action="oc">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC" data-action="oc">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" >
+                                            <span class="fa fa-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                                {{-- <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC" data-action="oc"> --}}
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="cdp">Cuadro de Presup.</label>
-                                <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" >
+                                            <span class="fa fa-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                                {{-- <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp"> --}}
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -496,6 +513,38 @@ Cobranzas
 		</div>
 	</div>
 </div>
+{{-- lista de oc y cdp --}}
+<div class="modal fade" id="lista-procesadas" tabindex="-1" aria-labelledby="lista-procesadas" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lista-procesadas">Lista ventas procesadas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="mytable table table-striped table-condensed table-bordered" id="lista-ventas-procesadas">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>OC</th>
+                                    <th>CDP</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+  </div>
 @endsection
 @section('scripts')
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
