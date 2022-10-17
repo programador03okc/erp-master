@@ -114,22 +114,30 @@ function mostrar_detalle() {
 
         var regExp = /[a-zA-Z]/g; //expresión regular
          
-        if ((regExp.test(element.id_detalle_requerimiento) != true)) {
-            cantidadRervas = (element.reserva).filter(function(item){
-                if (item.estado != 7) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }).length;
-
-            cantidadOrdenes = (element.ordenes_compra).filter(function(item){
-                if (item.estado != 7) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }).length;
+        if ((regExp.test(element.id_detalle_requerimiento) != true) || element.estado !=7) {
+            console.log(element);
+            if(element.reserva!= null){
+                cantidadRervas = (element.reserva).filter(function(item){
+                    if (item.estado != 7) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }).length;
+            }else{
+                cantidadRervas=0;
+            }
+            if(element.ordenes_compra != null){
+                cantidadOrdenes = (element.ordenes_compra).filter(function(item){
+                    if (item.estado != 7) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }).length;
+            }else{
+                cantidadOrdenes=0;
+            }
 
         if (pn !== null) {
             link_pn = `
@@ -214,7 +222,6 @@ function mostrar_detalle() {
         </tr>`;
         i++;
     });
-
     $('#detalleItemsRequerimiento tbody').html(html);
 
 }
