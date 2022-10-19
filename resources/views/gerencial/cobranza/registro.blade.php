@@ -32,7 +32,7 @@ Cobranzas
             <h3 class="box-title">Lista de registro</h3>
             <div class="pull-right box-tools">
                 <button type="button" class="btn btn-success" title="Nuevo Usuario" data-action="nuevo-registro">Nuevo registro</button>
-                <button class="btn btn-primary" data-action="actualizar"><i class="fa fa-refresh"></i> Actualizar</button>
+                {{-- <button class="btn btn-primary" data-action="actualizar"><i class="fa fa-refresh"></i> Actualizar</button> --}}
             </div>
         </div>
         <div class="box-body">
@@ -215,7 +215,7 @@ Cobranzas
                                         <option value="1" selected>S/.</option>
                                         <option value="2">$</option>
                                     </select>
-                                    <input type="number" class="form-control input-sm number text-right" name="importe" id="importe" required placeholder="0.00">
+                                    <input type="number" class="form-control input-sm number text-right" name="importe" id="importe" required placeholder="0.00" step="0.01">
                                 </div>
                             </div>
                         </div>

@@ -31,6 +31,7 @@ function listarRegistros() {
         destroy: true,
         pageLength: 10,
         serverSide: true,
+        lengthChange: false,
         ajax: {
             url: "listar-registros",
             type: "POST"
@@ -89,7 +90,7 @@ function listarRegistros() {
                 className: "text-center"
             }
         ],
-        // order: [[0, "desc"]],
+        order: [[0, "desc"]],
         columnDefs: [{ aTargets: [0], sClass: "invisible" }]
     });
 
@@ -97,11 +98,10 @@ function listarRegistros() {
 $(document).on('click','[data-action="nuevo-registro"]',function () {
     $('#modal-cobranza').modal('show');
 });
-$(document).on('submit','#formulario',function (e) {
-    e.preventDefault();
-    var data = $(this).serialize();
-    console.log(data);
-});
+// $(document).on('submit','#formulario',function (e) {
+//     e.preventDefault();
+//     var data = $(this).serialize();
+// });
 function ModalSearchCustomer() {
     $('#modal-buscar-cliente').modal('show');
     customerList();
@@ -247,27 +247,37 @@ $(document).on('change','[data-select="departamento-select"]',function () {
         this_select = $(this).closest('div.modal-body').find('div [name="provincia"]'),
         html='';
 
-    $.ajax({
-        type: 'get',
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'provincia/'+id_departamento,
-        data: {},
-        dataType: 'JSON',
-        success: function(response){
-            if (response.status===200) {
-                $.each(response.data, function (index, element) {
-                    html+='<option value="'+element.id_prov+'">'+element.descripcion+'</option>'
-                });
-                console.log(this_select);
-                // $('[data-form="guardar-cliente"] [name="provincia"]').html(html);
-                this_select.html(html);
+    if (id_departamento!==null && id_departamento!=='') {
+        $.ajax({
+            type: 'get',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: 'provincia/'+id_departamento,
+            data: {},
+            dataType: 'JSON',
+            success: function(response){
+                console.log(response);
+                if (response.status===200) {
+                    html='<option value=""> Seleccione...</option>';
+                    $.each(response.data, function (index, element) {
+                        html+='<option value="'+element.id_prov+'">'+element.descripcion+'</option>'
+                    });
+                    // console.log(this_select);
+                    // $('[data-form="guardar-cliente"] [name="provincia"]').html(html);
+                    this_select.html(html);
+                }else{
+                    this_select.html(html);
+                }
             }
-        }
-    }).fail( function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    })
+        }).fail( function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        })
+    }else{
+        this_select.html('<option value=""> Seleccione...</option>');
+        $(this).closest('div.modal-body').find('div [name="distrito"]').html('<option value=""> Seleccione...</option>');
+    }
+
 });
 
 $(document).on('change','[data-select="provincia-select"]',function () {
@@ -275,25 +285,31 @@ $(document).on('change','[data-select="provincia-select"]',function () {
         this_select = $(this).closest('div.modal-body').find('div [name="distrito"]'),
         html='';
 
-    $.ajax({
-        type: 'get',
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'distrito/'+id_provincia,
-        data: {},
-        dataType: 'JSON',
-        success: function(response){
-            if (response.status===200) {
-                $.each(response.data, function (index, element) {
-                    html+='<option value="'+element.id_dis+'">'+element.descripcion+'</option>'
-                });
-                this_select.html(html);
+    if (id_provincia!==null && id_provincia!=='') {
+        $.ajax({
+            type: 'get',
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            url: 'distrito/'+id_provincia,
+            data: {},
+            dataType: 'JSON',
+            success: function(response){
+                if (response.status===200) {
+                    html='<option value=""> Seleccione...</option>';
+                    $.each(response.data, function (index, element) {
+                        html+='<option value="'+element.id_dis+'">'+element.descripcion+'</option>'
+                    });
+                    this_select.html(html);
+                }
             }
-        }
-    }).fail( function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    })
+        }).fail( function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        })
+    } else {
+        this_select.html('<option value=""> Seleccione...</option>');
+    }
+
 });
 // busca por factura
 $(document).on('change','.buscar-factura',function () {
@@ -371,7 +387,7 @@ $('#formulario').on('submit', function(){
         cancelButtonText: 'No',
         showLoaderOnConfirm: true,
         preConfirm: () => {
-            $.ajax({
+            return  $.ajax({
                 type: 'POST',
                 url: 'guardar-registro-cobranza',
                 dataType: 'JSON',
@@ -384,6 +400,8 @@ $('#formulario').on('submit', function(){
                           'success'
                         ).then((result) => {
                             $('#listaUsuarios').DataTable().ajax.reload();
+                            $('#modal-cobranza').modal('hide');
+                            // location.reload();
                         })
                     }else{
                         Swal.fire(

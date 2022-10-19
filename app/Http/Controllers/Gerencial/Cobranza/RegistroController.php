@@ -21,6 +21,7 @@ use App\models\Gerencial\CobanzaFase;
 use App\models\Gerencial\Cobranza;
 use App\models\Gerencial\Empresa;
 use App\models\Gerencial\EstadoDocumento;
+use App\Models\Gerencial\RegistroCobranza;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
 use Exception;
@@ -72,7 +73,9 @@ class RegistroController extends Controller
         ->addColumn('fase', function($data) {
             $fase = CobanzaFase::where('id_cobranza', $data->id_cobranza)->orderBy('id_fase', 'desc')->first();
             return ($fase?$fase->fase[0] : '-');
-        })->make(true);
+        })
+        ->toJson();
+        // ->make(true);
     }
     public function restar_fechas($fi, $ff){
 		$ini = strtotime($fi);
@@ -145,6 +148,7 @@ class RegistroController extends Controller
     }
     public function provincia($id_departamento)
     {
+
         $provincia = Provincia::where('id_dpto',$id_departamento)->get();
         if ($provincia) {
             return response()->json([
@@ -212,12 +216,12 @@ class RegistroController extends Controller
     public function guardarRegistroCobranza(Request $request)
     {
         $data = $request;
-        $empresa = Empresa::where('estado',1)->where('')->get();
-        $cobranza = new Cobranza();
+        $empresa = DB::table('administracion.adm_empresa')->where('id_contribuyente',$request->empresa)->first();
+        $cobranza = new RegistroCobranza();
 
         $cobranza->id_empresa       = $request->empresa;
         $cobranza->id_sector        = $request->sector;
-        $cobranza->id_cliente       = $request->cliente;
+        $cobranza->id_cliente       = $request->id_cliente;
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
         $cobranza->fuente_financ    = $request->ff;
@@ -230,16 +234,16 @@ class RegistroController extends Controller
         $cobranza->id_estado_doc    = $request->estado_doc;
         $cobranza->id_tipo_tramite  = $request->tramite;
         $cobranza->vendedor         = $request->nom_vendedor;
-        // $cobranza->estado           = $request->empresa;
+        $cobranza->estado           = 1;
         $cobranza->fecha_registro   = date('Y-m-d H:i:s');
         $cobranza->id_area          = $request->area;
         $cobranza->id_periodo       = $request->periodo;
         $cobranza->ocam             = $request->ocam;
-        // $cobranza->codigo_empresa   = $request->empresa;
+        $cobranza->codigo_empresa   = $empresa->codigo;
         $cobranza->categoria        = $request->categ;
         $cobranza->cdp              = $request->cdp;
         $cobranza->plazo_credito    = $request->plazo_credito;
-        // $cobranza->id_vent          = $request->empresa;
+        // $cobranza->id_vent          = ;
 
         $cobranza->save();
         return response()->json([
@@ -390,5 +394,93 @@ class RegistroController extends Controller
             ]);
         }
 
+    }
+    public function scriptCliente()
+    {
+        $clientes_faltantes =array();
+        $cliente = DB::table('gerencial.cliente')->where('estado',1)->where('ruc','!=',null)->get();
+        foreach ($cliente as $key => $value) {
+            $contri = DB::table('contabilidad.adm_contri')->where('estado',1)->where('nro_documento',$value->ruc)->first();
+            if (!$contri) {
+                $contri = DB::table('contabilidad.adm_contri')->where('estado',1)->where('razon_social',$value->nombre)->first();
+            }
+            if ($contri) {
+                $update = Contribuyente::where('estado',1)
+                ->where('id_contribuyente',$contri->id_contribuyente)
+                ->update(
+                    ['id_cliente_gerencial_old' => $value->id_cliente]
+                );
+            }else{
+                array_push($clientes_faltantes, $value);
+            }
+            // else{
+            //     $curl = curl_init();
+
+            //     curl_setopt_array($curl, array(
+            //     CURLOPT_URL => 'https://api.apis.net.pe/v1/ruc?numero='.$value->ruc,
+            //     CURLOPT_RETURNTRANSFER => true,
+            //     CURLOPT_ENCODING => '',
+            //     CURLOPT_MAXREDIRS => 10,
+            //     CURLOPT_TIMEOUT => 0,
+            //     CURLOPT_FOLLOWLOCATION => true,
+            //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            //     CURLOPT_CUSTOMREQUEST => 'GET',
+            //     CURLOPT_HTTPHEADER => array(
+            //         'Accept: application/json',
+            //         'Authorization: Bearer apis-token-3057.Bd6ln-qewOEgNxkqhR7p4purLtmCNFZ5'
+            //     ),
+            //     ));
+
+            //     $response = curl_exec($curl);
+
+            //     curl_close($curl);
+
+            //     $response = json_decode($response);
+            //     if (!empty($response->error)) {
+
+            //     }else{
+
+            //     }
+            //     return response()->json($response);
+            // }
+
+        }
+
+        foreach ($clientes_faltantes as $key => $value) {
+            if ($value->ruc!=='undefined' && strlen($value->ruc)===11) {
+
+                $curl = curl_init();
+
+                    curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://api.apis.net.pe/v1/ruc?numero='.$value->ruc,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'GET',
+                    CURLOPT_HTTPHEADER => array(
+                        'Accept: application/json',
+                        'Authorization: Bearer apis-token-3057.Bd6ln-qewOEgNxkqhR7p4purLtmCNFZ5'
+                    ),
+                ));
+
+                $response = curl_exec($curl);
+
+                curl_close($curl);
+
+                $response = json_decode($response);
+                if (empty($response->error)) {
+                    return response()->json($response);exit;
+                }
+                // falta guardar los clientes
+
+                return response()->json($response);exit;
+            }
+
+
+        }
+        // return response()->json($clientes_faltantes);
     }
 }
