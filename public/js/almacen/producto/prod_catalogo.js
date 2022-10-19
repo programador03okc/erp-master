@@ -1,23 +1,22 @@
 $(function () {
     var vardataTables = funcDatatables();
-    var button_copiar = (array_accesos.find(element => element === 37) ? vardataTables[2][0] : []),
-        button_excel = (array_accesos.find(element => element === 39) ? vardataTables[2][1] : []),
-        button_pdf = (array_accesos.find(element => element === 38) ? vardataTables[2][2] : []),
-        button_imprimir = (array_accesos.find(element => element === 40) ? vardataTables[2][3] : []);
+    // var button_copiar = (array_accesos.find(element => element === 37) ? vardataTables[2][0] : []),
+    //     button_excel = (array_accesos.find(element => element === 39) ? vardataTables[2][1] : []),
+    //     button_pdf = (array_accesos.find(element => element === 38) ? vardataTables[2][2] : []),
+    //     button_imprimir = (array_accesos.find(element => element === 40) ? vardataTables[2][3] : []);
 
-    let botones = [];
-    botones.push({
-        text: ' Exportar Excel',
-        action: function () {
-            exportarProductos();
-        }, className: 'btn-success btnExportarProductos'
-    });
+    // let botones = [];
+    // botones.push({
+    //     text: ' Exportar Excel',
+    //     action: function () {
+    //         exportarProductos();
+    //     }, className: 'btn-success btnExportarProductos'
+    // });
 
     $('#listaProductoCatalogo').dataTable({
         'dom': vardataTables[1],
-        // 'buttons': [button_copiar, button_excel, button_pdf, button_imprimir],
+        'buttons': [[], vardataTables[2][1], [], []],
         'language': vardataTables[0],
-        buttons: botones,
         'ajax': 'listar_productos',
         'columns': [
             { 'data': 'id_producto' },
