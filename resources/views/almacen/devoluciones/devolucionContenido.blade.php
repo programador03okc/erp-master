@@ -66,10 +66,13 @@
                             <div class="col-md-4">
                                 <label class="col-sm-4 control-label">Tipo: </label>
                                 <div class="col-sm-8">
-                                    <select class="form-control js-example-basic-single" name="tipo" required readOnly>
+                                    <select class="form-control js-example-basic-single" name="id_tipo" required readOnly>
                                         <option value="">Elija una opción</option>
-                                        <option value="cliente" selected>Cliente</option>
-                                        <option value="proveedor">Proveedor</option>
+                                        @foreach ($tipos as $tp)
+                                        <option value="{{$tp->id}}">{{$tp->descripcion}}</option>
+                                        @endforeach
+                                        {{-- <option value="cliente" selected>Cliente</option>
+                                        <option value="proveedor">Proveedor</option> --}}
                                     </select>
                                 </div>
                             </div>

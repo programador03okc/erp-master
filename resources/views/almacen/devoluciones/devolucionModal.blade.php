@@ -13,6 +13,7 @@
                             <th hidden>Id</th>
                             <th>Codigo</th>
                             <th>Comentario</th>
+                            <th>Estado</th>
                         </tr>
                     </thead>
                     <tbody style="font-size: 14px;"></tbody>

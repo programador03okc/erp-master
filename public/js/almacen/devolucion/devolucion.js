@@ -46,6 +46,7 @@ $(".nueva-devolucion").on('click', function () {
 
     $("[name=modo]").val("edicion");
     $("[name=id_devolucion]").val("");
+    $("[name=id_tipo]").val(1);
 
     $("[name=id_usuario]").val(usuarioSession);
     $("#nombre_registrado_por").text(usuarioNombreSession);
@@ -272,7 +273,7 @@ function mostrarDevolucion(id) {
             $('[name=id_cliente]').val(response.devolucion.id_cliente);
             $('[name=id_contribuyente]').val(response.devolucion.id_contribuyente);
             $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social);
-            $('[name=tipo]').val(response.devolucion.tipo);
+            $('[name=id_tipo]').val(response.devolucion.id_tipo);
 
             $('#codigo').text(response.devolucion.codigo);
             $('#estado').text(response.devolucion.estado_descripcion);
