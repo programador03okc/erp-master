@@ -468,7 +468,13 @@ class RevisarAprobarController extends Controller{
                 }
                 break;
             case '3':
+
+                if($requerimiento->estado !=3){
+                    $requerimiento->estado_anterior = $requerimiento->estado;
+                }
                 $requerimiento->estado = 3;
+
+
                 break;
             case '5':
                 $requerimiento->estado = 12;
@@ -494,6 +500,9 @@ class RevisarAprobarController extends Controller{
                 break;
             case '3':
                 $requerimientoPago->id_estado = 3;
+                if($requerimientoPago->estado !=3){
+                    $requerimientoPago->estado_anterior = $requerimientoPago->id_estado;
+                }
                 break;
             case '5':
                 $requerimientoPago->id_estado = 4;
