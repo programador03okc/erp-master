@@ -36,7 +36,9 @@ function listarDevoluciones() {
             { 'data': 'id_devolucion' },
             { 'data': 'codigo' },
             { 'data': 'observacion' },
+            { 'data': 'estado_doc', name: 'devolucion_estado.descripcion' },
         ],
-        'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
+        columnDefs: [{ 'aTargets': [0], 'sClass': 'invisible' }],
+        order: [[0, "desc"]]
     });
 }
