@@ -27,7 +27,7 @@ Catálogo de Productos
                             <th>Control de Series</th>
                             <th>Unid. Med.</th>
                             <th>Marca</th>
-                            <th>Subcatgoría</th>
+                            <th>Subcategoría</th>
                             <th>Categoría</th>
                             <th>Clasificación</th>
                             <th>Fecha registro</th>
