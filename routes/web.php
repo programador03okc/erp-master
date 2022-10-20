@@ -1995,6 +1995,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('reistro-pagos-exportar-excel', 'Tesoreria\RegistroPagoController@registroPagosExportarExcel');
 				Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
+				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
+
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {
@@ -2680,4 +2682,10 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('guardar_area', 'AdministracionController@guardar_area');
 	Route::post('editar_area', 'AdministracionController@actualizar_area');
 	Route::get('anular_area/{id}', 'AdministracionController@anular_area');
+});
+
+Route::group(['as' => 'power-bi.', 'prefix' => 'power-bi'], function () {
+	Route::get('ventas', function () { return view('power-bi/ventas'); })->name('ventas');
+	Route::get('cobranzas', function () { return view('power-bi/cobranzas'); })->name('cobranzas');
+	Route::get('inventario', function () { return view('power-bi/inventario'); })->name('inventario');
 });

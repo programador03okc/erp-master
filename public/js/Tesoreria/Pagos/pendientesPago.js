@@ -315,7 +315,7 @@
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
                                     data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}"
                                     data-moneda="${row['simbolo']}"
-
+                                    data-cantidad-adjuntos-logisticos="${row['cantidad_adjuntos_logisticos']}"
                                     data-nrodoc="${nroDocumentoDestinatario}"
                                     data-prov="${nombreDestinatario}"
                                     data-cta="${cuentaDestinatario}"

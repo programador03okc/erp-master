@@ -1,6 +1,7 @@
 var array_title=[];
     array_sub_title=[],
-    array_disable_accesos=[];
+    array_disable_accesos=[],
+    array_random = [];
 $(document).ready(function () {
     accesosUsuario();
 });
@@ -62,7 +63,8 @@ function disableAccesos() {
     });
 }
 function visualizarAccesos(response) {
-    var html='';
+    var html='',
+        numero_random=0;
     $.each(response.data, function (index, element) {
 
         array_disable_accesos.push(element.id_acceso);
@@ -75,8 +77,11 @@ function visualizarAccesos(response) {
             html = '',
             data_disable = 'true',// $('[data-action="modulo-seleccionado"][data-id-acceso="'+element.id_acceso+'"]').attr('ata-disabled'),
             $this_componente = $('[data-action="modulo-seleccionado"][data-id-acceso="'+element.id_acceso+'"]');
+
+
         asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso, acceso, html, data_disable, $this_componente);
 
+        // console.log(Math.random());
     });
 }
 $(document).on('change','[data-select="modulos-select"]',function () {
@@ -244,7 +249,16 @@ function asignarAccesoss(titulo, sub_titulo, id_modulo, id_sub_modulo, id_acceso
         $this_componente.attr('data-disabled','false');
         if (array_title.indexOf(parseInt(id_modulo))===-1) {
             html+='<div class="col-md-12" data-count="col" data-key="'+id_modulo+'">'
-                html+='<label data-id-modulo="'+id_modulo+'">'+titulo+'</label>';
+                html+='<label >'+titulo+'</label>';
+
+                html+='<div class="box-tools pull-right">'
+                    html+='<button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target="#collapse'+id_modulo+'_" aria-expanded="false" aria-controls="collapseExample" data-action="box-tool"><i class="fa fa-plus"></i></button>'
+                html+='</div>'
+
+                html+='<div class="collapse" id="collapse'+id_modulo+'_">'
+                    html+='<div class="card card-body" data-id-modulo="'+id_modulo+'">'
+                    html+='</div>'
+                html+='</div>'
             html+='</div>';
             array_title.push(parseInt(id_modulo));
             $('[data-accesos="select-accesos"]').append(html);

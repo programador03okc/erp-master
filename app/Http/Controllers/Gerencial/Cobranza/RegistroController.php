@@ -77,13 +77,16 @@ class RegistroController extends Controller
     public function nuevoCliente(Request $request)
     {
         // $cliente = Cliente::where('ruc',$request->nuevo_ruc_dni_cliente)->orWhere('nombre','like','%'.$request->nuevo_cliente.'%')->first();
-        $cliente = Contribuyente::where('estado',1)->where('nro_documento',$request->nuevo_ruc_dni_cliente)
-        ->orWhere('razon_social','like','%'.$request->nuevo_cliente)
-        ->first();
-        if ($cliente) {
-            return $cliente;
-        } else {
-            return $cliente;
+
+        $cliente = Contribuyente::where('estado',1);
+        if (!empty($request->nuevo_ruc_dni_cliente)) {
+            $cliente->where('nro_documento',$request->nuevo_ruc_dni_cliente);
         }
+        if (!empty($request->nuevo_cliente)) {
+            $cliente->where('razon_social','like','%'.$request->nuevo_cliente.'%');
+        }
+        $cliente = $cliente->first();
+
+        return response()->json($cliente);
     }
 }

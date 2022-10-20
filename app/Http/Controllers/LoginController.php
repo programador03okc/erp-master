@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -33,7 +34,7 @@ class LoginController extends Controller{
     }
 
     function select_modules(){
-        $sql = DB::table('configuracion.sis_modulo')->where([['id_padre', '=', 0],['estado','!=',7]])->orderBy('descripcion', 'ASC')->get();
+        $sql = DB::table('configuracion.modulos')->where([['id_padre', '=', 0],['estado','!=',7]])->orderBy('descripcion', 'ASC')->get();
         $html = '';
 
         foreach ($sql as $row){
@@ -42,15 +43,30 @@ class LoginController extends Controller{
             $link = $row->ruta;
             $rutas = '';
 
-            $html .=
-            '<div class="col-md-3">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Módulo</div>
-                    <div class="panel-body">
-                        <h4><a class="panel-link" href="'.$link.'/index">'.$name.'</a></h4>
+            if ($id===169) {
+                if (in_array(Auth::user()->id_usuario, [1,31,6,129])) {
+                    $html .=
+                    '<div class="col-md-3">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Módulo</div>
+                            <div class="panel-body">
+                                <h4><a class="panel-link" href="'.$link.'">'.$name.'</a></h4>
+                            </div>
+                        </div>
+                    </div>';
+                }
+            }else{
+                $html .=
+                '<div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Módulo</div>
+                        <div class="panel-body ">
+                            <h4><a class="panel-link" href="'.$link.'/index">'.$name.'</a></h4>
+                        </div>
                     </div>
-                </div>
-            </div>';
+                </div>';
+            }
+
         }
         return $html;
     }
