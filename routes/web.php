@@ -2128,14 +2128,27 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
 			Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
 			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
-			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros')->name('listar');
-			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes')->name('listar');
-			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente')->name('listar');
+			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
+			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
+			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente');
+
+            Route::get('provincia/{id_departamento}', 'Gerencial\Cobranza\RegistroController@provincia');
+            Route::get('distrito/{id_provincia}', 'Gerencial\Cobranza\RegistroController@distrito');
+            Route::get('get-cliente/{id_cliente}', 'Gerencial\Cobranza\RegistroController@getCliente');
+            Route::get('buscar-factura/{factura}', 'Gerencial\Cobranza\RegistroController@getFactura');
+            Route::get('buscar-registro/{input}/{tipo}', 'Gerencial\Cobranza\RegistroController@getRegistro');
+            Route::get('seleccionar-registro/{id_requerimiento}', 'Gerencial\Cobranza\RegistroController@selecconarRequerimiento');
+            // registro de cobranza
+            Route::post('guardar-registro-cobranza', 'Gerencial\Cobranza\RegistroController@guardarRegistroCobranza');
+            Route::get('actualizar-ven-doc-req', 'Gerencial\Cobranza\RegistroController@actualizarDocVentReq');
+            Route::post('editar-cliente','Gerencial\Cobranza\RegistroController@editarCliente');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			// });
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
 
 			// });
+            Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
+			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 		});
 	});
 	Route::get('config', function () {
