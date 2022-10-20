@@ -222,7 +222,7 @@ function agregarCliente(tipo){
         document.querySelector("form[form='ventas'] input[id='id_cliente']").value= tempClienteSelected.id;
         document.querySelector("form[form='ventas'] input[id='ruc_dni_cliente']").value= tempClienteSelected.ruc;
     } else {
-        document.querySelector("form[form='cobranza'] input[id='cliente']").value= tempClienteSelected.ruc;
+        document.querySelector("form[form='cobranza'] input[id='cliente']").value= tempClienteSelected.nombre;
         document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= tempClienteSelected.id;
     }
     tempClienteSelected = {};
@@ -560,7 +560,8 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
                 $('#formulario .modal-body input[name="oc"]').val(response.data.nro_orden)
                 $('#formulario .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
 
-                $('#formulario .modal-body input[name="id_cliente"]').val(response.data.id_cliente)
+                $('#formulario .modal-body input[name="id_cliente"]').val('')
+                $('#formulario .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
                 $('#formulario .modal-body input[name="cliente"]').val(response.data.razon_social)
                 $('#formulario .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 
@@ -603,13 +604,14 @@ $(document).on('submit','[data-form="editar"]',function (e) {
           allowOutsideClick: () => !Swal.isLoading()
 
       }).then((result) => {
-        if (result.isConfirmed) {
+        if (result.isConfirmed && result.value.status ===200) {
             console.log(result);
-        //   Swal.fire(
-        //     'Deleted!',
-        //     'Your file has been deleted.',
-        //     'success'
-        //   )
+            Swal.fire(
+                'Éxito!',
+                'Se guardo con éxito',
+                'success'
+            )
+            $('#modal-editar-cliente').modal('hide');
         }
       })
 

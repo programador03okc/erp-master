@@ -131,6 +131,7 @@ Cobranzas
                             <div class="form-group">
                                 <label for="cliente">Cliente</label>
                                 <input type="hidden" name="id_cliente" id="id_cliente" value="0">
+                                <input type="hidden" name="id_contribuyente" value="0">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm" name="cliente" id="cliente" placeholder="N° RUC" readonly>
                                     <span class="input-group-btn">
@@ -322,8 +323,9 @@ Cobranzas
 		<div class="modal-content">
 			<form class="formPage" type="search">
 				<div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
 					<h3 class="modal-title">Catálogo de Clientes</h3>
-					<button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+
 				</div>
 				<div class="modal-body">
 					<div class="row">
@@ -509,8 +511,8 @@ Cobranzas
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
 				<h3 class="modal-title">Clasificador</h3>
-				<button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
 			</div>
 			<div class="modal-body">
 				<div class="row">
@@ -550,10 +552,11 @@ Cobranzas
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="lista-procesadas">Lista ventas procesadas</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
+                <h3 class="modal-title" id="lista-procesadas">Lista ventas procesadas</h3>
+
             </div>
             <div class="modal-body">
                 <div class="row">

@@ -270,7 +270,12 @@ class RegistroController extends Controller
 
         $cobranza->id_empresa       = $request->empresa;
         $cobranza->id_sector        = $request->sector;
-        $cobranza->id_cliente       = $request->id_cliente;
+        if ($request->id_cliente!==null && $request->id_cliente!=='') {
+            $cobranza->id_cliente       = $request->id_cliente;
+        }else{
+            $cobranza->id_cliente_agil      = $request->id_contribuyente;
+        }
+
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
         $cobranza->fuente_financ    = $request->ff;
@@ -449,7 +454,15 @@ class RegistroController extends Controller
     {
         $clientes_faltantes =array();
         $json_faltantes=array();
-        $cliente = DB::table('gerencial.cliente')->where('estado',1)->where('ruc','!=',null)->get();
+
+        DB::table('gerencial.cliente')->where('ruc',null)
+        ->update(
+            ['ruc' => 'undefined']
+        );
+
+        // return DB::table('gerencial.cliente')->where('ruc',null)->get();exit;
+
+        $cliente = DB::table('gerencial.cliente')->where('ruc','!=',null)->get();
         foreach ($cliente as $key => $value) {
             $contri = DB::table('contabilidad.adm_contri')->where('nro_documento',$value->ruc)->first();
             if (!$contri) {
@@ -460,7 +473,14 @@ class RegistroController extends Controller
                 $update = Contribuyente::where('estado',1)
                 ->where('id_contribuyente',$contri->id_contribuyente)
                 ->update(
-                    ['id_cliente_gerencial_old' => $value->id_cliente]
+                    [
+                        'id_cliente_gerencial_old' => $value->id_cliente,
+                    ]
+                );
+
+                DB::table('gerencial.cliente')->where('id_cliente',$value->id_cliente)
+                ->update(
+                    ['comparar' => 2]
                 );
             }else{
                 array_push($clientes_faltantes, $value);
@@ -469,8 +489,8 @@ class RegistroController extends Controller
         }
 
         foreach ($clientes_faltantes as $key => $value) {
-            if ($value->ruc!=='undefined' && strlen($value->ruc)===11) {
-
+            // if ($value->ruc!=='undefined' && strlen($value->ruc)===11) {
+                // api de reniec en busca por el ruc
                 $curl = curl_init();
 
                     curl_setopt_array($curl, array(
@@ -493,27 +513,34 @@ class RegistroController extends Controller
                 curl_close($curl);
 
                 $response = json_decode($response);
-                $ubigeo_distrito = Distrito::where('descripcion',$response->distrito)->first();
                 // return response()->json($ubigeo_distrito);
                 if (empty($response->error)) {
-
+                    $ubigeo_distrito = Distrito::where('descripcion',$response->distrito)->first();
+                    $ubigeo=0;
                     if ($ubigeo_distrito) {
-                        $guardar_contribuyente = new Contribuyente;
-                        $guardar_contribuyente->nro_documento   =$response->numeroDocumento;
-                        $guardar_contribuyente->razon_social    =$response->nombre;
-                        $guardar_contribuyente->ubigeo          =$ubigeo_distrito->id_dis;
-                        $guardar_contribuyente->id_pais         =170;
-                        $guardar_contribuyente->fecha_registro  =date('Y-m-d H:i:s');
-                        $guardar_contribuyente->id_cliente_gerencial_old    =$value->id_cliente;
-                        $guardar_contribuyente->estado          =1;
-                        $guardar_contribuyente->transportista   ='f';
-                        $guardar_contribuyente->save();
+                        $ubigeo = $ubigeo_distrito->id_dis;
                     }else{
-                        array_push($json_faltantes, $value);
+                        $ubigeo = $response->ubigeo;
                     }
+                    $guardar_contribuyente = new Contribuyente;
+                    $guardar_contribuyente->nro_documento   =$response->numeroDocumento;
+                    $guardar_contribuyente->razon_social    =$response->nombre;
+                    $guardar_contribuyente->ubigeo          =(int)$ubigeo;
+                    $guardar_contribuyente->id_pais         =170;
+                    $guardar_contribuyente->fecha_registro  =date('Y-m-d H:i:s');
+                    $guardar_contribuyente->id_cliente_gerencial_old    =$value->id_cliente;
+                    $guardar_contribuyente->estado          =1;
+                    $guardar_contribuyente->transportista   ='f';
+                    $guardar_contribuyente->save();
+
+                    DB::table('gerencial.cliente')->where('id_cliente',$value->id_cliente)
+                    ->update(
+                        ['comparar' => 2]
+                    );
+                }else{
+                    array_push($json_faltantes, $value);
                 }
-                // falta guardar los clientes
-            }
+            // }
         }
         return response()->json($json_faltantes);
     }
@@ -536,7 +563,6 @@ class RegistroController extends Controller
         return response()->json([
             "status"=>200,
             "success"=>true,
-            "data"=>$request
         ]);
     }
 }
