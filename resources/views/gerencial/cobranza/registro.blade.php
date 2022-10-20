@@ -80,6 +80,7 @@ Cobranzas
 				</div>
 				<div class="modal-body">
                     <input type="hidden" name="id" id="id">
+                    <input type="hidden" name="id_doc_ven" value="">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -117,7 +118,7 @@ Cobranzas
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="periodo">Periodo</label>
-                                <select name="periodo" id="periodo" class="form-control input-sm" onchange="cambiarPeriodos(this.value);">
+                                <select name="periodo" id="periodo" class="form-control input-sm">
                                     @foreach ($periodo as $item)
                                         <option value="{{$item->id_periodo }}">{{$item->descripcion}}</option>
                                     @endforeach
@@ -140,7 +141,7 @@ Cobranzas
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                        {{-- <div class="col-md-2">
                             <div class="form-group">
                                 <label for="oc">Orden de Compra</label>
                                 <div class="input-group input-group-sm">
@@ -151,10 +152,9 @@ Cobranzas
                                         </button>
                                     </span>
                                 </div>
-                                {{-- <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC" data-action="oc"> --}}
                             </div>
-                        </div>
-                        <div class="col-md-2">
+                        </div> --}}
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="cdp">Cuadro de Presup.</label>
                                 <div class="input-group input-group-sm">
@@ -168,10 +168,23 @@ Cobranzas
                                 {{-- <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp"> --}}
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        {{-- <div class="col-md-3">
                             <div class="form-group">
                                 <label for="ocam">OCAM</label>
                                 <input type="text" class="form-control input-sm text-center" name="ocam" id="ocam" placeholder="N° OCAM">
+                            </div>
+                        </div> --}}
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="oc">Orden de Compra / OCAM</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC / OCAM" data-action="oc">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" >
+                                            <span class="fa fa-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -237,7 +250,7 @@ Cobranzas
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="fecha_rec">Fecha Recepción</label>
-                                <input type="date" class="form-control input-sm text-center" name="fecha_rec" id="fecha_rec" onchange="calcularAtraso(this.value);" required>
+                                <input type="date" class="form-control input-sm text-center" name="fecha_rec" id="fecha_rec"  required>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -320,8 +333,8 @@ Cobranzas
 								onclick="ModalAddNewCustomer();">
                                     <span class="fa fa-plus"></span> Nuevo
                                 </button>
-                                <button class="btn btn-warning btn-flat" title="Editar" type="button" id="edit_customer"
-                                    onclick="ModalEditCustomer();" disabled>
+                                <button class="btn btn-warning btn-flat modal-editar" title="Editar" type="button" id="edit_customer"
+                                     disabled>
                                     <span class="fa fa-edit"></span> Editar
                                 </button>
                             </div>
@@ -422,24 +435,40 @@ Cobranzas
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cliente">
 	<div class="modal-dialog" style="width: 30%;">
 		<div class="modal-content">
-			<form class="formPage" type="register">
+			<form class="formPage" type="register" data-form="editar">
 				<div class="modal-header">
 					<h3 class="modal-title">Editar Cliente</h3>
 					<button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<div class="modal-body">
+                    <input type="hidden" name="id_cliente" value="">
+                    <input type="hidden" name="id_contribuyente" value="">
                     <div class="row">
 						<div class="col-md-12">
 							<h5>Pais :</h5>
-                            <select name="pais" id="edit_pais">
+                            <select name="pais" id="nuevo_pais" class="form-control">
                                 <option value="">Seleccione...</option>
+                                @foreach ($pais as $items)
+                                    <option value="{{ $items->id_pais }}">{{ $items->descripcion }}</option>
+                                @endforeach
+                            </select>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Departamento :</h5>
+                            <select name="departamento" id="nuevo_provincia" data-select="departamento-select" class="form-control">
+                                <option value="">Seleccione...</option>
+                                @foreach ($departamento as $items)
+                                    <option value="{{ $items->id_dpto }}">{{ $items->descripcion }}</option>
+                                @endforeach
                             </select>
 						</div>
 					</div>
                     <div class="row">
 						<div class="col-md-12">
 							<h5>Provincia :</h5>
-                            <select name="provincia" id="edit_provincia">
+                            <select name="provincia" id="nuevo_provincia" class="form-control" data-select="provincia-select">
                                 <option value="">Seleccione...</option>
                             </select>
 						</div>
@@ -447,7 +476,7 @@ Cobranzas
                     <div class="row">
 						<div class="col-md-12">
 							<h5>Distrito :</h5>
-                            <select name="distrito" id="edit_distrito">
+                            <select name="distrito" id="nuevo_distrito" class="form-control">
                                 <option value="">Seleccione...</option>
                             </select>
 						</div>
@@ -468,7 +497,7 @@ Cobranzas
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-sm btn-success" onclick="updateCustomer();"> Actualizar </button>
+					<button type="submit" class="btn btn-sm btn-success" > Actualizar </button>
 
 				</div>
 			</form>

@@ -2141,6 +2141,7 @@ Route::group(['middleware' => ['auth']], function () {
             // registro de cobranza
             Route::post('guardar-registro-cobranza', 'Gerencial\Cobranza\RegistroController@guardarRegistroCobranza');
             Route::get('actualizar-ven-doc-req', 'Gerencial\Cobranza\RegistroController@actualizarDocVentReq');
+            Route::post('editar-cliente','Gerencial\Cobranza\RegistroController@editarCliente');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			// });
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {

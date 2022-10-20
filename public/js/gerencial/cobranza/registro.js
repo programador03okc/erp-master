@@ -148,21 +148,8 @@ $('#tabla-clientes tbody').on('click', 'tr', function(){
         $(this).addClass('selected');
         document.querySelector("button[id='edit_customer']").removeAttribute('disabled')
         document.querySelector("button[id='btnAgregarCliente']").removeAttribute('disabled')
+        $("button[id='edit_customer']").attr('data-id',$(this)[0].firstChild.innerHTML);
 
-        $.ajax({
-            type: 'GET',
-            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            url: 'get-cliente/'+$(this)[0].firstChild.innerHTML,
-            data: {},
-            dataType: 'JSON',
-            success: function(response){
-                console.log(response);
-            }
-        }).fail( function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        })
     }
     var id = $(this)[0].firstChild.innerHTML;
     var nombre = $(this)[0].childNodes[1].textContent;
@@ -176,14 +163,58 @@ function ModalAddNewCustomer() {
     $('[name=nuevo_ruc_dni_cliente]').val('');
     $('[name=nuevo_cliente]').val('');
 }
-function ModalEditCustomer(){
+$(document).on('click','.modal-editar',function () {
     $('#modal-editar-cliente').modal({show: true});
-    document.querySelector("div[id='modal-editar-cliente'] input[id='edit_ubigeo_cliente']").value = tempClienteSelected.ubigeo;
-    document.querySelector("div[id='modal-editar-cliente'] input[id='edit_ruc_dni_cliente']").value = tempClienteSelected.nro_documento;
-    document.querySelector("div[id='modal-editar-cliente'] input[id='edit_cliente']").value = tempClienteSelected.razon_social;
-    document.querySelector("div[id='modal-editar-cliente'] input[id='edit_id']").value = tempClienteSelected.id;
+    var id = $(this).attr('data-id'),
+        html= '';
+    $.ajax({
+        type: 'GET',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'get-cliente/'+id,
+        data: {},
+        dataType: 'JSON',
+        success: function(response){
+            if (response.status === 200) {
 
-}
+                $('#modal-editar-cliente .modal-body input[name="edit_ruc_dni_cliente"]').val(response.data.nro_documento);
+                $('#modal-editar-cliente .modal-body input[name="edit_cliente"]').val(response.data.razon_social);
+
+
+                html='<option value="">Seleccione...</option>';
+                $.each(response.provincia, function (index, element) {
+                    html+='<option value="'+element.id_prov+'">'+element.descripcion+'</option>'
+                });
+                $('#modal-editar-cliente .modal-body select[name="provincia"]').html(html);
+
+                html='<option value="">Seleccione...</option>';
+                $.each(response.distrito, function (index, element) {
+                    html+='<option value="'+element.id_dis+'">'+element.descripcion+'</option>'
+                });
+                $('#modal-editar-cliente .modal-body select[name="distrito"]').html(html);
+
+                $('#modal-editar-cliente .modal-body select[name="pais"] option').removeAttr('selected');
+                $('#modal-editar-cliente .modal-body select[name="pais"] option[value="'+response.data.id_pais+'"]').attr('selected',true)
+
+                $('#modal-editar-cliente .modal-body select[name="departamento"] option').removeAttr('selected');
+                $('#modal-editar-cliente .modal-body select[name="departamento"] option[value="'+response.id_dpto+'"]').attr('selected',true)
+
+                $('#modal-editar-cliente .modal-body select[name="provincia"] option').removeAttr('selected');
+                $('#modal-editar-cliente .modal-body select[name="provincia"] option[value="'+response.id_prov+'"]').attr('selected',true)
+
+                $('#modal-editar-cliente .modal-body select[name="distrito"] option').removeAttr('selected');
+                $('#modal-editar-cliente .modal-body select[name="distrito"] option[value="'+response.id_dis+'"]').attr('selected',true)
+
+                $('#modal-editar-cliente .modal-body input[name="id_cliente"]').val(response.data_old.id_cliente)
+                $('#modal-editar-cliente .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente)
+            }
+            console.log(response);
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
 function agregarCliente(tipo){
     $('#modal-buscar-cliente').modal('hide');
     if (tipo == 'ventas') {
@@ -218,6 +249,7 @@ function SaveNewCustomer(){
                     dataType: 'JSON',
                     success: function(response){
                         $('#tabla-clientes').DataTable().ajax.reload();
+                        console.log(response);
                     }
                 }).fail( function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
@@ -312,30 +344,30 @@ $(document).on('change','[data-select="provincia-select"]',function () {
 
 });
 // busca por factura
-$(document).on('change','.buscar-factura',function () {
-    const factura = $(this).val();
-    $.ajax({
-        type: 'get',
-        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'buscar-factura/'+factura,
-        data: {},
-        dataType: 'JSON',
-        success: function(response){
-            if (response.status===200) {
-                $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
-                $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.moneda+'"]').attr('selected','true');
-                $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
-                $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
-                $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
-                console.log(response);
-            }
-        }
-    }).fail( function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
-    })
-});
+// $(document).on('change','.buscar-factura',function () {
+//     const factura = $(this).val();
+//     $.ajax({
+//         type: 'get',
+//         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         url: 'buscar-factura/'+factura,
+//         data: {},
+//         dataType: 'JSON',
+//         success: function(response){
+//             if (response.status===200) {
+//                 $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
+//                 $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.moneda+'"]').attr('selected','true');
+//                 $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
+//                 $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
+//                 $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
+//                 console.log(response);
+//             }
+//         }
+//     }).fail( function(jqXHR, textStatus, errorThrown) {
+//         console.log(jqXHR);
+//         console.log(textStatus);
+//         console.log(errorThrown);
+//     })
+// });
 function searchSource(){
     $('#modal-fue-fin').modal({show: true, backdrop: 'static'});
     $('#modal-fue-fin').on('shown.bs.modal', function(){
@@ -366,7 +398,8 @@ function selectSource(){
     $('#ff').val(text);
     $('#modal-fue-fin').modal('hide');
 }
-$('#formulario').on('submit', function(){
+$('#formulario').on('submit', function(e){
+    e.preventDefault();
     var data = $(this).serialize();
     var form = $(this).attr('form');
     var type = $(this).attr('type');
@@ -375,7 +408,6 @@ $('#formulario').on('submit', function(){
 
     var url;
     var msj;
-
     Swal.fire({
         title: 'Guardar',
         text: "¿Esta seguro de guardar este registro?",
@@ -417,9 +449,10 @@ $('#formulario').on('submit', function(){
                 console.log(textStatus);
                 console.log(errorThrown);
             });
-          },
+        },
           allowOutsideClick: () => !Swal.isLoading()
       }).then((result) => {
+
     })
 });
 function actualizarDocVentReq() {
@@ -529,6 +562,7 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
 
                 $('#formulario .modal-body input[name="id_cliente"]').val(response.data.id_cliente)
                 $('#formulario .modal-body input[name="cliente"]').val(response.data.razon_social)
+                $('#formulario .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 
             }
         }
@@ -537,4 +571,46 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
         console.log(textStatus);
         console.log(errorThrown);
     })
+});
+$(document).on('submit','[data-form="editar"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
+    Swal.fire({
+        title: '¿Esta seguro de guardar?',
+        text: "Se modificara su registro",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'post',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: 'editar-cliente',
+                data: data,
+                dataType: 'JSON'
+            }).done(function( data ) {
+                return data;
+            }).fail( function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            })
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+
+      }).then((result) => {
+        if (result.isConfirmed) {
+            console.log(result);
+        //   Swal.fire(
+        //     'Deleted!',
+        //     'Your file has been deleted.',
+        //     'success'
+        //   )
+        }
+      })
+
 });
