@@ -217,18 +217,28 @@ class RegistroController extends Controller
         $cliente_gerencial = DB::table('gerencial.cliente')->where('estado',1)->where('id_cliente',$id_cliente)->first();
         $cliente_erp = Contribuyente::where('id_cliente_gerencial_old',$cliente_gerencial->id_cliente)->first();
 
+        // return response()->json([$cliente_gerencial,$cliente_erp]);exit;
         // $departamento ='';
+        $id_dis     = 0;
+        $id_prov     = 0;
+        $id_dpto     = 0;
 
-        $distrito_first   = Distrito::where('id_dis',$cliente_erp->ubigeo)->first();
-        $id_dis     = $cliente_erp->ubigeo;
+        $distrito     = [];
+        $provincia     = [];
 
-        $provincia_first  = Provincia::where('id_prov',$distrito_first->id_prov)->first();
-        $id_prov    = $provincia_first->id_prov;
+        if ($cliente_erp && $cliente_erp->ubigeo !==null && $cliente_erp->ubigeo !=='') {
+            $distrito_first   = Distrito::where('id_dis',$cliente_erp->ubigeo)->first();
+            $id_dis     = $cliente_erp->ubigeo;
 
-        $distrito  = Distrito::where('id_prov',$id_prov)->get();
-        $provincia  = Provincia::where('id_dpto',$provincia_first->id_dpto)->get();
+            $provincia_first  = Provincia::where('id_prov',$distrito_first->id_prov)->first();
+            $id_prov    = $provincia_first->id_prov;
 
-        $id_dpto = $provincia_first->id_dpto;
+            $distrito  = Distrito::where('id_prov',$id_prov)->get();
+            $provincia  = Provincia::where('id_dpto',$provincia_first->id_dpto)->get();
+
+            $id_dpto = $provincia_first->id_dpto;
+        }
+
         return response()->json([
             "success"=>true,
             "status"=>200,
