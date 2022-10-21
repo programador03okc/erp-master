@@ -309,7 +309,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="usuario">Usuario : </label>
-                                <input type="text" class="form-control usuario-unico" id="usuario" name="usuario" required disabled>
+                                <input type="text" class="form-control usuario-unico" id="usuario" name="usuario" value="" required >
                             </div>
                         </div>
                         {{-- <div class="col-md-6">
@@ -799,14 +799,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="usuario_modificar">Usuario : </label>
-                                <input type="text" class="form-control" id="usuario_modificar" name="usuario" required>
+                                <label for="nombre_corto_modificar">Nombre corto : </label>
+                                <input type="text" class="form-control" id="nombre_corto_modificar" name="nombre_corto" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="nombre_corto_modificar">Nombre corto : </label>
-                                <input type="text" class="form-control" id="nombre_corto_modificar" name="nombre_corto" required>
+                                <label for="usuario_modificar">Usuario : </label>
+                                <input type="text" class="form-control" id="usuario_modificar" name="usuario" required>
                             </div>
                         </div>
                         {{-- <div class="col-md-6">

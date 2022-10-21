@@ -2102,6 +2102,7 @@ Route::group(['middleware' => ['auth']], function () {
         // scripts a ejecutar
         Route::get('prueba', 'ConfiguracionController@prueba');
         Route::get('scripts/{var}', 'ConfiguracionController@scripts');
+        Route::get('scripts-usuario', 'ConfiguracionController@scriptsAccesos');
         // ----fin de scripts
 		Route::group(['as' => 'accesos.', 'prefix' => 'accesos'], function () {
 			Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
