@@ -227,9 +227,9 @@ function agregarCliente(tipo){
     }
     tempClienteSelected = {};
 }
-function SaveNewCustomer(){
-
-    var data = $('[data-form="guardar-cliente"]').serialize();
+$(document).on('submit','[data-form="guardar-cliente"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
     Swal.fire({
         title: '¿Está seguro de guardar?',
         text: "Se guardara como un registro nuevo",
@@ -273,6 +273,10 @@ function SaveNewCustomer(){
             })
         }
     })
+});
+function SaveNewCustomer(){
+
+
 }
 $(document).on('change','[data-select="departamento-select"]',function () {
     var id_departamento = $(this).val()

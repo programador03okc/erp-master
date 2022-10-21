@@ -377,7 +377,7 @@ Cobranzas
                     <div class="row">
 						<div class="col-md-12">
 							<h5>Pais :</h5>
-                            <select name="pais" id="nuevo_pais" class="form-control">
+                            <select name="pais" id="nuevo_pais" class="form-control" required>
                                 <option value="">Seleccione...</option>
                                 @foreach ($pais as $items)
                                     <option value="{{ $items->id_pais }}">{{ $items->descripcion }}</option>
@@ -388,7 +388,7 @@ Cobranzas
                     <div class="row">
 						<div class="col-md-12">
 							<h5>Departamento :</h5>
-                            <select name="departamento" id="nuevo_provincia" data-select="departamento-select" class="form-control">
+                            <select name="departamento" id="nuevo_provincia" data-select="departamento-select" class="form-control" required>
                                 <option value="">Seleccione...</option>
                                 @foreach ($departamento as $items)
                                     <option value="{{ $items->id_dpto }}">{{ $items->descripcion }}</option>
@@ -399,7 +399,7 @@ Cobranzas
                     <div class="row">
 						<div class="col-md-12">
 							<h5>Provincia :</h5>
-                            <select name="provincia" id="nuevo_provincia" class="form-control" data-select="provincia-select">
+                            <select name="provincia" id="nuevo_provincia" class="form-control" data-select="provincia-select" required>
                                 <option value="">Seleccione...</option>
                             </select>
 						</div>
@@ -407,7 +407,7 @@ Cobranzas
                     <div class="row">
 						<div class="col-md-12">
 							<h5>Distrito :</h5>
-                            <select name="distrito" id="nuevo_distrito" class="form-control">
+                            <select name="distrito" id="nuevo_distrito" class="form-control" required>
                                 <option value="">Seleccione...</option>
                             </select>
 						</div>
@@ -415,14 +415,14 @@ Cobranzas
 					<div class="row">
 						<div class="col-md-12">
 							<h5>RUC/DNI</h5>
-							<input type="text" class="form-control input-sm" name="nuevo_ruc_dni_cliente" id="nuevo_ruc_dni_cliente" placeholder="Nro. Documento">
+							<input type="text" class="form-control input-sm" name="nuevo_ruc_dni_cliente" id="nuevo_ruc_dni_cliente" placeholder="Nro. Documento" required>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-12">
 							<h5>Cliente <i style="font-size: 12px;">( Nombre de la empresa )</i></h5>
 							<input type="text" class="form-control input-sm" name="nuevo_cliente" id="nuevo_cliente"
-								placeholder="Razón Social/Nombre" onkeyup="javascript:this.value = this.value.toUpperCase();">
+								placeholder="Razón Social/Nombre" onkeyup="javascript:this.value = this.value.toUpperCase();" required>
 						</div>
 					</div>
 				</div>
