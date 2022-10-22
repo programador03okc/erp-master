@@ -239,6 +239,11 @@
                     }, 'className': 'text-right celestito'
                 },
                 {
+                    'render': function (data, type, row) {
+                        return (row['monto_a_pago'] !== null ? formatNumber.decimal(row['monto_a_pago'], '', -2) : (row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00'));
+                    }, 'className': 'text-right'
+                },
+                {
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
                         // var estadoAdd = '';
@@ -325,6 +330,8 @@
                                     data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     data-comentario-pago-logistica="${row['comentario_pago']}"
+                                    data-pagos-a-cuota="${row['pagos_a_cuota']}"
+                                    data-monto-a-pago="${row['monto_a_pago']}"
                                     data-observacion-requerimiento="${observacionRequerimiento}"
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`
                                     : ''}

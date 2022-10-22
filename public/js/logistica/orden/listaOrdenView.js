@@ -995,10 +995,12 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
 
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='saldo']").value = '';
-        
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="";
+
         let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
         if (selectCuenta != null) {
             while (selectCuenta.children.length > 0) {
@@ -1024,20 +1026,24 @@ class ListaOrdenView {
             show: true,
             backdrop: 'static'
         });
-        console.log(obj.dataset.montoAPagoOrden);
+      console.log();
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = 1;
 
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").setAttribute("data-monto-total",obj.dataset.montoTotalOrden);
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =(obj.dataset.montoAPagoOrden != null && parseFloat(obj.dataset.montoAPagoOrden) > 0)?obj.dataset.montoAPagoOrden:obj.dataset.montoTotalOrden ;
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").value = obj.dataset.simboloMonedaOrden+' '+$.number(obj.dataset.montoTotalOrden,2,".",",");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").setAttribute("data-monto-total-orden",obj.dataset.montoTotalOrden);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = $.number(obj.dataset.montoTotalOrden,2,".",",");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =(parseFloat(obj.dataset.montoTotalOrden) - parseFloat(obj.dataset.montoTotalPagado)).toFixed(2);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").value = $.number(obj.dataset.montoTotalPagado,2,".",",");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").setAttribute("data-monto-total-pagado",obj.dataset.montoTotalPagado);
+
         // document.querySelector("div[id='modal-enviar-solicitud-pago'] div[name='simboloMoneda']").textContent = obj.dataset.simboloMonedaOrden;
         $( "div[name*='simboloMoneda']" ).text(obj.dataset.simboloMonedaOrden);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
         this.calcularSaldo();
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent = ((obj.dataset.pagosACuota)==="true"?"(Pagos a cuotas)":"");
 
 
         if (obj.dataset.estadoPago == 8) {
@@ -1068,7 +1074,7 @@ class ListaOrdenView {
             this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor)
         }
 
-        this.obtenerMontosParaPago(obj.dataset.idOrdenCompra);
+        // this.obtenerMontosParaPago(obj.dataset.idOrdenCompra);
 
     }
 
@@ -1118,13 +1124,11 @@ class ListaOrdenView {
             console.log(err)
         })
     }
-    obtenerMontosParaPago(idOrden) {
-        console.log(idOrden);
-        // this.getContribuyentePorIdProveedor(idOrden).then((res) => {
+    // obtenerMontosParaPago(idOrden) {
+        // console.log(idOrden);
+        // this.getMontoparaPago(idOrden).then((res) => {
         //     // console.log(res);
         //     if (res.tipo_estado == 'success') {
-        //         tempDataProveedorParaPago = res.data;
-        //         this.llenarInputsDeDestinatario(res.data);
         //     } else {
         //         Lobibox.notify(res.tipo_estado, {
         //             title: false,
@@ -1138,7 +1142,7 @@ class ListaOrdenView {
         // }).catch(function (err) {
         //     console.log(err)
         // })
-    }
+    // }
 
     llenarInputsDeDestinatario(data) {
         // console.log(data);
@@ -1548,9 +1552,12 @@ class ListaOrdenView {
     calcularSaldo(){
 
         // let montoPagar = obj.value!=null?(parseFloat((obj.value).replace(",",""))):0;
-        let montoPagar = (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value)!=null?(parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value).replace(",",""))):0;
-        let montoTotal = document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").dataset.montoTotal!=null ?(parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total']").dataset.montoTotal)):0;
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='saldo']").value= $.number(parseFloat(montoTotal -montoPagar),2,".",",");
+        let montoTotalOrden = document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden!=null ?(parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden)):0;
+        let montoTotalPagado = (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").dataset.montoTotalPagado)!=null?(parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").dataset.montoTotalPagado).replace(",",""))):0;
+        let montoAPagar = (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value)!=null?(parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value).replace(",",""))):0;
+        let saldo = parseFloat((montoTotalOrden-(montoTotalPagado+montoAPagar)));
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='saldo']").value= $.number(saldo,2,".",",");
+        saldo >0?(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="(Pago en cuotas)"):(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="");
     }
 
 
@@ -1826,6 +1833,8 @@ class ListaOrdenView {
                                 data-id-tipo-destinatario-pago="${row.id_tipo_destinatario_pago ?? ''}"
                                 data-id-cuenta-contribuyente-pago="${row.id_cta_principal ?? ''}"
                                 data-id-contribuyente-pago="${row.id_contribuyente ?? ''}"
+                                data-monto-total-pagado="${row.monto_total_pagado ?? '0'}"
+                                data-pagos-a-cuota="${Boolean(row.pagos_a_cuota) ?? false}"
 
                                 data-id-persona-pago="${row.id_persona_pago ?? ''}"
                                 data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"

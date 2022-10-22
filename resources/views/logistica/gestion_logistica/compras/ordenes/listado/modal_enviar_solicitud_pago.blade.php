@@ -5,7 +5,7 @@
             <form id="form-enviar_solicitud_pago">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title">Enviar a pago <span class="text-primary" id="codigo_orden"></span></h3>
+                    <h3 class="modal-title">Enviar a pago <span class="text-primary" id="codigo_orden"></span> <span class="text-danger" id="condicion_de_envio_pago"></span></h3>
                 </div>
                 <div class="modal-body">
                     <div class="row">
@@ -84,16 +84,25 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <h5>Monto Total:</h5>
+                                <h5>Monto total Orden:</h5>
                                 <div class="input-group">
                                     <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda"></div>
-                                    <input type="text" class="form-control" name="monto_total" data-monto-total="" placeholder="Monto total" readOnly>
+                                    <input type="text" class="form-control" name="monto_total_orden" data-monto-total-orden="" placeholder="Monto total orden" readOnly>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <h5>Monto pagado:</h5>
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda"></div>
+                                    <input type="text" class="form-control" name="monto_total_pagado" data-monto-total-pagado="" placeholder="Monto total pagado" readOnly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <h5>Monto a pagar:</h5>
                                 <div class="input-group">
@@ -102,7 +111,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <h5>Saldo:</h5>
                                 <div class="input-group">
@@ -111,7 +120,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12" hidden>
                             <div class="form-group">
                                 <h5>Adjuntar:</h5>
                                 <input type="file"  multiple="multiple" class="filestyle handleChangeAgregarAdjunto" name="nombre_archivo" placeholder="Seleccionar" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo" data-size="sm" data-iconName="fa fa-folder-open" accept="application/pdf,image/*" />
@@ -121,7 +130,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12" hidden>
                         <fieldset class="group-table">
                         <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos logísticos</strong></h5>
                         <div class="row">

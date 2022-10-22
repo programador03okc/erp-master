@@ -4317,6 +4317,7 @@ class OrdenController extends Controller
                         $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
                         $orden->comentario_pago = $request->comentario;
                         $orden->monto_a_pago = (strlen($request->monto_a_pagar))>0?(str_replace(",", "", $request->monto_a_pagar)):null;
+                        $orden->pagos_a_cuota= (floatval($request->monto_a_pagar) < floatval($orden->monto_total))?1:0;
                         $orden->fecha_solicitud_pago = Carbon::now();
                         $orden->save();
 

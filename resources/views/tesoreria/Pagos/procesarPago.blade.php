@@ -109,12 +109,28 @@
                             </div>
                         </div>
                         <div class="row" id="contenedor_adjunto_logistica">
-                            <div class="col-md-3" style="width:auto;">
+                            <div class="col-md-2">
                                 <span style="font-size: 14px;">Adjuntos logística: </span>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-3">
                                 <label class="lbl-codigo handleClickVerAdjuntosLogisticos" style="font-size: 14px;" name="adjuntoslogistica">Ver</label>
                             </div>
+
+                            <div class="col-md-2" >
+                                <span style="font-size: 14px;">Pagos en cuota?: </span>
+                            </div>
+                            <div class="col-md-1">
+                                <label style="font-size: 14px;color: #8b3447 !important;font-weight: bold;" name="pagosACuota"></label>
+                            </div>
+                            <div class="col-md-2" >
+                                <span style="font-size: 14px;">Monto a pagar: </span>
+                            </div>
+                            <div class="col-md-2">
+                                <label style="font-size: 14px;color: #8b3447 !important;font-weight: bold;" name="montoAPago"></label>
+                            </div>
+                        </div>
+                        <div class="row" id="contenedor_adjunto_logistica">
+
                         </div>
                     </fieldset>
                     <br>

@@ -18,6 +18,8 @@ function openRegistroPago(data) {
     var comentarioPagoLogistica = data.data('comentarioPagoLogistica');
     var observacionRequerimiento = data.data('observacionRequerimiento');
     var cantidadAdjuntosLogisticos = data.data('cantidadAdjuntosLogisticos');
+    var pagosACuota = data.data('pagosACuota');
+    var montoAPago = data.data('montoAPago');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
     console.log(data);
@@ -58,7 +60,7 @@ function openRegistroPago(data) {
     $('[name=codigo]').val(codigo);
     $('[name=cod_serie_numero]').text(codigo);
 
-    $('[name=total_pago]').val(total_pago);
+    $('[name=total_pago]').val(montoAPago>0?montoAPago:total_pago);
     $('[name=total]').val(total_pago);
     $('[name=total_pagado]').text(formatNumber.decimal(pago, moneda, -2));
     $('[name=monto_total]').text(formatNumber.decimal(total, moneda, -2));
@@ -77,6 +79,8 @@ function openRegistroPago(data) {
     $('[name=motivo]').text(motivo !== undefined ? decodeURIComponent(motivo) : '');
     $('[name=comentario_pago_logistica]').text(comentarioPagoLogistica ?? '');
     $('[name=observacion_requerimiento]').text(observacionRequerimiento ?? '');
+    $('[name=pagosACuota]').text(pagosACuota ===true ? 'SI' : 'NO');
+    $('[name=montoAPago]').text(moneda+$.number(montoAPago,2,",",".")??'');
 
     if (comentarioPagoLogistica != undefined && comentarioPagoLogistica != '') {
         document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_comentario_pago_logistica']").classList.remove("oculto");
@@ -170,7 +174,7 @@ function listarCuentasOrigen() {
         progress: true,
         imageColor: "#3c8dbc"
     });
-    console.log(id_empresa);
+    // console.log(id_empresa);
     $.ajax({
         type: 'GET',
         url: 'cuentasOrigen/' + id_empresa,

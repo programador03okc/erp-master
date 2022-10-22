@@ -85,8 +85,9 @@ Registro de pagos
                                                 <th>Fecha envío a pago</th>
                                                 {{-- <th>Forma de Pago</th> --}}
                                                 <th>Mnd</th>
-                                                <th>Total</th>
+                                                <th>Total Orden</th>
                                                 <th>Saldo</th>
+                                                <th>A pagar</th>
                                                 <th>Estado</th>
                                                 <th>Autorizado por</th>
                                                 <th style="width:80px;">Acción</th>
