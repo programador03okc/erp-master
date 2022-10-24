@@ -382,13 +382,18 @@ class OrdenesDespachoInternoController extends Controller
                // Debugbar::info($idOd);
                 if($idOd>0){
                     $orden_despacho = OrdenDespacho::find($idOd);
-                    $cuadro = CuadroCosto::where('id_oportunidad', $req->id_oportunidad)->first();
-                    $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+                    if(intval($req->id_oportunidad)>0){
+                        $cuadro = CuadroCosto::where('id_oportunidad', $req->id_oportunidad)->first();
+                        $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+                        $codigoOportunidad=$oportunidad->codigo_oportunidad;
+                    }else{
+                        $codigoOportunidad='';
+                    }
                     NotificacionHelper::notificacionODI(
                         $idUsuarios,
                         $orden_despacho->codigo,
                         $orden_despacho->fecha_despacho,
-                        $oportunidad->codigo_oportunidad,
+                        $codigoOportunidad,
                         $req,
                         trim($request->comentario)
                     );
