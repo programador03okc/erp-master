@@ -387,7 +387,7 @@ class OrdenesDespachoInternoController extends Controller
                         $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
                         $codigoOportunidad=$oportunidad->codigo_oportunidad;
                     }else{
-                        $codigoOportunidad='';
+                        $codigoOportunidad=null;
                     }
                     NotificacionHelper::notificacionODI(
                         $idUsuarios,
