@@ -1026,7 +1026,7 @@ class ListaOrdenView {
             show: true,
             backdrop: 'static'
         });
-      console.log();
+        
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = 1;
 
@@ -1043,7 +1043,7 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
         this.calcularSaldo();
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent = ((obj.dataset.pagosACuota)==="true"?"(Pagos a cuotas)":"");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent = ((obj.dataset.pagosACuota)==="true"?"(Pago en cuotas)":"");
 
 
         if (obj.dataset.estadoPago == 8) {
@@ -1556,8 +1556,9 @@ class ListaOrdenView {
         let montoTotalPagado = (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").dataset.montoTotalPagado)!=null?(parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").dataset.montoTotalPagado).replace(",",""))):0;
         let montoAPagar = (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value)!=null?(parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value).replace(",",""))):0;
         let saldo = parseFloat((montoTotalOrden-(montoTotalPagado+montoAPagar)));
+        console.log(saldo);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='saldo']").value= $.number(saldo,2,".",",");
-        saldo >0?(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="(Pago en cuotas)"):(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="");
+        (saldo !=null && saldo >0)?(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="(Pago en cuotas)"):(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="");
     }
 
 
