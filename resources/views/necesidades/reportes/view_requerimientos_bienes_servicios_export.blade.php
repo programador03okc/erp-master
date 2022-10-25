@@ -9,6 +9,7 @@
             <th>Fecha Entrega</th>
             <th>Tipo Req.</th>
             <th>Empresa</th>
+            <th>Sede</th>
             <th>Grupo</th>
             <th>División</th>
             <th>Proyecto/presupuesto</th>
@@ -30,6 +31,7 @@
             <td>{{ $requerimiento["fecha_entrega"] }}</td>
             <td>{{ $requerimiento["tipo_requerimiento"] }}</td>
             <td>{{ $requerimiento["razon_social"] }}</td>
+            <td>{{ $requerimiento["sede"] }}</td>
             <td>{{ $requerimiento["grupo"] }}</td>
             <td>{{ $requerimiento["division"] }}</td>
             <td>{{ $requerimiento["descripcion_proyecto"] }}</td>

@@ -48,7 +48,9 @@ class DevolucionController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
-        return view('almacen/devoluciones/devolucionCas', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+        $tipos = DB::table('cas.devolucion_tipo')->where('estado', 1)->get();
+
+        return view('almacen/devoluciones/devolucionCas', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas','tipos'));
     }
 
     public function listarDevoluciones()
