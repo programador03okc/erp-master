@@ -2525,7 +2525,7 @@ public function anular_configuracion_socket($id){
     }
     public function scriptsAccesos()
     {
-        $array_id_accesos=[58,59,60,61,62,57,56];
+        $array_id_accesos=[93,77,61,33,32,27,22,17,3,1];
         $accesos=array();
         $array_usuarios=[135,133,130,128,126,125,124,123,61,122,119,118,117,97,93,78,77,75,66,65,64,62,60,59,36,33,32,27,22,121,17,16,14,5,3,1];
         $json_usuarios=array();
