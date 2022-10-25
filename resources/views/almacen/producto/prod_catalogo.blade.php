@@ -18,18 +18,21 @@ Catálogo de Productos
                     <table class="mytable table table-condensed table-bordered table-okc-view" id="listaProductoCatalogo">
                         <thead>
                             <tr>
-                                <th></th>
-                                <th>Clasificación</th>
-                                <th>Código Softlink</th>
-                                <th>Categoría</th>
-                                <th>Cód. Cat. Softlink</th>
-                                <th>Subcatgoría</th>
-                                <th>Cód. SubCat. Softlink</th>
-                                <th>Marca</th>
-                                <th>Código Agile</th>
-                                <th>Part Number</th>
-                                <th>Descripción</th>
-                                <th>Unid. Med.</th>
+                            <th></th>
+                            <th>Part Number</th>
+                            <th>Código Agile</th>
+                            <th>Código Softlink</th>
+                            <th width="30%">Descripción</th>
+                            <th>Notas</th>
+                            <th>Moneda</th>
+                            <th>Control de Series</th>
+                            <th>Unid. Med.</th>
+                            <th>Marca</th>
+                            <th>Subcatgoría</th>
+                            <th>Categoría</th>
+                            <th>Clasificación</th>
+                            <th>Fecha registro</th>
+                            <th>Registrado por</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

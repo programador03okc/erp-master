@@ -604,33 +604,35 @@ class ProductoController extends Controller
     //Catalogo Producto
     public function mostrar_productos()
     {
-        $data = DB::table('almacen.alm_prod')
-            ->select(
-                'alm_prod.id_producto',
-                'alm_prod.part_number',
-                'alm_prod.codigo',
-                'alm_prod.cod_softlink',
-                'alm_prod.descripcion',
-                'sis_moneda.simbolo',
-                DB::raw("CASE WHEN series=true THEN 'SI'
-                        ELSE 'NO' END  AS series"),
-                'alm_und_medida.abreviatura',
-                'alm_subcat.cod_softlink as cod_sub_cat',
-                'alm_subcat.descripcion as subcat_descripcion',
-                'alm_cat_prod.cod_softlink as cod_cat',
-                'alm_cat_prod.descripcion as cat_descripcion',
-                'alm_tp_prod.id_tipo_producto',
-                'alm_tp_prod.descripcion as tipo_descripcion',
-                'alm_clasif.id_clasificacion',
-                'alm_clasif.descripcion as clasif_descripcion'
-            )
-            ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
-            ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
-            ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
-            ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
-            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
-            ->get();
+        $data = DB::table('almacen.view_catalogo_productos')->get();
+
+        // $data = DB::table('almacen.alm_prod')
+        //     ->select(
+        //         'alm_prod.id_producto',
+        //         'alm_prod.part_number',
+        //         'alm_prod.codigo',
+        //         'alm_prod.cod_softlink',
+        //         'alm_prod.descripcion',
+        //         'sis_moneda.simbolo',
+        //         DB::raw("CASE WHEN series=true THEN 'SI'
+        //                 ELSE 'NO' END  AS series"),
+        //         'alm_und_medida.abreviatura',
+        //         'alm_subcat.cod_softlink as cod_sub_cat',
+        //         'alm_subcat.descripcion as subcat_descripcion',
+        //         'alm_cat_prod.cod_softlink as cod_cat',
+        //         'alm_cat_prod.descripcion as cat_descripcion',
+        //         'alm_tp_prod.id_tipo_producto',
+        //         'alm_tp_prod.descripcion as tipo_descripcion',
+        //         'alm_clasif.id_clasificacion',
+        //         'alm_clasif.descripcion as clasif_descripcion'
+        //     )
+        //     ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+        //     ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        //     ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
+        //     ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
+        //     ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+        //     ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
+        //     ->get();
         $output['data'] = $data;
         return response()->json($output);
     }
