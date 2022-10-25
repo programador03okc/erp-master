@@ -37,9 +37,9 @@ function listarRegistros() {
             type: "POST"
         },
         columns: [
-            {data: 'id_cobranza', name:"id_cobranza"},
+            {data: 'id_registro_cobranza', name:"id_registro_cobranza"},
             {data: 'empresa', name:"empresa"},
-            {data: 'ocam', name:"ocam"},
+            {data: 'oc', name:"oc"},
             {data: 'cliente', name:"cliente"},
             {data: 'factura', name:"factura"},
             {data: 'uu_ee', name:"uu_ee"},
@@ -53,27 +53,29 @@ function listarRegistros() {
             {data: 'importe', name:"importe"},
             {
                 render: function (data, type, row) {
-                    var html='';
-                    var html=`<select class="" name="estado_documento">`;
-                    row['estado'][1].forEach(element => {
+                    // var html='';
+                    // var html=`<select class="" name="estado_documento">`;
+                    // row['estado'][1].forEach(element => {
 
-                        html+=`<option value="${element.id_estado_doc}" ${element.id_estado_doc===row['estado'][0]?'selected':''}>${element.nombre}</option>`;
-                    });
-                    html+=`</select>`;
-                    return (html);
+                    //     html+=`<option value="${element.id_estado_doc}" ${element.id_estado_doc===row['estado'][0]?'selected':''}>${element.nombre}</option>`;
+                    // });
+                    // html+=`</select>`;
+                    // return (html);
+                    return (row['estado']);
                 },
                 className: "text-center"
             },
             {
                 render: function (data, type, row) {
-                    var html='';
-                    var html=`<select class="" name="area_responsable">`;
-                    row['area'][1].forEach(element => {
+                    // var html='';
+                    // var html=`<select class="" name="area_responsable">`;
+                    // row['area'][1].forEach(element => {
 
-                        html+=`<option value="${element.id_area}" ${element.id_area===row['area'][0]?'selected':''}>${element.descripcion}</option>`;
-                    });
-                    html+=`</select>`;
-                    return (html);
+                    //     html+=`<option value="${element.id_area}" ${element.id_area===row['area'][0]?'selected':''}>${element.descripcion}</option>`;
+                    // });
+                    // html+=`</select>`;
+                    // return (html);
+                    return (row['area']);
                 },
                 className: "text-center"
             },
@@ -85,7 +87,11 @@ function listarRegistros() {
             },
             {
                 render: function (data, type, row) {
-                    return ``;
+                    html='';
+                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-edit"></i></button>';
+                        html+='<button type="button" class="btn btn-primary btn-flat botonList" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-comments"></i></button>';
+                    html+='';
+                    return html;
                 },
                 className: "text-center"
             }
@@ -102,10 +108,18 @@ $(document).on('click','[data-action="nuevo-registro"]',function () {
 //     e.preventDefault();
 //     var data = $(this).serialize();
 // });
-function ModalSearchCustomer() {
+// function ModalSearchCustomer(this) {
+//     console.log(this);
+//     $('#modal-buscar-cliente').modal('show');
+
+//     customerList();
+// }
+$(document).on('click','[data-action="modal-search-customer"]',function () {
     $('#modal-buscar-cliente').modal('show');
+    let data =$(this).attr('data-form');
+    $('#modal-buscar-cliente .formPage .modal-footer button').attr('data-form',data);
     customerList();
-}
+});
 function customerList() {
     var vardataTables = funcDatatables();
     tableRequerimientos = $("#tabla-clientes").DataTable({
@@ -217,6 +231,8 @@ $(document).on('click','.modal-editar',function () {
 });
 function agregarCliente(tipo){
     $('#modal-buscar-cliente').modal('hide');
+    let data_form = $(this).attr('data-form');
+    console.log(tipo);
     if (tipo == 'ventas') {
         document.querySelector("form[form='ventas'] input[id='cliente']").value= tempClienteSelected.nombre;
         document.querySelector("form[form='ventas'] input[id='id_cliente']").value= tempClienteSelected.id;
@@ -227,6 +243,34 @@ function agregarCliente(tipo){
     }
     tempClienteSelected = {};
 }
+$(document).on('click','[data-action="agregar-cliente"]',function () {
+    let data = $(this).data('button'),
+        data_form = $(this).attr('data-form');
+    $('#modal-buscar-cliente').modal('hide');
+
+    if (data == 'ventas') {
+        document.querySelector("form[form='ventas'] input[id='cliente']").value= tempClienteSelected.nombre;
+        document.querySelector("form[form='ventas'] input[id='id_cliente']").value= tempClienteSelected.id;
+        document.querySelector("form[form='ventas'] input[id='ruc_dni_cliente']").value= tempClienteSelected.ruc;
+    }
+    // else {
+    //     document.querySelector("form[form='cobranza'] input[id='cliente']").value= tempClienteSelected.nombre;
+    //     document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= tempClienteSelected.id;
+    // }
+
+
+    switch (data_form) {
+        case 'guardar-formulario':
+            document.querySelector("form[form='cobranza'] input[id='cliente']").value= tempClienteSelected.nombre;
+            document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= tempClienteSelected.id;
+        break;
+
+        case 'editar-formulario':
+            $('[data-form="editar-formulario"] .modal-body [name="id_cliente"]').val(tempClienteSelected.id);
+            $('[data-form="editar-formulario"] .modal-body [name="cliente"]').val(tempClienteSelected.nombre);
+        break;
+    }
+});
 $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
     e.preventDefault();
     var data = $(this).serialize();
@@ -480,10 +524,11 @@ $(document).on('click','[data-action="actualizar"]',function () {
 $(document).on('click','.modal-lista-procesadas',function () {
     const input = $(this).closest('div').find('input').val();
     const action = $(this).closest('div').find('input').data('action');
-
+    let data_form = $(this).attr('data-form');
     if (input) {
         $('#lista-procesadas').modal('show');
         $('#lista-procesadas .btn-seleccionar').attr('disabled','true');
+        $('#lista-procesadas .modal-footer .btn-seleccionar').attr('data-form',data_form);
         listarRegistrosProcesadas(input, action);
     }
 
@@ -545,6 +590,7 @@ $(document).on('click','.selecionar',function () {
 });
 $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
     const id_requerimiento = $(this).data('id');
+    var data_form =$(this).data('form');
     $.ajax({
         type: 'get',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -552,22 +598,49 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
         data: {},
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
+
             if (response.status===200) {
                 $('#lista-procesadas').modal('hide');
-                $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
-                $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
+                if ('guardar-formulario'===data_form) {
+                    $('[data-form="guardar-formulario"] .modal-body select[name="moneda"]').removeAttr('selected');
+                        $('[data-form="guardar-formulario"] .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
+                        $('[data-form="guardar-formulario"] .modal-body input[name="importe"]').val(response.data.total_a_pagar)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="oc"]').val(response.data.nro_orden)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="id_cliente"]').val('')
+                        $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 
-                $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
-                $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
-                $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
-                $('#formulario .modal-body input[name="oc"]').val(response.data.nro_orden)
-                $('#formulario .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
+                        if (response.factura && response.factura) {
+                            $('[data-form="guardar-formulario"] .modal-body input[name="fact"]').val(response.factura.serie+'-'+response.factura.numero);
+                        }
+                        console.log(response);
+                }else{
+                    $('[data-form="editar-formulario"] .modal-body select[name="moneda"]').removeAttr('selected');
+                    $('[data-form="editar-formulario"] .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
 
-                $('#formulario .modal-body input[name="id_cliente"]').val('')
-                $('#formulario .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
-                $('#formulario .modal-body input[name="cliente"]').val(response.data.razon_social)
-                $('#formulario .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
+                    $('[data-form="editar-formulario"] .modal-body input[name="importe"]').val(response.data.total_a_pagar)
+                    $('[data-form="editar-formulario"] .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
+                    $('[data-form="editar-formulario"] .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
+                    $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(response.data.nro_orden)
+                    $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
+
+                    $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val('')
+                    $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
+                    $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
+                    $('[data-form="editar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
+
+                    if (response.factura && response.factura) {
+                        $('[data-form="editar-formulario"] .modal-body input[name="fact"]').val(response.factura.serie+'-'+response.factura.numero);
+                    };
+                    console.log(response);
+                }
+
+
+
 
             }
         }
@@ -619,4 +692,60 @@ $(document).on('submit','[data-form="editar"]',function (e) {
         }
       })
 
+});
+$(document).on('click','.editar-registro',function () {
+    let id_registro_cobranza = $(this).data('id');
+    $.ajax({
+        type: 'GET',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'editar-registro/'+id_registro_cobranza,
+        data: {},
+        dataType: 'JSON'
+    }).done(function( data ) {
+        if (data.status===200) {
+            $('#modal-editar-cobranza').modal('show');
+
+            $('[data-form="editar-formulario"] .modal-body select[name="empresa"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="empresa"] option[value="'+data.data.id_empresa+'"]').attr('selected','true');
+
+            $('[data-form="editar-formulario"] .modal-body select[name="sector"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="sector"] option[value="'+data.data.id_sector+'"]').attr('selected','true');
+
+            $('[data-form="editar-formulario"] .modal-body select[name="tramite"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="tramite"] option[value="'+data.data.id_tipo_tramite+'"]').attr('selected','true');
+
+            $('[data-form="editar-formulario"] .modal-body select[name="periodo"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="periodo"] option[value="'+data.data.id_periodo+'"]').attr('selected','true');
+
+            $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val(data.data.id_cliente);
+            $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(data.data.id_cliente_agil);
+            // $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.data.);
+            $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(data.data.cdp);
+            $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(data.data.oc);
+            $('[data-form="editar-formulario"] .modal-body input[name="fact"]').val(data.data.factura);
+            $('[data-form="editar-formulario"] .modal-body input[name="siaf"]').val(data.data.siaf);
+            $('[data-form="editar-formulario"] .modal-body input[name="ue"]').val(data.data.uu_ee);
+            $('[data-form="editar-formulario"] .modal-body input[name="ff"]').val(data.data.fuente_financ);
+            $('[data-form="editar-formulario"] .modal-body select[name="moneda"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="moneda"] option[value="'+data.data.moneda+'"]').attr('selected','true');
+            $('[data-form="editar-formulario"] .modal-body input[name="importe"]').val(data.data.importe);
+            $('[data-form="editar-formulario"] .modal-body input[name="categ"]').val(data.data.categoria);
+            $('[data-form="editar-formulario"] .modal-body input[name="fecha_emi"]').val(data.data.fecha_emision);
+            $('[data-form="editar-formulario"] .modal-body input[name="fecha_rec"]').val(data.data.fecha_recepcion);
+            $('[data-form="editar-formulario"] .modal-body select[name="estado_doc"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="estado_doc"] option[value="'+data.data.id_estado_doc+'"]').attr('selected','true');
+            // $('[data-form="editar-formulario"] .modal-body input[name="fecha_ppago"]').val(data.data.id_cliente);
+            // $('[data-form="editar-formulario"] .modal-body input[name="atraso"]').val(data.data.id_cliente);
+            $('[data-form="editar-formulario"] .modal-body input[name="plazo_credito"]').val(data.data.plazo_credito);
+            $('[data-form="editar-formulario"] .modal-body input[name="nom_vendedor"]').val(data.data.vendedor);
+            $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
+        }
+        console.log(data);
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+    console.log(id_registro_cobranza);
 });

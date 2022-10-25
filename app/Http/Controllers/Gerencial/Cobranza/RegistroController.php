@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Gerencial\CobranzaAgil;
 use App\Models\Administracion\Periodo;
+use App\Models\almacen\DocumentoVenta;
 use App\Models\almacen\DocVentReq;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Comercial\Cliente as ComercialCliente;
@@ -21,6 +22,7 @@ use App\models\Gerencial\CobanzaFase;
 use App\models\Gerencial\Cobranza;
 use App\models\Gerencial\Empresa;
 use App\models\Gerencial\EstadoDocumento;
+use App\Models\Gerencial\ProgramacionPago;
 use App\Models\Gerencial\RegistroCobranza;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
@@ -53,29 +55,65 @@ class RegistroController extends Controller
     }
     public function listarRegistros()
     {
-        $data = Cobranza::select('*')->orderBy('id_cobranza', 'desc');
+        // $data = Cobranza::select('*')->orderBy('id_cobranza', 'desc');
+        $data = RegistroCobranza::select('*')->orderBy('id_registro_cobranza', 'desc');
         return DataTables::of($data)
-        ->addColumn('empresa', function($data){ return $data->empresa->nombre; })
-        ->addColumn('cliente', function($data){ return $data->cliente->nombre; })
+        ->addColumn('empresa', function($data){
+            $id_cliente =$data->id_empresa;
+            $empresa            = DB::table('administracion.adm_empresa')
+            ->select(
+                'adm_empresa.id_contribuyente',
+                'adm_empresa.codigo',
+                'adm_contri.razon_social'
+            )
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->where('adm_empresa.id_contribuyente',$id_cliente)
+            ->first();
+            return $empresa->razon_social;
+            // return $data->empresa->nombre;
+        })
+        // ->filterColumn('empresa', function ($query, $keyword) {
+        //     $keywords = trim(strtoupper($keyword));
+        //     $query->whereRaw("UPPER(CONCAT(rrhh_perso.nombres,' ', rrhh_perso.apellido_paterno,' ', rrhh_perso.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
+        // })
+        // ->filterColumn('empresa', function($query, $keyword) {
+        //     $sql = "CONCAT(users.first_name,'-',users.last_name)  like ?";
+        //     $query->whereRaw($sql, ["%{$keyword}%"]);
+        // })
+        ->addColumn('cliente', function($data){
+            $id_cliente = $data->id_cliente;
+            if (!$id_cliente) {
+                $id_cliente = $data->id_cliente_agil;
+            }
+            return $id_cliente;
+        })
         ->addColumn('atraso', function($data){
             return ($this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) > 0) ? $this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) : '0';
          })
-        ->addColumn('moneda', function($data){ return ($data->moneda == 1) ? 'S/' : 'US $'; })
-        ->addColumn('importe', function($data){ return number_format($data->importe, 2); })
+        ->addColumn('moneda', function($data){
+            return ($data->moneda == 1) ? 'S/' : 'US $';
+        })
+        ->addColumn('importe', function($data){
+            return number_format($data->importe, 2);
+        })
         ->addColumn('estado', function($data){
-            $estado_documento = EstadoDocumento::where('estado',1)->get();
-            return [$data->estadoDocumento->id_estado_doc,$estado_documento];
+            // $estado_documento = EstadoDocumento::where('estado',1)->get();
+            $estado_documento_nombre = EstadoDocumento::where('id_estado_doc',$data->id_estado_doc)->first();
+            // return [$data->estadoDocumento->id_estado_doc,$estado_documento,$estado_documento_nombre];
+            return $estado_documento_nombre->nombre;
         })
         ->addColumn('area', function($data){
-            $area_responsable = AreaResponsable::where('estado',1)->get();
-            return [$data->areaResponsable->id_area, $area_responsable];
+            // $area_responsable = AreaResponsable::where('estado',1)->get();
+            $area_responsable_nombre = AreaResponsable::where('id_area',$data->id_area)->first();
+            // return [$data->areaResponsable->id_area, $area_responsable];
+            return $area_responsable_nombre->descripcion;
          })
         ->addColumn('fase', function($data) {
             $fase = CobanzaFase::where('id_cobranza', $data->id_cobranza)->orderBy('id_fase', 'desc')->first();
             return ($fase?$fase->fase[0] : '-');
         })
-        ->toJson();
-        // ->make(true);
+        // ->toJson();
+        ->make(true);
     }
     public function restar_fechas($fi, $ff){
 		$ini = strtotime($fi);
@@ -311,10 +349,19 @@ class RegistroController extends Controller
         // $cobranza->id_vent          = ;
 
         $cobranza->save();
+
+        if ($cobranza) {
+            $programacion_pago = new ProgramacionPago();
+            $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
+            $programacion_pago->fecha   = $request->fecha_ppago;
+            $programacion_pago->estado  = 1;
+            $programacion_pago->fecha_registro = date('Y-m-d H:i:s');
+            $programacion_pago->save();
+        }
         return response()->json([
             "success"=>true,
             "status"=>200,
-            "data"=>$request
+            "data"=>$cobranza
         ]);
     }
     public function actualizarDocVentReq()
@@ -445,17 +492,24 @@ class RegistroController extends Controller
         ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
         ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
         ->first();
+
+        $doc_ven=[];
+
         if ($cliente_gerencial) {
+
+            $doc_ven = DocumentoVenta::where('id_doc_ven',$cliente_gerencial->id_doc_ven)->first();
             return response()->json([
                 "status"=>200,
                 "success"=>true,
-                "data"=>$cliente_gerencial
+                "data"=>$cliente_gerencial,
+                "factura"=>$doc_ven,
             ]);
         }else{
             return response()->json([
                 "status"=>400,
                 "success"=>false,
-                "data"=>$cliente_gerencial
+                "data"=>$cliente_gerencial,
+                "factura"=>$doc_ven,
             ]);
         }
 
@@ -658,6 +712,15 @@ array("ruc"=>20285139415,"razon"=>"ZONA REGISTRAL Nø III SEDE MOYOBAMBA", "BASE
             "status"=>200,
             "data"=>$clientes_faltates,
             "encontrados"=>$clientes_cambiados
+        ]);
+    }
+    public function editarRegistro($id)
+    {
+        $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
+        return response()->json([
+            "status"=>200,
+            "success"=>true,
+            "data"=>$registro_cobranza
         ]);
     }
 }

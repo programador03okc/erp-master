@@ -2151,6 +2151,9 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
             Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
 
+
+            Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
+
             // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 		});
 	});

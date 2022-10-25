@@ -19,6 +19,6 @@ class Empresa extends Model
 
     public function empresaCobranza()
     {
-        return $this->belongsTo(Cobranza::class,'id_empresa', 'id_empresa');
+        return $this->belongsTo(RegistroCobranza::class,'id_empresa', 'id_empresa');
     }
 }

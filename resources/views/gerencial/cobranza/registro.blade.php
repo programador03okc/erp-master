@@ -69,11 +69,11 @@ Cobranzas
         </div>
     </div>
 </div>
-
+{{-- crear registro de cobranza --}}
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-cobranza">
 	<div class="modal-dialog" style="width: 70%;">
 		<div class="modal-content">
-			<form class="formPage" id="formulario" form="cobranza" type="register">
+			<form class="formPage" id="formulario" form="cobranza" type="register" data-form="guardar-formulario">
 				<div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Registro de Cobranza</h3>
@@ -135,33 +135,20 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm" name="cliente" id="cliente" placeholder="N° RUC" readonly>
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat" type="button" id="search_customer" onclick="ModalSearchCustomer();">
+                                        <button class="btn btn-default btn-flat" type="button" id="search_customer" data-form="guardar-formulario" data-action="modal-search-customer">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="oc">Orden de Compra</label>
-                                <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC" data-action="oc">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" >
-                                            <span class="fa fa-search"></span>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div> --}}
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="cdp">Cuadro de Presup.</label>
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" >
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" data-form="guardar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -181,7 +168,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC / OCAM" data-action="oc">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" >
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" data-form="guardar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -318,53 +305,7 @@ Cobranzas
 		</div>
 	</div>
 </div>
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-buscar-cliente">
-	<div class="modal-dialog" style="width: 70%;">
-		<div class="modal-content">
-			<form class="formPage" type="search">
-				<div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-					<h3 class="modal-title">Catálogo de Clientes</h3>
 
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group">
-                                <button class="btn btn-success btn-flat" title="Agregar Nuevo" type="button" id="add_new_customer"
-								onclick="ModalAddNewCustomer();">
-                                    <span class="fa fa-plus"></span> Nuevo
-                                </button>
-                                <button class="btn btn-warning btn-flat modal-editar" title="Editar" type="button" id="edit_customer"
-                                     disabled>
-                                    <span class="fa fa-edit"></span> Editar
-                                </button>
-                            </div>
-						</div>
-						<div class="col-md-12">
-							<table class="table table-hover" id="tabla-clientes" width="100%" style="font-size: 11px;">
-								<thead>
-									<tr>
-										<th width="60">Código</th>
-										<th>Nombre</th>
-										<th width="100">Nro Documento</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
-						</div>
-					</div>
-
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-sm btn-success" id="btnAgregarCliente" onclick="agregarCliente('cobranza');" disabled> Aceptar </button>
-
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-cliente">
 	<div class="modal-dialog" style="width: 30%;">
 		<div class="modal-content">
@@ -506,6 +447,323 @@ Cobranzas
 		</div>
 	</div>
 </div>
+
+
+
+  {{-- editar cobranza --}}
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cobranza">
+	<div class="modal-dialog" style="width: 70%;">
+		<div class="modal-content">
+			<form data-form="editar-formulario">
+				<div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title">Editar Registro de Cobranza</h3>
+				</div>
+				<div class="modal-body">
+                    <input type="hidden" name="id" id="id">
+                    <input type="hidden" name="id_doc_ven" value="">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="empresa">Empresa</label>
+                                <select class="form-control input-sm" name="empresa" required>
+                                    <option value="" disabled selected>Elija una opción</option>
+                                    @foreach ($empresa as $item)
+                                        <option value="{{$item->id_contribuyente }}">{{$item->razon_social }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="sector">Sector</label>
+                                <select class="form-control input-sm" name="sector" required>
+                                    <option value="" disabled selected>Elija una opción</option>
+                                    @foreach ($sector as $item)
+                                        <option value="{{$item->id_sector }}">{{$item->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="tramite">Trámite</label>
+                                <select class="form-control input-sm" name="tramite" required>
+                                    <option value="" disabled selected>Elija una opción</option>
+                                    @foreach ($tipo_ramite as $item)
+                                        <option value="{{$item->id_tipo_tramite }}">{{$item->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="periodo">Periodo</label>
+                                <select name="periodo" class="form-control input-sm">
+                                    @foreach ($periodo as $item)
+                                        <option value="{{$item->id_periodo }}">{{$item->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="cliente">Cliente</label>
+                                <input type="hidden" name="id_cliente" value="0">
+                                <input type="hidden" name="id_contribuyente" value="0">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control input-sm" name="cliente" placeholder="N° RUC" readonly>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-flat" type="button" data-form="editar-formulario" data-action="modal-search-customer">
+                                            <span class="fa fa-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="cdp">Cuadro de Presup.</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" placeholder="N° CDP" data-action="cdp">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" data-form="editar-formulario">
+                                            <span class="fa fa-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="oc">Orden de Compra / OCAM</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" required placeholder="N° OC / OCAM" data-action="oc">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" data-form="editar-formulario">
+                                            <span class="fa fa-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="fact">Factura</label>
+                                <input type="text" class="form-control input-sm text-center buscar-factura" name="fact" required placeholder="N° Fact">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="siaf">N° SIAF</label>
+                                <input type="text" class="form-control input-sm text-center" name="siaf" placeholder="SIAF">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="ue">Unidad Ejec.</label>
+                                <input type="text" class="form-control input-sm text-center" name="ue" placeholder="UU.EE">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="ff">FTE FTO.</label>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control input-sm text-center" name="ff" readonly>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-info btn-flat" type="button" onclick="searchSource();">
+                                            <span class="fa fa-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="importe">Importe</label>
+                                <div class="group-okc-ini">
+                                    <select class="form-control input-sm" name="moneda" required>
+                                        <option value="1" selected>S/.</option>
+                                        <option value="2">$</option>
+                                    </select>
+                                    <input type="number" class="form-control input-sm number text-right" name="importe" required placeholder="0.00" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="categ">Categoría</label>
+                                <input type="text" class="form-control input-sm text-center" name="categ" placeholder="Categoría">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="fecha_emi">Fecha Emisión</label>
+                                <input type="date" class="form-control input-sm text-center" name="fecha_emi"
+                                required>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="fecha_rec">Fecha Recepción</label>
+                                <input type="date" class="form-control input-sm text-center" name="fecha_rec" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="estado_doc">Estado Documento</label>
+                                <select class="form-control input-sm" name="estado_doc" required>
+                                    <option value="" disabled selected>Elija una opción</option>
+                                    @foreach ($estado_documento as $item)
+                                        <option value="{{$item->id_estado_doc}}" >{{$item->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="fecha_act">Fecha Actual</label>
+                                <input type="date" class="form-control input-sm text-center" name="fecha_act" value="{{date('Y-m-d')}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+					<div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="fecha_ppago">Fecha Pago (próx)</label>
+                                <input type="date" class="form-control input-sm text-center" name="fecha_ppago" value="{{date('Y-m-d')}}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="atraso">Días Atras</label>
+                                <input type="text" class="form-control input-sm text-center" name="atraso" value="0" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="plazo_credito">Plazo Crédito</label>
+                                <input type="text" class="form-control input-sm text-center" name="plazo_credito" value="0">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="nom_vendedor">Nombre del Vendedor</label>
+                                <input type="text" class="form-control input-sm" name="nom_vendedor" placeholder="Nombre y Apellido">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="area">Area</label>
+                                <select class="form-control input-sm" name="area" required>
+                                    <option value="1" selected>Almacén</option>
+                                    <option value="2">Contabilidad</option>
+                                    <option value="3">Logística</option>
+                                    <option value="4">Tesorería</option>
+                                </select>
+                            </div>
+                        </div>
+					</div>
+				</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal"><span class="fa fa-time"></span> Cerrar</button>
+					<button type="submit" class="btn btn-success"><span class="fa fa-save"></span> Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{{-- lista de oc y cdp --}}
+<div class="modal fade" id="lista-procesadas" tabindex="-1" aria-labelledby="lista-procesadas" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" id="lista-procesadas">Lista ventas procesadas</h3>
+
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="mytable table table-striped table-condensed table-bordered" id="lista-ventas-procesadas">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>OC</th>
+                                    <th>CDP</th>
+                                    <th>DOCUMENTO</th>
+                                    <th>FECHE EMISION</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-primary btn-seleccionar" data-id="" disabled>Seleccionar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- lista de clientes --}}
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-buscar-cliente">
+	<div class="modal-dialog" style="width: 70%;">
+		<div class="modal-content">
+			<form class="formPage" type="search">
+				<div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title">Catálogo de Clientes</h3>
+
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+                                <button class="btn btn-success btn-flat" title="Agregar Nuevo" type="button" id="add_new_customer"
+								onclick="ModalAddNewCustomer();">
+                                    <span class="fa fa-plus"></span> Nuevo
+                                </button>
+                                <button class="btn btn-warning btn-flat modal-editar" title="Editar" type="button" id="edit_customer"
+                                     disabled>
+                                    <span class="fa fa-edit"></span> Editar
+                                </button>
+                            </div>
+						</div>
+						<div class="col-md-12">
+							<table class="table table-hover" id="tabla-clientes" width="100%" style="font-size: 11px;">
+								<thead>
+									<tr>
+										<th width="60">Código</th>
+										<th>Nombre</th>
+										<th width="100">Nro Documento</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-sm btn-success" id="btnAgregarCliente" disabled data-button="cobranza" data-action="agregar-cliente"> Aceptar </button>
+
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 <!-- Modal Fuente Financiamiento -->
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-fue-fin">
 	<div class="modal-dialog modal-md">
@@ -547,42 +805,6 @@ Cobranzas
 		</div>
 	</div>
 </div>
-{{-- lista de oc y cdp --}}
-<div class="modal fade" id="lista-procesadas" tabindex="-1" aria-labelledby="lista-procesadas" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h3 class="modal-title" id="lista-procesadas">Lista ventas procesadas</h3>
-
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <table class="mytable table table-striped table-condensed table-bordered" id="lista-ventas-procesadas">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>OC</th>
-                                    <th>CDP</th>
-                                    <th>DOCUMENTO</th>
-                                    <th>FECHE EMISION</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button class="btn btn-primary btn-seleccionar" data-id="" disabled>Seleccionar</button>
-            </div>
-        </div>
-    </div>
-  </div>
 @endsection
 @section('scripts')
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
