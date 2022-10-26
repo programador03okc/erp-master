@@ -172,6 +172,8 @@ class ComprasLocales {
                 } else {
                     modalFiltro.querySelector("select[name='empresa']").setAttribute("readOnly", true);
                     modalFiltro.querySelector("select[name='empresa']").value = 'SIN_FILTRO';
+                    this.ActualParametroEmpresa='SIN_FILTRO';
+
                 }
                 break;
             case 'chkSede':
@@ -180,6 +182,7 @@ class ComprasLocales {
                 } else {
                     modalFiltro.querySelector("select[name='sede']").setAttribute("readOnly", true);
                     modalFiltro.querySelector("select[name='sede']").value = 'SIN_FILTRO';
+                    this.ActualParametroSede='SIN_FILTRO';
 
                 }
                 break;
@@ -189,6 +192,7 @@ class ComprasLocales {
                 } else {
                     modalFiltro.querySelector("select[name='grupo']").setAttribute("readOnly", true);
                     modalFiltro.querySelector("select[name='grupo']").value = 'SIN_FILTRO';
+                    this.ActualParametroGrupo='SIN_FILTRO';
 
                 }
                 break;
@@ -198,6 +202,8 @@ class ComprasLocales {
                 } else {
                     modalFiltro.querySelector("select[name='proyecto']").setAttribute("readOnly", true);
                     modalFiltro.querySelector("select[name='proyecto']").value = 'SIN_FILTRO';
+                    this.ActualParametroProyecto='SIN_FILTRO';
+
 
                 }
             case 'chkObservacionOrden':
@@ -205,7 +211,9 @@ class ComprasLocales {
                     modalFiltro.querySelector("input[name='observacionOrden']").removeAttribute("readOnly");
                 } else {
                     modalFiltro.querySelector("input[name='observacionOrden']").setAttribute("readOnly", true);
-                    modalFiltro.querySelector("input[name='observacionOrden']").value = 'SIN_FILTRO';
+                    // modalFiltro.querySelector("input[name='observacionOrden']").value = '';
+                    this.ActualParametroObservacionOrden='SIN_FILTRO';
+
                 }
                 break;
             case 'chkEstadoPago':
@@ -214,6 +222,8 @@ class ComprasLocales {
                 } else {
                     modalFiltro.querySelector("select[name='estadoPago']").setAttribute("readOnly", true);
                     modalFiltro.querySelector("select[name='estadoPago']").value = 'SIN_FILTRO';
+                    this.ActualParametroEstadoPago='SIN_FILTRO';
+
 
                 }
                 break;
@@ -226,6 +236,7 @@ class ComprasLocales {
                     modalFiltro.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true);
                     modalFiltro.querySelector("input[name='fechaRegistroDesde']").value = 'SIN_FILTRO';
                     modalFiltro.querySelector("input[name='fechaRegistroHasta']").value = 'SIN_FILTRO';
+                    this.ActualParametroFechaDesdeCancelacion='SIN_FILTRO';
 
                 }
                 break;
@@ -238,6 +249,7 @@ class ComprasLocales {
                     modalFiltro.querySelector("input[name='fechaCancelacionHasta']").setAttribute("readOnly", true);
                     modalFiltro.querySelector("input[name='fechaCancelacionDesde']").value = 'SIN_FILTRO';
                     modalFiltro.querySelector("input[name='fechaCancelacionHasta']").value = 'SIN_FILTRO';
+                    this.ActualParametroFechaHastaCancelacion='SIN_FILTRO';
                 }
                 break;
             case 'chkRazonSocialProveedor':
@@ -246,6 +258,8 @@ class ComprasLocales {
                 } else {
                     modalFiltro.querySelector("input[name='razon_social_proveedor']").setAttribute("readOnly", true)
                     modalFiltro.querySelector("input[name='razon_social_proveedor']").value = 'SIN_FILTRO';
+                    this.ActualParametroRazonSocialProveedor='SIN_FILTRO';
+
                 }
                 break;
             default:
