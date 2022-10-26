@@ -383,7 +383,7 @@ class ComprasLocales {
                 { 'data': 'direccion_contribuyente', 'name': 'direccion_contribuyente', 'className': 'text-center' },
                 { 'data': 'ubigeo_contribuyente', 'name': 'ubigeo_contribuyente', 'className': 'text-center' },
                 { 'data': 'fecha_emision_comprobante_contribuyente', 'name': 'fecha_emision_comprobante_contribuyente', 'className': 'text-center','render': function (data, type, row){
-                    return `<label class="lbl-codigo handleClickVerAdjuntosLogisticos" data-id-orden="${row.id_orden_compra}">${row.fecha_emision_comprobante_contribuyente}</label>`;
+                    return `<label class="lbl-codigo handleClickVerAdjuntosLogisticos" data-id-orden="${row.id_orden_compra}">${(row.fecha_emision_comprobante_contribuyente != null ?row.fecha_emision_comprobante_contribuyente:'')}</label>`;
                 } },
                 { 'data': 'fecha_pago', 'name': 'fecha_pago', 'className': 'text-center','render': function (data, type, row){
                     return `<label class="lbl-codigo handleClickVerAdjuntosDePago" data-id-orden="${row.id_orden_compra}">${row.fecha_pago}</label>`;
