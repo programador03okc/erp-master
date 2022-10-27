@@ -634,50 +634,50 @@ class RegistroController extends Controller
 
         $array_clientes_razon_social = array(
             array("ruc"=>10070498575,"razon"=>"AGÜERO MASS LUIS SANTIAGO", "BASE"=>"AGÜERO MASS LUIS SANTIAGO"),
-array("ruc"=>20553647291,"razon"=>"C & R ECOCLEAN MULTISERVICIOS S.A.C.", "BASE"=>"C R ECOCLEAN MULTISERVICIOS S.A.C."),
-array("ruc"=>20520755307,"razon"=>"CAMED COMUNICACIONES S.A.C.", "BASE"=>"CAMED COMUNICACIONES S.A.C."),
-array("ruc"=>20538298485,"razon"=>"CENTRO NACIONAL DE ABASTECIMIENTO DE RECURSOS ESTRATEGICOS EN SALUD", "BASE"=>"CENTRO NACIONAL DE ABASTECIMIENTO DE RECURSOS ESTRATEGICOS EN SALUD"),
-array("ruc"=>20606780347,"razon"=>"CENTRO PROMOTOR DE SALUD P & G SOCIEDAD COMERCIAL DE RESPONSABILIDAD LIMITADA", "BASE"=>"CENTRO PROMOTOR DE SALUD P "),
-array("ruc"=>20339267821,"razon"=>"COMIS.NAC.PARA DESAR.Y VIDA SIN DROGAS", "BASE"=>"COMISIÓN NACIONAL PARA EL DESARROLLO Y VIDA SIN DROGAS - DEVIDA"),
-array("ruc"=>20455494967,"razon"=>"CONSULTORIA & MONITOREO PERU S.A.C. ", "BASE"=>"CONSULTORIA "),
-array("ruc"=>20604565406,"razon"=>"CORPORACION ARIDEL S.A.C.", "BASE"=>"CORPORACION ARIDEL S.A.C."),
-array("ruc"=>20166236950,"razon"=>"DIRECCION REGIONAL DE EDUCACION DE MOQUEGUA", "BASE"=>"DIRECCION REGIONAL DE EDUCACION DE MOQUEGUA"),
-array("ruc"=>20146045881,"razon"=>"DIRECCION REGIONAL DE SALUD HUANUCO", "BASE"=>"DIRECCION REGIONAL DE SALUD - HUANUCO - GRH"),
-array("ruc"=>20262221335,"razon"=>"EMPRESA DE GENERACION ELECTRICA SAN GABAN S.A.", "BASE"=>"EMPRESA DE GENERACION ELECTRICA SAN GABAN S.A."),
-array("ruc"=>20100164958,"razon"=>"EMPRESA MUNICIPAL DE MERCADOS S.A.", "BASE"=>"EMPRESA MUNICIPAL DE MERCADOS S.A."),
-array("ruc"=>20523421981,"razon"=>"GRUPO LOGISTICO ECONOMICO Y FINANCIERO DEL PERU SOCIEDAD ANONIMA CERRADA - GLEF PERU SAC", "BASE"=>"GLEF PERU SAC"),
-array("ruc"=>20162086716,"razon"=>"DIRECCION REGIONAL DE SALUD DE LIMA", "BASE"=>"GOBIERNO REGIONAL DE LIMA - DIRECCION DE SALUD III  LIMA NORTE"),
-array("ruc"=>20602754104,"razon"=>"GRUPO TASPAC EMPRESA INDIVIDUAL DE RESPONSABILIDAD LIMITADA", "BASE"=>"GRUPO TASPAC E.I.R.L."),
-array("ruc"=>20514772194,"razon"=>"HOSPITAL MUNICIPAL LOS OLIVOS", "BASE"=>"HOSPITAL MUNICIPAL LOS OLIVOS"),
-array("ruc"=>20600444531,"razon"=>"I.T.V. CAMBRIDGE S.A.C.", "BASE"=>"I.T.V. CAMBRIDGE S.A.C."),
-array("ruc"=>20399849382,"razon"=>"INPE-DIRECCION REGIONAL SUR ORIENTE CUSCO", "BASE"=>"INPE-DIRECCION REGIONAL SUR ORIENTE CUSCO"),
-array("ruc"=>20131366885,"razon"=>"INTENDENCIA NACIONAL DE BOMBEROS DEL PERU O INBP", "BASE"=>"INTENDENCIA NACIONAL DE BOMBEROS DEL PERU O INBP"),
-array("ruc"=>20341946531,"razon"=>"L.C. GROUP S.A.C.", "BASE"=>"LC GROUP S.A.C."),
-array("ruc"=>20602878083,"razon"=>"MEGATECSA SOCIEDAD ANÓNIMA CERRADA - MEGATECSA S.A.C.", "BASE"=>"MEGATECSA S.A.C."),
-array("ruc"=>20555546841,"razon"=>"MUNDIMEDIA SAC", "BASE"=>"MUNDIMEDIA SAC"),
-array("ruc"=>20147796715,"razon"=>"MUNICIPALIDAD DISTRITAL DE ALTO DE LA ALIANZA", "BASE"=>"MUNICIPALIDAD DISTRITAL DE ALTO DE LA ALIANZA"),
-array("ruc"=>20163611512,"razon"=>"MUNICIPALIDAD DISTRITAL DE MIRAFLORES", "BASE"=>"MUNICIPALIDAD DISTRITAL DE AREQUIPA"),
-array("ruc"=>20172022279,"razon"=>"MUNICIPALIDAD DISTRITAL DE CARMEN DE LA LEGUA REYNOSO", "BASE"=>"MUNICIPALIDAD DISTRITAL DE CARMEN DE LA LEGUA REYNOSO"),
-array("ruc"=>20312108284,"razon"=>"MUNICIP DIST JOSE L BUSTAMANTE Y RIVERO", "BASE"=>"MUNICIPALIDAD DISTRITAL DE JOSE LUIS BUSTAMANTE Y RIVERO"),
-array("ruc"=>20176249111,"razon"=>"MUNICIPALIDAD DISTRITAL DE KAÑARIS", "BASE"=>"MUNICIPALIDAD DISTRITAL DE KAÑARIS"),
-array("ruc"=>20143114911,"razon"=>"MUNICIP.DISTRIT.DE SAN JUAN BAUTISTA", "BASE"=>"MUNICIPALIDAD DISTRITAL DE SAN JUAN BAUTISTA"),
-array("ruc"=>20154432516,"razon"=>"MUNICIPALIDAD DISTRITAL SANTIAGO", "BASE"=>"MUNICIPALIDAD DISTRITAL DE SANTIAGO - CUSCO"),
-array("ruc"=>20170327391,"razon"=>"MUNICIPALIDAD DISTRITAL DE VILCABAMBA", "BASE"=>"MUNICIPALIDAD DISTRITAL DE VILCABAMBA - LA CONVENCION"),
-array("ruc"=>10447347763,"razon"=>"VASQUEZ MOQUILLAZA NATALY CAROLINA", "BASE"=>"NATALY VASQUEZ MOQUILLAZA"),
-array("ruc"=>20470145901,"razon"=>"NEXSYS DEL PERU S.A.C.", "BASE"=>"NEXSYS DEL PERU S.A.C."),
-array("ruc"=>20522224783,"razon"=>"ORGANISMO DE SUPERVISION DE LOS RECURSOS FORESTALES Y DE FAUNA SILVESTRE - OSINFOR", "BASE"=>"ORGANISMO DE SUPERVISION DE LOS RECURSOS FORESTALES Y DE FAUNA SILVESTRE"),
-array("ruc"=>20565423372,"razon"=>"ORGANISMO TÉCNICO DE LA ADMINISTRACIÓN DE LOS SERVICIOS DE SANEAMIENTO-OTASS", "BASE"=>"ORGANISMO TECNICO DE LA ADMINISTRACION DE LOS SERVICIOS DE SANEAMIENTO-OTASS"),
-array("ruc"=>20511366594,"razon"=>"UNIDAD DE COORDINACION DE PROYECTOS DEL PODER JUDICIAL", "BASE"=>"PODER JUDICIAL - UNIDAD DE COORDINACION DE PROYECTOS DEL PODER JUDICIAL"),
-array("ruc"=>20550154065,"razon"=>"PROGRAMA NACIONAL DE ALIMENTACIÓN ESCOLAR QALI WARMA", "BASE"=>"PROGRAMA NACIONAL DE ALIMENTACION ESCOLAR QALI WARMA"),
-array("ruc"=>20530015999,"razon"=>"QUIMERA FISH SOCIEDAD ANONIMA CERRADA - QUIMERA FISH S.A.C.", "BASE"=>"QUIMERA FISH S.A.C."),
-array("ruc"=>20602467971,"razon"=>"REGION POLICIAL AYACUCHO - ICA", "BASE"=>"REGION POLICIAL AYACUCHO - ICA"),
-array("ruc"=>20337101276,"razon"=>"SERVICIO DE ADMINISTRACION TRIBUTARIA", "BASE"=>"SERVICIO DE ADMINISTRACION TRIBUTARIA - LIMA"),
-array("ruc"=>20131366028,"razon"=>"SERVICIO NACIONAL METEOREOLOGIA E HIDROL.", "BASE"=>"SERVICIO NACIONAL METEOREOLOGIA E HIDROL."),
-array("ruc"=>20158219655,"razon"=>"SUPERINTENDENCIA NAC.SERV.DE SANEAMIENTO", "BASE"=>"SUPERINTENDENCIA NACIONAL DE SERVICIOS DE SANEAMIENTO"),
-array("ruc"=>20600244605,"razon"=>"TRANSPORTE TERRAPERU SAC", "BASE"=>"TRANSPORTE TERRAPERU SAC"),
-array("ruc"=>20607706957,"razon"=>"UE 005: PROGRAMA MEJORAMIENTO DE LOS SERVICIOS DE JUSTICIA EN MATERIA PENAL EN EL PERÚ - PMSJMPP", "BASE"=>"UE 005: PROGRAMA MEJORAMIENTO DE LOS SERVICIOS DE JUSTICIA EN MATERIA PENAL EN EL PERU - PMSJMPP"),
-array("ruc"=>20344832138,"razon"=>"UNIDAD DE GESTION EDUCATIVA LOCAL # 01", "BASE"=>"UNIDAD DE GESTION EDUCATIVA LOCAL 01"),
-array("ruc"=>20285139415,"razon"=>"ZONA REGISTRAL Nø III SEDE MOYOBAMBA", "BASE"=>"ZONA REGISTRAL III - SEDE MOYOBAMBA")
+            array("ruc"=>20553647291,"razon"=>"C & R ECOCLEAN MULTISERVICIOS S.A.C.", "BASE"=>"C R ECOCLEAN MULTISERVICIOS S.A.C."),
+            array("ruc"=>20520755307,"razon"=>"CAMED COMUNICACIONES S.A.C.", "BASE"=>"CAMED COMUNICACIONES S.A.C."),
+            array("ruc"=>20538298485,"razon"=>"CENTRO NACIONAL DE ABASTECIMIENTO DE RECURSOS ESTRATEGICOS EN SALUD", "BASE"=>"CENTRO NACIONAL DE ABASTECIMIENTO DE RECURSOS ESTRATEGICOS EN SALUD"),
+            array("ruc"=>20606780347,"razon"=>"CENTRO PROMOTOR DE SALUD P & G SOCIEDAD COMERCIAL DE RESPONSABILIDAD LIMITADA", "BASE"=>"CENTRO PROMOTOR DE SALUD P "),
+            array("ruc"=>20339267821,"razon"=>"COMIS.NAC.PARA DESAR.Y VIDA SIN DROGAS", "BASE"=>"COMISIÓN NACIONAL PARA EL DESARROLLO Y VIDA SIN DROGAS - DEVIDA"),
+            array("ruc"=>20455494967,"razon"=>"CONSULTORIA & MONITOREO PERU S.A.C. ", "BASE"=>"CONSULTORIA "),
+            array("ruc"=>20604565406,"razon"=>"CORPORACION ARIDEL S.A.C.", "BASE"=>"CORPORACION ARIDEL S.A.C."),
+            array("ruc"=>20166236950,"razon"=>"DIRECCION REGIONAL DE EDUCACION DE MOQUEGUA", "BASE"=>"DIRECCION REGIONAL DE EDUCACION DE MOQUEGUA"),
+            array("ruc"=>20146045881,"razon"=>"DIRECCION REGIONAL DE SALUD HUANUCO", "BASE"=>"DIRECCION REGIONAL DE SALUD - HUANUCO - GRH"),
+            array("ruc"=>20262221335,"razon"=>"EMPRESA DE GENERACION ELECTRICA SAN GABAN S.A.", "BASE"=>"EMPRESA DE GENERACION ELECTRICA SAN GABAN S.A."),
+            array("ruc"=>20100164958,"razon"=>"EMPRESA MUNICIPAL DE MERCADOS S.A.", "BASE"=>"EMPRESA MUNICIPAL DE MERCADOS S.A."),
+            array("ruc"=>20523421981,"razon"=>"GRUPO LOGISTICO ECONOMICO Y FINANCIERO DEL PERU SOCIEDAD ANONIMA CERRADA - GLEF PERU SAC", "BASE"=>"GLEF PERU SAC"),
+            array("ruc"=>20162086716,"razon"=>"DIRECCION REGIONAL DE SALUD DE LIMA", "BASE"=>"GOBIERNO REGIONAL DE LIMA - DIRECCION DE SALUD III  LIMA NORTE"),
+            array("ruc"=>20602754104,"razon"=>"GRUPO TASPAC EMPRESA INDIVIDUAL DE RESPONSABILIDAD LIMITADA", "BASE"=>"GRUPO TASPAC E.I.R.L."),
+            array("ruc"=>20514772194,"razon"=>"HOSPITAL MUNICIPAL LOS OLIVOS", "BASE"=>"HOSPITAL MUNICIPAL LOS OLIVOS"),
+            array("ruc"=>20600444531,"razon"=>"I.T.V. CAMBRIDGE S.A.C.", "BASE"=>"I.T.V. CAMBRIDGE S.A.C."),
+            array("ruc"=>20399849382,"razon"=>"INPE-DIRECCION REGIONAL SUR ORIENTE CUSCO", "BASE"=>"INPE-DIRECCION REGIONAL SUR ORIENTE CUSCO"),
+            array("ruc"=>20131366885,"razon"=>"INTENDENCIA NACIONAL DE BOMBEROS DEL PERU O INBP", "BASE"=>"INTENDENCIA NACIONAL DE BOMBEROS DEL PERU O INBP"),
+            array("ruc"=>20341946531,"razon"=>"L.C. GROUP S.A.C.", "BASE"=>"LC GROUP S.A.C."),
+            array("ruc"=>20602878083,"razon"=>"MEGATECSA SOCIEDAD ANÓNIMA CERRADA - MEGATECSA S.A.C.", "BASE"=>"MEGATECSA S.A.C."),
+            array("ruc"=>20555546841,"razon"=>"MUNDIMEDIA SAC", "BASE"=>"MUNDIMEDIA SAC"),
+            array("ruc"=>20147796715,"razon"=>"MUNICIPALIDAD DISTRITAL DE ALTO DE LA ALIANZA", "BASE"=>"MUNICIPALIDAD DISTRITAL DE ALTO DE LA ALIANZA"),
+            array("ruc"=>20163611512,"razon"=>"MUNICIPALIDAD DISTRITAL DE MIRAFLORES", "BASE"=>"MUNICIPALIDAD DISTRITAL DE AREQUIPA"),
+            array("ruc"=>20172022279,"razon"=>"MUNICIPALIDAD DISTRITAL DE CARMEN DE LA LEGUA REYNOSO", "BASE"=>"MUNICIPALIDAD DISTRITAL DE CARMEN DE LA LEGUA REYNOSO"),
+            array("ruc"=>20312108284,"razon"=>"MUNICIP DIST JOSE L BUSTAMANTE Y RIVERO", "BASE"=>"MUNICIPALIDAD DISTRITAL DE JOSE LUIS BUSTAMANTE Y RIVERO"),
+            array("ruc"=>20176249111,"razon"=>"MUNICIPALIDAD DISTRITAL DE KAÑARIS", "BASE"=>"MUNICIPALIDAD DISTRITAL DE KAÑARIS"),
+            array("ruc"=>20143114911,"razon"=>"MUNICIP.DISTRIT.DE SAN JUAN BAUTISTA", "BASE"=>"MUNICIPALIDAD DISTRITAL DE SAN JUAN BAUTISTA"),
+            array("ruc"=>20154432516,"razon"=>"MUNICIPALIDAD DISTRITAL SANTIAGO", "BASE"=>"MUNICIPALIDAD DISTRITAL DE SANTIAGO - CUSCO"),
+            array("ruc"=>20170327391,"razon"=>"MUNICIPALIDAD DISTRITAL DE VILCABAMBA", "BASE"=>"MUNICIPALIDAD DISTRITAL DE VILCABAMBA - LA CONVENCION"),
+            array("ruc"=>10447347763,"razon"=>"VASQUEZ MOQUILLAZA NATALY CAROLINA", "BASE"=>"NATALY VASQUEZ MOQUILLAZA"),
+            array("ruc"=>20470145901,"razon"=>"NEXSYS DEL PERU S.A.C.", "BASE"=>"NEXSYS DEL PERU S.A.C."),
+            array("ruc"=>20522224783,"razon"=>"ORGANISMO DE SUPERVISION DE LOS RECURSOS FORESTALES Y DE FAUNA SILVESTRE - OSINFOR", "BASE"=>"ORGANISMO DE SUPERVISION DE LOS RECURSOS FORESTALES Y DE FAUNA SILVESTRE"),
+            array("ruc"=>20565423372,"razon"=>"ORGANISMO TÉCNICO DE LA ADMINISTRACIÓN DE LOS SERVICIOS DE SANEAMIENTO-OTASS", "BASE"=>"ORGANISMO TECNICO DE LA ADMINISTRACION DE LOS SERVICIOS DE SANEAMIENTO-OTASS"),
+            array("ruc"=>20511366594,"razon"=>"UNIDAD DE COORDINACION DE PROYECTOS DEL PODER JUDICIAL", "BASE"=>"PODER JUDICIAL - UNIDAD DE COORDINACION DE PROYECTOS DEL PODER JUDICIAL"),
+            array("ruc"=>20550154065,"razon"=>"PROGRAMA NACIONAL DE ALIMENTACIÓN ESCOLAR QALI WARMA", "BASE"=>"PROGRAMA NACIONAL DE ALIMENTACION ESCOLAR QALI WARMA"),
+            array("ruc"=>20530015999,"razon"=>"QUIMERA FISH SOCIEDAD ANONIMA CERRADA - QUIMERA FISH S.A.C.", "BASE"=>"QUIMERA FISH S.A.C."),
+            array("ruc"=>20602467971,"razon"=>"REGION POLICIAL AYACUCHO - ICA", "BASE"=>"REGION POLICIAL AYACUCHO - ICA"),
+            array("ruc"=>20337101276,"razon"=>"SERVICIO DE ADMINISTRACION TRIBUTARIA", "BASE"=>"SERVICIO DE ADMINISTRACION TRIBUTARIA - LIMA"),
+            array("ruc"=>20131366028,"razon"=>"SERVICIO NACIONAL METEOREOLOGIA E HIDROL.", "BASE"=>"SERVICIO NACIONAL METEOREOLOGIA E HIDROL."),
+            array("ruc"=>20158219655,"razon"=>"SUPERINTENDENCIA NAC.SERV.DE SANEAMIENTO", "BASE"=>"SUPERINTENDENCIA NACIONAL DE SERVICIOS DE SANEAMIENTO"),
+            array("ruc"=>20600244605,"razon"=>"TRANSPORTE TERRAPERU SAC", "BASE"=>"TRANSPORTE TERRAPERU SAC"),
+            array("ruc"=>20607706957,"razon"=>"UE 005: PROGRAMA MEJORAMIENTO DE LOS SERVICIOS DE JUSTICIA EN MATERIA PENAL EN EL PERÚ - PMSJMPP", "BASE"=>"UE 005: PROGRAMA MEJORAMIENTO DE LOS SERVICIOS DE JUSTICIA EN MATERIA PENAL EN EL PERU - PMSJMPP"),
+            array("ruc"=>20344832138,"razon"=>"UNIDAD DE GESTION EDUCATIVA LOCAL # 01", "BASE"=>"UNIDAD DE GESTION EDUCATIVA LOCAL 01"),
+            array("ruc"=>20285139415,"razon"=>"ZONA REGISTRAL Nø III SEDE MOYOBAMBA", "BASE"=>"ZONA REGISTRAL III - SEDE MOYOBAMBA")
         );
 
         $clientes_faltates=array();
@@ -716,11 +716,108 @@ array("ruc"=>20285139415,"razon"=>"ZONA REGISTRAL Nø III SEDE MOYOBAMBA", "BASE
     }
     public function editarRegistro($id)
     {
+        $cliente_array=array();
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
+        $contribuyente = Contribuyente::where('id_contribuyente',$registro_cobranza->id_cliente_agil)->first();
+        if (!$contribuyente) {
+            $contribuyente = Cliente::where('id_cliente',$registro_cobranza->id_cliente)->first();
+            array_push($cliente_array,array(
+                "id_cliente"=>$contribuyente->id_cliente,
+                "id_contribuyente"=>null,
+                "nro_documento"=>$contribuyente->ruc,
+                "razon_social"=>$contribuyente->nombre
+            ));
+            // $cliente_array=[
+            //     "id_cliente"=>$contribuyente->id_cliente,
+            //     "id_contribuyente"=>null,
+            //     "nro_documento"=>$contribuyente->ruc,
+            //     "razon_social"=>$contribuyente->nombre
+            // ];
+        }else{
+            array_push($cliente_array,array(
+                "id_cliente"=>null,
+                "id_contribuyente"=>$contribuyente->id_contribuyente,
+                "nro_documento"=>$contribuyente->nro_documento,
+                "razon_social"=>$contribuyente->razon_social
+            ));
+            // $cliente_array=[
+            //     "id_cliente"=>$contribuyente->id_cliente,
+            //     "id_contribuyente"=>null,
+            //     "nro_documento"=>$contribuyente->ruc,
+            //     "razon_social"=>$contribuyente->nombre
+            // ];
+        }
+        $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$id)->where('estado',1)->first();
         return response()->json([
             "status"=>200,
             "success"=>true,
-            "data"=>$registro_cobranza
+            "data"=>$registro_cobranza,
+            "programacion_pago"=>$programacion_pago,
+            "cliente"=>$cliente_array
+        ]);
+    }
+    public function modificarRegistro(Request $request)
+    {
+        $data=$request;
+        $empresa = DB::table('administracion.adm_empresa')->where('id_contribuyente',$request->empresa)->first();
+        $cobranza = RegistroCobranza::find($request->id_registro_cobranza);
+
+        $cobranza->id_empresa       = $request->empresa;
+        $cobranza->id_sector        = $request->sector;
+
+        $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
+        $cobranza->id_cliente_agil       = (!empty($request->id_cliente_agil) ? $request->id_cliente_agil:null) ;
+
+        $cobranza->factura          = $request->fact;
+        $cobranza->uu_ee            = $request->ue;
+        $cobranza->fuente_financ    = $request->ff;
+        $cobranza->oc               = $request->oc; // OCAM es igul que la oc
+        $cobranza->siaf             = $request->siaf;
+        $cobranza->fecha_emision    = $request->fecha_emi;
+        $cobranza->fecha_recepcion  = $request->fecha_rec;
+        $cobranza->moneda           = $request->moneda;
+        $cobranza->importe          = $request->importe;
+        $cobranza->id_estado_doc    = $request->estado_doc;
+        $cobranza->id_tipo_tramite  = $request->tramite;
+        $cobranza->vendedor         = $request->nom_vendedor;
+        $cobranza->estado           = 1;
+        // $cobranza->fecha_registro   = date('Y-m-d H:i:s');
+        $cobranza->id_area          = $request->area;
+        $cobranza->id_periodo       = $request->periodo;
+        // $cobranza->ocam             = $request->ocam;
+        $cobranza->codigo_empresa   = $empresa->codigo;
+        $cobranza->categoria        = $request->categ;
+        $cobranza->cdp              = $request->cdp;
+        $cobranza->plazo_credito    = $request->plazo_credito;
+        $cobranza->id_doc_ven       = $request->id_doc_ven;
+        // $cobranza->id_vent          = ;
+
+        $cobranza->save();
+
+        if ($cobranza) {
+            $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$cobranza->id_registro_cobranza)->first();
+            if ($programacion_pago) {
+                $programacion_pago = ProgramacionPago::find($cobranza->id_registro_cobranza);
+                // $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
+                $programacion_pago->fecha   = $request->fecha_ppago;
+                $programacion_pago->estado  = 1;
+                $programacion_pago->fecha_registro = date('Y-m-d H:i:s');
+                $programacion_pago->save();
+            }else{
+                $programacion_pago = new ProgramacionPago();
+                $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
+                $programacion_pago->fecha   = $request->fecha_ppago;
+                $programacion_pago->estado  = 1;
+                $programacion_pago->fecha_registro = date('Y-m-d H:i:s');
+                $programacion_pago->save();
+            }
+
+        }
+
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$data
         ]);
     }
 }

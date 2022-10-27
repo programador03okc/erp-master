@@ -238,7 +238,7 @@ Cobranzas
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="fecha_rec">Fecha Recepción</label>
-                                <input type="date" class="form-control input-sm text-center" name="fecha_rec" id="fecha_rec"  required>
+                                <input type="date" class="form-control input-sm text-center dias-atraso" data-form="guardar-formulario" name="fecha_rec" id="fecha_rec"  required>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -263,13 +263,13 @@ Cobranzas
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="fecha_ppago">Fecha Pago (próx)</label>
-                                <input type="date" class="form-control input-sm text-center" name="fecha_ppago" id="fecha_ppago" value="{{date('Y-m-d')}}">
+                                <input type="date" class="form-control input-sm text-center dias-atraso" data-form="editar-formulario" name="fecha_ppago" id="fecha_ppago" value="{{date('Y-m-d')}}">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="atraso">Días Atras</label>
-                                <input type="text" class="form-control input-sm text-center" name="atraso" id="atraso" value="0" disabled>
+                                <input type="text" class="form-control input-sm text-center dias-atraso" name="atraso" id="atraso" value="0" data-form="guardar-formulario" disabled>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -462,6 +462,7 @@ Cobranzas
 				<div class="modal-body">
                     <input type="hidden" name="id" id="id">
                     <input type="hidden" name="id_doc_ven" value="">
+                    <input type="hidden" name="id_registro_cobranza" value="">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -612,7 +613,7 @@ Cobranzas
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="fecha_rec">Fecha Recepción</label>
-                                <input type="date" class="form-control input-sm text-center" name="fecha_rec" required>
+                                <input type="date" class="form-control input-sm text-center dias-atraso" data-form="editar-formulario" name="fecha_rec" required>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -637,13 +638,13 @@ Cobranzas
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="fecha_ppago">Fecha Pago (próx)</label>
-                                <input type="date" class="form-control input-sm text-center" name="fecha_ppago" value="{{date('Y-m-d')}}">
+                                <input type="date" class="form-control input-sm text-center dias-atraso" data-form="editar-formulario" name="fecha_ppago" value="{{date('Y-m-d')}}">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="atraso">Días Atras</label>
-                                <input type="text" class="form-control input-sm text-center" name="atraso" value="0" disabled>
+                                <input type="text" class="form-control input-sm text-center dias-atraso" name="atraso" value="0" data-form="editar-formulario" disabled>
                             </div>
                         </div>
                         <div class="col-md-2">

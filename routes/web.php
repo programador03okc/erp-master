@@ -2128,6 +2128,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
 			Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
+
 			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
 			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
 			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
@@ -2153,6 +2154,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 
             Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
+            Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
 
             // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 		});

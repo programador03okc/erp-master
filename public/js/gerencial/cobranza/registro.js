@@ -695,6 +695,7 @@ $(document).on('submit','[data-form="editar"]',function (e) {
 });
 $(document).on('click','.editar-registro',function () {
     let id_registro_cobranza = $(this).data('id');
+    var fecha_emision ,fecha_vencimiento, numero_dias=0;
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -719,7 +720,7 @@ $(document).on('click','.editar-registro',function () {
 
             $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val(data.data.id_cliente);
             $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(data.data.id_cliente_agil);
-            // $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.data.);
+            $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.cliente[0].razon_social);
             $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(data.data.cdp);
             $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(data.data.oc);
             $('[data-form="editar-formulario"] .modal-body input[name="fact"]').val(data.data.factura);
@@ -734,18 +735,89 @@ $(document).on('click','.editar-registro',function () {
             $('[data-form="editar-formulario"] .modal-body input[name="fecha_rec"]').val(data.data.fecha_recepcion);
             $('[data-form="editar-formulario"] .modal-body select[name="estado_doc"] option').removeAttr('selected');
             $('[data-form="editar-formulario"] .modal-body select[name="estado_doc"] option[value="'+data.data.id_estado_doc+'"]').attr('selected','true');
-            // $('[data-form="editar-formulario"] .modal-body input[name="fecha_ppago"]').val(data.data.id_cliente);
+            if (data.programacion_pago) {
+                $('[data-form="editar-formulario"] .modal-body input[name="fecha_ppago"]').val(data.programacion_pago.fecha);
+            }
+
             // $('[data-form="editar-formulario"] .modal-body input[name="atraso"]').val(data.data.id_cliente);
             $('[data-form="editar-formulario"] .modal-body input[name="plazo_credito"]').val(data.data.plazo_credito);
             $('[data-form="editar-formulario"] .modal-body input[name="nom_vendedor"]').val(data.data.vendedor);
             $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
             $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
+
+            $('[data-form="editar-formulario"] .modal-body input[name="id_doc_ven"]').val(data.data.id_doc_ven);
+            $('[data-form="editar-formulario"] .modal-body input[name="id_registro_cobranza"]').val(data.data.id_registro_cobranza);
+
+            fecha_emision = new Date($('[data-form="editar-formulario"] input[name="fecha_rec"]').val().split('/').reverse().join('-')).getTime();
+            fecha_vencimiento= new Date($('[data-form="editar-formulario"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime();
+
+            numero_dias = fecha_vencimiento - fecha_emision;
+            numero_dias = numero_dias/(1000*60*60*24)
+            numero_dias = numero_dias*-1;
+            if (numero_dias<=0) {
+                numero_dias = 0;
+            }
+            $('[data-form="editar-formulario"] input[name="atraso"]').val(numero_dias);
+
         }
-        console.log(data);
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     })
-    console.log(id_registro_cobranza);
+});
+
+$(document).on('change click','.dias-atraso',function () {
+    var data_form = $(this).attr('data-form');
+    var fecha_emision = new Date($('[data-form="'+data_form+'"] input[name="fecha_rec"]').val().split('/').reverse().join('-')).getTime() ,
+        fecha_vencimiento= new Date($('[data-form="'+data_form+'"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime(),
+        numero_dias=0;
+
+    numero_dias = fecha_vencimiento - fecha_emision  ;
+    numero_dias = numero_dias/(1000*60*60*24)
+    numero_dias = numero_dias*-1;
+    if (numero_dias<=0) {
+        numero_dias = 0;
+    }
+    $('[data-form="'+data_form+'"] input[name="atraso"]').val(numero_dias);
+});
+
+$(document).on('submit','[data-form="editar-formulario"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
+    Swal.fire({
+        title: '¿Está seguro de guardar?',
+        text: "Se guardara el registro",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+          return $.ajax({
+                type: 'GET',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: 'modificar-registro',
+                data: data,
+                dataType: 'JSON'
+            }).done(function( data ) {
+                return data
+            }).fail( function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            })
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            console.log(result);
+            if (result.value.status === 200) {
+                location.reload();
+            }
+        }
+    })
+
 });

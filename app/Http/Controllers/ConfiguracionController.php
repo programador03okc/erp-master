@@ -2525,9 +2525,11 @@ public function anular_configuracion_socket($id){
     }
     public function scriptsAccesos()
     {
-        $array_id_accesos=[93,77,61,33,32,27,22,17,3,1];
+        // array de accesos
+        $array_id_accesos=[208,207,217,210,209,213,214,215,216,212,211];
         $accesos=array();
-        $array_usuarios=[135,133,130,128,126,125,124,123,61,122,119,118,117,97,93,78,77,75,66,65,64,62,60,59,36,33,32,27,22,121,17,16,14,5,3,1];
+        // array de usuarios
+        $array_usuarios=[36,16];
         $json_usuarios=array();
         $usuarios_faltantes=array();
 
@@ -2545,6 +2547,7 @@ public function anular_configuracion_socket($id){
         foreach ($array_id_accesos as $key => $value) {
             $accesos_table = Accesos::where('id_acceso',$value)->first();
             array_push($accesos,$accesos_table);
+
             $modulo = DB::table('configuracion.modulos')->where('id_modulo',$accesos_table->id_modulo)->first();
             array_push($accesos_modulos,array(
                 "id_acceso"=>$value,
