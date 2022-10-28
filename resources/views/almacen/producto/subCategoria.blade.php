@@ -1,15 +1,15 @@
 @extends('layout.main')
 @include('layout.menu_almacen')
 
-@if(Auth::user()->tieneAccion(63))
+<!-- @if(Auth::user()->tieneAccion(63)) -->
 @section('option')
 @include('layout.option')
 @endsection
-@elseif(Auth::user()->tieneAccion(64))
+<!-- @elseif(Auth::user()->tieneAccion(64)) -->
 @section('option')
 @include('layout.option_historial')
 @endsection
-@endif
+<!-- @endif -->
 
 @section('cabecera')
 SubCategoría

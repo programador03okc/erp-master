@@ -1436,6 +1436,7 @@ class RequerimientoController extends Controller
                 'alm_req.id_grupo',
                 'alm_req.id_empresa',
                 'adm_contri.razon_social',
+                'sis_sede.codigo as sede',
                 'adm_contri.nro_documento',
                 'adm_contri.id_doc_identidad',
                 'sis_identi.descripcion as tipo_documento_identidad',

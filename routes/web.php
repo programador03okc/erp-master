@@ -1,9 +1,10 @@
 <?php
-
+use App\Exports\CatalogoProductoExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 //  Route::get('/{path?}', function () {
 //      return view('index');
@@ -1288,6 +1289,11 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'catalogo-productos.', 'prefix' => 'catalogo-productos'], function () {
 				Route::get('index', 'Almacen\Catalogo\ProductoController@view_prod_catalogo')->name('index');
 				Route::get('listar_productos', 'Almacen\Catalogo\ProductoController@mostrar_productos');
+				// Route::post('productosExcel', 'Almacen\Catalogo\ProductoController@productosExcel')->name('productosExcel');
+				Route::post('catalogoProductosExcel', function () {
+					return Excel::download(new CatalogoProductoExport, 'Catalogo_Productos.xlsx');
+				})->name('catalogoProductosExcel');
+				
 			});
 		});
 
