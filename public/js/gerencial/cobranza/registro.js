@@ -3,6 +3,12 @@ let carga_ini = 1;
 var tempClienteSelected = {};
 var tempoNombreCliente = '';
 var userNickname= '';
+var empresa_filtro,
+    estado_filttro,
+    fase_filtro,
+    fecha_emision_filtro,
+    importe_simbolo_filtro,
+    importe_total_filtro;
 $(document).ready(function () {
     // list();
     listarRegistros();
@@ -32,6 +38,20 @@ function listarRegistros() {
         pageLength: 10,
         serverSide: true,
         lengthChange: false,
+        dom: vardataTables[1],
+        buttons:[
+            // {
+            //     text: '<i class="fas fa-filter"></i> Filtros : 0',
+            //     attr: {
+            //         id: 'btnFiltros'
+            //     },
+            //     action: () => {
+            //         $('#modal-filtros').modal('show');
+
+            //     },
+            //     className: 'btn-default btn-sm'
+            // }
+        ],
         ajax: {
             url: "listar-registros",
             type: "POST"
@@ -53,28 +73,13 @@ function listarRegistros() {
             {data: 'importe', name:"importe"},
             {
                 render: function (data, type, row) {
-                    // var html='';
-                    // var html=`<select class="" name="estado_documento">`;
-                    // row['estado'][1].forEach(element => {
 
-                    //     html+=`<option value="${element.id_estado_doc}" ${element.id_estado_doc===row['estado'][0]?'selected':''}>${element.nombre}</option>`;
-                    // });
-                    // html+=`</select>`;
-                    // return (html);
                     return (row['estado']);
                 },
                 className: "text-center"
             },
             {
                 render: function (data, type, row) {
-                    // var html='';
-                    // var html=`<select class="" name="area_responsable">`;
-                    // row['area'][1].forEach(element => {
-
-                    //     html+=`<option value="${element.id_area}" ${element.id_area===row['area'][0]?'selected':''}>${element.descripcion}</option>`;
-                    // });
-                    // html+=`</select>`;
-                    // return (html);
                     return (row['area']);
                 },
                 className: "text-center"
@@ -89,14 +94,14 @@ function listarRegistros() {
                 render: function (data, type, row) {
                     html='';
                         html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-edit"></i></button>';
-                        html+='<button type="button" class="btn btn-primary btn-flat botonList" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-comments"></i></button>';
+                        html+='<button type="button" class="btn btn-primary btn-flat botonList modal-fase" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-comments"></i></button>';
                     html+='';
                     return html;
                 },
                 className: "text-center"
             }
         ],
-        order: [[0, "desc"]],
+        order: [[1, "desc"]],
         columnDefs: [{ aTargets: [0], sClass: "invisible" }]
     });
 
@@ -479,7 +484,7 @@ $('#formulario').on('submit', function(e){
                           'Se elimino con éxito.',
                           'success'
                         ).then((result) => {
-                            $('#listaUsuarios').DataTable().ajax.reload();
+                            $('#listar-registros').DataTable().ajax.reload();
                             $('#modal-cobranza').modal('hide');
                             // location.reload();
                         })
@@ -820,4 +825,117 @@ $(document).on('submit','[data-form="editar-formulario"]',function (e) {
         }
     })
 
+});
+$(document).on('click','.modal-fase',function () {
+    var id = $(this).attr('data-id'),
+        html = '';
+    $('#modal-agregar-fase [data-form="guardar-fase"] input[name="id_registro_cobranza"]').val(id);
+    $('#modal-agregar-fase').modal('show');
+    $.ajax({
+        type: 'GET',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'obtener-fase/'+id,
+        data: {},
+        dataType: 'JSON'
+    }).done(function( data ) {
+        if (data.status===200) {
+            $.each(data.fases, function (index, element) {
+                html+='<tr>'+
+                    '<td class="text-center">'+element.fase+'</td>'+
+                    '<td class="text-center">'+element.fecha+'</td>'+
+                    '<td class="text-center"><button class="btn btn-danger eliminar-fase" data-id="'+element.id_fase+'"><i class="fa fa-trash"></i></button></td>'+
+                '</tr>';
+            });
+            $('[data-table="table-fase"]').html(html);
+            $('#listar-registros').DataTable().ajax.reload();
+        }else{
+            $('[data-table="table-fase"]').html(html);
+        }
+
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+$(document).on('submit','[data-form="guardar-fase"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
+    Swal.fire({
+        title: '¿Está seguro de guardar?',
+        text: "Se guardara el registro",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+          return $.ajax({
+                type: 'POST',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: 'guardar-fase',
+                data: data,
+                dataType: 'JSON'
+            }).done(function( data ) {
+                return data
+            }).fail( function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            })
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            console.log(result);
+            if (result.value.status === 200) {
+                $('#modal-agregar-fase').modal('hide');
+                $('#listar-registros').DataTable().ajax.reload();
+            }
+        }
+    })
+});
+$(document).on('click','.eliminar-fase',function () {
+    var id = $(this).attr('data-id');
+
+    Swal.fire({
+        title: '¿Está seguro de eliminar?',
+        text: "Se eliminara el registro",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: 'eliminar-fase',
+                data: {id:id},
+                dataType: 'JSON'
+            }).done(function( data ) {
+                return data
+            }).fail( function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            })
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value.status === 200) {
+                // $('#modal-agregar-fase').modal('hide');
+                $(this).closest('tr').remove();
+                $('#listar-registros').DataTable().ajax.reload();
+            }
+        }
+    })
+});
+$(document).on('change','.select-check',function () {
+    console.log($(this).val());
 });

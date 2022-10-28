@@ -135,7 +135,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm" name="cliente" id="cliente" placeholder="N° RUC" readonly>
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat" type="button" id="search_customer" data-form="guardar-formulario" data-action="modal-search-customer">
+                                        <button class="btn btn-default btn-flat" type="button" data-form="guardar-formulario" data-action="modal-search-customer">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -148,7 +148,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" data-form="guardar-formulario">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="guardar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -168,7 +168,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC / OCAM" data-action="oc">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" data-form="guardar-formulario">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="guardar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -306,75 +306,7 @@ Cobranzas
 	</div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-cliente">
-	<div class="modal-dialog" style="width: 30%;">
-		<div class="modal-content">
-			<form class="formPage" type="register" data-form="guardar-cliente">
-				<div class="modal-header">
-					<h3 class="modal-title">Agregar Nuevo Cliente</h3>
-					<button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-				</div>
-				<div class="modal-body">
-                    <div class="row">
-						<div class="col-md-12">
-							<h5>Pais :</h5>
-                            <select name="pais" id="nuevo_pais" class="form-control" required>
-                                <option value="">Seleccione...</option>
-                                @foreach ($pais as $items)
-                                    <option value="{{ $items->id_pais }}">{{ $items->descripcion }}</option>
-                                @endforeach
-                            </select>
-						</div>
-					</div>
-                    <div class="row">
-						<div class="col-md-12">
-							<h5>Departamento :</h5>
-                            <select name="departamento" id="nuevo_provincia" data-select="departamento-select" class="form-control" required>
-                                <option value="">Seleccione...</option>
-                                @foreach ($departamento as $items)
-                                    <option value="{{ $items->id_dpto }}">{{ $items->descripcion }}</option>
-                                @endforeach
-                            </select>
-						</div>
-					</div>
-                    <div class="row">
-						<div class="col-md-12">
-							<h5>Provincia :</h5>
-                            <select name="provincia" id="nuevo_provincia" class="form-control" data-select="provincia-select" required>
-                                <option value="">Seleccione...</option>
-                            </select>
-						</div>
-					</div>
-                    <div class="row">
-						<div class="col-md-12">
-							<h5>Distrito :</h5>
-                            <select name="distrito" id="nuevo_distrito" class="form-control" required>
-                                <option value="">Seleccione...</option>
-                            </select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<h5>RUC/DNI</h5>
-							<input type="text" class="form-control input-sm" name="nuevo_ruc_dni_cliente" id="nuevo_ruc_dni_cliente" placeholder="Nro. Documento" required>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<h5>Cliente <i style="font-size: 12px;">( Nombre de la empresa )</i></h5>
-							<input type="text" class="form-control input-sm" name="nuevo_cliente" id="nuevo_cliente"
-								placeholder="Razón Social/Nombre" onkeyup="javascript:this.value = this.value.toUpperCase();" required>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-sm btn-success" onclick="SaveNewCustomer();"> Guardar </button>
 
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cliente">
 	<div class="modal-dialog" style="width: 30%;">
 		<div class="modal-content">
@@ -460,7 +392,7 @@ Cobranzas
                     <h3 class="modal-title">Editar Registro de Cobranza</h3>
 				</div>
 				<div class="modal-body">
-                    <input type="hidden" name="id" id="id">
+                    {{-- <input type="hidden" name="id" id="id"> --}}
                     <input type="hidden" name="id_doc_ven" value="">
                     <input type="hidden" name="id_registro_cobranza" value="">
                     <div class="row">
@@ -530,7 +462,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" placeholder="N° CDP" data-action="cdp">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="search_customer" data-form="editar-formulario">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="editar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -802,6 +734,239 @@ Cobranzas
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-sm btn-success" onclick="selectSource();">Seleccionar <span class="fa fa-download"></span></button>
+			</div>
+		</div>
+	</div>
+</div>
+{{-- nuevo cliente --}}
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-cliente">
+	<div class="modal-dialog" style="width: 30%;">
+		<div class="modal-content">
+			<form class="formPage" type="register" data-form="guardar-cliente">
+				<div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+					<h3 class="modal-title">Agregar Nuevo Cliente</h3>
+
+				</div>
+				<div class="modal-body">
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Pais :</h5>
+                            <select name="pais" id="nuevo_pais" class="form-control" required>
+                                <option value="">Seleccione...</option>
+                                @foreach ($pais as $items)
+                                    <option value="{{ $items->id_pais }}">{{ $items->descripcion }}</option>
+                                @endforeach
+                            </select>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Departamento :</h5>
+                            <select name="departamento" id="nuevo_provincia" data-select="departamento-select" class="form-control" required>
+                                <option value="">Seleccione...</option>
+                                @foreach ($departamento as $items)
+                                    <option value="{{ $items->id_dpto }}">{{ $items->descripcion }}</option>
+                                @endforeach
+                            </select>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Provincia :</h5>
+                            <select name="provincia" id="nuevo_provincia" class="form-control" data-select="provincia-select" required>
+                                <option value="">Seleccione...</option>
+                            </select>
+						</div>
+					</div>
+                    <div class="row">
+						<div class="col-md-12">
+							<h5>Distrito :</h5>
+                            <select name="distrito" id="nuevo_distrito" class="form-control" required>
+                                <option value="">Seleccione...</option>
+                            </select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<h5>RUC/DNI</h5>
+							<input type="text" class="form-control input-sm" name="nuevo_ruc_dni_cliente" id="nuevo_ruc_dni_cliente" placeholder="Nro. Documento" required>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<h5>Cliente <i style="font-size: 12px;">( Nombre de la empresa )</i></h5>
+							<input type="text" class="form-control input-sm" name="nuevo_cliente" id="nuevo_cliente"
+								placeholder="Razón Social/Nombre" onkeyup="javascript:this.value = this.value.toUpperCase();" required>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-sm btn-success" onclick="SaveNewCustomer();"> Guardar </button>
+
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{{-- Fases --}}
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-agregar-fase">
+	<div class="modal-dialog" style="width: 30%;">
+		<div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Fases</h3>
+
+            </div>
+            <div class="modal-body">
+                <form class="formPage" type="register" data-form="guardar-fase">
+                    <input type="hidden" name="id_registro_cobranza">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Fase :</label>
+                                <select class="form-control" name="fase" required>
+                                    <option value="" disabled selected>Elija una opción</option>
+                                    <option value="COMPROMISO">COMPROMISO</option>
+                                    <option value="DEVENGADO">DEVENGADO</option>
+                                    <option value="PAGADO">PAGADO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Fecha :</label>
+                                <input type="date" class="form-control" name="fecha_fase" value="{{date('Y-m-d')}}" required>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-block btn-sm btn-success"><span class="fa fa-save"></span> Grabar Fase</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Fases</th>
+                                    <th>Fecha</th>
+                                    <th>Accion</th>
+                                </tr>
+                            </thead>
+                            <tbody data-table="table-fase">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-filtros">
+	<div class="modal-dialog" style="width: 500px;">
+		<div class="modal-content">
+			<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title">Filtros</h3>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-check">
+									<input type="checkbox" class="form-check-input select-check" id="checkEmpresa" data-check="empresa">
+									<label class="text-muted" for="checkEmpresa">Empresa</label>
+								</div>
+							</div>
+							<div class="col-md-8">
+                                <select class="form-control" name="empresa" data-check="empresa" required>
+                                    <option value="" disabled selected>Elija una opción</option>
+                                    @foreach ($empresa as $item)
+                                        <option value="{{$item->id_contribuyente }}">{{$item->razon_social }}</option>
+                                    @endforeach
+                                </select>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-check">
+									<input type="checkbox" class="form-check-input select-check" id="checkEstado">
+									<label class="text-muted" for="checkEstado">Estado</label>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<select class="form-control input-sm" name="fil_estado" id="fil_estado">
+									<option value="1">EN TRAMITE</option>
+									<option value="2">PENDIENTE</option>
+									<option value="3">EN VERIFICACION</option>
+									<option value="4">SIN PRESUPUESTO</option>
+									<option value="5">PAGADO</option>
+									<option value="6">ANULADO</option>
+								</select>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-check">
+									<input type="checkbox" class="form-check-input select-check" id="checkFase">
+									<label class="text-muted" for="checkFase">Fases</label>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<select class="form-control input-sm" name="fil_fase" id="fil_fase">
+									<option value="COMPROMISO">COMPROMISO</option>
+									<option value="DEVENGADO">DEVENGADO</option>
+									<option value="PAGADO">PAGADO</option>
+								</select>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-check">
+									<input type="checkbox" class="form-check-input select-check" id="checkEmi">
+									<label class="text-muted" for="checkEmi">Fecha Emisión</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<input type="date" class="form-control input-sm" name="fil_emision_ini" id="fil_emision_ini">
+							</div>
+							<div class="col-md-4">
+								<input type="date" class="form-control input-sm" name="fil_emision_fin" id="fil_emision_fin">
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-check">
+									<input type="checkbox" class="form-check-input select-check" id="checkImporte">
+									<label class="text-muted" for="checkImporte">Importe</label>
+								</div>
+							</div>
+							<div class="col-md-2">
+								<select class="form-control input-sm" name="fil_simbol" id="fil_simbol">
+									<option value="1"><</option>
+									<option value="2">></option>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<input type="number" class="form-control input-sm" name="fil_importe" id="fil_importe" step="any" value="0">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+
 			</div>
 		</div>
 	</div>

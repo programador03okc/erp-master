@@ -76,10 +76,7 @@ class RegistroController extends Controller
         //     $keywords = trim(strtoupper($keyword));
         //     $query->whereRaw("UPPER(CONCAT(rrhh_perso.nombres,' ', rrhh_perso.apellido_paterno,' ', rrhh_perso.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
         // })
-        // ->filterColumn('empresa', function($query, $keyword) {
-        //     $sql = "CONCAT(users.first_name,'-',users.last_name)  like ?";
-        //     $query->whereRaw($sql, ["%{$keyword}%"]);
-        // })
+
         ->addColumn('cliente', function($data){
             $id_cliente = $data->id_cliente;
             if (!$id_cliente) {
@@ -109,8 +106,12 @@ class RegistroController extends Controller
             return $area_responsable_nombre->descripcion;
          })
         ->addColumn('fase', function($data) {
-            $fase = CobanzaFase::where('id_cobranza', $data->id_cobranza)->orderBy('id_fase', 'desc')->first();
-            return ($fase?$fase->fase[0] : '-');
+            $fase = CobanzaFase::where('id_cobranza', $data->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->orderBy('id_fase', 'desc')->first();
+            if (!$fase) {
+                $fase = CobanzaFase::where('id_registro_cobranza', $data->id_registro_cobranza)->where('estado',1)->orderBy('id_fase', 'desc')->first();
+            }
+            return ($fase?$fase->fase : '-');
+            // return ($fase?$fase->fase[0] : '-');
         })
         // ->toJson();
         ->make(true);
@@ -819,5 +820,76 @@ class RegistroController extends Controller
             "status"=>200,
             "data"=>$data
         ]);
+    }
+    public function obtenerFase($id)
+    {
+        $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
+        // return $registro_cobranza;
+        if ($registro_cobranza) {
+            $cobranzas_fases = CobanzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->get();
+            if (sizeof($cobranzas_fases)===0) {
+                $cobranzas_fases = CobanzaFase::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado',1)->get();
+            }
+            if (sizeof($cobranzas_fases)>0) {
+                return response()->json([
+                    "success"=>true,
+                    "status"=>200,
+                    "fases"=>$cobranzas_fases
+                ]);
+            }else{
+                return response()->json([
+                    "success"=>false,
+                    "status"=>404,
+                    "fases"=>null
+                ]);
+            }
+        }else{
+            return response()->json([
+                "success"=>false,
+                "status"=>404,
+                "fases"=>null
+            ]);
+        }
+
+
+    }
+    public function guardarFase(Request $request)
+    {
+        $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$request->id_registro_cobranza)->first();
+        // $cobranza_fase = CobanzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->first();
+        $cobranza_fase          = new CobanzaFase();
+        if ($registro_cobranza) {
+            $cobranza_fase->id_cobranza    = $registro_cobranza->id_cobranza_old;
+        }
+
+        $cobranza_fase->fase    = $request->fase;
+        $cobranza_fase->fecha   = $request->fecha_fase;
+        $cobranza_fase->fecha_registro  = date('Y-m-d H:i:s');
+        $cobranza_fase->estado  = 1;
+        $cobranza_fase->id_registro_cobranza  = $request->id_registro_cobranza;
+        $cobranza_fase->save();
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+        ]);
+    }
+    public function eliminarFase(Request $request)
+    {
+        $cobranza_fase = CobanzaFase::find($request->id);
+        $cobranza_fase->estado = 0;
+        $cobranza_fase->save();
+        if ($cobranza_fase) {
+            return response()->json([
+                "success"=>true,
+                "status"=>200,
+                "data"=>$cobranza_fase
+            ]);
+        }else{
+            return response()->json([
+                "success"=>false,
+                "status"=>404,
+            ]);
+        }
+
     }
 }
