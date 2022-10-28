@@ -2526,10 +2526,10 @@ public function anular_configuracion_socket($id){
     public function scriptsAccesos()
     {
         // array de accesos
-        $array_id_accesos=[208,207,217,210,209,213,214,215,216,212,211];
+        $array_id_accesos=[78,83,77,79,82,80,81];
         $accesos=array();
         // array de usuarios
-        $array_usuarios=[36,16];
+        $array_usuarios=[93,77,65,60,36,33,32,27,22,17,16,3,1];
         $json_usuarios=array();
         $usuarios_faltantes=array();
 
