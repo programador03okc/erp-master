@@ -421,11 +421,12 @@ $(document).on('change','[data-select="provincia-select"]',function () {
 //         console.log(errorThrown);
 //     })
 // });
-function searchSource(){
+function searchSource(type){
     $('#modal-fue-fin').modal({show: true, backdrop: 'static'});
     $('#modal-fue-fin').on('shown.bs.modal', function(){
         $('[name=fuente]').select();
     });
+    $('#modal-fue-fin .modal-footer button').attr('data-form',type);
 }
 function fuenteFinan(value){
     $('#rubro').empty();
@@ -444,13 +445,21 @@ function fuenteFinan(value){
     }
     $('#rubro').append(opcion);
 }
-function selectSource(){
+// function selectSource(){
+//     var fuente = $('#fuente').val();
+//     var rubro = $('#rubro').val();
+//     var text = fuente.concat('-', rubro);
+//     $('#ff').val(text);
+//     $('#modal-fue-fin').modal('hide');
+// }
+$(document).on('click','.select-source',function () {
     var fuente = $('#fuente').val();
     var rubro = $('#rubro').val();
     var text = fuente.concat('-', rubro);
-    $('#ff').val(text);
+    var data_form = $(this).attr('data-form');
+    $('[data-form="'+data_form+'"] [name="ff"]').val(text);
     $('#modal-fue-fin').modal('hide');
-}
+});
 $('#formulario').on('submit', function(e){
     e.preventDefault();
     var data = $(this).serialize();

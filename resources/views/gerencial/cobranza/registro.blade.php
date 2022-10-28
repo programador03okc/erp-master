@@ -201,7 +201,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center" name="ff" id="ff" readonly>
                                     <span class="input-group-btn">
-                                        <button class="btn btn-info btn-flat" type="button" onclick="searchSource();">
+                                        <button class="btn btn-info btn-flat" type="button" onclick="searchSource('guardar-formulario');">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -508,7 +508,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center" name="ff" readonly>
                                     <span class="input-group-btn">
-                                        <button class="btn btn-info btn-flat" type="button" onclick="searchSource();">
+                                        <button class="btn btn-info btn-flat" type="button" onclick="searchSource('editar-formulario');">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -733,7 +733,7 @@ Cobranzas
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-sm btn-success" onclick="selectSource();">Seleccionar <span class="fa fa-download"></span></button>
+				<button type="button" class="btn btn-sm btn-success select-source">Seleccionar <span class="fa fa-download"></span></button>
 			</div>
 		</div>
 	</div>
@@ -802,7 +802,7 @@ Cobranzas
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-sm btn-success" onclick="SaveNewCustomer();"> Guardar </button>
+					<button type="submit" class="btn btn-sm btn-success" > Guardar </button>
 
 				</div>
 			</form>
