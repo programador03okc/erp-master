@@ -19,6 +19,18 @@ $(function () {
     }
 });
 
+$("[name=id_tipo]").on('change', function () {
+    console.log($(this).val());
+    if ($(this).val() == 1) {
+        $('.divSalida').show();
+        $('.divIngreso').hide();
+    }
+    else if ($(this).val() == 2) {
+        $('.divSalida').hide();
+        $('.divIngreso').show();
+    }
+});
+
 $(".nueva-devolucion").on('click', function () {
 
     $(".edition").removeAttr("disabled");

@@ -75,7 +75,7 @@
                                 <label class="col-sm-4 control-label">Tipo: </label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single" 
-                                        name="id_tipo" required readOnly>
+                                        name="id_tipo" required >
                                         <option value="">Elija una opción</option>
                                         @foreach ($tipos as $tp)
                                         <option value="{{$tp->id}}">{{$tp->descripcion}}</option>
@@ -149,7 +149,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row divSalida">
                 <div class="col-md-12">
                     <div class="panel panel-default" style="margin-bottom: 0px;">
                         <div class="panel-heading"><strong>Ventas</strong></div>
@@ -161,9 +161,32 @@
                                     <th>Razon Social del Cliente</th>
                                     <th>Cod.Salida</th>
                                     <th width='8%' style="padding:0px;">
-                                        <i class="fas fa-plus-square icon-tabla green boton add-new-sobrante edition" 
-                                        id="addSobrante" data-toggle="tooltip" data-placement="bottom" 
+                                        <i class="fas fa-plus-square icon-tabla green boton edition" 
+                                        data-toggle="tooltip" data-placement="bottom" 
                                         title="Agregar Salida Venta" onClick="verSalidasVenta();"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row divIngreso">
+                <div class="col-md-12">
+                    <div class="panel panel-default" style="margin-bottom: 0px;">
+                        <div class="panel-heading"><strong>Ingresos</strong></div>
+                        <table id="listaIngresosDevolucion" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Guía Compra</th>
+                                    <th>Factura</th>
+                                    <th>Razon Social del Proveedor</th>
+                                    <th>Cod.Ingreso</th>
+                                    <th width='8%' style="padding:0px;">
+                                        <i class="fas fa-plus-square icon-tabla green boton edition" 
+                                        data-toggle="tooltip" data-placement="bottom" 
+                                        title="Agregar Ingreso" onClick="verIngresos();"></i>
                                     </th>
                                 </tr>
                             </thead>

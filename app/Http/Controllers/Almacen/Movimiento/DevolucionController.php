@@ -107,7 +107,6 @@ class DevolucionController extends Controller
             )
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'devolucion.id_almacen')
-            // ->join('configuracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
             ->leftJoin('configuracion.sis_usua as usuario_conforme', 'usuario_conforme.id_usuario', '=', 'devolucion.revisado_por')
             ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'devolucion.id_cliente')
             ->leftjoin('contabilidad.adm_contri', function ($join) {
@@ -118,12 +117,15 @@ class DevolucionController extends Controller
                 $join->on('log_prove.id_contribuyente', '=', 'adm_contri.id_contribuyente');
                 $join->where('log_prove.estado', '!=', 7);
             })
-            // ->leftJoin('logistica.log_prove', 'log_prove.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->join('cas.devolucion_estado', 'devolucion_estado.id_estado', '=', 'devolucion.estado')
-            ->where('devolucion.estado', '=', 2)->get();
+            ->where([
+                ['devolucion.estado', '=', 2],
+                ['devolucion.id_tipo', '=', 1]
+            ])
+            ->get();
         return datatables($lista)->toJson();
-        // return response()->json($lista);
     }
+
 
     public function verFichasTecnicasAdjuntas($id)
     {
