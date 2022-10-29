@@ -1635,7 +1635,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listar', 'Almacen\Reporte\SaldosController@listar')->name('listar');
 				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\SaldosController@verRequerimientosReservados');
 				Route::get('exportar', 'Almacen\Reporte\SaldosController@exportar')->name('exportar');
-				Route::get('prueba_saldo', 'Almacen\Reporte\SaldosController@pruebaSaldo')->name('prueba_saldo');
+				Route::get('exportarSeries', 'Almacen\Reporte\SaldosController@exportarSeries')->name('exportarSeries');
+				Route::get('prueba', 'Almacen\Reporte\SaldosController@prueba')->name('prueba');
 				Route::post('exportar-valorizacion', 'Almacen\Reporte\SaldosController@valorizacion')->name('exportar-valorizacion');
 			});
 
