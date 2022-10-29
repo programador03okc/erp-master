@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Almacen\Reporte;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReporteSaldosExport;
+use App\Exports\ReporteSaldosSeriesExport;
 use App\Exports\ValorizacionExport;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\Almacen;
@@ -26,13 +27,13 @@ class SaldosController extends Controller
         $fecha = new Carbon();
         $almacenes = DB::table('almacen.alm_almacen')->where('estado', 1)->orderBy('codigo', 'asc')->get();
 
-        $array_accesos=[];
-        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
-            array_push($array_accesos,$value->id_acceso);
+            array_push($array_accesos, $value->id_acceso);
         }
 
-        return view('almacen/reportes/saldos', get_defined_vars(),compact('array_accesos'));
+        return view('almacen/reportes/saldos', get_defined_vars(), compact('array_accesos'));
     }
 
     public function filtrar(Request $request)
@@ -115,51 +116,50 @@ class SaldosController extends Controller
                     ->get();
 
                 if ($movimientos->count() > 0) {
-                $saldo = 0;
-                $saldo_valor = 0;
-                $costo_promedio = 0;
-                $valor_salida = 0;
+                    $saldo = 0;
+                    $saldo_valor = 0;
+                    $costo_promedio = 0;
+                    $valor_salida = 0;
 
-                foreach ($movimientos as $m) {
+                    foreach ($movimientos as $m) {
 
-                    if ($m->id_tp_mov == 1 || $m->id_tp_mov == 0) { //ingreso o inicial
-                        $saldo += $m->cantidad;
-                        $saldo_valor += $m->valorizacion;
-                    } else if ($m->id_tp_mov == 2) { //salida
-                        $saldo -= $m->cantidad;
-                        $valor_salida = $costo_promedio * $m->cantidad;
-                        $saldo_valor -= $valor_salida;
+                        if ($m->id_tp_mov == 1 || $m->id_tp_mov == 0) { //ingreso o inicial
+                            $saldo += $m->cantidad;
+                            $saldo_valor += $m->valorizacion;
+                        } else if ($m->id_tp_mov == 2) { //salida
+                            $saldo -= $m->cantidad;
+                            $valor_salida = $costo_promedio * $m->cantidad;
+                            $saldo_valor -= $valor_salida;
+                        }
+
+                        if ($saldo !== 0) {
+                            $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+                        }
                     }
 
-                    if ($saldo !== 0) {
-                        $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+                    $reserva = ($d->cantidad_reserva == null) ? 0 : $d->cantidad_reserva;
+                    $disponibilidad = ($saldo - $reserva);
+
+                    if ($reserva > 0 || $disponibilidad > 0 || $saldo > 0) {
+                        // return $reserva;exit;
+                        $data[] = [
+                            'id_producto'           => $d->id_producto,
+                            'id_almacen'            => $d->id_almacen,
+                            'codigo'                => ($d->codigo != null) ? $d->codigo : '',
+                            'cod_softlink'          => ($d->cod_softlink != null) ? $d->cod_softlink : '',
+                            'part_number'           => ($d->part_number != null) ? trim($d->part_number) : '',
+                            'categoria'             => trim($d->categoria),
+                            'producto'              => trim($d->producto),
+                            'simbolo'               => ($d->simbolo != null) ? $d->simbolo : '',
+                            'valorizacion'          => $saldo_valor,
+                            'costo_promedio'        => $costo_promedio,
+                            'abreviatura'           => ($d->abreviatura != null) ? $d->abreviatura : '',
+                            'stock'                 => $saldo,
+                            'reserva'               => $reserva,
+                            'disponible'            => ($saldo - $reserva),
+                            'almacen_descripcion'   => ($d->almacen_descripcion != null) ? $d->almacen_descripcion : '',
+                        ];
                     }
-                }
-
-                $reserva = ($d->cantidad_reserva == null) ? 0 : $d->cantidad_reserva;
-                $disponibilidad =($saldo - $reserva);
-
-                if ($reserva>0 || $disponibilidad>0 || $saldo>0) {
-                    // return $reserva;exit;
-                    $data[] = [
-                        'id_producto'           => $d->id_producto,
-                        'id_almacen'            => $d->id_almacen,
-                        'codigo'                => ($d->codigo != null) ? $d->codigo : '',
-                        'cod_softlink'          => ($d->cod_softlink != null) ? $d->cod_softlink : '',
-                        'part_number'           => ($d->part_number != null) ? trim($d->part_number) : '',
-                        'categoria'             => trim($d->categoria),
-                        'producto'              => trim($d->producto),
-                        'simbolo'               => ($d->simbolo != null) ? $d->simbolo : '',
-                        'valorizacion'          => $saldo_valor,
-                        'costo_promedio'        => $costo_promedio,
-                        'abreviatura'           => ($d->abreviatura != null) ? $d->abreviatura : '',
-                        'stock'                 => $saldo,
-                        'reserva'               => $reserva,
-                        'disponible'            => ($saldo - $reserva),
-                        'almacen_descripcion'   => ($d->almacen_descripcion != null) ? $d->almacen_descripcion : '',
-                    ];
-                }
-
                 }
             }
         }
@@ -205,6 +205,51 @@ class SaldosController extends Controller
     public function exportar()
     {
         return Excel::download(new ReporteSaldosExport(), 'reporte_saldos.xlsx');
+    }
+
+    public function exportarSeries()
+    {
+        return Excel::download(new ReporteSaldosSeriesExport(), 'reporte_saldos_series.xlsx');
+    }
+
+    public function prueba()
+    {
+        $fecha = '2022-05-20';
+        $series = DB::table('almacen.alm_prod_serie')
+            ->select('alm_prod_serie.serie')
+            ->leftjoin('almacen.guia_com_det', function ($join) {
+                $join->on('guia_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det');
+                $join->where('guia_com_det.estado', 1);
+            })
+            ->leftjoin('almacen.guia_com', function ($join) use ($fecha) {
+                $join->on('guia_com.id_guia', '=', 'guia_com_det.id_guia_com');
+                $join->where('guia_com.fecha_almacen', '<=', $fecha);
+                $join->where('guia_com.estado', 1);
+            })
+            ->where([
+                ['alm_prod_serie.id_prod', '=', 10150],
+                ['alm_prod_serie.id_almacen', '=', 19],
+                // ['alm_prod_serie.id_guia_com_det', '=', $d->id_guia_com_det],
+                ['alm_prod_serie.estado', '!=', 7]
+            ])
+            ->whereNull('alm_prod_serie.id_guia_ven_det')
+            ->whereNull('alm_prod_serie.id_base')
+            ->get();
+
+
+        $strSeries = '';
+
+        if ($series !== null) {
+            foreach ($series as $s) {
+                if ($strSeries !== '') {
+                    $strSeries .= ', ' . $s->serie;
+                } else {
+                    $strSeries = 'Serie(s): ' . $s->serie;
+                }
+            }
+        }
+
+        return response()->json($strSeries);
     }
 
     public function valorizacion(Request $request)
