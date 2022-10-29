@@ -70,6 +70,24 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                         $join->where('guia_com.fecha_almacen', '<=', $fecha);
                         $join->where('guia_com.estado', 1);
                     })
+                    ->leftjoin('almacen.guia_com_det as guia_sobrante_det', function ($join) {
+                        $join->on('guia_sobrante_det.id_sobrante', '=', 'alm_prod_serie.id_sobrante');
+                        $join->where('guia_sobrante_det.estado', 1);
+                    })
+                    ->leftjoin('almacen.guia_com as guia_sobrante', function ($join) use ($fecha) {
+                        $join->on('guia_sobrante.id_guia', '=', 'guia_sobrante_det.id_guia_com');
+                        $join->where('guia_sobrante.fecha_almacen', '<=', $fecha);
+                        $join->where('guia_sobrante.estado', 1);
+                    })
+                    ->leftjoin('almacen.guia_com_det as guia_transformado_det', function ($join) {
+                        $join->on('guia_transformado_det.id_transformado', '=', 'alm_prod_serie.id_transformado');
+                        $join->where('guia_transformado_det.estado', 1);
+                    })
+                    ->leftjoin('almacen.guia_com as guia_transformado', function ($join) use ($fecha) {
+                        $join->on('guia_transformado.id_guia', '=', 'guia_transformado_det.id_guia_com');
+                        $join->where('guia_transformado.fecha_almacen', '<=', $fecha);
+                        $join->where('guia_transformado.estado', 1);
+                    })
                     ->where([
                         ['alm_prod_serie.id_prod', '=', $d->id_producto],
                         ['alm_prod_serie.id_almacen', '=', $d->id_almacen],
