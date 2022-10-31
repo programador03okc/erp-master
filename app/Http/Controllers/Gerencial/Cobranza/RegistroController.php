@@ -6,6 +6,7 @@ use App\Gerencial\Cobranza as GerencialCobranza;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Gerencial\CobranzaAgil;
+use App\Models\Administracion\Empresa as AdministracionEmpresa;
 use App\Models\Administracion\Periodo;
 use App\Models\almacen\DocumentoVenta;
 use App\Models\almacen\DocVentReq;
@@ -895,5 +896,79 @@ class RegistroController extends Controller
             ]);
         }
 
+    }
+    public function scriptEmpresa()
+    {
+        // return $empresa_agil = Contribuyente::where('nro_documento',10804138582)->first();exit;
+        $empresa_gerencial = Empresa::get();
+        // $empresa_agil      = DB::table('administracion.adm_empresa')
+        // ->select(
+        //     'adm_empresa.id_contribuyente',
+        //     'adm_empresa.codigo',
+        //     'adm_contri.razon_social'
+        // )
+        // ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+        // ->get();
+        $encontrados = array();
+        $faltantes = array();
+        $encontrados_administracion = array();
+        $faltantes_administracion = array();
+        foreach ($empresa_gerencial as $key => $value) {
+            $empresa_agil = Contribuyente::where('nro_documento',$value->ruc)->first();
+            if (!$empresa_agil) {
+                $empresa_agil = Contribuyente::where('razon_social',$value->nombre)->first();
+            }
+
+            if ($empresa_agil) {
+
+                array_push($encontrados,$empresa_agil);
+                $editar_empresa = Contribuyente::find($empresa_agil->id_contribuyente);
+                $editar_empresa->id_empresa_gerencial_old = $value->id_empresa;
+                $editar_empresa->save();
+
+                $administracion_empresa = DB::table('administracion.adm_empresa')->where('id_contribuyente',$empresa_agil->id_contribuyente)->first();
+
+                if (!$administracion_empresa) {
+                    array_push($faltantes_administracion,$administracion_empresa);
+                }else{
+                    array_push($encontrados_administracion,$administracion_empresa);
+                }
+            }else{
+                // return 'else';exit;
+                // return $empresa_agil;exit;
+                // return $empresa_agil = Contribuyente::where('nro_documento',$value->ruc)->first();exit;
+                array_push($faltantes,$value);
+
+                $guardar_contribuyente = new Contribuyente;
+                $guardar_contribuyente->nro_documento   =$value->ruc;
+                $guardar_contribuyente->razon_social    =$value->nombre;
+                $guardar_contribuyente->ubigeo          =0;
+                $guardar_contribuyente->id_pais         =170;
+                $guardar_contribuyente->fecha_registro  =date('Y-m-d H:i:s');
+                $guardar_contribuyente->id_empresa_gerencial_old    =$value->id_empresa;
+                $guardar_contribuyente->estado          =1;
+                $guardar_contribuyente->transportista   ='f';
+                $guardar_contribuyente->save();
+
+                $guardar_adm_empresa = new AdministracionEmpresa();
+                $guardar_adm_empresa->id_contribuyente  = $guardar_contribuyente->id_contribuyente;
+                $guardar_adm_empresa->codigo            = $value->codigo;
+                $guardar_adm_empresa->estado            = 1;
+                $guardar_adm_empresa->fecha_registro    = date('Y-m-d H:i:s');
+                $guardar_adm_empresa->logo_empresa      = ' ';
+                $guardar_adm_empresa->save();
+            }
+
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            // "gerencial"=>$empresa_gerencial,
+            // "encontrados"=>$encontrados,
+            // "faltantes"=>$faltantes,
+            "encontrados"=>$encontrados_administracion,
+            "faltantes"=>$faltantes_administracion,
+            // "agil"=>$empresa_agil
+        ]);
     }
 }

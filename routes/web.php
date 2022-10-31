@@ -1293,7 +1293,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('catalogoProductosExcel', function () {
 					return Excel::download(new CatalogoProductoExport, 'Catalogo_Productos.xlsx');
 				})->name('catalogoProductosExcel');
-				
+
 			});
 		});
 
@@ -2157,6 +2157,7 @@ Route::group(['middleware' => ['auth']], function () {
 			// });
             Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
             Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
+            Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
 
 
             Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
