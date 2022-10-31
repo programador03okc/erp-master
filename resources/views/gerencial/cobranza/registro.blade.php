@@ -886,7 +886,7 @@ Cobranzas
 								</div>
 							</div>
 							<div class="col-md-8">
-                                <select class="form-control" name="empresa" data-check="empresa" required>
+                                <select class="form-control" name="empresa" data-check="empresa" disabled>
                                     <option value="" disabled selected>Elija una opción</option>
                                     @foreach ($empresa as $item)
                                         <option value="{{$item->id_contribuyente }}">{{$item->razon_social }}</option>
@@ -898,12 +898,12 @@ Cobranzas
 						<div class="row">
 							<div class="col-md-4">
 								<div class="form-check">
-									<input type="checkbox" class="form-check-input select-check" id="checkEstado">
+									<input type="checkbox" class="form-check-input select-check" id="checkEstado" data-check="estado">
 									<label class="text-muted" for="checkEstado">Estado</label>
 								</div>
 							</div>
 							<div class="col-md-8">
-								<select class="form-control input-sm" name="fil_estado" id="fil_estado">
+								<select class="form-control input-sm" name="fil_estado" id="fil_estado" disabled>
 									<option value="1">EN TRAMITE</option>
 									<option value="2">PENDIENTE</option>
 									<option value="3">EN VERIFICACION</option>
@@ -917,12 +917,12 @@ Cobranzas
 						<div class="row">
 							<div class="col-md-4">
 								<div class="form-check">
-									<input type="checkbox" class="form-check-input select-check" id="checkFase">
+									<input type="checkbox" class="form-check-input select-check" id="checkFase" data-check="fase">
 									<label class="text-muted" for="checkFase">Fases</label>
 								</div>
 							</div>
 							<div class="col-md-8">
-								<select class="form-control input-sm" name="fil_fase" id="fil_fase">
+								<select class="form-control input-sm" name="fil_fase" id="fil_fase" disabled>
 									<option value="COMPROMISO">COMPROMISO</option>
 									<option value="DEVENGADO">DEVENGADO</option>
 									<option value="PAGADO">PAGADO</option>
@@ -933,33 +933,33 @@ Cobranzas
 						<div class="row">
 							<div class="col-md-4">
 								<div class="form-check">
-									<input type="checkbox" class="form-check-input select-check" id="checkEmi">
+									<input type="checkbox" class="form-check-input select-check" id="checkEmi" data-check="emision">
 									<label class="text-muted" for="checkEmi">Fecha Emisión</label>
 								</div>
 							</div>
 							<div class="col-md-4">
-								<input type="date" class="form-control input-sm" name="fil_emision_ini" id="fil_emision_ini">
+								<input type="date" class="form-control input-sm" name="fil_emision_ini" id="fil_emision_ini" disabled>
 							</div>
 							<div class="col-md-4">
-								<input type="date" class="form-control input-sm" name="fil_emision_fin" id="fil_emision_fin">
+								<input type="date" class="form-control input-sm" name="fil_emision_fin" id="fil_emision_fin" disabled>
 							</div>
 						</div>
 						<br>
 						<div class="row">
 							<div class="col-md-4">
 								<div class="form-check">
-									<input type="checkbox" class="form-check-input select-check" id="checkImporte">
+									<input type="checkbox" class="form-check-input select-check" id="checkImporte" data-check="importe">
 									<label class="text-muted" for="checkImporte">Importe</label>
 								</div>
 							</div>
 							<div class="col-md-2">
-								<select class="form-control input-sm" name="fil_simbol" id="fil_simbol">
+								<select class="form-control input-sm" name="fil_simbol" id="fil_simbol" disabled>
 									<option value="1"><</option>
 									<option value="2">></option>
 								</select>
 							</div>
 							<div class="col-md-6">
-								<input type="number" class="form-control input-sm" name="fil_importe" id="fil_importe" step="any" value="0">
+								<input type="number" class="form-control input-sm" name="fil_importe" id="fil_importe" step="any" value="0" disabled>
 							</div>
 						</div>
 					</div>

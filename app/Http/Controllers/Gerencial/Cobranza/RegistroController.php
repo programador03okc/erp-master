@@ -72,9 +72,13 @@ class RegistroController extends Controller
             return $empresa->razon_social;
             // return $data->empresa->nombre;
         })
-        // ->filterColumn('empresa', function ($query, $keyword) {
-        //     $keywords = trim(strtoupper($keyword));
-        //     $query->whereRaw("UPPER(CONCAT(rrhh_perso.nombres,' ', rrhh_perso.apellido_paterno,' ', rrhh_perso.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
+        // ->filterColumn('empresa', function($query, $keyword) {
+        //     $empresa            = DB::table('contabilidad.adm_contri')
+        //     ->where('adm_contri.razon_social','like',"%".$keyword."%")
+        //     ->first();
+
+        //     $sql = "registros_cobranzas.id_empresa = ";
+        //     $query->whereRaw($sql, ["$empresa->id_contribuyente"]);
         // })
 
         ->addColumn('cliente', function($data){
