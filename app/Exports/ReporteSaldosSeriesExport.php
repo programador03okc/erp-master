@@ -127,7 +127,7 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                         'disponible'            => ($saldo - $reserva),
                         'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  str_replace("'","",$d->almacen_descripcion) : '',
                         'count_series'          => count($series),
-                        'series'                => str_replace("'","",$strSeries)
+                        'series'                => str_replace(",","",$strSeries)
                     ];
                 }
             }
