@@ -1,4 +1,5 @@
 <?php
+
 use App\Exports\CatalogoProductoExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -989,7 +990,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('listar-archivos-adjuntos-pago-requerimiento/{idOrden}', 'OrdenController@listarArchivoAdjuntoPagoRequerimiento');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
-
 			});
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function () {
@@ -1293,7 +1293,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('catalogoProductosExcel', function () {
 					return Excel::download(new CatalogoProductoExport, 'Catalogo_Productos.xlsx');
 				})->name('catalogoProductosExcel');
-
 			});
 		});
 
@@ -1641,6 +1640,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listar', 'Almacen\Reporte\SaldosController@listar')->name('listar');
 				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\SaldosController@verRequerimientosReservados');
 				Route::get('exportar', 'Almacen\Reporte\SaldosController@exportar')->name('exportar');
+				Route::get('exportarSeries', 'Almacen\Reporte\SaldosController@exportarSeries')->name('exportarSeries');
 				Route::get('prueba_saldo', 'Almacen\Reporte\SaldosController@pruebaSaldo')->name('prueba_saldo');
 				Route::post('exportar-valorizacion', 'Almacen\Reporte\SaldosController@valorizacion')->name('exportar-valorizacion');
 			});
@@ -1740,7 +1740,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listar_stock_series', 'AlmacenController@listar_stock_series');
 				Route::get('prueba_exportar_excel', 'AlmacenController@obtener_data_stock_series');
 				Route::get('exportar_excel', 'AlmacenController@exportar_stock_series_excel');
-
 			});
 		});
 
@@ -2002,7 +2001,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('reistro-pagos-exportar-excel', 'Tesoreria\RegistroPagoController@registroPagosExportarExcel');
 				Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
-
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {
@@ -2082,8 +2080,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario')->name('listarUsuarios');
-        Route::post('validar-documento', 'ConfiguracionController@validarDocumento');
-        Route::post('validar-usuario', 'ConfiguracionController@validarUsuario');
+		Route::post('validar-documento', 'ConfiguracionController@validarDocumento');
+		Route::post('validar-usuario', 'ConfiguracionController@validarUsuario');
 		#asignar acceso a los usuarios
 		// Route::get('configuracion/usuarios/accesos/{id}', 'ConfiguracionController@usuarioAcceso')->name('accesos');
 		// Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
@@ -2716,7 +2714,13 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 Route::group(['as' => 'power-bi.', 'prefix' => 'power-bi'], function () {
-	Route::get('ventas', function () { return view('power-bi/ventas'); })->name('ventas');
-	Route::get('cobranzas', function () { return view('power-bi/cobranzas'); })->name('cobranzas');
-	Route::get('inventario', function () { return view('power-bi/inventario'); })->name('inventario');
+	Route::get('ventas', function () {
+		return view('power-bi/ventas');
+	})->name('ventas');
+	Route::get('cobranzas', function () {
+		return view('power-bi/cobranzas');
+	})->name('cobranzas');
+	Route::get('inventario', function () {
+		return view('power-bi/inventario');
+	})->name('inventario');
 });
