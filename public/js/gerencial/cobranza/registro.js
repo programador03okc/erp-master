@@ -40,17 +40,17 @@ function listarRegistros() {
         lengthChange: false,
         dom: vardataTables[1],
         buttons:[
-            // {
-            //     text: '<i class="fas fa-filter"></i> Filtros : 0',
-            //     attr: {
-            //         id: 'btnFiltros'
-            //     },
-            //     action: () => {
-            //         $('#modal-filtros').modal('show');
+            {
+                text: '<i class="fas fa-filter"></i> Filtros : 0',
+                attr: {
+                    id: 'btnFiltros'
+                },
+                action: () => {
+                    $('#modal-filtros').modal('show');
 
-            //     },
-            //     className: 'btn-default btn-sm'
-            // }
+                },
+                className: 'btn-default btn-sm'
+            }
         ],
         ajax: {
             url: "listar-registros",
@@ -946,5 +946,49 @@ $(document).on('click','.eliminar-fase',function () {
     })
 });
 $(document).on('change','.select-check',function () {
+    var key = $(this).attr('data-check')
+
+    switch (key) {
+        case 'empresa':
+            if ($(this).prop('checked')) {
+                $('#modal-filtros .modal-body [name="empresa"]').removeAttr('disabled');
+            }else{
+                $('#modal-filtros .modal-body [name="empresa"]').attr('disabled','true');
+            }
+            break;
+
+        case 'estado':
+            if ($(this).prop('checked')) {
+                $('#modal-filtros .modal-body [name="fil_estado"]').removeAttr('disabled');
+            }else{
+                $('#modal-filtros .modal-body [name="fil_estado"]').attr('disabled','true');
+            }
+            break;
+        case 'fase':
+            if ($(this).prop('checked')) {
+                $('#modal-filtros .modal-body [name="fil_fase"]').removeAttr('disabled');
+            }else{
+                $('#modal-filtros .modal-body [name="fil_fase"]').attr('disabled','true');
+            }
+            break;
+        case 'emision':
+            if ($(this).prop('checked')) {
+                $('#modal-filtros .modal-body [name="fil_emision_ini"]').removeAttr('disabled');
+                $('#modal-filtros .modal-body [name="fil_emision_fin"]').removeAttr('disabled');
+            }else{
+                $('#modal-filtros .modal-body [name="fil_emision_ini"]').attr('disabled','true');
+                $('#modal-filtros .modal-body [name="fil_emision_fin"]').attr('disabled','true');
+            }
+            break;
+        case 'importe':
+            if ($(this).prop('checked')) {
+                $('#modal-filtros .modal-body [name="fil_simbol"]').removeAttr('disabled');
+                $('#modal-filtros .modal-body [name="fil_importe"]').removeAttr('disabled');
+            }else{
+                $('#modal-filtros .modal-body [name="fil_simbol"]').attr('disabled','true');
+                $('#modal-filtros .modal-body [name="fil_importe"]').attr('disabled','true');
+            }
+            break;
+    }
     console.log($(this).val());
 });

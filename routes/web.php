@@ -2155,6 +2155,7 @@ Route::group(['middleware' => ['auth']], function () {
 			// });
             Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
             Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
+            Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
 
 
             Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
