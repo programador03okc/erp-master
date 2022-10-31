@@ -114,9 +114,9 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                         'id_producto'           => $d->id_producto,
                         'id_almacen'            => $d->id_almacen,
                         'codigo'                => ($d->codigo != null) ?  str_replace("'","",$d->codigo) : '',
-                        'cod_softlink'          => ($d->cod_softlink != null) ?  str_replace("'","",$d->cod_softlink) : '',
-                        'part_number'           => ($d->part_number != null) ?  str_replace("'","",trim($d->part_number)) : '',
-                        'producto'              => str_replace("'","",trim($d->producto)),
+                        'cod_softlink'          => ($d->cod_softlink != null) ?  str_replace("'", "", str_replace("", "" , $d->cod_softlink)) : '',
+                        'part_number'           => ($d->part_number != null) ?  str_replace("'", "", str_replace("", "", trim($d->part_number))) : '',
+                        'producto'              => str_replace("'", "", str_replace("", "", $d->producto)),
                         'categoria'             => str_replace("'","",trim($d->categoria)),
                         'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
                         'valorizacion'          => $saldo_valor,
@@ -127,7 +127,7 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                         'disponible'            => ($saldo - $reserva),
                         'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  str_replace("'","",$d->almacen_descripcion) : '',
                         'count_series'          => count($series),
-                        'series'                => str_replace(",","",$strSeries)
+                        'series'                => str_replace("'", "", str_replace("", "", $strSeries))
                     ];
                 }
             }
