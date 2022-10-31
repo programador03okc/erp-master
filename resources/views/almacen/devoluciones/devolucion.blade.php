@@ -18,9 +18,19 @@ Orden Devolución
 @endsection
 
 @section('content')
-
+@if (in_array(Auth::user()->id_usuario,[1,3,27,17,64,16,118,119,93,77,135]))
 @include('almacen.devoluciones.devolucionContenido')
-
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error de Accesos:</span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @include('almacen.devoluciones.devolucionModal')
 @include('almacen.customizacion.productoCatalogoModal')
 @include('almacen.devoluciones.contribuyenteModal')
