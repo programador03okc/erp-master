@@ -54,10 +54,24 @@ class RegistroController extends Controller
         $departamento = Departamento::get();
         return view('gerencial/cobranza/registro',compact('sector','tipo_ramite','empresa','periodo','estado_documento', 'pais', 'departamento'));
     }
-    public function listarRegistros()
+    public function listarRegistros(Request $request)
     {
         // $data = Cobranza::select('*')->orderBy('id_cobranza', 'desc');
+
         $data = RegistroCobranza::select('*')->orderBy('id_registro_cobranza', 'desc');
+        if (!empty($request->empresa)) {
+            $empresa = DB::table('contabilidad.adm_contri')
+            ->where('id_contribuyente',$request->empresa)
+            ->first();
+            $data = $data->where('id_empresa',$empresa->id_contribuyente)->orWhere('id_empresa_old',$empresa->id_empresa_gerencial_old);
+            // $data = $data->where('id_empresa_old',$empresa->id_empresa_gerencial_old);
+        }
+        if (!empty($request->estado)) {
+            $data = $data->where('id_estado_doc',$request->estado);
+        }
+        if (!empty($request->fase)) {
+            $data = $data->where('id_estado_doc',$request->fase);
+        }
         return DataTables::of($data)
         ->addColumn('empresa', function($data){
             $id_cliente =$data->id_empresa;
@@ -73,15 +87,6 @@ class RegistroController extends Controller
             return $empresa->razon_social;
             // return $data->empresa->nombre;
         })
-        // ->filterColumn('empresa', function($query, $keyword) {
-        //     $empresa            = DB::table('contabilidad.adm_contri')
-        //     ->where('adm_contri.razon_social','like',"%".$keyword."%")
-        //     ->first();
-
-        //     $sql = "registros_cobranzas.id_empresa = ";
-        //     $query->whereRaw($sql, ["$empresa->id_contribuyente"]);
-        // })
-
         ->addColumn('cliente', function($data){
             $id_cliente = $data->id_cliente;
             if (!$id_cliente) {

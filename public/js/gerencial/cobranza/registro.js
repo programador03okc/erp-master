@@ -3,12 +3,22 @@ let carga_ini = 1;
 var tempClienteSelected = {};
 var tempoNombreCliente = '';
 var userNickname= '';
-var empresa_filtro,
-    estado_filttro,
-    fase_filtro,
-    fecha_emision_filtro,
-    importe_simbolo_filtro,
-    importe_total_filtro;
+var data_filtros={
+    "empresa":null,
+    "estado":null,
+    "fase":null,
+    "fecha_emision_inicio":null,
+    "fecha_emision_fin":null,
+    "simbolo":null,
+    "importe":null
+};
+var empresa_filtro=null,
+    estado_filttro=null,
+    fase_filtro=null,
+    fecha_emision_inicio_filtro=null,
+    fecha_emision_fin_filtro=null,
+    importe_simbolo_filtro=null,
+    importe_total_filtro=null;
 $(document).ready(function () {
     // list();
     listarRegistros();
@@ -30,7 +40,7 @@ function list() {
         console.log(errorThrown);
     });
 }
-function listarRegistros() {
+function listarRegistros(filtros) {
     var vardataTables = funcDatatables();
         tableRequerimientos = $("#listar-registros").DataTable({
         language: vardataTables[0],
@@ -54,7 +64,23 @@ function listarRegistros() {
         ],
         ajax: {
             url: "listar-registros",
-            type: "POST"
+            type: "POST",
+            data:filtros,
+            // beforeSend : function(){
+            //     $("#listar-registros").LoadingOverlay("show", {
+            //         imageAutoResize: true,
+            //         progress: true,
+            //         imageColor: "#3c8dbc"
+            //     });
+            // }
+            beforeSend: data => {
+
+                $("#listar-registros").LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            }
         },
         columns: [
             {data: 'id_registro_cobranza', name:"id_registro_cobranza"},
@@ -102,7 +128,11 @@ function listarRegistros() {
             }
         ],
         order: [[1, "desc"]],
-        columnDefs: [{ aTargets: [0], sClass: "invisible" }]
+        columnDefs: [{ aTargets: [0], sClass: "invisible" }],
+        "drawCallback": function (settings) {
+
+            $("#listar-registros").LoadingOverlay("hide", true);
+        }
     });
 
 }
@@ -946,49 +976,85 @@ $(document).on('click','.eliminar-fase',function () {
     })
 });
 $(document).on('change','.select-check',function () {
-    var key = $(this).attr('data-check')
+    var key = $(this).attr('data-check'),
+        this_check = $(this);
+    checkFiltros(key,this_check);
+});
 
+$(document).on('change','[data-select="select"]',function () {
+    var key = $(this).attr('data-check'),
+        this_check = $(this).closest('div.row').find('[data-check="'+key+'"]');
+    checkFiltros(key,this_check);
+});
+function checkFiltros(key,this_check) {
     switch (key) {
         case 'empresa':
-            if ($(this).prop('checked')) {
+            if (this_check.prop('checked')) {
                 $('#modal-filtros .modal-body [name="empresa"]').removeAttr('disabled');
+                empresa_filtro = $('#modal-filtros .modal-body [name="empresa"]').val();
             }else{
                 $('#modal-filtros .modal-body [name="empresa"]').attr('disabled','true');
+                empresa_filtro = null;
             }
             break;
 
         case 'estado':
-            if ($(this).prop('checked')) {
+            if (this_check.prop('checked')) {
                 $('#modal-filtros .modal-body [name="fil_estado"]').removeAttr('disabled');
+                estado_filttro = $('#modal-filtros .modal-body [name="fil_estado"]').val();
             }else{
                 $('#modal-filtros .modal-body [name="fil_estado"]').attr('disabled','true');
+                estado_filttro = null;
             }
             break;
         case 'fase':
-            if ($(this).prop('checked')) {
+            if (this_check.prop('checked')) {
                 $('#modal-filtros .modal-body [name="fil_fase"]').removeAttr('disabled');
+                fase_filtro = $('#modal-filtros .modal-body [name="fil_fase"]').val();
             }else{
                 $('#modal-filtros .modal-body [name="fil_fase"]').attr('disabled','true');
+                fase_filtro = null;
             }
             break;
         case 'emision':
-            if ($(this).prop('checked')) {
+            if (this_check.prop('checked')) {
                 $('#modal-filtros .modal-body [name="fil_emision_ini"]').removeAttr('disabled');
                 $('#modal-filtros .modal-body [name="fil_emision_fin"]').removeAttr('disabled');
+                fecha_emision_inicio_filtro = $('#modal-filtros .modal-body [name="fil_emision_ini"]').val();
+                fecha_emision_fin_filtro = $('#modal-filtros .modal-body [name="fil_emision_fin"]').val();
             }else{
                 $('#modal-filtros .modal-body [name="fil_emision_ini"]').attr('disabled','true');
                 $('#modal-filtros .modal-body [name="fil_emision_fin"]').attr('disabled','true');
+                fecha_emision_inicio_filtro = null;
+                fecha_emision_fin_filtro = null;
             }
             break;
         case 'importe':
-            if ($(this).prop('checked')) {
+            if (this_check.prop('checked')) {
                 $('#modal-filtros .modal-body [name="fil_simbol"]').removeAttr('disabled');
                 $('#modal-filtros .modal-body [name="fil_importe"]').removeAttr('disabled');
+                importe_simbolo_filtro  =$('#modal-filtros .modal-body [name="fil_simbol"]').val();
+                importe_total_filtro    =$('#modal-filtros .modal-body [name="fil_importe"]').val();
             }else{
                 $('#modal-filtros .modal-body [name="fil_simbol"]').attr('disabled','true');
                 $('#modal-filtros .modal-body [name="fil_importe"]').attr('disabled','true');
+                importe_simbolo_filtro=null;
+                importe_total_filtro=null;
             }
             break;
     }
-    console.log($(this).val());
+    data_filtros={
+        "empresa":empresa_filtro,
+        "estado":estado_filttro,
+        "fase":fase_filtro,
+        "fecha_emision_inicio":fecha_emision_inicio_filtro,
+        "fecha_emision_fin":fecha_emision_fin_filtro,
+        "simbolo":importe_simbolo_filtro,
+        "importe":importe_total_filtro
+    };
+}
+
+$('#modal-filtros').on('hidden.bs.modal', () => {
+    listarRegistros(data_filtros);
+
 });

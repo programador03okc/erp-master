@@ -886,8 +886,8 @@ Cobranzas
 								</div>
 							</div>
 							<div class="col-md-8">
-                                <select class="form-control" name="empresa" data-check="empresa" disabled>
-                                    <option value="" disabled selected>Elija una opción</option>
+                                <select class="form-control" name="empresa" data-select="select" data-check="empresa" disabled>
+                                    <option value="">Elija una opción</option>
                                     @foreach ($empresa as $item)
                                         <option value="{{$item->id_contribuyente }}">{{$item->razon_social }}</option>
                                     @endforeach
@@ -903,7 +903,8 @@ Cobranzas
 								</div>
 							</div>
 							<div class="col-md-8">
-								<select class="form-control input-sm" name="fil_estado" id="fil_estado" disabled>
+								<select class="form-control input-sm" name="fil_estado" id="fil_estado" data-select="select" data-check="estado" disabled>
+                                    <option value="">Elija una opción</option>
 									<option value="1">EN TRAMITE</option>
 									<option value="2">PENDIENTE</option>
 									<option value="3">EN VERIFICACION</option>
@@ -922,7 +923,8 @@ Cobranzas
 								</div>
 							</div>
 							<div class="col-md-8">
-								<select class="form-control input-sm" name="fil_fase" id="fil_fase" disabled>
+								<select class="form-control input-sm" name="fil_fase" id="fil_fase" data-select="select" data-check="fase" disabled>
+                                    <option value="">Elija una opción</option>
 									<option value="COMPROMISO">COMPROMISO</option>
 									<option value="DEVENGADO">DEVENGADO</option>
 									<option value="PAGADO">PAGADO</option>
@@ -938,10 +940,10 @@ Cobranzas
 								</div>
 							</div>
 							<div class="col-md-4">
-								<input type="date" class="form-control input-sm" name="fil_emision_ini" id="fil_emision_ini" disabled>
+								<input type="date" class="form-control input-sm" name="fil_emision_ini" id="fil_emision_ini"  data-select="select" data-check="emision" disabled>
 							</div>
 							<div class="col-md-4">
-								<input type="date" class="form-control input-sm" name="fil_emision_fin" id="fil_emision_fin" disabled>
+								<input type="date" class="form-control input-sm" name="fil_emision_fin" id="fil_emision_fin" data-select="select" data-check="emision" disabled>
 							</div>
 						</div>
 						<br>
@@ -953,13 +955,13 @@ Cobranzas
 								</div>
 							</div>
 							<div class="col-md-2">
-								<select class="form-control input-sm" name="fil_simbol" id="fil_simbol" disabled>
+								<select class="form-control input-sm" name="fil_simbol" id="fil_simbol" data-select="select" data-check="importe" disabled>
 									<option value="1"><</option>
 									<option value="2">></option>
 								</select>
 							</div>
 							<div class="col-md-6">
-								<input type="number" class="form-control input-sm" name="fil_importe" id="fil_importe" step="any" value="0" disabled>
+								<input type="number" class="form-control input-sm" name="fil_importe" id="fil_importe" step="any" value="0" data-select="select" data-check="importe" disabled>
 							</div>
 						</div>
 					</div>
@@ -973,6 +975,7 @@ Cobranzas
 </div>
 @endsection
 @section('scripts')
+<script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
