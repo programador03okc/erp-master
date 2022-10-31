@@ -113,11 +113,11 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                     $data[] = [
                         'id_producto'           => $d->id_producto,
                         'id_almacen'            => $d->id_almacen,
-                        'codigo'                => ($d->codigo != null) ?  $d->codigo : '',
-                        'cod_softlink'          => ($d->cod_softlink != null) ?  $d->cod_softlink : '',
-                        'part_number'           => ($d->part_number != null) ?  trim($d->part_number) : '',
-                        'producto'              => trim($d->producto),
-                        'categoria'             => trim($d->categoria),
+                        'codigo'                => ($d->codigo != null) ?  str_replace("'","",$d->codigo) : '',
+                        'cod_softlink'          => ($d->cod_softlink != null) ?  str_replace("'","",$d->cod_softlink) : '',
+                        'part_number'           => ($d->part_number != null) ?  str_replace("'","",trim($d->part_number)) : '',
+                        'producto'              => str_replace("'","",trim($d->producto)),
+                        'categoria'             => str_replace("'","",trim($d->categoria)),
                         'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
                         'valorizacion'          => $saldo_valor,
                         'costo_promedio'        => $costo_promedio,
@@ -125,9 +125,9 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                         'stock'                 => $saldo,
                         'reserva'               => $reserva,
                         'disponible'            => ($saldo - $reserva),
-                        'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  $d->almacen_descripcion : '',
+                        'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  str_replace("'","",$d->almacen_descripcion) : '',
                         'count_series'          => count($series),
-                        'series'                => $strSeries
+                        'series'                => str_replace("'","",$strSeries)
                     ];
                 }
             }
