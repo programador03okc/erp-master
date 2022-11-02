@@ -356,7 +356,7 @@ class RevisarAprobarController extends Controller{
                     // Debugbar::info($idRolUsuarioList);
                     // Debugbar::info(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList));
 
-                    if (((count(array_intersect($nextIdRolAprobanteList, $idRolUsuarioList))) > 0) == true || (count(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList))) > 0) {
+                    if ( in_array(6,$idRolUsuarioList) || ((count(array_intersect($nextIdRolAprobanteList, $idRolUsuarioList))) > 0) == true || (count(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList))) > 0) {
 
 
                             $element->setAttribute('id_flujo',$nextIdFlujo);

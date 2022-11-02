@@ -17,6 +17,6 @@ class Cliente extends Model
     // ];
     public function cliente()
     {
-        return $this->belongsTo(Cobranza::class, 'id_cliente', 'id_cliente');
+        return $this->belongsTo(RegistroCobranza::class, 'id_cliente', 'id_cliente');
     }
 }

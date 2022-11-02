@@ -1,4 +1,5 @@
 <?php
+
 use App\Exports\CatalogoProductoExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -989,7 +990,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('listar-archivos-adjuntos-pago-requerimiento/{idOrden}', 'OrdenController@listarArchivoAdjuntoPagoRequerimiento');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
-
 			});
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function () {
@@ -1293,7 +1293,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('catalogoProductosExcel', function () {
 					return Excel::download(new CatalogoProductoExport, 'Catalogo_Productos.xlsx');
 				})->name('catalogoProductosExcel');
-				
 			});
 		});
 
@@ -1641,6 +1640,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listar', 'Almacen\Reporte\SaldosController@listar')->name('listar');
 				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\SaldosController@verRequerimientosReservados');
 				Route::get('exportar', 'Almacen\Reporte\SaldosController@exportar')->name('exportar');
+				Route::get('exportarSeries', 'Almacen\Reporte\SaldosController@exportarSeries')->name('exportarSeries');
 				Route::get('prueba_saldo', 'Almacen\Reporte\SaldosController@pruebaSaldo')->name('prueba_saldo');
 				Route::post('exportar-valorizacion', 'Almacen\Reporte\SaldosController@valorizacion')->name('exportar-valorizacion');
 			});
@@ -1740,7 +1740,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listar_stock_series', 'AlmacenController@listar_stock_series');
 				Route::get('prueba_exportar_excel', 'AlmacenController@obtener_data_stock_series');
 				Route::get('exportar_excel', 'AlmacenController@exportar_stock_series_excel');
-
 			});
 		});
 
@@ -2002,7 +2001,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('reistro-pagos-exportar-excel', 'Tesoreria\RegistroPagoController@registroPagosExportarExcel');
 				Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
-
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {
@@ -2082,8 +2080,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario')->name('listarUsuarios');
-        Route::post('validar-documento', 'ConfiguracionController@validarDocumento');
-        Route::post('validar-usuario', 'ConfiguracionController@validarUsuario');
+		Route::post('validar-documento', 'ConfiguracionController@validarDocumento');
+		Route::post('validar-usuario', 'ConfiguracionController@validarUsuario');
 		#asignar acceso a los usuarios
 		// Route::get('configuracion/usuarios/accesos/{id}', 'ConfiguracionController@usuarioAcceso')->name('accesos');
 		// Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
@@ -2108,6 +2106,7 @@ Route::group(['middleware' => ['auth']], function () {
         // scripts a ejecutar
         Route::get('prueba', 'ConfiguracionController@prueba');
         Route::get('scripts/{var}', 'ConfiguracionController@scripts');
+        Route::get('scripts-usuario', 'ConfiguracionController@scriptsAccesos');
         // ----fin de scripts
 		Route::group(['as' => 'accesos.', 'prefix' => 'accesos'], function () {
 			Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
@@ -2133,15 +2132,39 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
 			Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
+
 			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
-			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros')->name('listar');
-			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes')->name('listar');
-			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente')->name('listar');
+			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
+			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
+			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente');
+
+            Route::get('provincia/{id_departamento}', 'Gerencial\Cobranza\RegistroController@provincia');
+            Route::get('distrito/{id_provincia}', 'Gerencial\Cobranza\RegistroController@distrito');
+            Route::get('get-cliente/{id_cliente}', 'Gerencial\Cobranza\RegistroController@getCliente');
+            Route::get('buscar-factura/{factura}', 'Gerencial\Cobranza\RegistroController@getFactura');
+            Route::get('buscar-registro/{input}/{tipo}', 'Gerencial\Cobranza\RegistroController@getRegistro');
+            Route::get('seleccionar-registro/{id_requerimiento}', 'Gerencial\Cobranza\RegistroController@selecconarRequerimiento');
+            // registro de cobranza
+            Route::post('guardar-registro-cobranza', 'Gerencial\Cobranza\RegistroController@guardarRegistroCobranza');
+            Route::get('actualizar-ven-doc-req', 'Gerencial\Cobranza\RegistroController@actualizarDocVentReq');
+            Route::post('editar-cliente','Gerencial\Cobranza\RegistroController@editarCliente');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			// });
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
 
 			// });
+            Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
+            Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
+            Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
+
+
+            Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
+            Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
+            Route::post('guardar-fase', 'Gerencial\Cobranza\RegistroController@guardarFase');
+            Route::get('obtener-fase/{id}', 'Gerencial\Cobranza\RegistroController@obtenerFase');
+            Route::post('eliminar-fase', 'Gerencial\Cobranza\RegistroController@eliminarFase');
+
+            // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 		});
 	});
 	Route::get('config', function () {
@@ -2691,7 +2714,13 @@ Route::group(['middleware' => ['auth']], function () {
 });
 
 Route::group(['as' => 'power-bi.', 'prefix' => 'power-bi'], function () {
-	Route::get('ventas', function () { return view('power-bi/ventas'); })->name('ventas');
-	Route::get('cobranzas', function () { return view('power-bi/cobranzas'); })->name('cobranzas');
-	Route::get('inventario', function () { return view('power-bi/inventario'); })->name('inventario');
+	Route::get('ventas', function () {
+		return view('power-bi/ventas');
+	})->name('ventas');
+	Route::get('cobranzas', function () {
+		return view('power-bi/cobranzas');
+	})->name('cobranzas');
+	Route::get('inventario', function () {
+		return view('power-bi/inventario');
+	})->name('inventario');
 });
