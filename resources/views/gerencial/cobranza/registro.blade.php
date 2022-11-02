@@ -973,6 +973,75 @@ Cobranzas
 		</div>
 	</div>
 </div>
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-penalidad-cobro">
+	<div class="modal-dialog" style="width: 700px;">
+		<div class="modal-content">
+			<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title">Penalidad / Retención / Detracción</h3>
+			</div>
+			<div class="modal-body">
+                <form action="" data-form="guardar-penalidad">
+                    <input type="hidden" name="id_cobranza_penal">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Tipo : </label>
+                                <select class="form-control input-sm" name="tipo_penal" id="tipo_penal" required>
+                                    <option value="0" selected disabled>Elija una opción</option>
+                                    <option value="PENALIDAD">PENALIDAD</option>
+                                    <option value="RETENCION">RETENCION</option>
+                                    <option value="DETRACCION">DETRACCION</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Fecha :</label>
+                                <input type="date" class="form-control input-sm" name="fecha_penal" id="fecha_penal" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>N° Comp.</label>
+                                <input type="text" class="form-control input-sm" name="doc_penal" id="doc_penal" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Importe</label>
+                                <input type="number" class="form-control input-sm" name="importe_penal" id="importe_penal" step="any" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Detalle</label>
+                                <textarea class="form-control input-sm" name="obs_penal" id="obs_penal" rows="3" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-block btn-sm btn-success">Grabar Penalidad <span class="fa fa-save"></span></button>
+                        </div>
+                    </div>
+                </form>
+				<div class="row">
+					<div class="col-md-12">
+						<fieldset><legend><h4>1° Historial de Penalidades</h4></legend>
+							<table class="table table-bordered table-hover table-aux" id="result-penal">
+								<thead><tr><th>Tipo</th><th width="80">Comprobante</th><th width="100">Importe</th><th width="100">Fecha</th></tr></thead>
+								<tbody></tbody>
+							</table>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 @endsection
 @section('scripts')
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>

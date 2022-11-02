@@ -66,15 +66,7 @@ function listarRegistros(filtros) {
             url: "listar-registros",
             type: "POST",
             data:filtros,
-            // beforeSend : function(){
-            //     $("#listar-registros").LoadingOverlay("show", {
-            //         imageAutoResize: true,
-            //         progress: true,
-            //         imageColor: "#3c8dbc"
-            //     });
-            // }
             beforeSend: data => {
-
                 $("#listar-registros").LoadingOverlay("show", {
                     imageAutoResize: true,
                     progress: true,
@@ -121,6 +113,10 @@ function listarRegistros(filtros) {
                     html='';
                         html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-edit"></i></button>';
                         html+='<button type="button" class="btn btn-primary btn-flat botonList modal-fase" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-comments"></i></button>';
+                        if (row['id_estado_doc'] ===5) {
+                            html+='<button type="button" class="btn btn btn-flat botonList modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-exclamation-triangle text-black"></i></button>'
+                        }
+
                     html+='';
                     return html;
                 },
@@ -1056,5 +1052,26 @@ function checkFiltros(key,this_check) {
 
 $('#modal-filtros').on('hidden.bs.modal', () => {
     listarRegistros(data_filtros);
-
+});
+$(document).on('click','.modal-penalidad',function () {
+    var id = $(this).attr('data-id');
+    $('#modal-penalidad-cobro input[name="id_cobranza_penal"]').val(id);
+    $('#modal-penalidad-cobro').modal('show');
+});
+$(document).on('submit','[data-form="guardar-penalidad"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'guardar-penalidad',
+        data: data,
+        dataType: 'JSON'
+    }).done(function( data ) {
+        console.log(data);
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
 });

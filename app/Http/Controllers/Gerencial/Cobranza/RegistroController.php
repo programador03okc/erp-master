@@ -58,19 +58,39 @@ class RegistroController extends Controller
     {
         // $data = Cobranza::select('*')->orderBy('id_cobranza', 'desc');
 
-        $data = RegistroCobranza::select('*')->orderBy('id_registro_cobranza', 'desc');
+        $data = RegistroCobranza::select('registros_cobranzas.*')->orderBy('id_registro_cobranza', 'desc');
         if (!empty($request->empresa)) {
             $empresa = DB::table('contabilidad.adm_contri')
             ->where('id_contribuyente',$request->empresa)
             ->first();
-            $data = $data->where('id_empresa',$empresa->id_contribuyente)->orWhere('id_empresa_old',$empresa->id_empresa_gerencial_old);
+            $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente)->orWhere('registros_cobranzas.id_empresa_old',$empresa->id_empresa_gerencial_old);
             // $data = $data->where('id_empresa_old',$empresa->id_empresa_gerencial_old);
         }
         if (!empty($request->estado)) {
-            $data = $data->where('id_estado_doc',$request->estado);
+            $data = $data->where('registros_cobranzas.id_estado_doc',$request->estado);
         }
         if (!empty($request->fase)) {
-            $data = $data->where('id_estado_doc',$request->fase);
+            $fase_text = $request->fase;
+            $data = $data->join('gerencia_cobranza.cobranza_fase', function ($join) use($fase_text){
+                $join->on('cobranza_fase.id_registro_cobranza', '=', 'registros_cobranzas.id_registro_cobranza')
+                    ->orOn('cobranza_fase.id_cobranza', '=', 'registros_cobranzas.id_cobranza_old');
+            });
+            $data->where('cobranza_fase.fase', 'like' ,'%'.$fase_text.'%')
+            ->where('cobranza_fase.estado',1);
+        }
+        if (!empty($request->fecha_emision_inicio)) {
+            $data = $data->where('registros_cobranzas.fecha_emision','>=',$request->fecha_emision_inicio);
+        }
+        if (!empty($request->fecha_emision_fin)) {
+            $data = $data->where('registros_cobranzas.fecha_emision','<=',$request->fecha_emision_fin);
+        }
+        if (!empty($request->simbolo) && (int)$request->simbolo=== 1 ) {
+            $importe = $request->importe!==''||$request->importe!==null?$request->importe:0;
+            $data = $data->where('registros_cobranzas.importe','<',(int) $importe);
+        }
+        if (!empty($request->simbolo) && (int)$request->simbolo=== 2 ) {
+            $importe = $request->importe!==''||$request->importe!==null?$request->importe:0;
+            $data = $data->where('registros_cobranzas.importe','>',(int) $importe);
         }
         return DataTables::of($data)
         ->addColumn('empresa', function($data){
@@ -116,9 +136,9 @@ class RegistroController extends Controller
             return $area_responsable_nombre->descripcion;
          })
         ->addColumn('fase', function($data) {
-            $fase = CobanzaFase::where('id_cobranza', $data->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->orderBy('id_fase', 'desc')->first();
+            $fase = CobanzaFase::where('id_cobranza', $data->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->first();
             if (!$fase) {
-                $fase = CobanzaFase::where('id_registro_cobranza', $data->id_registro_cobranza)->where('estado',1)->orderBy('id_fase', 'desc')->first();
+                $fase = CobanzaFase::where('id_registro_cobranza', $data->id_registro_cobranza)->where('estado',1)->first();
             }
             return ($fase?$fase->fase : '-');
             // return ($fase?$fase->fase[0] : '-');
@@ -836,9 +856,9 @@ class RegistroController extends Controller
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
         // return $registro_cobranza;
         if ($registro_cobranza) {
-            $cobranzas_fases = CobanzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->get();
+            $cobranzas_fases = CobanzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado','!=',0)->get();
             if (sizeof($cobranzas_fases)===0) {
-                $cobranzas_fases = CobanzaFase::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado',1)->get();
+                $cobranzas_fases = CobanzaFase::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado','!=',0)->get();
             }
             if (sizeof($cobranzas_fases)>0) {
                 return response()->json([
@@ -867,6 +887,13 @@ class RegistroController extends Controller
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$request->id_registro_cobranza)->first();
         // $cobranza_fase = CobanzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->first();
+        DB::table('gerencia_cobranza.cobranza_fase')
+            ->where('id_registro_cobranza', $registro_cobranza->id_registro_cobranza)
+            ->update(['estado' => 2]);
+        DB::table('gerencia_cobranza.cobranza_fase')
+            ->where('id_cobranza', $registro_cobranza->id_cobranza_old)
+            ->where('id_cobranza','!=' , null)
+            ->update(['estado' => 2]);
         $cobranza_fase          = new CobanzaFase();
         if ($registro_cobranza) {
             $cobranza_fase->id_cobranza    = $registro_cobranza->id_cobranza_old;
@@ -974,6 +1001,53 @@ class RegistroController extends Controller
             "encontrados"=>$encontrados_administracion,
             "faltantes"=>$faltantes_administracion,
             // "agil"=>$empresa_agil
+        ]);
+    }
+    public function scriptFase()
+    {
+        $cobranza_fase_id_cobranza = DB::table('gerencia_cobranza.cobranza_fase')
+        ->select('id_cobranza')
+        ->where('id_cobranza','!=',null)
+        ->where('estado',1)
+        ->orderBy('id_cobranza','DESC')
+        ->groupBy('id_cobranza')
+        ->get();
+        $array_id_conbranza = [];
+        foreach ($cobranza_fase_id_cobranza as $key => $value) {
+            array_push($array_id_conbranza,$value->id_cobranza);
+        }
+        $array_cambios=array();
+        foreach ($array_id_conbranza as $key => $value) {
+            $cobranza_fase = CobanzaFase::where('id_cobranza',$value)->where('estado',1)->orderBy('id_fase','DESC')->get();
+            foreach ($cobranza_fase as $key => $value) {
+                if ($key!==0) {
+                    // array_push($array_cambios,array(
+                    //     "id_fase"=> $value->id_fase,
+                    //     "id_cobranza"=> $value->id_cobranza,
+                    //     "fase"=> $value->fase,
+                    //     "fecha"=> $value->fecha,
+                    //     "estado"=> 2,
+                    //     "fecha_registro"=> $value->fecha_registro,
+                    //     "id_registro_cobranza"=> $value->id_registro_cobranza
+                    // ));
+                    DB::table('gerencia_cobranza.cobranza_fase')
+                    ->where('id_fase', $value->id_fase)
+                    ->update(['estado' => 2]);
+                }
+            }
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            // "fase"=>$array_cambios,
+            "id"=>$array_id_conbranza
+        ]);
+    }
+    public function guardarPenalidad(Request $request)
+    {
+        return response()->json([
+            "status"=>200,
+            "success"=>true,
         ]);
     }
 }

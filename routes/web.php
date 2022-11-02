@@ -2156,6 +2156,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
             Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
             Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
+            Route::get('script-fase', 'Gerencial\Cobranza\RegistroController@scriptFase');
 
 
             Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
@@ -2163,6 +2164,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('guardar-fase', 'Gerencial\Cobranza\RegistroController@guardarFase');
             Route::get('obtener-fase/{id}', 'Gerencial\Cobranza\RegistroController@obtenerFase');
             Route::post('eliminar-fase', 'Gerencial\Cobranza\RegistroController@eliminarFase');
+            Route::post('guardar-penalidad', 'Gerencial\Cobranza\RegistroController@guardarPenalidad');
 
             // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 		});
