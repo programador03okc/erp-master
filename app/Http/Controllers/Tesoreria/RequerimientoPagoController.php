@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Tesoreria;
 
+use App\Exports\ListadoItemsRequerimientoPagoExport;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Exports\ListadoRequerimientoPagoExport;
@@ -292,6 +293,7 @@ class RequerimientoPagoController extends Controller
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->fecha_registro = new Carbon();
                 $detalle->id_estado = 1;
+                $detalle->motivo = $request->motivo[$i];
                 $detalle->save();
                 $detalle->idRegister = $request->idRegister[$i];
                 $detalleArray[] = $detalle;
@@ -547,6 +549,7 @@ class RequerimientoPagoController extends Controller
                     $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                     $detalle->fecha_registro = new Carbon();
                     $detalle->id_estado = 1;
+                    $detalle->motivo = $request->motivo[$i];
                     $detalle->save();
                     $detalle->idRegister = $request->idRegister[$i];
                     $detalleArray[] = $detalle;
@@ -570,6 +573,7 @@ class RequerimientoPagoController extends Controller
                         $detalle->cantidad = $request->cantidad[$i];
                         $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                         $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
+                        $detalle->motivo = $request->motivo[$i];
                         $detalle->save();
                         $detalle->idRegister = $request->idRegister[$i];
                         $detalleArray[] = $detalle;
@@ -1220,6 +1224,10 @@ class RequerimientoPagoController extends Controller
         # code...
         return Excel::download(new ListadoRequerimientoPagoExport($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado), 'listado_requerimiento_pago.xlsx');;
     }
+    public function listadoItemsRequerimientoPagoExportExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
+    {
+        return Excel::download(new ListadoItemsRequerimientoPagoExport($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado), 'listado_items_requerimiento_pago.xlsx');;
+    }
     public function obtenerRequerimientosElaborados($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
     {
         # code...
@@ -1303,7 +1311,7 @@ class RequerimientoPagoController extends Controller
         return $data;
 
     }
-    public function obtenerRequerimientosElaboradosDetalle($id_requerimiento_pago)
+    public function obtenerRequerimientosPagoElaboradosConDetalle($id_requerimiento_pago)
     {
         // $id_requerimiento_pago=50;
         // $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')
@@ -1375,6 +1383,99 @@ class RequerimientoPagoController extends Controller
 
         // return $requerimientoPago->detalle = $detalleRequerimientoPagoList;
         return $requerimientoPago;
+    }
+    public function obtenerItemsRequerimientoPagoElaborados($meOrAll,$idEmpresa,$idSede,$idGrupo,$idDivision,$fechaRegistroDesde,$fechaRegistroHasta,$idEstado)
+    {
+
+        $detalleRequerimientoPagoList_2 = DB::table('tesoreria.requerimiento_pago_detalle')
+        ->leftJoin('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'requerimiento_pago_detalle.id_requerimiento_pago')
+        ->leftJoin('configuracion.sis_moneda', 'requerimiento_pago.id_moneda', '=', 'sis_moneda.id_moneda')
+        ->leftJoin('administracion.adm_prioridad', 'requerimiento_pago.id_prioridad', '=', 'adm_prioridad.id_prioridad')
+        ->leftJoin('configuracion.sis_grupo', 'requerimiento_pago.id_grupo', '=', 'sis_grupo.id_grupo')
+        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
+        ->leftJoin('administracion.division', 'division.id_division', '=', 'requerimiento_pago.id_division')
+        ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'requerimiento_pago.id_proyecto')
+        ->leftJoin('administracion.adm_empresa', 'requerimiento_pago.id_empresa', '=', 'adm_empresa.id_empresa')
+        ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
+
+        ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'requerimiento_pago.id_cc')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('tesoreria.requerimiento_pago_tipo', 'requerimiento_pago_tipo.id_requerimiento_pago_tipo', '=', 'requerimiento_pago.id_requerimiento_pago_tipo')
+
+        ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'requerimiento_pago_detalle.id_partida')
+        ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'requerimiento_pago_detalle.id_centro_costo')
+
+        ->select(
+            'requerimiento_pago_detalle.descripcion',
+            'requerimiento_pago_detalle.motivo',
+            'requerimiento_pago_detalle.cantidad',
+            'requerimiento_pago_detalle.precio_unitario',
+            'requerimiento_pago_detalle.subtotal',
+            'requerimiento_pago_detalle.fecha_registro',
+            'adm_prioridad.descripcion as prioridad',
+            'requerimiento_pago_tipo.descripcion AS tipo_requerimiento',
+
+            'requerimiento_pago.codigo',
+            'oportunidades.codigo_oportunidad',
+            'requerimiento_pago.concepto',
+            'requerimiento_pago.comentario',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'sis_sede.codigo as sede',
+            'sis_sede.descripcion as descripcion_empresa_sede',
+            'adm_contri.razon_social as empresa_razon_social',
+            'sis_identi.descripcion as empresa_tipo_documento',
+            'proy_proyecto.descripcion AS descripcion_proyecto',
+            'sis_grupo.descripcion as grupo',
+            'division.descripcion as division',
+            'requerimiento_pago.monto_total',
+            'presup_par.codigo as partida',
+            'presup_par.id_partida',
+            'centro_costo.codigo as c_costo',
+            'centro_costo.id_centro_costo'
+        )
+        ->when(($meOrAll === 'ME'), function ($query) {
+            $idUsuario = Auth::user()->id_usuario;
+            return $query->whereRaw('requerimiento_pago.id_usuario = ' . $idUsuario);
+        })
+        ->when(($meOrAll === 'ALL'), function ($query) {
+            return $query->whereRaw('requerimiento_pago.id_usuario > 0');
+        })
+        ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
+            return $query->whereRaw('requerimiento_pago.id_empresa = ' . $idEmpresa);
+        })
+        ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
+            return $query->whereRaw('requerimiento_pago.id_sede = ' . $idSede);
+        })
+        ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
+            return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
+        })
+        ->when((intval($idDivision) > 0), function ($query)  use ($idDivision) {
+            return $query->whereRaw('requerimiento_pago.division_id = ' . $idDivision);
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+            return $query->where('requerimiento_pago.fecha_registro', '>=', $fechaRegistroDesde);
+        })
+        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+            return $query->where('requerimiento_pago.fecha_registro', '<=', $fechaRegistroHasta);
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+            return $query->whereBetween('requerimiento_pago.fecha_registro', [$fechaRegistroDesde, $fechaRegistroHasta]);
+        })
+
+        ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
+            return $query->whereRaw('requerimiento_pago.id_estado = ' . $idEstado);
+        })
+        ->where([['requerimiento_pago_detalle.id_estado','!=',7],['requerimiento_pago.id_estado','!=',7]])
+        ->orderBy('requerimiento_pago_detalle.fecha_registro','desc')
+        ->get();
+
+        // $requerimientoPago = DB::table('tesoreria.requerimiento_pago')
+        // ->select('requerimiento_pago.id_requerimiento_pago', 'requerimiento_pago.fecha_autorizacion')
+        // ->where('id_requerimiento_pago', $id_requerimiento_pago)
+        // ->first();
+
+        return $detalleRequerimientoPagoList_2;
     }
 
     public function ordenesPago($id)
