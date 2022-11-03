@@ -357,4 +357,52 @@ class MigrateProductoSoftlinkController extends Controller
         }
         return $zeros . $number;
     }
+
+    public function actualizarFechasIngresoSoft()
+    {
+        try {
+            DB::beginTransaction();
+
+            $productos = DB::table('almacen.alm_prod_serie')
+                ->select('alm_prod_serie.serie', 'alm_prod.id_producto', 'alm_prod.cod_softlink')
+                ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
+                ->whereNull('id_guia_ven_det')
+                ->whereNull('id_guia_com_det')
+                ->whereNull('id_sobrante')
+                ->whereNull('id_base')
+                ->where('alm_prod_serie.estado', 1)
+                ->where('alm_prod.cod_softlink', '011626')
+                ->get();
+
+            foreach ($productos as $p) {
+
+                $prod = DB::connection('soft')->table('series')
+                    ->select('series.fecha_ing', 'detmov.pre_prod')
+                    ->join('detmov', function ($join) {
+                        $join->on('detmov.mov_id', '=', 'series.id_ingreso');
+                    })
+                    ->where('detmov.cod_prod', strval($p->cod_softlink))
+                    ->where('series.serie', strval($p->serie))
+                    ->orderBy('series.fecha_ing', 'asc')
+                    ->first();
+
+                if ($prod !== null) {
+                    $fec = $prod->fecha_ing;
+                    $pre = $prod->pre_prod;
+                    DB::table('almacen.alm_prod_serie')
+                        ->where('id_prod', $p->id_producto)
+                        ->update([
+                            'fecha_ingreso_soft' => $fec,
+                            'precio_unitario_soft' => $pre,
+                        ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json(array('tipo' => 'success', 'mensaje' => 'Se actualizó correctamente '));
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(array('tipo' => 'error', 'mensaje' => 'Hubo un problema al enviar el producto. Por favor intente de nuevo', 'error' => $e->getMessage()));
+        }
+    }
 }
