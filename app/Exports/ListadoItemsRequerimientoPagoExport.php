@@ -36,21 +36,9 @@ class ListadoItemsRequerimientoPagoExport implements FromView
         $fechaRegistroDesde = $this->fechaRegistroDesde;
         $fechaRegistroHasta = $this->fechaRegistroHasta;
         $idEstado = $this->idEstado;
-        $requerimientos = (new RequerimientoPagoController)->obtenerRequerimientosElaborados($meOrAll,$idEmpresa,$idSede,$idGrupo,$idDivision,$fechaRegistroDesde,$fechaRegistroHasta,$idEstado)->orderBy('fecha_registro','desc')->get();
 
         $data=[];
-        $requerimientosDetalle_array=[];
-        foreach($requerimientos as $element){
-
-
-            $requerimientosDetalle = (new RequerimientoPagoController)->obtenerItemsRequerimientoPagoElaborados($element->id_requerimiento_pago);
-
-            $ordenesPago = (new RequerimientoPagoController)->ordenesPago($element->id_requerimiento_pago);
-            $pago_total = 0;
-            foreach ($ordenesPago as $key => $value) {
-                $pago_total = $pago_total + $value->total_pago;
-            }
-            $pago_total = round($pago_total,2);
+            $requerimientosDetalle = (new RequerimientoPagoController)->obtenerItemsRequerimientoPagoElaborados($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado);   
 
             foreach ($requerimientosDetalle as $key => $value) {
 
@@ -76,8 +64,6 @@ class ListadoItemsRequerimientoPagoExport implements FromView
                 ];
             }
 
-
-        }
 
         return view('necesidades.reportes.listado_items_requerimiento_pago_export_excel', [
             'items'        =>  $data

@@ -1384,7 +1384,7 @@ class RequerimientoPagoController extends Controller
         // return $requerimientoPago->detalle = $detalleRequerimientoPagoList;
         return $requerimientoPago;
     }
-    public function obtenerItemsRequerimientoPagoElaborados($id_requerimiento_pago)
+    public function obtenerItemsRequerimientoPagoElaborados($meOrAll,$idEmpresa,$idSede,$idGrupo,$idDivision,$fechaRegistroDesde,$fechaRegistroHasta,$idEstado)
     {
 
         $detalleRequerimientoPagoList_2 = DB::table('tesoreria.requerimiento_pago_detalle')
@@ -1434,7 +1434,40 @@ class RequerimientoPagoController extends Controller
             'centro_costo.codigo as c_costo',
             'centro_costo.id_centro_costo'
         )
-        ->where('requerimiento_pago_detalle.id_requerimiento_pago', $id_requerimiento_pago)
+        ->when(($meOrAll === 'ME'), function ($query) {
+            $idUsuario = Auth::user()->id_usuario;
+            return $query->whereRaw('requerimiento_pago.id_usuario = ' . $idUsuario);
+        })
+        ->when(($meOrAll === 'ALL'), function ($query) {
+            return $query->whereRaw('requerimiento_pago.id_usuario > 0');
+        })
+        ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
+            return $query->whereRaw('requerimiento_pago.id_empresa = ' . $idEmpresa);
+        })
+        ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
+            return $query->whereRaw('requerimiento_pago.id_sede = ' . $idSede);
+        })
+        ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
+            return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
+        })
+        ->when((intval($idDivision) > 0), function ($query)  use ($idDivision) {
+            return $query->whereRaw('requerimiento_pago.division_id = ' . $idDivision);
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+            return $query->where('requerimiento_pago.fecha_registro', '>=', $fechaRegistroDesde);
+        })
+        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+            return $query->where('requerimiento_pago.fecha_registro', '<=', $fechaRegistroHasta);
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+            return $query->whereBetween('requerimiento_pago.fecha_registro', [$fechaRegistroDesde, $fechaRegistroHasta]);
+        })
+
+        ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
+            return $query->whereRaw('requerimiento_pago.id_estado = ' . $idEstado);
+        })
+        ->where([['requerimiento_pago_detalle.id_estado','!=',7],['requerimiento_pago.id_estado','!=',7]])
+        ->orderBy('requerimiento_pago_detalle.fecha_registro','desc')
         ->get();
 
         // $requerimientoPago = DB::table('tesoreria.requerimiento_pago')
