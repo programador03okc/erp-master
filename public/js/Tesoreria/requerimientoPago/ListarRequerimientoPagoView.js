@@ -500,8 +500,12 @@ class ListarRequerimientoPagoView {
 
     }
 
-    descargarListaRequerimientosElaboradosExcel() {
+    descargarListaCabeceraRequerimientoPagoElaboradosExcel() {
         window.open(`listado-requerimientos-pagos-export-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
+
+    }
+    descargarListaItemsRequerimientoPagoElaboradosExcel() {
+        window.open(`listado-items-requerimientos-pagos-export-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
 
     }
 
@@ -534,15 +538,28 @@ class ListarRequerimientoPagoView {
                 },
                 className: 'btn-default btn-sm'
             }:[]),
-            button_descargar_excel = (array_accesos.find(element => element === 22)?{
-                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+            button_descargar_excel_cabecera = (array_accesos.find(element => element === 22)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel cabecera',
                 attr: {
                     id: 'btnDescargarListaRequerimientosElaboradosExcel'
                 },
                 action: () => {
-                    this.descargarListaRequerimientosElaboradosExcel();
+                    this.descargarListaCabeceraRequerimientoPagoElaboradosExcel();
 
                 },
+                
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel_items = (array_accesos.find(element => element === 22)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel item',
+                attr: {
+                    id: 'btnDescargarListaRequerimientosElaboradosExcel'
+                },
+                action: () => {
+                    this.descargarListaItemsRequerimientoPagoElaboradosExcel();
+
+                },
+                
                 className: 'btn-default btn-sm'
             }:[]);
         $tablaListaRequerimientoPago = $('#ListaRequerimientoPago').DataTable({
@@ -561,7 +578,7 @@ class ListarRequerimientoPagoView {
                 //     },
                 //     className: 'btn-success btn-sm'
                 // }
-                ,button_filtros,button_descargar_excel
+                ,button_filtros,button_descargar_excel_cabecera,button_descargar_excel_items
             ],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
