@@ -2800,7 +2800,11 @@ class AlmacenController extends Controller
         $movimientos = [];
         $codigo = '';
 
+        $costo_promedio = 0;
+        $saldo_valor_aux = 0;
+        $valor_salida=0;
         foreach ($query as $d) {
+
 
             if ($d->prod_codigo !== $codigo) {
                 $saldo = 0;
@@ -2808,6 +2812,7 @@ class AlmacenController extends Controller
             }
             $ordenes = "";
             $comprobantes_array = [];
+
 
             if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) {
                 $saldo += $d->cantidad;
@@ -2841,10 +2846,18 @@ class AlmacenController extends Controller
                         array_push($comprobantes_array, $doc->serie . '-' . $doc->numero);
                     }
                 }
+                $saldo_valor_aux += $d->valorizacion;
             } else if ($d->id_tp_mov == 2) {
                 $saldo -= $d->cantidad;
                 $saldo_valor -= $d->valorizacion;
+
+                $valor_salida = (int) $costo_promedio * (int) $d->cantidad;
+                $saldo_valor_aux -= $valor_salida;
             }
+
+            $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor_aux / $saldo);
+            $costo_promedio = number_format($costo_promedio, 4, ".", ",");
+
             $codigo = $d->prod_codigo;
 
             $nuevo = [
@@ -2876,6 +2889,8 @@ class AlmacenController extends Controller
                 "cod_transferencia" => $d->cod_transferencia,
                 "orden" => $ordenes,
                 "docs" => implode(', ', $comprobantes_array),
+
+                "costo_promedio_2"=>$costo_promedio
             ];
             array_push($movimientos, $nuevo);
         }
@@ -7011,13 +7026,13 @@ class AlmacenController extends Controller
         $output['data'] = $data;
         return response()->json($output);
     }
-    
+
     function view_stock_series()
     {
         return view('almacen/reportes/stock_series');
     }
 
-    
+
     public function obtener_data_stock_series(){
         set_time_limit(0);
 
@@ -7040,7 +7055,7 @@ class AlmacenController extends Controller
         }
         return $data;
         // return response()->json($data);
-    
+
     }
     public function listar_stock_series(){
         $data = StockSeriesView::where('estado','!=',7);
