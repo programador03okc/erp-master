@@ -292,6 +292,7 @@ class RequerimientoPagoController extends Controller
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->fecha_registro = new Carbon();
                 $detalle->id_estado = 1;
+                $detalle->motivo = $request->motivo[$i];
                 $detalle->save();
                 $detalle->idRegister = $request->idRegister[$i];
                 $detalleArray[] = $detalle;
@@ -547,6 +548,7 @@ class RequerimientoPagoController extends Controller
                     $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                     $detalle->fecha_registro = new Carbon();
                     $detalle->id_estado = 1;
+                    $detalle->motivo = $request->motivo[$i];
                     $detalle->save();
                     $detalle->idRegister = $request->idRegister[$i];
                     $detalleArray[] = $detalle;
@@ -570,6 +572,7 @@ class RequerimientoPagoController extends Controller
                         $detalle->cantidad = $request->cantidad[$i];
                         $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                         $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
+                        $detalle->motivo = $request->motivo[$i];
                         $detalle->save();
                         $detalle->idRegister = $request->idRegister[$i];
                         $detalleArray[] = $detalle;

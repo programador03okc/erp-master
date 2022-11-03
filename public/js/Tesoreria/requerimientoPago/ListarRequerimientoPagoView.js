@@ -985,7 +985,14 @@ class ListarRequerimientoPagoView {
                 <input class="form-control input-sm precio text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="0" name="precioUnitario[]"  placeholder="Precio U." value="${data != null && typeof data.precio_unitario === 'string' ? data.precio_unitario : ""}">
             </div>
         </td>
+        
         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+        <td>
+            <div class="form-group">
+            <h5></h5>
+                <textarea class="form-control input-sm motivo handleCheckStatusValue" name="motivo[]" placeholder="Motivo">${data != null && typeof data.motivo === 'string' ? data.motivo : ""}</textarea>
+            </div>
+        </td>
         <td>
             <div class="btn-group" role="group">
                 <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
@@ -2138,6 +2145,7 @@ class ListarRequerimientoPagoView {
                 <td style="text-align:center;">${data.detalle[i].cantidad >= 0 ? data.detalle[i].cantidad : ''}</td>
                 <td style="text-align:right;">${data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : ''}${Util.formatoNumero(data.detalle[i].precio_unitario, 2)}</td>
                 <td style="text-align:right;">${data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : ''}${(data.detalle[i].subtotal ? Util.formatoNumero(data.detalle[i].subtotal, 2) : (Util.formatoNumero((data.detalle[i].cantidad * data.detalle[i].precio_unitario), 2)))}</td>
+                <td style="text-align:left;">${data.detalle[i].motivo != null ? data.detalle[i].motivo : ''}</td>
                 <td style="text-align:center;">${data.detalle[i].estado != null ? data.detalle[i].estado.estado_doc : ''}</td>
                 <td style="text-align: center;">
                 ${cantidadAdjuntosItem > 0 ? '<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickAdjuntarArchivoDetalle" data-tipo-modal="lectura" data-id="' + data.detalle[i].id_requerimiento_pago_detalle + '" >Ver (<span>' + cantidadAdjuntosItem + '</span>)</a>' : '-'}
