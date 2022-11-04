@@ -803,7 +803,7 @@ class RegistroController extends Controller
         $cobranza->id_sector        = $request->sector;
 
         $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
-        $cobranza->id_cliente_agil       = (!empty($request->id_cliente_agil) ? $request->id_cliente_agil:null) ;
+        $cobranza->id_cliente_agil       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null) ;
 
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
