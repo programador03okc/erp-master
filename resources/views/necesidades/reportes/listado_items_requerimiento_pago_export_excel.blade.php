@@ -4,6 +4,8 @@
             <th>Prioridad</th>
             <th>Requerimiento</th>
             <th>CDP</th>
+            <th>Partida</th>
+            <th>Centro costo</th>
             <th>Motivo</th>
             <th>Concepto</th>
             <th>Item</th>
@@ -14,9 +16,12 @@
             <th>Grupo</th>
             <th>División</th>
             <th>Proyecto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
             <th>Moneda</th>
-            <th>Monto Total</th>
             <th>Observación</th>
+            <th>Estado Requerimiento</th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +30,8 @@
                     <td>{{ $item['prioridad'] }}</td>
                     <td>{{ $item['codigo'] }}</td>
                     <td>{{ $item['codigo_oportunidad'] }}</td>
+                    <td>{{ $item['partida'] }}</td>
+                    <td>{{ $item['centro_costo'] }}</td>
                     <td>{{ $item['motivo'] }}</td>
                     <td>{{ $item['concepto'] }}</td>
                     <td>{{ $item['descripcion'] }}</td>
@@ -35,9 +42,13 @@
                     <td>{{ $item['grupo'] }}</td>
                     <td>{{ $item['division'] }}</td>
                     <td>{{ $item['descripcion_proyecto'] }}</td>
+                    <td>{{ $item['cantidad'] }}</td>
+                    <td>{{ $item['precio_unitario'] }}</td>
+                    <td>{{ $item['subtotal'] }}</td>
                     <td>{{ $item['simbolo_moneda'] }}</td>
-                    <td>{{ $item['monto_total'] }}</td>
                     <td>{{ $item['comentario'] }}</td>
+                    <td>{{ $item['estado_requerimiento'] }}</td>
+
                 </tr>
         @endforeach
     </tbody>
