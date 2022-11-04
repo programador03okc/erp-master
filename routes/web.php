@@ -703,6 +703,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 				Route::get('reporte-requerimientos-bienes-servicios-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Logistica\RequerimientoController@reporteRequerimientosBienesServiciosExcel');
+				Route::get('reporte-items-requerimientos-bienes-servicios-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Logistica\RequerimientoController@reporteItemsRequerimientosBienesServiciosExcel');
 				Route::get('listar-todo-archivos-adjuntos-requerimiento-logistico/{id}', 'Logistica\RequerimientoController@listarTodoArchivoAdjuntoRequerimientoLogistico');
 				Route::post('anular-adjunto-requerimiento-logístico-cabecera', 'Logistica\RequerimientoController@anularArchivoAdjuntoRequerimientoLogisticoCabecera');
 				Route::post('anular-adjunto-requerimiento-logístico-detalle', 'Logistica\RequerimientoController@anularArchivoAdjuntoRequerimientoLogisticoDetalle');

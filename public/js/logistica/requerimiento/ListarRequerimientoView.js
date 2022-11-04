@@ -301,6 +301,10 @@ class ListarRequerimientoView {
         window.open(`reporte-requerimientos-bienes-servicios-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
 
     }
+    descargarListaItemsRequerimientosElaboradosExcel() {
+        window.open(`reporte-items-requerimientos-bienes-servicios-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
+
+    }
 
     mostrar(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
         // console.log(meOrAll,idEmpresa,idSede,idGrupo,idDivision,fechaRegistroDesde,fechaRegistroHasta,idEstado);
@@ -318,8 +322,8 @@ class ListarRequerimientoView {
                 },
                 className: 'btn-default btn-sm'
             }:[]),
-            button_descargar_excel = (array_accesos.find(element => element === 19)?{
-                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+            button_descargar_excel_cabecera = (array_accesos.find(element => element === 19)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel cabecera',
                 attr: {
                     id: 'btnDescargarListaRequerimientosElaboradosExcel'
                 },
@@ -328,10 +332,21 @@ class ListarRequerimientoView {
 
                 },
                 className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel_items = (array_accesos.find(element => element === 19)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel items',
+                attr: {
+                    id: 'btnDescargarListaItemsRequerimientosElaboradosExcel'
+                },
+                action: () => {
+                    this.descargarListaItemsRequerimientosElaboradosExcel();
+
+                },
+                className: 'btn-default btn-sm'
             }:[]);
         $tablaListaRequerimientosElaborados = $('#ListaRequerimientosElaborados').DataTable({
             'dom': vardataTables[1],
-            'buttons': [button_filtro,button_descargar_excel],
+            'buttons': [button_filtro,button_descargar_excel_cabecera,button_descargar_excel_items],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,
