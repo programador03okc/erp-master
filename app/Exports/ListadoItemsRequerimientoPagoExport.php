@@ -45,6 +45,8 @@ class ListadoItemsRequerimientoPagoExport implements FromView
                 $data[]=[
                     'prioridad'=>$value->prioridad,
                     'codigo'=> $value->codigo,
+                    'partida'=> $value->partida,
+                    'centro_costo'=> $value->centro_costo,
                     'codigo_oportunidad'=> str_replace("'", "", str_replace("", "" ,$value->codigo_oportunidad)),
                     'motivo'=> str_replace("'", "", str_replace("", "" ,$value->motivo)),
                     'concepto'=> str_replace("'", "", str_replace("", "" ,$value->concepto)),
@@ -57,9 +59,10 @@ class ListadoItemsRequerimientoPagoExport implements FromView
                     'division'=> $value->division,
                     'descripcion_proyecto'=> str_replace("'", "", str_replace("", "" ,$value->descripcion_proyecto)),
                     'simbolo_moneda'=> str_replace("'", "", str_replace("", "" ,$value->simbolo_moneda)),
-                    // 'precio_unitario'=> $value->precio_unitario,
-                    // 'subtotal'=> $value->subtotal,
-                    'monto_total'=> $value->monto_total,
+                    'cantidad'=> $value->cantidad,
+                    'precio_unitario'=> $value->precio_unitario,
+                    'subtotal'=> $value->subtotal,
+                    'estado_requerimiento'=> $value->estado_requerimiento,
                     'comentario'=> str_replace("'", "", str_replace("", "" ,$value->comentario))
                 ];
             }

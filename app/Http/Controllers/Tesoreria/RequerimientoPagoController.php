@@ -1405,6 +1405,7 @@ class RequerimientoPagoController extends Controller
 
         ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'requerimiento_pago_detalle.id_partida')
         ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'requerimiento_pago_detalle.id_centro_costo')
+        ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago.id_estado', '=', 'requerimiento_pago_estado.id_requerimiento_pago_estado')
 
         ->select(
             'requerimiento_pago_detalle.descripcion',
@@ -1431,8 +1432,9 @@ class RequerimientoPagoController extends Controller
             'requerimiento_pago.monto_total',
             'presup_par.codigo as partida',
             'presup_par.id_partida',
-            'centro_costo.codigo as c_costo',
-            'centro_costo.id_centro_costo'
+            'centro_costo.codigo as centro_costo',
+            'centro_costo.id_centro_costo',
+            'requerimiento_pago_estado.descripcion as estado_requerimiento'
         )
         ->when(($meOrAll === 'ME'), function ($query) {
             $idUsuario = Auth::user()->id_usuario;

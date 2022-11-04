@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Logistica;
 
+use App\Exports\reporteItemsRequerimientosBienesServiciosExcel;
 use App\Exports\reporteRequerimientosBienesServiciosExcel;
 use App\Helpers\NotificacionHelper;
 use App\Http\Controllers\Almacen\Reporte\SaldosController;
@@ -207,6 +208,96 @@ class RequerimientoController extends Controller
             ->get();
 
         return response()->json($detalles);
+    }
+    
+    public function listaDetalleRequerimiento($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
+    {
+        $detalleRequerimientoList = DB::table('almacen.alm_det_req')
+        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
+        ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
+        ->leftJoin('configuracion.sis_grupo', 'alm_req.id_grupo', '=', 'sis_grupo.id_grupo')
+        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+        ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
+        ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
+        ->leftJoin('administracion.adm_empresa', 'alm_req.id_empresa', '=', 'adm_empresa.id_empresa')
+        ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
+        ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('almacen.alm_tp_req', 'alm_tp_req.id_tipo_requerimiento', '=', 'alm_req.id_tipo_requerimiento')
+        ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
+        ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
+        ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+
+        ->select(
+            'alm_det_req.descripcion_adicional',
+            'alm_det_req.motivo',
+            'alm_det_req.cantidad',
+            'alm_det_req.precio_unitario',
+            'alm_det_req.subtotal',
+            'alm_det_req.fecha_registro',
+            'adm_prioridad.descripcion as prioridad',
+            'alm_tp_req.descripcion AS tipo_requerimiento',
+            'alm_req.codigo',
+            'oportunidades.codigo_oportunidad',
+            'alm_req.concepto',
+            'alm_req.codigo',
+            'alm_req.observacion',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'sis_sede.codigo as sede',
+            'sis_sede.descripcion as descripcion_empresa_sede',
+            'adm_contri.razon_social as empresa_razon_social',
+            'sis_identi.descripcion as empresa_tipo_documento',
+            'proy_proyecto.descripcion AS descripcion_proyecto',
+            'sis_grupo.descripcion as grupo',
+            'division.descripcion as division',
+            'alm_req.monto_total',
+            'presup_par.codigo as partida',
+            'presup_par.id_partida',
+            'centro_costo.codigo as centro_costo',
+            'centro_costo.id_centro_costo',
+            'adm_estado_doc.estado_doc as estado_requerimiento'
+
+        )
+        ->when(($meOrAll === 'ME'), function ($query) {
+            $idUsuario = Auth::user()->id_usuario;
+            return $query->whereRaw('alm_req.id_usuario = ' . $idUsuario);
+        })
+        ->when(($meOrAll === 'ALL'), function ($query) {
+            return $query->whereRaw('alm_req.id_usuario > 0');
+        })
+        ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
+            return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
+        })
+        ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
+            return $query->whereRaw('alm_req.id_sede = ' . $idSede);
+        })
+        ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
+            return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
+        })
+        ->when((intval($idDivision) > 0), function ($query)  use ($idDivision) {
+            return $query->whereRaw('alm_req.division_id = ' . $idDivision);
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+            return $query->where('alm_req.fecha_registro', '>=', $fechaRegistroDesde);
+        })
+        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+            return $query->where('alm_req.fecha_registro', '<=', $fechaRegistroHasta);
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+            return $query->whereBetween('alm_req.fecha_registro', [$fechaRegistroDesde, $fechaRegistroHasta]);
+        })
+
+        ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
+            return $query->whereRaw('alm_req.estado = ' . $idEstado);
+        })
+        ->where([['alm_det_req.estado','!=',7],['alm_req.estado','!=',7]])
+        ->orderBy('alm_det_req.fecha_registro','desc')
+        ->get();
+
+        return $detalleRequerimientoList;
+
     }
 
     public function mostrarRequerimiento($id, $codigo)
@@ -3902,6 +3993,10 @@ class RequerimientoController extends Controller
     public function reporteRequerimientosBienesServiciosExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
     {
         return Excel::download(new reporteRequerimientosBienesServiciosExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado), 'reporte_requerimientos_bienes_servicios.xlsx');
+    }
+    public function reporteItemsRequerimientosBienesServiciosExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
+    {
+        return Excel::download(new reporteItemsRequerimientosBienesServiciosExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado), 'reporte_requerimientos_bienes_servicios.xlsx');
     }
 
     public function listarTodoArchivoAdjuntoRequerimientoLogistico($idRequerimiento)

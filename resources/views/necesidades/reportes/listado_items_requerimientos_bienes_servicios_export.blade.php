@@ -5,7 +5,7 @@
             <th>Requerimiento</th>
             <th>CDP</th>
             <th>Partida</th>
-            <th>Centro costo</th>
+            <th>Centro Costo</th>
             <th>Motivo</th>
             <th>Concepto</th>
             <th>Item</th>
@@ -34,7 +34,7 @@
                     <td>{{ $item['centro_costo'] }}</td>
                     <td>{{ $item['motivo'] }}</td>
                     <td>{{ $item['concepto'] }}</td>
-                    <td>{{ $item['descripcion'] }}</td>
+                    <td>{{ $item['descripcion_adicional'] }}</td>
                     <td>{{ $item['fecha_registro'] }}</td>
                     <td>{{ $item['tipo_requerimiento'] }}</td>
                     <td>{{ $item['empresa_razon_social'] }}</td>
@@ -46,9 +46,8 @@
                     <td>{{ $item['precio_unitario'] }}</td>
                     <td>{{ $item['subtotal'] }}</td>
                     <td>{{ $item['simbolo_moneda'] }}</td>
-                    <td>{{ $item['comentario'] }}</td>
+                    <td>{{ $item['observacion'] }}</td>
                     <td>{{ $item['estado_requerimiento'] }}</td>
-
                 </tr>
         @endforeach
     </tbody>
