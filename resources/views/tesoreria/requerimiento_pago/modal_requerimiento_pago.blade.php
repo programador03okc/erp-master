@@ -286,6 +286,7 @@
                                                         <th style="width: 6%">Cantidad</th>
                                                         <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span></th>
                                                         <th style="width: 6%">Subtotal</th>
+                                                        <th style="width: 10%">Motivo</th>
                                                         <th style="width: 7%">Acciones</th>
                                                     </tr>
                                                 </thead>
