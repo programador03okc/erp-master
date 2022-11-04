@@ -6,6 +6,9 @@ Cobranzas
 @endsection
 
 @section('estilos')
+<!-- Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <style>
     .group-okc-ini {
         display: flex;
@@ -70,7 +73,7 @@ Cobranzas
     </div>
 </div>
 {{-- crear registro de cobranza --}}
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-cobranza">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-cobranza" data-action="modal">
 	<div class="modal-dialog" style="width: 70%;">
 		<div class="modal-content">
 			<form class="formPage" id="formulario" form="cobranza" type="register" data-form="guardar-formulario">
@@ -281,7 +284,9 @@ Cobranzas
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="nom_vendedor">Nombre del Vendedor</label>
-                                <input type="text" class="form-control input-sm" name="nom_vendedor" id="nom_vendedor" placeholder="Nombre y Apellido">
+                                {{-- <input type="text" class="form-control input-sm" name="nom_vendedor" id="nom_vendedor" placeholder="Nombre y Apellido"> --}}
+                                <select class="select2 search-vendedor-guardar" name="nom_vendedor" required>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -383,7 +388,7 @@ Cobranzas
 
 
   {{-- editar cobranza --}}
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cobranza">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cobranza" data-action="modal">
 	<div class="modal-dialog" style="width: 70%;">
 		<div class="modal-content">
 			<form data-form="editar-formulario">
@@ -588,7 +593,9 @@ Cobranzas
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="nom_vendedor">Nombre del Vendedor</label>
-                                <input type="text" class="form-control input-sm" name="nom_vendedor" placeholder="Nombre y Apellido">
+                                {{-- <input type="text" class="form-control input-sm" name="nom_vendedor" placeholder="Nombre y Apellido"> --}}
+                                <select class="select2 search-vendedor" name="nom_vendedor" required>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -988,7 +995,7 @@ Cobranzas
                             <div class="form-group">
                                 <label for="">Tipo : </label>
                                 <select class="form-control input-sm" name="tipo_penal" id="tipo_penal" required>
-                                    <option value="0" selected disabled>Elija una opción</option>
+                                    <option value="">Elija una opción</option>
                                     <option value="PENALIDAD">PENALIDAD</option>
                                     <option value="RETENCION">RETENCION</option>
                                     <option value="DETRACCION">DETRACCION</option>
@@ -1030,10 +1037,18 @@ Cobranzas
                 </form>
 				<div class="row">
 					<div class="col-md-12">
-						<fieldset><legend><h4>1° Historial de Penalidades</h4></legend>
-							<table class="table table-bordered table-hover table-aux" id="result-penal">
-								<thead><tr><th>Tipo</th><th width="80">Comprobante</th><th width="100">Importe</th><th width="100">Fecha</th></tr></thead>
-								<tbody></tbody>
+						<fieldset>
+                            <legend><h4>1° Historial de Penalidades</h4></legend>
+							<table class="table table-bordered table-hover table-aux text-center" >
+								<thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Comprobante</th>
+                                        <th>Importe</th>
+                                        <th>Fecha</th>
+                                    </tr>
+                                </thead>
+								<tbody data-table="penalidades"></tbody>
 							</table>
 						</fieldset>
 					</div>
@@ -1044,6 +1059,9 @@ Cobranzas
 </div>
 @endsection
 @section('scripts')
+<script>
+
+</script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
@@ -1056,7 +1074,109 @@ Cobranzas
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
+<!-- Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ asset('js/gerencial/cobranza/registro.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
+        $('.search-vendedor-guardar').select2({
+            dropdownParent: $('#modal-cobranza'),
+            placeholder: 'Selecciona un vendedor',
+            ajax: {
+                url: 'buscar-vendedor',
+                type: "post",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        searchTerm: params.term, // search term
+                        page: params.page
+                    };
+                    // return query;
+            },
+            processResults: function (data, params) {
+                // params.page = params.page || 1;
+                return {
+                    // results: data.items,
+                    // pagination: {
+                    //     more: (params.page * 30) < data.total_count
+                    // }
+                    results: $.map(data, function (item) {
+                        return{
+                            text:item.nombre,
+                            id:item.id_vendedor
+                        }
+                     })
+
+                };
+            },
+            cache: true,
+            },
+            minimumInputLength: 2,
+            templateResult: formatRepo,
+            templateSelection: formatRepoSelection
+        });
+        $('.search-vendedor').select2({
+            dropdownParent: $('#modal-editar-cobranza'),
+            placeholder: 'Selecciona un vendedor',
+            ajax: {
+                url: 'buscar-vendedor',
+                type: "post",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        searchTerm: params.term, // search term
+                        page: params.page
+                    };
+                    // return query;
+            },
+            processResults: function (data, params) {
+                // params.page = params.page || 1;
+                return {
+                    // results: data.items,
+                    // pagination: {
+                    //     more: (params.page * 30) < data.total_count
+                    // }
+                    results: $.map(data, function (item) {
+                        return{
+                            text:item.nombre,
+                            id:item.id_vendedor
+                        }
+                     })
+
+                };
+            },
+            cache: true,
+            },
+            minimumInputLength: 2,
+            templateResult: formatRepo,
+            templateSelection: formatRepoSelection
+        });
+        function formatRepo (repo) {
+            if (repo.id) {
+                return repo.text;
+            }
+            var state = $(
+                `<span>`+repo.text+`</span>`
+            );
+            return state;
+
+        }
+
+        function formatRepoSelection (repo) {
+            return repo.nombre || repo.text;
+        }
+    });
+    $(document).on('change','.search-vendedor-guardar',function () {
+        console.log($(this).val());
+    });
+    $(document).on('change','.search-vendedor',function () {
+        console.log($(this).val());
+    });
 
 
-    <script src="{{ asset('js/gerencial/cobranza/registro.js') }}"></script>
+
+</script>
 @endsection

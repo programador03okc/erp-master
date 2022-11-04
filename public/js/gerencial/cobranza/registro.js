@@ -116,6 +116,7 @@ function listarRegistros(filtros) {
                         if (row['id_estado_doc'] ===5) {
                             html+='<button type="button" class="btn btn btn-flat botonList modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-exclamation-triangle text-black"></i></button>'
                         }
+                        html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-trash"></i></button>';
 
                     html+='';
                     return html;
@@ -781,9 +782,15 @@ $(document).on('click','.editar-registro',function () {
 
             // $('[data-form="editar-formulario"] .modal-body input[name="atraso"]').val(data.data.id_cliente);
             $('[data-form="editar-formulario"] .modal-body input[name="plazo_credito"]').val(data.data.plazo_credito);
-            $('[data-form="editar-formulario"] .modal-body input[name="nom_vendedor"]').val(data.data.vendedor);
-            $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
-            $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
+
+            if (data.vendedor) {
+                $('.search-vendedor').val(null).trigger('change');
+                var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, false, false);
+                $('.search-vendedor').append(newOption).trigger('change');
+                $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
+                $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
+            }
+
 
             $('[data-form="editar-formulario"] .modal-body input[name="id_doc_ven"]').val(data.data.id_doc_ven);
             $('[data-form="editar-formulario"] .modal-body input[name="id_registro_cobranza"]').val(data.data.id_registro_cobranza);
@@ -1054,24 +1061,114 @@ $('#modal-filtros').on('hidden.bs.modal', () => {
     listarRegistros(data_filtros);
 });
 $(document).on('click','.modal-penalidad',function () {
-    var id = $(this).attr('data-id');
+    var id = $(this).attr('data-id'),
+        html='';
     $('#modal-penalidad-cobro input[name="id_cobranza_penal"]').val(id);
     $('#modal-penalidad-cobro').modal('show');
-});
-$(document).on('submit','[data-form="guardar-penalidad"]',function (e) {
-    e.preventDefault();
-    var data = $(this).serialize();
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'guardar-penalidad',
-        data: data,
+        url: 'obtener-penalidades/'+id,
+        data: {},
         dataType: 'JSON'
     }).done(function( data ) {
+        if (data.status===200) {
+            $.each(data.penalidades, function (index, element) {
+                html+='<tr>'
+                    html+='<td>'+element.tipo+'</td>'
+                    html+='<td>'+element.documento+'</td>'
+                    html+='<td>'+element.monto+'</td>'
+                    html+='<td>'+element.fecha+'</td>'
+                html+='</tr>'
+            });
+            $('[data-table="penalidades"]').html(html);
+        }
         console.log(data);
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
         console.log(errorThrown);
     })
+
+});
+$(document).on('submit','[data-form="guardar-penalidad"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
+    Swal.fire({
+        title: '¿Está seguro de guardar?',
+        text: "Se guardara el registro",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: 'guardar-penalidad',
+                data: data,
+                dataType: 'JSON'
+            }).done(function( data ) {
+                return data;
+            }).fail( function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            })
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value.status === 200) {
+                $('#modal-penalidad-cobro').modal('hide');
+            }
+        }
+    })
+});
+
+$(document).on('click','.eliminar',function (e) {
+    e.preventDefault();
+    var id = $(this).attr('data-id');
+    Swal.fire({
+        title: '¿Esta seguro de eliminar?',
+        text: "Se eliminara su registro",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'get',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                url: 'eliminar-registro-cobranza/'+id,
+                data: {},
+                dataType: 'JSON'
+            }).done(function( data ) {
+                return data;
+            }).fail( function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            })
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+
+      }).then((result) => {
+        if (result.isConfirmed && result.value.status ===200) {
+
+            Swal.fire(
+                'Éxito!',
+                'Se elimino con éxito',
+                'success'
+            )
+            $('#listar-registros').DataTable().ajax.reload();
+        }
+      })
+
 });

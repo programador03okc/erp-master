@@ -23,10 +23,12 @@ use App\models\Gerencial\CobanzaFase;
 use App\models\Gerencial\Cobranza;
 use App\models\Gerencial\Empresa;
 use App\models\Gerencial\EstadoDocumento;
+use App\Models\Gerencial\Penalidad;
 use App\Models\Gerencial\ProgramacionPago;
 use App\Models\Gerencial\RegistroCobranza;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
+use App\Models\Gerencial\Vendedor;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -58,7 +60,7 @@ class RegistroController extends Controller
     {
         // $data = Cobranza::select('*')->orderBy('id_cobranza', 'desc');
 
-        $data = RegistroCobranza::select('registros_cobranzas.*')->orderBy('id_registro_cobranza', 'desc');
+        $data = RegistroCobranza::where('estado',1)->select('registros_cobranzas.*')->orderBy('id_registro_cobranza', 'desc');
         if (!empty($request->empresa)) {
             $empresa = DB::table('contabilidad.adm_contri')
             ->where('id_contribuyente',$request->empresa)
@@ -108,11 +110,13 @@ class RegistroController extends Controller
             // return $data->empresa->nombre;
         })
         ->addColumn('cliente', function($data){
-            $id_cliente = $data->id_cliente;
-            if (!$id_cliente) {
-                $id_cliente = $data->id_cliente_agil;
+            $data->id_cliente;
+            $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$data->id_cliente)->where('id_cliente_gerencial_old','!=',null)->first();
+            if (!$contribuyente) {
+                $contribuyente = Contribuyente::where('id_contribuyente',$data->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
             }
-            return $id_cliente;
+
+            return $contribuyente->razon_social;
         })
         ->addColumn('atraso', function($data){
             return ($this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) > 0) ? $this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) : '0';
@@ -749,6 +753,7 @@ class RegistroController extends Controller
     {
         $cliente_array=array();
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
+        $vendedor = Vendedor::where('id_vendedor',$registro_cobranza->vendedor)->first();
         $contribuyente = Contribuyente::where('id_contribuyente',$registro_cobranza->id_cliente_agil)->first();
         if (!$contribuyente) {
             $contribuyente = Cliente::where('id_cliente',$registro_cobranza->id_cliente)->first();
@@ -784,7 +789,8 @@ class RegistroController extends Controller
             "success"=>true,
             "data"=>$registro_cobranza,
             "programacion_pago"=>$programacion_pago,
-            "cliente"=>$cliente_array
+            "cliente"=>$cliente_array,
+            "vendedor"=>$vendedor?$vendedor:[]
         ]);
     }
     public function modificarRegistro(Request $request)
@@ -1045,9 +1051,69 @@ class RegistroController extends Controller
     }
     public function guardarPenalidad(Request $request)
     {
+        $penalidad = new Penalidad();
+        $penalidad->tipo            = $request->tipo_penal;
+        $penalidad->monto           = $request->importe_penal;
+        $penalidad->documento       = $request->doc_penal;
+        $penalidad->fecha           = $request->fecha_penal;
+        $penalidad->observacion   = $request->obs_penal;
+        $penalidad->estado          = 1;
+        $penalidad->fecha_registro  = date('Y-m-d H:i:s');
+        $penalidad->id_registro_cobranza  = $request->id_cobranza_penal;
+        $penalidad->save();
         return response()->json([
             "status"=>200,
             "success"=>true,
+        ]);
+    }
+    public function obtenerPenalidades($id_registro_cobranza)
+    {
+        $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id_registro_cobranza)->first();
+
+        $penalidad_gerencial = Penalidad::where('estado',1);
+
+        if (!empty($registro_cobranza->id_cobranza_old)) {
+            $penalidad_gerencial = $penalidad_gerencial->where('id_cobranza',$registro_cobranza->id_cobranza_old);
+        }
+
+        if (!empty($registro_cobranza->id_registro_cobranza)) {
+            $penalidad_gerencial = $penalidad_gerencial->where('id_registro_cobranza',$id_registro_cobranza);
+        }
+
+        $penalidad_gerencial = $penalidad_gerencial->get();
+
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "penalidades"=>$penalidad_gerencial
+        ]);
+    }
+    public function buscarVendedor( Request $request)
+    {
+        $vendedor=[];
+        if (!empty($request->searchTerm)) {
+            $searchTerm=strtoupper($request->searchTerm);
+            $vendedor = Vendedor::where('estado',1);
+            if (!empty($request->searchTerm)) {
+                $vendedor = $vendedor->where('nombre','like','%'.$searchTerm.'%');
+            }
+            $vendedor = $vendedor->get();
+            return response()->json($vendedor);
+        }else{
+            return response()->json([
+                "status"=>404,
+                "success"=>false
+            ]);
+        }
+    }
+    public function eliminarRegistroCobranza($id_registro_cobranza)
+    {
+        $registro_cobranza = RegistroCobranza::find($id_registro_cobranza);
+        $registro_cobranza->estado=0;
+        $registro_cobranza->save();
+        return response()->json([
+            "success"=>true,
+            "status"=>200
         ]);
     }
 }

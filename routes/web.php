@@ -2165,7 +2165,9 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('obtener-fase/{id}', 'Gerencial\Cobranza\RegistroController@obtenerFase');
             Route::post('eliminar-fase', 'Gerencial\Cobranza\RegistroController@eliminarFase');
             Route::post('guardar-penalidad', 'Gerencial\Cobranza\RegistroController@guardarPenalidad');
-
+            Route::get('obtener-penalidades/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@obtenerPenalidades');
+            Route::post('buscar-vendedor', 'Gerencial\Cobranza\RegistroController@buscarVendedor');
+            Route::get('eliminar-registro-cobranza/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@eliminarRegistroCobranza');
             // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 		});
 	});
