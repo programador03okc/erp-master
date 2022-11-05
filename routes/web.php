@@ -2171,6 +2171,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('buscar-vendedor', 'Gerencial\Cobranza\RegistroController@buscarVendedor');
             Route::get('eliminar-registro-cobranza/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@eliminarRegistroCobranza');
             // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
+            Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
 		});
 	});
 	Route::get('config', function () {

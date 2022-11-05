@@ -110,11 +110,18 @@ class RegistroController extends Controller
             // return $data->empresa->nombre;
         })
         ->addColumn('cliente', function($data){
-            $data->id_cliente;
-            $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$data->id_cliente)->where('id_cliente_gerencial_old','!=',null)->first();
-            if (!$contribuyente) {
-                $contribuyente = Contribuyente::where('id_contribuyente',$data->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
+
+            $contribuyente=null;
+            if (!empty($data->id_cliente)) {
+                $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$data->id_cliente)->where('id_cliente_gerencial_old','!=',null)->first();
             }
+            if (!empty($data->id_cliente_agil)) {
+                // if (!$contribuyente) {
+                    $contribuyente = Contribuyente::where('id_contribuyente',$data->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
+                // }
+            }
+
+
 
             return $contribuyente->razon_social;
         })
@@ -353,11 +360,13 @@ class RegistroController extends Controller
 
         $cobranza->id_empresa       = $request->empresa;
         $cobranza->id_sector        = $request->sector;
-        if ($request->id_cliente!==null && $request->id_cliente!=='') {
-            $cobranza->id_cliente       = $request->id_cliente;
-        }else{
-            $cobranza->id_cliente_agil      = $request->id_contribuyente;
-        }
+        // if ($request->id_cliente!==null && $request->id_cliente!=='') {
+        //     $cobranza->id_cliente       = $request->id_cliente;
+        // }else{
+        //     $cobranza->id_cliente_agil      = $request->id_contribuyente;
+        // }
+        $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
+        $cobranza->id_cliente_agil       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null) ;
 
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
@@ -1114,6 +1123,39 @@ class RegistroController extends Controller
         return response()->json([
             "success"=>true,
             "status"=>200
+        ]);
+    }
+    public function buscarClienteSeleccionado($id)
+    {
+        $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$id)->where('id_cliente_gerencial_old','!=',null)->first();
+        $cliente_gerencial=null;
+        if (!$contribuyente) {
+            $cliente_gerencial = Cliente::where('id_cliente',$id)->first();
+
+            $contribuyente = new Contribuyente;
+            $contribuyente->nro_documento     = $cliente_gerencial->ruc;
+            $contribuyente->razon_social      = $cliente_gerencial->nombre;
+            $contribuyente->id_pais           = 170;
+            $contribuyente->estado            = 1;
+            $contribuyente->fecha_registro    = date('Y-m-d H:i:s');
+            $contribuyente->transportista     = false;
+
+            $contribuyente->ubigeo            = 0;
+
+            $contribuyente->id_cliente_gerencial_old    = $cliente_gerencial->id_cliente;
+            $contribuyente->save();
+
+            $com_cliente = new ComercialCliente();
+            $com_cliente->id_contribuyente=$contribuyente->id_contribuyente;
+            $com_cliente->estado=1;
+            $com_cliente->fecha_registro = date('Y-m-d H:i:s');
+            $com_cliente->save();
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$contribuyente,
+            "old"=>$cliente_gerencial
         ]);
     }
 }

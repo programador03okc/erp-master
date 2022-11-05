@@ -291,17 +291,38 @@ $(document).on('click','[data-action="agregar-cliente"]',function () {
     // }
 
 
-    switch (data_form) {
-        case 'guardar-formulario':
-            document.querySelector("form[form='cobranza'] input[id='cliente']").value= tempClienteSelected.nombre;
-            document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= tempClienteSelected.id;
-        break;
 
-        case 'editar-formulario':
-            $('[data-form="editar-formulario"] .modal-body [name="id_cliente"]').val(tempClienteSelected.id);
-            $('[data-form="editar-formulario"] .modal-body [name="cliente"]').val(tempClienteSelected.nombre);
-        break;
-    }
+    $.ajax({
+        type: 'get',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'buscar-cliente-seleccionado/'+tempClienteSelected.id,
+        data: data,
+        dataType: 'JSON',
+        success: function(response){
+            if (response.status===200) {
+                console.log(response);
+                switch (data_form) {
+                    case 'guardar-formulario':
+                        document.querySelector("form[form='cobranza'] input[id='cliente']").value= response.data.razon_social;
+                        document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= null;
+                        document.querySelector("form[form='cobranza'] input[name='id_contribuyente']").value= response.data.id_contribuyente;
+                    break;
+
+                    case 'editar-formulario':
+
+                        $('[data-form="editar-formulario"] .modal-body [name="id_cliente"]').val(null);
+                        $('[data-form="editar-formulario"] .modal-body [name="cliente"]').val(response.data.razon_social);
+                        $('[data-form="editar-formulario"] .modal-body [name="id_contribuyente"]').val(response.data.id_contribuyente);
+                    break;
+                }
+            }
+
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
 });
 $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
     e.preventDefault();
