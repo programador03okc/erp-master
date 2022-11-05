@@ -214,6 +214,7 @@ class RequerimientoController extends Controller
     {
         $detalleRequerimientoList = DB::table('almacen.alm_det_req')
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
         ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
         ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
         ->leftJoin('configuracion.sis_grupo', 'alm_req.id_grupo', '=', 'sis_grupo.id_grupo')
@@ -231,7 +232,9 @@ class RequerimientoController extends Controller
         ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
 
         ->select(
-            'alm_det_req.descripcion_adicional',
+
+            'alm_prod.descripcion as descripcion_producto',
+            'alm_det_req.descripcion as descripcion_detalle_requerimiento',
             'alm_det_req.motivo',
             'alm_det_req.cantidad',
             'alm_det_req.precio_unitario',

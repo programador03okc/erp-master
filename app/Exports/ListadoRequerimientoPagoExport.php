@@ -43,7 +43,7 @@ class ListadoRequerimientoPagoExport implements FromView
         foreach($requerimientos as $element){
 
 
-            $requerimientosDetalle = (new RequerimientoPagoController)->obtenerRequerimientosElaboradosConDetalle($element->id_requerimiento_pago);
+            $requerimientosDetalle = (new RequerimientoPagoController)->obtenerRequerimientosPagoElaboradosConDetalle($element->id_requerimiento_pago);
 
             $ordenesPago = (new RequerimientoPagoController)->ordenesPago($element->id_requerimiento_pago);
             $pago_total = 0;
