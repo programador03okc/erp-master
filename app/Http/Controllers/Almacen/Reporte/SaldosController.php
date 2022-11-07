@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Almacen\Reporte;
 
+use App\Exports\ReporteAntiguedadesExcel;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReporteSaldosExport;
 use App\Exports\ReporteSaldosSeriesExport;
@@ -210,6 +211,11 @@ class SaldosController extends Controller
     public function exportarSeries()
     {
         return Excel::download(new ReporteSaldosSeriesExport(), 'reporte_saldos_series.xlsx');
+    }
+
+    public function exportarAntiguedades()
+    {
+        return Excel::download(new ReporteAntiguedadesExcel(), 'reporte_antiguedades.xlsx');
     }
 
     public function prueba()

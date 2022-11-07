@@ -360,22 +360,22 @@ class MigrateProductoSoftlinkController extends Controller
 
     public function actualizarFechasIngresoSoft()
     {
-
         $productos = DB::table('almacen.alm_prod_serie')
             ->select('alm_prod_serie.serie', 'alm_prod.id_producto', 'alm_prod.cod_softlink')
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
-            ->whereNull('id_guia_ven_det')
+            // ->whereNull('id_guia_ven_det')
             ->whereNull('id_guia_com_det')
-            ->whereNull('id_sobrante')
+            // ->whereNull('id_sobrante')
             ->whereNull('id_base')
-            ->whereNull('alm_prod_serie.fecha_ingreso_soft')
+            // ->whereNull('alm_prod_serie.fecha_ingreso_soft')
             ->where('alm_prod_serie.estado', 1)
+            ->where('alm_prod_serie.id_almacen', 1)
             ->get();
 
         foreach ($productos as $p) {
 
             $prod = DB::connection('soft')->table('series')
-                ->select('series.fecha_ing', 'detmov.pre_prod')
+                ->select('series.fecha_ing', 'detmov.pre_prod', 'detmov.num_docu')
                 ->join('detmov', function ($join) {
                     $join->on('detmov.mov_id', '=', 'series.id_ingreso');
                 })
@@ -387,11 +387,13 @@ class MigrateProductoSoftlinkController extends Controller
             if ($prod !== null) {
                 $fec = $prod->fecha_ing;
                 $pre = $prod->pre_prod;
+                $doc = $prod->num_docu;
                 DB::table('almacen.alm_prod_serie')
                     ->where('id_prod', $p->id_producto)
                     ->update([
                         'fecha_ingreso_soft' => $fec,
                         'precio_unitario_soft' => $pre,
+                        'doc_ingreso_soft' => $doc
                     ]);
             }
         }
