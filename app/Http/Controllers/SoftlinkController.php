@@ -11,11 +11,12 @@ class SoftlinkController extends Controller
     //
     public function movimiento()
     {
-        $movimiento = DB::connection('soft')->table('movimien')->get();
+        // $movimiento = DB::connection('softLink')->table('movimien')->limit(5)->get();
+        // $movimiento = DB::connection('softLink')->table('movimien')->limit(5)->get();
         return response()->json([
             "success"=>true,
             "status"=>200,
-            "movimiento"=>$movimiento
+            // "movimiento"=>$movimiento
         ]);
     }
 }
