@@ -60,7 +60,7 @@ class RegistroController extends Controller
     {
         // $data = Cobranza::select('*')->orderBy('id_cobranza', 'desc');
 
-        $data = RegistroCobranza::where('estado',1)->select('registros_cobranzas.*')->orderBy('id_registro_cobranza', 'desc');
+        $data = RegistroCobranza::where('registros_cobranzas.estado',1)->select('registros_cobranzas.*')->orderBy('id_registro_cobranza', 'desc');
         if (!empty($request->empresa)) {
             $empresa = DB::table('contabilidad.adm_contri')
             ->where('id_contribuyente',$request->empresa)
