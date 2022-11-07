@@ -34,7 +34,7 @@
                     <td>{{ $item['centro_costo'] }}</td>
                     <td>{{ $item['motivo'] }}</td>
                     <td>{{ $item['concepto'] }}</td>
-                    <td>{{ $item['descripcion_adicional'] }}</td>
+                    <td>{{ $item['descripcion'] }}</td>
                     <td>{{ $item['fecha_registro'] }}</td>
                     <td>{{ $item['tipo_requerimiento'] }}</td>
                     <td>{{ $item['empresa_razon_social'] }}</td>

@@ -43,7 +43,7 @@ class reporteItemsRequerimientosBienesServiciosExcel implements FromView
                 'centro_costo'=> $element->centro_costo,
                 'partida'=> $element->partida,
                 'concepto'=> $element->concepto,
-                'descripcion_adicional'=> $element->descripcion_adicional,
+                'descripcion'=> $element->descripcion_producto != null? str_replace("'", "", str_replace("", "" ,$element->descripcion_producto)): str_replace("'", "", str_replace("", "" ,$element->descripcion_detalle_requerimiento)),
                 'cantidad'=> $element->cantidad,
                 'precio_unitario'=> $element->precio_unitario,
                 'subtotal'=> $element->subtotal,

@@ -214,6 +214,7 @@ class RequerimientoController extends Controller
     {
         $detalleRequerimientoList = DB::table('almacen.alm_det_req')
         ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
         ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
         ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
         ->leftJoin('configuracion.sis_grupo', 'alm_req.id_grupo', '=', 'sis_grupo.id_grupo')
@@ -231,7 +232,9 @@ class RequerimientoController extends Controller
         ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
 
         ->select(
-            'alm_det_req.descripcion_adicional',
+
+            'alm_prod.descripcion as descripcion_producto',
+            'alm_det_req.descripcion as descripcion_detalle_requerimiento',
             'alm_det_req.motivo',
             'alm_det_req.cantidad',
             'alm_det_req.precio_unitario',
@@ -1619,7 +1622,8 @@ class RequerimientoController extends Controller
             $idGrupoDeUsuarioEnSesionList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
         }
 
-        $requerimientos = Requerimiento::with('detalle')->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
+        $requerimientos = Requerimiento::with('detalle')
+            ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
@@ -1726,7 +1730,7 @@ class RequerimientoController extends Controller
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
-            ->where('alm_req.flg_compras', '=', 0)
+            ->where([['alm_req.flg_compras', '=', 0],['adm_documentos_aprob.id_tp_documento', '=', 1]])
             ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList);
 
         return datatables($requerimientos)
