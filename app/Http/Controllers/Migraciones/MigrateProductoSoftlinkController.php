@@ -367,9 +367,9 @@ class MigrateProductoSoftlinkController extends Controller
             ->whereNull('id_guia_com_det')
             // ->whereNull('id_sobrante')
             ->whereNull('id_base')
-            // ->whereNull('alm_prod_serie.fecha_ingreso_soft')
+            ->whereNull('alm_prod_serie.fecha_ingreso_soft')
             ->where('alm_prod_serie.estado', 1)
-            ->where('alm_prod_serie.id_almacen', 1)
+            // ->where('alm_prod_serie.id_almacen', 1)
             ->get();
 
         foreach ($productos as $p) {
