@@ -1643,8 +1643,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\SaldosController@verRequerimientosReservados');
 				Route::get('exportar', 'Almacen\Reporte\SaldosController@exportar')->name('exportar');
 				Route::get('exportarSeries', 'Almacen\Reporte\SaldosController@exportarSeries')->name('exportarSeries');
-				Route::get('prueba_saldo', 'Almacen\Reporte\SaldosController@pruebaSaldo')->name('prueba_saldo');
+				Route::get('exportarAntiguedades', 'Almacen\Reporte\SaldosController@exportarAntiguedades')->name('exportarAntiguedades');
 				Route::post('exportar-valorizacion', 'Almacen\Reporte\SaldosController@valorizacion')->name('exportar-valorizacion');
+				Route::get('actualizarFechasIngresoSoft', 'Migraciones\MigrateProductoSoftlinkController@actualizarFechasIngresoSoft')->name('actualizarFechasIngresoSoft');
 			});
 
 			Route::group(['as' => 'lista-ingresos.', 'prefix' => 'lista-ingresos'], function () {
