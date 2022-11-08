@@ -318,6 +318,7 @@ class DevolucionController extends Controller
                 [
                     'codigo' => $codigo,
                     'id_tipo' => $request->id_tipo,
+                    'tipo' => (($request->id_tipo == 1 or $request->id_tipo == 2) ? 'cliente' : 'proveedor'),
                     'id_almacen' => $request->id_almacen,
                     // 'id_moneda' => $request->id_moneda,
                     'id_cliente' => $id_cliente,
@@ -394,67 +395,49 @@ class DevolucionController extends Controller
             $tipo = '';
 
 
-            if ($request->tipo == 'cliente') {
-                $cliente = DB::table('comercial.com_cliente')
-                    ->where([
-                        ['id_contribuyente', '=', $request->id_contribuyente],
-                        ['estado', '=', 1]
-                    ])
-                    ->first();
+            $cliente = DB::table('comercial.com_cliente')
+                ->where([
+                    ['id_contribuyente', '=', $request->id_contribuyente],
+                    ['estado', '=', 1]
+                ])
+                ->first();
 
-                if ($cliente == null) {
-                    $id_cliente = DB::table('comercial.com_cliente')
-                        ->insertGetId([
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => new Carbon(),
-                        ], 'id_cliente');
-                } else {
-                    $id_cliente = $cliente->id_cliente;
-                }
-
-                $proveedor = DB::table('logistica.log_prove')
-                    ->where([
-                        ['id_contribuyente', '=', $request->id_contribuyente],
-                        ['estado', '=', 1]
-                    ])
-                    ->first();
-
-                if ($proveedor == null) {
-                    $id_proveedor = DB::table('logistica.log_prove')
-                        ->insertGetId([
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => new Carbon(),
-                        ], 'id_proveedor');
-                } else {
-                    $id_proveedor = $proveedor->id_proveedor;
-                }
-            } else if ($request->tipo == 'proveedor') {
-                $proveedor = DB::table('logistica.log_prove')
-                    ->where([
-                        ['id_contribuyente', '=', $request->id_contribuyente],
-                        ['estado', '=', 1]
-                    ])
-                    ->first();
-
-                if ($proveedor == null) {
-                    $id_proveedor = DB::table('logistica.log_prove')
-                        ->insertGetId([
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => new Carbon(),
-                        ], 'id_proveedor');
-                } else {
-                    $id_proveedor = $proveedor->id_proveedor;
-                }
+            if ($cliente == null) {
+                $id_cliente = DB::table('comercial.com_cliente')
+                    ->insertGetId([
+                        'id_contribuyente' => $request->id_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ], 'id_cliente');
+            } else {
+                $id_cliente = $cliente->id_cliente;
             }
+
+            $proveedor = DB::table('logistica.log_prove')
+                ->where([
+                    ['id_contribuyente', '=', $request->id_contribuyente],
+                    ['estado', '=', 1]
+                ])
+                ->first();
+
+            if ($proveedor == null) {
+                $id_proveedor = DB::table('logistica.log_prove')
+                    ->insertGetId([
+                        'id_contribuyente' => $request->id_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ], 'id_proveedor');
+            } else {
+                $id_proveedor = $proveedor->id_proveedor;
+            }
+
 
             DB::table('cas.devolucion')
                 ->where('id_devolucion', $request->id_devolucion)
                 ->update([
                     'id_almacen' => $request->id_almacen,
                     'id_tipo' => $request->id_tipo,
+                    'tipo' => (($request->id_tipo == 1 or $request->id_tipo == 2) ? 'cliente' : 'proveedor'),
                     'id_cliente' => $id_cliente,
                     'id_proveedor' => $id_proveedor,
                     'observacion' => $request->observacion,
