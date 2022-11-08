@@ -573,7 +573,11 @@ class DevolucionController extends Controller
         if ($mov->estado == 1) {
             DB::table('cas.devolucion')
                 ->where('id_devolucion', $id_devolucion)
-                ->update(['estado' => 7]);
+                ->update([
+                    'estado' => 7,
+                    'usuario_anula' => Auth::user()->id_usuario,
+                    'fecha_anulacion' => new Carbon(),
+                ]);
 
             DB::table('cas.devolucion_detalle')
                 ->where('id_devolucion', $id_devolucion)
