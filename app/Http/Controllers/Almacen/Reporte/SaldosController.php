@@ -310,7 +310,7 @@ class SaldosController extends Controller
 
         // return Excel::download(new ValorizacionExport($data, $alm->descripcion, $request->fecha, $tc), 'valorizacion.xlsx');
         $tca = DB::table('contabilidad.cont_tp_cambio')->where('fecha', $request->fecha);
-        $tc = ($tca->count() > 0) ? (float) $tca->first()->compra : 1;
+        $tc = ($tca->count() > 0) ? (float) $tca->first()->venta : 1;
         $alm = DB::table('almacen.alm_almacen')->where('id_almacen', $request->almacen)->first();
         $data=[];
         $nfecha = $request->session()->get('filtroFecha') . ' 23:59:59';
