@@ -272,7 +272,9 @@ function mostrarDevolucion(id) {
             $('[name=id_proveedor]').val(response.devolucion.id_proveedor);
             $('[name=id_cliente]').val(response.devolucion.id_cliente);
             $('[name=id_contribuyente]').val(response.devolucion.id_contribuyente);
-            $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social);
+            // $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social);
+            $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social !== null ?
+                response.devolucion.proveedor_razon_social : response.devolucion.cliente_razon_social);
             $('[name=id_tipo]').val(response.devolucion.id_tipo);
 
             $('#codigo').text(response.devolucion.codigo);
