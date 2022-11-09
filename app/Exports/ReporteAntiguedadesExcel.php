@@ -89,7 +89,8 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
                 ->where('mov_alm.fecha_emision', '<=', session()->get('filtroFecha'))
                 ->where('mov_alm_det.id_producto', $q->id_producto)
                 ->where('mov_alm_det.estado', 1)
-                ->orderBy('mov_alm.fecha_emision');
+                ->orderBy('mov_alm.fecha_emision', 'asc')
+                ->orderBy('mov_alm.id_tp_mov', 'asc');
 
             if ($movimientos->count() > 0) {
                 $saldo = 0;
