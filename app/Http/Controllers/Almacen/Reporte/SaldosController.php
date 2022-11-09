@@ -261,7 +261,6 @@ class SaldosController extends Controller
     public function valorizacion(Request $request)
     {
         // $productos = $this->listar_productos($request->almacen, $request->fecha);
-        // $productos = (new SaldosController)->reporteSaldosLista()->get();
         $productos = DB::table('almacen.alm_prod_ubi')
             ->select(
                 'alm_prod_ubi.*',
@@ -269,18 +268,10 @@ class SaldosController extends Controller
                 'alm_prod.cod_softlink',
                 'alm_prod.descripcion',
                 'alm_und_medida.abreviatura',
-                // 'alm_prod.part_number',
-                // 'alm_cat_prod.descripcion AS categoria',
-                // 'sis_moneda.simbolo',
                 'alm_prod.id_moneda',
-                // 'alm_prod.id_unidad_medida',
-                // 'alm_almacen.descripcion AS almacen_descripcion'
             )
-            // ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
-            // ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            // ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->where([
                 ['alm_prod_ubi.estado', '=', 1],
                 ['alm_prod.estado', '=', 1],
@@ -308,7 +299,6 @@ class SaldosController extends Controller
             $movimientos = DB::table('almacen.mov_alm')
                 ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
                 ->select(
-                    // 'mov_alm.codigo',
                     'mov_alm.id_tp_mov',
                     'mov_alm.fecha_emision',
                     'mov_alm_det.id_producto',
