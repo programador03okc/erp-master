@@ -35,7 +35,8 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                 ->where('mov_alm.fecha_emision', '<=', session()->get('filtroFecha'))
                 ->where('mov_alm_det.id_producto', $d->id_producto)
                 ->where('mov_alm_det.estado', 1)
-                ->orderBy('mov_alm.fecha_emision');
+                ->orderBy('mov_alm.fecha_emision', 'asc')
+                ->orderBy('mov_alm.id_tp_mov', 'asc');
 
             if ($movimientos->count() > 0) {
                 $saldo = 0;
@@ -44,14 +45,14 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
 
                 foreach ($movimientos->get() as $key) {
                     if ($key->id_tp_mov == 0 || $key->id_tp_mov == 1) {
-                        $saldo += (float) $key->cantidad;
-                        $saldo_valor += (float) $key->valorizacion;
+                        $saldo += $key->cantidad;
+                        $saldo_valor += $key->valorizacion;
                     } else if ($key->id_tp_mov == 2) {
-                        $saldo -= (float) $key->cantidad;
-                        $valor_salida = $costo_promedio * (float) $key->cantidad;
-                        $saldo_valor -= (float) $valor_salida;
+                        $saldo -= $key->cantidad;
+                        $valor_salida = $costo_promedio * $key->cantidad;
+                        $saldo_valor -= $valor_salida;
                     }
-                    $costo_promedio = (float) ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+                    $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
                 }
 
                 $reserva = ($d->cantidad_reserva == null) ? 0 : $d->cantidad_reserva;
