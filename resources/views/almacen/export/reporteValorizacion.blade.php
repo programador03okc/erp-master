@@ -46,12 +46,12 @@
                     <td>{{ $item['stock'] }}</td>
                     <td align="right">{{ $item['simbolo'] }}</td>
                     <td align="right">{{ $item['costo_promedio'] }}</td>
-                    <td align="right">{{ $item['simbolo']!=='$' ? $item['valorizacion'] : '' }}</td>
-                    <td align="right">{{ $item['simbolo']==='$' ? $item['valorizacion'] : '' }}</td>
+                    <td align="right">{{ $item['simbolo']!=='$' ? $item['valorizacion'] : (floatval($item['valorizacion'])*floatval($tc)) }}</td>
+                    <td align="right">{{ $item['simbolo']==='$' ? $item['valorizacion'] : (floatval($item['valorizacion'])/floatval($tc)) }}</td>
                 </tr>
                 @php
-                    $item['simbolo']!=='$' ? ($total_soles = floatval($total_soles) + floatval($item['valorizacion']))  : '';
-                    $item['simbolo']==='$' ? ($total_dolares = floatval($total_dolares) + floatval($item['valorizacion']))  : '';
+                    $total_soles = $item['simbolo']!=='$' ? (floatval($total_soles) + floatval($item['valorizacion']))  : floatval($total_soles) + (floatval($item['valorizacion'])*floatval($tc));
+                    $total_dolares = $item['simbolo']==='$' ? (floatval($total_dolares) + floatval($item['valorizacion']))  : floatval($total_dolares) + (floatval($item['valorizacion'])/floatval($tc));
                 @endphp
             @endforeach
             <tr>
