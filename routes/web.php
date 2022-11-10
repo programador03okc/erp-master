@@ -2058,10 +2058,16 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 
 	Route::group(['as' => 'migracion.', 'prefix' => 'migracion'], function () {
-
 		Route::get('index', 'Migraciones\MigracionAlmacenSoftLinkController@index')->name('index');
 		Route::get('movimientos', 'Migraciones\MigracionAlmacenSoftLinkController@movimientos')->name('movimientos');
 		Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importar')->name('importar');
+
+		Route::group(['as' => 'softlink.', 'prefix' => 'softlink'], function () {
+			Route::get('index', 'Migraciones\MigracionAlmacenSoftLinkController@view_migracion_series')->name('index');
+			Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importarSeries')->name('importar');
+			Route::get('exportar', 'Migraciones\MigracionAlmacenSoftLinkController@exportarSeries')->name('exportar');
+			Route::get('test', 'Migraciones\MigracionAlmacenSoftLinkController@testSeries')->name('test');
+		});
 	});
 
 	Route::group(['as' => 'notificaciones.', 'prefix' => 'notificaciones'], function () {
@@ -2198,105 +2204,6 @@ Route::group(['middleware' => ['auth']], function () {
 	// });
 	Route::get('logistica', 'LogisticaController@view_main_logistica');
 
-
-
-
-	//Route::get('login', 'Tesoreria\LoginController@showLoginForm')->name('login');
-	/*
-	Route::group(['middleware' => ['roles:1,2,3,15,22,7,38'], 'prefix' => 'tesoreria', 'as' => 'tesoreria.'], function () {
-
-		$roles['programador'] = [7, 38 //Programador
-		];
-		$roles['req_sol'] = [22, 38, //Asistnte Administrativo
-			7, //Programador
-		];
-		$roles['gerente_general'] = [1,  //Gerente General
-		];
-		$roles['gerente'] = [1,  //Gerente General
-			2,  //Gerente Administrativo
-			3,  //Gerente Comercial
-			15,  //Gerente Proyectos
-		];
-		$roles['pagos'] = [22, 38 //Asistnte Administrativo
-		];
-		$roles['asis_ger_general'] = [22, 38 //Asistnte Administrativo
-		];
-
-		$entrar['solicitud'] = array_merge($roles['programador'], $roles['req_sol'], $roles['gerente']);
-		$entrar['pagos'] = array_merge($roles['programador'], $roles['asis_ger_general'], $roles['pagos'], $roles['gerente']);
-
-		View::share('entrar', $entrar);
-		View::share('roles', $roles);
-		View::share('rolesSeccion', $entrar);
-
-
-		//Route::get('login', 'Tesoreria\LoginController@showLoginForm')->name('login');
-
-		Route::get('', 'TesoreriaController@index')->name('index');
-
-		Route::group(['prefix' => 'solicitud', 'as' => 'solicitud.'], function () use ($roles, $entrar) {
-			Route::get('tipo/{id_tipo}', 'Tesoreria\SolicitudController@index')->name('tipo')->middleware('roles:' . implode(',', $entrar['solicitud']));
-			Route::post('state', 'Tesoreria\SolicitudController@cambiarEstadoAjax')->name('update.state');
-		});
-
-		Route::group(['middleware' => ['roles:' . implode(',', $entrar['pagos'])], 'prefix' => 'planillapagos', 'as' => 'planillapagos.'], function () {
-			Route::any('ordinario', 'Tesoreria\PlanillaPagosController@index')->name('ordinario');
-			Route::any('extraordinario', 'Tesoreria\PlanillaPagosController@index')->name('extraordinario');
-
-			Route::post('state', 'Tesoreria\PlanillaPagosController@cambiarEstadoAjax')->name('update.state');
-		});
-
-		Route::resources(['proveedor' => 'Tesoreria\ProveedorController',
-
-			'cajachica' => 'Tesoreria\CajaChicaController', 'cajachica_movimientos' => 'Tesoreria\CajaChicaMovimientosController', 'solicitud' => 'Tesoreria\SolicitudController', 'planillapagos' => 'Tesoreria\PlanillaPagosController', 'tcambio' => 'Tesoreria\TipoCambioController',]);
-
-		Route::group(['prefix' => 'pdf', 'as' => 'pdf.'], function () {
-			Route::any('vale_salida/{vale_id}', 'Tesoreria\PdfController@generateValeSalida')->name('vale_salida');
-			Route::any('historial/cajachica/{cajachica_id}', 'Tesoreria\PdfController@generarHistorialCajaChica')->name('historial.cajachica');
-		});
-
-		/*
-		Route::get('crear_tablas', 'TesoreriaController@crearTablas');
-		Route::get('crear_uno', 'TesoreriaController@crearUno');
-		Route::get('llenar_data', 'TesoreriaController@llenarDataInicial');
-		Route::get('eliminar_tablas', 'TesoreriaController@eliminarTablas');
-
-		Route::group(['middleware' => ['roles:' . implode(',', $roles['programador'])], 'prefix' => 'administracion', 'as' => 'administracion.'], function () {
-			Route::get('sol_tipos', 'Tesoreria\SolicitudesTiposController@index')->name('solicitudes_tipos.index');
-			Route::post('guardar', 'Tesoreria\SolicitudesTiposController@store')->name('solicitudes_tipos.store');
-		});
-
-		Route::group(['middleware' => ['roles:' . implode(',', $roles['programador'])], 'prefix' => 'configuraciones', 'as' => 'configuraciones.'], function () {
-			Route::get('/', 'Tesoreria\ConfiguracionesController@index')->name('index');
-		});
-	});
-	Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
-		Route::any('data/{tipo}/{identificador}', 'Tesoreria\AjaxController@getDataPersonaContribuyente')->name('data.persona_contribuyente');
-
-		Route::any('proveedores', 'Tesoreria\AjaxController@getProveedores')->name('proveedores');
-
-		Route::any('cajaschicas', 'Tesoreria\AjaxController@getCajasChicas')->name('cajaschicas');
-		Route::any('cajachica/{cajachica_id}/movimientos', 'Tesoreria\AjaxController@getCajaChicaMovimientos')->name('cajachica.movimientos');
-		Route::get('cajachica/{cajachica_id}/saldos', 'Tesoreria\AjaxController@getSaldoCajaChica')->name('cajachica.saldos');
-
-		Route::get('almacenes/{empresa?}/{sede?}', 'Tesoreria\AjaxController@ajaxListaAlmacenes')->name('almacenes');
-		Route::get('t_cambio/{moneda_id}/{fecha?}', 'Tesoreria\AjaxController@ajaxTipoCambio')->name('t_cambio');
-
-		Route::get('solicitudes_subtipos/{tipo_id}', 'Tesoreria\AjaxController@getSolicitudesSubTipos')->name('sol_subtipos');
-		Route::get('solicitudes', 'Tesoreria\AjaxController@getSolicitudes')->name('solicitudes');
-
-		Route::get('planillapagos', 'Tesoreria\AjaxController@getPlanillaPagos')->name('planillapagos');
-
-		Route::get('sedes/{empresa_id}', 'Tesoreria\AjaxController@getSedes')->name('sedes');
-		Route::get('areas/{sede_id}', 'Tesoreria\AjaxController@getGruposAreas')->name('areas');
-
-		Route::get('solicitudes_subtipos/{tipo_id}', 'Tesoreria\AjaxController@getSolicitudesSubTipos')->name('sol_subtipos');
-		Route::get('solicitudes', 'Tesoreria\AjaxController@getSolicitudes')->name('solicitudes');
-
-
-		Route::get('presupuesto/{area_id}', 'Tesoreria\AjaxController@getPresupuesto')->name('presupuesto');
-	});
-*/
 	Route::get('migrarOrdenVenta/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrarOCC');
 	Route::get('correlativo', 'Migraciones\MigrateOrdenSoftLinkController@correlativo');
 
