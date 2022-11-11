@@ -68,6 +68,24 @@
                             </div>
                         </div>
                     </fieldset>
+                    <br>
+                    <fieldset class="group-table">
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de la cabecera</strong></h5>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view">
+                                    <thead>
+                                        <th>Adjunto</th>
+                                        <th>Fecha emisión</th>
+                                        <th>Tipo adjunto</th>
+                                    </thead>
+                                    <tbody data-table="adjuntos-tesoreria">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
                 </form>
             </div>
             <div class="modal-footer">

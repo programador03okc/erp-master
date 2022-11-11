@@ -1506,5 +1506,30 @@ class RequerimientoPagoController extends Controller
 
         return $query;
     }
+    public function obtenerAdjuntosPago($id_requerimiento_pago)
+    {
+        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::select('requerimiento_pago_adjunto.id_requerimiento_pago_adjunto','requerimiento_pago_adjunto.archivo','requerimiento_pago_adjunto.id_estado','requerimiento_pago_adjunto.fecha_registro','requerimiento_pago_adjunto.id_categoria_adjunto', 'requerimiento_pago_categoria_adjunto.descripcion')
+        ->where('id_requerimiento_pago',$id_requerimiento_pago)
+        ->join('tesoreria.requerimiento_pago_categoria_adjunto','requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto','=','requerimiento_pago_adjunto.id_categoria_adjunto')
+        ->get();
+
+        $adjuntos_pagos = RegistroPago::select('registro_pago_adjuntos.adjunto', 'registro_pago_adjuntos.id_adjunto')
+            ->where('id_requerimiento_pago',$id_requerimiento_pago)
+            ->join('tesoreria.registro_pago_adjuntos','registro_pago_adjuntos.id_pago', '=','registro_pago.id_pago')
+            ->get();
+
+
+        if (sizeof($adjuntos_pagos_complementarios)>0) {
+            foreach ($adjuntos_pagos_complementarios as $key => $value) {
+                $value->fecha_registro= date("d/m/Y", strtotime($value->fecha_registro));
+            }
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$adjuntos_pagos_complementarios,
+            "data_pagos"=>$adjuntos_pagos
+        ]);
+    }
 
 }
