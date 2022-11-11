@@ -391,8 +391,28 @@ function validarOrdenAgilOrdenSoftlink() {
             url: 'validar-orden-agil-orden-softlink',
             data: { 'idOrden': idOrden },
             dataType: 'JSON',
+            beforeSend: data => {
+                var customElement = $("<div>", {
+                    "css": {
+                        "font-size": "24px",
+                        "text-align": "center",
+                        "padding": "0px",
+                        "margin-top": "-700px"
+                    },
+                    "class": "your-custom-class",
+                    "text": "Validando orden con softlink..."
+                });
+                $("#wrapper-okc").LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    custom: customElement,
+                    imageColor: "#3c8dbc"
+                });
+            },
             success: (response) => {
                 console.log(response);
+                $("#wrapper-okc").LoadingOverlay("hide", true);
+
                 if (response.tipo == 'warning') {
                     Lobibox.notify('warning', {
                         title: false,
@@ -405,6 +425,8 @@ function validarOrdenAgilOrdenSoftlink() {
                 }
             }
         }).fail((jqXHR, textStatus, errorThrown) => {
+            $("#wrapper-okc").LoadingOverlay("hide", true);
+
             Swal.fire(
                 '',
                 'Hubo un problema al intentar validar la orden de Ágil con la orden Softlink, por favor vuelva a intentarlo.',
@@ -1408,8 +1430,8 @@ function agregarServicio() {
 
     document.querySelector("tbody[id='body_detalle_orden']").insertAdjacentHTML('beforeend', `<tr style="text-align:center;">
     <td><input type="hidden"  name="idRegister[]" value="${makeId()}"> <input type="hidden"  class="idEstado" name="idEstado[]"> <input type="hidden"  name="idDetalleRequerimiento[]" value=""> <input type="hidden"  name="idTipoItem[]" value="2"></td>
-    <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-    <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
+    <td>(No aplica) <input type="hidden" value=""></td>
+    <td>(No aplica) <input type="hidden" value=""></td>
     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
     <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="" style="width:100%;height: 60px;"> </textarea>  
         <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;"></textarea>
