@@ -363,25 +363,38 @@ class RequerimientoPagoController extends Controller
     function guardarAdjuntosAdicionales(Request $request){
         DB::beginTransaction();
         try {
+    // Debugbar::info($ObjectoAdjuntoDetalle);
+    $estado_accion='';
+    $idAdjunto=[];
 
-        $requerimientoPago = RequerimientoPago::where("id_requerimiento_pago", $request->id_requerimiento_pago)->first();
+    $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoPagoObject);
+    $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+    $archivoAdjuntoList =$request->archivo_adjunto_list;
+    $requerimientoPago = RequerimientoPago::where("id_requerimiento_pago", $request->id_requerimiento_pago)->first();
+        
+        if (count($request->archivo_adjunto_list) > 0) {
+                
 
-        $adjuntoAdjuntosLength = $request->archivo_adjunto != null ? count($request->archivo_adjunto) : 0;
+            foreach ($ObjectoAdjunto as $keyObj => $value) {
+                $ObjectoAdjunto[$keyObj]->id_requerimiento_pago=$request->id_requerimiento_pago;
+                $ObjectoAdjunto[$keyObj]->codigo=$requerimientoPago->codigo;
+                if ($adjuntoOtrosAdjuntosLength > 0) {
+                    foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                        if(is_file($archivo)){
+                            $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                            if($nombreArchivoAdjunto == $value->nameFile){
+                                $ObjectoAdjunto[$keyObj]->file=$archivo;
+                            }
+                        }
+                    }
+                }               
+            }
+            $idAdjunto[] = $this->subirYRegistrarArchivoCabecera($ObjectoAdjunto);
 
-
-        $idAdjuntoList = $request->id_adjunto;
-        $fechaEmisionAdjuntoList = $request->fecha_emision_adjunto;
-        $idCategoriaAdjuntoList = $request->categoria_adjunto;
-        // $accionAdjunto = $request->accion;
-
-
-
-        $idAdjunto=[];
-        if ($adjuntoAdjuntosLength) {
-            $idAdjunto=$this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago, $fechaEmisionAdjuntoList, $idCategoriaAdjuntoList ,$request->archivo_adjunto, $requerimientoPago->codigo);
         }
 
-        $estado_accion='error';
+ 
+
         if(count($idAdjunto)>0){
             $mensaje = 'Adjuntos guardos';
             $estado_accion='success';
@@ -400,64 +413,118 @@ class RequerimientoPagoController extends Controller
 
     }
 
-    function subirYRegistrarArchivoCabecera($idRequerimientoPago,$fechaEmisionAdjuntoList,$idCategoriaAdjuntoList, $adjunto, $codigoRequerimientoPago)
+    function subirYRegistrarArchivoCabecera($ObjectoAdjunto)
     {
-        $idAdjuntoRequerimientoPagoList=[];
-        foreach ($adjunto as $key => $archivo) {
-            if ($archivo != null) {
+        $idList = [];
+
+        foreach ($ObjectoAdjunto as $key => $archivo) {
+
+            if($archivo->action=="GUARDAR"){
                 $fechaHoy = new Carbon();
                 $sufijo = $fechaHoy->format('YmdHis');
-                $file = $archivo->getClientOriginalName();
-                $codigo = $codigoRequerimientoPago;
+                $file = ($archivo->file)->getClientOriginalName();
+                $codigo = $archivo->codigo;
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile = $codigo . '_' . $key . $idCategoriaAdjuntoList[$key] . $sufijo . '.' . $extension;
-                Storage::disk('archivos')->put("necesidades/requerimientos/pago/cabecera/" . $newNameFile, File::get($archivo));
+                $newNameFile = $codigo . '_' . $key . $archivo->category . $sufijo . '.' . $extension;
+                Storage::disk('archivos')->put("necesidades/requerimientos/pago/cabecera/" . $newNameFile, File::get($archivo->file));
 
-                $idAdjuntoRequerimientoPago = DB::table('tesoreria.requerimiento_pago_adjunto')->insertGetId(
+                $idAdjunto = DB::table('tesoreria.requerimiento_pago_adjunto')->insertGetId(
                     [
-                        'id_requerimiento_pago'     => $idRequerimientoPago,
+                        'id_requerimiento_pago'     => $archivo->id_requerimiento_pago,
                         'archivo'                   => $newNameFile,
                         'id_estado'                 => 1,
-                        'fecha_emision'             => $fechaEmisionAdjuntoList[$key],
-                        'id_categoria_adjunto'      => $idCategoriaAdjuntoList[$key],
+                        'fecha_emision'             => $archivo->fecha_emision,
+                        'id_categoria_adjunto'      => $archivo->category,
                         'fecha_registro'            => $fechaHoy
                     ],
                     'id_requerimiento_pago_adjunto'
                 );
-                $idAdjuntoRequerimientoPagoList[]= $idAdjuntoRequerimientoPago;
+                $idList[] = $idAdjunto;
+            }elseif($archivo->action=="ACTUALIZAR"){
+                $idAdjunto = DB::table('tesoreria.requerimiento_pago_adjunto')
+                ->where('id_requerimiento_pago_adjunto', $archivo->id)
+                ->update(
+                    [
+                        'estado'                => 1,
+                        'categoria_adjunto_id'  => $archivo->category,
+                        'fecha_emision'         => $archivo->fecha_emision                    ]
+                );
+
+                $idList[] = $idAdjunto;
             }
+            elseif($archivo->action=="ANULAR"){
+
+                $idAdjunto = DB::table('tesoreria.requerimiento_pago_adjunto')
+                ->where('id_requerimiento_pago_adjunto', $archivo->id)
+                ->update(
+                    [
+                        'estado' => 7
+                    ]
+                );
+                $idList[] = $idAdjunto;
+
+            }
+
         }
-        return $idAdjuntoRequerimientoPagoList;
+        return $idList;
 
     }
 
-    function guardarAdjuntoRequerimientoPagoDetalle($adjuntoRequerimientoPagoDetalleArray, $codigoRequerimientoPago)
+    function guardarAdjuntoRequerimientoPagoDetalle($ObjectoAdjuntoDetalle)
     {
+    // Debugbar::info($ObjectoAdjuntoDetalle);
 
-        // $adjuntoRequerimientoPagoDetalle = 0;
-        if ($adjuntoRequerimientoPagoDetalleArray != null && count($adjuntoRequerimientoPagoDetalleArray) > 0) {
-            foreach ($adjuntoRequerimientoPagoDetalleArray as $key => $adjunto) {
+        $idList = [];
+
+        foreach ($ObjectoAdjuntoDetalle as $key => $archivo) {
+
+            if($archivo->action=="GUARDAR"){
                 $fechaHoy = new Carbon();
                 $sufijo = $fechaHoy->format('YmdHis');
-                $file = $adjunto['archivo']->getClientOriginalName();
-                $codigo = $codigoRequerimientoPago;
+                $file = ($archivo->file)->getClientOriginalName();
+                $codigo = $archivo->codigo;
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-                $newNameFile = $codigo . '_' . $key . $sufijo . '.' . $extension;
+                $newNameFile = $codigo . '_' . $key  . $sufijo . '.' . $extension;
+                Storage::disk('archivos')->put("necesidades/requerimientos/pago/detalle/" . $newNameFile, File::get($archivo->file));
 
-                Storage::disk('archivos')->put("necesidades/requerimientos/pago/detalle/" . $newNameFile, File::get($adjunto['archivo']));
-
-
-                $adjuntoRequerimientoPagoDetalle = DB::table('tesoreria.requerimiento_pago_detalle_adjunto')->insertGetId(
+                $idAdjunto = DB::table('tesoreria.requerimiento_pago_detalle_adjunto')->insertGetId(
                     [
-                        'id_requerimiento_pago_detalle' => $adjunto['id_requerimiento_pago_detalle'],
+                        'id_requerimiento_pago_detalle' => $archivo->id_requerimiento_pago_detalle,
                         'archivo'                   => $newNameFile,
                         'id_estado'                 => 1,
                         'fecha_registro'            => $fechaHoy
                     ],
                     'id_requerimiento_pago_detalle_adjunto'
                 );
+                $idList[] = $idAdjunto;
+            }elseif($archivo->action=="ACTUALIZAR"){
+                $idAdjunto = DB::table('tesoreria.requerimiento_pago_detalle_adjunto')
+                ->where('id_requerimiento_pago_detalle_adjunto', $archivo->id)
+                ->update(
+                    [
+                        'estado'                => 1,
+                    ]
+                );
+
+                $idList[] = $idAdjunto;
             }
+            elseif($archivo->action=="ANULAR"){
+
+                $idAdjunto = DB::table('tesoreria.requerimiento_pago_detalle_adjunto')
+                ->where('id_requerimiento_pago_detalle_adjunto', $archivo->id)
+                ->update(
+                    [
+                        'estado' => 7
+                    ]
+                );
+                $idList[] = $idAdjunto;
+
+            }
+
         }
+        return $idList;
+
+
     }
 
 
@@ -505,29 +572,6 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
             $requerimientoPago->id_trabajador = $request->id_trabajador > 0 ? $request->id_trabajador : null;
             $requerimientoPago->save();
-
-            // guardar adjuntos
-            // $requerimientoPago->adjuntoOtrosAdjuntosGuardar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar1;
-            // $requerimientoPago->adjuntoOrdenesGuardar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar2;
-            // $requerimientoPago->adjuntoComprobanteBancarioGuardar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar3;
-            // $requerimientoPago->adjuntoComprobanteContableGuardar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileGuardar4;
-
-            // $requerimientoPago->fecha_emision = $request->fecha_emision;//fecha de emision de comprobsante del adjunto nivel cabecera
-            $requerimientoPago->archivo_adjunto = $request->archivo_adjunto;
-            $requerimientoPago->fecha_emision_adjunto = $request->fecha_emision_adjunto;
-            $requerimientoPago->categoria_adjunto = $request->categoria_adjunto;
-
-            // //? actualizar adjuntos, actualmente no se actualizan archivos por otros
-            // $requerimientoPago->adjuntoOtrosAdjuntosActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar1;
-            // $requerimientoPago->adjuntoOrdenesActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar2;
-            // $requerimientoPago->adjuntoComprobanteBancarioActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar3;
-            // $requerimientoPago->adjuntoComprobanteContableActualizar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileActualizar4;
-            // //? eliminar adjuntos, actualmente no se elimina en disco
-            // $requerimientoPago->adjuntoOtrosAdjuntosEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar1;
-            // $requerimientoPago->adjuntoOrdenesEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar2;
-            // $requerimientoPago->adjuntoComprobanteBancarioEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar3;
-            // $requerimientoPago->adjuntoComprobanteContableEliminar = $request->archivoAdjuntoRequerimientoPagoCabeceraFileEliminar4;
-
 
             $count = count($request->descripcion);
 
@@ -582,70 +626,64 @@ class RequerimientoPagoController extends Controller
             }
 
 
-            // guardando adjuntos nuevos
-            if (($requerimientoPago->archivo_adjunto != null ? (count($requerimientoPago->archivo_adjunto)) : 0) > 0) {
-                $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago,$requerimientoPago->fecha_emision_adjunto, $requerimientoPago->archivo_adjunto, $requerimientoPago->adjuntoOtrosAdjuntosGuardar, $requerimientoPago->codigo);
-            }
+            //adjuntos cabecera
+            $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoPagoObject);
+            $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+            $archivoAdjuntoList =$request->archivo_adjunto_list;
 
 
+            if (count($request->archivo_adjunto_list) > 0) {
+                
 
-            // adjuntos cabecera - actualizar, anular adjuntos en tabla
-            $archivoAdjuntoRequerimientoPagoObject = json_decode($request->archivoAdjuntoRequerimientoPagoObject);
-            if (count($archivoAdjuntoRequerimientoPagoObject) > 0) {
-                foreach ($archivoAdjuntoRequerimientoPagoObject as $ar) {
-                    if (preg_match('/^[0-9]+$/', $ar->id)) {
-                        if ($ar->action == 'ACTUALIZAR') {
-                            RequerimientoPagoAdjunto::where('id_requerimiento_pago_adjunto', '=', $ar->id)
-                                ->update(['id_categoria_adjunto' => $ar->category]);
+                foreach ($ObjectoAdjunto as $keyObj => $value) {
+                    $ObjectoAdjunto[$keyObj]->id_requerimiento_pago=$requerimientoPago->id_requerimiento_pago;
+                    $ObjectoAdjunto[$keyObj]->codigo=$requerimientoPago->codigo;
+                    if ($adjuntoOtrosAdjuntosLength > 0) {
+                        foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                            if(is_file($archivo)){
+                                $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                if($nombreArchivoAdjunto == $value->nameFile){
+                                    $ObjectoAdjunto[$keyObj]->file=$archivo;
+                                }
+                            }
                         }
-                        if ($ar->action == 'ELIMINAR') {
-                            RequerimientoPagoAdjunto::where('id_requerimiento_pago_adjunto', '=', $ar->id)
-                                ->update(['id_estado' => 7]);
-                        }
-                    }
+                    }               
                 }
+                $idAdjunto[] = $this->subirYRegistrarArchivoCabecera($ObjectoAdjunto);
+
             }
 
 
-            // adjunto detalle - guardar adjuntos
-            $adjuntoRequerimientoPagoDetalleArray = [];
+            //adjuntos detalle
 
-            if (count($detalleArray) > 0) {
-                for ($i = 0; $i < count($detalleArray); $i++) {
+            Debugbar::info(count($request->archivo_adjunto_detalle_list) );
+            $ObjectoAdjuntoDetalle = json_decode($request->archivoAdjuntoRequerimientoPagoDetalleObject);
+            $adjuntoOtrosAdjuntosDetalleLength = $request->archivo_adjunto_detalle_list != null ? count($request->archivo_adjunto_detalle_list) : 0;
+            $archivoAdjuntoDetalleList =$request->archivo_adjunto_detalle_list;
+            if (count($request->archivo_adjunto_detalle_list) > 0) {
+                
 
-                    $archivos = $request->{"archivoAdjuntoRequerimientoPagoDetalleGuardar" . $detalleArray[$i]['idRegister']};
-
-                    if (isset($archivos)) {
-                        foreach ($archivos as $archivo) {
-                            $adjuntoRequerimientoPagoDetalleArray[] = [
-                                'id_requerimiento_pago_detalle' => $detalleArray[$i]['id_requerimiento_pago_detalle'],
-                                // 'nombre_archivo' => $archivo->getClientOriginalName(),
-                                'archivo' => $archivo
-                            ];
+                foreach ($ObjectoAdjuntoDetalle as $keyObj => $value) {
+                    $ObjectoAdjuntoDetalle[$keyObj]->id_requerimiento_pago=$requerimientoPago->id_requerimiento_pago;
+                    $ObjectoAdjuntoDetalle[$keyObj]->codigo=$requerimientoPago->codigo;
+                    if ($adjuntoOtrosAdjuntosDetalleLength > 0) {
+                        foreach ($archivoAdjuntoDetalleList as $keyA => $archivo) {
+                            if(is_file($archivo)){
+                                $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                if($nombreArchivoAdjunto == $value->nameFile){
+                                    $ObjectoAdjuntoDetalle[$keyObj]->file=$archivo;
+                                }
+                            }
                         }
-                    }
+                    }               
                 }
+                
+
+                $idAdjuntoDetalle[] = $this->guardarAdjuntoRequerimientoPagoDetalle($ObjectoAdjuntoDetalle);
+
             }
 
-
-
-            // adjuntos detalle -anular adjuntos en tabla
-            $archivoAdjuntoRequerimientoPagoDetalleObject = json_decode($request->archivoAdjuntoRequerimientoPagoDetalleObject);
-            if (count($archivoAdjuntoRequerimientoPagoDetalleObject) > 0) {
-                foreach ($archivoAdjuntoRequerimientoPagoDetalleObject as $ar) {
-                    if (preg_match('/^[0-9]+$/', $ar->id)) {
-                        if ($ar->action == 'ELIMINAR') {
-                            RequerimientoPagoAdjuntoDetalle::where('id_requerimiento_pago_detalle_adjunto', '=', $ar->id)
-                                ->update(['id_estado' => 7]);
-                        }
-                    }
-                }
-            }
-
-            if (count($adjuntoRequerimientoPagoDetalleArray) > 0) {
-                $this->guardarAdjuntoRequerimientoPagoDetalle($adjuntoRequerimientoPagoDetalleArray, $requerimientoPago->codigo);
-            }
-
+ 
 
             DB::commit();
 
