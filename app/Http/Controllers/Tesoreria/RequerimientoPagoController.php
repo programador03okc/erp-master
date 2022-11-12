@@ -317,28 +317,59 @@ class RequerimientoPagoController extends Controller
             $documento->save();
 
 
-            $this->guardarAdjuntoRequerimientoPagoCabecera($requerimientoPago, $codigo);
+            // Adjuntos Cabecera
+            $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoPagoObject);
+            $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+            $archivoAdjuntoList =$request->archivo_adjunto_list;
 
-            // guardar adjuntos nivel detalle
-            $adjuntoRequerimientoPagoDetalleArray = [];
-            for ($i = 0; $i < count($detalleArray); $i++) {
-                $archivos = $request->{"archivoAdjuntoRequerimientoPagoDetalle" . $detalleArray[$i]['idRegister']};
-                if (isset($archivos)) {
-                    foreach ($archivos as $archivo) {
-                        $adjuntoRequerimientoPagoDetalleArray[] = [
-                            'id_requerimiento_pago_detalle' => $detalleArray[$i]['id_requerimiento_pago_detalle'],
-                            'nombre_archivo' => $archivo->getClientOriginalName(),
-                            'archivo' => $archivo
-                        ];
-                    }
+            if (count($request->archivo_adjunto_list) > 0) {
+                foreach ($ObjectoAdjunto as $keyObj => $value) {
+                    $ObjectoAdjunto[$keyObj]->id_requerimiento_pago=$requerimientoPago->id_requerimiento_pago;
+                    $ObjectoAdjunto[$keyObj]->codigo=$codigo;
+                    if ($adjuntoOtrosAdjuntosLength > 0) {
+                        foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                            if(is_file($archivo)){
+                                $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                if($nombreArchivoAdjunto == $value->nameFile){
+                                    $ObjectoAdjunto[$keyObj]->file=$archivo;
+                                }
+                            }
+                        }
+                    }               
                 }
+                $idAdjunto[] = $this->subirYRegistrarArchivoCabecera($ObjectoAdjunto);
             }
+            // Adjuntos Detalle
+            $ObjectoAdjuntoDetalle = json_decode($request->archivoAdjuntoRequerimientoPagoDetalleObject);
+            $adjuntoOtrosAdjuntosDetalleLength = $request->archivo_adjunto_detalle_list != null ? count($request->archivo_adjunto_detalle_list) : 0;
+            $archivoAdjuntoDetalleList =$request->archivo_adjunto_detalle_list;
+            if (count($request->archivo_adjunto_detalle_list) > 0) {
+                
+                foreach ($ObjectoAdjuntoDetalle as $keyObj => $value) {
+                foreach ($detalleArray as $keyDetArr => $det) {
+                    if($det->idRegister == $value->id){
+                        $ObjectoAdjuntoDetalle[$keyObj]->id_requerimiento_pago_detalle=$det->id_requerimiento_pago_detalle;
+                    }
+                    $ObjectoAdjuntoDetalle[$keyObj]->id_requerimiento_pago=$requerimientoPago->id_requerimiento_pago;
+                    $ObjectoAdjuntoDetalle[$keyObj]->codigo=$codigo;
+                    if ($adjuntoOtrosAdjuntosDetalleLength > 0) {
+                        foreach ($archivoAdjuntoDetalleList as $keyA => $archivo) {
+                            if(is_file($archivo)){
+                                $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                if($nombreArchivoAdjunto == $value->nameFile){
+                                    $ObjectoAdjuntoDetalle[$keyObj]->file=$archivo;
+                                }
+                            }
+                        }
+                    }               
+                }
+                }
+                
+    // Debugbar::info($ObjectoAdjuntoDetalle);
 
-            if (count($adjuntoRequerimientoPagoDetalleArray) > 0) {
-                $this->guardarAdjuntoRequerimientoPagoDetalle($adjuntoRequerimientoPagoDetalleArray, $codigo);
+                $idAdjuntoDetalle[] = $this->guardarAdjuntoRequerimientoPagoDetalle($ObjectoAdjuntoDetalle);
+
             }
-
-
 
             return response()->json(['id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago, 'mensaje' => 'Se guardó el requerimiento de pago ' . $codigo]);
         } catch (Exception $e) {
@@ -346,19 +377,6 @@ class RequerimientoPagoController extends Controller
             return response()->json(['id_requerimiento_pago' => 0, 'mensaje' => 'Hubo un problema al guardar el requerimiento de pago. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
-
-    function guardarAdjuntoRequerimientoPagoCabecera($requerimientoPago, $codigoRequerimientoPago)
-    {
-        $adjuntoAdjuntosLength = $requerimientoPago->archivo_adjunto != null ? count($requerimientoPago->archivo_adjunto) : 0;
-        $fechaEmisionAdjuntoList = $requerimientoPago->fecha_emision_adjunto;
-        $idCategoriaAdjuntoList = $requerimientoPago->categoria_adjunto;
-
-        if ($adjuntoAdjuntosLength >  0) {
-            $this->subirYRegistrarArchivoCabecera($requerimientoPago->id_requerimiento_pago,$fechaEmisionAdjuntoList, $idCategoriaAdjuntoList, $requerimientoPago->archivo_adjunto, $codigoRequerimientoPago);
-        }
-
-    }
-
 
     function guardarAdjuntosAdicionales(Request $request){
         DB::beginTransaction();
@@ -656,7 +674,7 @@ class RequerimientoPagoController extends Controller
 
             //adjuntos detalle
 
-            Debugbar::info(count($request->archivo_adjunto_detalle_list) );
+            // Debugbar::info(count($request->archivo_adjunto_detalle_list) );
             $ObjectoAdjuntoDetalle = json_decode($request->archivoAdjuntoRequerimientoPagoDetalleObject);
             $adjuntoOtrosAdjuntosDetalleLength = $request->archivo_adjunto_detalle_list != null ? count($request->archivo_adjunto_detalle_list) : 0;
             $archivoAdjuntoDetalleList =$request->archivo_adjunto_detalle_list;

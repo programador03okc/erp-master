@@ -1650,23 +1650,31 @@ class ListarRequerimientoPagoView {
             let formData = new FormData($('#form-requerimiento-pago')[0]);
 
             if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+                formData.append(`archivoAdjuntoRequerimientoPagoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoCabeceraList));
+
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-                    formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFile${element.category}[]`, element.file);
-                    formData.append(`id_adjunto[]`, element.id);
-                    formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
-                    formData.append(`categoria_adjunto[]`, element.category);
-                    formData.append(`archivo_adjunto[]`, element.file);
-                    // formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
-                    formData.append(`nombre_real_adjunto[]`, element.nameFile);
-                    formData.append(`action[]`, 'GUARDAR');
-                });
+                    formData.append(`archivo_adjunto_list[]`, element.file);
+            });
+                // tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
+                //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFile${element.category}[]`, element.file);
+                //     formData.append(`id_adjunto[]`, element.id);
+                //     formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
+                //     formData.append(`categoria_adjunto[]`, element.category);
+                //     formData.append(`archivo_adjunto[]`, element.file);
+                //     // formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
+                //     formData.append(`nombre_real_adjunto[]`, element.nameFile);
+                //     formData.append(`action[]`, 'GUARDAR');
+                // });
             }
             if (tempArchivoAdjuntoRequerimientoPagoDetalleList.length > 0) {
+                formData.append(`archivoAdjuntoRequerimientoPagoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoDetalleList));
+
                 tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
-                    formData.append(`archivoAdjuntoRequerimientoPagoDetalle${element.id}[]`, element.file);
-                    // if(Number.isInteger(element.id)){
-                    // }
+                    formData.append(`archivo_adjunto_detalle_list[]`, element.file);
                 });
+                // tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
+                //     formData.append(`archivoAdjuntoRequerimientoPagoDetalle${element.id}[]`, element.file);
+                // });
             }
 
             $.ajax({
