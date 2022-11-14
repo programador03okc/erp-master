@@ -399,7 +399,7 @@ class MigrateProductoSoftlinkController extends Controller
                 $mon = $prod->tip_mone;
 
                 DB::table('almacen.alm_prod_serie')
-                    ->where('id_prod', $p->id_producto)
+                    ->where('serie', $p->serie)
                     ->update([
                         'fecha_ingreso_soft' => $fec,
                         'precio_unitario_soft' => $pre,
