@@ -919,6 +919,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('listas-categorias-adjunto', 'OrdenController@listarCategoriasAdjuntos');
 						Route::post('guardar-adjunto-orden', 'OrdenController@guardarAdjuntoOrden');
 						Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
+						Route::get('historial-de-envios-a-pago-en-cuotas/{id_order}', 'OrdenController@ObtenerHistorialDeEnviosAPagoEnCuotas');
 						Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 						Route::get('facturas/{id_orden}', 'OrdenController@obtenerFacturas');

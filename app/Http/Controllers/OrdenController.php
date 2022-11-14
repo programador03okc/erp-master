@@ -55,6 +55,8 @@ use App\Models\Logistica\ItemsOrdenesView;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\OrdenesView;
+use App\Models\Logistica\PagoCuota;
+use App\Models\Logistica\PagoCuotaDetalle;
 use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
@@ -4316,10 +4318,41 @@ class OrdenController extends Controller
                         $orden->id_persona_pago = $request->id_persona;
                         $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
                         $orden->comentario_pago = $request->comentario;
-                        $orden->monto_a_pago = (strlen($request->monto_a_pagar))>0?(str_replace(",", "", $request->monto_a_pagar)):null;
-                        $orden->pagos_a_cuota= (floatval($request->monto_a_pagar) < floatval($orden->monto_total))?1:0;
+                        $orden->tiene_pago_en_cuotas= (isset($request->pagoEnCuotasCheckbox) && empty($request->pagoEnCuotasCheckbox)==false)?true:false;
                         $orden->fecha_solicitud_pago = Carbon::now();
                         $orden->save();
+
+                        if( $orden->tiene_pago_en_cuotas == true){
+                            $findPagoCuota = PagoCuota::where('id_orden', $request->id_orden_compra)->first();
+                            if(empty($findPagoCuota)==false){
+                                $pagoCuotaDetalle = new PagoCuotaDetalle();
+                                $pagoCuotaDetalle->id_pago_cuota =$findPagoCuota->id_pago_cuota;
+                                $pagoCuotaDetalle->monto_cuota =$request->monto_a_pagar;
+                                $pagoCuotaDetalle->observación = $request->comentario;
+                                $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
+                                $pagoCuotaDetalle->fecha_registro = new Carbon();
+                                $pagoCuotaDetalle->estado = 1;
+                                $pagoCuotaDetalle->save();
+                            }else{
+                                $pagoCuota = new PagoCuota();
+                                $pagoCuota->id_orden = $request->id_orden_compra;
+                                $pagoCuota->numero_de_cuotas = $request->numero_de_cuotas;
+                                $pagoCuota->estado = 1;
+                                $pagoCuota->fecha_registro = new Carbon();
+                                $pagoCuota->save();
+    
+                                $pagoCuotaDetalle = new PagoCuotaDetalle();
+                                $pagoCuotaDetalle->id_pago_cuota =$pagoCuota->id_pago_cuota;
+                                $pagoCuotaDetalle->monto_cuota =$request->monto_a_pagar;
+                                $pagoCuotaDetalle->observación = $request->comentario;
+                                $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
+                                $pagoCuotaDetalle->fecha_registro = new Carbon();
+                                $pagoCuotaDetalle->estado = 1;
+                                $pagoCuotaDetalle->save();
+                            }
+
+
+                        }
 
                         $arrayRspta = array(
                             'tipo_estado' => 'success',
@@ -4356,7 +4389,11 @@ class OrdenController extends Controller
             return response()->json(['tipo_estado' => 'error', 'data' => [], 'mensaje' => 'Hubo un problema al intentar obtener la data del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
-
+    function ObtenerHistorialDeEnviosAPagoEnCuotas($idOrden){
+        return PagoCuota::with(['detalle'=> function($query) {
+            $query->orderBy('fecha_registro', 'asc');
+        },'detalle.creadoPor','detalle.adjuntos'])->where('id_orden',$idOrden)->first();
+    }
 
     function obtenerContribuyente($idContribuyente)
     {

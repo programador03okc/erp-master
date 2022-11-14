@@ -100,10 +100,10 @@ class ListaOrdenView {
         $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeCuenta", (e) => {
             this.actualizarIdCuentaBancariaDeInput(e.currentTarget);
         });
-        
-        $('#modal-enviar-solicitud-pago').on("keyup", "input.handleKeyUpCalcularSaldo", (e) => {
-            this.calcularSaldo();
+        $('#modal-enviar-solicitud-pago').on("click", "input.handleCkeckPagoCuotas", (e) => {
+            this.updateLabelModalEnviarSolicitudPago(e.currentTarget.checked);
         });
+        
 
         $('#listaDestinatariosEncontrados').on("click", "tr.handleClickSeleccionarDestinatario", (e) => {
             this.seleccionarDestinatario(e.currentTarget);
@@ -264,7 +264,7 @@ class ListaOrdenView {
         $(document).on("change", "input.handleChangeAgregarAdjuntoRequerimientoCompraCabecera", (e) => {
             this.agregarAdjuntoRequerimientoCabeceraCompra(e.currentTarget);
         });
-        $('#modal-adjuntar-orden').on("click", "button.handleClickEliminarArchivoCabeceraRequerimientoCompra", (e) => {
+        $(document).on("click", "button.handleClickEliminarArchivoCabeceraRequerimientoCompra", (e) => {
             this.eliminarAdjuntoRequerimientoCompraCabecera(e.currentTarget);
         });
         $(document).on("submit", "#form-adjunto-orden", (e) => {
@@ -273,16 +273,16 @@ class ListaOrdenView {
             this.guardarAdjuntos();
         });
 
-        $('#modal-adjuntar-orden').on("change", "input.handleChangeFechaEmision", (e) => {
+        $(document).on("change", "input.handleChangeFechaEmision", (e) => {
             this.actualizarFechaEmisionDeAdjunto(e.currentTarget);
         });
-        $('#modal-adjuntar-orden').on("change", "input.handleChangeNroComprobante", (e) => {
+        $(document).on("change", "input.handleChangeNroComprobante", (e) => {
             this.actualizarNroComprobanteDeAdjunto(e.currentTarget);
         });
-        $('#modal-adjuntar-orden').on("click", "button.handleClickEditarAdjuntoProveedor", (e) => {
+        $(document).on("click", "button.handleClickEditarAdjuntoProveedor", (e) => {
             this.editarAdjuntoProveedor(e.currentTarget);
         });
-        $('#modal-adjuntar-orden').on("click", "button.handleClickAnularAdjuntoProveedor", (e) => {
+        $(document).on("click", "button.handleClickAnularAdjuntoProveedor", (e) => {
             this.anularAdjuntoProveedor(e.currentTarget);
         });
 
@@ -996,9 +996,7 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
 
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = '';
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value = '';
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='saldo']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="";
 
         let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
@@ -1019,6 +1017,10 @@ class ListaOrdenView {
     }
 
     modalEnviarOrdenAPago(obj) {
+        tempArchivoAdjuntoRequerimientoCabeceraList=[];
+        $(":file").filestyle('clear');
+        this.limpiarTabla('adjuntosCabecera');
+
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = '';
         this.limpiarFormEnviarOrdenAPago();
         this.restablecerValoresPorDefectoFormEnviarOrdenAPago();
@@ -1033,17 +1035,17 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").setAttribute("data-monto-total-orden",obj.dataset.montoTotalOrden);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = $.number(obj.dataset.montoTotalOrden,2,".",",");
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =(parseFloat(obj.dataset.montoTotalOrden) - parseFloat(obj.dataset.montoTotalPagado)).toFixed(2);
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").value = $.number(obj.dataset.montoTotalPagado,2,".",",");
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").setAttribute("data-monto-total-pagado",obj.dataset.montoTotalPagado);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =(parseFloat(obj.dataset.montoTotalOrden)).toFixed(2);
 
         // document.querySelector("div[id='modal-enviar-solicitud-pago'] div[name='simboloMoneda']").textContent = obj.dataset.simboloMonedaOrden;
         $( "div[name*='simboloMoneda']" ).text(obj.dataset.simboloMonedaOrden);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
-        this.calcularSaldo();
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent = ((obj.dataset.pagosACuota)==="true"?"(Pago en cuotas)":"");
+ 
+        // this.updateLabelModalEnviarSolicitudPago((obj.dataset.tienePagoEnCuotas === "true"));
+        this.updateLabelModalEnviarSolicitudPago(JSON.parse((obj.dataset.tienePagoEnCuotas).toLowerCase()));
+
 
 
         if (obj.dataset.estadoPago == 8) {
@@ -1076,6 +1078,128 @@ class ListaOrdenView {
 
         // this.obtenerMontosParaPago(obj.dataset.idOrdenCompra);
 
+        this.obteneAdjuntosOrden(obj.dataset.idOrdenCompra).then((res) => {
+
+            let htmlAdjunto = '';
+            // console.log(res.length);
+            if (res.length > 0) {
+                (res).forEach(element => {
+
+                    tempArchivoAdjuntoRequerimientoCabeceraList.push(
+                        {
+                            'id':element.id_adjunto,
+                            'category':element.categoria_adjunto_id,
+                            'fecha_emision':element.fecha_emision,
+                            'nro_comprobante':(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:""),
+                            'nameFile':element.archivo,
+                            'accion':'',
+                            'file':[element.id_adjunto]
+                    }
+                    );
+
+                        htmlAdjunto+= '<tr id="'+element.id_adjunto+'">'
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+='<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>'
+                            htmlAdjunto+='</td>'
+
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+='<span name="fecha_emision_text">'+element.fecha_emision+'</span><input type="date" class="form-control handleChangeFechaEmision oculto" name="fecha_emision" placeholder="Fecha emisión"  value="'+element.fecha_emision+'">'
+                            htmlAdjunto+='</td>'
+
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+='<span name="nro_comprobante_text">'+(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:"")+'</span><input type="text" class="form-control handleChangeNroComprobante oculto" name="nro_comprobante"  placeholder="Nro comprobante" value="'+element.nro_comprobante+'">'
+                            htmlAdjunto+='</td>'
+
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+=''+element.descripcion+''
+                            htmlAdjunto+='</td>'
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+='<div style="display:flex;"><button type="button" class="btn btn-sm btn-warning boton handleClickEditarAdjuntoProveedor" title="Editar" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-edit"></i> </button>'
+                                htmlAdjunto+='<button type="button" class="btn btn-sm btn-danger boton handleClickAnularAdjuntoProveedor" title="Anular" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-trash"></i> </button></div>'
+                            htmlAdjunto+='</td>'
+                        htmlAdjunto+= '</tr>'
+
+                });
+            }else{
+                htmlAdjunto = `<tr>
+                <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
+                </tr>`;
+            }
+            $('#form-enviar_solicitud_pago #body_adjuntos_logisticos').html(htmlAdjunto)
+
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+        this.obteneHistorialDeEnviosAPagoEnCuotas(obj.dataset.idOrdenCompra).then((res) => {
+            console.log(res);
+            let htmlTable = '';
+            
+            if (res.hasOwnProperty('detalle') && res.detalle.length > 0) {
+                (res.detalle).forEach((element,index) => {
+                    let enlaceAdjunto=[];
+                        htmlTable+= '<tr id="'+element.id_pago_cuota_detalle+'">'
+                            htmlTable+='<td>'
+                                htmlTable+= index+1;
+                            htmlTable+='</td>'
+
+                            htmlTable+='<td>'
+                                htmlTable+= $.number(element.monto_cuota,2,".",",");
+                            htmlTable+='</td>'
+
+                            htmlTable+='<td>'
+                                htmlTable+= element.observacion??'';
+                            htmlTable+='</td>'
+
+                            htmlTable+='<td>'
+                                htmlTable+= element.fecha_registro
+                            htmlTable+='</td>'
+                            htmlTable+='<td>'
+
+                                if(element.adjuntos.length >0){
+                                    (element.adjuntos).forEach(adjunto => {
+                                        enlaceAdjunto.push(`<a href="files/logistica/comporbantes_proveedor/${adjunto.archivo}" target="_blank">${adjunto.archivo}</a>`);
+                                    });
+                                }
+
+                                htmlTable+=enlaceAdjunto.toString().replace(",","<br>");
+                            htmlTable+='</td>'
+                        htmlTable+= '</tr>'
+
+                });
+            }else{
+                htmlTable = `<tr>
+                <td style="text-align:center;" colspan="5">Sin data para mostrar</td>
+                </tr>`;
+            }
+            $('#form-enviar_solicitud_pago #body_historial_de_envios_a_pago_en_cuotas').html(htmlTable)
+
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+    }
+
+    updateLabelModalEnviarSolicitudPago(tienePagoEnCuotas){
+
+        if(tienePagoEnCuotas ===true){
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='pagoEnCuotasCheckbox']").checked = true;
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").setAttribute("readOnly",true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").removeAttribute("disabled");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent = "(Pago en cuotas)";
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-historialEnviosAPagoLogistica']").removeAttribute("hidden");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-adjuntosLogisticosRegistrados']").setAttribute("hidden",true);
+        }else{
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='pagoEnCuotasCheckbox']").checked = false;
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent = "";
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").setAttribute("disabled",true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").removeAttribute("readOnly");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-historialEnviosAPagoLogistica']").setAttribute("hidden",true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-adjuntosLogisticosRegistrados']").removeAttribute("hidden");
+
+        }
     }
 
     getContribuyentePorIdProveedor(id) {
@@ -1217,7 +1341,14 @@ class ListaOrdenView {
         // console.log('enviar a pago');
 
         if (this.validarFormularioEnvioOrdenAPago()) {
+
             let formData = new FormData($('#form-enviar_solicitud_pago')[0]);
+            if(tempArchivoAdjuntoRequerimientoCabeceraList.length>0){
+                formData.append(`archivoAdjuntoRequerimientoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoCabeceraList));
+                tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
+                    formData.append(`archivo_adjunto_list[]`, element.file);
+            });
+            }
             $.ajax({
                 type: 'POST',
                 url: 'registrar-solicitud-de-pago',
@@ -1549,18 +1680,6 @@ class ListaOrdenView {
         }
     }
 
-    calcularSaldo(){
-
-        // let montoPagar = obj.value!=null?(parseFloat((obj.value).replace(",",""))):0;
-        let montoTotalOrden = document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden!=null ?(parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden)):0;
-        let montoTotalPagado = (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").dataset.montoTotalPagado)!=null?(parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_pagado']").dataset.montoTotalPagado).replace(",",""))):0;
-        let montoAPagar = (document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value)!=null?(parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value).replace(",",""))):0;
-        let saldo = parseFloat((montoTotalOrden-(montoTotalPagado+montoAPagar)));
-        console.log(saldo);
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='saldo']").value= $.number(saldo,2,".",",");
-        (saldo !=null && saldo >0)?(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="(Pago en cuotas)"):(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="");
-    }
-
 
     buscarDestinatarioPorNombre(obj) {
         let nombreDestinatario = obj.value;
@@ -1825,7 +1944,6 @@ class ListaOrdenView {
                                 data-id-orden-compra="${row.id ?? ''}"
                                 data-codigo-orden="${row.codigo ?? ''}"
                                 data-monto-total-orden="${row.monto_total ?? ''}"
-                                data-monto-a-pago-orden="${row.monto_a_pago ?? ''}"
                                 data-simbolo-moneda-orden="${row.simbolo_moneda ?? ''}"
                                 data-id-proveedor="${row.id_proveedor ?? ''}"
                                 data-id-cuenta-principal="${row.id_cta_principal ?? ''}"
@@ -1834,8 +1952,7 @@ class ListaOrdenView {
                                 data-id-tipo-destinatario-pago="${row.id_tipo_destinatario_pago ?? ''}"
                                 data-id-cuenta-contribuyente-pago="${row.id_cta_principal ?? ''}"
                                 data-id-contribuyente-pago="${row.id_contribuyente ?? ''}"
-                                data-monto-total-pagado="${row.monto_total_pagado ?? '0'}"
-                                data-pagos-a-cuota="${Boolean(row.pagos_a_cuota) ?? false}"
+                                data-tiene-pago-en-cuotas="${JSON.parse((row.tiene_pago_en_cuotas)) ?? false}"
 
                                 data-id-persona-pago="${row.id_persona_pago ?? ''}"
                                 data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"
@@ -2277,8 +2394,8 @@ class ListaOrdenView {
                 </div>
             </td>
             </tr>`;
-
-            document.querySelector("div[id='modal-adjuntar-orden'] tbody[id='body_archivos_requerimiento_compra_cabecera']").insertAdjacentHTML('beforeend', html);
+            
+            document.querySelector("div[id='"+document.querySelector("div[class='modal fade in']").id+"'] tbody[id='body_archivos_requerimiento_compra_cabecera']").insertAdjacentHTML('beforeend', html);
 
         }).catch(function (err) {
             console.log(err)
@@ -2419,6 +2536,23 @@ class ListaOrdenView {
                 },
                 error: function (err) {
                     // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                    reject(err)
+                }
+            });
+        });
+    }
+    obteneHistorialDeEnviosAPagoEnCuotas(id_orden) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `historial-de-envios-a-pago-en-cuotas/${id_orden}`,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+            },
+                success(response) {
+                    resolve(response);
+                },
+                error: function (err) {
                     reject(err)
                 }
             });
