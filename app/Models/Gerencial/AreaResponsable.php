@@ -12,6 +12,6 @@ class AreaResponsable extends Model
     public $timestamps = false;
     public function cobranza()
     {
-        return $this->belongsTo(Cobranza::class, 'id_area', 'id_area');
+        return $this->belongsTo(RegistroCobranza::class, 'id_area', 'id_area');
     }
 }

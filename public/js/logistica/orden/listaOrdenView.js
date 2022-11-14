@@ -191,7 +191,7 @@ class ListaOrdenView {
                                 'nro_comprobante':(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:""),
                                 'nameFile':element.archivo,
                                 'accion':'',
-                                'file':[element.id_adjunto]
+                                'file': null
                         }
                         );
 
@@ -2445,24 +2445,26 @@ class ListaOrdenView {
 
             if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
                 tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
-
+                    
                         formData.append(`id_adjunto[]`, element.id);
                         formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
                         formData.append(`nro_comprobante_adjunto[]`, element.nro_comprobante);
                         formData.append(`categoria_adjunto[]`, element.category);
-                        formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
+                        formData.append(`archivo_adjunto_list[]`, element.file);
                         formData.append(`nombre_real_adjunto[]`, element.nameFile);
                         formData.append(`accion[]`, element.accion);
                     
                 });
+
             }
 
             $.ajax({
                 type: 'POST',
                 url: 'guardar-adjunto-orden',
-                data: formData,
+                enctype: 'multipart/form-data',
                 processData: false,
                 contentType: false,
+                data: formData,
                 dataType: 'JSON',
                 beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
                     $('#modal-adjuntar-orden .modal-content').LoadingOverlay("show", {

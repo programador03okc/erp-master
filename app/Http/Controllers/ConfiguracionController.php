@@ -806,6 +806,7 @@ class ConfiguracionController extends Controller{
 
     public function guardar_usuarios(Request $request){
 
+        // return $request;exit;
         $rrhh_perso = new rrhh_perso;
         $rrhh_perso->id_documento_identidad = 1;
         $rrhh_perso->nro_documento          = (int) $request->nro_documento;
@@ -2521,6 +2522,74 @@ public function anular_configuracion_socket($id){
                 ]);
             }
         }
+    }
+    public function scriptsAccesos()
+    {
+        // array de accesos
+        $array_id_accesos=[78,83,77,79,82,80,81];
+        $accesos=array();
+        // array de usuarios
+        $array_usuarios=[93,77,65,60,36,33,32,27,22,17,16,3,1];
+        $json_usuarios=array();
+        $usuarios_faltantes=array();
+
+        foreach ($array_usuarios as $key => $value) {
+            $accesos_table = SisUsua::where('id_usuario',$value)->first();
+            if ($accesos_table) {
+                array_push($json_usuarios,$accesos_table);
+            } else {
+                array_push($usuarios_faltantes,$value);
+            }
+        }
+
+        $accesos_modulos=array();
+
+        foreach ($array_id_accesos as $key => $value) {
+            $accesos_table = Accesos::where('id_acceso',$value)->first();
+            array_push($accesos,$accesos_table);
+
+            $modulo = DB::table('configuracion.modulos')->where('id_modulo',$accesos_table->id_modulo)->first();
+            array_push($accesos_modulos,array(
+                "id_acceso"=>$value,
+                "id_modulo"=>$accesos_table->id_modulo,
+                "id_padre"=>$modulo->id_padre
+            ));
+        }
+
+        $usuario_accessos=array();
+        foreach ($json_usuarios as $key_usuario => $value_usuario) {
+            foreach ($accesos_modulos as $key_accesos => $value_accesos) {
+                array_push($usuario_accessos,array(
+                    "id_acceso"=>$value_accesos['id_acceso'],
+                    "id_modulo"=>$value_accesos['id_modulo'],
+                    "id_padre"=>$value_accesos['id_padre'],
+                    "id_usuario"=>$value_usuario['id_usuario']
+                ));
+            }
+        }
+
+        foreach ($usuario_accessos as $key => $value) {
+
+            $busacar_accesos = AccesosUsuarios::where('estado',1)->where('id_usuario',$value['id_usuario'])->where('id_acceso',$value['id_acceso'])->first();
+            if (!$busacar_accesos) {
+                $accesos_usuarios_table= new AccesosUsuarios();
+                $accesos_usuarios_table->id_acceso  = $value['id_acceso'];
+                $accesos_usuarios_table->id_usuario = $value['id_usuario'];
+                $accesos_usuarios_table->estado     = 1;
+                $accesos_usuarios_table->id_modulo  = $value['id_modulo'];
+                $accesos_usuarios_table->id_padre   = $value['id_padre'];
+                $accesos_usuarios_table->save();
+            }
+
+        }
+
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "usuarios"=>$usuario_accessos,
+            "usuarios_faltantes"=>$usuarios_faltantes,
+            "accesos"=>$accesos_modulos
+        ]);
     }
 }
 

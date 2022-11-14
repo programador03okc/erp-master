@@ -1,9 +1,11 @@
 <?php
 
+use App\Exports\CatalogoProductoExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 //  Route::get('/{path?}', function () {
 //      return view('index');
@@ -701,6 +703,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('imprimir_salida/{id}', 'Almacen\Movimiento\SalidasPendientesController@imprimir_salida');
 				Route::get('imprimir_transformacion/{id}', 'Almacen\Movimiento\TransformacionController@imprimir_transformacion');
 				Route::get('reporte-requerimientos-bienes-servicios-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Logistica\RequerimientoController@reporteRequerimientosBienesServiciosExcel');
+				Route::get('reporte-items-requerimientos-bienes-servicios-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Logistica\RequerimientoController@reporteItemsRequerimientosBienesServiciosExcel');
 				Route::get('listar-todo-archivos-adjuntos-requerimiento-logistico/{id}', 'Logistica\RequerimientoController@listarTodoArchivoAdjuntoRequerimientoLogistico');
 				Route::post('anular-adjunto-requerimiento-logístico-cabecera', 'Logistica\RequerimientoController@anularArchivoAdjuntoRequerimientoLogisticoCabecera');
 				Route::post('anular-adjunto-requerimiento-logístico-detalle', 'Logistica\RequerimientoController@anularArchivoAdjuntoRequerimientoLogisticoDetalle');
@@ -745,6 +748,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
 				Route::get('index', 'Tesoreria\RequerimientoPagoController@viewListaRequerimientoPago')->name('index');
 				Route::get('listado-requerimientos-pagos-export-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Tesoreria\RequerimientoPagoController@listadoRequerimientoPagoExportExcel');
+				Route::get('listado-items-requerimientos-pagos-export-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Tesoreria\RequerimientoPagoController@listadoItemsRequerimientoPagoExportExcel');
 				Route::post('lista-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@listarRequerimientoPago')->name('lista-requerimiento-pago');
 				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');
 				// Route::get('detalle-requerimiento-pago/{id?}', 'Tesoreria\RequerimientoPagoController@listarDetalleRequerimientoPago')->name('detalle-requerimiento-pago');
@@ -989,7 +993,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('listar-archivos-adjuntos-pago-requerimiento/{idOrden}', 'OrdenController@listarArchivoAdjuntoPagoRequerimiento');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
-
 			});
 			Route::group(['as' => 'cotizacion.', 'prefix' => 'cotizacion'], function () {
 				Route::group(['as' => 'gestionar.', 'prefix' => 'gestionar'], function () {
@@ -1289,6 +1292,10 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'catalogo-productos.', 'prefix' => 'catalogo-productos'], function () {
 				Route::get('index', 'Almacen\Catalogo\ProductoController@view_prod_catalogo')->name('index');
 				Route::get('listar_productos', 'Almacen\Catalogo\ProductoController@mostrar_productos');
+				// Route::post('productosExcel', 'Almacen\Catalogo\ProductoController@productosExcel')->name('productosExcel');
+				Route::post('catalogoProductosExcel', function () {
+					return Excel::download(new CatalogoProductoExport, 'Catalogo_Productos.xlsx');
+				})->name('catalogoProductosExcel');
 			});
 		});
 
@@ -1636,8 +1643,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listar', 'Almacen\Reporte\SaldosController@listar')->name('listar');
 				Route::get('verRequerimientosReservados/{id}/{alm}', 'Almacen\Reporte\SaldosController@verRequerimientosReservados');
 				Route::get('exportar', 'Almacen\Reporte\SaldosController@exportar')->name('exportar');
-				Route::get('prueba_saldo', 'Almacen\Reporte\SaldosController@pruebaSaldo')->name('prueba_saldo');
+				Route::get('exportarSeries', 'Almacen\Reporte\SaldosController@exportarSeries')->name('exportarSeries');
+				Route::get('exportarAntiguedades', 'Almacen\Reporte\SaldosController@exportarAntiguedades')->name('exportarAntiguedades');
 				Route::post('exportar-valorizacion', 'Almacen\Reporte\SaldosController@valorizacion')->name('exportar-valorizacion');
+				Route::get('actualizarFechasIngresoSoft', 'Migraciones\MigrateProductoSoftlinkController@actualizarFechasIngresoSoft')->name('actualizarFechasIngresoSoft');
 			});
 
 			Route::group(['as' => 'lista-ingresos.', 'prefix' => 'lista-ingresos'], function () {
@@ -1735,7 +1744,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listar_stock_series', 'AlmacenController@listar_stock_series');
 				Route::get('prueba_exportar_excel', 'AlmacenController@obtener_data_stock_series');
 				Route::get('exportar_excel', 'AlmacenController@exportar_stock_series_excel');
-
 			});
 		});
 
@@ -1997,7 +2005,6 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('reistro-pagos-exportar-excel', 'Tesoreria\RegistroPagoController@registroPagosExportarExcel');
 				Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
-
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {
@@ -2052,10 +2059,16 @@ Route::group(['middleware' => ['auth']], function () {
 	});
 
 	Route::group(['as' => 'migracion.', 'prefix' => 'migracion'], function () {
-
 		Route::get('index', 'Migraciones\MigracionAlmacenSoftLinkController@index')->name('index');
 		Route::get('movimientos', 'Migraciones\MigracionAlmacenSoftLinkController@movimientos')->name('movimientos');
 		Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importar')->name('importar');
+
+		Route::group(['as' => 'softlink.', 'prefix' => 'softlink'], function () {
+			Route::get('index', 'Migraciones\MigracionAlmacenSoftLinkController@view_migracion_series')->name('index');
+			Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importarSeries')->name('importar');
+			Route::get('exportar', 'Migraciones\MigracionAlmacenSoftLinkController@exportarSeries')->name('exportar');
+			Route::get('test', 'Migraciones\MigracionAlmacenSoftLinkController@testSeries')->name('test');
+		});
 	});
 
 	Route::group(['as' => 'notificaciones.', 'prefix' => 'notificaciones'], function () {
@@ -2077,8 +2090,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::get('index', 'ConfiguracionController@view_main_configuracion')->name('index');
 		Route::get('usuarios', 'ConfiguracionController@view_usuario')->name('listarUsuarios');
-        Route::post('validar-documento', 'ConfiguracionController@validarDocumento');
-        Route::post('validar-usuario', 'ConfiguracionController@validarUsuario');
+		Route::post('validar-documento', 'ConfiguracionController@validarDocumento');
+		Route::post('validar-usuario', 'ConfiguracionController@validarUsuario');
 		#asignar acceso a los usuarios
 		// Route::get('configuracion/usuarios/accesos/{id}', 'ConfiguracionController@usuarioAcceso')->name('accesos');
 		// Route::get('usuarios/get/usuario/{id}', 'ConfiguracionController@getUsuario')->name('usuario.accesos');
@@ -2103,6 +2116,7 @@ Route::group(['middleware' => ['auth']], function () {
         // scripts a ejecutar
         Route::get('prueba', 'ConfiguracionController@prueba');
         Route::get('scripts/{var}', 'ConfiguracionController@scripts');
+        Route::get('scripts-usuario', 'ConfiguracionController@scriptsAccesos');
         // ----fin de scripts
 		Route::group(['as' => 'accesos.', 'prefix' => 'accesos'], function () {
 			Route::post('get/modulos', 'ConfiguracionController@getModulosAccion');
@@ -2128,15 +2142,44 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
 			Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
+
 			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
-			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros')->name('listar');
-			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes')->name('listar');
-			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente')->name('listar');
+			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
+			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
+			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente');
+
+            Route::get('provincia/{id_departamento}', 'Gerencial\Cobranza\RegistroController@provincia');
+            Route::get('distrito/{id_provincia}', 'Gerencial\Cobranza\RegistroController@distrito');
+            Route::get('get-cliente/{id_cliente}', 'Gerencial\Cobranza\RegistroController@getCliente');
+            Route::get('buscar-factura/{factura}', 'Gerencial\Cobranza\RegistroController@getFactura');
+            Route::get('buscar-registro/{input}/{tipo}', 'Gerencial\Cobranza\RegistroController@getRegistro');
+            Route::get('seleccionar-registro/{id_requerimiento}', 'Gerencial\Cobranza\RegistroController@selecconarRequerimiento');
+            // registro de cobranza
+            Route::post('guardar-registro-cobranza', 'Gerencial\Cobranza\RegistroController@guardarRegistroCobranza');
+            Route::get('actualizar-ven-doc-req', 'Gerencial\Cobranza\RegistroController@actualizarDocVentReq');
+            Route::post('editar-cliente','Gerencial\Cobranza\RegistroController@editarCliente');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			// });
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
 
 			// });
+            Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
+            Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
+            Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
+            Route::get('script-fase', 'Gerencial\Cobranza\RegistroController@scriptFase');
+
+
+            Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
+            Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
+            Route::post('guardar-fase', 'Gerencial\Cobranza\RegistroController@guardarFase');
+            Route::get('obtener-fase/{id}', 'Gerencial\Cobranza\RegistroController@obtenerFase');
+            Route::post('eliminar-fase', 'Gerencial\Cobranza\RegistroController@eliminarFase');
+            Route::post('guardar-penalidad', 'Gerencial\Cobranza\RegistroController@guardarPenalidad');
+            Route::get('obtener-penalidades/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@obtenerPenalidades');
+            Route::post('buscar-vendedor', 'Gerencial\Cobranza\RegistroController@buscarVendedor');
+            Route::get('eliminar-registro-cobranza/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@eliminarRegistroCobranza');
+            // Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
+            Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
 		});
 	});
 	Route::get('config', function () {
@@ -2162,105 +2205,6 @@ Route::group(['middleware' => ['auth']], function () {
 	// });
 	Route::get('logistica', 'LogisticaController@view_main_logistica');
 
-
-
-
-	//Route::get('login', 'Tesoreria\LoginController@showLoginForm')->name('login');
-	/*
-	Route::group(['middleware' => ['roles:1,2,3,15,22,7,38'], 'prefix' => 'tesoreria', 'as' => 'tesoreria.'], function () {
-
-		$roles['programador'] = [7, 38 //Programador
-		];
-		$roles['req_sol'] = [22, 38, //Asistnte Administrativo
-			7, //Programador
-		];
-		$roles['gerente_general'] = [1,  //Gerente General
-		];
-		$roles['gerente'] = [1,  //Gerente General
-			2,  //Gerente Administrativo
-			3,  //Gerente Comercial
-			15,  //Gerente Proyectos
-		];
-		$roles['pagos'] = [22, 38 //Asistnte Administrativo
-		];
-		$roles['asis_ger_general'] = [22, 38 //Asistnte Administrativo
-		];
-
-		$entrar['solicitud'] = array_merge($roles['programador'], $roles['req_sol'], $roles['gerente']);
-		$entrar['pagos'] = array_merge($roles['programador'], $roles['asis_ger_general'], $roles['pagos'], $roles['gerente']);
-
-		View::share('entrar', $entrar);
-		View::share('roles', $roles);
-		View::share('rolesSeccion', $entrar);
-
-
-		//Route::get('login', 'Tesoreria\LoginController@showLoginForm')->name('login');
-
-		Route::get('', 'TesoreriaController@index')->name('index');
-
-		Route::group(['prefix' => 'solicitud', 'as' => 'solicitud.'], function () use ($roles, $entrar) {
-			Route::get('tipo/{id_tipo}', 'Tesoreria\SolicitudController@index')->name('tipo')->middleware('roles:' . implode(',', $entrar['solicitud']));
-			Route::post('state', 'Tesoreria\SolicitudController@cambiarEstadoAjax')->name('update.state');
-		});
-
-		Route::group(['middleware' => ['roles:' . implode(',', $entrar['pagos'])], 'prefix' => 'planillapagos', 'as' => 'planillapagos.'], function () {
-			Route::any('ordinario', 'Tesoreria\PlanillaPagosController@index')->name('ordinario');
-			Route::any('extraordinario', 'Tesoreria\PlanillaPagosController@index')->name('extraordinario');
-
-			Route::post('state', 'Tesoreria\PlanillaPagosController@cambiarEstadoAjax')->name('update.state');
-		});
-
-		Route::resources(['proveedor' => 'Tesoreria\ProveedorController',
-
-			'cajachica' => 'Tesoreria\CajaChicaController', 'cajachica_movimientos' => 'Tesoreria\CajaChicaMovimientosController', 'solicitud' => 'Tesoreria\SolicitudController', 'planillapagos' => 'Tesoreria\PlanillaPagosController', 'tcambio' => 'Tesoreria\TipoCambioController',]);
-
-		Route::group(['prefix' => 'pdf', 'as' => 'pdf.'], function () {
-			Route::any('vale_salida/{vale_id}', 'Tesoreria\PdfController@generateValeSalida')->name('vale_salida');
-			Route::any('historial/cajachica/{cajachica_id}', 'Tesoreria\PdfController@generarHistorialCajaChica')->name('historial.cajachica');
-		});
-
-		/*
-		Route::get('crear_tablas', 'TesoreriaController@crearTablas');
-		Route::get('crear_uno', 'TesoreriaController@crearUno');
-		Route::get('llenar_data', 'TesoreriaController@llenarDataInicial');
-		Route::get('eliminar_tablas', 'TesoreriaController@eliminarTablas');
-
-		Route::group(['middleware' => ['roles:' . implode(',', $roles['programador'])], 'prefix' => 'administracion', 'as' => 'administracion.'], function () {
-			Route::get('sol_tipos', 'Tesoreria\SolicitudesTiposController@index')->name('solicitudes_tipos.index');
-			Route::post('guardar', 'Tesoreria\SolicitudesTiposController@store')->name('solicitudes_tipos.store');
-		});
-
-		Route::group(['middleware' => ['roles:' . implode(',', $roles['programador'])], 'prefix' => 'configuraciones', 'as' => 'configuraciones.'], function () {
-			Route::get('/', 'Tesoreria\ConfiguracionesController@index')->name('index');
-		});
-	});
-	Route::group(['prefix' => 'ajax', 'as' => 'ajax.'], function () {
-		Route::any('data/{tipo}/{identificador}', 'Tesoreria\AjaxController@getDataPersonaContribuyente')->name('data.persona_contribuyente');
-
-		Route::any('proveedores', 'Tesoreria\AjaxController@getProveedores')->name('proveedores');
-
-		Route::any('cajaschicas', 'Tesoreria\AjaxController@getCajasChicas')->name('cajaschicas');
-		Route::any('cajachica/{cajachica_id}/movimientos', 'Tesoreria\AjaxController@getCajaChicaMovimientos')->name('cajachica.movimientos');
-		Route::get('cajachica/{cajachica_id}/saldos', 'Tesoreria\AjaxController@getSaldoCajaChica')->name('cajachica.saldos');
-
-		Route::get('almacenes/{empresa?}/{sede?}', 'Tesoreria\AjaxController@ajaxListaAlmacenes')->name('almacenes');
-		Route::get('t_cambio/{moneda_id}/{fecha?}', 'Tesoreria\AjaxController@ajaxTipoCambio')->name('t_cambio');
-
-		Route::get('solicitudes_subtipos/{tipo_id}', 'Tesoreria\AjaxController@getSolicitudesSubTipos')->name('sol_subtipos');
-		Route::get('solicitudes', 'Tesoreria\AjaxController@getSolicitudes')->name('solicitudes');
-
-		Route::get('planillapagos', 'Tesoreria\AjaxController@getPlanillaPagos')->name('planillapagos');
-
-		Route::get('sedes/{empresa_id}', 'Tesoreria\AjaxController@getSedes')->name('sedes');
-		Route::get('areas/{sede_id}', 'Tesoreria\AjaxController@getGruposAreas')->name('areas');
-
-		Route::get('solicitudes_subtipos/{tipo_id}', 'Tesoreria\AjaxController@getSolicitudesSubTipos')->name('sol_subtipos');
-		Route::get('solicitudes', 'Tesoreria\AjaxController@getSolicitudes')->name('solicitudes');
-
-
-		Route::get('presupuesto/{area_id}', 'Tesoreria\AjaxController@getPresupuesto')->name('presupuesto');
-	});
-*/
 	Route::get('migrarOrdenVenta/{id}', 'Migraciones\MigrateRequerimientoSoftLinkController@migrarOCC');
 	Route::get('correlativo', 'Migraciones\MigrateOrdenSoftLinkController@correlativo');
 
@@ -2683,4 +2627,16 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('guardar_area', 'AdministracionController@guardar_area');
 	Route::post('editar_area', 'AdministracionController@actualizar_area');
 	Route::get('anular_area/{id}', 'AdministracionController@anular_area');
+});
+
+Route::group(['as' => 'power-bi.', 'prefix' => 'power-bi'], function () {
+	Route::get('ventas', function () {
+		return view('power-bi/ventas');
+	})->name('ventas');
+	Route::get('cobranzas', function () {
+		return view('power-bi/cobranzas');
+	})->name('cobranzas');
+	Route::get('inventario', function () {
+		return view('power-bi/inventario');
+	})->name('inventario');
 });

@@ -41,7 +41,7 @@ Saldos Actuales
                         @csrf
                         <div class="row">
                             @if (in_array(159,$array_accesos))
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <h5>Almacén</h5>
                                     <select name="almacen[]" class="selectpicker" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10">
@@ -53,31 +53,41 @@ Saldos Actuales
                             </div>
                             @endif
 
-                            <div class="col-md-8">
+                            <div class="col-md-9">
                                 <div class="row">
                                     @if (in_array(159,$array_accesos))
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <div class="form-group">
                                             <h5>Hasta</h5>
                                             <input type="date" name="fecha" class="form-control text-center" value="{{ $fecha->format('Y-m-d') }}">
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <button type="button" class="btn btn-block botones btn-success" onclick="procesar();">
                                             <i class="fas fa-search"></i> Procesar
                                         </button>
                                     </div>
                                     @endif
                                     @if (in_array(160,$array_accesos))
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <button type="button" class="btn btn-block botones btn-primary export" onclick="exportar();" disabled>
                                             <i class="fas fa-download"></i> Exportar
                                         </button>
                                     </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-block botones btn-warning export" onclick="exportarSeries();" disabled>
+                                            <i class="fas fa-download"></i> Exportar series
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-block botones btn-info export" onclick="exportarAntiguedades();" disabled>
+                                            <i class="fas fa-download"></i> Antiguedades
+                                        </button>
+                                    </div>
                                     @endif
                                     @if (in_array(161,$array_accesos))
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <button type="button" class="btn btn-block botones btn-danger" onclick="exportarSoftLink();">
                                             <i class="fas fa-download"></i> Stock Valorizado
                                         </button>
@@ -326,6 +336,14 @@ Saldos Actuales
 
         function exportar() {
             window.location.href = "{{ route('almacen.reportes.saldos.exportar') }}";
+        }
+
+        function exportarSeries() {
+            window.location.href = "{{ route('almacen.reportes.saldos.exportarSeries') }}";
+        }
+
+        function exportarAntiguedades() {
+            window.location.href = "{{ route('almacen.reportes.saldos.exportarAntiguedades') }}";
         }
 
         function exportarSoftLink() {

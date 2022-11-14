@@ -1,7 +1,6 @@
 let items = [];
 let salidas = [];
 let incidencias = [];
-let ventas = [];
 let usuarioSession = '';
 let usuarioNombreSession = '';
 
@@ -43,10 +42,11 @@ $(".nueva-devolucion").on('click', function () {
 
     items = [];
     incidencias = [];
-    ventas = [];
+    salidas = [];
 
     $("[name=modo]").val("edicion");
     $("[name=id_devolucion]").val("");
+    $("[name=id_tipo]").val(1);
 
     $("[name=id_usuario]").val(usuarioSession);
     $("#nombre_registrado_por").text(usuarioNombreSession);
@@ -76,7 +76,7 @@ $(".cancelar").on('click', function () {
 
     items = [];
     incidencias = [];
-    ventas = [];
+    salidas = [];
 
     $("[name=modo]").val("");
     $("[name=id_devolucion]").val("");
@@ -162,8 +162,18 @@ $("#form-devolucion").on("submit", function (e) {
                     'estado': element.estado,
                 });
             });
+            let salidas_venta = [];
+            salidas.forEach(function (element) {
+                salidas_venta.push({
+                    'id': element.id,
+                    'id_devolucion': element.id_devolucion,
+                    'id_salida': element.id_salida,
+                    'estado': element.estado,
+                });
+            });
             data += '&items=' + JSON.stringify(detalle) +
-                '&incidencias=' + JSON.stringify(incidencias);
+                '&incidencias=' + JSON.stringify(incidencias) +
+                '&salidas=' + JSON.stringify(salidas_venta);
             console.log(data);
             guardarDevolucion(data);
         }
@@ -228,6 +238,8 @@ function guardarDevolucion(data) {
             $('#nombre_registrado_por').text(response.devolucion.nombre_corto);
             $('#fecha_registro').text(response.devolucion.fecha_registro);
 
+            mostrarDevolucion(response.devolucion.id_devolucion)
+
             $("#submit_devolucion").attr('disabled', false);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -245,7 +257,7 @@ function mostrarDevolucion(id) {
 
     items = [];
     incidencias = [];
-    ventas = [];
+    salidas = [];
 
     $.ajax({
         type: 'GET',
@@ -260,8 +272,10 @@ function mostrarDevolucion(id) {
             $('[name=id_proveedor]').val(response.devolucion.id_proveedor);
             $('[name=id_cliente]').val(response.devolucion.id_cliente);
             $('[name=id_contribuyente]').val(response.devolucion.id_contribuyente);
-            $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social);
-            $('[name=tipo]').val(response.devolucion.tipo);
+            // $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social);
+            $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social !== null ?
+                response.devolucion.proveedor_razon_social : response.devolucion.cliente_razon_social);
+            $('[name=id_tipo]').val(response.devolucion.id_tipo);
 
             $('#codigo').text(response.devolucion.codigo);
             $('#estado').text(response.devolucion.estado_descripcion);
@@ -269,6 +283,8 @@ function mostrarDevolucion(id) {
             $('#estado').addClass('label label-' + response.devolucion.bootstrap_color);
             $('#nombre_registrado_por').text(response.devolucion.nombre_corto);
             $('#fecha_registro').text(response.devolucion.fecha_registro);
+            $('#nombre_revisado_por').text(response.devolucion.nombre_revisado);
+            $('#comentario_revision').text(response.devolucion.comentario_revision);
 
             items = response.detalle;
             salidas = response.salidas;

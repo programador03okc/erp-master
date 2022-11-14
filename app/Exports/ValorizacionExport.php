@@ -2,7 +2,9 @@
 
 namespace App\Exports;
 
+use App\Http\Controllers\Almacen\Reporte\SaldosController;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -21,9 +23,9 @@ class ValorizacionExport implements FromView, WithColumnFormatting, WithStyles
         $this->fecha = $fecha;
         $this->tc = $tc;
     }
-
     public function view() : View
     {
+
         return view('almacen.export.reporteValorizacion', ['data' => $this->data, 'almacen' => $this->almacen, 'fecha' => $this->fecha, 'tc' => $this->tc]);
     }
 

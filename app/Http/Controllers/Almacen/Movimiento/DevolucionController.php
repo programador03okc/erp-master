@@ -24,12 +24,21 @@ class DevolucionController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
-        // $array_accesos = [];
-        // $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
-        // foreach ($accesos_usuario as $key => $value) {
-        //     array_push($array_accesos, $value->id_acceso);
-        // }
-        return view('almacen/devoluciones/devolucion', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+        $tipos = DB::table('cas.devolucion_tipo')->where('estado', 1)->get();
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
+        return view('almacen/devoluciones/devolucion', compact(
+            'almacenes',
+            'empresas',
+            'usuarios',
+            'unidades',
+            'monedas',
+            'tipos',
+            'array_accesos'
+        ));
     }
 
     function viewDevolucionCas()
@@ -39,7 +48,9 @@ class DevolucionController extends Controller
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $monedas = Moneda::where('estado', 1)->get();
-        return view('almacen/devoluciones/devolucionCas', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas'));
+        $tipos = DB::table('cas.devolucion_tipo')->where('estado', 1)->get();
+
+        return view('almacen/devoluciones/devolucionCas', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas', 'tipos'));
     }
 
     public function listarDevoluciones()
@@ -128,6 +139,7 @@ class DevolucionController extends Controller
             ->select(
                 'devolucion.*',
                 'sis_usua.nombre_corto',
+                'usu_revisado.nombre_corto as nombre_revisado',
                 'proveedor.id_contribuyente',
                 'proveedor.razon_social as proveedor_razon_social',
                 'cliente.razon_social as cliente_razon_social',
@@ -139,6 +151,7 @@ class DevolucionController extends Controller
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'devolucion.id_cliente')
             ->leftjoin('contabilidad.adm_contri as cliente', 'cliente.id_contribuyente', '=', 'devolucion.registrado_por')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
+            ->leftjoin('configuracion.sis_usua as usu_revisado', 'usu_revisado.id_usuario', '=', 'devolucion.revisado_por')
             ->join('cas.devolucion_estado', 'devolucion_estado.id_estado', '=', 'devolucion.estado')
             ->where('id_devolucion', $id)->first();
 
@@ -156,32 +169,31 @@ class DevolucionController extends Controller
             ->where('devolucion_detalle.id_devolucion', $id)
             ->where('devolucion_detalle.estado', 1)->get();
 
-        $salidas = DB::table('cas.devolucion_detalle')
+        $salidas = DB::table('cas.devolucion_venta')
             ->select(
-                'mov_alm.id_mov_alm',
+                'devolucion_venta.id',
+                'devolucion_venta.id_devolucion',
+                'devolucion_venta.id_salida',
                 'mov_alm.codigo',
                 'mov_alm.estado',
                 DB::raw("(concat(guia_ven.serie,'-',guia_ven.numero) ) as serie_numero_guia"),
                 'adm_contri.razon_social',
                 DB::raw("(select concat(dv.serie,'-', dv.numero) from almacen.doc_ven as dv 
                 inner join almacen.doc_ven_det as d on(
-                d.id_doc=dv.id_doc_ven)
+                    d.id_doc=dv.id_doc_ven)
                 inner join almacen.guia_ven_det as g on(
-                g.id_guia_ven_det=d.id_guia_ven_det)
+                    g.id_guia_ven_det=d.id_guia_ven_det)
                 where g.id_guia_ven=mov_alm.id_guia_ven
                 group by concat(dv.serie,'-', dv.numero)
-                limit 1) AS serie_numero_doc")
+                    limit 1) AS serie_numero_doc")
             )
-            ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm_det', '=', 'devolucion_detalle.id_salida_detalle')
-            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
+            ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'devolucion_venta.id_salida')
             ->join('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'guia_ven.id_almacen')
             ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-            ->whereNotNull('devolucion_detalle.id_salida_detalle')
-            ->where('devolucion_detalle.id_devolucion', $id)
-            ->where('devolucion_detalle.estado', 1)
-            ->distinct()
+            ->where('devolucion_venta.id_devolucion', $id)
+            ->where('devolucion_venta.estado', 1)
             ->get();
 
         $incidencias = DB::table('cas.devolucion_incidencia')
@@ -266,66 +278,47 @@ class DevolucionController extends Controller
             $id_cliente = null;
             $id_proveedor = null;
 
-            if ($request->tipo == 'cliente') {
-                $cliente = DB::table('comercial.com_cliente')
-                    ->where([
-                        ['id_contribuyente', '=', $request->id_contribuyente],
-                        ['estado', '=', 1]
-                    ])
-                    ->first();
+            $cliente = DB::table('comercial.com_cliente')
+                ->where([
+                    ['id_contribuyente', '=', $request->id_contribuyente],
+                    ['estado', '=', 1]
+                ])
+                ->first();
 
-                if ($cliente == null) {
-                    $id_cliente = DB::table('comercial.com_cliente')
-                        ->insertGetId([
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => new Carbon(),
-                        ], 'id_cliente');
-                } else {
-                    $id_cliente = $cliente->id_cliente;
-                }
+            if ($cliente == null) {
+                $id_cliente = DB::table('comercial.com_cliente')
+                    ->insertGetId([
+                        'id_contribuyente' => $request->id_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ], 'id_cliente');
+            } else {
+                $id_cliente = $cliente->id_cliente;
+            }
 
-                $proveedor = DB::table('logistica.log_prove')
-                    ->where([
-                        ['id_contribuyente', '=', $request->id_contribuyente],
-                        ['estado', '=', 1]
-                    ])
-                    ->first();
+            $proveedor = DB::table('logistica.log_prove')
+                ->where([
+                    ['id_contribuyente', '=', $request->id_contribuyente],
+                    ['estado', '=', 1]
+                ])
+                ->first();
 
-                if ($proveedor == null) {
-                    $id_proveedor = DB::table('logistica.log_prove')
-                        ->insertGetId([
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => new Carbon(),
-                        ], 'id_proveedor');
-                } else {
-                    $id_proveedor = $proveedor->id_proveedor;
-                }
-            } else if ($request->tipo == 'proveedor') {
-                $proveedor = DB::table('logistica.log_prove')
-                    ->where([
-                        ['id_contribuyente', '=', $request->id_contribuyente],
-                        ['estado', '=', 1]
-                    ])
-                    ->first();
-
-                if ($proveedor == null) {
-                    $id_proveedor = DB::table('logistica.log_prove')
-                        ->insertGetId([
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => new Carbon(),
-                        ], 'id_proveedor');
-                } else {
-                    $id_proveedor = $proveedor->id_proveedor;
-                }
+            if ($proveedor == null) {
+                $id_proveedor = DB::table('logistica.log_prove')
+                    ->insertGetId([
+                        'id_contribuyente' => $request->id_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ], 'id_proveedor');
+            } else {
+                $id_proveedor = $proveedor->id_proveedor;
             }
 
             $id_devolucion = DB::table('cas.devolucion')->insertGetId(
                 [
                     'codigo' => $codigo,
-                    'tipo' => $request->tipo,
+                    'id_tipo' => $request->id_tipo,
+                    'tipo' => (($request->id_tipo == 1 or $request->id_tipo == 2) ? 'cliente' : 'proveedor'),
                     'id_almacen' => $request->id_almacen,
                     // 'id_moneda' => $request->id_moneda,
                     'id_cliente' => $id_cliente,
@@ -368,6 +361,18 @@ class DevolucionController extends Controller
                 );
             }
 
+            $salidas = json_decode($request->salidas);
+
+            foreach ($salidas as $sal) {
+                DB::table('cas.devolucion_venta')->insert(
+                    [
+                        'id_devolucion' => $id_devolucion,
+                        'id_salida' => $sal->id_salida,
+                        'estado' => 1,
+                    ]
+                );
+            }
+
             $devolucion = DB::table('cas.devolucion')->where('id_devolucion', $id_devolucion)->first();
             $mensaje = 'Se guardó la devolución correctamente';
             $tipo = 'success';
@@ -390,67 +395,49 @@ class DevolucionController extends Controller
             $tipo = '';
 
 
-            if ($request->tipo == 'cliente') {
-                $cliente = DB::table('comercial.com_cliente')
-                    ->where([
-                        ['id_contribuyente', '=', $request->id_contribuyente],
-                        ['estado', '=', 1]
-                    ])
-                    ->first();
+            $cliente = DB::table('comercial.com_cliente')
+                ->where([
+                    ['id_contribuyente', '=', $request->id_contribuyente],
+                    ['estado', '=', 1]
+                ])
+                ->first();
 
-                if ($cliente == null) {
-                    $id_cliente = DB::table('comercial.com_cliente')
-                        ->insertGetId([
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => new Carbon(),
-                        ], 'id_cliente');
-                } else {
-                    $id_cliente = $cliente->id_cliente;
-                }
-
-                $proveedor = DB::table('logistica.log_prove')
-                    ->where([
-                        ['id_contribuyente', '=', $request->id_contribuyente],
-                        ['estado', '=', 1]
-                    ])
-                    ->first();
-
-                if ($proveedor == null) {
-                    $id_proveedor = DB::table('logistica.log_prove')
-                        ->insertGetId([
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => new Carbon(),
-                        ], 'id_proveedor');
-                } else {
-                    $id_proveedor = $proveedor->id_proveedor;
-                }
-            } else if ($request->tipo == 'proveedor') {
-                $proveedor = DB::table('logistica.log_prove')
-                    ->where([
-                        ['id_contribuyente', '=', $request->id_contribuyente],
-                        ['estado', '=', 1]
-                    ])
-                    ->first();
-
-                if ($proveedor == null) {
-                    $id_proveedor = DB::table('logistica.log_prove')
-                        ->insertGetId([
-                            'id_contribuyente' => $request->id_contribuyente,
-                            'estado' => 1,
-                            'fecha_registro' => new Carbon(),
-                        ], 'id_proveedor');
-                } else {
-                    $id_proveedor = $proveedor->id_proveedor;
-                }
+            if ($cliente == null) {
+                $id_cliente = DB::table('comercial.com_cliente')
+                    ->insertGetId([
+                        'id_contribuyente' => $request->id_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ], 'id_cliente');
+            } else {
+                $id_cliente = $cliente->id_cliente;
             }
+
+            $proveedor = DB::table('logistica.log_prove')
+                ->where([
+                    ['id_contribuyente', '=', $request->id_contribuyente],
+                    ['estado', '=', 1]
+                ])
+                ->first();
+
+            if ($proveedor == null) {
+                $id_proveedor = DB::table('logistica.log_prove')
+                    ->insertGetId([
+                        'id_contribuyente' => $request->id_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ], 'id_proveedor');
+            } else {
+                $id_proveedor = $proveedor->id_proveedor;
+            }
+
 
             DB::table('cas.devolucion')
                 ->where('id_devolucion', $request->id_devolucion)
                 ->update([
                     'id_almacen' => $request->id_almacen,
-                    'tipo' => $request->tipo,
+                    'id_tipo' => $request->id_tipo,
+                    'tipo' => (($request->id_tipo == 1 or $request->id_tipo == 2) ? 'cliente' : 'proveedor'),
                     'id_cliente' => $id_cliente,
                     'id_proveedor' => $id_proveedor,
                     'observacion' => $request->observacion,
@@ -508,6 +495,26 @@ class DevolucionController extends Controller
                     );
                 }
             }
+
+            $salidas = json_decode($request->salidas);
+
+            foreach ($salidas as $sal) {
+                if ($sal->id > 0) {
+                    if ($sal->estado == 7) {
+                        DB::table('cas.devolucion_venta')
+                            ->where('id', $sal->id)
+                            ->update(['estado' => $sal->estado]);
+                    }
+                } else {
+                    DB::table('cas.devolucion_venta')->insert(
+                        [
+                            'id_devolucion' => $request->id_devolucion,
+                            'id_salida' => $sal->id_salida,
+                            'estado' => 1,
+                        ]
+                    );
+                }
+            }
             $devolucion = DB::table('cas.devolucion')->where('id_devolucion', $request->id_devolucion)->first();
             $mensaje = 'Se actualizó la devolución correctamente';
             $tipo = 'success';
@@ -549,7 +556,11 @@ class DevolucionController extends Controller
         if ($mov->estado == 1) {
             DB::table('cas.devolucion')
                 ->where('id_devolucion', $id_devolucion)
-                ->update(['estado' => 7]);
+                ->update([
+                    'estado' => 7,
+                    'usuario_anula' => Auth::user()->id_usuario,
+                    'fecha_anulacion' => new Carbon(),
+                ]);
 
             DB::table('cas.devolucion_detalle')
                 ->where('id_devolucion', $id_devolucion)

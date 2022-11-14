@@ -22,6 +22,7 @@ Route::post('api/logistica/gestion-logistica/requerimiento/elaboracion/guardar',
 Route::post('api/tesoreria/guardar-tipo-cambio', 'Tesoreria\TipoCambioController@store');
 Route::get('api/getTipoCambio', 'Tesoreria\TipoCambioController@getTipoCambio');
 Route::get('get-cambio', 'ApiController@get');
+Route::get('movimiento', 'SoftlinkController@movimiento');
 
 Route::get('pruebas', function(Request $request){
     return 'acceso';

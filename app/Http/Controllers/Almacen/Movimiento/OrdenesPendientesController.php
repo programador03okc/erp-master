@@ -476,7 +476,8 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')
             ->where([
-                ['log_det_ord_compra.id_orden_compra', '=', $id_orden]
+                ['log_det_ord_compra.id_orden_compra', '=', $id_orden],
+                ['log_det_ord_compra.estado', '!=', 7]
             ])
             ->get();
         return response()->json($detalle);
