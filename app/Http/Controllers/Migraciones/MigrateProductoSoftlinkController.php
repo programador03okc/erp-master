@@ -381,15 +381,11 @@ class MigrateProductoSoftlinkController extends Controller
                 ->select(
                     'series.fecha_ing',
                     'detmov.pre_prod',
-                    'detmov.num_docu',
+                    'movimien.num_docu',
                     'movimien.tip_mone'
                 )
-                ->join('detmov', function ($join) {
-                    $join->on('detmov.mov_id', '=', 'series.id_ingreso');
-                })
-                ->join('movimien', function ($join) {
-                    $join->on('movimien.mov_id', '=', 'detmov.mov_id');
-                })
+                ->join('detmov', 'detmov.mov_id', '=', 'series.id_ingreso')
+                ->join('movimien', 'movimien.mov_id', '=', 'detmov.mov_id')
                 // ->where('detmov.cod_prod', strval($p->cod_softlink))
                 ->where('series.serie', strval(trim($p->serie)))
                 ->orderBy('series.fecha_ing', 'asc')
