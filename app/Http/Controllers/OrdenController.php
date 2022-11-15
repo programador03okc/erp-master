@@ -1460,6 +1460,7 @@ class OrdenController extends Controller
 
             'log_ord_compra.estado',
             'log_ord_compra.observacion',
+            'log_ord_compra.compra_local',
             'adm_estado_doc.estado_doc',
             'adm_estado_doc.bootstrap_color'
         )
@@ -1628,6 +1629,7 @@ class OrdenController extends Controller
             'sis_moneda.descripcion as moneda_descripcion',
             'log_ord_compra.id_contacto',
             'log_ord_compra.sustento_anulacion',
+            'log_ord_compra.compra_local',
             'adm_ctb_contac.nombre as nombre_contacto',
             'adm_ctb_contac.telefono as telefono_contacto',
             'adm_ctb_contac.email as email_contacto',
@@ -2641,6 +2643,7 @@ class OrdenController extends Controller
                 $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
                 $orden->observacion = $request->observacion != null ? trim(strtoupper($request->observacion)) : null;
                 $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
+                $orden->compra_local = isset($request->esCompraLocal) ? $request->esCompraLocal : false;
                 $orden->save();
 
                 if($request->id_proveedor>0 && $request->id_rubro_proveedor !=null && $request->id_rubro_proveedor >0 ){
@@ -3131,6 +3134,7 @@ class OrdenController extends Controller
                     $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
                     $orden->observacion = isset($request->observacion) ? $request->observacion : null;
                     $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
+                    $orden->compra_local = isset($request->esCompraLocal) ? $request->esCompraLocal : false;
                     $orden->save();
 
                     if($request->id_proveedor>0 && $request->id_rubro_proveedor !=null && $request->id_rubro_proveedor >0 ){
