@@ -209,7 +209,7 @@ class RequerimientoController extends Controller
 
         return response()->json($detalles);
     }
-    
+
     public function listaDetalleRequerimiento($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
     {
         $detalleRequerimientoList = DB::table('almacen.alm_det_req')

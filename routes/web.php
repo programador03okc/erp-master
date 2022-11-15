@@ -804,6 +804,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 			});
 		});
+        Route::group(['as' => 'ecommerce.', 'prefix' => 'ecommerce'], function () {
+            Route::get('index', 'EcommerceController@index')->name('index');
+            Route::get('crear', 'EcommerceController@crear')->name('crear');
+            Route::post('guardar', 'EcommerceController@guardar')->name('guardar');
+            Route::post('buscar-trabajador', 'EcommerceController@buscarTrabajador');
+        });
 	});
 
 	Route::group(['as' => 'logistica.', 'prefix' => 'logistica'], function () {
