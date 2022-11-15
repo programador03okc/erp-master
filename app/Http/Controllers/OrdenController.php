@@ -4367,7 +4367,7 @@ class OrdenController extends Controller
                         foreach ($ObjectoAdjunto as $keyObj => $value) {
                             $ObjectoAdjunto[$keyObj]->id_orden=$idOrden;
                             $ObjectoAdjunto[$keyObj]->codigo_orden=$codigoOrden;
-                            $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle=$pagoCuotaDetalle->id_pago_cuota_detalle;
+                            $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle=isset($pagoCuotaDetalle)?$pagoCuotaDetalle->id_pago_cuota_detalle:null;
                             if ($adjuntoOtrosAdjuntosLength > 0) {
                                 foreach ($archivoAdjuntoList as $keyA => $archivo) {
                                     if(is_file($archivo)){
