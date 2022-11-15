@@ -11,6 +11,7 @@ use App\Models\Logistica\Orden;
 use App\Models\Logistica\PagoCuota;
 use App\Models\Logistica\PagoCuotaDetalle;
 use App\Models\Rrhh\Persona;
+use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RequerimientoPagoAdjunto;
 use App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle;
 use App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto;
@@ -311,7 +312,6 @@ class RegistroPagoController extends Controller
                 ->where([['registro_pago.id_doc_com', '=', $id], ['registro_pago.estado', '!=', 7]])
                 ->get();
         }
-
         return response()->json($query);
     }
     public function listarPagosEnCuotas($tipo, $id)
@@ -742,7 +742,12 @@ class RegistroPagoController extends Controller
         $adjuntoDetalle = RequerimientoPagoAdjuntoDetalle::join('tesoreria.requerimiento_pago_detalle', 'requerimiento_pago_detalle.id_requerimiento_pago_detalle', '=', 'requerimiento_pago_detalle_adjunto.id_requerimiento_pago_detalle')
             ->where([['requerimiento_pago_detalle.id_requerimiento_pago', $id_requerimiento_pago], ['requerimiento_pago_detalle_adjunto.id_estado', '!=', 7]])->get();
 
-        return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle]);
+        $adjuntos_pagos = RegistroPago::select('registro_pago_adjuntos.adjunto', 'registro_pago_adjuntos.id_adjunto')
+            ->where('id_requerimiento_pago',$id_requerimiento_pago)
+            ->join('tesoreria.registro_pago_adjuntos','registro_pago_adjuntos.id_pago', '=','registro_pago.id_pago')
+            ->get();
+        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::where('id_requerimiento_pago',$id_requerimiento_pago)->get();
+        return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle, 'adjuntos_pago'=>$adjuntos_pagos,'adjuntos_pagos_complementarios'=>$adjuntos_pagos_complementarios]);
     }
 
     function listarAdjuntosPago($id_requerimiento_pago)
@@ -930,5 +935,34 @@ class RegistroPagoController extends Controller
             ->where([['registro_pago.id_oc', '=', $id_orden_compra], ['registro_pago.estado', '!=', 7]])
             ->get();
         return $query;
+    }
+    public function guardarAdjuntosTesoreria(Request $request)
+    {
+        foreach ($request->adjuntos as $key => $archivo) {
+
+            $fechaHoy = new Carbon();
+            $sufijo = $fechaHoy->format('YmdHis');
+            $file = $archivo->getClientOriginalName();
+            // $codigo = $codigoRequerimiento;
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+            // $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
+            $newNameFile = $request->codigo_requerimiento.$key  . $sufijo . '.' . $extension;
+            Storage::disk('archivos')->put("tesoreria/pagos/" . $newNameFile, File::get($archivo));
+
+            $adjunto = new RequerimientoPagoAdjunto();
+            $adjunto->id_requerimiento_pago = $request->id_requerimiento_pago;
+            $adjunto->archivo  = $newNameFile;
+            $adjunto->id_estado  = 1;
+            $adjunto->fecha_registro  = $fechaHoy;
+            $adjunto->id_categoria_adjunto = 5;
+            // $adjunto->id_usuario = Auth::user()->id_usuario;
+            $adjunto->save();
+        }
+
+        return response()->json([
+            "status"=>200,
+            "success"=>true,
+            "data"=>$request
+        ]);
     }
 }
