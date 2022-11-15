@@ -8,6 +8,8 @@ use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Logistica\Orden;
+use App\Models\Logistica\PagoCuota;
+use App\Models\Logistica\PagoCuotaDetalle;
 use App\Models\Rrhh\Persona;
 use App\Models\Tesoreria\RequerimientoPagoAdjunto;
 use App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle;
@@ -152,7 +154,15 @@ class RegistroPagoController extends Controller
             DB::raw("(SELECT COUNT(adjuntos_logisticos.id_adjunto)
                     FROM logistica.adjuntos_logisticos
                     WHERE  adjuntos_logisticos.id_orden = log_ord_compra.id_orden_compra AND
-                    adjuntos_logisticos.estado != 7) AS cantidad_adjuntos_logisticos")
+                    adjuntos_logisticos.estado != 7) AS cantidad_adjuntos_logisticos"),
+            DB::raw("(SELECT monto_cuota FROM logistica.pago_cuota_detalle
+            inner join logistica.pago_cuota on pago_cuota.id_pago_cuota = pago_cuota_detalle.id_pago_cuota
+            WHERE  pago_cuota.id_orden = log_ord_compra.id_orden_compra and pago_cuota_detalle.id_estado != 7 order by pago_cuota_detalle.fecha_registro desc limit 1 ) AS ultima_monto_cuota"),
+            DB::raw("(SELECT sum(monto_cuota) FROM logistica.pago_cuota_detalle
+            inner join logistica.pago_cuota on pago_cuota.id_orden = log_ord_compra.id_orden_compra
+            WHERE pago_cuota.id_pago_cuota = pago_cuota_detalle.id_pago_cuota
+            and pago_cuota_detalle.id_estado =5) AS suma_cuotas_con_autorizacion"),
+
         )
             ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
@@ -304,6 +314,17 @@ class RegistroPagoController extends Controller
 
         return response()->json($query);
     }
+    public function listarPagosEnCuotas($tipo, $id)
+    {
+        $query=[];
+        if ($tipo == "orden") {
+            $query= PagoCuota::with(['orden','detalle'=> function($query) {
+                $query->orderBy('fecha_registro', 'asc');
+            },'detalle.creadoPor','detalle.adjuntos','detalle.estado'])->where('id_orden',$id)->first();
+        }
+
+        return response()->json($query);
+    }
 
     public function verAdjuntosPago($id)
     {
@@ -420,6 +441,15 @@ class RegistroPagoController extends Controller
                     'estado' => 1,
                     'fecha_registro' => date('Y-m-d H:i:s')
                 ], 'id_pago');
+
+                if(isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago)>0){
+                    foreach ($request->vincularCuotaARegistroDePago as $key => $value) {
+                            $pagoCuota = PagoCuotaDetalle::where('id_pago_cuota_detalle',$value)->first();
+                            $pagoCuota->id_pago = $id_pago;
+                            $pagoCuota->id_estado = 6; // pagado
+                            $pagoCuota->save();
+                    }
+                }
 
             //Guardar archivos subidos
             if ($request->hasFile('archivos')) {
@@ -575,7 +605,19 @@ class RegistroPagoController extends Controller
                                 'fecha_autorizacion' => new Carbon(),
                                 'usuario_autorizacion' => $id_usuario
                             ]); //enviado a pago
-                        $msj = 'Se autorizó el pago de la orden exitosamente';
+
+                            $msj = 'Se autorizó el pago de la orden exitosamente';
+
+                            if(isset($request->idPagoCuotaDetalle) && ($request->idPagoCuotaDetalle >0)){
+                                $pagoCuotaDetalle = PagoCuotaDetalle::where('id_pago_cuota_detalle',$request->idPagoCuotaDetalle)->first();
+                                $pagoCuotaDetalle->fecha_autorizacion= new Carbon();
+                                $pagoCuotaDetalle->id_estado= 5;
+                                $pagoCuotaDetalle->save();
+
+                                $msj = 'Se autorizó el pago de la cuota exitosamente';
+
+                            }
+
                         $tipo = 'success';
                     } else {
                         $msj = 'La orden fue anulada';

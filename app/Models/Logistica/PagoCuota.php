@@ -22,6 +22,10 @@ class PagoCuota extends Model
         return $fecha->format('d-m-Y h:m');
     }
 
+    public function orden()
+    {
+        return $this->hasOne('App\Models\Logistica\Orden', 'id_orden_compra', 'id_orden');
+    }
     public function detalle()
     {
         return $this->hasMany('App\Models\Logistica\PagoCuotaDetalle', 'id_pago_cuota', 'id_pago_cuota');

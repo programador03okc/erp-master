@@ -1,5 +1,20 @@
+function limpiarTabla(idElement) {
+    let nodeTbodyList = document.querySelectorAll("table[id='" + idElement + "'] tbody");
+    nodeTbodyList.forEach(element => {
+        if (element != null) {
+            while (element.children.length > 0) {
+                element.removeChild(element.lastChild);
+            }
+        }
+        
+    });
+}
 
 function openRegistroPago(data) {
+    $('#form-procesarPago')[0].reset();
+    limpiarTabla('tablaDatosPagoEnCuotas');
+
+    document.querySelector("select[name='vincularCuotaARegistroDePago[]']").innerHTML = ""
     var id = data.data('id');
     var tipo = data.data('tipo');
     var codigo = data.data('cod');
@@ -18,8 +33,9 @@ function openRegistroPago(data) {
     var comentarioPagoLogistica = data.data('comentarioPagoLogistica');
     var observacionRequerimiento = data.data('observacionRequerimiento');
     var cantidadAdjuntosLogisticos = data.data('cantidadAdjuntosLogisticos');
-    var pagosACuota = data.data('pagosACuota');
+    var tienePagoEnCuotas = data.data('tienePagoEnCuotas');
     var montoAPago = data.data('montoAPago');
+    var sumaCuotaConAutorizacion = data.data('sumaCuotaConAutorizacion');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
     console.log(data);
@@ -50,6 +66,16 @@ function openRegistroPago(data) {
         document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_adjunto_logistica']").classList.remove("oculto");
         document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_adjunto_logistica'] label[name='adjuntoslogistica']").textContent=`Ver(${cantidadAdjuntosLogisticos})`;
 
+        if(tienePagoEnCuotas){
+            document.querySelector("div[id='modal-procesarPago'] fieldset[id='fieldsetDatosPagoEnCuotas']").removeAttribute("hidden");
+            listarPagoEnCuotas(tipo,id);
+            total_pago = formatDecimal(sumaCuotaConAutorizacion);
+
+        }else{
+            document.querySelector("div[id='modal-procesarPago'] fieldset[id='fieldsetDatosPagoEnCuotas']").setAttribute("hidden",true);
+
+        }
+
     }
     else if (tipo == 'comprobante') {
         $('[name=id_requerimiento_pago]').val('');
@@ -79,8 +105,8 @@ function openRegistroPago(data) {
     $('[name=motivo]').text(motivo !== undefined ? decodeURIComponent(motivo) : '');
     $('[name=comentario_pago_logistica]').text(comentarioPagoLogistica ?? '');
     $('[name=observacion_requerimiento]').text(observacionRequerimiento ?? '');
-    $('[name=pagosACuota]').text(pagosACuota ===true ? 'SI' : 'NO');
-    $('[name=montoAPago]').text(moneda+$.number(montoAPago,2,",",".")??'');
+    
+   
 
     if (comentarioPagoLogistica != undefined && comentarioPagoLogistica != '') {
         document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_comentario_pago_logistica']").classList.remove("oculto");
@@ -269,6 +295,68 @@ function enviarAPago(tipo, id) {
     });
 }
 
+function enviarPagoEnCuotas(id,idPagoCuotaDetalle,tipo,event) {
+
+    const obj= event.currentTarget;
+
+    Swal.fire({
+        title: "¿Está seguro que desea autorizar el pago?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6", //"#00a65a",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Autorizar"
+    }).then(result => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: 'POST',
+                url: 'enviarAPago',
+                data: {
+                    'tipo': tipo,
+                    'id': id,
+                    'idPagoCuotaDetalle': idPagoCuotaDetalle
+                },
+                dataType: 'JSON',
+            }).done(function (response) {
+                console.log(response);
+                Lobibox.notify(response.tipo, {
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: response.mensaje
+                });
+                if (tipo == "orden") {
+                    tableOrdenes.ajax.reload(null, false);
+                    formatPagosEnCuotas(iTableCounter, id, tableOrdenes.row($(this).closest('tr')), "orden");
+
+
+                }
+                else if (tipo == "requerimiento") {
+                    tableRequerimientos.ajax.reload(null, false);
+                }
+                else if (tipo == "orden") {
+                    tableComprobantes.ajax.reload(null, false);
+                }
+            }).always(function () {
+                // $("select[name='id_cuenta_origen']").LoadingOverlay("hide", true);
+            }).fail(function (jqXHR) {
+                Lobibox.notify('error', {
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
+                });
+                //Cerrar el modal
+                // $modal.modal('hide');
+                console.log('Error devuelto: ' + jqXHR.responseText);
+            });
+        }
+    });
+}
+
 function revertirEnvio(tipo, id) {
 
     console.log(tipo);
@@ -378,5 +466,65 @@ function anularPago(id_pago, tipo) {
                 console.log('Error devuelto: ' + jqXHR.responseText);
             });
         }
+    });
+}
+
+
+function listarPagoEnCuotas(tipo,id){
+    $.ajax({
+        type: 'GET',
+        url: 'listarPagosEnCuotas/' + tipo + '/' + id,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            var html = '';
+            var htmlOptionVincularConPago = '';
+            var i = 1;
+
+            let orden = response.orden;
+            let montoCuota = response.numero_de_cuotas;
+            let detalle = response.detalle;
+        
+            if (response.hasOwnProperty('detalle') && detalle.length > 0) {
+                detalle.forEach(element => {
+                    enlaceAdjunto=[];
+                    (element.adjuntos).forEach(element => {
+                        enlaceAdjunto.push('<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>');
+                    });
+                    
+                    html += '<tr id="' + element.id_pago_cuota_detalle + '">' +
+                        '<td style="border: none; text-align: center">' + i + '</td>' +
+                        '<td style="border: none; text-align: center; color: #8b3447 !important;font-weight: bold;">' + (element.monto_cuota !== null ? element.monto_cuota : '') + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
+                        '<td style="border: none; text-align: center">' +  i+'/'+montoCuota + '</td>' +
+                        '<td style="border: none; text-align: center">' + enlaceAdjunto.toString().replace(",","<br>") + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.fecha_autorizacion + '</td>' +
+                        '<td style="border: none; text-align: center">' +element.estado.descripcion+'</td>' +
+                        '</tr>';
+                    i++;
+                });
+
+                // option vincular cuota con pago
+                detalle.forEach((element,index) => {
+                    if(element.id_estado ==5){
+                        htmlOptionVincularConPago+=`<option value="${element.id_pago_cuota_detalle}" selected>cuota #${index+1}</option>`
+                    }
+                });
+
+ 
+            }
+            else {
+                var html = `
+                <tr><td>No hay registros para mostrar</td></tr>`;
+            }
+            document.querySelector("table[id='tablaDatosPagoEnCuotas'] tbody").insertAdjacentHTML('beforeend', html );
+            document.querySelector("select[name='vincularCuotaARegistroDePago[]']").insertAdjacentHTML('beforeend', htmlOptionVincularConPago );
+
+    
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
     });
 }

@@ -240,7 +240,7 @@
                 },
                 {
                     'render': function (data, type, row) {
-                        return ((row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00'));
+                        return ((parseFloat(row['ultima_monto_cuota'])>0? row['ultima_monto_cuota']:(row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00')) );
                     }, 'className': 'text-right'
                 },
                 {
@@ -301,11 +301,16 @@
                                     break;
                             }
                             return `<div class="btn-group" role="group">
-                ${(row['estado_pago'] == 8 && permisoEnviar == '1') ?
+                ${(row['estado_pago'] == 8 && permisoEnviar == '1' && row['tiene_pago_en_cuotas']===false) ?
                                     `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                 title="Autorizar pago" >
                                 <i class="fas fa-share"></i></button>`: ''}
+                ${(permisoEnviar == '1' && row['tiene_pago_en_cuotas']===true) ?
+                                    `<button type="button" class="visualizarPagosEnCuotas btn btn-info boton" data-toggle="tooltip"
+                                data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
+                                title="Visualizar pagos en cuotas" >
+                                <i class="fas fa-calendar-check"></i></button>`: ''}
                             ${row['estado_pago'] == 5 ?
                                     `${permisoEnviar == '1' ?
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip"
@@ -318,7 +323,9 @@
                                     `${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom"
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
-                                    data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}"
+                                    data-total="${row['monto_total']}" 
+                                    data-pago="${row['suma_pagado']}"
+                                    data-suma-cuota-con-autorizacion="${row['suma_cuotas_con_autorizacion']}"
                                     data-moneda="${row['simbolo']}"
                                     data-cantidad-adjuntos-logisticos="${row['cantidad_adjuntos_logisticos']}"
                                     data-nrodoc="${nroDocumentoDestinatario}"
@@ -766,4 +773,116 @@ function actualizarEstadoPago() {
     });
 
 }
+
+
+
+$('#listaOrdenes tbody').on('click', 'td button.visualizarPagosEnCuotas', function () {
+    var tr = $(this).closest('tr');
+    var row = tableOrdenes.row(tr);
+    var id = $(this).data('id');
+
+    if (row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+    }
+    else {
+        formatPagosEnCuotas(iTableCounter, id, row, "orden");
+        tr.addClass('shown');
+        oInnerTable = $('#listaOrdenes_' + iTableCounter).dataTable({
+            //    data: sections,
+            autoWidth: true,
+            deferRender: true,
+            info: false,
+            lengthChange: false,
+            ordering: false,
+            paging: false,
+            scrollX: false,
+            scrollY: false,
+            searching: false,
+            columns: []
+        });
+        iTableCounter = iTableCounter + 1;
+    }
+});
+
+function formatPagosEnCuotas(table_id, id, row, tipo) {
+    // console.log(tipo)
+    $.ajax({
+        type: 'GET',
+        url: 'listarPagosEnCuotas/' + tipo + '/' + id,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            var html = '';
+            var i = 1;
+
+            let orden = response.orden;
+            let montoCuota = response.numero_de_cuotas;
+            let detalle = response.detalle;
+        
+            if (response.hasOwnProperty('detalle') && detalle.length > 0) {
+                detalle.forEach(element => {
+                    enlaceAdjunto=[];
+                    (element.adjuntos).forEach(element => {
+                        enlaceAdjunto.push('<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>');
+                    });
+                    
+                    html += '<tr id="' + element.id_pago_cuota_detalle + '">' +
+                        '<td style="border: none; text-align: center">' + i + '</td>' +
+                        '<td style="border: none; text-align: center">' + (element.monto_cuota !== null ? element.monto_cuota : '') + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
+                        '<td style="border: none; text-align: center">' +  i+'/'+montoCuota + '</td>' +
+                        '<td style="border: none; text-align: center">' + enlaceAdjunto.toString().replace(",","<br>") + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.creado_por.nombre_corto + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.fecha_registro + '</td>' +
+                        '<td style="border: none; text-align: center">' + (element.fecha_autorizacion??'') + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.estado.descripcion + '</td>' +
+                        '<td style="border: none; text-align: center">' +
+                        `<button type = "button" class= "btn btn-${element.fecha_autorizacion !=null?'success':'info'} boton" data - toggle="tooltip"
+                            data - placement="bottom"
+                            onClick = "enviarPagoEnCuotas(${orden.id_orden_compra},${element.id_pago_cuota_detalle},'${tipo}',event)" title = "${element.fecha_autorizacion !=null?'Pago Autorizado':'Autorizar pago'}" ${element.fecha_autorizacion !=null?'disabled':''}>
+                            ${element.fecha_autorizacion !=null?'<i class="fas fa-check-double"></i> Autorizado':'<i class="fas fa-check"></i> Autorizar'} 
+                            </button>` +
+           
+                        '</td>' +
+                        '</tr>';
+                    i++;
+                });
+                var tabla = `<table class= "table table-sm" style = "border: none;"
+                id = "detalle_${table_id}" >
+                <thead style="color: black;background-color: #c7cacc;">
+                    <tr>
+                        <th style="border: none;">#</th>
+                        <th style="border: none;">Monto a pagar</th>
+                        <th style="border: none;">Observación</th>
+                        <th style="border: none;">Cuota/Número de cuotas</th>
+                        <th style="border: none;">Adjunto</th>
+                        <th style="border: none;">Registrado por</th>
+                        <th style="border: none;">Fecha Registro</th>
+                        <th style="border: none;">Fecha Autorización</th>
+                        <th style="border: none;">Estado</th>
+                        <th style="border: none;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>${html}</tbody>
+                </table> `;
+            }
+            else {
+                var tabla = `<table class= "table table-sm" style = "border: none;"
+                id = "detalle_${table_id}" >
+            <tbody>
+                <tr><td>No hay registros para mostrar</td></tr>
+            </tbody>
+                </table> `;
+            }
+        row.child(tabla).show();
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
+}
+
 

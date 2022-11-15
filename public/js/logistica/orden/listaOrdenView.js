@@ -104,6 +104,10 @@ class ListaOrdenView {
             this.updateLabelModalEnviarSolicitudPago(e.currentTarget.checked);
         });
         
+        $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeNumeroDeCuotas", (e) => {
+            this.updateMontoAPagarEnCuotas();
+        });
+        
 
         $('#listaDestinatariosEncontrados').on("click", "tr.handleClickSeleccionarDestinatario", (e) => {
             this.seleccionarDestinatario(e.currentTarget);
@@ -290,12 +294,15 @@ class ListaOrdenView {
     }
 
     limpiarTabla(idElement) {
-        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
-        if (nodeTbody != null) {
-            while (nodeTbody.children.length > 0) {
-                nodeTbody.removeChild(nodeTbody.lastChild);
+        let nodeTbodyList = document.querySelectorAll("table[id='" + idElement + "'] tbody");
+        nodeTbodyList.forEach(element => {
+            if (element != null) {
+                while (element.children.length > 0) {
+                    element.removeChild(element.lastChild);
+                }
             }
-        }
+            
+        });
     }
 
     vista_extendida() {
@@ -1020,6 +1027,8 @@ class ListaOrdenView {
         tempArchivoAdjuntoRequerimientoCabeceraList=[];
         $(":file").filestyle('clear');
         this.limpiarTabla('adjuntosCabecera');
+        this.limpiarTabla('historialEnviosAPagoLogistica');
+        $('#form-enviar_solicitud_pago')[0].reset();
 
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = '';
         this.limpiarFormEnviarOrdenAPago();
@@ -1036,6 +1045,7 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").setAttribute("data-monto-total-orden",obj.dataset.montoTotalOrden);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = $.number(obj.dataset.montoTotalOrden,2,".",",");
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =(parseFloat(obj.dataset.montoTotalOrden)).toFixed(2);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value =(parseInt(obj.dataset.numeroDeCuotas));
 
         // document.querySelector("div[id='modal-enviar-solicitud-pago'] div[name='simboloMoneda']").textContent = obj.dataset.simboloMonedaOrden;
         $( "div[name*='simboloMoneda']" ).text(obj.dataset.simboloMonedaOrden);
@@ -1045,7 +1055,6 @@ class ListaOrdenView {
  
         // this.updateLabelModalEnviarSolicitudPago((obj.dataset.tienePagoEnCuotas === "true"));
         this.updateLabelModalEnviarSolicitudPago(JSON.parse((obj.dataset.tienePagoEnCuotas).toLowerCase()));
-
 
 
         if (obj.dataset.estadoPago == 8) {
@@ -1180,6 +1189,9 @@ class ListaOrdenView {
             console.log(err)
         })
 
+
+        this.updateMontoAPagarEnCuotas();
+
     }
 
     updateLabelModalEnviarSolicitudPago(tienePagoEnCuotas){
@@ -1199,6 +1211,14 @@ class ListaOrdenView {
             document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-historialEnviosAPagoLogistica']").setAttribute("hidden",true);
             document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-adjuntosLogisticosRegistrados']").removeAttribute("hidden");
 
+        }
+    }
+
+    updateMontoAPagarEnCuotas(){
+        let numeroDeCuotas = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value??0;
+        if (numeroDeCuotas > 0){
+            let cuota= parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value) / parseInt(numeroDeCuotas);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value=(cuota);
         }
     }
 
@@ -1325,6 +1345,11 @@ class ListaOrdenView {
             } else {
                 continuar = true;
             }
+        }
+        if (document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value == (document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='historialEnviosAPagoLogistica'] tbody").childElementCount)){
+            menseje.push('No se puede superar el limite de cuota establecida');
+            continuar = false;
+
         }
 
         if (menseje.length > 0) {
@@ -1953,6 +1978,7 @@ class ListaOrdenView {
                                 data-id-cuenta-contribuyente-pago="${row.id_cta_principal ?? ''}"
                                 data-id-contribuyente-pago="${row.id_contribuyente ?? ''}"
                                 data-tiene-pago-en-cuotas="${JSON.parse((row.tiene_pago_en_cuotas)) ?? false}"
+                                data-numero-de-cuotas="${(row.numero_de_cuotas) ?? 0}"
 
                                 data-id-persona-pago="${row.id_persona_pago ?? ''}"
                                 data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"

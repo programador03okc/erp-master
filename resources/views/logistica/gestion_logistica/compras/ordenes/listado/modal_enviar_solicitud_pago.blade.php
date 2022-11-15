@@ -109,7 +109,7 @@
                                     <span class="input-group-addon">
                                         <label for=""> <input type="checkbox" class="handleCkeckPagoCuotas" name="pagoEnCuotasCheckbox"></label>
                                     </span>
-                                    <select class="form-control" name="numero_de_cuotas" placeholder="N° cuotas" disabled>
+                                    <select class="form-control handleChangeNumeroDeCuotas" name="numero_de_cuotas" placeholder="N° cuotas" disabled>
                                         <option value="2">2 cuotas</option>
                                         <option value="3">3 cuotas</option>
                                         <option value="4">4 cuotas</option>

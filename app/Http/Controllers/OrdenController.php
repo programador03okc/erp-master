@@ -4307,9 +4307,9 @@ class OrdenController extends Controller
 
             if (!empty($orden)) {
                 //ya fue autorizado?
-                if ($orden->estado_pago !== 5) {
+                if ($orden->estado_pago !== 5 || $orden->tiene_pago_en_cuotas == true) {
                     //ya fue pagado?
-                    if ($orden->estado_pago !== 6) {
+                    if ($orden->estado_pago !== 6 || $orden->tiene_pago_en_cuotas == true) {
 
                         $orden->estado_pago = 8; //enviado a pago
                         $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
@@ -4328,31 +4328,64 @@ class OrdenController extends Controller
                                 $pagoCuotaDetalle = new PagoCuotaDetalle();
                                 $pagoCuotaDetalle->id_pago_cuota =$findPagoCuota->id_pago_cuota;
                                 $pagoCuotaDetalle->monto_cuota =$request->monto_a_pagar;
-                                $pagoCuotaDetalle->observación = $request->comentario;
+                                $pagoCuotaDetalle->observacion = $request->comentario;
                                 $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
                                 $pagoCuotaDetalle->fecha_registro = new Carbon();
-                                $pagoCuotaDetalle->estado = 1;
+                                $pagoCuotaDetalle->id_estado = 1;
                                 $pagoCuotaDetalle->save();
                             }else{
                                 $pagoCuota = new PagoCuota();
                                 $pagoCuota->id_orden = $request->id_orden_compra;
                                 $pagoCuota->numero_de_cuotas = $request->numero_de_cuotas;
-                                $pagoCuota->estado = 1;
+                                $pagoCuota->id_estado = 1;
                                 $pagoCuota->fecha_registro = new Carbon();
                                 $pagoCuota->save();
     
                                 $pagoCuotaDetalle = new PagoCuotaDetalle();
                                 $pagoCuotaDetalle->id_pago_cuota =$pagoCuota->id_pago_cuota;
                                 $pagoCuotaDetalle->monto_cuota =$request->monto_a_pagar;
-                                $pagoCuotaDetalle->observación = $request->comentario;
+                                $pagoCuotaDetalle->observacion = $request->comentario;
                                 $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
                                 $pagoCuotaDetalle->fecha_registro = new Carbon();
-                                $pagoCuotaDetalle->estado = 1;
+                                $pagoCuotaDetalle->id_estado = 1;
                                 $pagoCuotaDetalle->save();
                             }
 
 
                         }
+
+                        $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoObject);
+                        $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+                        $idOrden = $request->id_orden_compra;
+                        $codigoOrden= Orden::find($request->id_orden_compra)->codigo;
+                        $archivoAdjuntoList =$request->archivo_adjunto_list;
+
+                        foreach ($ObjectoAdjunto as $keyObj => $value) {
+                            $ObjectoAdjunto[$keyObj]->id_orden=$idOrden;
+                            $ObjectoAdjunto[$keyObj]->codigo_orden=$codigoOrden;
+                            $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle=$pagoCuotaDetalle->id_pago_cuota_detalle;
+                            if ($adjuntoOtrosAdjuntosLength > 0) {
+                                foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                                    if(is_file($archivo)){
+                                        $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                        if($nombreArchivoAdjunto == $value->nameFile){
+                                            $ObjectoAdjunto[$keyObj]->file=$archivo;
+                                        }
+                                    }
+            
+                                }
+                            }               
+        
+                        }
+                        $idAdjunto=[];
+                        if ($adjuntoOtrosAdjuntosLength > 0) {
+            
+                            $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
+                        }
+
+
+
+
 
                         $arrayRspta = array(
                             'tipo_estado' => 'success',
@@ -4579,6 +4612,7 @@ class OrdenController extends Controller
                             'categoria_adjunto_id'  => $archivo->category,
                             'fecha_emision'         => $archivo->fecha_emision,
                             'nro_comprobante'       => $archivo->nro_comprobante,
+                            'id_pago_cuota_detalle' => (isset($archivo->id_pago_cuota_detalle) && $archivo->id_pago_cuota_detalle >0?$archivo->id_pago_cuota_detalle:null),
                             'fecha_registro'        => $fechaHoy
                         ],
                         'id_adjunto'
