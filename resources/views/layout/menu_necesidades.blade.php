@@ -28,6 +28,6 @@
     {{-- @if(Auth::user()->tieneAplicacion(134)) --}}
         <li><a href="{{route('necesidades.revisar-aprobar.listado.index')}}"><i class="fas fa-stamp"></i> <span>Revisar / aprobar</span></a></li>
     {{-- @endif --}}
-    <li><a href="{{route('necesidades.ecommerce.index')}}"><i class="fas fa-shopping-cart"></i> <span>ECOMMERCE</span></a></li>
+    {{-- <li><a href="{{route('necesidades.ecommerce.index')}}"><i class="fas fa-shopping-cart"></i> <span>ECOMMERCE</span></a></li> --}}
 </ul>
 @endsection

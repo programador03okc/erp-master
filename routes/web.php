@@ -2182,6 +2182,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
             #script 4
             Route::get('script-fase', 'Gerencial\Cobranza\RegistroController@scriptFase');
+            #script 5
+            Route::get('script-conbranza', 'Gerencial\Cobranza\RegistroController@scriptCobranza');
 
 
             Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');

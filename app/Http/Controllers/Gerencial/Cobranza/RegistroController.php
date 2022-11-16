@@ -1167,4 +1167,11 @@ class RegistroController extends Controller
             "old"=>$cliente_gerencial
         ]);
     }
+    public function scriptCobranza()
+    {
+        $cobranzas = DB::table('gerencial.cobranza')
+        ->limit(10)
+        ->get();
+        return response()->json($cobranzas);
+    }
 }
