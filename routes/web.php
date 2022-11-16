@@ -2174,9 +2174,13 @@ Route::group(['middleware' => ['auth']], function () {
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
 
 			// });
+            #script 2
             Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
+            #script 1
             Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
+            #script 3
             Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
+            #script 4
             Route::get('script-fase', 'Gerencial\Cobranza\RegistroController@scriptFase');
 
 

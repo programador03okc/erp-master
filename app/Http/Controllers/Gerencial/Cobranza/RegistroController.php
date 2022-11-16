@@ -597,7 +597,7 @@ class RegistroController extends Controller
         }
 
         foreach ($clientes_faltantes as $key => $value) {
-            // if ($value->ruc!=='undefined' && strlen($value->ruc)===11) {
+            if ($value->ruc!=='undefined' && strlen($value->ruc)===11) {
                 // api de reniec en busca por el ruc
                 $curl = curl_init();
 
@@ -621,8 +621,15 @@ class RegistroController extends Controller
                 curl_close($curl);
 
                 $response = json_decode($response);
-                // return response()->json($ubigeo_distrito);
-                if (empty($response->error)) {
+
+                // return response()->json([$response,$value]);exit;
+                if (!empty($response->error)) {
+
+                    // $ubigeo_distrito=[];
+                    // if (!isset($response->distrito)) {
+
+                    //     $ubigeo_distrito = Distrito::where('descripcion',$response->distrito)->first();
+                    // }
                     $ubigeo_distrito = Distrito::where('descripcion',$response->distrito)->first();
                     $ubigeo=0;
                     if ($ubigeo_distrito) {
@@ -648,7 +655,9 @@ class RegistroController extends Controller
                 }else{
                     array_push($json_faltantes, $value);
                 }
-            // }
+            }else{
+                // return response()->json($value);exit;
+            }
         }
         return response()->json($json_faltantes);
     }
