@@ -2174,16 +2174,18 @@ Route::group(['middleware' => ['auth']], function () {
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
 
 			// });
-            #script 2
-            Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
             #script 1
             Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
+            #script 2
+            Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
             #script 3
             Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
             #script 4
             Route::get('script-fase', 'Gerencial\Cobranza\RegistroController@scriptFase');
             #script 5
             Route::get('script-conbranza', 'Gerencial\Cobranza\RegistroController@scriptCobranza');
+            #script 6
+            Route::get('script-empresa-unicos', 'Gerencial\Cobranza\RegistroController@scriptEmpresaUnicos');
 
 
             Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');

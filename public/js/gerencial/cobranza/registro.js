@@ -910,7 +910,7 @@ $(document).on('click','.modal-fase',function () {
                 '</tr>';
             });
             $('[data-table="table-fase"]').html(html);
-            $('#listar-registros').DataTable().ajax.reload();
+            // $('#listar-registros').DataTable().ajax.reload();
         }else{
             $('[data-table="table-fase"]').html(html);
         }
