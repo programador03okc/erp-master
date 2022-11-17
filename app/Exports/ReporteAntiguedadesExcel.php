@@ -62,7 +62,7 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
             ->whereNull('alm_prod_serie.id_base');
 
         if (session()->has('filtroAlmacen')) {
-            $query = $query->whereIn('alm_prod_ubi.id_almacen', session()->get('filtroAlmacen'));
+            $query = $query->whereIn('alm_prod_serie.id_almacen', session()->get('filtroAlmacen'));
         }
         // $query = $query->orderBy('alm_prod.id_producto', 'asc')
         //     ->orderBy('alm_prod_serie.id_almacen', 'asc')->get();
