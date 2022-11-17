@@ -1216,9 +1216,17 @@ class ListaOrdenView {
 
     updateMontoAPagarEnCuotas(){
         let numeroDeCuotas = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value??0;
-        if (numeroDeCuotas > 0){
-            let cuota= parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value) / parseInt(numeroDeCuotas);
+        // console.log(numeroDeCuotas);
+        if (numeroDeCuotas > 1){
+            let cuota= parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden) / parseInt(numeroDeCuotas);
             document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value=(cuota);
+        }
+        
+        if (numeroDeCuotas == 1){
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").removeAttribute("readonly");
+        }else{
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").setAttribute("readonly",true);
+
         }
     }
 
@@ -1346,7 +1354,7 @@ class ListaOrdenView {
                 continuar = true;
             }
         }
-        if (document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value == (document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='historialEnviosAPagoLogistica'] tbody").childElementCount)){
+        if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value >1)&& (document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value == (document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='historialEnviosAPagoLogistica'] tbody").childElementCount))){
             menseje.push('No se puede superar el limite de cuota establecida');
             continuar = false;
 
@@ -1965,7 +1973,7 @@ class ListaOrdenView {
                             let btnVerDetalle = (array_accesos.find(element => element === 245)?`<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id}">
                                                 <i class="fas fa-chevron-down"></i>
                                                 </button>`:'');
-                            let btnEnviarAPago = (array_accesos.find(element => element === 247)?`<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
+                            let btnEnviarAPago = (array_accesos.find(element => element === 247)?`<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" ${row.tiene_pago_en_cuotas == true?'style="background-color:purple""':''} title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
                                 data-id-orden-compra="${row.id ?? ''}"
                                 data-codigo-orden="${row.codigo ?? ''}"
                                 data-monto-total-orden="${row.monto_total ?? ''}"

@@ -4311,9 +4311,9 @@ class OrdenController extends Controller
 
             if (!empty($orden)) {
                 //ya fue autorizado?
-                if ($orden->estado_pago !== 5 || $orden->tiene_pago_en_cuotas == true) {
+                if ($orden->estado_pago !== 5 || (isset($request->pagoEnCuotasCheckbox)==true)) {
                     //ya fue pagado?
-                    if ($orden->estado_pago !== 6 || $orden->tiene_pago_en_cuotas == true) {
+                    if ($orden->estado_pago !== 6 || (isset($request->pagoEnCuotasCheckbox)==true)) {
 
                         $orden->estado_pago = 8; //enviado a pago
                         $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
@@ -4326,12 +4326,12 @@ class OrdenController extends Controller
                         $orden->fecha_solicitud_pago = Carbon::now();
                         $orden->save();
 
-                        if( $orden->tiene_pago_en_cuotas == true){
+                        if( (isset($request->pagoEnCuotasCheckbox)==true)){
                             $findPagoCuota = PagoCuota::where('id_orden', $request->id_orden_compra)->first();
                             if(empty($findPagoCuota)==false){
                                 $pagoCuotaDetalle = new PagoCuotaDetalle();
                                 $pagoCuotaDetalle->id_pago_cuota =$findPagoCuota->id_pago_cuota;
-                                $pagoCuotaDetalle->monto_cuota =$request->monto_a_pagar;
+                                $pagoCuotaDetalle->monto_cuota =str_replace(',','',$request->monto_a_pagar);
                                 $pagoCuotaDetalle->observacion = $request->comentario;
                                 $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
                                 $pagoCuotaDetalle->fecha_registro = new Carbon();
@@ -4347,7 +4347,7 @@ class OrdenController extends Controller
     
                                 $pagoCuotaDetalle = new PagoCuotaDetalle();
                                 $pagoCuotaDetalle->id_pago_cuota =$pagoCuota->id_pago_cuota;
-                                $pagoCuotaDetalle->monto_cuota =$request->monto_a_pagar;
+                                $pagoCuotaDetalle->monto_cuota =str_replace(',','',$request->monto_a_pagar);
                                 $pagoCuotaDetalle->observacion = $request->comentario;
                                 $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
                                 $pagoCuotaDetalle->fecha_registro = new Carbon();

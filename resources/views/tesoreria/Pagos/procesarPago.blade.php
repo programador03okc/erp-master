@@ -129,13 +129,20 @@
                                     <th style="border: none;">#</th>
                                     <th style="border: none;">Monto a pagar</th>
                                     <th style="border: none;">Observación</th>
-                                    <th style="border: none;">Cuota/Número de cuotas</th>
+                                    <th style="border: none;">Cuota</th>
                                     <th style="border: none;">Adjunto</th>
                                     <th style="border: none;">Fecha Autorización</th>
                                     <th style="border: none;">Estado</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
+                            <tfoot>
+                                <tr class="bg-info">
+                                    <td class="text-right"><strong>Total:</strong></td>
+                                    <td class="text-center"><strong><span id='sumaMontoTotalPagado'></span></strong></td>
+                                    <td colspan="5"></td>
+                                </tr>
+                            </tfoot>
                         </table>
 
                         <div class="text-right">

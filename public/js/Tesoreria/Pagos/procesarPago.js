@@ -18,8 +18,8 @@ function openRegistroPago(data) {
     var id = data.data('id');
     var tipo = data.data('tipo');
     var codigo = data.data('cod');
-    var total = data.data('total');
-    var pago = (data.data('pago') !== null ? parseFloat(data.data('pago')) : 0);
+    var total = data.data('total'); // monto_total de cabecera del doc( orden)
+    var pago = (data.data('pago') !== null ? parseFloat(data.data('pago')) : 0); // suma de los pagos reallizados
     var moneda = data.data('moneda');
     var nrodoc = data.data('nrodoc');
     var prov = data.data('prov');
@@ -34,7 +34,6 @@ function openRegistroPago(data) {
     var observacionRequerimiento = data.data('observacionRequerimiento');
     var cantidadAdjuntosLogisticos = data.data('cantidadAdjuntosLogisticos');
     var tienePagoEnCuotas = data.data('tienePagoEnCuotas');
-    var montoAPago = data.data('montoAPago');
     var sumaCuotaConAutorizacion = data.data('sumaCuotaConAutorizacion');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
@@ -86,7 +85,7 @@ function openRegistroPago(data) {
     $('[name=codigo]').val(codigo);
     $('[name=cod_serie_numero]').text(codigo);
 
-    $('[name=total_pago]').val(montoAPago>0?montoAPago:total_pago);
+    $('[name=total_pago]').val(total_pago);
     $('[name=total]').val(total_pago);
     $('[name=total_pagado]').text(formatNumber.decimal(pago, moneda, -2));
     $('[name=monto_total]').text(formatNumber.decimal(total, moneda, -2));
@@ -482,11 +481,15 @@ function listarPagoEnCuotas(tipo,id){
             var i = 1;
 
             let orden = response.orden;
-            let montoCuota = response.numero_de_cuotas;
+            let numeroCuotas = response.numero_de_cuotas;
             let detalle = response.detalle;
-        
+            let sumaMontoTotalMontoCuota=0;
             if (response.hasOwnProperty('detalle') && detalle.length > 0) {
                 detalle.forEach(element => {
+
+                    if(element.id_estado !=7){
+                        sumaMontoTotalMontoCuota+=parseFloat(element.monto_cuota);
+                    }
                     enlaceAdjunto=[];
                     (element.adjuntos).forEach(element => {
                         enlaceAdjunto.push('<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>');
@@ -496,9 +499,9 @@ function listarPagoEnCuotas(tipo,id){
                         '<td style="border: none; text-align: center">' + i + '</td>' +
                         '<td style="border: none; text-align: center; color: #8b3447 !important;font-weight: bold;">' + (element.monto_cuota !== null ? element.monto_cuota : '') + '</td>' +
                         '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
-                        '<td style="border: none; text-align: center">' +  i+'/'+montoCuota + '</td>' +
+                        '<td style="border: none; text-align: center">' + (numeroCuotas>1?(i+'/'+numeroCuotas):i)+ '</td>' +
                         '<td style="border: none; text-align: center">' + enlaceAdjunto.toString().replace(",","<br>") + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.fecha_autorizacion + '</td>' +
+                        '<td style="border: none; text-align: center">' + (element.fecha_autorizacion !=null?element.fecha_autorizacion:'') + '</td>' +
                         '<td style="border: none; text-align: center">' +element.estado.descripcion+'</td>' +
                         '</tr>';
                     i++;
@@ -519,6 +522,7 @@ function listarPagoEnCuotas(tipo,id){
             }
             document.querySelector("table[id='tablaDatosPagoEnCuotas'] tbody").insertAdjacentHTML('beforeend', html );
             document.querySelector("select[name='vincularCuotaARegistroDePago[]']").insertAdjacentHTML('beforeend', htmlOptionVincularConPago );
+            document.querySelector("span[id='sumaMontoTotalPagado']").textContent= sumaMontoTotalMontoCuota;
 
     
         }

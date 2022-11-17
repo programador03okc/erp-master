@@ -11,6 +11,7 @@ use App\Models\Logistica\Orden;
 use App\Models\Logistica\PagoCuota;
 use App\Models\Logistica\PagoCuotaDetalle;
 use App\Models\Rrhh\Persona;
+use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RequerimientoPagoAdjunto;
 use App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle;
 use App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
+use Debugbar;
 
 class RegistroPagoController extends Controller
 {
@@ -183,7 +185,7 @@ class RegistroPagoController extends Controller
             ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
             ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'log_ord_compra.usuario_autorizacion')
             ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'log_ord_compra.id_prioridad_pago')
-            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9]);
+            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9,10]);
 
         // return datatables($data)
         //     ->addColumn('persona', function ($data) {
@@ -494,9 +496,14 @@ class RegistroPagoController extends Controller
                 }
             } else {
                 if ($request->id_oc !== null) {
+                    if(isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago)>0){
+                        $nuevoEstado=10;
+                    }else{
+                        $nuevoEstado=9;
+                    }
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $request->id_oc)
-                        ->update(['estado_pago' => 9]); //con saldo
+                        ->update(['estado_pago' => $nuevoEstado]); //con saldo
                 } else if ($request->id_requerimiento_pago !== null) {
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
@@ -505,6 +512,30 @@ class RegistroPagoController extends Controller
             }
 
             DB::commit();
+
+            // determinar el estado de la estadopago en la orden si todo los pagoDetalle con estad 6 (pagado) es igual al monto e la orden, el estado podria ser "pagado" o "pagado con saldo"
+            if(isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago)>0){
+                if ($request->id_oc !== null) {
+                    $ord = Orden::where('id_orden_compra',$request->id_oc)->first();
+                    $lastPagoCuota= PagoCuota::where([['id_orden',$request->id_oc]])->first();
+                    $lastPagoCuotaDetallePagadas = PagoCuotaDetalle::where([['id_pago_cuota',$lastPagoCuota->id_pago_cuota],['id_estado','=',6]])->get();
+                    $sumaPagos=0;
+                    foreach ($lastPagoCuotaDetallePagadas as $key => $detCuota) {
+                    $sumaPagos+=$detCuota->monto_cuota;
+                    }
+
+                    // Debugbar::info($ord->monto_total);
+                    // Debugbar::info($sumaPagos);
+
+                    if(floatval($ord->monto_total) > floatval($sumaPagos)){
+                    DB::table('logistica.log_ord_compra')
+                        ->where('id_orden_compra', $ord->id_orden_compra)
+                        ->update(['estado_pago' => 10]); //pagada con saldo
+                    }
+                }
+            }
+
+
             return response()->json($id_pago);
         } catch (\PDOException $e) {
             DB::rollBack();
