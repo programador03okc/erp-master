@@ -70,7 +70,7 @@
                     </fieldset>
                     <br>
                     <fieldset class="group-table">
-                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de la cabecera</strong></h5>
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de tesorería</strong></h5>
                         <div class="row">
                             <div class="col-md-12">
                                 <table class="mytable table table-condensed table-bordered table-okc-view">

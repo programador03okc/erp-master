@@ -11,7 +11,6 @@
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_od">
                     <input type="text" class="oculto" name="id_sede">
-                    <input type="text" class="oculto" name="id_cliente">
                     <input type="text" class="oculto" name="id_persona">
                     <input type="text" class="oculto" name="id_requerimiento">
                     <div class="row">
@@ -43,7 +42,13 @@
                     <div class="row">
                         <div class="col-md-3">
                             <h5>Cliente</h5>
-                            <input type="text" class="form-control" name="razon_social_cliente" disabled>
+                            <div style="display:flex;">
+                                <input type="text" class="oculto" name="id_cliente">
+                                <input type="text" class="form-control" name="razon_social_cliente" disabled>
+                                <button type="button" class="input-group-text activation" id="basic-addon1" onclick="openClienteModal();">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <h5>Tipo de Operación</h5>

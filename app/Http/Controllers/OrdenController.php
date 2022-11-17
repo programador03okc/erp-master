@@ -55,6 +55,8 @@ use App\Models\Logistica\ItemsOrdenesView;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\OrdenesView;
+use App\Models\Logistica\PagoCuota;
+use App\Models\Logistica\PagoCuotaDetalle;
 use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
@@ -1458,6 +1460,7 @@ class OrdenController extends Controller
 
             'log_ord_compra.estado',
             'log_ord_compra.observacion',
+            'log_ord_compra.compra_local',
             'adm_estado_doc.estado_doc',
             'adm_estado_doc.bootstrap_color'
         )
@@ -1626,6 +1629,7 @@ class OrdenController extends Controller
             'sis_moneda.descripcion as moneda_descripcion',
             'log_ord_compra.id_contacto',
             'log_ord_compra.sustento_anulacion',
+            'log_ord_compra.compra_local',
             'adm_ctb_contac.nombre as nombre_contacto',
             'adm_ctb_contac.telefono as telefono_contacto',
             'adm_ctb_contac.email as email_contacto',
@@ -2639,6 +2643,7 @@ class OrdenController extends Controller
                 $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
                 $orden->observacion = $request->observacion != null ? trim(strtoupper($request->observacion)) : null;
                 $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
+                $orden->compra_local = isset($request->esCompraLocal) ? $request->esCompraLocal : false;
                 $orden->save();
 
                 if($request->id_proveedor>0 && $request->id_rubro_proveedor !=null && $request->id_rubro_proveedor >0 ){
@@ -3129,6 +3134,7 @@ class OrdenController extends Controller
                     $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
                     $orden->observacion = isset($request->observacion) ? $request->observacion : null;
                     $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
+                    $orden->compra_local = isset($request->esCompraLocal) ? $request->esCompraLocal : false;
                     $orden->save();
 
                     if($request->id_proveedor>0 && $request->id_rubro_proveedor !=null && $request->id_rubro_proveedor >0 ){
@@ -4305,9 +4311,9 @@ class OrdenController extends Controller
 
             if (!empty($orden)) {
                 //ya fue autorizado?
-                if ($orden->estado_pago !== 5) {
+                if ($orden->estado_pago !== 5 || $orden->tiene_pago_en_cuotas == true) {
                     //ya fue pagado?
-                    if ($orden->estado_pago !== 6) {
+                    if ($orden->estado_pago !== 6 || $orden->tiene_pago_en_cuotas == true) {
 
                         $orden->estado_pago = 8; //enviado a pago
                         $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
@@ -4316,8 +4322,74 @@ class OrdenController extends Controller
                         $orden->id_persona_pago = $request->id_persona;
                         $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
                         $orden->comentario_pago = $request->comentario;
+                        $orden->tiene_pago_en_cuotas= (isset($request->pagoEnCuotasCheckbox) && empty($request->pagoEnCuotasCheckbox)==false)?true:false;
                         $orden->fecha_solicitud_pago = Carbon::now();
                         $orden->save();
+
+                        if( $orden->tiene_pago_en_cuotas == true){
+                            $findPagoCuota = PagoCuota::where('id_orden', $request->id_orden_compra)->first();
+                            if(empty($findPagoCuota)==false){
+                                $pagoCuotaDetalle = new PagoCuotaDetalle();
+                                $pagoCuotaDetalle->id_pago_cuota =$findPagoCuota->id_pago_cuota;
+                                $pagoCuotaDetalle->monto_cuota =$request->monto_a_pagar;
+                                $pagoCuotaDetalle->observacion = $request->comentario;
+                                $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
+                                $pagoCuotaDetalle->fecha_registro = new Carbon();
+                                $pagoCuotaDetalle->id_estado = 1;
+                                $pagoCuotaDetalle->save();
+                            }else{
+                                $pagoCuota = new PagoCuota();
+                                $pagoCuota->id_orden = $request->id_orden_compra;
+                                $pagoCuota->numero_de_cuotas = $request->numero_de_cuotas;
+                                $pagoCuota->id_estado = 1;
+                                $pagoCuota->fecha_registro = new Carbon();
+                                $pagoCuota->save();
+    
+                                $pagoCuotaDetalle = new PagoCuotaDetalle();
+                                $pagoCuotaDetalle->id_pago_cuota =$pagoCuota->id_pago_cuota;
+                                $pagoCuotaDetalle->monto_cuota =$request->monto_a_pagar;
+                                $pagoCuotaDetalle->observacion = $request->comentario;
+                                $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
+                                $pagoCuotaDetalle->fecha_registro = new Carbon();
+                                $pagoCuotaDetalle->id_estado = 1;
+                                $pagoCuotaDetalle->save();
+                            }
+
+
+                        }
+
+                        $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoObject);
+                        $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+                        $idOrden = $request->id_orden_compra;
+                        $codigoOrden= Orden::find($request->id_orden_compra)->codigo;
+                        $archivoAdjuntoList =$request->archivo_adjunto_list;
+
+                        foreach ($ObjectoAdjunto as $keyObj => $value) {
+                            $ObjectoAdjunto[$keyObj]->id_orden=$idOrden;
+                            $ObjectoAdjunto[$keyObj]->codigo_orden=$codigoOrden;
+                            $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle=isset($pagoCuotaDetalle)?$pagoCuotaDetalle->id_pago_cuota_detalle:null;
+                            if ($adjuntoOtrosAdjuntosLength > 0) {
+                                foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                                    if(is_file($archivo)){
+                                        $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                        if($nombreArchivoAdjunto == $value->nameFile){
+                                            $ObjectoAdjunto[$keyObj]->file=$archivo;
+                                        }
+                                    }
+            
+                                }
+                            }               
+        
+                        }
+                        $idAdjunto=[];
+                        if ($adjuntoOtrosAdjuntosLength > 0) {
+            
+                            $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
+                        }
+
+
+
+
 
                         $arrayRspta = array(
                             'tipo_estado' => 'success',
@@ -4354,7 +4426,11 @@ class OrdenController extends Controller
             return response()->json(['tipo_estado' => 'error', 'data' => [], 'mensaje' => 'Hubo un problema al intentar obtener la data del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
-
+    function ObtenerHistorialDeEnviosAPagoEnCuotas($idOrden){
+        return PagoCuota::with(['detalle'=> function($query) {
+            $query->orderBy('fecha_registro', 'asc');
+        },'detalle.creadoPor','detalle.adjuntos'])->where('id_orden',$idOrden)->first();
+    }
 
     function obtenerContribuyente($idContribuyente)
     {
@@ -4540,6 +4616,7 @@ class OrdenController extends Controller
                             'categoria_adjunto_id'  => $archivo->category,
                             'fecha_emision'         => $archivo->fecha_emision,
                             'nro_comprobante'       => $archivo->nro_comprobante,
+                            'id_pago_cuota_detalle' => (isset($archivo->id_pago_cuota_detalle) && $archivo->id_pago_cuota_detalle >0?$archivo->id_pago_cuota_detalle:null),
                             'fecha_registro'        => $fechaHoy
                         ],
                         'id_adjunto'

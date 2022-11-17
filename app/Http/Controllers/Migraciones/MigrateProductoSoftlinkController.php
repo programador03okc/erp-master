@@ -358,42 +358,53 @@ class MigrateProductoSoftlinkController extends Controller
         return $zeros . $number;
     }
 
-    public function actualizarFechasIngresoSoft()
+    public function actualizarFechasIngresoSoft($id_almacen)
     {
         $productos = DB::table('almacen.alm_prod_serie')
-            ->select('alm_prod_serie.serie', 'alm_prod.id_producto', 'alm_prod.cod_softlink')
+            ->select(
+                'alm_prod_serie.serie',
+                'alm_prod.id_producto',
+                'alm_prod.cod_softlink',
+                'alm_almacen.codigo'
+            )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
-            // ->whereNull('id_guia_ven_det')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_serie.id_almacen')
             ->whereNull('id_guia_com_det')
-            // ->whereNull('id_sobrante')
             ->whereNull('id_base')
             ->whereNull('alm_prod_serie.fecha_ingreso_soft')
             ->where('alm_prod_serie.estado', 1)
-            ->where('alm_prod_serie.id_almacen', 1)
+            ->where('alm_prod_serie.id_almacen', $id_almacen)
             ->get();
 
         foreach ($productos as $p) {
-
             $prod = DB::connection('soft')->table('series')
-                ->select('series.fecha_ing', 'detmov.pre_prod', 'detmov.num_docu')
-                ->join('detmov', function ($join) {
-                    $join->on('detmov.mov_id', '=', 'series.id_ingreso');
-                })
-                ->where('detmov.cod_prod', strval($p->cod_softlink))
-                ->where('series.serie', strval($p->serie))
+                ->select(
+                    'series.fecha_ing',
+                    'detmov.pre_prod',
+                    'movimien.num_docu',
+                    'movimien.tip_mone'
+                )
+                ->join('detmov', 'detmov.mov_id', '=', 'series.id_ingreso')
+                ->join('movimien', 'movimien.mov_id', '=', 'detmov.mov_id')
+                // ->where('detmov.cod_prod', strval($p->cod_softlink))
+                ->where('series.serie', strval(trim($p->serie)))
                 ->orderBy('series.fecha_ing', 'asc')
                 ->first();
 
             if ($prod !== null) {
+
                 $fec = $prod->fecha_ing;
                 $pre = $prod->pre_prod;
                 $doc = $prod->num_docu;
+                $mon = $prod->tip_mone;
+
                 DB::table('almacen.alm_prod_serie')
-                    ->where('id_prod', $p->id_producto)
+                    ->where('serie', $p->serie)
                     ->update([
                         'fecha_ingreso_soft' => $fec,
                         'precio_unitario_soft' => $pre,
-                        'doc_ingreso_soft' => $doc
+                        'doc_ingreso_soft' => $doc,
+                        'moneda_soft' => $mon,
                     ]);
             }
         }

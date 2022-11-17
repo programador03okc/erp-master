@@ -492,17 +492,8 @@ function guardarAdjuntos() {
 
         if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
             tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-                if (element.action == 'GUARDAR') {
-                    formData.append(`id_adjunto[]`, element.id);
-                    formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
-                    formData.append(`categoria_adjunto[]`, element.category);
-                    formData.append(`archivo_adjunto[]`, element.file);
-                    // formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileGuardar${element.category}[]`, element.file);
-                    formData.append(`nombre_real_adjunto[]`, element.nameFile);
-                    formData.append(`accion_adjunto[]`, 'GUARDAR');
+                formData.append(`archivo_adjunto_list[]`, element.file);
 
-
-                }
             });
         }
 

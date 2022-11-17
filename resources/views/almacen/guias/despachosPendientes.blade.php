@@ -164,6 +164,8 @@ Atención de Salidas
 @include('almacen.guias.guia_ven_cambio')
 @include('almacen.guias.guia_ven_series')
 @include('almacen.guias.salidaAlmacen')
+@include('almacen.guias.clienteModal')
+@include('almacen.guias.agregarCliente')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_orden_de_requerimiento')
 @endsection
@@ -190,6 +192,8 @@ Atención de Salidas
 <script src="{{ asset('js/almacen/guia/guia_ven_cambio.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_cambio.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_series.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/salidaAlmacen.js')}}?v={{filemtime(public_path('js/almacen/guia/salidaAlmacen.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/clienteModal.js')}}?v={{filemtime(public_path('js/almacen/guia/clienteModal.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/agregarCliente.js')}}?v={{filemtime(public_path('js/almacen/guia/agregarCliente.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 <script>
