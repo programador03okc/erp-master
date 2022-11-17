@@ -667,7 +667,7 @@ class RequerimientoPagoController extends Controller
             }
 
             //adjuntos detalle
-            if (isset($request->archivo_adjunto_list)) {
+            if (isset($request->archivo_adjunto_detalle_list)) {
 
                 // Debugbar::info(count($request->archivo_adjunto_detalle_list) );
                 $ObjectoAdjuntoDetalle = json_decode($request->archivoAdjuntoRequerimientoPagoDetalleObject);
