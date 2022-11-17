@@ -583,7 +583,7 @@ class SalidasPendientesController extends Controller
                             ->update(['estado' => 1]);
 
                         $detalle = DB::table('almacen.guia_ven_det')
-                            ->select('guia_ven_det.id_guia_ven_det', 'alm_det_req.id_detalle_requerimiento')
+                            ->select('guia_ven_det.id_guia_ven_det', 'alm_det_req.id_detalle_requerimiento', 'guia_ven_det.id_od_det')
                             ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
                             ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
                             ->where('id_guia_ven', $request->id_guia_ven)
@@ -609,6 +609,13 @@ class SalidasPendientesController extends Controller
                                         ->where('id_reserva', $res->id_reserva)
                                         ->update(['estado' => 1]);
                                 }
+                            }
+
+                            if ($det->id_od_det !== null) {
+                                //revierte la reserva
+                                DB::table('almacen.orden_despacho_det')
+                                    ->where('id_od_detalle', $det->id_od_det)
+                                    ->update(['estado' => 1]);
                             }
                         }
                         $msj = 'La salida fue anulada con éxito.';
