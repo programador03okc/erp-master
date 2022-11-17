@@ -318,57 +318,62 @@ class RequerimientoPagoController extends Controller
 
 
             // Adjuntos Cabecera
-            $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoPagoObject);
-            $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
-            $archivoAdjuntoList =$request->archivo_adjunto_list;
-
-            if (count($request->archivo_adjunto_list) > 0) {
-                foreach ($ObjectoAdjunto as $keyObj => $value) {
-                    $ObjectoAdjunto[$keyObj]->id_requerimiento_pago=$requerimientoPago->id_requerimiento_pago;
-                    $ObjectoAdjunto[$keyObj]->codigo=$codigo;
-                    if ($adjuntoOtrosAdjuntosLength > 0) {
-                        foreach ($archivoAdjuntoList as $keyA => $archivo) {
-                            if(is_file($archivo)){
-                                $nombreArchivoAdjunto = $archivo->getClientOriginalName();
-                                if($nombreArchivoAdjunto == $value->nameFile){
-                                    $ObjectoAdjunto[$keyObj]->file=$archivo;
+            if(isset($request->archivo_adjunto_list)){
+                $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoPagoObject);
+                $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+                $archivoAdjuntoList =$request->archivo_adjunto_list;
+    
+                if (count($request->archivo_adjunto_list) > 0) {
+                    foreach ($ObjectoAdjunto as $keyObj => $value) {
+                        $ObjectoAdjunto[$keyObj]->id_requerimiento_pago=$requerimientoPago->id_requerimiento_pago;
+                        $ObjectoAdjunto[$keyObj]->codigo=$codigo;
+                        if ($adjuntoOtrosAdjuntosLength > 0) {
+                            foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                                if(is_file($archivo)){
+                                    $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                    if($nombreArchivoAdjunto == $value->nameFile){
+                                        $ObjectoAdjunto[$keyObj]->file=$archivo;
+                                    }
                                 }
                             }
-                        }
-                    }               
+                        }               
+                    }
+                    $idAdjunto[] = $this->subirYRegistrarArchivoCabecera($ObjectoAdjunto);
                 }
-                $idAdjunto[] = $this->subirYRegistrarArchivoCabecera($ObjectoAdjunto);
+                
             }
             // Adjuntos Detalle
-            $ObjectoAdjuntoDetalle = json_decode($request->archivoAdjuntoRequerimientoPagoDetalleObject);
-            $adjuntoOtrosAdjuntosDetalleLength = $request->archivo_adjunto_detalle_list != null ? count($request->archivo_adjunto_detalle_list) : 0;
-            $archivoAdjuntoDetalleList =$request->archivo_adjunto_detalle_list;
-            if (count($request->archivo_adjunto_detalle_list) > 0) {
-                
-                foreach ($ObjectoAdjuntoDetalle as $keyObj => $value) {
-                foreach ($detalleArray as $keyDetArr => $det) {
-                    if($det->idRegister == $value->id){
-                        $ObjectoAdjuntoDetalle[$keyObj]->id_requerimiento_pago_detalle=$det->id_requerimiento_pago_detalle;
-                    }
-                    $ObjectoAdjuntoDetalle[$keyObj]->id_requerimiento_pago=$requerimientoPago->id_requerimiento_pago;
-                    $ObjectoAdjuntoDetalle[$keyObj]->codigo=$codigo;
-                    if ($adjuntoOtrosAdjuntosDetalleLength > 0) {
-                        foreach ($archivoAdjuntoDetalleList as $keyA => $archivo) {
-                            if(is_file($archivo)){
-                                $nombreArchivoAdjunto = $archivo->getClientOriginalName();
-                                if($nombreArchivoAdjunto == $value->nameFile){
-                                    $ObjectoAdjuntoDetalle[$keyObj]->file=$archivo;
+            if(isset($request->archivo_adjunto_detalle_list)){
+                $ObjectoAdjuntoDetalle = json_decode($request->archivoAdjuntoRequerimientoPagoDetalleObject);
+                $adjuntoOtrosAdjuntosDetalleLength = $request->archivo_adjunto_detalle_list != null ? count($request->archivo_adjunto_detalle_list) : 0;
+                $archivoAdjuntoDetalleList =$request->archivo_adjunto_detalle_list;
+                if (count($request->archivo_adjunto_detalle_list) > 0) {
+                    
+                    foreach ($ObjectoAdjuntoDetalle as $keyObj => $value) {
+                    foreach ($detalleArray as $keyDetArr => $det) {
+                        if($det->idRegister == $value->id){
+                            $ObjectoAdjuntoDetalle[$keyObj]->id_requerimiento_pago_detalle=$det->id_requerimiento_pago_detalle;
+                        }
+                        $ObjectoAdjuntoDetalle[$keyObj]->id_requerimiento_pago=$requerimientoPago->id_requerimiento_pago;
+                        $ObjectoAdjuntoDetalle[$keyObj]->codigo=$codigo;
+                        if ($adjuntoOtrosAdjuntosDetalleLength > 0) {
+                            foreach ($archivoAdjuntoDetalleList as $keyA => $archivo) {
+                                if(is_file($archivo)){
+                                    $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                    if($nombreArchivoAdjunto == $value->nameFile){
+                                        $ObjectoAdjuntoDetalle[$keyObj]->file=$archivo;
+                                    }
                                 }
                             }
-                        }
-                    }               
+                        }               
+                    }
+                    }
+                    
+        // Debugbar::info($ObjectoAdjuntoDetalle);
+    
+                    $idAdjuntoDetalle[] = $this->guardarAdjuntoRequerimientoPagoDetalle($ObjectoAdjuntoDetalle);
+    
                 }
-                }
-                
-    // Debugbar::info($ObjectoAdjuntoDetalle);
-
-                $idAdjuntoDetalle[] = $this->guardarAdjuntoRequerimientoPagoDetalle($ObjectoAdjuntoDetalle);
-
             }
 
             return response()->json(['id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago, 'mensaje' => 'Se guardó el requerimiento de pago ' . $codigo]);
