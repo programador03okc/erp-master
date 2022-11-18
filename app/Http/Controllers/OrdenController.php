@@ -4308,105 +4308,27 @@ class OrdenController extends Controller
 
             if (!empty($orden)) {
                 //ya fue autorizado?
-                if ($orden->estado_pago !== 5 || (isset($request->pagoEnCuotasCheckbox) == true)) {
+                if ($orden->estado_pago !== 5) {
                     //ya fue pagado?
-                    if ($orden->estado_pago !== 6 || (isset($request->pagoEnCuotasCheckbox) == true)) {
-
-                        // validar cantidad de cuotas vs monto total orden, si se completo el numero de cuotas enviar mensaje
-                        $lastPagoCuota = PagoCuota::where([['id_orden', $orden->id_orden_compra]])->first();
-                        $lastPagoCuotaDetallePagadas = PagoCuotaDetalle::where([['id_pago_cuota', $lastPagoCuota->id_pago_cuota], ['id_estado', '=', 6]])->get();
-                        $sumaPagos = 0;
-                        foreach ($lastPagoCuotaDetallePagadas as $key => $detCuota) {
-                            $sumaPagos += $detCuota->monto_cuota;
-                        }
-                        if (floatval($orden->monto_total) > floatval($sumaPagos)) {
-
-                            // 
-
-                            $orden->estado_pago = 8; //enviado a pago
-                            $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
-                            $orden->id_prioridad_pago = $request->id_prioridad;
-                            $orden->id_cta_principal = $request->id_cuenta_contribuyente;
-                            $orden->id_persona_pago = $request->id_persona;
-                            $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
-                            $orden->comentario_pago = $request->comentario;
-                            $orden->tiene_pago_en_cuotas = (isset($request->pagoEnCuotasCheckbox) && empty($request->pagoEnCuotasCheckbox) == false) ? true : false;
-                            $orden->fecha_solicitud_pago = Carbon::now();
-                            $orden->save();
-
-                            if ((isset($request->pagoEnCuotasCheckbox) == true)) {
-                                $findPagoCuota = PagoCuota::where('id_orden', $request->id_orden_compra)->first();
-                                if (empty($findPagoCuota) == false) {
-                                    $pagoCuotaDetalle = new PagoCuotaDetalle();
-                                    $pagoCuotaDetalle->id_pago_cuota = $findPagoCuota->id_pago_cuota;
-                                    $pagoCuotaDetalle->monto_cuota = str_replace(',', '', $request->monto_a_pagar);
-                                    $pagoCuotaDetalle->observacion = $request->comentario;
-                                    $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
-                                    $pagoCuotaDetalle->fecha_registro = new Carbon();
-                                    $pagoCuotaDetalle->id_estado = 1;
-                                    $pagoCuotaDetalle->save();
-                                } else {
-                                    $pagoCuota = new PagoCuota();
-                                    $pagoCuota->id_orden = $request->id_orden_compra;
-                                    $pagoCuota->numero_de_cuotas = $request->numero_de_cuotas;
-                                    $pagoCuota->id_estado = 1;
-                                    $pagoCuota->fecha_registro = new Carbon();
-                                    $pagoCuota->save();
-
-                                    $pagoCuotaDetalle = new PagoCuotaDetalle();
-                                    $pagoCuotaDetalle->id_pago_cuota = $pagoCuota->id_pago_cuota;
-                                    $pagoCuotaDetalle->monto_cuota = str_replace(',', '', $request->monto_a_pagar);
-                                    $pagoCuotaDetalle->observacion = $request->comentario;
-                                    $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
-                                    $pagoCuotaDetalle->fecha_registro = new Carbon();
-                                    $pagoCuotaDetalle->id_estado = 1;
-                                    $pagoCuotaDetalle->save();
-                                }
-                            }
-
-                            $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoObject);
-                            $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
-                            $idOrden = $request->id_orden_compra;
-                            $codigoOrden = Orden::find($request->id_orden_compra)->codigo;
-                            $archivoAdjuntoList = $request->archivo_adjunto_list;
-
-                            foreach ($ObjectoAdjunto as $keyObj => $value) {
-                                $ObjectoAdjunto[$keyObj]->id_orden = $idOrden;
-                                $ObjectoAdjunto[$keyObj]->codigo_orden = $codigoOrden;
-                                $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle = $pagoCuotaDetalle->id_pago_cuota_detalle;
-                                if ($adjuntoOtrosAdjuntosLength > 0) {
-                                    foreach ($archivoAdjuntoList as $keyA => $archivo) {
-                                        if (is_file($archivo)) {
-                                            $nombreArchivoAdjunto = $archivo->getClientOriginalName();
-                                            if ($nombreArchivoAdjunto == $value->nameFile) {
-                                                $ObjectoAdjunto[$keyObj]->file = $archivo;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            $idAdjunto = [];
-                            if ($adjuntoOtrosAdjuntosLength > 0) {
-
-                                $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
-                            }
-
-
-
-
-
+                    if ($orden->estado_pago !== 6) {
+                        // Debugbar::info(isset($request->pagoEnCuotasCheckbox));
+                        if (isset($request->pagoEnCuotasCheckbox) == true) {
+                            $registoSolicitudPagoEnCuotas = $this->registrarSolicitudDePagarEnCuotas($request);
                             $arrayRspta = array(
-                                'tipo_estado' => 'success',
-                                'mensaje' => 'Solicitud de pago registrado.',
-                                'data' => $orden
+                                'tipo_estado' => $registoSolicitudPagoEnCuotas['tipo_estado'],
+                                'mensaje' => $registoSolicitudPagoEnCuotas['mensaje'],
+                                'data' => $registoSolicitudPagoEnCuotas['data']
                             );
                         } else {
+                            $registoSolicitudPagoDirecta = $this->registrarSolicitudDePagarDirecta($request);
                             $arrayRspta = array(
-                                'tipo_estado' => 'warning',
-                                'mensaje' => 'Se completo el limite total de cuotas, orden pagada.',
-                                'data' => $orden
+                                'tipo_estado' => $registoSolicitudPagoDirecta['tipo_estado'],
+                                'mensaje' => $registoSolicitudPagoDirecta['mensaje'],
+                                'data' => $registoSolicitudPagoDirecta['data']
                             );
+                            
                         }
+
                     } else {
                         $arrayRspta = array(
                             'tipo_estado' => 'warning',
@@ -4437,6 +4359,181 @@ class OrdenController extends Controller
             return response()->json(['tipo_estado' => 'error', 'data' => [], 'mensaje' => 'Hubo un problema al intentar obtener la data del contribuyente. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
+
+    function registrarSolicitudDePagarEnCuotas(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $orden = Orden::find($request->id_orden_compra);
+
+            // validar cantidad de cuotas vs monto total orden, si se completo el numero de cuotas enviar mensaje
+            $lastPagoCuota = PagoCuota::where([['id_orden', $orden->id_orden_compra]])->first();
+            $lastPagoCuotaDetallePagadas = PagoCuotaDetalle::where([['id_pago_cuota', $lastPagoCuota->id_pago_cuota], ['id_estado', '=', 6]])->get();
+            $sumaPagos = 0;
+            foreach ($lastPagoCuotaDetallePagadas as $key => $detCuota) {
+                $sumaPagos += $detCuota->monto_cuota;
+            }
+            if (floatval($orden->monto_total) > floatval($sumaPagos)) {
+
+
+                $orden->estado_pago = 8; //enviado a pago
+                $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
+                $orden->id_prioridad_pago = $request->id_prioridad;
+                $orden->id_cta_principal = $request->id_cuenta_contribuyente;
+                $orden->id_persona_pago = $request->id_persona;
+                $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
+                $orden->comentario_pago = $request->comentario;
+                $orden->tiene_pago_en_cuotas = (isset($request->pagoEnCuotasCheckbox) && empty($request->pagoEnCuotasCheckbox) == false) ? true : false;
+                $orden->fecha_solicitud_pago = Carbon::now();
+                $orden->save();
+
+                if ((isset($request->pagoEnCuotasCheckbox) == true)) {
+                    $findPagoCuota = PagoCuota::where('id_orden', $request->id_orden_compra)->first();
+                    if (empty($findPagoCuota) == false) {
+                        $pagoCuotaDetalle = new PagoCuotaDetalle();
+                        $pagoCuotaDetalle->id_pago_cuota = $findPagoCuota->id_pago_cuota;
+                        $pagoCuotaDetalle->monto_cuota = str_replace(',', '', $request->monto_a_pagar);
+                        $pagoCuotaDetalle->observacion = $request->comentario;
+                        $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
+                        $pagoCuotaDetalle->fecha_registro = new Carbon();
+                        $pagoCuotaDetalle->id_estado = 1;
+                        $pagoCuotaDetalle->save();
+                    } else {
+                        $pagoCuota = new PagoCuota();
+                        $pagoCuota->id_orden = $request->id_orden_compra;
+                        $pagoCuota->numero_de_cuotas = $request->numero_de_cuotas;
+                        $pagoCuota->id_estado = 1;
+                        $pagoCuota->fecha_registro = new Carbon();
+                        $pagoCuota->save();
+
+                        $pagoCuotaDetalle = new PagoCuotaDetalle();
+                        $pagoCuotaDetalle->id_pago_cuota = $pagoCuota->id_pago_cuota;
+                        $pagoCuotaDetalle->monto_cuota = str_replace(',', '', $request->monto_a_pagar);
+                        $pagoCuotaDetalle->observacion = $request->comentario;
+                        $pagoCuotaDetalle->id_usuario = Auth::user()->id_usuario;
+                        $pagoCuotaDetalle->fecha_registro = new Carbon();
+                        $pagoCuotaDetalle->id_estado = 1;
+                        $pagoCuotaDetalle->save();
+                    }
+                }
+
+                $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoObject);
+                $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+                $idOrden = $request->id_orden_compra;
+                $codigoOrden = Orden::find($request->id_orden_compra)->codigo;
+                $archivoAdjuntoList = $request->archivo_adjunto_list;
+
+                foreach ($ObjectoAdjunto as $keyObj => $value) {
+                    $ObjectoAdjunto[$keyObj]->id_orden = $idOrden;
+                    $ObjectoAdjunto[$keyObj]->codigo_orden = $codigoOrden;
+                    $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle = $pagoCuotaDetalle->id_pago_cuota_detalle;
+                    if ($adjuntoOtrosAdjuntosLength > 0) {
+                        foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                            if (is_file($archivo)) {
+                                $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                if ($nombreArchivoAdjunto == $value->nameFile) {
+                                    $ObjectoAdjunto[$keyObj]->file = $archivo;
+                                }
+                            }
+                        }
+                    }
+                }
+                $idAdjunto = [];
+                if ($adjuntoOtrosAdjuntosLength > 0) {
+
+                    $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
+                }
+                $arrayRspta = array(
+                    'tipo_estado' => 'success',
+                    'mensaje' => 'Solicitud de pago registrado.',
+                    'data' => $orden
+                );
+            } else {
+                $arrayRspta = array(
+                    'tipo_estado' => 'warning',
+                    'mensaje' => 'Se completo el limite total de cuotas, orden pagada.',
+                    'data' => $orden
+                );
+            }
+            DB::commit();
+
+            return $arrayRspta;
+        } catch (Exception $e) {
+
+            $arrayRspta = array(
+                'tipo_estado' => 'error',
+                'mensaje' => 'Hubo un problema al intentar registrar de solicitud de pago',
+                'data' => []
+            );
+
+            return $arrayRspta;
+        }
+    }
+    function registrarSolicitudDePagarDirecta(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $orden = Orden::find($request->id_orden_compra);
+
+            $orden->estado_pago = 8; //enviado a pago
+            $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
+            $orden->id_prioridad_pago = $request->id_prioridad;
+            $orden->id_cta_principal = $request->id_cuenta_contribuyente;
+            $orden->id_persona_pago = $request->id_persona;
+            $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
+            $orden->comentario_pago = $request->comentario;
+            $orden->tiene_pago_en_cuotas = false;
+            $orden->fecha_solicitud_pago = Carbon::now();
+            $orden->save();
+
+
+            $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoObject);
+            $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+            $idOrden = $request->id_orden_compra;
+            $codigoOrden = Orden::find($request->id_orden_compra)->codigo;
+            $archivoAdjuntoList = $request->archivo_adjunto_list;
+
+            foreach ($ObjectoAdjunto as $keyObj => $value) {
+                $ObjectoAdjunto[$keyObj]->id_orden = $idOrden;
+                $ObjectoAdjunto[$keyObj]->codigo_orden = $codigoOrden;
+                $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle = null;
+                if ($adjuntoOtrosAdjuntosLength > 0) {
+                    foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                        if (is_file($archivo)) {
+                            $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                            if ($nombreArchivoAdjunto == $value->nameFile) {
+                                $ObjectoAdjunto[$keyObj]->file = $archivo;
+                            }
+                        }
+                    }
+                }
+            }
+            $idAdjunto = [];
+            if ($adjuntoOtrosAdjuntosLength > 0) {
+
+                $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
+            }
+
+            $arrayRspta = array(
+                'tipo_estado' => 'success',
+                'mensaje' => 'Solicitud de pago registrado.',
+                'data' => $orden
+            );
+            
+            DB::commit();
+            return $arrayRspta;
+        } catch (Exception $e) {
+
+            $arrayRspta = array(
+                'tipo_estado' => 'error',
+                'mensaje' => 'Hubo un problema al intentar registrar de solicitud de pago',
+                'data' => []
+            );
+
+            return $arrayRspta;
+        }
+    }
+
     function ObtenerHistorialDeEnviosAPagoEnCuotas($idOrden)
     {
         return PagoCuota::with(['detalle' => function ($query) {
