@@ -240,7 +240,11 @@
                 },
                 {
                     'render': function (data, type, row) {
-                        return ((parseFloat(row['ultima_monto_cuota'])>0? row['ultima_monto_cuota']:(row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00')) );
+                        if(JSON.parse(row['tiene_pago_en_cuotas'])==true){
+                            return ((parseFloat(row['ultima_monto_cuota'])>0? row['ultima_monto_cuota']:(row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00')) );
+                        }else{
+                            return '(No aplica)';
+                        }
                     }, 'className': 'text-right'
                 },
                 {
@@ -300,6 +304,7 @@
                                 default:
                                     break;
                             }
+                            console.log(row['id_estado'] == 10  );
                             return `<div class="btn-group" role="group">
                 ${(row['estado_pago'] == 8 && permisoEnviar == '1' && row['tiene_pago_en_cuotas']===false) ?
                                     `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip"
@@ -319,7 +324,7 @@
                                     `
                                     : ''}
 
-                                ${row['estado_pago'] == 5 || row['estado_pago'] == 9 ?
+                                ${row['estado_pago'] == 5 || row['estado_pago'] == 9 || (row['estado_pago'] == 10 && parseFloat(row['suma_cuotas_con_autorizacion'])>0) ?
                                     `${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom"
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
@@ -367,7 +372,7 @@
                     targets: 2
                 },
             ],
-            'order': [[10, "asc"], [6, "asc"]]
+            'order': [[11, "asc"], [6, "asc"]]
         });
 
     }
@@ -934,7 +939,7 @@ function formatPagosEnCuotas(table_id, id, row, tipo) {
             var i = 1;
 
             let orden = response.orden;
-            let montoCuota = response.numero_de_cuotas;
+            let numeroCuotas = response.numero_de_cuotas;
             let detalle = response.detalle;
         
             if (response.hasOwnProperty('detalle') && detalle.length > 0) {
@@ -945,10 +950,9 @@ function formatPagosEnCuotas(table_id, id, row, tipo) {
                     });
                     
                     html += '<tr id="' + element.id_pago_cuota_detalle + '">' +
-                        '<td style="border: none; text-align: center">' + i + '</td>' +
                         '<td style="border: none; text-align: center">' + (element.monto_cuota !== null ? element.monto_cuota : '') + '</td>' +
                         '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
-                        '<td style="border: none; text-align: center">' +  i+'/'+montoCuota + '</td>' +
+                        '<td style="border: none; text-align: center">' +  (numeroCuotas>1?(i+'/'+numeroCuotas):i) + '</td>' +
                         '<td style="border: none; text-align: center">' + enlaceAdjunto.toString().replace(",","<br>") + '</td>' +
                         '<td style="border: none; text-align: center">' + element.creado_por.nombre_corto + '</td>' +
                         '<td style="border: none; text-align: center">' + element.fecha_registro + '</td>' +
@@ -969,10 +973,9 @@ function formatPagosEnCuotas(table_id, id, row, tipo) {
                 id = "detalle_${table_id}" >
                 <thead style="color: black;background-color: #c7cacc;">
                     <tr>
-                        <th style="border: none;">#</th>
                         <th style="border: none;">Monto a pagar</th>
                         <th style="border: none;">Observación</th>
-                        <th style="border: none;">Cuota/Número de cuotas</th>
+                        <th style="border: none;">Cuotas</th>
                         <th style="border: none;">Adjunto</th>
                         <th style="border: none;">Registrado por</th>
                         <th style="border: none;">Fecha Registro</th>

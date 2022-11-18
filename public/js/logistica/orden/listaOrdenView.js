@@ -1029,6 +1029,9 @@ class ListaOrdenView {
         this.limpiarTabla('adjuntosCabecera');
         this.limpiarTabla('historialEnviosAPagoLogistica');
         $('#form-enviar_solicitud_pago')[0].reset();
+        document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='estadoHistorialEnvioAPagoLogistica']").textContent= '';
+        document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='sumaMontoTotalPagado']").textContent= '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value= '';
 
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = '';
         this.limpiarFormEnviarOrdenAPago();
@@ -1144,9 +1147,13 @@ class ListaOrdenView {
         this.obteneHistorialDeEnviosAPagoEnCuotas(obj.dataset.idOrdenCompra).then((res) => {
             console.log(res);
             let htmlTable = '';
-            
+
+            let sumaMontoTotalMontoCuota=0;
             if (res.hasOwnProperty('detalle') && res.detalle.length > 0) {
                 (res.detalle).forEach((element,index) => {
+                    if(element.id_estado !=7){
+                        sumaMontoTotalMontoCuota+=parseFloat(element.monto_cuota);
+                    }
                     let enlaceAdjunto=[];
                         htmlTable+= '<tr id="'+element.id_pago_cuota_detalle+'">'
                             htmlTable+='<td>'
@@ -1184,6 +1191,15 @@ class ListaOrdenView {
             }
             $('#form-enviar_solicitud_pago #body_historial_de_envios_a_pago_en_cuotas').html(htmlTable)
 
+            document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='sumaMontoTotalPagado']").textContent= sumaMontoTotalMontoCuota;
+
+            if(parseFloat(sumaMontoTotalMontoCuota) == parseFloat(document.querySelector("input[name='monto_total_orden']").dataset.montoTotalOrden)){
+                document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='estadoHistorialEnvioAPagoLogistica']").textContent= "Cuotas completadas, Orden pagada";
+            }else{
+                document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='estadoHistorialEnvioAPagoLogistica']").textContent= '';
+            }
+
+
 
         }).catch(function (err) {
             console.log(err)
@@ -1216,9 +1232,17 @@ class ListaOrdenView {
 
     updateMontoAPagarEnCuotas(){
         let numeroDeCuotas = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value??0;
-        if (numeroDeCuotas > 0){
-            let cuota= parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value) / parseInt(numeroDeCuotas);
+        // console.log(numeroDeCuotas);
+        if (numeroDeCuotas > 1){
+            let cuota= parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden) / parseInt(numeroDeCuotas);
             document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value=(cuota);
+        }
+        
+        if (numeroDeCuotas == 1){
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").removeAttribute("readonly");
+        }else{
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").setAttribute("readonly",true);
+
         }
     }
 
@@ -1346,7 +1370,7 @@ class ListaOrdenView {
                 continuar = true;
             }
         }
-        if (document.querySelector("input[name='pagoEnCuotasCheckbox']").checked ==true && (document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value == (document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='historialEnviosAPagoLogistica'] tbody").childElementCount))){
+        if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value >1)&& (document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value == (document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='historialEnviosAPagoLogistica'] tbody").childElementCount))){
             menseje.push('No se puede superar el limite de cuota establecida');
             continuar = false;
 
@@ -1965,7 +1989,7 @@ class ListaOrdenView {
                             let btnVerDetalle = (array_accesos.find(element => element === 245)?`<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id}">
                                                 <i class="fas fa-chevron-down"></i>
                                                 </button>`:'');
-                            let btnEnviarAPago = (array_accesos.find(element => element === 247)?`<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
+                            let btnEnviarAPago = (array_accesos.find(element => element === 247)?`<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" ${row.tiene_pago_en_cuotas == true?'style="background-color:purple""':''} title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
                                 data-id-orden-compra="${row.id ?? ''}"
                                 data-codigo-orden="${row.codigo ?? ''}"
                                 data-monto-total-orden="${row.monto_total ?? ''}"

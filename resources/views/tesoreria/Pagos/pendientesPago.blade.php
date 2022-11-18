@@ -87,7 +87,7 @@ Registro de pagos
                                                 <th>Mnd</th>
                                                 <th>Total Orden</th>
                                                 <th>Saldo</th>
-                                                <th>A pagar</th>
+                                                <th>Valor cuota</th>
                                                 <th>Estado</th>
                                                 <th>Autorizado por</th>
                                                 <th style="width:80px;">Acción</th>
