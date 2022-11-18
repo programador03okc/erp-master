@@ -4416,32 +4416,34 @@ class OrdenController extends Controller
                         $pagoCuotaDetalle->save();
                     }
                 }
-
-                $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoObject);
-                $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
-                $idOrden = $request->id_orden_compra;
-                $codigoOrden = Orden::find($request->id_orden_compra)->codigo;
-                $archivoAdjuntoList = $request->archivo_adjunto_list;
-
-                foreach ($ObjectoAdjunto as $keyObj => $value) {
-                    $ObjectoAdjunto[$keyObj]->id_orden = $idOrden;
-                    $ObjectoAdjunto[$keyObj]->codigo_orden = $codigoOrden;
-                    $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle = $pagoCuotaDetalle->id_pago_cuota_detalle;
-                    if ($adjuntoOtrosAdjuntosLength > 0) {
-                        foreach ($archivoAdjuntoList as $keyA => $archivo) {
-                            if (is_file($archivo)) {
-                                $nombreArchivoAdjunto = $archivo->getClientOriginalName();
-                                if ($nombreArchivoAdjunto == $value->nameFile) {
-                                    $ObjectoAdjunto[$keyObj]->file = $archivo;
+                if(isset($request->archivoAdjuntoRequerimientoObject)){
+                    $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoObject);
+                    $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+                    $idOrden = $request->id_orden_compra;
+                    $codigoOrden = Orden::find($request->id_orden_compra)->codigo;
+                    $archivoAdjuntoList = $request->archivo_adjunto_list;
+    
+                    foreach ($ObjectoAdjunto as $keyObj => $value) {
+                        $ObjectoAdjunto[$keyObj]->id_orden = $idOrden;
+                        $ObjectoAdjunto[$keyObj]->codigo_orden = $codigoOrden;
+                        $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle = $pagoCuotaDetalle->id_pago_cuota_detalle;
+                        if ($adjuntoOtrosAdjuntosLength > 0) {
+                            foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                                if (is_file($archivo)) {
+                                    $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                    if ($nombreArchivoAdjunto == $value->nameFile) {
+                                        $ObjectoAdjunto[$keyObj]->file = $archivo;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                $idAdjunto = [];
-                if ($adjuntoOtrosAdjuntosLength > 0) {
+                    $idAdjunto = [];
+                    if ($adjuntoOtrosAdjuntosLength > 0) {
+    
+                        $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
+                    }
 
-                    $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
                 }
                 $arrayRspta = array(
                     'tipo_estado' => 'success',
@@ -4487,32 +4489,37 @@ class OrdenController extends Controller
             $orden->save();
 
 
-            $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoObject);
-            $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
-            $idOrden = $request->id_orden_compra;
-            $codigoOrden = Orden::find($request->id_orden_compra)->codigo;
-            $archivoAdjuntoList = $request->archivo_adjunto_list;
-
-            foreach ($ObjectoAdjunto as $keyObj => $value) {
-                $ObjectoAdjunto[$keyObj]->id_orden = $idOrden;
-                $ObjectoAdjunto[$keyObj]->codigo_orden = $codigoOrden;
-                $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle = null;
-                if ($adjuntoOtrosAdjuntosLength > 0) {
-                    foreach ($archivoAdjuntoList as $keyA => $archivo) {
-                        if (is_file($archivo)) {
-                            $nombreArchivoAdjunto = $archivo->getClientOriginalName();
-                            if ($nombreArchivoAdjunto == $value->nameFile) {
-                                $ObjectoAdjunto[$keyObj]->file = $archivo;
+            if(isset($request->archivoAdjuntoRequerimientoObject)){
+                $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoObject);
+                $adjuntoOtrosAdjuntosLength = $request->archivo_adjunto_list != null ? count($request->archivo_adjunto_list) : 0;
+                $idOrden = $request->id_orden_compra;
+                $codigoOrden = Orden::find($request->id_orden_compra)->codigo;
+                $archivoAdjuntoList = $request->archivo_adjunto_list;
+    
+                foreach ($ObjectoAdjunto as $keyObj => $value) {
+                    $ObjectoAdjunto[$keyObj]->id_orden = $idOrden;
+                    $ObjectoAdjunto[$keyObj]->codigo_orden = $codigoOrden;
+                    $ObjectoAdjunto[$keyObj]->id_pago_cuota_detalle = null;
+                    if ($adjuntoOtrosAdjuntosLength > 0) {
+                        foreach ($archivoAdjuntoList as $keyA => $archivo) {
+                            if (is_file($archivo)) {
+                                $nombreArchivoAdjunto = $archivo->getClientOriginalName();
+                                if ($nombreArchivoAdjunto == $value->nameFile) {
+                                    $ObjectoAdjunto[$keyObj]->file = $archivo;
+                                }
                             }
                         }
                     }
                 }
-            }
-            $idAdjunto = [];
-            if ($adjuntoOtrosAdjuntosLength > 0) {
+                $idAdjunto = [];
+                if ($adjuntoOtrosAdjuntosLength > 0) {
+    
+                    $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
+                }
 
-                $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
             }
+
+
 
             $arrayRspta = array(
                 'tipo_estado' => 'success',
