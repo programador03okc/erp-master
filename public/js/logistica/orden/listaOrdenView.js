@@ -1029,6 +1029,9 @@ class ListaOrdenView {
         this.limpiarTabla('adjuntosCabecera');
         this.limpiarTabla('historialEnviosAPagoLogistica');
         $('#form-enviar_solicitud_pago')[0].reset();
+        document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='estadoHistorialEnvioAPagoLogistica']").textContent= '';
+        document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='sumaMontoTotalPagado']").textContent= '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value= '';
 
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = '';
         this.limpiarFormEnviarOrdenAPago();
@@ -1144,6 +1147,7 @@ class ListaOrdenView {
         this.obteneHistorialDeEnviosAPagoEnCuotas(obj.dataset.idOrdenCompra).then((res) => {
             console.log(res);
             let htmlTable = '';
+
             let sumaMontoTotalMontoCuota=0;
             if (res.hasOwnProperty('detalle') && res.detalle.length > 0) {
                 (res.detalle).forEach((element,index) => {
@@ -1186,7 +1190,7 @@ class ListaOrdenView {
                 </tr>`;
             }
             $('#form-enviar_solicitud_pago #body_historial_de_envios_a_pago_en_cuotas').html(htmlTable)
-            console.log(sumaMontoTotalMontoCuota);
+
             document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='sumaMontoTotalPagado']").textContent= sumaMontoTotalMontoCuota;
 
             if(parseFloat(sumaMontoTotalMontoCuota) == parseFloat(document.querySelector("input[name='monto_total_orden']").dataset.montoTotalOrden)){
