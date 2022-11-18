@@ -2203,6 +2203,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('eliminar-registro-cobranza/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@eliminarRegistroCobranza');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
+            #exportar excel
+			Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
 		});
 	});
 	Route::get('config', function () {

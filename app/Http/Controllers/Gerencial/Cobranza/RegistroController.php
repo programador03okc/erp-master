@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
+use App\Exports\CobranzasExpor;
 use App\Gerencial\Cobranza as GerencialCobranza;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -31,6 +32,7 @@ use App\models\Gerencial\TipoTramite;
 use App\Models\Gerencial\Vendedor;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class RegistroController extends Controller
@@ -811,7 +813,10 @@ class RegistroController extends Controller
             ));
         }
 
-        $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$id)->where('estado',1)->first();
+        $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado',1)->first();
+        if (!$programacion_pago) {
+            $programacion_pago = ProgramacionPago::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('estado',1)->first();
+        }
         return response()->json([
             "status"=>200,
             "success"=>true,
@@ -966,7 +971,7 @@ class RegistroController extends Controller
     public function scriptEmpresa()
     {
         // return $empresa_agil = Contribuyente::where('nro_documento',10804138582)->first();exit;
-        $empresa_gerencial = Empresa::get();
+        $empresa_gerencial = Empresa::where('estado',1)->get();
         // $empresa_agil      = DB::table('administracion.adm_empresa')
         // ->select(
         //     'adm_empresa.id_contribuyente',
@@ -1271,5 +1276,128 @@ class RegistroController extends Controller
             "success"=>true,
             "status"=>200
         ]);
+    }
+    public function exportarExcel($request)
+    {
+        $request = json_decode($request);
+        // return response()->json($request);
+        $data = RegistroCobranza::where('registros_cobranzas.estado',1)
+        ->select(
+            'registros_cobranzas.*',
+            'sector.nombre AS nombre_sector',
+        )
+        ->join('gerencia_cobranza.sector', 'sector.id_sector','=', 'registros_cobranzas.id_sector')
+        ->orderBy('id_registro_cobranza', 'desc');
+        if (!empty($request->empresa)) {
+            $empresa = DB::table('contabilidad.adm_contri')
+            ->where('id_contribuyente',$request->empresa)
+            ->first();
+            $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente)->orWhere('registros_cobranzas.id_empresa_old',$empresa->id_empresa_gerencial_old);
+            // $data = $data->where('id_empresa_old',$empresa->id_empresa_gerencial_old);
+        }
+        if (!empty($request->estado)) {
+            $data = $data->where('registros_cobranzas.id_estado_doc',$request->estado);
+        }
+        if (!empty($request->fase)) {
+            $fase_text = $request->fase;
+            $data = $data->join('gerencia_cobranza.cobranza_fase', function ($join) use($fase_text){
+                $join->on('cobranza_fase.id_registro_cobranza', '=', 'registros_cobranzas.id_registro_cobranza')
+                    ->orOn('cobranza_fase.id_cobranza', '=', 'registros_cobranzas.id_cobranza_old');
+            });
+            $data->where('cobranza_fase.fase', 'like' ,'%'.$fase_text.'%')
+            ->where('cobranza_fase.estado',1);
+        }
+        if (!empty($request->fecha_emision_inicio)) {
+            $data = $data->where('registros_cobranzas.fecha_emision','>=',$request->fecha_emision_inicio);
+        }
+        if (!empty($request->fecha_emision_fin)) {
+            $data = $data->where('registros_cobranzas.fecha_emision','<=',$request->fecha_emision_fin);
+        }
+        if (!empty($request->simbolo) && (int)$request->simbolo=== 1 ) {
+            $importe = $request->importe!==''||$request->importe!==null?$request->importe:0;
+            $data = $data->where('registros_cobranzas.importe','<',(int) $importe);
+        }
+        if (!empty($request->simbolo) && (int)$request->simbolo=== 2 ) {
+            $importe = $request->importe!==''||$request->importe!==null?$request->importe:0;
+            $data = $data->where('registros_cobranzas.importe','>',(int) $importe);
+        }
+        $data=$data->get();
+
+        foreach ($data as $key => $value) {
+
+            # empresa
+            $id_cliente =$value->id_empresa;
+            if (!$id_cliente) {
+                $id_cliente =$value->id_empresa_old;
+                $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$value->id_empresa_old)->first();
+                $id_cliente = $adm_contri->id_contribuyente;
+                // return $adm_contri;exit;
+            }
+
+            // if ($value->id_empresa!==null && $value->id_empresa !=='') {
+            //     $id_cliente =$data->id_empresa;
+
+            // }else{
+            //     $id_cliente =$value->id_empresa_old;
+            //     $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$id_cliente)->first();
+            //     $id_cliente= $adm_contri->id_contribuyente;
+            // }
+
+            $empresa = DB::table('administracion.adm_empresa')
+            ->select(
+                'adm_empresa.id_contribuyente',
+                'adm_empresa.codigo',
+                'adm_contri.razon_social'
+            )
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->where('adm_empresa.id_contribuyente',$id_cliente)
+            ->first();
+            $value->empresa = $empresa?$empresa->razon_social:'--';
+
+            #cliente
+            $contribuyente=null;
+            if (!empty($value->id_cliente)) {
+                $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$value->id_cliente)->where('id_cliente_gerencial_old','!=',null)->first();
+            }
+            if (!empty($value->id_cliente_agil)) {
+                // if (!$contribuyente) {
+                    $contribuyente = Contribuyente::where('id_contribuyente',$value->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
+                // }
+            }
+            $value->cliente =  $contribuyente ? $contribuyente->razon_social:'--';
+            $value->cliente_ruc =  $contribuyente ? $contribuyente->nro_documento:'--';
+
+            #atraso
+            $value->atraso = ($this->restar_fechas($value->fecha_recepcion, date('Y-m-d')) > 0) ? $this->restar_fechas($value->fecha_recepcion, date('Y-m-d')) : '0';
+
+            #modena
+            $value->moneda =  ($value->moneda == 1) ? 'S/' : 'US $';
+
+            #importe
+            $value->importe = number_format($value->importe, 2);
+
+            #estado
+            $estado_documento_nombre = EstadoDocumento::where('id_estado_doc',$value->id_estado_doc)->first();
+            $value->estado =$estado_documento_nombre->nombre;
+
+            #area
+            $area_responsable_nombre = AreaResponsable::where('id_area',$value->id_area)->first();
+            $value->area =  $area_responsable_nombre->descripcion;
+
+            #fase
+            $fase = CobanzaFase::where('id_cobranza', $value->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->first();
+            if (!$fase) {
+                $fase = CobanzaFase::where('id_registro_cobranza', $value->id_registro_cobranza)->where('estado',1)->first();
+            }
+            $value->fase = ($fase?$fase->fase : '-');
+            #fecha de pago
+            $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$value->id_registro_cobranza)->where('estado',1)->first();
+            if (!$programacion_pago) {
+                $programacion_pago = ProgramacionPago::where('id_cobranza',$value->id_cobranza_old)->where('estado',1)->first();
+            }
+            $value->fecha_pago = $programacion_pago? $programacion_pago->fecha:'--';
+        }
+        return Excel::download(new CobranzasExpor($data), 'reporte_requerimientos_bienes_servicios.xlsx');
+        // return response()->json($data);
     }
 }

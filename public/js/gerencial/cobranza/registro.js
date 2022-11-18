@@ -60,6 +60,17 @@ function listarRegistros(filtros) {
 
                 },
                 className: 'btn-default btn-sm'
+            },
+            {
+                text: '<i class="fas fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnExcel'
+                },
+                action: () => {
+                    exportarExcel();
+
+                },
+                className: 'btn-default btn-sm'
             }
         ],
         ajax: {
@@ -766,6 +777,7 @@ $(document).on('click','.editar-registro',function () {
         dataType: 'JSON'
     }).done(function( data ) {
         if (data.status===200) {
+            console.log(data);
             $('#modal-editar-cobranza').modal('show');
 
             $('[data-form="editar-formulario"] .modal-body select[name="empresa"] option').removeAttr('selected');
@@ -1193,3 +1205,7 @@ $(document).on('click','.eliminar',function (e) {
       })
 
 });
+function exportarExcel() {
+    console.log(JSON.stringify(data_filtros));
+    window.open('exportar-excel/'+JSON.stringify(data_filtros));
+}
