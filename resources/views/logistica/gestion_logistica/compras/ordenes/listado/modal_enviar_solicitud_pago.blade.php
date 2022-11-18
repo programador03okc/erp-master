@@ -138,21 +138,21 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-12">
-                        <fieldset class="group-table" style="margin-bottom: 25px">
-                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos para subir</strong></h5>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table id="adjuntosCabecera" class="mytable table table-condensed table-bordered table-okc-view">
-                                    <tbody id="body_archivos_requerimiento_compra_cabecera"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </fieldset>
+                            <fieldset class="group-table" style="margin-bottom: 25px">
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos para subir</strong></h5>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table id="adjuntosCabecera" class="mytable table table-condensed table-bordered table-okc-view">
+                                            <tbody id="body_archivos_requerimiento_compra_cabecera"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </fieldset>
                         </div>
 
-                        <div class="col-md-12"  id="group-adjuntosLogisticosRegistrados" hidden>
+                        <div class="col-md-12" id="group-adjuntosLogisticosRegistrados" hidden>
                             <fieldset class="group-table">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos logísticos registrados</strong></h5>
                                 <div class="row">
@@ -186,10 +186,18 @@
                                                 <th>Monto</th>
                                                 <th>Observación</th>
                                                 <th>Fecha registro</th>
-                                                <th>Adjuntos</th>                                                
-                                            </tr></thead>
+                                                <th>Adjuntos</th>
+                                                </tr>
+                                            </thead>
                                             <tbody id="body_historial_de_envios_a_pago_en_cuotas">
                                             </tbody>
+                                            <tfoot>
+                                                <tr class="bg-info">
+                                                    <td class="text-right"><strong>Total:</strong></td>
+                                                    <td class="text-center"><strong><span name='sumaMontoTotalPagado'></span></strong></td>
+                                                    <td class="text-center" colspan="5"><span class="text-danger text-uppercase" name='estadoHistorialEnvioAPagoLogistica'></span></td>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>

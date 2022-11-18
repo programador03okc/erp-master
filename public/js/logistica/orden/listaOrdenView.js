@@ -1144,9 +1144,12 @@ class ListaOrdenView {
         this.obteneHistorialDeEnviosAPagoEnCuotas(obj.dataset.idOrdenCompra).then((res) => {
             console.log(res);
             let htmlTable = '';
-            
+            let sumaMontoTotalMontoCuota=0;
             if (res.hasOwnProperty('detalle') && res.detalle.length > 0) {
                 (res.detalle).forEach((element,index) => {
+                    if(element.id_estado !=7){
+                        sumaMontoTotalMontoCuota+=parseFloat(element.monto_cuota);
+                    }
                     let enlaceAdjunto=[];
                         htmlTable+= '<tr id="'+element.id_pago_cuota_detalle+'">'
                             htmlTable+='<td>'
@@ -1183,6 +1186,15 @@ class ListaOrdenView {
                 </tr>`;
             }
             $('#form-enviar_solicitud_pago #body_historial_de_envios_a_pago_en_cuotas').html(htmlTable)
+            console.log(sumaMontoTotalMontoCuota);
+            document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='sumaMontoTotalPagado']").textContent= sumaMontoTotalMontoCuota;
+
+            if(parseFloat(sumaMontoTotalMontoCuota) == parseFloat(document.querySelector("input[name='monto_total_orden']").dataset.montoTotalOrden)){
+                document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='estadoHistorialEnvioAPagoLogistica']").textContent= "Cuotas completadas, Orden pagada";
+            }else{
+                document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='estadoHistorialEnvioAPagoLogistica']").textContent= '';
+            }
+
 
 
         }).catch(function (err) {

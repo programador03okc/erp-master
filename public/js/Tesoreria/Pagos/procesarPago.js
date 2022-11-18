@@ -522,7 +522,7 @@ function listarPagoEnCuotas(tipo,id){
             }
             document.querySelector("table[id='tablaDatosPagoEnCuotas'] tbody").insertAdjacentHTML('beforeend', html );
             document.querySelector("select[name='vincularCuotaARegistroDePago[]']").insertAdjacentHTML('beforeend', htmlOptionVincularConPago );
-            document.querySelector("span[id='sumaMontoTotalPagado']").textContent= sumaMontoTotalMontoCuota;
+            document.querySelector("table[id='tablaDatosPagoEnCuotas'] span[id='sumaMontoTotalPagado']").textContent= sumaMontoTotalMontoCuota;
 
     
         }

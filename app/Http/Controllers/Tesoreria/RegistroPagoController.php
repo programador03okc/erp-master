@@ -446,10 +446,10 @@ class RegistroPagoController extends Controller
 
                 if(isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago)>0){
                     foreach ($request->vincularCuotaARegistroDePago as $key => $value) {
-                            $pagoCuota = PagoCuotaDetalle::where('id_pago_cuota_detalle',$value)->first();
-                            $pagoCuota->id_pago = $id_pago;
-                            $pagoCuota->id_estado = 6; // pagado
-                            $pagoCuota->save();
+                            $pagoCuotaDetalle = PagoCuotaDetalle::where('id_pago_cuota_detalle',$value)->first();
+                            $pagoCuotaDetalle->id_pago = $id_pago;
+                            $pagoCuotaDetalle->id_estado = 6; // pagado
+                            $pagoCuotaDetalle->save();
                     }
                 }
 
@@ -531,6 +531,10 @@ class RegistroPagoController extends Controller
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $ord->id_orden_compra)
                         ->update(['estado_pago' => 10]); //pagada con saldo
+                    }else{
+                        $pagoc = PagoCuota::where('id_orden',$ord->id_orden_compra)->first();
+                        $pagoc->id_estado = 6; // pagado
+                        $pagoc->save();
                     }
                 }
             }

@@ -139,7 +139,7 @@
                             <tfoot>
                                 <tr class="bg-info">
                                     <td class="text-right"><strong>Total:</strong></td>
-                                    <td class="text-center"><strong><span id='sumaMontoTotalPagado'></span></strong></td>
+                                    <td class="text-center"><strong><span name='sumaMontoTotalPagado'></span></strong></td>
                                     <td colspan="5"></td>
                                 </tr>
                             </tfoot>
