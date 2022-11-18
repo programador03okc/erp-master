@@ -537,6 +537,30 @@ class RequerimientoPagoController extends Controller
         }
         return $idList;
     }
+    public function obtenerIdDocumento($tipoDocumento,$idReq){
+        $result = [];
+
+        $documento = Documento::where([['id_doc',$idReq],['id_tp_documento',$tipoDocumento]])->first();
+
+        if( !empty($documento)){
+            $result =[
+                'id'=> $documento->id_doc_aprob,
+                'mensaje'=>'Id encontrado',
+                'estado'=>'success'
+        ];
+
+        }else{
+            $result =[
+            'id'=>0,
+            'mensaje'=>'No se encontro el id',
+            'estado'=>'error'
+        ];
+
+        }
+
+        return $result;
+
+    }
 
 
     function actualizarRequerimientoPago(Request $request)
@@ -569,6 +593,20 @@ class RequerimientoPagoController extends Controller
                 // $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
                 // $trazabilidad->fecha_registro = new Carbon();
                 // $trazabilidad->save();
+                if(intval($request->id_requerimiento_pago) >0){
+                    $documento = $this->obtenerIdDocumento(11,$request->id_requerimiento_pago);
+                }
+                $aprobacion = new Aprobacion();
+                $aprobacion->id_flujo = null;
+                $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+                $aprobacion->id_usuario = Auth::user()->id_usuario;
+                $aprobacion->id_vobo = 8; // sustentado
+                $aprobacion->fecha_vobo = new Carbon();
+                $aprobacion->detalle_observacion = null; // comentario
+                $aprobacion->id_rol = null;
+                $aprobacion->tiene_sustento = false;
+                $aprobacion->save();
+                
 
                 $idDocumento = Documento::getIdDocAprob($requerimientoPago->id_requerimiento_pago, 11);
                 $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
@@ -734,6 +772,19 @@ class RequerimientoPagoController extends Controller
                     RequerimientoPagoAdjunto::where('id_requerimiento_pago', '=', $idRequerimientoPago)
                         ->update(['id_estado' => 7]);
 
+                        if(intval($idRequerimientoPago) >0){
+                            $documento = $this->obtenerIdDocumento(11,$idRequerimientoPago);
+                        }
+                        $aprobacion = new Aprobacion();
+                        $aprobacion->id_flujo = null;
+                        $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+                        $aprobacion->id_usuario = Auth::user()->id_usuario;
+                        $aprobacion->id_vobo = 7; // Anulado
+                        $aprobacion->fecha_vobo = new Carbon();
+                        $aprobacion->detalle_observacion = null; // comentario
+                        $aprobacion->id_rol = null;
+                        $aprobacion->tiene_sustento = false;
+                        $aprobacion->save();
 
                     $output = [
                         'id_requerimiento_pago' => $idRequerimientoPago,

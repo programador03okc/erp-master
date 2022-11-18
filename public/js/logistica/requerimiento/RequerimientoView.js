@@ -408,7 +408,7 @@ class RequerimientoView {
                 for (let i = 0; i < data['historial_aprobacion'].length; i++) {
                     html += `<tr>
                             <td style="text-align:center;">${data['historial_aprobacion'][i].nombre_corto ? data['historial_aprobacion'][i].nombre_corto : ''}</td>
-                            <td style="text-align:center;">${data['historial_aprobacion'][i].accion ? data['historial_aprobacion'][i].accion : ''}${data['historial_aprobacion'][i].tiene_sustento == true ? ' (Con sustento de usuario)' : ''}</td>
+                            <td style="text-align:center;">${data['historial_aprobacion'][i].accion ? data['historial_aprobacion'][i].accion : ''}${data['historial_aprobacion'][i].tiene_sustento == true ? ' ' : ''}</td>
                             <td style="text-align:left;">${data['historial_aprobacion'][i].detalle_observacion ? data['historial_aprobacion'][i].detalle_observacion : ''}</td>
                             <td style="text-align:center;">${data['historial_aprobacion'][i].fecha_vobo ? data['historial_aprobacion'][i].fecha_vobo : ''}</td>
                         </tr>`;
@@ -512,7 +512,7 @@ class RequerimientoView {
             for (let i = 0; i < data.length; i++) {
                 html += `<tr>
                     <td style="text-align:center;">${data[i].nombre_corto ? data[i].nombre_corto : ''}</td>
-                    <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}${data[i].tiene_sustento == true ? ' (Con sustento de usuario)' : ''}</td>
+                    <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}</td>
                     <td style="text-align:left;">${data[i].detalle_observacion ? data[i].detalle_observacion : ''}</td>
                     <td style="text-align:center;">${data[i].fecha_vobo ? data[i].fecha_vobo : ''}</td>
                 </tr>`;
