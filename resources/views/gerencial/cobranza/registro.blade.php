@@ -8,7 +8,7 @@ Cobranzas
 @section('estilos')
 <!-- Select2 -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
+<link rel="stylesheet" href="{{asset('template/plugins/select2/select2.min.css')}}">
 <style>
     .group-okc-ini {
         display: flex;
@@ -1076,6 +1076,7 @@ Cobranzas
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
 <!-- Select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
 <script src="{{ asset('js/gerencial/cobranza/registro.js') }}"></script>
 <script>
     $(document).ready(function() {

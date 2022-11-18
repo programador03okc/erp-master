@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
+use App\Exports\CobranzasExpor;
 use App\Gerencial\Cobranza as GerencialCobranza;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -31,6 +32,7 @@ use App\models\Gerencial\TipoTramite;
 use App\Models\Gerencial\Vendedor;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class RegistroController extends Controller
@@ -97,7 +99,17 @@ class RegistroController extends Controller
         return DataTables::of($data)
         ->addColumn('empresa', function($data){
             $id_cliente =$data->id_empresa;
-            $empresa            = DB::table('administracion.adm_empresa')
+
+            if ($data->id_empresa!==null && $data->id_empresa !=='') {
+                $id_cliente =$data->id_empresa;
+
+            }else{
+                $id_cliente =$data->id_empresa_old;
+                $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$id_cliente)->first();
+                $id_cliente= $adm_contri->id_contribuyente;
+            }
+
+            $empresa = DB::table('administracion.adm_empresa')
             ->select(
                 'adm_empresa.id_contribuyente',
                 'adm_empresa.codigo',
@@ -106,7 +118,7 @@ class RegistroController extends Controller
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->where('adm_empresa.id_contribuyente',$id_cliente)
             ->first();
-            return $empresa->razon_social;
+            return $empresa?$empresa->razon_social:'--';
             // return $data->empresa->nombre;
         })
         ->addColumn('cliente', function($data){
@@ -123,7 +135,7 @@ class RegistroController extends Controller
 
 
 
-            return $contribuyente->razon_social;
+            return $contribuyente ? $contribuyente->razon_social:'--';
         })
         ->addColumn('atraso', function($data){
             return ($this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) > 0) ? $this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) : '0';
@@ -597,7 +609,7 @@ class RegistroController extends Controller
         }
 
         foreach ($clientes_faltantes as $key => $value) {
-            // if ($value->ruc!=='undefined' && strlen($value->ruc)===11) {
+            if ($value->ruc!=='undefined' && strlen($value->ruc)===11) {
                 // api de reniec en busca por el ruc
                 $curl = curl_init();
 
@@ -621,8 +633,15 @@ class RegistroController extends Controller
                 curl_close($curl);
 
                 $response = json_decode($response);
-                // return response()->json($ubigeo_distrito);
-                if (empty($response->error)) {
+
+                // return response()->json([$response,$value]);exit;
+                if (!empty($response->error)) {
+
+                    // $ubigeo_distrito=[];
+                    // if (!isset($response->distrito)) {
+
+                    //     $ubigeo_distrito = Distrito::where('descripcion',$response->distrito)->first();
+                    // }
                     $ubigeo_distrito = Distrito::where('descripcion',$response->distrito)->first();
                     $ubigeo=0;
                     if ($ubigeo_distrito) {
@@ -648,7 +667,9 @@ class RegistroController extends Controller
                 }else{
                     array_push($json_faltantes, $value);
                 }
-            // }
+            }else{
+                // return response()->json($value);exit;
+            }
         }
         return response()->json($json_faltantes);
     }
@@ -762,22 +783,27 @@ class RegistroController extends Controller
     {
         $cliente_array=array();
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
-        $vendedor = Vendedor::where('id_vendedor',$registro_cobranza->vendedor)->first();
+
+        $vendedor=[];
+        if (intval($registro_cobranza->vendedor)>0) {
+            $vendedor = Vendedor::where('id_vendedor',$registro_cobranza->vendedor)->first();
+        }
+
+        if (!$vendedor) {
+            $vendedor = Vendedor::where('nombre','like','%'.$registro_cobranza->vendedor.'%')->first();
+        }
+        // return $vendedor;exit;
         $contribuyente = Contribuyente::where('id_contribuyente',$registro_cobranza->id_cliente_agil)->first();
         if (!$contribuyente) {
-            $contribuyente = Cliente::where('id_cliente',$registro_cobranza->id_cliente)->first();
+            $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$registro_cobranza->id_cliente)->first();
+            // $contribuyente = Cliente::where('id_cliente',$registro_cobranza->id_cliente)->first();
+            // return $contribuyente;exit;
             array_push($cliente_array,array(
-                "id_cliente"=>$contribuyente->id_cliente,
-                "id_contribuyente"=>null,
-                "nro_documento"=>$contribuyente->ruc,
-                "razon_social"=>$contribuyente->nombre
+                "id_cliente"=>null,
+                "id_contribuyente"=>$contribuyente->id_contribuyente,
+                "nro_documento"=>$contribuyente->nro_documento,
+                "razon_social"=>$contribuyente->razon_social
             ));
-            // $cliente_array=[
-            //     "id_cliente"=>$contribuyente->id_cliente,
-            //     "id_contribuyente"=>null,
-            //     "nro_documento"=>$contribuyente->ruc,
-            //     "razon_social"=>$contribuyente->nombre
-            // ];
         }else{
             array_push($cliente_array,array(
                 "id_cliente"=>null,
@@ -785,14 +811,12 @@ class RegistroController extends Controller
                 "nro_documento"=>$contribuyente->nro_documento,
                 "razon_social"=>$contribuyente->razon_social
             ));
-            // $cliente_array=[
-            //     "id_cliente"=>$contribuyente->id_cliente,
-            //     "id_contribuyente"=>null,
-            //     "nro_documento"=>$contribuyente->ruc,
-            //     "razon_social"=>$contribuyente->nombre
-            // ];
         }
-        $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$id)->where('estado',1)->first();
+
+        $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado',1)->first();
+        if (!$programacion_pago) {
+            $programacion_pago = ProgramacionPago::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('estado',1)->first();
+        }
         return response()->json([
             "status"=>200,
             "success"=>true,
@@ -947,7 +971,7 @@ class RegistroController extends Controller
     public function scriptEmpresa()
     {
         // return $empresa_agil = Contribuyente::where('nro_documento',10804138582)->first();exit;
-        $empresa_gerencial = Empresa::get();
+        $empresa_gerencial = Empresa::where('estado',1)->get();
         // $empresa_agil      = DB::table('administracion.adm_empresa')
         // ->select(
         //     'adm_empresa.id_contribuyente',
@@ -1157,5 +1181,223 @@ class RegistroController extends Controller
             "data"=>$contribuyente,
             "old"=>$cliente_gerencial
         ]);
+    }
+    public function scriptCobranza()
+    {
+        $cobranzas = DB::table('gerencial.cobranza')
+        // ->limit(1)
+        ->get();
+        $array = [];
+        foreach ($cobranzas as $key => $value) {
+            $registro_cobranza = new RegistroCobranza();
+            $registro_cobranza->id_empresa        = null;
+            $registro_cobranza->id_sector         = $value->id_sector;
+            $registro_cobranza->id_cliente        = $value->id_cliente;
+            $registro_cobranza->factura           = $value->factura;
+            $registro_cobranza->uu_ee             = $value->uu_ee;
+            $registro_cobranza->fuente_financ     = $value->fuente_financ;
+            $registro_cobranza->oc                = $value->oc;
+            $registro_cobranza->siaf              = $value->siaf;
+            $registro_cobranza->fecha_emision     = $value->fecha_emision;
+            $registro_cobranza->fecha_recepcion   = $value->fecha_recepcion;
+            $registro_cobranza->moneda            = $value->moneda;
+            $registro_cobranza->importe           = $value->importe;
+            $registro_cobranza->id_estado_doc     = $value->id_estado_doc;
+            $registro_cobranza->id_tipo_tramite   = $value->id_tipo_tramite;
+            $registro_cobranza->vendedor          = $value->vendedor;
+            $registro_cobranza->estado            = $value->estado;
+            $registro_cobranza->fecha_registro    = $value->fecha_registro;
+            $registro_cobranza->id_area           = $value->id_area;
+            $registro_cobranza->id_periodo        = $value->id_periodo;
+            $registro_cobranza->codigo_empresa    = $value->codigo_empresa;
+            $registro_cobranza->categoria         = $value->categoria;
+            $registro_cobranza->cdp               = $value->cdp;
+            $registro_cobranza->plazo_credito     = $value->plazo_credito;
+            $registro_cobranza->id_doc_ven       = $value->id_venta;
+            $registro_cobranza->id_cliente_agil   = null;
+            $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
+            $registro_cobranza->id_empresa_old    = $value->id_empresa;
+            $registro_cobranza->save();
+            // array_push($array,array(
+            //     // "id_registro_cobranza" => ,
+            //     "id_empresa"        =>null,
+            //     "id_sector"         =>$value->id_sector,
+            //     "id_cliente"        =>$value->id_cliente,
+            //     "factura"           =>$value->factura,
+            //     "uu_ee"             =>$value->uu_ee,
+            //     "fuente_financ"     =>$value->fuente_financ,
+            //     "oc"                =>$value->oc,
+            //     "siaf"              =>$value->siaf,
+            //     "fecha_emision"     =>$value->fecha_emision,
+            //     "fecha_recepcion"   =>$value->fecha_recepcion,
+            //     "moneda"            =>$value->moneda,
+            //     "importe"           =>$value->importe,
+            //     "id_estado_doc"     =>$value->id_estado_doc,
+            //     "id_tipo_tramite"   =>$value->id_tipo_tramite,
+            //     "vendedor"          =>$value->vendedor,
+            //     "estado"            =>$value->estado,
+            //     "fecha_registro"    =>$value->fecha_registro,
+            //     "id_area"           =>$value->id_area,
+            //     "id_periodo"        =>$value->id_periodo,
+            //     "codigo_empresa"    =>$value->codigo_empresa,
+            //     "categoria"         =>$value->categoria,
+            //     "cdp"               =>$value->cdp,
+            //     "plazo_credito"     =>$value->plazo_credito,
+            //     "id_doc_ven"        =>$value->id_venta,
+            //     "id_cliente_agil"   =>null,
+            //     "id_cobranza_old"   =>$value->id_cobranza,
+            //     "id_empresa_old"    =>$value->id_empresa,
+            // ));
+        }
+
+        return response()->json([
+            "status"=>200,
+            "success"=>true
+        ]);
+    }
+    public function scriptEmpresaUnicos()
+    {
+        $registro_cobranzas = RegistroCobranza::where('estado',1)->get();
+        // $registro_cobranzas = RegistroCobranza::where('estado',0)->get();
+        foreach ($registro_cobranzas as $key => $value) {
+            $cliente_gerencial = Cliente::where('id_cliente',$value->id_cliente)->first();
+            if ($cliente_gerencial) {
+                $adm_contri = Contribuyente::where('nro_documento',$cliente_gerencial->ruc)->first();
+                if ($adm_contri) {
+                    $nueva_cobranza = RegistroCobranza::find($value->id_registro_cobranza);
+                    $nueva_cobranza->id_cliente = $adm_contri->id_cliente_gerencial_old;
+                    $nueva_cobranza->save();
+                }
+            }
+
+        }
+
+        return response()->json([
+            "success"=>true,
+            "status"=>200
+        ]);
+    }
+    public function exportarExcel($request)
+    {
+        $request = json_decode($request);
+        // return response()->json($request);
+        $data = RegistroCobranza::where('registros_cobranzas.estado',1)
+        ->select(
+            'registros_cobranzas.*',
+            'sector.nombre AS nombre_sector',
+        )
+        ->join('gerencia_cobranza.sector', 'sector.id_sector','=', 'registros_cobranzas.id_sector')
+        ->orderBy('id_registro_cobranza', 'desc');
+        if (!empty($request->empresa)) {
+            $empresa = DB::table('contabilidad.adm_contri')
+            ->where('id_contribuyente',$request->empresa)
+            ->first();
+            $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente)->orWhere('registros_cobranzas.id_empresa_old',$empresa->id_empresa_gerencial_old);
+            // $data = $data->where('id_empresa_old',$empresa->id_empresa_gerencial_old);
+        }
+        if (!empty($request->estado)) {
+            $data = $data->where('registros_cobranzas.id_estado_doc',$request->estado);
+        }
+        if (!empty($request->fase)) {
+            $fase_text = $request->fase;
+            $data = $data->join('gerencia_cobranza.cobranza_fase', function ($join) use($fase_text){
+                $join->on('cobranza_fase.id_registro_cobranza', '=', 'registros_cobranzas.id_registro_cobranza')
+                    ->orOn('cobranza_fase.id_cobranza', '=', 'registros_cobranzas.id_cobranza_old');
+            });
+            $data->where('cobranza_fase.fase', 'like' ,'%'.$fase_text.'%')
+            ->where('cobranza_fase.estado',1);
+        }
+        if (!empty($request->fecha_emision_inicio)) {
+            $data = $data->where('registros_cobranzas.fecha_emision','>=',$request->fecha_emision_inicio);
+        }
+        if (!empty($request->fecha_emision_fin)) {
+            $data = $data->where('registros_cobranzas.fecha_emision','<=',$request->fecha_emision_fin);
+        }
+        if (!empty($request->simbolo) && (int)$request->simbolo=== 1 ) {
+            $importe = $request->importe!==''||$request->importe!==null?$request->importe:0;
+            $data = $data->where('registros_cobranzas.importe','<',(int) $importe);
+        }
+        if (!empty($request->simbolo) && (int)$request->simbolo=== 2 ) {
+            $importe = $request->importe!==''||$request->importe!==null?$request->importe:0;
+            $data = $data->where('registros_cobranzas.importe','>',(int) $importe);
+        }
+        $data=$data->get();
+
+        foreach ($data as $key => $value) {
+
+            # empresa
+            $id_cliente =$value->id_empresa;
+            if (!$id_cliente) {
+                $id_cliente =$value->id_empresa_old;
+                $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$value->id_empresa_old)->first();
+                $id_cliente = $adm_contri->id_contribuyente;
+                // return $adm_contri;exit;
+            }
+
+            // if ($value->id_empresa!==null && $value->id_empresa !=='') {
+            //     $id_cliente =$data->id_empresa;
+
+            // }else{
+            //     $id_cliente =$value->id_empresa_old;
+            //     $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$id_cliente)->first();
+            //     $id_cliente= $adm_contri->id_contribuyente;
+            // }
+
+            $empresa = DB::table('administracion.adm_empresa')
+            ->select(
+                'adm_empresa.id_contribuyente',
+                'adm_empresa.codigo',
+                'adm_contri.razon_social'
+            )
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->where('adm_empresa.id_contribuyente',$id_cliente)
+            ->first();
+            $value->empresa = $empresa?$empresa->razon_social:'--';
+
+            #cliente
+            $contribuyente=null;
+            if (!empty($value->id_cliente)) {
+                $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$value->id_cliente)->where('id_cliente_gerencial_old','!=',null)->first();
+            }
+            if (!empty($value->id_cliente_agil)) {
+                // if (!$contribuyente) {
+                    $contribuyente = Contribuyente::where('id_contribuyente',$value->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
+                // }
+            }
+            $value->cliente =  $contribuyente ? $contribuyente->razon_social:'--';
+            $value->cliente_ruc =  $contribuyente ? $contribuyente->nro_documento:'--';
+
+            #atraso
+            $value->atraso = ($this->restar_fechas($value->fecha_recepcion, date('Y-m-d')) > 0) ? $this->restar_fechas($value->fecha_recepcion, date('Y-m-d')) : '0';
+
+            #modena
+            $value->moneda =  ($value->moneda == 1) ? 'S/' : 'US $';
+
+            #importe
+            $value->importe = number_format($value->importe, 2);
+
+            #estado
+            $estado_documento_nombre = EstadoDocumento::where('id_estado_doc',$value->id_estado_doc)->first();
+            $value->estado =$estado_documento_nombre->nombre;
+
+            #area
+            $area_responsable_nombre = AreaResponsable::where('id_area',$value->id_area)->first();
+            $value->area =  $area_responsable_nombre->descripcion;
+
+            #fase
+            $fase = CobanzaFase::where('id_cobranza', $value->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->first();
+            if (!$fase) {
+                $fase = CobanzaFase::where('id_registro_cobranza', $value->id_registro_cobranza)->where('estado',1)->first();
+            }
+            $value->fase = ($fase?$fase->fase : '-');
+            #fecha de pago
+            $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$value->id_registro_cobranza)->where('estado',1)->first();
+            if (!$programacion_pago) {
+                $programacion_pago = ProgramacionPago::where('id_cobranza',$value->id_cobranza_old)->where('estado',1)->first();
+            }
+            $value->fecha_pago = $programacion_pago? $programacion_pago->fecha:'--';
+        }
+        return Excel::download(new CobranzasExpor($data), 'reporte_requerimientos_bienes_servicios.xlsx');
+        // return response()->json($data);
     }
 }

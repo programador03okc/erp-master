@@ -60,6 +60,17 @@ function listarRegistros(filtros) {
 
                 },
                 className: 'btn-default btn-sm'
+            },
+            {
+                text: '<i class="fas fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnExcel'
+                },
+                action: () => {
+                    exportarExcel();
+
+                },
+                className: 'btn-default btn-sm'
             }
         ],
         ajax: {
@@ -766,6 +777,7 @@ $(document).on('click','.editar-registro',function () {
         dataType: 'JSON'
     }).done(function( data ) {
         if (data.status===200) {
+            console.log(data);
             $('#modal-editar-cobranza').modal('show');
 
             $('[data-form="editar-formulario"] .modal-body select[name="empresa"] option').removeAttr('selected');
@@ -804,12 +816,13 @@ $(document).on('click','.editar-registro',function () {
             // $('[data-form="editar-formulario"] .modal-body input[name="atraso"]').val(data.data.id_cliente);
             $('[data-form="editar-formulario"] .modal-body input[name="plazo_credito"]').val(data.data.plazo_credito);
 
+            $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
             if (data.vendedor) {
                 $('.search-vendedor').val(null).trigger('change');
                 var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, false, false);
                 $('.search-vendedor').append(newOption).trigger('change');
-                $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
-                $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
+
             }
 
 
@@ -910,7 +923,7 @@ $(document).on('click','.modal-fase',function () {
                 '</tr>';
             });
             $('[data-table="table-fase"]').html(html);
-            $('#listar-registros').DataTable().ajax.reload();
+            // $('#listar-registros').DataTable().ajax.reload();
         }else{
             $('[data-table="table-fase"]').html(html);
         }
@@ -1193,3 +1206,7 @@ $(document).on('click','.eliminar',function (e) {
       })
 
 });
+function exportarExcel() {
+    console.log(JSON.stringify(data_filtros));
+    window.open('exportar-excel/'+JSON.stringify(data_filtros));
+}
