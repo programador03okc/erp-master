@@ -23,14 +23,14 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
         $nfecha = session()->get('filtroFecha') . ' 23:59:59';
         $ft_fecha = date('Y-m-d', strtotime($nfecha));
 
-        $query = DB::table('almacen.alm_prod_ubi')
+        $query = DB::table('almacen.alm_prod_serie')
             ->select(
                 'alm_prod_serie.serie',
                 'alm_prod_serie.fecha_ingreso_soft',
                 'alm_prod_serie.precio_unitario_soft',
                 'alm_prod_serie.doc_ingreso_soft',
-                'alm_prod_ubi.id_almacen',
-                'alm_prod.id_producto',
+                'alm_prod_serie.id_almacen',
+                'alm_prod_serie.id_prod as id_producto',
                 'alm_prod.codigo',
                 'alm_prod.cod_softlink',
                 'alm_prod.descripcion AS producto',
@@ -42,22 +42,27 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
                 'alm_prod.id_unidad_medida',
                 'alm_almacen.descripcion AS almacen_descripcion'
             )
-            ->leftjoin('almacen.alm_prod_serie', function ($join) {
-                $join->on('alm_prod_serie.id_almacen', '=', 'alm_prod_ubi.id_almacen');
-                $join->on('alm_prod_serie.id_prod', '=', 'alm_prod_ubi.id_producto');
-                $join->whereNull('alm_prod_serie.id_guia_ven_det');
-                $join->whereNull('alm_prod_serie.id_base');
-                $join->where('alm_prod_serie.estado', 1);
-            })
-            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_ubi.id_almacen')
-            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
+            // ->leftjoin('almacen.alm_prod_serie', function ($join) {
+            //     $join->on('alm_prod_serie.id_almacen', '=', 'alm_prod_ubi.id_almacen');
+            //     $join->on('alm_prod_serie.id_prod', '=', 'alm_prod_ubi.id_producto');
+            //     $join->whereNull('alm_prod_serie.id_guia_ven_det');
+            //     $join->whereNull('alm_prod_serie.id_base');
+            //     $join->where('alm_prod_serie.estado', 1);
+            // })
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_serie.id_almacen')
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
             ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
-            ->where([['alm_prod_ubi.estado', '=', 1], ['alm_prod.estado', '=', 1]]);
+            ->where([
+                ['alm_prod_serie.estado', '=', 1],
+                ['alm_prod.estado', '=', 1]
+            ])
+            ->whereNull('alm_prod_serie.id_guia_ven_det')
+            ->whereNull('alm_prod_serie.id_base');
 
         if (session()->has('filtroAlmacen')) {
-            $query = $query->whereIn('alm_prod_ubi.id_almacen', session()->get('filtroAlmacen'));
+            $query = $query->whereIn('alm_prod_serie.id_almacen', session()->get('filtroAlmacen'));
         }
         // $query = $query->orderBy('alm_prod.id_producto', 'asc')
         //     ->orderBy('alm_prod_serie.id_almacen', 'asc')->get();
@@ -68,19 +73,13 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
         $doc_ingreso_soft = '';
 
         foreach ($query->get() as $q) {
-
-            // $str = $q->codigo . '-' . $q->id_almacen;
-            // if (!in_array($str, $unicos)) {
-            //     array_push($unicos, $q->codigo . '-' . $q->id_almacen);
-
+            /*
             $movimientos = DB::table('almacen.mov_alm')
                 ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
-                // ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm.id_guia_com')
                 ->select(
                     'mov_alm.id_tp_mov',
                     'mov_alm.fecha_emision',
                     'mov_alm.codigo',
-                    // DB::raw("(guia_com.serie) || '-' || (guia_com.numero) as guia"),
                     'mov_alm_det.id_producto',
                     'mov_alm_det.cantidad',
                     'mov_alm_det.valorizacion',
@@ -118,28 +117,27 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
                     }
                 }
 
-                if ($saldo > 0) {
-                    $data[] = [
-                        'id_producto'           => $q->id_producto,
-                        'id_almacen'            => $q->id_almacen,
-                        'codigo'                => ($q->codigo != null) ?  str_replace("'", "", $q->codigo) : '',
-                        'cod_softlink'          => ($q->cod_softlink != null) ?  str_replace("'", "", str_replace("", "", $q->cod_softlink)) : '',
-                        'part_number'           => ($q->part_number != null) ?  str_replace("'", "", str_replace("", "", trim($q->part_number))) : '',
-                        'producto'              => str_replace("'", "", str_replace("", "", $q->producto)),
-                        'categoria'             => str_replace("'", "", trim($q->categoria)),
-                        'simbolo'               => ($q->simbolo != null) ?  $q->simbolo : '',
-                        'valorizacion'          => $saldo_valor,
-                        'costo_promedio'        => $costo_promedio,
-                        'abreviatura'           => ($q->abreviatura != null) ?  $q->abreviatura : '',
-                        'stock'                 => $saldo,
-                        'almacen_descripcion'   => ($q->almacen_descripcion != null) ?  str_replace("'", "", $q->almacen_descripcion) : '',
-                        'serie'                 => $q->serie,
-                        'fecha_ingreso_soft'    => ($q->fecha_ingreso_soft !== null ? $q->fecha_ingreso_soft : $fecha_ingreso_soft),
-                        'precio_unitario_soft'  => ($q->precio_unitario_soft !== null ? $q->precio_unitario_soft : $precio_unitario_soft),
-                        'doc_ingreso_soft'      => ($q->doc_ingreso_soft !== null ? $q->doc_ingreso_soft : $doc_ingreso_soft),
-                    ];
-                }
-            }
+                if ($saldo > 0) {*/
+            $data[] = [
+                'id_producto'           => $q->id_producto,
+                'id_almacen'            => $q->id_almacen,
+                'codigo'                => ($q->codigo != null) ?  str_replace("'", "", $q->codigo) : '',
+                'cod_softlink'          => ($q->cod_softlink != null) ?  str_replace("'", "", str_replace("", "", $q->cod_softlink)) : '',
+                'part_number'           => ($q->part_number != null) ?  str_replace("'", "", str_replace("", "", trim($q->part_number))) : '',
+                'producto'              => str_replace("'", "", str_replace("", "", $q->producto)),
+                'categoria'             => str_replace("'", "", trim($q->categoria)),
+                'simbolo'               => ($q->simbolo != null) ?  $q->simbolo : '',
+                // 'valorizacion'          => $saldo_valor,
+                // 'costo_promedio'        => $costo_promedio,
+                'abreviatura'           => ($q->abreviatura != null) ?  $q->abreviatura : '',
+                // 'stock'                 => $saldo,
+                'almacen_descripcion'   => ($q->almacen_descripcion != null) ?  str_replace("'", "", $q->almacen_descripcion) : '',
+                'serie'                 => $q->serie,
+                'fecha_ingreso_soft'    => ($q->fecha_ingreso_soft !== null ? $q->fecha_ingreso_soft : $fecha_ingreso_soft),
+                'precio_unitario_soft'  => ($q->precio_unitario_soft !== null ? $q->precio_unitario_soft : $precio_unitario_soft),
+                'doc_ingreso_soft'      => ($q->doc_ingreso_soft !== null ? $q->doc_ingreso_soft : $doc_ingreso_soft),
+            ];
+            //     }
             // }
 
         }
