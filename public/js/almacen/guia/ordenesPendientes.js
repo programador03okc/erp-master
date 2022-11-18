@@ -40,21 +40,22 @@ function listarOrdenesPendientes() {
     var vardataTables = funcDatatables();
 
     let botones = [];
-    const button_ingresar_guia = (array_accesos.find(element => element === 37)?{
+    const button_ingresar_guia = (array_accesos.find(element => element === 99)?{
             text: ' Ingresar Guía',
             action: function () {
                 open_guia_create_seleccionadas();
             }, className: 'btn-primary disabled btnIngresarGuia'
         }:[]),
-        button_descargar_excel = (array_accesos.find(element => element === 37)?{
+        button_descargar_excel = (array_accesos.find(element => element === 100)?{
             text: ' Exportar Excel',
             action: function () {
                 exportarOrdenesPendientes();
             }, className: 'btn-success btnExportarOrdenesPendientes'
         }:[]);
-    if (acceso == '1') {
-        botones.push(button_ingresar_guia,button_descargar_excel);
-    }
+    // if (acceso == '1') {
+    //     botones.push(button_ingresar_guia,button_descargar_excel);
+    // }
+    botones.push(button_ingresar_guia,button_descargar_excel);
 
     $("#ordenesPendientes").on('search.dt', function () {
         $('#ordenesPendientes_filter input').prop('disabled', true);
