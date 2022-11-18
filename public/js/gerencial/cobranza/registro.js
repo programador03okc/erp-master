@@ -816,12 +816,13 @@ $(document).on('click','.editar-registro',function () {
             // $('[data-form="editar-formulario"] .modal-body input[name="atraso"]').val(data.data.id_cliente);
             $('[data-form="editar-formulario"] .modal-body input[name="plazo_credito"]').val(data.data.plazo_credito);
 
+            $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
             if (data.vendedor) {
                 $('.search-vendedor').val(null).trigger('change');
                 var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, false, false);
                 $('.search-vendedor').append(newOption).trigger('change');
-                $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
-                $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
+
             }
 
 

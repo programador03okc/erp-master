@@ -789,10 +789,10 @@ class RegistroController extends Controller
             $vendedor = Vendedor::where('id_vendedor',$registro_cobranza->vendedor)->first();
         }
 
-        if ($vendedor) {
+        if (!$vendedor) {
             $vendedor = Vendedor::where('nombre','like','%'.$registro_cobranza->vendedor.'%')->first();
         }
-
+        // return $vendedor;exit;
         $contribuyente = Contribuyente::where('id_contribuyente',$registro_cobranza->id_cliente_agil)->first();
         if (!$contribuyente) {
             $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$registro_cobranza->id_cliente)->first();
