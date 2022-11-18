@@ -1047,7 +1047,7 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").setAttribute("data-monto-total-orden",obj.dataset.montoTotalOrden);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = $.number(obj.dataset.montoTotalOrden,2,".",",");
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =(parseFloat(obj.dataset.montoTotalOrden)).toFixed(2);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =parseFloat(obj.dataset.montoTotalOrden)>0 ?(parseFloat(obj.dataset.montoTotalOrden)).toFixed(2):0;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value =(parseInt(obj.dataset.numeroDeCuotas));
 
         // document.querySelector("div[id='modal-enviar-solicitud-pago'] div[name='simboloMoneda']").textContent = obj.dataset.simboloMonedaOrden;

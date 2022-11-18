@@ -483,6 +483,12 @@ $('#listaOrdenes tbody').on("click", "button.revertir", function () {
 $('#listaRequerimientos tbody').on("click", "button.adjuntos", function () {
     var id = $(this).data('id');
     var codigo = $(this).data('codigo');
+    var codigo = $(this).data('codigo');
+    $('#modal-verAdjuntos input[name="id_requerimiento_pago"]').val(id)
+    $('#modal-verAdjuntos input[name="codigo_requerimiento"]').val(codigo)
+    $('#modal-verAdjuntos [data-action="table-body"]').html('');
+    $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').html('');
+
     verAdjuntos(id, codigo);
 });
 
@@ -521,6 +527,27 @@ function verAdjuntos(id, codigo) {
                 });
                 $('#adjuntosDetalle tbody').html(html);
             }
+            var html = '';
+            if (response.adjuntos_pago.length > 0) {
+
+                response.adjuntos_pago.forEach(function (element) {
+                    html += `<tr>
+                        <td><a target="_blank" href="/files/tesoreria/pagos/${element.adjunto}">${element.adjunto}</a></td>
+                    </tr>`;
+                });
+                // $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').html(html);
+            }
+
+            if (response.adjuntos_pagos_complementarios.length > 0) {
+                // var html = '';
+                response.adjuntos_pagos_complementarios.forEach(function (element) {
+                    html += `<tr>
+                        <td><a target="_blank" href="/files/tesoreria/pagos/${element.archivo}">${element.archivo}</a></td>
+                    </tr>`;
+                });
+                // $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').append(html);
+            }
+            $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').html(html);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -652,10 +679,11 @@ $('#listaRequerimientos tbody').on('click', 'td button.detalle', function () {
         });
         iTableCounterReq = iTableCounterReq + 1;
     }
+
 });
 
 function formatPagos(table_id, id, row, tipo) {
-    console.log(tipo)
+
     $.ajax({
         type: 'GET',
         url: 'listarPagos/' + tipo + '/' + id,
@@ -778,8 +806,97 @@ function actualizarEstadoPago() {
     });
 
 }
+var array_adjuntos = [];
+$(document).on('change','[data-action="adjuntos"]',function () {
 
+    $.each($(this)[0].files, function (index, element) {
+        array_adjuntos.push(element);
+    });
+    pesoArchivos();
+    adjuntosSeleccionados();
+});
+function pesoArchivos() {
+    var peso_archivo= 0,
+        peso_total = 0;
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        peso_archivo=peso_archivo+valueOfElement.size;
+    });
+    peso_total = peso_archivo/(1000000);
+    $('#modal-verAdjuntos #peso-estimado').text(peso_total.toFixed(2)+'MB');
 
+    if (peso_archivo<=2000000) {
+        $('.guardar-adjuntos').removeAttr('disabled');
+
+    }else{
+        $('.guardar-adjuntos').attr('disabled',true);
+    }
+}
+function adjuntosSeleccionados() {
+    var html='';
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        html+='<tr data-key="'+indexInArray+'">'
+            html+='<td>'
+                html+=valueOfElement.name
+            html+='</td>'
+            html+='<td><buton class="btn btn-danger btn-xs" data-action="eliminar-adjunto" data-key="'+indexInArray+'"><i class="fas fa-trash-alt"></i></button></td>'
+        html+='</tr>'
+    });
+    $('[data-action="table-body"]').html(html);
+}
+$(document).on('click','[data-action="eliminar-adjunto"]',function () {
+    var key_item = $(this).attr('data-key');
+    array_adjuntos = array_adjuntos.filter((item, key) => key !== parseInt(key_item));
+    if (array_adjuntos.length===0) {
+        $('[name="adjuntos[]"]').val('');
+    }
+    adjuntosSeleccionados();
+    pesoArchivos();
+});
+$(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
+    e.preventDefault();
+    var data_forma_adjuntos = new FormData($(this)[0]);
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        data_forma_adjuntos.append('archivos[]', valueOfElement);
+    });
+    Swal.fire({
+        title: 'Adjuntos',
+        text: "¿Está seguro de guardar?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'no',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                url: 'guardar-adjuntos-tesoreria',
+                data: data_forma_adjuntos,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                    console.log(data);
+                }
+            }).done(function(response) {
+                return response
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+
+          },
+      }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value.status===200) {
+                $('#modal-verAdjuntos').modal('hide');
+            }
+        }
+    })
+
+});
 
 $('#listaOrdenes tbody').on('click', 'td button.visualizarPagosEnCuotas', function () {
     var tr = $(this).closest('tr');
@@ -887,5 +1004,3 @@ function formatPagosEnCuotas(table_id, id, row, tipo) {
     });
 
 }
-
-

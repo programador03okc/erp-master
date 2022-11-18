@@ -67,11 +67,13 @@ function openRegistroPago(data) {
 
         if(tienePagoEnCuotas){
             document.querySelector("div[id='modal-procesarPago'] fieldset[id='fieldsetDatosPagoEnCuotas']").removeAttribute("hidden");
+            document.querySelector("div[id='modal-procesarPago'] div[id='contenedorVinculoACuota']").removeAttribute("hidden");
             listarPagoEnCuotas(tipo,id);
             total_pago = formatDecimal(sumaCuotaConAutorizacion);
 
         }else{
             document.querySelector("div[id='modal-procesarPago'] fieldset[id='fieldsetDatosPagoEnCuotas']").setAttribute("hidden",true);
+            document.querySelector("div[id='modal-procesarPago'] div[id='contenedorVinculoACuota']").setAttribute("hidden",true);
 
         }
 

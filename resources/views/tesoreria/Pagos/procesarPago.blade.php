@@ -188,7 +188,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4" id="contenedorVinculoACuota">
                             <h5>vincular pago con cuota(s)</h5>
                             <select multiple class="form-control" name="vincularCuotaARegistroDePago[]" style="height: 6rem;">
                             </select>
