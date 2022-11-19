@@ -488,9 +488,75 @@ $('#listaRequerimientos tbody').on("click", "button.adjuntos", function () {
     $('#modal-verAdjuntos input[name="codigo_requerimiento"]').val(codigo)
     $('#modal-verAdjuntos [data-action="table-body"]').html('');
     $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').html('');
-
+    $(":file").filestyle('clear');
+    array_adjuntos=[];
     verAdjuntos(id, codigo);
 });
+
+$('#modal-verAdjuntos').on("click", "button.handleClickAnularAdjuntoTesoreria", (e) => {
+    anularAdjuntoTesoreria(e.currentTarget);
+});
+
+function anularAdjuntoTesoreria(obj){
+    let idAdjunto = obj.dataset.idAdjunto;
+    if (idAdjunto > 0) {
+        $.ajax({
+            type: 'POST',
+            url: 'anular-adjunto-requerimiento-pago-tesoreria',
+            data: { id_adjunto: idAdjunto },
+            dataType: 'JSON',
+            beforeSend: (data) => { // Are not working with dataType:'jsonp'
+                $('#modal-verAdjuntos .modal-content').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+            success: (response) => {
+                if (response.status == 'success') {
+                    $('#modal-verAdjuntos .modal-content').LoadingOverlay("hide", true);
+
+                    obj.closest('tr').remove();
+                    Lobibox.notify('success', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+
+                } else {
+                    $('#modal-verAdjuntos .modal-content').LoadingOverlay("hide", true);
+                    // console.log(response);
+                    Swal.fire(
+                        '',
+                        response.mensaje,
+                        'error'
+                    );
+                }
+            },
+            fail: (jqXHR, textStatus, errorThrown) => {
+                $('#modal-verAdjuntos .modal-content').LoadingOverlay("hide", true);
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar anular los adjuntos, por favor vuelva a intentarlo',
+                    'error'
+                );
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    } else {
+        Swal.fire(
+            '',
+            'No existen un ID adjuntos para continuar con la acción',
+            'warning'
+        );
+    }
+
+}
 
 function verAdjuntos(id, codigo) {
     $('#modal-verAdjuntos').modal({
@@ -529,10 +595,16 @@ function verAdjuntos(id, codigo) {
             }
             var html = '';
             if (response.adjuntos_pago.length > 0) {
-
+                let tieneAccesoParaEliminarAdjuntos = false;
+                if (response.id_usuario_propietario_requerimiento > 0 && response.id_usuario_propietario_requerimiento == auth_user.id_usuario) {
+                    tieneAccesoParaEliminarAdjuntos = true;
+                }
                 response.adjuntos_pago.forEach(function (element) {
                     html += `<tr>
                         <td><a target="_blank" href="/files/tesoreria/pagos/${element.adjunto}">${element.adjunto}</a></td>
+                        <td style="text-align:center;">
+                            <button type="button" class="btn btn-xs btn-danger handleClickAnularAdjuntoTesoreria" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos == true ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                        </td>
                     </tr>`;
                 });
                 // $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').html(html);
@@ -540,9 +612,16 @@ function verAdjuntos(id, codigo) {
 
             if (response.adjuntos_pagos_complementarios.length > 0) {
                 // var html = '';
+                let tieneAccesoParaEliminarAdjuntos = false;
+                if (response.id_usuario_propietario_requerimiento > 0 && response.id_usuario_propietario_requerimiento == auth_user.id_usuario) {
+                    tieneAccesoParaEliminarAdjuntos = true;
+                }
                 response.adjuntos_pagos_complementarios.forEach(function (element) {
                     html += `<tr>
                         <td><a target="_blank" href="/files/tesoreria/pagos/${element.archivo}">${element.archivo}</a></td>
+                        <td style="text-align:center;">
+                            <button type="button" class="btn btn-xs btn-danger handleClickAnularAdjuntoTesoreria" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos == true ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                        </td>
                     </tr>`;
                 });
                 // $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').append(html);
