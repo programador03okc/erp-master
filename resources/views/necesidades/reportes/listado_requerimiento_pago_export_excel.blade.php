@@ -15,7 +15,8 @@
 
             <th>Moneda</th>
             <th>Monto Total</th>
-            <th>Creado por</th>
+            <th>Elaborado por</th>
+            <th>Aprobado por</th>
             <th>Estado</th>
             <th>Importe Pagado</th>
 
@@ -44,6 +45,7 @@
                     <td>{{ $requerimiento["simbolo_moneda"] }}</td>
                     <td>{{ $requerimiento["monto_total"]    }}</td>
                     <td>{{ $requerimiento["nombre_usuario"] }}</td>
+                    <td>{{ $requerimiento["ultimo_aprobador"] }}</td>
                     <td>{{ $requerimiento["estado_doc"]     }}</td>
                     <td>{{ $requerimiento["pago_total"]     }}</td>
                     <td>{{ $requerimiento["partida"] }}</td>

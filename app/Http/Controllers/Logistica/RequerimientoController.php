@@ -1621,7 +1621,14 @@ class RequerimientoController extends Controller
                 DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
                 FROM almacen.alm_det_req
                 WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
-                alm_det_req.estado != 7) AS monto_total")
+                alm_det_req.estado != 7) AS monto_total"),
+                DB::raw("(SELECT sis_usua.nombre_corto
+                FROM administracion.adm_documentos_aprob
+                     INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                    LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                    LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE alm_req.id_requerimiento = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =1 and adm_aprobacion.id_vobo =1 order by adm_aprobacion.fecha_vobo desc limit 1 ) AS ultimo_aprobador")
+            
 
             )
 

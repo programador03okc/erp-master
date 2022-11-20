@@ -178,7 +178,21 @@ class RequerimientoPagoController extends Controller
                 DB::raw("(SELECT COUNT(registro_pago.id_pago)
                 FROM tesoreria.registro_pago
                 WHERE  registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago AND registro_pago.adjunto IS NOT NULL AND
-                registro_pago.estado != 7) AS cantidad_adjuntos_pago")
+                registro_pago.estado != 7) AS cantidad_adjuntos_pago"),
+ 
+                // DB::raw("(SELECT  jsonb_agg(DISTINCT jsonb_build_object('vobo', adm_vobo.descripcion, 'usuario', sis_usua.nombre_corto, 'fecha_vobo', adm_aprobacion.fecha_vobo))
+                // FROM administracion.adm_documentos_aprob
+                //      INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                //     LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                //     LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                // WHERE requerimiento_pago.id_requerimiento_pago = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =11 ) AS flujo_aprobacion")
+                DB::raw("(SELECT sis_usua.nombre_corto
+                FROM administracion.adm_documentos_aprob
+                     INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                    LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                    LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE requerimiento_pago.id_requerimiento_pago = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =11 and adm_aprobacion.id_vobo =1 order by adm_aprobacion.fecha_vobo desc limit 1 ) AS ultimo_aprobador")
+            
             )
             ->when(($mostrar === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
@@ -224,6 +238,9 @@ class RequerimientoPagoController extends Controller
                     $query->whereBetween('requerimiento_pago.fecha_registro', [$desde, $hasta->addDay()->addSeconds(-1)]);
                 } catch (\Throwable $th) {
                 }
+            })
+            ->editColumn('flujo_aprobacion', function ($data) {
+                return json_decode($data->flujo_aprobacion,true);
             })
             ->rawColumns(['termometro'])->toJson();
     }
@@ -1371,7 +1388,21 @@ class RequerimientoPagoController extends Controller
                 DB::raw("(SELECT COUNT(registro_pago.id_pago)
                 FROM tesoreria.registro_pago
                 WHERE  registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago AND registro_pago.adjunto IS NOT NULL AND
-                registro_pago.estado != 7) AS cantidad_adjuntos_pago")
+                registro_pago.estado != 7) AS cantidad_adjuntos_pago"),
+                // DB::raw("(SELECT  jsonb_agg(DISTINCT jsonb_build_object('vobo', adm_vobo.descripcion, 'usuario', sis_usua.nombre_corto, 'fecha_vobo', adm_aprobacion.fecha_vobo))
+                // FROM administracion.adm_documentos_aprob
+                //      INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                //     LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                //     LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                // WHERE requerimiento_pago.id_requerimiento_pago = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =11 ) AS flujo_aprobacion")
+            
+                DB::raw("(SELECT sis_usua.nombre_corto
+                FROM administracion.adm_documentos_aprob
+                     INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                    LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                    LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE requerimiento_pago.id_requerimiento_pago = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =11 and adm_aprobacion.id_vobo =1 order by adm_aprobacion.fecha_vobo desc limit 1 ) AS ultimo_aprobador")
+            
             )
             ->when(($meOrAll === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
