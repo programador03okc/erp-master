@@ -1,4 +1,5 @@
-﻿class RequerimientoPago {
+﻿var array_adjuntos = [];
+class RequerimientoPago {
     constructor(permisoVer, permisoEnviar, permisoRegistrar) {
         this.permisoVer = permisoVer;
         this.permisoEnviar = permisoEnviar;
@@ -328,7 +329,7 @@
                                     `${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom"
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
-                                    data-total="${row['monto_total']}" 
+                                    data-total="${row['monto_total']}"
                                     data-pago="${row['suma_pagado']}"
                                     data-suma-cuota-con-autorizacion="${row['suma_cuotas_con_autorizacion']}"
                                     data-moneda="${row['simbolo']}"
@@ -343,7 +344,7 @@
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     data-comentario-pago-logistica="${row['comentario_pago']}"
                                     data-tiene-pago-en-cuotas="${row['tiene_pago_en_cuotas']}"
-                                  
+
                                     data-observacion-requerimiento="${observacionRequerimiento}"
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`
                                     : ''}
@@ -488,7 +489,7 @@ $('#listaRequerimientos tbody').on("click", "button.adjuntos", function () {
     $('#modal-verAdjuntos input[name="codigo_requerimiento"]').val(codigo)
     $('#modal-verAdjuntos [data-action="table-body"]').html('');
     $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').html('');
-
+    array_adjuntos=[];
     verAdjuntos(id, codigo);
 });
 
@@ -806,7 +807,7 @@ function actualizarEstadoPago() {
     });
 
 }
-var array_adjuntos = [];
+// var array_adjuntos = [];
 $(document).on('change','[data-action="adjuntos"]',function () {
 
     $.each($(this)[0].files, function (index, element) {
@@ -941,14 +942,14 @@ function formatPagosEnCuotas(table_id, id, row, tipo) {
             let orden = response.orden;
             let numeroCuotas = response.numero_de_cuotas;
             let detalle = response.detalle;
-        
+
             if (response.hasOwnProperty('detalle') && detalle.length > 0) {
                 detalle.forEach(element => {
                     enlaceAdjunto=[];
                     (element.adjuntos).forEach(element => {
                         enlaceAdjunto.push('<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>');
                     });
-                    
+
                     html += '<tr id="' + element.id_pago_cuota_detalle + '">' +
                         '<td style="border: none; text-align: center">' + (element.monto_cuota !== null ? element.monto_cuota : '') + '</td>' +
                         '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
@@ -962,9 +963,9 @@ function formatPagosEnCuotas(table_id, id, row, tipo) {
                         `<button type = "button" class= "btn btn-${element.fecha_autorizacion !=null?'success':'info'} boton" data - toggle="tooltip"
                             data - placement="bottom"
                             onClick = "enviarPagoEnCuotas(${orden.id_orden_compra},${element.id_pago_cuota_detalle},'${tipo}',event)" title = "${element.fecha_autorizacion !=null?'Pago Autorizado':'Autorizar pago'}" ${element.fecha_autorizacion !=null?'disabled':''}>
-                            ${element.fecha_autorizacion !=null?'<i class="fas fa-check-double"></i> Autorizado':'<i class="fas fa-check"></i> Autorizar'} 
+                            ${element.fecha_autorizacion !=null?'<i class="fas fa-check-double"></i> Autorizado':'<i class="fas fa-check"></i> Autorizar'}
                             </button>` +
-           
+
                         '</td>' +
                         '</tr>';
                     i++;

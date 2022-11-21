@@ -1556,7 +1556,17 @@ class RequerimientoPagoController extends Controller
     }
     public function obtenerAdjuntosPago($id_requerimiento_pago)
     {
-        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::select('requerimiento_pago_adjunto.id_requerimiento_pago_adjunto','requerimiento_pago_adjunto.archivo','requerimiento_pago_adjunto.id_estado','requerimiento_pago_adjunto.fecha_registro','requerimiento_pago_adjunto.id_categoria_adjunto', 'requerimiento_pago_categoria_adjunto.descripcion')
+        // return $id_requerimiento_pago;exit;
+
+        // return $adjuntos_pagos_complementarios;exit;
+        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::select(
+            'requerimiento_pago_adjunto.id_requerimiento_pago_adjunto',
+            'requerimiento_pago_adjunto.archivo',
+            'requerimiento_pago_adjunto.id_estado',
+            'requerimiento_pago_adjunto.fecha_registro',
+            'requerimiento_pago_adjunto.id_categoria_adjunto',
+            'requerimiento_pago_categoria_adjunto.descripcion'
+        )
         ->where('id_requerimiento_pago',$id_requerimiento_pago)
         ->join('tesoreria.requerimiento_pago_categoria_adjunto','requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto','=','requerimiento_pago_adjunto.id_categoria_adjunto')
         ->get();
