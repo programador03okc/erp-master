@@ -140,7 +140,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
             },
         }).done(function (response) {
             $("select[name='id_cuenta']").LoadingOverlay("hide", true);
-            // console.log(response);
+            console.log(response);//no es aqui
             if (response.tipo_estado == 'success') {
 
                 if (response.data.length > 0) {
@@ -156,16 +156,19 @@ function obtenerCuentasBancariasPersona(id_persona) {
                     }
                     (response.data).forEach(element => {
                         document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
-                        <option 
-                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
-                            data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}" 
-                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
-                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
-                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
+                        <option
+                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                            data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}"
+                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
                             value="${element.id_cuenta_bancaria}" ${element.id_cuenta_bancaria ==idCuentePorDefecto?'selected':''}
                             >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}</option>
                         `);
                     });
+                    console.log(response);
+                    // document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', `<option value="" selected>Seleccione...</option>`);
+                    // $('#form-requerimiento-pago .modal-body select[name="id_cuenta"]').append('<option value="" selected="true">Seleccione...</option>');
 
                     if(idCuentePorDefecto==null || idCuentePorDefecto==''){
                         document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value=document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value;
@@ -238,12 +241,13 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
             dataType: 'JSON',
         }).done(function (response) {
             // console.log(response);
+            console.log(response);//no este
             if (response.tipo_estado == 'success') {
 
                 if (response.data.length > 0) {
-                
+
                     // llenar cuenta bancaria
-                    
+
                     let idCuentePorDefecto =document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value;
                     document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
                     let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
@@ -255,16 +259,17 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
                     // console.log(response.data);
                     (response.data).forEach(element => {
                         document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
-                        <option 
-                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}" 
-                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}" 
-                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}" 
-                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}" 
-                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}" 
+                        <option
+                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}"
+                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
                             value="${element.id_cuenta_contribuyente}" ${element.id_cuenta_contribuyente ==idCuentePorDefecto?'selected':''}
                             >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}</option>
                         `);
                     });
+
                     if(idCuentePorDefecto==null || idCuentePorDefecto==''){
                         document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value=document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value;
                     }

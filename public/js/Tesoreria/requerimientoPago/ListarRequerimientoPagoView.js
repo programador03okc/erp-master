@@ -547,7 +547,7 @@ class ListarRequerimientoPagoView {
                     this.descargarListaCabeceraRequerimientoPagoElaboradosExcel();
 
                 },
-                
+
                 className: 'btn-default btn-sm'
             }:[]),
             button_descargar_excel_items = (array_accesos.find(element => element === 22)?{
@@ -559,7 +559,7 @@ class ListarRequerimientoPagoView {
                     this.descargarListaItemsRequerimientoPagoElaboradosExcel();
 
                 },
-                
+
                 className: 'btn-default btn-sm'
             }:[]);
         $tablaListaRequerimientoPago = $('#ListaRequerimientoPago').DataTable({
@@ -1002,7 +1002,7 @@ class ListarRequerimientoPagoView {
                 <input class="form-control input-sm precio text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="0" name="precioUnitario[]"  placeholder="Precio U." value="${data != null && typeof data.precio_unitario === 'string' ? data.precio_unitario : ""}">
             </div>
         </td>
-        
+
         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
         <td>
             <div class="form-group">
@@ -1538,6 +1538,7 @@ class ListarRequerimientoPagoView {
                 document.querySelector("input[name='nombre_destinatario']").closest('div').parentElement.classList.add('has-error');
             }
         }
+        console.log(document.querySelector("select[name='id_cuenta']").value);
         if ((document.querySelector("select[name='id_cuenta']").value == '' || (document.querySelector("input[name='id_cuenta_persona']").value == '' && document.querySelector("input[name='id_cuenta_contribuyente']").value == ''))) {
             continuar = false;
             if (document.querySelector("select[name='id_cuenta']").closest('div').parentElement.querySelector("span") == null) {
@@ -2694,7 +2695,7 @@ class ListarRequerimientoPagoView {
                         action: 'GUARDAR',
                         file: file
                     };
-                  
+
                     this.addToTablaArchivosRequerimientoPagoCabecera(payload);
 
                     tempArchivoAdjuntoRequerimientoPagoCabeceraList.push(payload);
