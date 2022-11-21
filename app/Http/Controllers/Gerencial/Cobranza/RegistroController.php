@@ -1331,7 +1331,7 @@ class RegistroController extends Controller
                 $id_cliente =$value->id_empresa_old;
                 $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$value->id_empresa_old)->first();
                 $id_cliente = $adm_contri->id_contribuyente;
-                // return $adm_contri;exit;
+
             }
 
             // if ($value->id_empresa!==null && $value->id_empresa !=='') {
