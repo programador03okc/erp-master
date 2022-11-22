@@ -32,11 +32,9 @@ $(function () {
         sessionStorage.removeItem('idOrden');
         sessionStorage.removeItem('action');
         // document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
-
     }
 
     obtenerTipoCambioCompra();
-
 
     $('#modal-proveedores').on("click", "button.handleClickCrearProveedor", () => {
         irACrearProveedor();
@@ -146,7 +144,6 @@ function getTipoCambioCompra(fecha) {
 }
 
 function obtenerTipoCambioCompra() {
-
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     let fechaHoy = now.toISOString().slice(0, 10)
@@ -164,7 +161,6 @@ function limpiarTabla(idElement) {
         while (nodeTbody.children.length > 0) {
             nodeTbody.removeChild(nodeTbody.lastChild);
         }
-
     }
 }
 
@@ -215,9 +211,7 @@ function calcularMontosTotales() {
 
     let totalNeto = 0;
     for (let index = 0; index < childrenTableTbody.length; index++) {
-
         if (childrenTableTbody[index].classList.contains("danger") == false) {
-
             let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
             let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
             totalNeto += (cantidad * precioUnitario);
@@ -234,7 +228,6 @@ function calcularMontosTotales() {
         let MontoTotal = (Math.round((parseFloat(totalNeto) + parseFloat(igv)) * 100) / 100).toFixed(2)
         document.querySelector("label[name='igv']").textContent = $.number(igv, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
-
         document.querySelector("input[name='monto_igv']").value = igv;
         document.querySelector("input[name='monto_total']").value = MontoTotal;
 
@@ -242,12 +235,9 @@ function calcularMontosTotales() {
         let MontoTotal = parseFloat(totalNeto);
         document.querySelector("label[name='igv']").textContent = $.number(0, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
-
         document.querySelector("input[name='monto_igv']").value = 0;
         document.querySelector("input[name='monto_total']").value = MontoTotal;
-
     }
-
 }
 
 function actualizarValorIncluyeIGV(obj) {
@@ -334,13 +324,11 @@ function setStatusPage() {
             case 'register':
                 changeStateButton('nuevo');
                 changeStateInput('form-crear-orden-requerimiento', false);
-
                 break;
             case 'edition':
                 changeStateButton('editar');
                 $("#form-crear-orden-requerimiento .activation").attr('disabled', false);
                 changeStateInput('form-crear-orden-requerimiento', false);
-
                 break;
             case 'historial':
                 changeStateButton('historial');
@@ -350,7 +338,6 @@ function setStatusPage() {
     } else {
         changeStateButton('inicio');
         $("#form-crear-orden-requerimiento .activation").attr('disabled', true);
-
     }
 }
 
@@ -385,14 +372,31 @@ function editarOrden() {
 }
 function validarOrdenAgilOrdenSoftlink() {
     let idOrden = document.querySelector("input[name='id_orden']").value;
+    let customElement = $("<div>", {
+        "css": {
+            "font-size": "15px",
+            "text-align": "center",
+            "padding": "0px",
+            "margin-top": "-750px"
+        },
+        "class": "your-custom-class",
+        "text": "Validando la orden en SoftLink..."
+    });
     if (idOrden > 0) {
         $.ajax({
             type: 'POST',
             url: 'validar-orden-agil-orden-softlink',
             data: { 'idOrden': idOrden },
             dataType: 'JSON',
+            beforeSend: function () {
+                $("#wrapper-okc").LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    custom: customElement,
+                    imageColor: "#3c8dbc",
+                });
+            },
             success: (response) => {
-                console.log(response);
                 if (response.tipo == 'warning') {
                     Lobibox.notify('warning', {
                         title: false,
@@ -403,6 +407,7 @@ function validarOrdenAgilOrdenSoftlink() {
                         msg: response.mensaje
                     });
                 }
+                $("#wrapper-okc").LoadingOverlay("hide", true);
             }
         }).fail((jqXHR, textStatus, errorThrown) => {
             Swal.fire(
@@ -410,6 +415,7 @@ function validarOrdenAgilOrdenSoftlink() {
                 'Hubo un problema al intentar validar la orden de Ágil con la orden Softlink, por favor vuelva a intentarlo.',
                 'error'
             );
+            $("#wrapper-okc").LoadingOverlay("hide", true);
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -443,7 +449,6 @@ function imprimirOrdenPDF() {
             'warning'
         );
     }
-
 }
 
 function migrarOrdenASoftlink() {
@@ -465,7 +470,6 @@ function migrarOrdenASoftlink() {
                 });
             },
             success: function (response) {
-                console.log(response);
                 $("#wrapper-okc").LoadingOverlay("hide", true);
                 mostrarOrden(response.ocAgile.cabecera.id_orden_compra);
                 actionPage = 'historial';
@@ -506,7 +510,6 @@ function estadoCuadroPresupuesto() {
         show: true,
         backdrop: 'true',
         keyboard: true
-
     });
 }
 
@@ -606,14 +609,12 @@ function cambiarTipoOrden(obj) {
     }
 }
 
-
 function mostrarOrden(id) {
     $.ajax({
         type: 'GET',
         url: 'mostrar-orden/' + id,
         dataType: 'JSON',
         success: (response) => {
-            console.log(response);
             construirFormularioOrden(response);
             detalleOrdenList = response.detalle;
             setStatusPage();
@@ -643,6 +644,7 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_subtotal']").value = data.monto_subtotal ? data.monto_subtotal : 0;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_igv']").value = data.monto_igv ? data.monto_igv : 0;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_total']").value = data.monto_total ? data.monto_total : 0;
+
     if (data.cuadro_costo != null && data.cuadro_costo.length > 0) {
         document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent = data.id_orden_compra ? data.id_orden_compra : '';
         data.cuadro_costo.map((element, index) => {
@@ -652,18 +654,14 @@ function construirFormularioOrden(data) {
                 document.querySelector("div[id='contenedor-detalle-estado-cdp']").innerHTML = '';
                 document.querySelector("div[id='contenedor-detalle-estado-cdp']").insertAdjacentHTML('beforeend', `<div class="panel panel-default">
                 <div class="panel-body">
-                
                     <ul style="list-style-type:none;">
                         <li><strong>Código:</strong> ${element.codigo_oportunidad}</li>
                         <li><strong>Estado CDP:</strong> ${element.estado_aprobacion}</li>
                     </ul>
-
                 </div>
             </div>`);
-
             } else {
                 document.querySelector("button[id='btn-enviar-email-finalizacion-cuadro-presupuesto']").classList.add("oculto");
-
             }
         })
 
@@ -703,6 +701,12 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_2']").value = data.nombre_personal_autorizado_2 ? data.nombre_personal_autorizado_2 : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value = data.observacion ? data.observacion : '';
 
+    if (data.compra_local == true) {
+        $("form[id='form-crear-orden-requerimiento'] input[name=compra_local]").iCheck("check");
+    } else {
+        $("form[id='form-crear-orden-requerimiento'] input[name=compra_local]").iCheck("uncheck");
+    }
+
     document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
     if (data.id_tp_documento != 13) { // no sea orden de devolución
         document.querySelector("button[name='btn-migrar-orden-softlink']").removeAttribute("disabled");
@@ -710,12 +714,9 @@ function construirFormularioOrden(data) {
     } else {
         document.querySelector("button[name='btn-migrar-orden-softlink']").setAttribute("disabled", true);
         document.querySelector("button[name='btn-relacionar-a-oc-softlink']").setAttribute("disabled", true);
-
     }
 
-
     // construir detalle 
-
     limpiarTabla('listaDetalleOrden');
     vista_extendida();
     let detalle = data.detalle;
@@ -1065,7 +1066,6 @@ function changeLogoEmprsa(id_empresa) {
 }
 
 function handleChangeCondicion() {
-
     let condicion_softlink = document.getElementsByName('id_condicion_softlink')[0];
     // let descripcion_condicion_softlink = condicion_softlink.options[condicion_softlink.selectedIndex].text;
     let dias_condicion_softlink = condicion_softlink.options[condicion_softlink.selectedIndex].dataset.dias;
@@ -1073,11 +1073,9 @@ function handleChangeCondicion() {
     if (dias_condicion_softlink > 0) {
         document.getElementsByName('id_condicion')[0].value = 2;
         document.getElementsByName('plazo_dias')[0].value = dias_condicion_softlink;
-
     } else {
         document.getElementsByName('id_condicion')[0].value = 1;
         document.getElementsByName('plazo_dias')[0].value = 0;
-
     }
 
     // if (text_condicion == 'CONTADO CASH' || text_condicion == 'Contado cash') {
@@ -1282,7 +1280,6 @@ function listarCatalogoProductos(tipo) {
     });
 }
 
-
 function selectProducto(obj) {
     let tr = obj.closest('tr');
 
@@ -1402,7 +1399,6 @@ function agregarProducto(data, tipo) { // tipo puede ser OBSEQUIO, DETALLE_REQUE
     }
 }
 
-
 function agregarServicio() {
     vista_extendida();
 
@@ -1435,8 +1431,6 @@ function agregarServicio() {
     </td>
 </tr>`);
 }
-
-
 
 // guardar orden 
 function save_orden(data, action) {
@@ -1507,7 +1501,6 @@ function validaOrdenRequerimiento() {
     }
     return msj;
 }
-
 
 function guardar_orden_requerimiento(action) {
     // console.log(action);

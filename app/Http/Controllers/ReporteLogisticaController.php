@@ -229,11 +229,11 @@ class ReporteLogisticaController extends Controller{
         $proyectos = Proyecto::mostrar();
         $estadosPago = RequerimientoPagoEstados::mostrar();
         $fechaActual = new Carbon();
-    $array_accesos=[];
-    $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
-    foreach ($accesos_usuario as $key => $value) {
-        array_push($array_accesos,$value->id_acceso);
-    }
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
 		return view('logistica/reportes/compras_locales',compact('empresas','grupos','proyectos','estadosPago','fechaActual','array_accesos'));
 	}
 
@@ -249,16 +249,16 @@ class ReporteLogisticaController extends Controller{
         $razonSocialProveedor = $request->razon_social_proveedor;
         $idGrupo = $request->idGrupo;
         $idProyecto = $request->idProyecto;
-        $observacionOrden = $request->observacionOrden;
+        // $observacionOrden = $request->observacionOrden;
         $estadoPago = $request->estadoPago;
 
-		$data = $this->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago);
+		$data = $this->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$estadoPago);
 
 		return datatables($data)->toJson();
 
 	}
 
-	public function obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago){
+	public function obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$estadoPago){
 		$data = ComprasLocalesView::when(($idEmpresa > 0), function ($query) use($idEmpresa) {
 			$idSedeList=[];
 			$sedes= Sede::where('id_empresa',$idEmpresa)->get();
@@ -299,15 +299,13 @@ class ReporteLogisticaController extends Controller{
         ->when((($idProyecto != 'SIN_FILTRO')), function ($query) use($idProyecto) {
             return $query->where('compras_locales_view.id_proyecto' ,'=',$idProyecto);
         })
-        ->when((($observacionOrden != 'SIN_FILTRO')), function ($query) use($observacionOrden) {
-			return $query->where('compras_locales_view.observacion_orden' ,'like','%'.$observacionOrden.'%');
-        })
+        // ->when((($observacionOrden != 'SIN_FILTRO')), function ($query) use($observacionOrden) {
+		// 	return $query->where('compras_locales_view.observacion_orden' ,'like','%'.$observacionOrden.'%');
+        // })
 		->when((($estadoPago != 'SIN_FILTRO')), function ($query) use($estadoPago) {
 			return $query->where('compras_locales_view.id_requerimiento_pago_estado' ,'=',$estadoPago);
-		})
-        ;
+		});
 
-
-		return $data;
+		return $data->where('compra_local', true);
 	}
 }
