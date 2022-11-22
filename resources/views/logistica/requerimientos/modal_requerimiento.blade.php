@@ -1,338 +1,186 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-requerimiento-pago" style="overflow-y: scroll;">
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-requerimiento" style="overflow-y: scroll;">
     <div class="modal-dialog modal-lg" style="width: 90%;">
         <div class="modal-content">
-            <form id="form-requerimiento-pago" method="post" type="register">
-                <input type="hidden" name="id_requerimiento_pago" primary="ids">
-                <input type="text" class="oculto" name="id_usuario">
-                <input type="text" class="oculto" name="id_estado">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title" id="modal-title">
-                        <div style="display:flex; justify-content: space-between;">
-                            <div><span id="titulo-modal">Requerimiento de pago </span> <span class="text-primary" style="font-weight: bold;" name="codigo"></span></div>
-                            <label style="font-size: 1.4rem; margin-right: 10px; "><span name="fecha_registro"></span></label>
-
-                        </div>
-                    </h3>
-
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <fieldset class="group-table">
-                                <h5><strong>Datos del Requerimiento</strong></h5>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <h5>Concepto *:</h5>
-                                            <input type="text" class="form-control activation handleCheckStatusValue" placeholder="Concepto/motivo" name="concepto">
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-
-                                            <h5>Tipo requerimiento</h5>
-                                            <select class="form-control activation handleCheckStatusValue" name="tipo_requerimiento_pago">
-                                                @foreach ($tiposRequerimientoPago as $tipo)
-                                                    @if((in_array(Auth::user()->id_usuario,[
-                                                    4,
-                                                    24,
-                                                    99,
-                                                    54,
-                                                    22,
-                                                    32,
-                                                    77,
-                                                    3,
-                                                    17,
-                                                    27
-                                                    ])))
-                                                        <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
-                                                    @elseif(($tipo->id_requerimiento_pago_tipo != 4))
-                                                        <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-
-                                            <h5>Periodo</h5>
-                                            <select class="form-control activation handleCheckStatusValue" name="periodo">
-                                                @foreach ($periodos as $periodo)
-                                                <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <h5>Prioridad</h5>
-                                            <select class="form-control activation handleCheckStatusValue" name="prioridad">
-                                                @foreach ($prioridades as $prioridad)
-                                                <option value="{{$prioridad->id_prioridad}}">{{$prioridad->descripcion}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <h5>Empresa *</h5>
-                                            <select class="form-control activation handleCheckStatusValue handleChangeOptEmpresa" name="empresa">
-                                                <option value="0">Elija una opción</option>
-                                                @foreach ($empresas as $empresa)
-                                                <option value="{{$empresa->id_empresa}}">{{ $empresa->razon_social}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <h5>Sede *</h5>
-                                            <select class="form-control activation handleCheckStatusValue" name="sede" disabled>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <h5>Grupo *</h5>
-                                            <select class="form-control activation handleCheckStatusValue handleChangeOptGrupo" name="grupo" disabled>
-                                                <option value="0">Elija una opción</option>
-                                                @foreach ($grupos as $grupo)
-                                                <option value="{{$grupo->id_grupo}}">{{ $grupo->descripcion}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-
-                                            <h5>División*</h5>
-                                            <select class="form-control activation handleCheckStatusValue" name="division" disabled>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 oculto" id="contenedor-proyecto">
-                                        <div class="form-group">
-
-                                            <h5>Proyecto</h5>
-                                            <select class="form-control activation handleCheckStatusValue" name="proyecto">
-                                                <option value="0">Seleccione un Proyecto</option>
-                                                @foreach ($proyectosActivos as $proyecto)
-                                                <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 oculto" id="contenedor-cdp">
-                                        <div class="form-group">
-                                            <h5>CDP</h5>
-                                            <div style="display:flex;">
-                                                <input type="text" class="form-control oculto" name="id_cc">
-                                                <input type="text" class="form-control" name="codigo_oportunidad" readonly>
-
-                                                <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <h5>Comentario</h5>
-                                            <textarea class="form-control activation handleCheckStatusValue" name="comentario" placeholder="Comentario/observación (opcional)" cols="100" rows="100" style="height:50px;"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3" id="input-group-asignar_trabajador">
-                                        <div class="form-group">
-                                            <h5>Solicitado por</h5>
-                                            <div style="display:flex;">
-                                                <input class="oculto" name="id_trabajador" value="{{$idTrabajador}}">
-                                                <input type="text" name="nombre_trabajador" class="form-control group-elemento" placeholder="Trabajador" value="{{$nombreUsuario}}" readonly="">
-                                                <button type="button" class="group-tex btn-primary activation" onclick="listaTrabajadoresModal();">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <h5>&nbsp;</h5>
-                                        <div style="display:flex; position:relative;">
-                                            <button type="button" class="btn btn-warning btn-md handleClickAdjuntarArchivoCabecera" name="btnAdjuntarArchivoCabecera[]" title="Adjuntos">
-                                                <i class="fas fa-paperclip"></i>
-                                                <span class="badge" name="cantidadAdjuntosCabeceraRequerimientoPago" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
-                                                Adjuntos
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <fieldset class="group-table">
-                                <h5><strong>Datos del destinatario de pago</strong></h5>
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <h5>Tipo Destinatario:</h5>
-                                            <div style="display:flex;">
-                                                <select class="form-control activation handleCheckStatusValue handleChangeTipoDestinatario" name="id_tipo_destinatario">
-                                                    @foreach ($tiposDestinatario as $tipo)
-                                                    <option value="{{$tipo->id_requerimiento_pago_tipo_destinatario}}">{{$tipo->descripcion}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <h5>Destinatario *</h5>
-                                            <input type="text" class="oculto" name="idProveedor">
-                                            <div style="display:flex;">
-                                                <input class="oculto" name="id_persona">
-                                                <input class="oculto" name="id_contribuyente">
-                                                <input type="text" class="form-control" name="tipo_documento_identidad" placeholder="Tipo doc." style="width:15%;" disabled>
-                                                <input type="text" class="form-control handleBlurBuscarDestinatarioPorNumeroDocumento" name="nro_documento" placeholder="Nro documento" style="width:30%;">
-                                                <input type="text" class="form-control handleKeyUpBuscarDestinatarioPorNombre handleFocusInputNombreDestinatario handleFocusOutInputNombreDestinatario" placeholder="Nombre destinatario" name="nombre_destinatario" style="width:55%;">
-                                                <button type="button" class="btn btn-sm btn-flat btn-primary" onClick="modalNuevoDestinatario();">
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="box box-solid box-default oculto" id="resultadoDestinatario" style="position: absolute; z-index: 999; overflow:scroll; height:30vh; box-shadow: rgb(9 30 66 / 25%) 0px 4px 8px, rgb(9 30 66 / 31%) 0px 0px 1px;">
-                                                    <div class="box-body">
-                                                        <ul class="nav nav-pills" role="tablist">
-                                                            <li>
-                                                                <h5>Resultados encontrados: <span class="badge" id="cantidadDestinatariosEncontrados">0</span></h5>
-                                                            </li>
-                                                        </ul>
-                                                        <table class="table table-striped table-hover" id="listaDestinatariosEncontrados"></table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <h5>Cuenta bancaria *</h5>
-                                            <div style="display:flex;">
-                                                <input class="oculto" name="id_cuenta_persona">
-                                                <input class="oculto" name="id_cuenta_contribuyente">
-                                                <select class="form-control activation handleCheckStatusValue handleChangeCuenta" name="id_cuenta">
-
-                                                </select>
-                                                <!-- <input type="text" class="form-control handleCheckStatusValue" name="nro_cuenta_principal_proveedor" placeholder="Nro cuenta seleccionada" readOnly> -->
-                                                <!-- <button type="button" class="group-text" onClick="cuentasBancariasModal();">
-                                                    <i class="fa fa-search"></i>
-                                                </button> -->
-                                                <button type="button" class="btn btn-sm btn-flat btn-primary" title="Agregar cuenta bancaria" onClick="modalNuevaCuentaDestinatario();">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-flat btn-default handleClickInfoAdicionalCuentaSeleccionada">
-                                                    <i class="fas fa-question-circle"></i>
-                                                </button>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <h5>Monto Total:</h5>
-                                            <div style="display:flex;">
-                                                <!-- <div class="input-group-addon" name="montoMoneda" style="width: auto;">S/.</div> -->
-                                                <select class="form-control activation handleCheckStatusValue handleChangeUpdateMoneda" name="moneda" style="width:50%;">
-                                                    @foreach ($monedas as $moneda)
-                                                    <option data-simbolo="{{$moneda->simbolo}}" value="{{$moneda->id_moneda}}">{{$moneda->simbolo}}</option>
-                                                    @endforeach
-                                                </select>
-                                                <input type="text" class="form-control oculto" name="monto_total" style="text-align: right;">
-                                                <input type="text" class="form-control activation handleCheckStatusValue" name="monto_total_read_only" readonly>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <fieldset class="group-table">
-                                <h5><strong>Detalle del Requerimiento</strong></h5>
-
-                                <div class="btn-group" role="group" aria-label="...">
-                                    <!-- <button type="button" class="btn btn-xs btn-success activation handleCheckStatusValue handleClickAgregarProducto" id="btnAddProducto" data-toggle="tooltip" data-placement="bottom" title="Agregar Producto"><i class="fas fa-plus"></i> Producto
-                                    </button> -->
-                                    <button type="button" class="btn btn-xs btn-primary activation handleCheckStatusValue handleClickAgregarServicio" id="btnAddServicio" data-toggle="tooltip" data-placement="bottom" title="Agregar Servicio"><i class="fas fa-plus"></i> Servicio
-                                    </button>
-                                </div>
-                                <div class="box box-widget">
-                                    <div class="box-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped table-condensed table-bordered" id="ListaDetalleRequerimientoPago" width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 10%">Partida</th>
-                                                        <th style="width: 10%">C.Costo</th>
-                                                        <th>Descripción de item</th>
-                                                        <th style="width: 10%">Unidad</th>
-                                                        <th style="width: 6%">Cantidad</th>
-                                                        <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span></th>
-                                                        <th style="width: 6%">Subtotal</th>
-                                                        <th style="width: 10%">Motivo</th>
-                                                        <th style="width: 7%">Acciones</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="body_detalle_requerimiento_pago">
-
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="6" class="text-right"><strong>Total:</strong></td>
-                                                        <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
-                                                        <td></td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-primary" class="close" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-sm btn-success handleClickGuardarRequerimientoPago" id="btnGuardarRequerimientoPago" disabled>Guardar</button>
-                    <button type="button" class="btn btn-sm btn-success handleClickRequerimientoPago oculto" id="btnActualizarRequerimientoPago" disabled>Actualizar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="modal-info-adicional-cuenta-seleccionada" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Información de cuenta</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Detalle del requerimiento de B/S</h3>
             </div>
             <div class="modal-body">
+                <input type="hidden" name="id_requerimiento">
+                <fieldset class="group-importes">
+                    <legend>Datos generales</legend>
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table" border="0" id="tablaDatosGenerales">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Código</td>
+                                            <td id="codigo" style="width:10%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Motivo</td>
+                                            <td id="concepto" style="width:auto;" colspan="2"></td>
+                                            <td></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Empresa</td>
+                                            <td id="razon_social_empresa" style="width:20%;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">División</td>
+                                            <td id="division" style="width:10%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Prioridad</td>
+                                            <td id="prioridad" style="width:10%;"></td>
+                                            <td style="width:14%; font-weight:bold; text-align:right;">Fecha Entrega</td>
+                                            <td id="fecha_entrega" style="width:10%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Solicitado por</td>
+                                            <td id="solicitado_por" style="width:15%;"></td>
+                                            <!--Elmer Figueroa Arce -->
+                                        </tr>
+                                        <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Tipo Req.</td>
+                                            <td id="tipo_requerimiento" style="width:5%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Periodo</td>
+                                            <td id="periodo" style="width:5%;"></td>
+                                            <td style="width:10%; font-weight:bold; text-align:right;">Creado por</td>
+                                            <td id="creado_por" style="width:18%;"></td>
+                                            <td style="width:10%; font-weight:bold; text-align:right;">Archivos adjuntos</td>
+                                            <td id='adjuntosRequerimiento'>-</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="oculto" id="contenedor_cdp">
+                                            <td style="width:5%; font-weight:bold; text-align:right;">CDP</td>
+                                            <td id="codigo_cdp" style="width:5%;"></td>
+                                        </tr>
+                                        <tr class="oculto" id="contenedor_proyecto">
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Proyecto</td>
+                                            <td id="proyecto_presupuesto" style="width:5%;" colspan="7"></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Observación</td>
+                                            <td id="observacion" style="width:80%;" colspan="5"></td>
+                                        </tr>
+                                        <tr class="oculto" id="contenedor_incidencia">
+                                        <td style="width:5%; font-weight:bold; text-align:right;">Incidencia</td>
+                                            <td id="incidencia" style="width:5%;" colspan="7"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <br>
+                <fieldset class="group-importes">
+                    <legend>
+                        Items de requerimiento
+                    </legend>
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-condensed table-bordered" id="listaDetalleRequerimientoModal">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 2%">#</th>
+                                            <th style="width: 10%">Partida</th>
+                                            <th style="width: 10%">C.Costo</th>
+                                            <th style="width: 5%">Part number</th>
+                                            <th style="width: 30%">Descripción de item</th>
+                                            <th style="width: 5%">Unidad</th>
+                                            <th style="width: 5%">Cantidad</th>
+                                            <th style="width: 8%">Precio U. <span name="simboloMoneda">S/</span></th>
+                                            <th style="width: 8%">Subtotal</th>
+                                            <th style="width: 20%">Motivo</th>
+                                            <th style="width: 10%">Estado</th>
+                                            <th style="width: 2%">Adjuntos</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body_item_requerimiento">
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="8" class="text-right"><strong>Monto neto:</strong></td>
+                                            <td class="text-right"><span name="simbolo_moneda">S/</span><label name="monto_subtotal"> 0.00</label></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="8" class="text-right"><strong>IGV 18%:</strong></td>
+                                            <td class="text-right"><span name="simbolo_moneda"></span><label name="monto_igv"> 0.00</label></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="8" class="text-right"><strong>Monto Total:</strong></td>
+                                            <td class="text-right"><span name="simbolo_moneda"></span><label name="monto_total"> 0.00</label></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="group-importes">
+                    <legend style="background:#b3a705;">Historial de revisiones/aprobaciones</legend>
+                    <br>
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="listaHistorialRevision">
+                                    <thead>
+                                        <tr>
+                                            <th>Revisado por</th>
+                                            <th>Acción</th>
+                                            <th>Comentario</th>
+                                            <th>Fecha revisión</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body_historial_revision"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="group-importes" id="group-acciones">
+                    <legend>Revisar</legend>
+                    <br>
+                    <div class="form-horizontal">
+                        <input type="hidden" name="idRequerimiento">
+                        <input type="hidden" name="idDocumento">
+                        <input type="hidden" name="idUsuario">
+                        <input type="hidden" name="idRolAprobante">
+                        <input type="hidden" name="idFlujo">
+                        <input type="hidden" name="idOperacion">
+                        <input type="hidden" name="aprobacionFinalOPendiente">
+                        <input type="hidden" name="tieneRolConSiguienteAprobacion">
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">Acción a realizar</label>
+                            <div class="col-sm-4">
+                                <select class="form-control handleChangeUpdateAccion" id="accion">
+                                    <option value="0">Seleccione una acción</option>
+                                    <option value="1">Aprobar Requerimiento</option>
+                                    <option value="2">Rechazar Requerimiento</option>
+                                    <option value="3">Observar Requerimiento</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">Comentarios</label>
+                            <div class="col-sm-4">
+                                <textarea class="form-control" id="comentario"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-primary" class="close" data-dismiss="modal">Cerrar</button>
+                <button class="btn btn-success handleClickRegistrarRespuesta" id="btnRegistrarRespuesta">Registrar respuesta</button>
             </div>
         </div>
     </div>
