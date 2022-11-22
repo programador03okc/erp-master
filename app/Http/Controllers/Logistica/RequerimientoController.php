@@ -1128,6 +1128,35 @@ class RequerimientoController extends Controller
         return response()->json($detalleAdjuntos);
     }
 
+    public function obtenerIdDocumento($tipoDocumento,$idReq){
+        $result = [];
+
+        $documento = Documento::where([['id_doc',$idReq],['id_tp_documento',$tipoDocumento]])->first();
+
+        if( !empty($documento)){
+            $result =[
+                'id'=> $documento->id_doc_aprob,
+                'mensaje'=>'Id encontrado',
+                'estado'=>'success'
+        ];
+
+        }else{
+            $result =[
+            'id'=>0,
+            'mensaje'=>'No se encontro el id',
+            'estado'=>'error'
+        ];
+
+        }
+
+        return $result;
+
+    }
+
+    public function getDescripcionEstado($idEstado){
+       return ( Estado::find($idEstado)->estado_doc)??'';
+    }
+
     public function actualizarRequerimiento(Request $request)
     {
         // dd($request->all());
@@ -1144,11 +1173,15 @@ class RequerimientoController extends Controller
         }
 
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
+        $nuevoEstado=1;
         if ($requerimiento->estado == 3) { // si el estado actual es observado
             if($request->monto_total <= $requerimiento->monto_total){
                 $requerimiento->estado = $requerimiento->estado_anterior;
+                $nuevoEstado=$requerimiento->estado_anterior;
             }else{
                 $requerimiento->estado = 1; // elaborado
+                $nuevoEstado=1;
+
             }
 
             $trazabilidad = new Trazabilidad();
@@ -1159,6 +1192,21 @@ class RequerimientoController extends Controller
             $trazabilidad->fecha_registro = new Carbon();
             $trazabilidad->save();
 
+            if(intval($request->id_requerimiento) >0){
+                $documento = $this->obtenerIdDocumento(1,$request->id_requerimiento);
+            }
+            $aprobacion = new Aprobacion();
+            $aprobacion->id_flujo = null;
+            $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+            $aprobacion->id_usuario = Auth::user()->id_usuario;
+            $aprobacion->id_vobo = 8; // sustentado
+            $aprobacion->fecha_vobo = new Carbon();
+            $aprobacion->detalle_observacion = 'El Sistema utilizó el sustento del usuario para determinar el nuevo estado del requerimiento, en este momento su estado es '. $this->getDescripcionEstado($nuevoEstado); // comentario
+            $aprobacion->id_rol = null;
+            $aprobacion->tiene_sustento = false;
+            $aprobacion->save();
+            
+
             $idDocumento = Documento::getIdDocAprob($request->id_requerimiento, 1);
             // $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
             $observacionesLis = Aprobacion::getObservaciones($idDocumento);
@@ -1167,7 +1215,6 @@ class RequerimientoController extends Controller
                     $aprobacion = Aprobacion::where("id_aprobacion", $value->id_aprobacion)->first();
                     $aprobacion->tiene_sustento = true;
                     $aprobacion->save();
-
                 }
             }
             // $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
@@ -1482,6 +1529,20 @@ class RequerimientoController extends Controller
                 }
                 $mensaje = 'Se anulo el requerimiento ' . $requerimiento->codigo;
                 $tipoMensaje = 'success';
+
+                if(intval($requerimiento->id_requerimiento) >0){
+                    $documento = $this->obtenerIdDocumento(1,$requerimiento->id_requerimiento);
+                }
+                $aprobacion = new Aprobacion();
+                $aprobacion->id_flujo = null;
+                $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+                $aprobacion->id_usuario = Auth::user()->id_usuario;
+                $aprobacion->id_vobo = 7; // Anulado
+                $aprobacion->fecha_vobo = new Carbon();
+                $aprobacion->detalle_observacion = null; // comentario
+                $aprobacion->id_rol = null;
+                $aprobacion->tiene_sustento = false;
+                $aprobacion->save();
             }
 
             DB::commit();
@@ -1560,7 +1621,14 @@ class RequerimientoController extends Controller
                 DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
                 FROM almacen.alm_det_req
                 WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
-                alm_det_req.estado != 7) AS monto_total")
+                alm_det_req.estado != 7) AS monto_total"),
+                DB::raw("(SELECT sis_usua.nombre_corto
+                FROM administracion.adm_documentos_aprob
+                     INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                    LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                    LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE alm_req.id_requerimiento = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =1 and adm_aprobacion.id_vobo =1 order by adm_aprobacion.fecha_vobo desc limit 1 ) AS ultimo_aprobador")
+            
 
             )
 

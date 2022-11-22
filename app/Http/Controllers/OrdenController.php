@@ -4360,18 +4360,21 @@ class OrdenController extends Controller
         }
     }
 
-    function registrarSolicitudDePagarEnCuotas(Request $request)
+    public function registrarSolicitudDePagarEnCuotas(Request $request)
     {
-        try {
-            DB::beginTransaction();
+        // try {
+        //     DB::beginTransaction();
             $orden = Orden::find($request->id_orden_compra);
-
+            
             // validar cantidad de cuotas vs monto total orden, si se completo el numero de cuotas enviar mensaje
-            $lastPagoCuota = PagoCuota::where([['id_orden', $orden->id_orden_compra]])->first();
-            $lastPagoCuotaDetallePagadas = PagoCuotaDetalle::where([['id_pago_cuota', $lastPagoCuota->id_pago_cuota], ['id_estado', '=', 6]])->get();
             $sumaPagos = 0;
-            foreach ($lastPagoCuotaDetallePagadas as $key => $detCuota) {
-                $sumaPagos += $detCuota->monto_cuota;
+            $lastPagoCuota = PagoCuota::where([['id_orden', $orden->id_orden_compra]])->first();
+            if(isset($lastPagoCuota->id_pago_cuota)==true){
+                $lastPagoCuotaDetallePagadas = PagoCuotaDetalle::where([['id_pago_cuota', $lastPagoCuota->id_pago_cuota], ['id_estado', '=', 6]])->get();
+                foreach ($lastPagoCuotaDetallePagadas as $key => $detCuota) {
+                    $sumaPagos += $detCuota->monto_cuota;
+                }
+                
             }
             if (floatval($orden->monto_total) > floatval($sumaPagos)) {
 
@@ -4389,7 +4392,7 @@ class OrdenController extends Controller
 
                 if ((isset($request->pagoEnCuotasCheckbox) == true)) {
                     $findPagoCuota = PagoCuota::where('id_orden', $request->id_orden_compra)->first();
-                    if (empty($findPagoCuota) == false) {
+                    if (empty($findPagoCuota) == false && ($findPagoCuota) !=null) {
                         $pagoCuotaDetalle = new PagoCuotaDetalle();
                         $pagoCuotaDetalle->id_pago_cuota = $findPagoCuota->id_pago_cuota;
                         $pagoCuotaDetalle->monto_cuota = str_replace(',', '', $request->monto_a_pagar);
@@ -4457,24 +4460,24 @@ class OrdenController extends Controller
                     'data' => $orden
                 );
             }
-            DB::commit();
+            // DB::commit();
 
             return $arrayRspta;
-        } catch (Exception $e) {
+        // } catch (Exception $e) {
 
-            $arrayRspta = array(
-                'tipo_estado' => 'error',
-                'mensaje' => 'Hubo un problema al intentar registrar de solicitud de pago',
-                'data' => []
-            );
+        //     $arrayRspta = array(
+        //         'tipo_estado' => 'error',
+        //         'mensaje' => 'Hubo un problema al intentar registrar de solicitud de pago en cuotas',
+        //         'data' => []
+        //     );
 
-            return $arrayRspta;
-        }
+        //     return $arrayRspta;
+        // }
     }
-    function registrarSolicitudDePagarDirecta(Request $request)
+    public function registrarSolicitudDePagarDirecta(Request $request)
     {
-        try {
-            DB::beginTransaction();
+        // try {
+        //     DB::beginTransaction();
             $orden = Orden::find($request->id_orden_compra);
 
             $orden->estado_pago = 8; //enviado a pago
@@ -4527,18 +4530,18 @@ class OrdenController extends Controller
                 'data' => $orden
             );
             
-            DB::commit();
+            // DB::commit();
             return $arrayRspta;
-        } catch (Exception $e) {
+        // } catch (Exception $e) {
 
-            $arrayRspta = array(
-                'tipo_estado' => 'error',
-                'mensaje' => 'Hubo un problema al intentar registrar de solicitud de pago',
-                'data' => []
-            );
+        //     $arrayRspta = array(
+        //         'tipo_estado' => 'error',
+        //         'mensaje' => 'Hubo un problema al intentar registrar de solicitud de pago',
+        //         'data' => []
+        //     );
 
-            return $arrayRspta;
-        }
+        //     return $arrayRspta;
+        // }
     }
 
     function ObtenerHistorialDeEnviosAPagoEnCuotas($idOrden)

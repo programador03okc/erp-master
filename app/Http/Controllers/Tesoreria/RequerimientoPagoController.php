@@ -178,7 +178,21 @@ class RequerimientoPagoController extends Controller
                 DB::raw("(SELECT COUNT(registro_pago.id_pago)
                 FROM tesoreria.registro_pago
                 WHERE  registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago AND registro_pago.adjunto IS NOT NULL AND
-                registro_pago.estado != 7) AS cantidad_adjuntos_pago")
+                registro_pago.estado != 7) AS cantidad_adjuntos_pago"),
+ 
+                // DB::raw("(SELECT  jsonb_agg(DISTINCT jsonb_build_object('vobo', adm_vobo.descripcion, 'usuario', sis_usua.nombre_corto, 'fecha_vobo', adm_aprobacion.fecha_vobo))
+                // FROM administracion.adm_documentos_aprob
+                //      INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                //     LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                //     LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                // WHERE requerimiento_pago.id_requerimiento_pago = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =11 ) AS flujo_aprobacion")
+                DB::raw("(SELECT sis_usua.nombre_corto
+                FROM administracion.adm_documentos_aprob
+                     INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                    LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                    LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE requerimiento_pago.id_requerimiento_pago = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =11 and adm_aprobacion.id_vobo =1 order by adm_aprobacion.fecha_vobo desc limit 1 ) AS ultimo_aprobador")
+            
             )
             ->when(($mostrar === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
@@ -224,6 +238,9 @@ class RequerimientoPagoController extends Controller
                     $query->whereBetween('requerimiento_pago.fecha_registro', [$desde, $hasta->addDay()->addSeconds(-1)]);
                 } catch (\Throwable $th) {
                 }
+            })
+            ->editColumn('flujo_aprobacion', function ($data) {
+                return json_decode($data->flujo_aprobacion,true);
             })
             ->rawColumns(['termometro'])->toJson();
     }
@@ -537,6 +554,30 @@ class RequerimientoPagoController extends Controller
         }
         return $idList;
     }
+    public function obtenerIdDocumento($tipoDocumento,$idReq){
+        $result = [];
+
+        $documento = Documento::where([['id_doc',$idReq],['id_tp_documento',$tipoDocumento]])->first();
+
+        if( !empty($documento)){
+            $result =[
+                'id'=> $documento->id_doc_aprob,
+                'mensaje'=>'Id encontrado',
+                'estado'=>'success'
+        ];
+
+        }else{
+            $result =[
+            'id'=>0,
+            'mensaje'=>'No se encontro el id',
+            'estado'=>'error'
+        ];
+
+        }
+
+        return $result;
+
+    }
 
 
     function actualizarRequerimientoPago(Request $request)
@@ -569,6 +610,20 @@ class RequerimientoPagoController extends Controller
                 // $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
                 // $trazabilidad->fecha_registro = new Carbon();
                 // $trazabilidad->save();
+                if(intval($request->id_requerimiento_pago) >0){
+                    $documento = $this->obtenerIdDocumento(11,$request->id_requerimiento_pago);
+                }
+                $aprobacion = new Aprobacion();
+                $aprobacion->id_flujo = null;
+                $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+                $aprobacion->id_usuario = Auth::user()->id_usuario;
+                $aprobacion->id_vobo = 8; // sustentado
+                $aprobacion->fecha_vobo = new Carbon();
+                $aprobacion->detalle_observacion = null; // comentario
+                $aprobacion->id_rol = null;
+                $aprobacion->tiene_sustento = false;
+                $aprobacion->save();
+                
 
                 $idDocumento = Documento::getIdDocAprob($requerimientoPago->id_requerimiento_pago, 11);
                 $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
@@ -734,6 +789,19 @@ class RequerimientoPagoController extends Controller
                     RequerimientoPagoAdjunto::where('id_requerimiento_pago', '=', $idRequerimientoPago)
                         ->update(['id_estado' => 7]);
 
+                        if(intval($idRequerimientoPago) >0){
+                            $documento = $this->obtenerIdDocumento(11,$idRequerimientoPago);
+                        }
+                        $aprobacion = new Aprobacion();
+                        $aprobacion->id_flujo = null;
+                        $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+                        $aprobacion->id_usuario = Auth::user()->id_usuario;
+                        $aprobacion->id_vobo = 7; // Anulado
+                        $aprobacion->fecha_vobo = new Carbon();
+                        $aprobacion->detalle_observacion = null; // comentario
+                        $aprobacion->id_rol = null;
+                        $aprobacion->tiene_sustento = false;
+                        $aprobacion->save();
 
                     $output = [
                         'id_requerimiento_pago' => $idRequerimientoPago,
@@ -1320,7 +1388,21 @@ class RequerimientoPagoController extends Controller
                 DB::raw("(SELECT COUNT(registro_pago.id_pago)
                 FROM tesoreria.registro_pago
                 WHERE  registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago AND registro_pago.adjunto IS NOT NULL AND
-                registro_pago.estado != 7) AS cantidad_adjuntos_pago")
+                registro_pago.estado != 7) AS cantidad_adjuntos_pago"),
+                // DB::raw("(SELECT  jsonb_agg(DISTINCT jsonb_build_object('vobo', adm_vobo.descripcion, 'usuario', sis_usua.nombre_corto, 'fecha_vobo', adm_aprobacion.fecha_vobo))
+                // FROM administracion.adm_documentos_aprob
+                //      INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                //     LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                //     LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                // WHERE requerimiento_pago.id_requerimiento_pago = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =11 ) AS flujo_aprobacion")
+            
+                DB::raw("(SELECT sis_usua.nombre_corto
+                FROM administracion.adm_documentos_aprob
+                     INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                    LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                    LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE requerimiento_pago.id_requerimiento_pago = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =11 and adm_aprobacion.id_vobo =1 order by adm_aprobacion.fecha_vobo desc limit 1 ) AS ultimo_aprobador")
+            
             )
             ->when(($meOrAll === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
@@ -1556,9 +1638,20 @@ class RequerimientoPagoController extends Controller
     }
     public function obtenerAdjuntosPago($id_requerimiento_pago)
     {
-        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::select('requerimiento_pago_adjunto.id_requerimiento_pago_adjunto','requerimiento_pago_adjunto.archivo','requerimiento_pago_adjunto.id_estado','requerimiento_pago_adjunto.fecha_registro','requerimiento_pago_adjunto.id_categoria_adjunto', 'requerimiento_pago_categoria_adjunto.descripcion')
+        // return $id_requerimiento_pago;exit;
+
+        // return $adjuntos_pagos_complementarios;exit;
+        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::select(
+            'requerimiento_pago_adjunto.id_requerimiento_pago_adjunto',
+            'requerimiento_pago_adjunto.archivo',
+            'requerimiento_pago_adjunto.id_estado',
+            'requerimiento_pago_adjunto.fecha_registro',
+            'requerimiento_pago_adjunto.id_categoria_adjunto',
+            'requerimiento_pago_categoria_adjunto.descripcion'
+        )
         ->where('id_requerimiento_pago',$id_requerimiento_pago)
         ->join('tesoreria.requerimiento_pago_categoria_adjunto','requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto','=','requerimiento_pago_adjunto.id_categoria_adjunto')
+        ->where('requerimiento_pago_adjunto.id_categoria_adjunto',5)
         ->get();
 
         $adjuntos_pagos = RegistroPago::select('registro_pago_adjuntos.adjunto', 'registro_pago_adjuntos.id_adjunto')

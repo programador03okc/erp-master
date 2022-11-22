@@ -1657,6 +1657,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('exportarAntiguedades', 'Almacen\Reporte\SaldosController@exportarAntiguedades')->name('exportarAntiguedades');
 				Route::post('exportar-valorizacion', 'Almacen\Reporte\SaldosController@valorizacion')->name('exportar-valorizacion');
 				Route::get('actualizarFechasIngresoSoft/{id}', 'Migraciones\MigrateProductoSoftlinkController@actualizarFechasIngresoSoft')->name('actualizarFechasIngresoSoft');
+				Route::get('actualizarFechasIngresoAgile/{id}', 'Migraciones\MigrateProductoSoftlinkController@actualizarFechasIngresoAgile')->name('actualizarFechasIngresoSoft');
 			});
 
 			Route::group(['as' => 'lista-ingresos.', 'prefix' => 'lista-ingresos'], function () {
@@ -2009,6 +2010,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('enviarAPago', 'Tesoreria\RegistroPagoController@enviarAPago')->name('enviar-pago');
 				Route::post('revertirEnvio', 'Tesoreria\RegistroPagoController@revertirEnvio')->name('revertir-envio');
 				Route::get('verAdjuntos/{id}', 'Tesoreria\RegistroPagoController@verAdjuntos')->name('ver-adjuntos');
+				Route::post('anular-adjunto-requerimiento-pago-tesoreria', 'Tesoreria\RegistroPagoController@anularAdjuntoTesoreria');
+
 				Route::get('verAdjuntosPago/{id}', 'Tesoreria\RegistroPagoController@verAdjuntosPago')->name('ver-adjuntos-pago');
 				Route::get('actualizarEstadoPago', 'Tesoreria\RegistroPagoController@actualizarEstadoPago')->name('actualizar-estados-pago');
 
