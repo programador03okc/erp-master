@@ -988,7 +988,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('reporte-transito-ordenes-compra-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteTransitoOrdenesCompraExcel')->name('reporte-transito-ordenes-compra-excel');
 				Route::get('compras-locales', 'ReporteLogisticaController@viewReporteComprasLocales')->name('compras-locales');
 				Route::post('lista-compras-locales', 'ReporteLogisticaController@listaComprasLocales');
-				Route::get('reporte-compras-locales-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}/{fechaDesdeCancelacion?}/{fechaHastaCancelacion?}/{razonSocialProveedor?}/{idGrupo?}/{idProyecto?}/{observacionOrden?}/{estadoPago?}', 'OrdenController@reporteCompraLocalesExcel')->name('reporte-compras-locales-excel');
+				Route::get('reporte-compras-locales-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}/{fechaDesdeCancelacion?}/{fechaHastaCancelacion?}/{razonSocialProveedor?}/{idGrupo?}/{idProyecto?}/{estadoPago?}', 'OrdenController@reporteCompraLocalesExcel')->name('reporte-compras-locales-excel');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('listar-archivos-adjuntos-pago-requerimiento/{idOrden}', 'OrdenController@listarArchivoAdjuntoPagoRequerimiento');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');

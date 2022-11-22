@@ -1400,8 +1400,6 @@ class OrdenController extends Controller
     }
     public function mostrarOrden($id_orden)
     {
-
-
         $orden = Orden::select(
             'log_ord_compra.id_orden_compra',
             'log_ord_compra.id_tp_documento',
@@ -1458,6 +1456,7 @@ class OrdenController extends Controller
 
             'log_ord_compra.estado',
             'log_ord_compra.observacion',
+            'log_ord_compra.compra_local',
             'adm_estado_doc.estado_doc',
             'adm_estado_doc.bootstrap_color'
         )
@@ -1490,19 +1489,13 @@ class OrdenController extends Controller
             ->with(['detalle.detalleRequerimiento.reserva', 'detalle.guia_compra_detalle' => function ($q) {
                 $q->where('guia_com_det.estado', '!=', 7);
             }, 'detalle.producto.unidadMedida', 'detalle.unidad_medida', 'detalle.estado_orden'])
-            ->where([
-                ['log_ord_compra.id_orden_compra', '=', $id_orden]
-            ])
-            ->first();
-
-
-
+            // ->where([
+            //     ['log_ord_compra.id_orden_compra', '=', $id_orden]
+            // ])
+            ->where('log_ord_compra.id_orden_compra', $id_orden)->first();
 
         return response()->json($orden);
     }
-
-
-
 
     public function groupIncluded($id_orden)
     {
@@ -2606,39 +2599,40 @@ class OrdenController extends Controller
             if ($requerimientoHelper->EstaHabilitadoRequerimiento($idDetalleRequerimientoList) == true) { // buscar el requerimiento de cada detalle requerimiento y devolver si esta habilitado para acción de guardar, estado en pausa y por regularizar no es posible realizar acción de guardar
 
                 $orden = new Orden();
-                $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
-                $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
-                $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
-                $orden->id_tp_documento = $tp_doc;
-                $orden->fecha = $request->fecha_emision ? $request->fecha_emision : new Carbon();
-                $orden->fecha_registro = new Carbon();
-                $orden->id_usuario = Auth::user()->id_usuario;
-                $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
-                $orden->incluye_igv = isset($request->incluye_igv) ? $request->incluye_igv : true;
-                $orden->monto_subtotal = isset($request->monto_subtotal) ? $request->monto_subtotal : null;
-                $orden->monto_igv = isset($request->monto_igv) ? $request->monto_igv : null;
-                $orden->monto_total = isset($request->monto_total) ? $request->monto_total : null;
-                $orden->id_proveedor = $request->id_proveedor;
-                $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor) ? $request->id_cuenta_principal_proveedor : null;
-                $orden->id_contacto = isset($request->id_contacto_proveedor) ? $request->id_contacto_proveedor : null;
-                $orden->plazo_entrega =  $request->plazo_entrega ? $request->plazo_entrega : null;
-                $orden->id_condicion_softlink = $request->id_condicion_softlink ? $request->id_condicion_softlink : null;
-                $orden->id_condicion = $request->id_condicion ? $request->id_condicion : null;
-                $orden->plazo_dias = $request->plazo_dias ? $request->plazo_dias : null;
-                $orden->id_cotizacion = $request->id_cotizacion ? $request->id_cotizacion : null;
-                $orden->id_tp_doc = isset($request->id_tp_doc) ? $request->id_tp_doc : null;
-                $orden->personal_autorizado_1 = $request->personal_autorizado_1 ? $request->personal_autorizado_1 : null;
-                $orden->personal_autorizado_2 = $request->personal_autorizado_2 ? $request->personal_autorizado_2 : null;
-                $orden->id_occ = $request->id_cc ? $request->id_cc : null;
-                $orden->id_sede = $request->id_sede ? $request->id_sede : null;
-                $orden->direccion_destino = $request->direccion_destino != null ? trim(strtoupper($request->direccion_destino)) : null;
-                $orden->ubigeo_destino = isset($request->id_ubigeo_destino) ? $request->id_ubigeo_destino : null;
-                $orden->en_almacen = false;
-                $orden->estado = 1;
-                $orden->estado_pago = 1;
-                $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
-                $orden->observacion = $request->observacion != null ? trim(strtoupper($request->observacion)) : null;
-                $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
+                    $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
+                    $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
+                    $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
+                    $orden->id_tp_documento = $tp_doc;
+                    $orden->fecha = $request->fecha_emision ? $request->fecha_emision : new Carbon();
+                    $orden->fecha_registro = new Carbon();
+                    $orden->id_usuario = Auth::user()->id_usuario;
+                    $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
+                    $orden->incluye_igv = isset($request->incluye_igv) ? $request->incluye_igv : true;
+                    $orden->monto_subtotal = isset($request->monto_subtotal) ? $request->monto_subtotal : null;
+                    $orden->monto_igv = isset($request->monto_igv) ? $request->monto_igv : null;
+                    $orden->monto_total = isset($request->monto_total) ? $request->monto_total : null;
+                    $orden->id_proveedor = $request->id_proveedor;
+                    $orden->id_cta_principal = isset($request->id_cuenta_principal_proveedor) ? $request->id_cuenta_principal_proveedor : null;
+                    $orden->id_contacto = isset($request->id_contacto_proveedor) ? $request->id_contacto_proveedor : null;
+                    $orden->plazo_entrega =  $request->plazo_entrega ? $request->plazo_entrega : null;
+                    $orden->id_condicion_softlink = $request->id_condicion_softlink ? $request->id_condicion_softlink : null;
+                    $orden->id_condicion = $request->id_condicion ? $request->id_condicion : null;
+                    $orden->plazo_dias = $request->plazo_dias ? $request->plazo_dias : null;
+                    $orden->id_cotizacion = $request->id_cotizacion ? $request->id_cotizacion : null;
+                    $orden->id_tp_doc = isset($request->id_tp_doc) ? $request->id_tp_doc : null;
+                    $orden->personal_autorizado_1 = $request->personal_autorizado_1 ? $request->personal_autorizado_1 : null;
+                    $orden->personal_autorizado_2 = $request->personal_autorizado_2 ? $request->personal_autorizado_2 : null;
+                    $orden->id_occ = $request->id_cc ? $request->id_cc : null;
+                    $orden->id_sede = $request->id_sede ? $request->id_sede : null;
+                    $orden->direccion_destino = $request->direccion_destino != null ? trim(strtoupper($request->direccion_destino)) : null;
+                    $orden->ubigeo_destino = isset($request->id_ubigeo_destino) ? $request->id_ubigeo_destino : null;
+                    $orden->en_almacen = false;
+                    $orden->estado = 1;
+                    $orden->estado_pago = 1;
+                    $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
+                    $orden->observacion = $request->observacion != null ? trim(strtoupper($request->observacion)) : null;
+                    $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
+                    $orden->compra_local = ($request->compra_local == 'on') ? true : false;
                 $orden->save();
 
                 if($request->id_proveedor>0 && $request->id_rubro_proveedor !=null && $request->id_rubro_proveedor >0 ){
@@ -2647,35 +2641,24 @@ class OrdenController extends Controller
                         $contribuyenteProveedor = Contribuyente::find($proveedor->id_contribuyente);
                         $contribuyenteProveedor->id_rubro=$request->id_rubro_proveedor;
                         $contribuyenteProveedor->save();
-
                     }
                 }
 
-                // $idRequerimientoList=[];
-
                 for ($i = 0; $i < $count; $i++) {
                     $detalle = new OrdenCompraDetalle();
-                    $detalle->id_orden_compra = $orden->id_orden_compra;
-                    $detalle->id_producto = ($request->idProducto[$i] ? $request->idProducto[$i] : null);
-                    $detalle->id_detalle_requerimiento = $request->idDetalleRequerimiento[$i] ? $request->idDetalleRequerimiento[$i] : null;
-                    $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
-                    $detalle->id_unidad_medida = isset($request->unidad[$i])?$request->unidad[$i]:null;
-                    $detalle->precio = $request->precioUnitario[$i];
-                    // $detalle->descripcion_adicional = (isset($request->descripcion[$i]) && $request->descripcion[$i] != null) ? trim(strtoupper($request->descripcion[$i])) : null;
-                    $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
-                    $detalle->descripcion_complementaria = ($request->descripcionComplementaria[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcionComplementaria[$i]))) : null;
-                    $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
-                    $detalle->tipo_item_id = $request->idTipoItem[$i];
-                    $detalle->estado = 1;
-                    $detalle->fecha_registro = new Carbon();
-
-                    // $detalle->fecha_registro = new Carbon();
+                        $detalle->id_orden_compra = $orden->id_orden_compra;
+                        $detalle->id_producto = ($request->idProducto[$i] ? $request->idProducto[$i] : null);
+                        $detalle->id_detalle_requerimiento = $request->idDetalleRequerimiento[$i] ? $request->idDetalleRequerimiento[$i] : null;
+                        $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
+                        $detalle->id_unidad_medida = isset($request->unidad[$i])?$request->unidad[$i]:null;
+                        $detalle->precio = $request->precioUnitario[$i];
+                        $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
+                        $detalle->descripcion_complementaria = ($request->descripcionComplementaria[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcionComplementaria[$i]))) : null;
+                        $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                        $detalle->tipo_item_id = $request->idTipoItem[$i];
+                        $detalle->estado = 1;
+                        $detalle->fecha_registro = new Carbon();
                     $detalle->save();
-
-                    // if($request->idDetalleRequerimiento[$i]>0){
-                    //     $idRequerimientoList[]= DetalleRequerimiento::find($request->idDetalleRequerimiento[$i])->first()->id_requerimiento;
-                    // }
-
                 }
 
                 $idOrden = $orden->id_orden_compra;
@@ -2688,9 +2671,7 @@ class OrdenController extends Controller
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento('CREAR',$orden->id_orden_compra, $orden->codigo);
                 }
 
-
                 // if ($request->migrar_oc_softlink == true) {
-
                 //     $statusMigracionSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
                 // }
 
@@ -2705,8 +2686,7 @@ class OrdenController extends Controller
                     'error' => $actualizarEstados['error']
 
                 ]);
-            } // si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
-            else {
+            } else { // si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
 
                 return response()->json([
                     'id_orden_compra' => null,
@@ -4047,10 +4027,10 @@ class OrdenController extends Controller
     {
         return Excel::download(new ReporteTransitoOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_transito_ordenes_compra.xlsx');
     }
-    public function reporteCompraLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago)
+    public function reporteCompraLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor,$idGrupo,$idProyecto,$estadoPago)
     {
         // return $razonSocialProveedor;
-        return Excel::download(new ReporteComprasLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago), 'reporte_compra_locales.xlsx');
+        return Excel::download(new ReporteComprasLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor,$idGrupo,$idProyecto,$estadoPago), 'reporte_compra_locales.xlsx');
     }
 
 

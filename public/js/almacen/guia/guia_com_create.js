@@ -228,7 +228,6 @@ $("#detalleOrdenSeleccionadas tbody").on("click", "a.verProducto", function (e) 
 });
 
 $("#form-guia_create").on("submit", function (e) {
-    console.log('submit');
     e.preventDefault();
 
     var detalle = [];
@@ -423,7 +422,6 @@ function guardar_guia_create(data) {
         data: data,
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
             if (response['id_ingreso'] == null) {
                 Swal.fire({
                     title: "Ya existe la serie-número de Guía!",
