@@ -36,14 +36,14 @@
                                             <select class="form-control activation handleCheckStatusValue" name="tipo_requerimiento_pago">
                                                 @foreach ($tiposRequerimientoPago as $tipo)
                                                     @if((in_array(Auth::user()->id_usuario,[
-                                                    4, 
+                                                    4,
                                                     24,
                                                     99,
-                                                    54, 
-                                                    22, 
-                                                    32, 
-                                                    77, 
-                                                    3, 
+                                                    54,
+                                                    22,
+                                                    32,
+                                                    77,
+                                                    3,
                                                     17,
                                                     27
                                                     ])))
@@ -132,8 +132,8 @@
                                                 <input type="text" class="form-control oculto" name="id_cc">
                                                 <input type="text" class="form-control" name="codigo_oportunidad" readonly>
 
-                                                <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP"">
-                                                    <i class=" fas fa-search"></i>
+                                                <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP">
+                                                    <i class="fas fa-search"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -198,9 +198,9 @@
                                             <div style="display:flex;">
                                                 <input class="oculto" name="id_persona">
                                                 <input class="oculto" name="id_contribuyente">
-                                                <input type="text" class="form-control" name="tipo_documento_identidad" placeholder="Tipo documento identidad" style="width:10%;" disabled>
+                                                <input type="text" class="form-control" name="tipo_documento_identidad" placeholder="Tipo doc." style="width:15%;" disabled>
                                                 <input type="text" class="form-control handleBlurBuscarDestinatarioPorNumeroDocumento" name="nro_documento" placeholder="Nro documento" style="width:30%;">
-                                                <input type="text" class="form-control handleKeyUpBuscarDestinatarioPorNombre handleFocusInputNombreDestinatario handleFocusOutInputNombreDestinatario" placeholder="Nombre destinatario" name="nombre_destinatario" style="width:60%;">
+                                                <input type="text" class="form-control handleKeyUpBuscarDestinatarioPorNombre handleFocusInputNombreDestinatario handleFocusOutInputNombreDestinatario" placeholder="Nombre destinatario" name="nombre_destinatario" style="width:55%;">
                                                 <button type="button" class="btn btn-sm btn-flat btn-primary" onClick="modalNuevoDestinatario();">
                                                     <i class="fa fa-plus"></i>
                                                 </button>
