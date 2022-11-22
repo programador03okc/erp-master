@@ -363,6 +363,7 @@ class MigrateProductoSoftlinkController extends Controller
         $productos = DB::table('almacen.alm_prod_serie')
             ->select(
                 'alm_prod_serie.serie',
+                'alm_prod_serie.id_almacen',
                 'alm_prod.id_producto',
                 'alm_prod.cod_softlink',
                 'alm_almacen.codigo'
@@ -406,6 +407,62 @@ class MigrateProductoSoftlinkController extends Controller
                         'doc_ingreso_soft' => $doc,
                         'moneda_soft' => $mon,
                     ]);
+            }
+        }
+
+        return response()->json(array('tipo' => 'success', 'mensaje' => 'Se actualizó correctamente '));
+    }
+
+    public function actualizarFechasIngresoAgile($id_almacen)
+    {
+        $productos = DB::table('almacen.alm_prod_serie')
+            ->select(
+                'alm_prod_serie.serie',
+                'alm_prod_serie.id_almacen',
+                'alm_prod.id_producto',
+                'alm_prod.cod_softlink',
+                'alm_almacen.codigo'
+            )
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_serie.id_almacen')
+            ->whereNull('alm_prod_serie.fecha_ingreso_soft')
+            ->where('alm_prod_serie.estado', 1)
+            ->where('alm_prod_serie.id_almacen', $id_almacen)
+            ->get();
+
+        foreach ($productos as $p) {
+            $data = DB::table('almacen.alm_prod_serie')
+                ->select(
+                    'guia_com.fecha_almacen',
+                    'guia_com_det.unitario',
+                    DB::raw("guia_com.serie || '-' || guia_com.numero as serie_numero"),
+                    'log_ord_compra.id_moneda'
+                )
+                ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
+                ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+                ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
+                ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+                ->where('alm_prod_serie.serie', $p->serie)
+                ->where('alm_prod_serie.id_almacen', $p->id_almacen)
+                ->where('alm_prod_serie.estado', 1)
+                ->orderBy('alm_prod_serie.fecha_registro', 'asc')
+                ->first();
+
+            if ($data !== null) {
+                $s = DB::table('almacen.alm_prod_serie')
+                    ->where([['serie', '=', $p->serie], ['id_almacen', '=', $p->id_almacen], ['estado', '=', 1]])
+                    ->first();
+
+                if ($s !== null && $s->fecha_ingreso_soft == null) {
+                    DB::table('almacen.alm_prod_serie')
+                        ->where('id_prod_serie', $s->id_prod_serie)
+                        ->update([
+                            'fecha_ingreso_soft' => $data->fecha_almacen,
+                            'precio_unitario_soft' => $data->unitario,
+                            'doc_ingreso_soft' => $data->serie_numero,
+                            'moneda_soft' => $data->id_moneda,
+                        ]);
+                }
             }
         }
 
