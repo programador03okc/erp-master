@@ -268,6 +268,12 @@ Orden de compra / servicio
                                 @endforeach
                             </select>
                         </div>
+                        <div class="col-md-2" id="group-tipo_documento">
+                            <h5>Tipo de Compra</h5>
+                            <label class="checkbox-inline">
+                            <input type="checkbox" name="esCompraLocal"> Compra local
+                            </label>
+                        </div>
 
                     </div>
                 </fieldset>

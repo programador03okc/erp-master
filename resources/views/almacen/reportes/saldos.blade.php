@@ -80,12 +80,12 @@ Saldos Actuales
                                             <i class="fas fa-download"></i> Exportar series
                                         </button>
                                     </div>
+                                    @endif
                                     <div class="col-md-2">
-                                        <button type="button" class="btn btn-block botones btn-info export" onclick="exportarAntiguedades();" disabled>
+                                        <button type="button" class="btn btn-block botones btn-info" onclick="exportarAntiguedades();">
                                             <i class="fas fa-download"></i> Antiguedades
                                         </button>
                                     </div>
-                                    @endif
                                     @if (in_array(161,$array_accesos))
                                     <div class="col-md-2">
                                         <button type="button" class="btn btn-block botones btn-danger" onclick="exportarSoftLink();">

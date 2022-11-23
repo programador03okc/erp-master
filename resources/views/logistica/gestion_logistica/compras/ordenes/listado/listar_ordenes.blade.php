@@ -32,7 +32,7 @@ Gestión de ordenes
                             <button type="button" class="btn btn-default handleClickTipoVistaPorCabecera" id="btnTipoVistaPorCabecera" title="Ver tabla a nivel de cabecera"><i class="fas fa-columns"></i> Vista a nivel de Cabecera</button>
                             @endif
                             @if (in_array(250,$array_accesos))
-                            <button type="button" class="btn btn-default handleClickTipoVistaPorItem" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items"><i class="fas fa-table"></i> Vista a nivel de Item's</button>
+                            <button type="button" class="btn btn-default handleClickTipoVistaPorItem" id="btnTipoVistaPorItemPara" title="Ver tabla a nivel de Items"><i class="fas fa-table"></i> Vista a nivel de Items</button>
                             @endif
                         </div>
                     </div>
@@ -167,39 +167,42 @@ Gestión de ordenes
 @endsection
 
 @section('scripts')
-<script src="{{ asset('js/util.js')}}"></script>
-<script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
-<script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
-<script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
-<!-- <script src="{{('/js/logistica/orden/listar_ordenes.js')}}"></script> -->
-<!-- <script src="{{('/js/logistica/orden/orden_ver_detalle.js')}}"></script> -->
-<script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
-<script src="{{('/js/logistica/orden/listaOrdenView.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenView.js'))}}"></script>
-<script src="{{('/js/logistica/orden/listaOrdenController.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenController.js'))}}"></script>
-<script src="{{('/js/logistica/orden/listaOrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenModel.js'))}}"></script>
-<script src="{{ asset('js/tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js'))}}"></script>
-<script src="{{ asset('js/tesoreria/requerimientoPago/nuevoDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoDestinatario.js'))}}"></script>
+    <script src="{{ asset('js/util.js')}}"></script>
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <!-- <script src="{{('/js/logistica/orden/listar_ordenes.js')}}"></script> -->
+    <!-- <script src="{{('/js/logistica/orden/orden_ver_detalle.js')}}"></script> -->
+    <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenView.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenView.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenController.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenController.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/listaOrdenModel.js')}}?v={{filemtime(public_path('/js/logistica/orden/listaOrdenModel.js'))}}"></script>
+    <script src="{{ asset('js/tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js'))}}"></script>
+    <script src="{{ asset('js/tesoreria/requerimientoPago/nuevoDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoDestinatario.js'))}}"></script>
 
-<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-<script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
-<script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
+    <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/jquery-number/jquery.number.min.js') }}"></script>
 
-<script>
-    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
-    window.onload = function() {
+    <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
+        window.onload = function() {
 
-        $.fn.dataTable.moment('DD-MM-YYYY HH:mm');
-        $.fn.dataTable.moment('DD-MM-YYYY');
-        const listaOrdenModel = new ListaOrdenModel();
-        const listaOrdenCtrl = new ListaOrdenCtrl(listaOrdenModel);
-        const listaOrdenView = new ListaOrdenView(listaOrdenCtrl);
+            $.fn.dataTable.moment('DD-MM-YYYY HH:mm');
+            $.fn.dataTable.moment('DD-MM-YYYY');
+            const listaOrdenModel = new ListaOrdenModel();
+            const listaOrdenCtrl = new ListaOrdenCtrl(listaOrdenModel);
+            const listaOrdenView = new ListaOrdenView(listaOrdenCtrl);
 
-        listaOrdenView.init();
-        listaOrdenView.initializeEventHandler();
+            listaOrdenView.init();
+            listaOrdenView.initializeEventHandler();
+            $('[name=monto_a_pagar]').number( true, 2 );
+            $('[name=saldo]').number( true, 2 );
 
-    };
-</script>
+        };
+    </script>
 @endsection

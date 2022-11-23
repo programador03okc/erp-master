@@ -1,4 +1,5 @@
-﻿class RequerimientoPago {
+﻿var array_adjuntos = [];
+class RequerimientoPago {
     constructor(permisoVer, permisoEnviar, permisoRegistrar) {
         this.permisoVer = permisoVer;
         this.permisoEnviar = permisoEnviar;
@@ -239,6 +240,15 @@
                     }, 'className': 'text-right celestito'
                 },
                 {
+                    'render': function (data, type, row) {
+                        if(JSON.parse(row['tiene_pago_en_cuotas'])==true){
+                            return ((parseFloat(row['ultima_monto_cuota'])>0? row['ultima_monto_cuota']:(row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00')) );
+                        }else{
+                            return '(No aplica)';
+                        }
+                    }, 'className': 'text-right'
+                },
+                {
                     'data': 'estado_doc', 'name': 'requerimiento_pago_estado.descripcion',
                     'render': function (data, type, row) {
                         // var estadoAdd = '';
@@ -295,12 +305,18 @@
                                 default:
                                     break;
                             }
+                            console.log(row['id_estado'] == 10  );
                             return `<div class="btn-group" role="group">
-                ${(row['estado_pago'] == 8 && permisoEnviar == '1') ?
+                ${(row['estado_pago'] == 8 && permisoEnviar == '1' && row['tiene_pago_en_cuotas']===false) ?
                                     `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
                                 title="Autorizar pago" >
                                 <i class="fas fa-share"></i></button>`: ''}
+                ${(permisoEnviar == '1' && row['tiene_pago_en_cuotas']===true) ?
+                                    `<button type="button" class="visualizarPagosEnCuotas btn btn-info boton" data-toggle="tooltip"
+                                data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
+                                title="Visualizar pagos en cuotas" >
+                                <i class="fas fa-calendar-check"></i></button>`: ''}
                             ${row['estado_pago'] == 5 ?
                                     `${permisoEnviar == '1' ?
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip"
@@ -309,11 +325,13 @@
                                     `
                                     : ''}
 
-                                ${row['estado_pago'] == 5 || row['estado_pago'] == 9 ?
+                                ${row['estado_pago'] == 5 || row['estado_pago'] == 9 || (row['estado_pago'] == 10 && parseFloat(row['suma_cuotas_con_autorizacion'])>0) ?
                                     `${permisoRegistrar == '1' ?
                                         `<button type="button" class="pago btn btn-success boton" data-toggle="tooltip" data-placement="bottom"
                                     data-id="${row['id_orden_compra']}" data-cod="${row['codigo']}" data-tipo="orden"
-                                    data-total="${row['monto_total']}" data-pago="${row['suma_pagado']}"
+                                    data-total="${row['monto_total']}"
+                                    data-pago="${row['suma_pagado']}"
+                                    data-suma-cuota-con-autorizacion="${row['suma_cuotas_con_autorizacion']}"
                                     data-moneda="${row['simbolo']}"
                                     data-cantidad-adjuntos-logisticos="${row['cantidad_adjuntos_logisticos']}"
                                     data-nrodoc="${nroDocumentoDestinatario}"
@@ -325,6 +343,8 @@
                                     data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     data-comentario-pago-logistica="${row['comentario_pago']}"
+                                    data-tiene-pago-en-cuotas="${row['tiene_pago_en_cuotas']}"
+
                                     data-observacion-requerimiento="${observacionRequerimiento}"
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`
                                     : ''}
@@ -353,7 +373,7 @@
                     targets: 2
                 },
             ],
-            'order': [[10, "asc"], [6, "asc"]]
+            'order': [[11, "asc"], [6, "asc"]]
         });
 
     }
@@ -464,6 +484,12 @@ $('#listaOrdenes tbody').on("click", "button.revertir", function () {
 $('#listaRequerimientos tbody').on("click", "button.adjuntos", function () {
     var id = $(this).data('id');
     var codigo = $(this).data('codigo');
+    var codigo = $(this).data('codigo');
+    $('#modal-verAdjuntos input[name="id_requerimiento_pago"]').val(id)
+    $('#modal-verAdjuntos input[name="codigo_requerimiento"]').val(codigo)
+    $('#modal-verAdjuntos [data-action="table-body"]').html('');
+    $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').html('');
+    array_adjuntos=[];
     verAdjuntos(id, codigo);
 });
 
@@ -502,6 +528,27 @@ function verAdjuntos(id, codigo) {
                 });
                 $('#adjuntosDetalle tbody').html(html);
             }
+            var html = '';
+            if (response.adjuntos_pago.length > 0) {
+
+                response.adjuntos_pago.forEach(function (element) {
+                    html += `<tr>
+                        <td><a target="_blank" href="/files/tesoreria/pagos/${element.adjunto}">${element.adjunto}</a></td>
+                    </tr>`;
+                });
+                // $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').html(html);
+            }
+
+            if (response.adjuntos_pagos_complementarios.length > 0) {
+                // var html = '';
+                response.adjuntos_pagos_complementarios.forEach(function (element) {
+                    html += `<tr>
+                        <td><a target="_blank" href="/files/tesoreria/pagos/${element.archivo}">${element.archivo}</a></td>
+                    </tr>`;
+                });
+                // $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').append(html);
+            }
+            $('#modal-verAdjuntos [data-table="adjuntos-pagos"]').html(html);
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -633,10 +680,11 @@ $('#listaRequerimientos tbody').on('click', 'td button.detalle', function () {
         });
         iTableCounterReq = iTableCounterReq + 1;
     }
+
 });
 
 function formatPagos(table_id, id, row, tipo) {
-    console.log(tipo)
+
     $.ajax({
         type: 'GET',
         url: 'listarPagos/' + tipo + '/' + id,
@@ -759,4 +807,201 @@ function actualizarEstadoPago() {
     });
 
 }
+// var array_adjuntos = [];
+$(document).on('change','[data-action="adjuntos"]',function () {
 
+    $.each($(this)[0].files, function (index, element) {
+        array_adjuntos.push(element);
+    });
+    pesoArchivos();
+    adjuntosSeleccionados();
+});
+function pesoArchivos() {
+    var peso_archivo= 0,
+        peso_total = 0;
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        peso_archivo=peso_archivo+valueOfElement.size;
+    });
+    peso_total = peso_archivo/(1000000);
+    $('#modal-verAdjuntos #peso-estimado').text(peso_total.toFixed(2)+'MB');
+
+    if (peso_archivo<=2000000) {
+        $('.guardar-adjuntos').removeAttr('disabled');
+
+    }else{
+        $('.guardar-adjuntos').attr('disabled',true);
+    }
+}
+function adjuntosSeleccionados() {
+    var html='';
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        html+='<tr data-key="'+indexInArray+'">'
+            html+='<td>'
+                html+=valueOfElement.name
+            html+='</td>'
+            html+='<td><buton class="btn btn-danger btn-xs" data-action="eliminar-adjunto" data-key="'+indexInArray+'"><i class="fas fa-trash-alt"></i></button></td>'
+        html+='</tr>'
+    });
+    $('[data-action="table-body"]').html(html);
+}
+$(document).on('click','[data-action="eliminar-adjunto"]',function () {
+    var key_item = $(this).attr('data-key');
+    array_adjuntos = array_adjuntos.filter((item, key) => key !== parseInt(key_item));
+    if (array_adjuntos.length===0) {
+        $('[name="adjuntos[]"]').val('');
+    }
+    adjuntosSeleccionados();
+    pesoArchivos();
+});
+$(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
+    e.preventDefault();
+    var data_forma_adjuntos = new FormData($(this)[0]);
+    $.each(array_adjuntos, function (indexInArray, valueOfElement) {
+        data_forma_adjuntos.append('archivos[]', valueOfElement);
+    });
+    Swal.fire({
+        title: 'Adjuntos',
+        text: "¿Está seguro de guardar?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'no',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                url: 'guardar-adjuntos-tesoreria',
+                data: data_forma_adjuntos,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                    console.log(data);
+                }
+            }).done(function(response) {
+                return response
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+
+          },
+      }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value.status===200) {
+                $('#modal-verAdjuntos').modal('hide');
+            }
+        }
+    })
+
+});
+
+$('#listaOrdenes tbody').on('click', 'td button.visualizarPagosEnCuotas', function () {
+    var tr = $(this).closest('tr');
+    var row = tableOrdenes.row(tr);
+    var id = $(this).data('id');
+
+    if (row.child.isShown()) {
+        row.child.hide();
+        tr.removeClass('shown');
+    }
+    else {
+        formatPagosEnCuotas(iTableCounter, id, row, "orden");
+        tr.addClass('shown');
+        oInnerTable = $('#listaOrdenes_' + iTableCounter).dataTable({
+            //    data: sections,
+            autoWidth: true,
+            deferRender: true,
+            info: false,
+            lengthChange: false,
+            ordering: false,
+            paging: false,
+            scrollX: false,
+            scrollY: false,
+            searching: false,
+            columns: []
+        });
+        iTableCounter = iTableCounter + 1;
+    }
+});
+
+function formatPagosEnCuotas(table_id, id, row, tipo) {
+    // console.log(tipo)
+    $.ajax({
+        type: 'GET',
+        url: 'listarPagosEnCuotas/' + tipo + '/' + id,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            var html = '';
+            var i = 1;
+
+            let orden = response.orden;
+            let numeroCuotas = response.numero_de_cuotas;
+            let detalle = response.detalle;
+
+            if (response.hasOwnProperty('detalle') && detalle.length > 0) {
+                detalle.forEach(element => {
+                    enlaceAdjunto=[];
+                    (element.adjuntos).forEach(element => {
+                        enlaceAdjunto.push('<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>');
+                    });
+
+                    html += '<tr id="' + element.id_pago_cuota_detalle + '">' +
+                        '<td style="border: none; text-align: center">' + (element.monto_cuota !== null ? element.monto_cuota : '') + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
+                        '<td style="border: none; text-align: center">' +  (numeroCuotas>1?(i+'/'+numeroCuotas):i) + '</td>' +
+                        '<td style="border: none; text-align: center">' + enlaceAdjunto.toString().replace(",","<br>") + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.creado_por.nombre_corto + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.fecha_registro + '</td>' +
+                        '<td style="border: none; text-align: center">' + (element.fecha_autorizacion??'') + '</td>' +
+                        '<td style="border: none; text-align: center">' + element.estado.descripcion + '</td>' +
+                        '<td style="border: none; text-align: center">' +
+                        `<button type = "button" class= "btn btn-${element.fecha_autorizacion !=null?'success':'info'} boton" data - toggle="tooltip"
+                            data - placement="bottom"
+                            onClick = "enviarPagoEnCuotas(${orden.id_orden_compra},${element.id_pago_cuota_detalle},'${tipo}',event)" title = "${element.fecha_autorizacion !=null?'Pago Autorizado':'Autorizar pago'}" ${element.fecha_autorizacion !=null?'disabled':''}>
+                            ${element.fecha_autorizacion !=null?'<i class="fas fa-check-double"></i> Autorizado':'<i class="fas fa-check"></i> Autorizar'}
+                            </button>` +
+
+                        '</td>' +
+                        '</tr>';
+                    i++;
+                });
+                var tabla = `<table class= "table table-sm" style = "border: none;"
+                id = "detalle_${table_id}" >
+                <thead style="color: black;background-color: #c7cacc;">
+                    <tr>
+                        <th style="border: none;">Monto a pagar</th>
+                        <th style="border: none;">Observación</th>
+                        <th style="border: none;">Cuotas</th>
+                        <th style="border: none;">Adjunto</th>
+                        <th style="border: none;">Registrado por</th>
+                        <th style="border: none;">Fecha Registro</th>
+                        <th style="border: none;">Fecha Autorización</th>
+                        <th style="border: none;">Estado</th>
+                        <th style="border: none;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>${html}</tbody>
+                </table> `;
+            }
+            else {
+                var tabla = `<table class= "table table-sm" style = "border: none;"
+                id = "detalle_${table_id}" >
+            <tbody>
+                <tr><td>No hay registros para mostrar</td></tr>
+            </tbody>
+                </table> `;
+            }
+        row.child(tabla).show();
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
+}
