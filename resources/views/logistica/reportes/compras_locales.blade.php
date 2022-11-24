@@ -81,7 +81,7 @@ Reporte de compras locales
 </div>
 
 
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-filtro-reporte-compra-locales" style="overflow-y: scroll;">`
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-filtro-reporte-compra-locales" style="overflow-y: scroll;">
     <div class="modal-dialog" style="width: 38%;">
         <div class="modal-content">
             <div class="modal-header">
@@ -177,7 +177,7 @@ Reporte de compras locales
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <!--  <div class="form-group">
                                 <label class="col-sm-4">
                                     <div class="checkbox">
                                         <label title="Observación en orden">
@@ -189,7 +189,7 @@ Reporte de compras locales
                                     <input type="text" class="form-control handleUpdateValorFiltro" name="observacionOrden" value="COMPRA LOCAL" readOnly>
 
                                 </div>
-                            </div>
+                            </div>  -->
                             <div class="form-group">
                                 <label class="col-sm-4">
                                     <div class="checkbox">
@@ -256,46 +256,43 @@ Reporte de compras locales
 @endsection
 
 @section('scripts')
-<script src="{{ asset('js/util.js')}}"></script>
-<script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
-<script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
-<script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-<script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
-<script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
-<script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/util.js')}}"></script>
+    <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/datetime-moment.js') }}"></script>
+    <script src="{{ asset('template/plugins/iCheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('datatables/Buttons/js/buttons.bootstrap.min.js') }}"></script>
 
-<script src="{{('/js/logistica/reportes/comprasLocales.js')}}?v={{filemtime(public_path('/js/logistica/reportes/comprasLocales.js'))}}"></script>
+    <script src="{{('/js/logistica/reportes/comprasLocales.js')}}?v={{filemtime(public_path('/js/logistica/reportes/comprasLocales.js'))}}"></script>
+    
+    <script>
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
+        $(document).ready(function() {
+            seleccionarMenu(window.location);
+            const comprasLocales = new ComprasLocales();
+            comprasLocales.mostrar(
+                'SIN_FILTRO'
+                ,'SIN_FILTRO'
+                ,'SIN_FILTRO'
+                ,'SIN_FILTRO'
+                ,'SIN_FILTRO'
+                ,'SIN_FILTRO'
+                ,'SIN_FILTRO'
+                ,3
+                ,'SIN_FILTRO'
+                ,6);
 
+                comprasLocales.ActualParametroGrupo=3;
+                {{--  comprasLocales.ActualParametroObservacionOrden='COMPRA LOCAL';  --}}
+                comprasLocales.ActualParametroEstadoPago=6;
 
-<script>
-    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
-    $(document).ready(function() {
-        seleccionarMenu(window.location);
-        const comprasLocales = new ComprasLocales();
-        comprasLocales.mostrar(
-            'SIN_FILTRO'
-            ,'SIN_FILTRO'
-            ,'SIN_FILTRO'
-            ,'SIN_FILTRO'
-            ,'SIN_FILTRO'
-            ,'SIN_FILTRO'
-            ,'SIN_FILTRO'
-            ,3
-            ,'SIN_FILTRO'
-            ,'COMPRA LOCAL'
-            ,6);
-
-            comprasLocales.ActualParametroGrupo=3;
-            comprasLocales.ActualParametroObservacionOrden='COMPRA LOCAL';
-            comprasLocales.ActualParametroEstadoPago=6;
-
-        comprasLocales.initializeEventHandler();
-    });
-</script>
-
+            comprasLocales.initializeEventHandler();
+        });
+    </script>
 @endsection
 
 

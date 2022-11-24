@@ -109,13 +109,53 @@
                             </div>
                         </div>
                         <div class="row" id="contenedor_adjunto_logistica">
-                            <div class="col-md-3" style="width:auto;">
+                            <div class="col-md-2">
                                 <span style="font-size: 14px;">Adjuntos logística: </span>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-3">
                                 <label class="lbl-codigo handleClickVerAdjuntosLogisticos" style="font-size: 14px;" name="adjuntoslogistica">Ver</label>
                             </div>
                         </div>
+                        <div class="row" id="contenedor_adjunto_logistica">
+
+                        </div>
+                    </fieldset>
+                    <br>
+                    <fieldset class="group-table" id="fieldsetDatosPagoEnCuotas" hidden>
+                    <h5 style="display:flex;justify-content: space-between;"><strong>Pago en cuotas</strong></h5>
+                        <table class= "table table-sm" style="border: none;" id="tablaDatosPagoEnCuotas">
+                            <thead style="color: black;background-color: #c7cacc;">
+                                <tr>
+                                    <th style="border: none;">#</th>
+                                    <th style="border: none;">Monto a pagar</th>
+                                    <th style="border: none;">Observación</th>
+                                    <th style="border: none;">Cuota</th>
+                                    <th style="border: none;">Adjunto</th>
+                                    <th style="border: none;">Fecha Autorización</th>
+                                    <th style="border: none;">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr class="bg-info">
+                                    <td class="text-right"><strong>Total:</strong></td>
+                                    <td class="text-center"><strong><span name='sumaMontoTotalPagado'></span></strong></td>
+                                    <td colspan="5"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="text-right">
+                        <small>Leyende de estados:</small>
+                        <ul class="list-inline">
+                            <li><span class="label label-default">Elaborado</span></li>
+                            <li><span class="label label-default">Autorizado</span></li>
+                            <li><span class="label label-default">Pagado</span></li>
+                        </ul>
+                        </div>
+
+                        
+
                     </fieldset>
                     <br>
                     <fieldset class="group-table" id="fieldsetDatosPago">
@@ -148,7 +188,12 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-4" id="contenedorVinculoACuota">
+                            <h5>vincular pago con cuota(s)</h5>
+                            <select multiple class="form-control" name="vincularCuotaARegistroDePago[]" style="height: 6rem;">
+                            </select>
+                            </div>
+                            <div class="col-md-8">
                                 <h5>Motivo</h5>
                                 <textarea name="observacion" id="observacion" class="form-control" style="height: 60px;" rows="2" required></textarea>
                             </div>

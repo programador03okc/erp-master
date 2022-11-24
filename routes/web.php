@@ -751,6 +751,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listado-items-requerimientos-pagos-export-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Tesoreria\RequerimientoPagoController@listadoItemsRequerimientoPagoExportExcel');
 				Route::post('lista-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@listarRequerimientoPago')->name('lista-requerimiento-pago');
 				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');
+				// adjuntos de tesoreria
+				Route::get('obtener-adjuntos-tesoreria/{id_requerimiento_pago}', 'Tesoreria\RequerimientoPagoController@obtenerAdjuntosPago');
 				// Route::get('detalle-requerimiento-pago/{id?}', 'Tesoreria\RequerimientoPagoController@listarDetalleRequerimientoPago')->name('detalle-requerimiento-pago');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('listar-division-por-grupo/{id?}', 'Logistica\RequerimientoController@listarDivisionPorGrupo')->name('listar-division-por-grupo');
@@ -923,6 +925,7 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::get('listas-categorias-adjunto', 'OrdenController@listarCategoriasAdjuntos');
 						Route::post('guardar-adjunto-orden', 'OrdenController@guardarAdjuntoOrden');
 						Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
+						Route::get('historial-de-envios-a-pago-en-cuotas/{id_order}', 'OrdenController@ObtenerHistorialDeEnviosAPagoEnCuotas');
 						Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 						Route::get('generar-orden-pdf/{id?}', 'OrdenController@generar_orden_por_requerimiento_pdf')->name('generar-orden-por-requerimiento-pdf'); // PDF
 						Route::get('facturas/{id_orden}', 'OrdenController@obtenerFacturas');
@@ -988,7 +991,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('reporte-transito-ordenes-compra-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}', 'OrdenController@reporteTransitoOrdenesCompraExcel')->name('reporte-transito-ordenes-compra-excel');
 				Route::get('compras-locales', 'ReporteLogisticaController@viewReporteComprasLocales')->name('compras-locales');
 				Route::post('lista-compras-locales', 'ReporteLogisticaController@listaComprasLocales');
-				Route::get('reporte-compras-locales-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}/{fechaDesdeCancelacion?}/{fechaHastaCancelacion?}/{razonSocialProveedor?}/{idGrupo?}/{idProyecto?}/{observacionOrden?}/{estadoPago?}', 'OrdenController@reporteCompraLocalesExcel')->name('reporte-compras-locales-excel');
+				Route::get('reporte-compras-locales-excel/{idEmpresa?}/{idSede?}/{fechaDesde?}/{fechaHasta?}/{fechaDesdeCancelacion?}/{fechaHastaCancelacion?}/{razonSocialProveedor?}/{idGrupo?}/{idProyecto?}/{estadoPago?}', 'OrdenController@reporteCompraLocalesExcel')->name('reporte-compras-locales-excel');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('listar-archivos-adjuntos-pago-requerimiento/{idOrden}', 'OrdenController@listarArchivoAdjuntoPagoRequerimiento');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
@@ -1987,11 +1990,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'procesar-pago.', 'prefix' => 'procesar-pago'], function () {
 
 				Route::get('index', 'Tesoreria\RegistroPagoController@view_pendientes_pago')->name('index');
+				Route::post('guardar-adjuntos-tesoreria', 'Tesoreria\RegistroPagoController@guardarAdjuntosTesoreria');
 				Route::post('listarComprobantesPagos', 'Tesoreria\RegistroPagoController@listarComprobantesPagos')->name('listar-comprobante-pagos');
 				Route::post('listarOrdenesCompra', 'Tesoreria\RegistroPagoController@listarOrdenesCompra')->name('listar-ordenes-compra');
 				Route::post('listarRequerimientosPago', 'Tesoreria\RegistroPagoController@listarRequerimientosPago')->name('listar-requerimientos-pago');
 				Route::post('procesarPago', 'Tesoreria\RegistroPagoController@procesarPago')->name('procesar-pagos');
 				Route::get('listarPagos/{tp}/{id}', 'Tesoreria\RegistroPagoController@listarPagos')->name('listar-pagos');
+				Route::get('listarPagosEnCuotas/{tp}/{id}', 'Tesoreria\RegistroPagoController@listarPagosEnCuotas')->name('listar-pagos-en-cuotas');
 				// Route::get('pagosComprobante/{id}', 'Tesoreria\RegistroPagoController@pagosComprobante')->name('pagos-comprobante');
 				// Route::get('pagosRequerimientos/{id}', 'Tesoreria\RegistroPagoController@pagosRequerimientos')->name('pagos-requerimientos');
 				Route::get('cuentasOrigen/{id}', 'Tesoreria\RegistroPagoController@cuentasOrigen')->name('cuentas-origen');
@@ -2007,6 +2012,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('reistro-pagos-exportar-excel', 'Tesoreria\RegistroPagoController@registroPagosExportarExcel');
 				Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
+
+				// lista adjuntos pago
+				// Route::get('adjuntos-pago/{id}', 'OrdenController@listarArchivosOrder');
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {

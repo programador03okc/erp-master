@@ -132,6 +132,12 @@ function selectProveedor(obj){
         obtenerContactoPorDefecto(idProveedor)
     }
 
+    if (idProveedor == 4) {
+        $('[name=compra_local]').iCheck('check');
+    } else {
+        $('[name=compra_local]').iCheck('uncheck');
+    }
+
     $('#modal-proveedores').modal('hide');
 }
 
