@@ -2636,7 +2636,7 @@ class OrdenController extends Controller
                 $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
                 $orden->observacion = $request->observacion != null ? trim(strtoupper($request->observacion)) : null;
                 $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
-                $orden->compra_local = isset($request->esCompraLocal) ? $request->esCompraLocal : false;
+                $orden->compra_local = isset($request->compra_local) ? $request->compra_local : false;
                 $orden->save();
 
                 if ($request->id_proveedor > 0 && $request->id_rubro_proveedor != null && $request->id_rubro_proveedor > 0) {
@@ -3117,7 +3117,7 @@ class OrdenController extends Controller
                 $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
                 $orden->observacion = isset($request->observacion) ? $request->observacion : null;
                 $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
-                $orden->compra_local = isset($request->esCompraLocal) ? $request->esCompraLocal : false;
+                $orden->compra_local = isset($request->compra_local) ? $request->compra_local : false;
                 $orden->save();
 
                 if ($request->id_proveedor > 0 && $request->id_rubro_proveedor != null && $request->id_rubro_proveedor > 0) {
