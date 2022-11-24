@@ -29,6 +29,7 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
                 'alm_prod_serie.fecha_ingreso_soft',
                 'alm_prod_serie.precio_unitario_soft',
                 'alm_prod_serie.doc_ingreso_soft',
+                'alm_prod_serie.moneda_soft',
                 'alm_prod_serie.id_almacen',
                 'alm_prod_serie.id_prod as id_producto',
                 'alm_prod.codigo',
