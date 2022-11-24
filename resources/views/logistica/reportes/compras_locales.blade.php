@@ -274,21 +274,10 @@ Reporte de compras locales
         $(document).ready(function() {
             seleccionarMenu(window.location);
             const comprasLocales = new ComprasLocales();
-            comprasLocales.mostrar(
-                'SIN_FILTRO'
-                ,'SIN_FILTRO'
-                ,'SIN_FILTRO'
-                ,'SIN_FILTRO'
-                ,'SIN_FILTRO'
-                ,'SIN_FILTRO'
-                ,'SIN_FILTRO'
-                ,3
-                ,'SIN_FILTRO'
-                ,6);
+            comprasLocales.mostrar('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 3 , 'SIN_FILTRO', 6);
 
-                comprasLocales.ActualParametroGrupo=3;
-                {{--  comprasLocales.ActualParametroObservacionOrden='COMPRA LOCAL';  --}}
-                comprasLocales.ActualParametroEstadoPago=6;
+                comprasLocales.ActualParametroGrupo = 3;
+                comprasLocales.ActualParametroEstadoPago = 6;
 
             comprasLocales.initializeEventHandler();
         });

@@ -248,7 +248,6 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
                             selectCuenta.removeChild(selectCuenta.lastChild);
                         }
                     }
-
                     // console.log(response.data);
                     (response.data).forEach(element => {
                         option += `

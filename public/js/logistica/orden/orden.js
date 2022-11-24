@@ -389,16 +389,6 @@ function validarOrdenAgilOrdenSoftlink() {
             data: { 'idOrden': idOrden },
             dataType: 'JSON',
             beforeSend: data => {
-                var customElement = $("<div>", {
-                    "css": {
-                        "font-size": "24px",
-                        "text-align": "center",
-                        "padding": "0px",
-                        "margin-top": "-700px"
-                    },
-                    "class": "your-custom-class",
-                    "text": "Validando orden con softlink..."
-                });
                 $("#wrapper-okc").LoadingOverlay("show", {
                     imageAutoResize: true,
                     progress: true,
@@ -706,12 +696,6 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='cdc_req']").value = data.oportunidad.length > 0 ? ((data.oportunidad).map(x => x.codigo_oportunidad).toString()) : ((data.requerimientos).map(x => x.codigo).toString());
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ejecutivo_responsable']").value = data.oportunidad.length > 0 ? ((data.oportunidad).map(x => x.responsable).toString()) : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_doc']").value = data.id_tp_doc ? data.id_tp_doc : '';
-    if(JSON.parse(data.compra_local) ==true){
-        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='esCompraLocal']").checked =true;
-
-    }else{
-        document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='esCompraLocal']").checked =false;
-    }
 
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='direccion_destino']").value = data.direccion_destino ? data.direccion_destino : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_ubigeo_destino']").value = data.ubigeo_destino_id ? data.ubigeo_destino_id : '';
@@ -1052,9 +1036,9 @@ function changeSede(obj) {
     changeLogoEmprsa(id_empresa);
     llenarUbigeo(direccion, id_ubigeo, ubigeo_descripcion);
 
-    if(id_empresa ==5){ // RBDB
-        document.querySelector("input[name='esCompraLocal']").checked=true;
-    }
+    // if (id_empresa == 5) { // RBDB
+    //     document.querySelector("input[name='esCompraLocal']").checked = true;
+    // }
 }
 
 function llenarUbigeo(direccion, id_ubigeo, ubigeo_descripcion) {
