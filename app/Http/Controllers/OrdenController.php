@@ -4283,6 +4283,7 @@ class OrdenController extends Controller
 
     function registrarSolicitudDePagar(Request $request)
     {
+        // return $request;exit;
         try {
             DB::beginTransaction();
 
@@ -4308,7 +4309,7 @@ class OrdenController extends Controller
                                 'mensaje' => $registoSolicitudPagoDirecta['mensaje'],
                                 'data' => $registoSolicitudPagoDirecta['data']
                             );
-                            
+
                         }
 
                     } else {
@@ -4347,7 +4348,7 @@ class OrdenController extends Controller
         // try {
         //     DB::beginTransaction();
             $orden = Orden::find($request->id_orden_compra);
-            
+
             // validar cantidad de cuotas vs monto total orden, si se completo el numero de cuotas enviar mensaje
             $sumaPagos = 0;
             $lastPagoCuota = PagoCuota::where([['id_orden', $orden->id_orden_compra]])->first();
@@ -4356,7 +4357,7 @@ class OrdenController extends Controller
                 foreach ($lastPagoCuotaDetallePagadas as $key => $detCuota) {
                     $sumaPagos += $detCuota->monto_cuota;
                 }
-                
+
             }
             if (floatval($orden->monto_total) > floatval($sumaPagos)) {
 
@@ -4407,7 +4408,7 @@ class OrdenController extends Controller
                     $idOrden = $request->id_orden_compra;
                     $codigoOrden = Orden::find($request->id_orden_compra)->codigo;
                     $archivoAdjuntoList = $request->archivo_adjunto_list;
-    
+
                     foreach ($ObjectoAdjunto as $keyObj => $value) {
                         $ObjectoAdjunto[$keyObj]->id_orden = $idOrden;
                         $ObjectoAdjunto[$keyObj]->codigo_orden = $codigoOrden;
@@ -4425,7 +4426,7 @@ class OrdenController extends Controller
                     }
                     $idAdjunto = [];
                     if ($adjuntoOtrosAdjuntosLength > 0) {
-    
+
                         $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
                     }
 
@@ -4480,7 +4481,7 @@ class OrdenController extends Controller
                 $idOrden = $request->id_orden_compra;
                 $codigoOrden = Orden::find($request->id_orden_compra)->codigo;
                 $archivoAdjuntoList = $request->archivo_adjunto_list;
-    
+
                 foreach ($ObjectoAdjunto as $keyObj => $value) {
                     $ObjectoAdjunto[$keyObj]->id_orden = $idOrden;
                     $ObjectoAdjunto[$keyObj]->codigo_orden = $codigoOrden;
@@ -4498,7 +4499,7 @@ class OrdenController extends Controller
                 }
                 $idAdjunto = [];
                 if ($adjuntoOtrosAdjuntosLength > 0) {
-    
+
                     $idAdjunto[] = $this->subirYRegistrarArchivoLogistico($ObjectoAdjunto);
                 }
 
@@ -4511,7 +4512,7 @@ class OrdenController extends Controller
                 'mensaje' => 'Solicitud de pago registrado.',
                 'data' => $orden
             );
-            
+
             // DB::commit();
             return $arrayRspta;
         // } catch (Exception $e) {

@@ -103,11 +103,11 @@ class ListaOrdenView {
         $('#modal-enviar-solicitud-pago').on("click", "input.handleCkeckPagoCuotas", (e) => {
             this.updateLabelModalEnviarSolicitudPago(e.currentTarget.checked);
         });
-        
+
         $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeNumeroDeCuotas", (e) => {
             this.updateMontoAPagarEnCuotas();
         });
-        
+
 
         $('#listaDestinatariosEncontrados').on("click", "tr.handleClickSeleccionarDestinatario", (e) => {
             this.seleccionarDestinatario(e.currentTarget);
@@ -290,7 +290,7 @@ class ListaOrdenView {
             this.anularAdjuntoProveedor(e.currentTarget);
         });
 
-        
+
     }
 
     limpiarTabla(idElement) {
@@ -301,7 +301,7 @@ class ListaOrdenView {
                     element.removeChild(element.lastChild);
                 }
             }
-            
+
         });
     }
 
@@ -1036,7 +1036,7 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = '';
         this.limpiarFormEnviarOrdenAPago();
         this.restablecerValoresPorDefectoFormEnviarOrdenAPago();
-        
+
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = 1;
 
@@ -1051,7 +1051,7 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
- 
+
         // this.updateLabelModalEnviarSolicitudPago((obj.dataset.tienePagoEnCuotas === "true"));
         this.updateLabelModalEnviarSolicitudPago(JSON.parse((obj.dataset.tienePagoEnCuotas).toLowerCase()));
 
@@ -1200,7 +1200,7 @@ class ListaOrdenView {
         }).catch(function (err) {
             console.log(err)
         })
-        
+
         this.updateMontoAPagarEnCuotas();
 
         $('#modal-enviar-solicitud-pago').modal({
@@ -1236,7 +1236,7 @@ class ListaOrdenView {
             let cuota= parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden) / parseInt(numeroDeCuotas);
             document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value=(cuota);
         }
-        
+
         if (numeroDeCuotas == 1){
             document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").removeAttribute("readonly");
         }else{
@@ -1980,7 +1980,7 @@ class ListaOrdenView {
                             let btnImprimirOrden = (array_accesos.find(element => element === 252)?'<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>':'');
 
                             let btnAnularOrden = '';
-                            if (row.fecha_ultimo_ingreso_almacen != null || [5,6,8,9].includes(row.estado_pago) ==true) {
+                            if (row.fecha_ultimo_ingreso_almacen != null || [5,6,8,9, 10].includes(row.estado_pago) ==true) {
                                 btnAnularOrden = (array_accesos.find(element => element === 248)?'<button type="button" class="btn btn-sm btn-default boton" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>':'');
                             } else {
                                 btnAnularOrden = (array_accesos.find(element => element === 248)?'<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '"><i class="fas fa-backspace fa-xs"></i></button>':'');
@@ -2443,7 +2443,7 @@ class ListaOrdenView {
                 </div>
             </td>
             </tr>`;
-            
+
             document.querySelector("div[id='"+document.querySelector("div[class='modal fade in']").id+"'] tbody[id='body_archivos_requerimiento_compra_cabecera']").insertAdjacentHTML('beforeend', html);
 
         }).catch(function (err) {
