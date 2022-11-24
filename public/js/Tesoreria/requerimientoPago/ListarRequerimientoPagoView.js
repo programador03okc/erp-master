@@ -964,7 +964,7 @@ class ListarRequerimientoPagoView {
         // console.log( data.adjunto);
         let idFila = data != null && data.id_requerimiento_pago_detalle > 0 ? data.id_requerimiento_pago_detalle : (this.makeId());
         let cantidadAdjuntos = data != null && data.adjunto ? (data.adjunto).filter((element, i) => element.id_estado != 7).length : 0;
-        console.log(data);
+        // console.log(data);
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
         <td>
             <input type="hidden"  class="idEstado" name="idEstado[]" value="${data != null && data.id_estado}">
@@ -1443,7 +1443,6 @@ class ListarRequerimientoPagoView {
         for (let index = 0; index < childrenTableTbody.length; index++) {
             // console.log(childrenTableTbody[index]);
             if(parseInt(childrenTableTbody[index].querySelector("input[class='idEstado']").value) !=7){
-                console.log('emtra');
                 let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
                 let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
                 total += (cantidad * precioUnitario);
@@ -1613,9 +1612,9 @@ class ListarRequerimientoPagoView {
             tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].category = parseInt(obj.value) > 0 ? parseInt(obj.value) : 1;
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
             }else{
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
             }
         } else {
             Swal.fire(
@@ -1632,9 +1631,9 @@ class ListarRequerimientoPagoView {
 // console.log(tempArchivoAdjuntoRequerimientoPagoCabeceraList);
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
             }else{
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
             }
         } else {
             Swal.fire(
@@ -1651,23 +1650,31 @@ class ListarRequerimientoPagoView {
             let formData = new FormData($('#form-requerimiento-pago')[0]);
 
             if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+                formData.append(`archivoAdjuntoRequerimientoPagoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoCabeceraList));
+
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-                    formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFile${element.category}[]`, element.file);
-                    formData.append(`id_adjunto[]`, element.id);
-                    formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
-                    formData.append(`categoria_adjunto[]`, element.category);
-                    formData.append(`archivo_adjunto[]`, element.file);
-                    // formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
-                    formData.append(`nombre_real_adjunto[]`, element.nameFile);
-                    formData.append(`accion_adjunto[]`, 'GUARDAR');
-                });
+                    formData.append(`archivo_adjunto_list[]`, element.file);
+            });
+                // tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
+                //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFile${element.category}[]`, element.file);
+                //     formData.append(`id_adjunto[]`, element.id);
+                //     formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
+                //     formData.append(`categoria_adjunto[]`, element.category);
+                //     formData.append(`archivo_adjunto[]`, element.file);
+                //     // formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
+                //     formData.append(`nombre_real_adjunto[]`, element.nameFile);
+                //     formData.append(`action[]`, 'GUARDAR');
+                // });
             }
             if (tempArchivoAdjuntoRequerimientoPagoDetalleList.length > 0) {
+                formData.append(`archivoAdjuntoRequerimientoPagoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoDetalleList));
+
                 tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
-                    formData.append(`archivoAdjuntoRequerimientoPagoDetalle${element.id}[]`, element.file);
-                    // if(Number.isInteger(element.id)){
-                    // }
+                    formData.append(`archivo_adjunto_detalle_list[]`, element.file);
                 });
+                // tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
+                //     formData.append(`archivoAdjuntoRequerimientoPagoDetalle${element.id}[]`, element.file);
+                // });
             }
 
             $.ajax({
@@ -1762,37 +1769,20 @@ class ListarRequerimientoPagoView {
                 let formData = new FormData($('#form-requerimiento-pago')[0]);
 
                 if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
-                    tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-                        if (element.action == 'GUARDAR') {
-                            formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileGuardar${element.category}[]`, element.file);
-                            formData.append(`fecha_emision[]`, element.fecha_emision);
+                    formData.append(`archivoAdjuntoRequerimientoPagoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoCabeceraList));
 
-                        }
-                        // //? actualizar adjuntos, actualmente no se actualizan archivos por otros
-                        // else if(element.action == 'ACTUALIZAR'){
-                        //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileActualizar${element.category}[]`, element.file);
-                        // //? eliminar adjuntos, actualmente no se elimina en disco
-                        // }else if(element.action =='ELIMINAR'){
-                        //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileEliminar${element.category}[]`, element.file);
-                        // }
+                    tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
+                            formData.append(`archivo_adjunto_list[]`, element.file);
                     });
                 }
 
                 if (tempArchivoAdjuntoRequerimientoPagoDetalleList.length > 0) {
+                    formData.append(`archivoAdjuntoRequerimientoPagoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoDetalleList));
+
                     tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
-                        if (element.action == 'GUARDAR') {
-                            formData.append(`archivoAdjuntoRequerimientoPagoDetalleGuardar${element.id}[]`, element.file);
-                            // formData.append(`fecha_emision[]`, element.fecha_emision);
-                        }
+                            formData.append(`archivo_adjunto_detalle_list[]`, element.file);
                     });
                 }
-
-                // formData.append(`idArchivoAdjuntoRequerimientoPagoCabeceraParaElminar`, JSON.stringify(tempIdArchivoAdjuntoRequerimientoPagoCabeceraToDeleteList));
-                formData.append(`archivoAdjuntoRequerimientoPagoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoCabeceraList));
-                formData.append(`archivoAdjuntoRequerimientoPagoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoDetalleList));
-
-                // formData.append(`idArchivoAdjuntoRequerimientoPagoDetalleParaElminar`, JSON.stringify(tempIdArchivoAdjuntoRequerimientoPagoDetalleToDeleteList));
-
 
                 $.ajax({
                     type: 'POST',
@@ -2647,7 +2637,7 @@ class ListarRequerimientoPagoView {
         } else {
             if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
                 let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.dataset.id);
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ELIMINAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ELIMINAR';
             } else {
                 Swal.fire(
                     '',
@@ -2701,9 +2691,10 @@ class ListarRequerimientoPagoView {
                         category: 1, //default: otros adjuntos
                         fecha_emision: moment().format("YYYY-MM-DD"), //default: fecha hoy
                         nameFile: file.name,
-                        action_adjunto: 'GUARDAR',
+                        action: 'GUARDAR',
                         file: file
                     };
+                  
                     this.addToTablaArchivosRequerimientoPagoCabecera(payload);
 
                     tempArchivoAdjuntoRequerimientoPagoCabeceraList.push(payload);
@@ -2867,6 +2858,7 @@ class ListarRequerimientoPagoView {
             if (regExp.test(idRequerimientoPagoDetalle) == false) {
                 tempArchivoAdjuntoRequerimientoPagoDetalleList = [];
                 this.getAdjuntosRequerimientoPagoDetalle(idRequerimientoPagoDetalle).then((adjuntoList) => {
+                    // console.log(adjuntoList);
                     (adjuntoList).forEach(element => {
                         if(element.id_estado !=7){ // omitir anulados
 
@@ -2964,7 +2956,7 @@ class ListarRequerimientoPagoView {
                         id: objBotonAdjuntoRequerimientoPagoDetalleSeleccionado.dataset.id,
                         id_requerimiento_pago_detalle: objBotonAdjuntoRequerimientoPagoDetalleSeleccionado.dataset.id,
                         nameFile: file.name,
-                        action_adjunto: 'GUARDAR',
+                        action: 'GUARDAR',
                         file: file
                     };
                     this.agregarRegistroEnTablaAdjuntoRequerimientoPagoDetalle(payload);
@@ -3135,9 +3127,8 @@ class ListarRequerimientoPagoView {
 
     buscarDestinatarioPorNumeroDeDocumento(obj) {
         let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_tipo_destinatario']").value);
-        let option = `<option value="" selected disabled>Elija una opción</option>`;
+        let option = ``;
         let nroDocumento = (obj.value).trim();
-
         if (nroDocumento.length > 0 && idTipoDestinatario > 0) {
             $.ajax({
                 type: 'POST',
@@ -3154,7 +3145,6 @@ class ListarRequerimientoPagoView {
                 },
                 success: (response) => {
                     $("input[name='nombre_destinatario']").LoadingOverlay("hide", true);
-
 
                     if (response.tipo_estado == 'success') {
                         if (response.data != null && response.data.length > 0) {
@@ -3173,7 +3163,7 @@ class ListarRequerimientoPagoView {
                                         selectCuenta.removeChild(selectCuenta.lastChild);
                                     }
                                 }
-
+                                
                                 (response.data[0].cuenta_persona).forEach(element => {
                                     option += `
                                     <option
@@ -3298,7 +3288,6 @@ class ListarRequerimientoPagoView {
     }
 
     listarEnResultadoDestinatario(data, idTipoDestinatario) {
-
         document.querySelector("div[id='modal-requerimiento-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = data.length;
         document.querySelector("div[id='modal-requerimiento-pago'] table[id='listaDestinatariosEncontrados']").innerHTML = '';
         data.forEach(element => {

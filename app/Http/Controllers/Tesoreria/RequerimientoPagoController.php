@@ -1569,8 +1569,7 @@ class RequerimientoPagoController extends Controller
         )
         ->where('id_requerimiento_pago',$id_requerimiento_pago)
         ->join('tesoreria.requerimiento_pago_categoria_adjunto','requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto','=','requerimiento_pago_adjunto.id_categoria_adjunto')
-        ->where('requerimiento_pago_adjunto.id_categoria_adjunto',5)
-        ->get();
+        ->where('requerimiento_pago_adjunto.id_categoria_adjunto', 5)->get();
 
         $adjuntos_pagos = RegistroPago::select('registro_pago_adjuntos.adjunto', 'registro_pago_adjuntos.id_adjunto')
             ->where('id_requerimiento_pago',$id_requerimiento_pago)

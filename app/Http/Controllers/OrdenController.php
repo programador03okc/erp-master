@@ -1403,8 +1403,6 @@ class OrdenController extends Controller
     }
     public function mostrarOrden($id_orden)
     {
-
-
         $orden = Orden::select(
             'log_ord_compra.id_orden_compra',
             'log_ord_compra.id_tp_documento',
@@ -1494,19 +1492,13 @@ class OrdenController extends Controller
             ->with(['detalle.detalleRequerimiento.reserva', 'detalle.guia_compra_detalle' => function ($q) {
                 $q->where('guia_com_det.estado', '!=', 7);
             }, 'detalle.producto.unidadMedida', 'detalle.unidad_medida', 'detalle.estado_orden'])
-            ->where([
-                ['log_ord_compra.id_orden_compra', '=', $id_orden]
-            ])
-            ->first();
-
-
-
+            // ->where([
+            //     ['log_ord_compra.id_orden_compra', '=', $id_orden]
+            // ])
+            ->where('log_ord_compra.id_orden_compra', $id_orden)->first();
 
         return response()->json($orden);
     }
-
-
-
 
     public function groupIncluded($id_orden)
     {
@@ -2656,8 +2648,6 @@ class OrdenController extends Controller
                     }
                 }
 
-                // $idRequerimientoList=[];
-
                 for ($i = 0; $i < $count; $i++) {
                     $detalle = new OrdenCompraDetalle();
                     $detalle->id_orden_compra = $orden->id_orden_compra;
@@ -2676,11 +2666,6 @@ class OrdenController extends Controller
 
                     // $detalle->fecha_registro = new Carbon();
                     $detalle->save();
-
-                    // if($request->idDetalleRequerimiento[$i]>0){
-                    //     $idRequerimientoList[]= DetalleRequerimiento::find($request->idDetalleRequerimiento[$i])->first()->id_requerimiento;
-                    // }
-
                 }
 
                 $idOrden = $orden->id_orden_compra;
@@ -2693,9 +2678,7 @@ class OrdenController extends Controller
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento('CREAR', $orden->id_orden_compra, $orden->codigo);
                 }
 
-
                 // if ($request->migrar_oc_softlink == true) {
-
                 //     $statusMigracionSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
                 // }
 
@@ -2710,8 +2693,7 @@ class OrdenController extends Controller
                     'error' => $actualizarEstados['error']
 
                 ]);
-            } // si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
-            else {
+            } else { // si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
 
                 return response()->json([
                     'id_orden_compra' => null,
