@@ -547,7 +547,7 @@ class ListarRequerimientoPagoView {
                     this.descargarListaCabeceraRequerimientoPagoElaboradosExcel();
 
                 },
-                
+
                 className: 'btn-default btn-sm'
             }:[]),
             button_descargar_excel_items = (array_accesos.find(element => element === 22)?{
@@ -559,7 +559,7 @@ class ListarRequerimientoPagoView {
                     this.descargarListaItemsRequerimientoPagoElaboradosExcel();
 
                 },
-                
+
                 className: 'btn-default btn-sm'
             }:[]);
         $tablaListaRequerimientoPago = $('#ListaRequerimientoPago').DataTable({
@@ -1002,7 +1002,7 @@ class ListarRequerimientoPagoView {
                 <input class="form-control input-sm precio text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="0" name="precioUnitario[]"  placeholder="Precio U." value="${data != null && typeof data.precio_unitario === 'string' ? data.precio_unitario : ""}">
             </div>
         </td>
-        
+
         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
         <td>
             <div class="form-group">
@@ -3127,9 +3127,8 @@ class ListarRequerimientoPagoView {
 
     buscarDestinatarioPorNumeroDeDocumento(obj) {
         let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_tipo_destinatario']").value);
-        let option = `<option value="" selected disabled>Elija una opción</option>`;
+        let option = ``;
         let nroDocumento = (obj.value).trim();
-
         if (nroDocumento.length > 0 && idTipoDestinatario > 0) {
             $.ajax({
                 type: 'POST',
@@ -3146,7 +3145,6 @@ class ListarRequerimientoPagoView {
                 },
                 success: (response) => {
                     $("input[name='nombre_destinatario']").LoadingOverlay("hide", true);
-
 
                     if (response.tipo_estado == 'success') {
                         if (response.data != null && response.data.length > 0) {

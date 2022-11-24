@@ -340,7 +340,6 @@ class RequerimientoPagoController extends Controller
                     }
                     $idAdjunto[] = $this->subirYRegistrarArchivoCabecera($ObjectoAdjunto);
                 }
-                $idAdjunto[] = $this->subirYRegistrarArchivoCabecera($ObjectoAdjunto);
             }
             // Adjuntos Detalle
             if (isset($request->archivo_adjunto_detalle_list)) {
@@ -716,13 +715,7 @@ class RequerimientoPagoController extends Controller
                     $idAdjuntoDetalle[] = $this->guardarAdjuntoRequerimientoPagoDetalle($ObjectoAdjuntoDetalle);
                 }
             }
-
-
-
             DB::commit();
-
-
-
             return response()->json(['id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago, 'mensaje' => 'Se actualizó el requerimiento de pago ' . $requerimientoPago->codigo]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -1589,9 +1582,9 @@ class RequerimientoPagoController extends Controller
             'requerimiento_pago_adjunto.id_categoria_adjunto',
             'requerimiento_pago_categoria_adjunto.descripcion'
         )
-            ->where('id_requerimiento_pago', $id_requerimiento_pago)
-            ->join('tesoreria.requerimiento_pago_categoria_adjunto', 'requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto', '=', 'requerimiento_pago_adjunto.id_categoria_adjunto')
-            ->get();
+        ->where('id_requerimiento_pago',$id_requerimiento_pago)
+        ->join('tesoreria.requerimiento_pago_categoria_adjunto','requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto','=','requerimiento_pago_adjunto.id_categoria_adjunto')
+        ->where('requerimiento_pago_adjunto.id_categoria_adjunto', 5)->get();
 
         $adjuntos_pagos = RegistroPago::select('registro_pago_adjuntos.adjunto', 'registro_pago_adjuntos.id_adjunto')
             ->where('id_requerimiento_pago', $id_requerimiento_pago)

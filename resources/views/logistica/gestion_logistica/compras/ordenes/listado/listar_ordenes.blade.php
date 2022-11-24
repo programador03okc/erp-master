@@ -202,7 +202,6 @@ Gestión de ordenes
             listaOrdenView.initializeEventHandler();
             $('[name=monto_a_pagar]').number( true, 2 );
             $('[name=saldo]').number( true, 2 );
-
         };
     </script>
 @endsection

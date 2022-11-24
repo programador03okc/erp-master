@@ -1459,6 +1459,7 @@ class OrdenController extends Controller
 
             'log_ord_compra.estado',
             'log_ord_compra.observacion',
+            'log_ord_compra.compra_local',
             'adm_estado_doc.estado_doc',
             'adm_estado_doc.bootstrap_color'
         )
@@ -2635,6 +2636,7 @@ class OrdenController extends Controller
                 $orden->codigo_softlink = $request->codigo_orden !== null ? $request->codigo_orden : '';
                 $orden->observacion = $request->observacion != null ? trim(strtoupper($request->observacion)) : null;
                 $orden->tipo_cambio_compra = isset($request->tipo_cambio_compra) ? $request->tipo_cambio_compra : true;
+                $orden->compra_local = isset($request->esCompraLocal) ? $request->esCompraLocal : false;
                 $orden->save();
 
                 if ($request->id_proveedor > 0 && $request->id_rubro_proveedor != null && $request->id_rubro_proveedor > 0) {
@@ -2643,7 +2645,6 @@ class OrdenController extends Controller
                         $contribuyenteProveedor = Contribuyente::find($proveedor->id_contribuyente);
                         $contribuyenteProveedor->id_rubro = $request->id_rubro_proveedor;
                         $contribuyenteProveedor->save();
-
                     }
                 }
 
@@ -2653,7 +2654,7 @@ class OrdenController extends Controller
                     $detalle->id_producto = ($request->idProducto[$i] ? $request->idProducto[$i] : null);
                     $detalle->id_detalle_requerimiento = $request->idDetalleRequerimiento[$i] ? $request->idDetalleRequerimiento[$i] : null;
                     $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
-                    $detalle->id_unidad_medida = isset($request->unidad[$i])?$request->unidad[$i]:null;
+                    $detalle->id_unidad_medida = isset($request->unidad[$i]) ? $request->unidad[$i] : null;
                     $detalle->precio = $request->precioUnitario[$i];
                     // $detalle->descripcion_adicional = (isset($request->descripcion[$i]) && $request->descripcion[$i] != null) ? trim(strtoupper($request->descripcion[$i])) : null;
                     $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
@@ -4031,10 +4032,10 @@ class OrdenController extends Controller
     {
         return Excel::download(new ReporteTransitoOrdenesCompraExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta), 'reporte_transito_ordenes_compra.xlsx');
     }
-    public function reporteCompraLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago)
+    public function reporteCompraLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor, $idGrupo, $idProyecto, $observacionOrden, $estadoPago)
     {
         // return $razonSocialProveedor;
-        return Excel::download(new ReporteComprasLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta,$fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago), 'reporte_compra_locales.xlsx');
+        return Excel::download(new ReporteComprasLocalesExcel($idEmpresa, $idSede, $fechaRegistroDesde, $fechaRegistroHasta, $fechaRegistroDesdeCancelacion, $fechaRegistroHastaCancelacion, $razonSocialProveedor, $idGrupo, $idProyecto, $observacionOrden, $estadoPago), 'reporte_compra_locales.xlsx');
     }
 
 

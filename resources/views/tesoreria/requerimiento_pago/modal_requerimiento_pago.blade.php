@@ -36,14 +36,14 @@
                                             <select class="form-control activation handleCheckStatusValue" name="tipo_requerimiento_pago">
                                                 @foreach ($tiposRequerimientoPago as $tipo)
                                                     @if((in_array(Auth::user()->id_usuario,[
-                                                    4, 
+                                                    4,
                                                     24,
                                                     99,
-                                                    54, 
-                                                    22, 
-                                                    32, 
-                                                    77, 
-                                                    3, 
+                                                    54,
+                                                    22,
+                                                    32,
+                                                    77,
+                                                    3,
                                                     17,
                                                     27
                                                     ])))

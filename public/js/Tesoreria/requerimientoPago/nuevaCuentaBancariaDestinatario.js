@@ -235,7 +235,7 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
             if (response.tipo_estado == 'success') {
                 if (response.data.length > 0) {
                     // llenar cuenta bancaria
-                    
+
                     let idCuentePorDefecto =document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value;
                     document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
                     let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
@@ -244,6 +244,16 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
                             selectCuenta.removeChild(selectCuenta.lastChild);
                         }
                     }
+                    option += `
+                    <option
+                        data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                        data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}"
+                        data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                        data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                        data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
+                        value="${element.id_cuenta_contribuyente}" ${element.id_cuenta_contribuyente ==idCuentePorDefecto?'selected':''}>
+                        ${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}
+                    </option>`;
                     // console.log(response.data);
                     (response.data).forEach(element => {
                         option += `
