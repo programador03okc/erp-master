@@ -751,7 +751,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listado-items-requerimientos-pagos-export-excel/{meOrAll}/{Empresa}/{Sede}/{Grupo}/{Division}/{FechaDesde}/{FechaHasta}/{Estado}', 'Tesoreria\RequerimientoPagoController@listadoItemsRequerimientoPagoExportExcel');
 				Route::post('lista-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@listarRequerimientoPago')->name('lista-requerimiento-pago');
 				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');
-                // adjuntos de tesoreria
+				// adjuntos de tesoreria
 				Route::get('obtener-adjuntos-tesoreria/{id_requerimiento_pago}', 'Tesoreria\RequerimientoPagoController@obtenerAdjuntosPago');
 				// Route::get('detalle-requerimiento-pago/{id?}', 'Tesoreria\RequerimientoPagoController@listarDetalleRequerimientoPago')->name('detalle-requerimiento-pago');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
@@ -1657,6 +1657,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('exportarAntiguedades', 'Almacen\Reporte\SaldosController@exportarAntiguedades')->name('exportarAntiguedades');
 				Route::post('exportar-valorizacion', 'Almacen\Reporte\SaldosController@valorizacion')->name('exportar-valorizacion');
 				Route::get('actualizarFechasIngresoSoft/{id}', 'Migraciones\MigrateProductoSoftlinkController@actualizarFechasIngresoSoft')->name('actualizarFechasIngresoSoft');
+				Route::get('actualizarFechasIngresoAgile/{id}', 'Migraciones\MigrateProductoSoftlinkController@actualizarFechasIngresoAgile')->name('actualizarFechasIngresoSoft');
 			});
 
 			Route::group(['as' => 'lista-ingresos.', 'prefix' => 'lista-ingresos'], function () {
@@ -2020,7 +2021,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
 
-                // lista adjuntos pago
+				// lista adjuntos pago
 				// Route::get('adjuntos-pago/{id}', 'OrdenController@listarArchivosOrder');
 			});
 

@@ -21,6 +21,7 @@
                 <th style="background-color: #cccccc;" width="30"><b>Almacén</b></th>
                 <th style="background-color: #cccccc;" width="20"><b>Serie</b></th>
                 <th style="background-color: #cccccc;" width="20"><b>Fecha 1er ingreso</b></th>
+                <th style="background-color: #cccccc;" width="5"><b>Mnd.</b></th>
                 <th style="background-color: #cccccc;" width="20"><b>Precio Unit.</b></th>
                 <th style="background-color: #cccccc;" width="20"><b>Doc. Ingreso</b></th>
             </tr>
@@ -40,6 +41,7 @@
                 <td>{{ $item['almacen_descripcion'] }}</td>
                 <td>{{ $item['serie'] }}</td>
                 <td>{{ $item['fecha_ingreso_soft'] }}</td>
+                <td>{{ $item['moneda_soft']==1?'S/':($item['moneda_soft']==2?'$':'') }}</td>
                 <td>{{ $item['precio_unitario_soft'] }}</td>
                 <td>{{ $item['doc_ingreso_soft'] }}</td>
             </tr>

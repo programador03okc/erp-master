@@ -498,6 +498,16 @@ class RequerimientoPagoController extends Controller
                         ]
                     );
                 $idList[] = $idAdjunto;
+            } elseif ($archivo->action == "ANULAR") {
+
+                $idAdjunto = DB::table('tesoreria.requerimiento_pago_adjunto')
+                    ->where('id_requerimiento_pago_adjunto', $archivo->id)
+                    ->update(
+                        [
+                            'estado' => 7
+                        ]
+                    );
+                $idList[] = $idAdjunto;
             }
         }
         return $idList;
@@ -539,6 +549,16 @@ class RequerimientoPagoController extends Controller
                         ]
                     );
 
+                $idList[] = $idAdjunto;
+            } elseif ($archivo->action == "ANULAR") {
+
+                $idAdjunto = DB::table('tesoreria.requerimiento_pago_detalle_adjunto')
+                    ->where('id_requerimiento_pago_detalle_adjunto', $archivo->id)
+                    ->update(
+                        [
+                            'estado' => 7
+                        ]
+                    );
                 $idList[] = $idAdjunto;
             } elseif ($archivo->action == "ANULAR") {
 
@@ -750,12 +770,7 @@ class RequerimientoPagoController extends Controller
                     $idAdjuntoDetalle[] = $this->guardarAdjuntoRequerimientoPagoDetalle($ObjectoAdjuntoDetalle);
                 }
             }
-
-
             DB::commit();
-
-
-
             return response()->json(['id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago, 'mensaje' => 'Se actualizó el requerimiento de pago ' . $requerimientoPago->codigo]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -1655,22 +1670,21 @@ class RequerimientoPagoController extends Controller
         ->get();
 
         $adjuntos_pagos = RegistroPago::select('registro_pago_adjuntos.adjunto', 'registro_pago_adjuntos.id_adjunto')
-            ->where('id_requerimiento_pago',$id_requerimiento_pago)
-            ->join('tesoreria.registro_pago_adjuntos','registro_pago_adjuntos.id_pago', '=','registro_pago.id_pago')
+            ->where('id_requerimiento_pago', $id_requerimiento_pago)
+            ->join('tesoreria.registro_pago_adjuntos', 'registro_pago_adjuntos.id_pago', '=', 'registro_pago.id_pago')
             ->get();
 
 
-        if (sizeof($adjuntos_pagos_complementarios)>0) {
+        if (sizeof($adjuntos_pagos_complementarios) > 0) {
             foreach ($adjuntos_pagos_complementarios as $key => $value) {
-                $value->fecha_registro= date("d/m/Y", strtotime($value->fecha_registro));
+                $value->fecha_registro = date("d/m/Y", strtotime($value->fecha_registro));
             }
         }
         return response()->json([
-            "success"=>true,
-            "status"=>200,
-            "data"=>$adjuntos_pagos_complementarios,
-            "data_pagos"=>$adjuntos_pagos
+            "success" => true,
+            "status" => 200,
+            "data" => $adjuntos_pagos_complementarios,
+            "data_pagos" => $adjuntos_pagos
         ]);
     }
-
 }
