@@ -385,9 +385,8 @@ class MigrateProductoSoftlinkController extends Controller
                     'movimien.num_docu',
                     'movimien.tip_mone'
                 )
-                ->join('detmov', 'detmov.mov_id', '=', 'series.id_ingreso')
+                ->join('detmov', 'detmov.unico', '=', 'series.unicodet_i')
                 ->join('movimien', 'movimien.mov_id', '=', 'detmov.mov_id')
-                // ->where('detmov.cod_prod', strval($p->cod_softlink))
                 ->where('series.serie', strval(trim($p->serie)))
                 ->orderBy('series.fecha_ing', 'asc')
                 ->first();

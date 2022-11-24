@@ -67,10 +67,10 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
         // $query = $query->orderBy('alm_prod.id_producto', 'asc')
         //     ->orderBy('alm_prod_serie.id_almacen', 'asc')->get();
 
-        $unicos = [];
-        $precio_unitario_soft = 0;
-        $fecha_ingreso_soft = null;
-        $doc_ingreso_soft = '';
+        // $unicos = [];
+        // $precio_unitario_soft = 0;
+        // $fecha_ingreso_soft = null;
+        // $doc_ingreso_soft = '';
 
         foreach ($query->get() as $q) {
             /*
@@ -133,9 +133,10 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
                 // 'stock'                 => $saldo,
                 'almacen_descripcion'   => ($q->almacen_descripcion != null) ?  str_replace("'", "", $q->almacen_descripcion) : '',
                 'serie'                 => $q->serie,
-                'fecha_ingreso_soft'    => ($q->fecha_ingreso_soft !== null ? $q->fecha_ingreso_soft : $fecha_ingreso_soft),
-                'precio_unitario_soft'  => ($q->precio_unitario_soft !== null ? $q->precio_unitario_soft : $precio_unitario_soft),
-                'doc_ingreso_soft'      => ($q->doc_ingreso_soft !== null ? $q->doc_ingreso_soft : $doc_ingreso_soft),
+                'fecha_ingreso_soft'    => ($q->fecha_ingreso_soft !== null ? $q->fecha_ingreso_soft : ''),
+                'precio_unitario_soft'  => ($q->precio_unitario_soft !== null ? $q->precio_unitario_soft : ''),
+                'doc_ingreso_soft'      => ($q->doc_ingreso_soft !== null ? $q->doc_ingreso_soft : ''),
+                'moneda_soft'           => ($q->moneda_soft !== null ? $q->moneda_soft : ''),
             ];
             //     }
             // }
