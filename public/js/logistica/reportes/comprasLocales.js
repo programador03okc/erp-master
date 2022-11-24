@@ -20,7 +20,6 @@ class ComprasLocales {
 
         this.ActualParametroGrupo = 'SIN_FILTRO';
         this.ActualParametroProyecto = 'SIN_FILTRO';
-        this.ActualParametroObservacionOrden = 'SIN_FILTRO';
         this.ActualParametroEstadoPago = 'SIN_FILTRO';
     }
 
@@ -60,7 +59,6 @@ class ComprasLocales {
                     this.ActualParametroRazonSocialProveedor,
                     this.ActualParametroGrupo,
                     this.ActualParametroProyecto,
-                    this.ActualParametroObservacionOrden,
                     this.ActualParametroEstadoPago
                 );
             }
@@ -136,7 +134,7 @@ class ComprasLocales {
         });
     }
 
-    actualizarEstadoCheckDeFiltros(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO', fechaRegistroDesdeCancelacion='SIN_FILTRO',fechaRegistroHastaCancelacion='SIN_FILTRO',razonSocialProveedor='SIN_FILTRO',idGrupo='SIN_FILTRO',idProyecto='SIN_FILTRO',observacionOrden='SIN_FILTRO',estadoPago='SIN_FILTRO'){
+    actualizarEstadoCheckDeFiltros(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO', fechaRegistroDesdeCancelacion='SIN_FILTRO',fechaRegistroHastaCancelacion='SIN_FILTRO',razonSocialProveedor='SIN_FILTRO',idGrupo='SIN_FILTRO',idProyecto='SIN_FILTRO',estadoPago='SIN_FILTRO'){
 
         const modalFiltro =document.querySelector("div[id='modal-filtro-reporte-compra-locales']");
         if(idEmpresa!='SIN_FILTRO' && idEmpresa>0){
@@ -148,11 +146,6 @@ class ComprasLocales {
             modalFiltro.querySelector("select[name='grupo']").value= idGrupo;
             modalFiltro.querySelector("select[name='grupo']").removeAttribute("readOnly");
             modalFiltro.querySelector("input[type='checkbox'][name='chkGrupo']").setAttribute("checked",true);
-        }
-        if(observacionOrden!='SIN_FILTRO' && observacionOrden.length >0){
-            modalFiltro.querySelector("input[name='observacionOrden']").value= observacionOrden;
-            modalFiltro.querySelector("input[name='observacionOrden']").removeAttribute("readOnly");
-            modalFiltro.querySelector("input[type='checkbox'][name='chkObservacionOrden']").setAttribute("checked",true);
         }
         if(estadoPago!='SIN_FILTRO' && estadoPago >0){
             modalFiltro.querySelector("select[name='estadoPago']").value= estadoPago;
@@ -204,15 +197,6 @@ class ComprasLocales {
                     modalFiltro.querySelector("select[name='proyecto']").value = 'SIN_FILTRO';
                     this.ActualParametroProyecto='SIN_FILTRO';
 
-
-                }
-            case 'chkObservacionOrden':
-                if (e.currentTarget.checked == true) {
-                    modalFiltro.querySelector("input[name='observacionOrden']").removeAttribute("readOnly");
-                } else {
-                    modalFiltro.querySelector("input[name='observacionOrden']").setAttribute("readOnly", true);
-                    // modalFiltro.querySelector("input[name='observacionOrden']").value = '';
-                    this.ActualParametroObservacionOrden='SIN_FILTRO';
 
                 }
                 break;
@@ -297,9 +281,6 @@ class ComprasLocales {
         if(modalFiltro.querySelector("select[name='proyecto']").getAttribute("readonly") ==null){
             this.ActualParametroProyecto=modalFiltro.querySelector("select[name='proyecto']").value.length>0?modalFiltro.querySelector("select[name='proyecto']").value:'SIN_FILTRO';
         }
-        if(modalFiltro.querySelector("input[name='observacionOrden']").getAttribute("readonly") ==null){
-            this.ActualParametroObservacionOrden=modalFiltro.querySelector("input[name='observacionOrden']").value.length>0?modalFiltro.querySelector("input[name='observacionOrden']").value:'SIN_FILTRO';
-        }
         if(modalFiltro.querySelector("select[name='estadoPago']").getAttribute("readonly") ==null){
             this.ActualParametroEstadoPago=modalFiltro.querySelector("select[name='estadoPago']").value.length>0?modalFiltro.querySelector("select[name='estadoPago']").value:'SIN_FILTRO';
         }
@@ -317,9 +298,9 @@ class ComprasLocales {
         return contadorCheckActivo;
     }
 
-    mostrar(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO', fechaRegistroDesdeCancelacion='SIN_FILTRO',fechaRegistroHastaCancelacion='SIN_FILTRO',razonSocialProveedor='SIN_FILTRO',idGrupo='SIN_FILTRO',idProyecto='SIN_FILTRO',observacionOrden='SIN_FILTRO',estadoPago='SIN_FILTRO') {
+    mostrar(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO', fechaRegistroDesdeCancelacion='SIN_FILTRO',fechaRegistroHastaCancelacion='SIN_FILTRO',razonSocialProveedor='SIN_FILTRO',idGrupo='SIN_FILTRO',idProyecto='SIN_FILTRO',estadoPago='SIN_FILTRO') {
 
-        this.actualizarEstadoCheckDeFiltros(idEmpresa,idSede, fechaRegistroDesde,fechaRegistroHasta, fechaRegistroDesdeCancelacion,fechaRegistroHastaCancelacion,razonSocialProveedor,idGrupo,idProyecto,observacionOrden,estadoPago);
+        this.actualizarEstadoCheckDeFiltros(idEmpresa,idSede, fechaRegistroDesde,fechaRegistroHasta, fechaRegistroDesdeCancelacion,fechaRegistroHastaCancelacion,razonSocialProveedor,idGrupo,idProyecto,estadoPago);
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
@@ -364,7 +345,6 @@ class ComprasLocales {
                     'fechaRegistroDesdeCancelacion':fechaRegistroDesdeCancelacion,'fechaRegistroHastaCancelacion':fechaRegistroHastaCancelacion,'razon_social_proveedor':razonSocialProveedor,
                     'idGrupo':idGrupo,
                     'idProyecto':idProyecto,
-                    'observacionOrden':observacionOrden,
                     'estadoPago':estadoPago
 
                 },
@@ -457,7 +437,7 @@ class ComprasLocales {
 
 
     DescargarListaComprasLocales(){
-        window.open(`reporte-compras-locales-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroFechaDesdeCancelacion}/${this.ActualParametroFechaHastaCancelacion}/${this.ActualParametroRazonSocialProveedor}/${this.ActualParametroGrupo}/${this.ActualParametroProyecto}/${this.ActualParametroObservacionOrden}/${this.ActualParametroEstadoPago}`);
+        window.open(`reporte-compras-locales-excel/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroFechaDesdeCancelacion}/${this.ActualParametroFechaHastaCancelacion}/${this.ActualParametroRazonSocialProveedor}/${this.ActualParametroGrupo}/${this.ActualParametroProyecto}/${this.ActualParametroEstadoPago}`);
     }
 
 

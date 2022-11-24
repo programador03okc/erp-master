@@ -11,7 +11,7 @@ var actionPage = null;
 
 $(function () {
     var reqTrueList = JSON.parse(sessionStorage.getItem('reqCheckedList'));
-    
+
     var tipoOrden = sessionStorage.getItem('tipoOrden');
     if (reqTrueList != undefined && reqTrueList != null && (reqTrueList.length > 0)) {
         // ordenView.changeStateInput('form-crear-orden-requerimiento', false);
@@ -32,11 +32,9 @@ $(function () {
         sessionStorage.removeItem('idOrden');
         sessionStorage.removeItem('action');
         // document.querySelector("div[id='group-migrar-oc-softlink']").classList.remove("oculto");
-
     }
 
     obtenerTipoCambioCompra();
-
 
     $('#modal-proveedores').on("click", "button.handleClickCrearProveedor", () => {
         irACrearProveedor();
@@ -146,7 +144,6 @@ function getTipoCambioCompra(fecha) {
 }
 
 function obtenerTipoCambioCompra() {
-
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     let fechaHoy = now.toISOString().slice(0, 10)
@@ -164,7 +161,6 @@ function limpiarTabla(idElement) {
         while (nodeTbody.children.length > 0) {
             nodeTbody.removeChild(nodeTbody.lastChild);
         }
-
     }
 }
 
@@ -215,9 +211,7 @@ function calcularMontosTotales() {
 
     let totalNeto = 0;
     for (let index = 0; index < childrenTableTbody.length; index++) {
-
         if (childrenTableTbody[index].classList.contains("danger") == false) {
-
             let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad_a_comprar']").value : 0);
             let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
             totalNeto += (cantidad * precioUnitario);
@@ -234,7 +228,6 @@ function calcularMontosTotales() {
         let MontoTotal = (Math.round((parseFloat(totalNeto) + parseFloat(igv)) * 100) / 100).toFixed(2)
         document.querySelector("label[name='igv']").textContent = $.number(igv, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
-
         document.querySelector("input[name='monto_igv']").value = igv;
         document.querySelector("input[name='monto_total']").value = MontoTotal;
 
@@ -242,12 +235,9 @@ function calcularMontosTotales() {
         let MontoTotal = parseFloat(totalNeto);
         document.querySelector("label[name='igv']").textContent = $.number(0, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
-
         document.querySelector("input[name='monto_igv']").value = 0;
         document.querySelector("input[name='monto_total']").value = MontoTotal;
-
     }
-
 }
 
 function actualizarValorIncluyeIGV(obj) {
@@ -334,13 +324,11 @@ function setStatusPage() {
             case 'register':
                 changeStateButton('nuevo');
                 changeStateInput('form-crear-orden-requerimiento', false);
-
                 break;
             case 'edition':
                 changeStateButton('editar');
                 $("#form-crear-orden-requerimiento .activation").attr('disabled', false);
                 changeStateInput('form-crear-orden-requerimiento', false);
-
                 break;
             case 'historial':
                 changeStateButton('historial');
@@ -350,7 +338,6 @@ function setStatusPage() {
     } else {
         changeStateButton('inicio');
         $("#form-crear-orden-requerimiento .activation").attr('disabled', true);
-
     }
 }
 
@@ -385,6 +372,16 @@ function editarOrden() {
 }
 function validarOrdenAgilOrdenSoftlink() {
     let idOrden = document.querySelector("input[name='id_orden']").value;
+    let customElement = $("<div>", {
+        "css": {
+            "font-size": "15px",
+            "text-align": "center",
+            "padding": "0px",
+            "margin-top": "-750px"
+        },
+        "class": "your-custom-class",
+        "text": "Validando la orden en SoftLink..."
+    });
     if (idOrden > 0) {
         $.ajax({
             type: 'POST',
@@ -423,6 +420,7 @@ function validarOrdenAgilOrdenSoftlink() {
                         msg: response.mensaje
                     });
                 }
+                $("#wrapper-okc").LoadingOverlay("hide", true);
             }
         }).fail((jqXHR, textStatus, errorThrown) => {
             $("#wrapper-okc").LoadingOverlay("hide", true);
@@ -432,6 +430,7 @@ function validarOrdenAgilOrdenSoftlink() {
                 'Hubo un problema al intentar validar la orden de Ágil con la orden Softlink, por favor vuelva a intentarlo.',
                 'error'
             );
+            $("#wrapper-okc").LoadingOverlay("hide", true);
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -465,7 +464,6 @@ function imprimirOrdenPDF() {
             'warning'
         );
     }
-
 }
 
 function migrarOrdenASoftlink() {
@@ -487,7 +485,6 @@ function migrarOrdenASoftlink() {
                 });
             },
             success: function (response) {
-                console.log(response);
                 $("#wrapper-okc").LoadingOverlay("hide", true);
                 mostrarOrden(response.ocAgile.cabecera.id_orden_compra);
                 actionPage = 'historial';
@@ -528,7 +525,6 @@ function estadoCuadroPresupuesto() {
         show: true,
         backdrop: 'true',
         keyboard: true
-
     });
 }
 
@@ -628,14 +624,12 @@ function cambiarTipoOrden(obj) {
     }
 }
 
-
 function mostrarOrden(id) {
     $.ajax({
         type: 'GET',
         url: 'mostrar-orden/' + id,
         dataType: 'JSON',
         success: (response) => {
-            console.log(response);
             construirFormularioOrden(response);
             detalleOrdenList = response.detalle;
             setStatusPage();
@@ -665,6 +659,7 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_subtotal']").value = data.monto_subtotal ? data.monto_subtotal : 0;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_igv']").value = data.monto_igv ? data.monto_igv : 0;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='monto_total']").value = data.monto_total ? data.monto_total : 0;
+
     if (data.cuadro_costo != null && data.cuadro_costo.length > 0) {
         document.querySelector("div[id='modal-estado-cuadro-presupuesto'] label[id='id_orden']").textContent = data.id_orden_compra ? data.id_orden_compra : '';
         data.cuadro_costo.map((element, index) => {
@@ -674,18 +669,14 @@ function construirFormularioOrden(data) {
                 document.querySelector("div[id='contenedor-detalle-estado-cdp']").innerHTML = '';
                 document.querySelector("div[id='contenedor-detalle-estado-cdp']").insertAdjacentHTML('beforeend', `<div class="panel panel-default">
                 <div class="panel-body">
-                
                     <ul style="list-style-type:none;">
                         <li><strong>Código:</strong> ${element.codigo_oportunidad}</li>
                         <li><strong>Estado CDP:</strong> ${element.estado_aprobacion}</li>
                     </ul>
-
                 </div>
             </div>`);
-
             } else {
                 document.querySelector("button[id='btn-enviar-email-finalizacion-cuadro-presupuesto']").classList.add("oculto");
-
             }
         })
 
@@ -717,7 +708,7 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_doc']").value = data.id_tp_doc ? data.id_tp_doc : '';
     if(JSON.parse(data.compra_local) ==true){
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='esCompraLocal']").checked =true;
-        
+
     }else{
         document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='esCompraLocal']").checked =false;
     }
@@ -731,6 +722,12 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nombre_persona_autorizado_2']").value = data.nombre_personal_autorizado_2 ? data.nombre_personal_autorizado_2 : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] textarea[name='observacion']").value = data.observacion ? data.observacion : '';
 
+    if (data.compra_local == true) {
+        $("form[id='form-crear-orden-requerimiento'] input[name=compra_local]").iCheck("check");
+    } else {
+        $("form[id='form-crear-orden-requerimiento'] input[name=compra_local]").iCheck("uncheck");
+    }
+
     document.querySelector("button[name='btn-imprimir-orden-pdf']").removeAttribute("disabled");
     if (data.id_tp_documento != 13) { // no sea orden de devolución
         document.querySelector("button[name='btn-migrar-orden-softlink']").removeAttribute("disabled");
@@ -738,12 +735,9 @@ function construirFormularioOrden(data) {
     } else {
         document.querySelector("button[name='btn-migrar-orden-softlink']").setAttribute("disabled", true);
         document.querySelector("button[name='btn-relacionar-a-oc-softlink']").setAttribute("disabled", true);
-
     }
 
-
-    // construir detalle 
-
+    // construir detalle
     limpiarTabla('listaDetalleOrden');
     vista_extendida();
     let detalle = data.detalle;
@@ -783,7 +777,7 @@ function construirFormularioOrden(data) {
 
                     </td>
                     <td>${(detalle[i].detalle_requerimiento ? detalle[i].detalle_requerimiento.cantidad : '')}</td>
-                    <td>${(cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : '')}</td> 
+                    <td>${(cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : '')}</td>
                     <td>${(cantidad_atendido_orden > 0 ? cantidad_atendido_orden : '')}</td>
                     <td>
                         <input class="form-control cantidad_a_comprar input-sm text-right ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : 0}" disabled>
@@ -809,7 +803,7 @@ function construirFormularioOrden(data) {
                 <td>(No aplica) <input type="hidden" value=""></td>
                 <td>(No aplica) <input type="hidden" value=""></td>
                 <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}" style="width:100%;height: 60px;"> ${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}</textarea> 
+                <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}" style="width:100%;height: 60px;"> ${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}</textarea>
                     <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;" disabled>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
                 </td>
                 <td><select name="unidad[]" class="form-control  input-sm" value="${detalle[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
@@ -991,7 +985,7 @@ function listarDetalleOrdeRequerimiento(data) {
                 <td>(No aplica) <input type="hidden" value=""></td>
                 <td>(No aplica) <input type="hidden" value=""></td>
                 <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(data[i].descripcion ? data[i].descripcion : '')}" style="width:100%;height: 60px;"> ${(data[i].descripcion ? data[i].descripcion : '')}</textarea> 
+                <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(data[i].descripcion ? data[i].descripcion : '')}" style="width:100%;height: 60px;"> ${(data[i].descripcion ? data[i].descripcion : '')}</textarea>
                 <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;">${(data[i].descripcion_complementaria ? data[i].descripcion_complementaria : '')}</textarea>
                 </td>
                 <td><select name="unidad[]" class="form-control input-sm" value="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
@@ -1097,7 +1091,6 @@ function changeLogoEmprsa(id_empresa) {
 }
 
 function handleChangeCondicion() {
-
     let condicion_softlink = document.getElementsByName('id_condicion_softlink')[0];
     // let descripcion_condicion_softlink = condicion_softlink.options[condicion_softlink.selectedIndex].text;
     let dias_condicion_softlink = condicion_softlink.options[condicion_softlink.selectedIndex].dataset.dias;
@@ -1105,11 +1098,9 @@ function handleChangeCondicion() {
     if (dias_condicion_softlink > 0) {
         document.getElementsByName('id_condicion')[0].value = 2;
         document.getElementsByName('plazo_dias')[0].value = dias_condicion_softlink;
-
     } else {
         document.getElementsByName('id_condicion')[0].value = 1;
         document.getElementsByName('plazo_dias')[0].value = 0;
-
     }
 
     // if (text_condicion == 'CONTADO CASH' || text_condicion == 'Contado cash') {
@@ -1275,7 +1266,7 @@ function listarCatalogoProductos(tipo) {
                     function (data, type, row) {
                         switch (tipo) {
                             case 'OBSEQUIOS':
-                                let btnProductoObsequioSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio" 
+                                let btnProductoObsequioSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio"
                                 data-id-producto="${row.id_producto}"
                                 data-codigo="${row.codigo}"
                                 data-codigo-softlink="${row.cod_softlink}"
@@ -1283,7 +1274,7 @@ function listarCatalogoProductos(tipo) {
                                 data-descripcion="${row.descripcion}"
                                 data-unidad-medida="${row.abreviatura_unidad_medida}"
                                 data-id-unidad-medida="${row.id_unidad_medida}"
-                                
+
                                 >Agregar obsequio</button>`;
                                 // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
                                 return btnProductoObsequioSeleccionar;
@@ -1291,7 +1282,7 @@ function listarCatalogoProductos(tipo) {
                                 break;
                             case 'PRODUCTOS':
 
-                                let btnProductoSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectProducto" 
+                                let btnProductoSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectProducto"
                             data-id-producto="${row.id_producto}"
                             data-codigo="${row.codigo}"
                             data-codigo-softlink="${row.cod_softlink}"
@@ -1299,7 +1290,7 @@ function listarCatalogoProductos(tipo) {
                             data-descripcion="${row.descripcion}"
                             data-unidad-medida="${row.abreviatura_unidad_medida}"
                             data-id-unidad-medida="${row.id_unidad_medida}"
-                            
+
                             >Agregar producto</button>`;
                                 // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
                                 return btnProductoSeleccionar;
@@ -1313,7 +1304,6 @@ function listarCatalogoProductos(tipo) {
 
     });
 }
-
 
 function selectProducto(obj) {
     let tr = obj.closest('tr');
@@ -1434,7 +1424,6 @@ function agregarProducto(data, tipo) { // tipo puede ser OBSEQUIO, DETALLE_REQUE
     }
 }
 
-
 function agregarServicio() {
     vista_extendida();
 
@@ -1443,7 +1432,7 @@ function agregarServicio() {
     <td>(No aplica) <input type="hidden" value=""></td>
     <td>(No aplica) <input type="hidden" value=""></td>
     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="" style="width:100%;height: 60px;"> </textarea>  
+    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="" style="width:100%;height: 60px;"> </textarea>
         <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;"></textarea>
     </td>
     <td>Servicio<input type="hidden"  name="unidad[]" value="38"></td>
@@ -1468,9 +1457,7 @@ function agregarServicio() {
 </tr>`);
 }
 
-
-
-// guardar orden 
+// guardar orden
 function save_orden(data, action) {
     // let payload_orden = this.get_header_orden_requerimiento();
     // payload_orden.detalle = (typeof detalleOrdenList != 'undefined') ? detalleOrdenList : detalleOrdenList;
@@ -1539,7 +1526,6 @@ function validaOrdenRequerimiento() {
     }
     return msj;
 }
-
 
 function guardar_orden_requerimiento(action) {
     // console.log(action);

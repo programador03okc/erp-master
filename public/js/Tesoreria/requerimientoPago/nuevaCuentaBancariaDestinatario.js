@@ -124,29 +124,21 @@ function guardarCuentaBancariaDestinatario(data) {
 
 // ###=========== obtener y actualizar select cuenta bancaria ==========###
 function obtenerCuentasBancariasPersona(id_persona) {
-    let option = `<option value="" selected disabled>Elija una opción</option>`;
+    let option = ``;
     // console.log(id_persona);
     if (id_persona > 0) {
         $.ajax({
             type: 'GET',
             url: 'obtener-cuenta-persona/' + id_persona,
             dataType: 'JSON',
-            beforeSend: data => {
-                $("select[name='id_cuenta']").LoadingOverlay("show", {
-                    imageAutoResize: true,
-                    progress: true,
-                    imageColor: "#3c8dbc"
-                });
-            },
         }).done(function (response) {
-            $("select[name='id_cuenta']").LoadingOverlay("hide", true);
-            console.log(response);//no es aqui
+            // console.log(response);
             if (response.tipo_estado == 'success') {
 
                 if (response.data.length > 0) {
 
                     // llenar cuenta bancaria
-                    let idCuentePorDefecto =document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value;
+                    let idCuentePorDefecto = document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value;
                     document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
                     let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
                     if (selectCuenta != null) {
@@ -162,7 +154,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
                             data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
                             data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
                             data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
-                            value="${element.id_cuenta_bancaria}" ${element.id_cuenta_bancaria ==idCuentePorDefecto?'selected':''}>
+                            value="${element.id_cuenta_bancaria}" ${element.id_cuenta_bancaria == idCuentePorDefecto ? 'selected':''}>
                             ${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}
                         </option>`;
                         document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
@@ -234,7 +226,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
 }
 
 function obtenerCuentasBancariasContribuyente(id_contribuyente) {
-    let option = `<option value="" selected disabled>Elija una opción</option>`;
+    let option = ``;
     // console.log(id_contribuyente);
     if (id_contribuyente > 0) {
         $.ajax({
@@ -266,11 +258,10 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
                             data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
                             data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
                             data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
-                            value="${element.id_cuenta_contribuyente}" ${element.id_cuenta_contribuyente ==idCuentePorDefecto?'selected':''}>
+                            value="${element.id_cuenta_contribuyente}" ${element.id_cuenta_contribuyente == idCuentePorDefecto ? 'selected' : ''}>
                             ${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}
                         </option>`;
                         document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
-
                     });
 
                     if(idCuentePorDefecto==null || idCuentePorDefecto==''){

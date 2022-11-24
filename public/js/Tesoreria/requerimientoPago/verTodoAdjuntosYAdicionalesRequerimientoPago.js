@@ -567,6 +567,16 @@ function adjuntosTesoreria(idRequerimientoPago) {
         dataType: 'JSON',
 
     }).done(function(response) {
+        // if (response.data_pagos.length>0) {
+        //     response.data_pagos.forEach(element => {
+        //         html+='<tr>';
+        //             html+='<td>'+element.archivo+'</td>';
+        //             html+='<td>'+element.fecha_registro+'</td>';
+        //             html+='<td>'+element.descripcion+'</td>';
+        //         html+='</tr>'
+        //     });
+        //     $('#modal-ver-agregar-adjuntos-requerimiento-pago [data-table="adjuntos-tesoreria"]').html(html);
+        // }
         if (response.data.length>0) {
             response.data.forEach(element => {
                 html+='<tr>';

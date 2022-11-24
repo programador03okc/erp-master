@@ -12,7 +12,7 @@ class ReporteComprasLocalesExcel implements FromView
 {
 
 
-    public function __construct(string $idEmpresa,string $idSede, string $fechaRegistroDesde, string $fechaRegistroHasta, string $fechaRegistroDesdeCancelacion, string $fechaRegistroHastaCancelacion, string $razonSocialProveedor, string $idGrupo, string $idProyecto, string $observacionOrden, string $estadoPago)
+    public function __construct(string $idEmpresa,string $idSede, string $fechaRegistroDesde, string $fechaRegistroHasta, string $fechaRegistroDesdeCancelacion, string $fechaRegistroHastaCancelacion, string $razonSocialProveedor, string $idGrupo, string $idProyecto, string $estadoPago)
     {
         $this->idEmpresa = $idEmpresa;
         $this->idsede = $idSede;
@@ -23,7 +23,6 @@ class ReporteComprasLocalesExcel implements FromView
         $this->razonSocialProveedor = $razonSocialProveedor;
         $this->idGrupo = $idGrupo;
         $this->idProyecto = $idProyecto;
-        $this->observacionOrden = $observacionOrden;
         $this->estadoPago = $estadoPago;
     }
 
@@ -38,10 +37,9 @@ class ReporteComprasLocalesExcel implements FromView
         $razonSocialProveedor = $this->razonSocialProveedor;
         $idGrupo =  $this->idGrupo;
         $idProyecto = $this->idProyecto;
-        $observacionOrden = $this->observacionOrden;
         $estadoPago = $this->estadoPago;
 
-        $comLocales = (new ReporteLogisticaController)->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago)->orderBy('fecha_emision','desc')->get();
+        $comLocales = (new ReporteLogisticaController)->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$estadoPago)->orderBy('fecha_emision','desc')->get();
 
         $data=[];
         foreach($comLocales as $element){
