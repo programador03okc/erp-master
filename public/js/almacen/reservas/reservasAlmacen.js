@@ -159,7 +159,6 @@ function listarReservasAlmacen(id_usuario) {
 
                     </button>`:``;
 
-
                     let $btn_eliminar = (row['numero'] == null && row['estado']===1 || row['id_tipo_requerimiento']===4) ?
 
                     (array_accesos.find(element => element === 156)?`<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
