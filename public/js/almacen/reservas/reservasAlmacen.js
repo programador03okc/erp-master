@@ -132,9 +132,22 @@ function listarReservasAlmacen(id_usuario) {
 
                 'render': function (data, type, row) {
 
-                    let $btn_editar = (id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93') ?
-                    ((row['estado']===1)?
-                    (array_accesos.find(element => element === 155)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
+                    // let $btn_editar = (id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93') ?
+                    // ((row['estado']===1)?
+                    // (array_accesos.find(element => element === 155)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
+
+                    // data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
+
+                    // data-almacen="${row['id_almacen_reserva']}"  data-stock="${row['stock_comprometido']}"
+
+                    // data-codigo="${row['codigo_req']}">
+
+                    // <i class="fas fa-edit"></i>
+
+                    // </button>`:``):``)
+                    // : '';
+
+                    let $btn_editar = array_accesos.find(element => element === 155)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
 
                     data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
 
@@ -144,9 +157,7 @@ function listarReservasAlmacen(id_usuario) {
 
                     <i class="fas fa-edit"></i>
 
-                    </button>`:``):``)
-                    : '';
-
+                    </button>`:``;
 
                     let $btn_eliminar = (row['numero'] == null && row['estado']===1 || row['id_tipo_requerimiento']===4) ?
 
