@@ -1024,6 +1024,7 @@ class ListaOrdenView {
     }
 
     modalEnviarOrdenAPago(obj) {
+
         tempArchivoAdjuntoRequerimientoCabeceraList=[];
         $(":file").filestyle('clear');
         this.limpiarTabla('adjuntosCabecera');
@@ -1180,6 +1181,8 @@ class ListaOrdenView {
                         htmlTable+= '</tr>'
 
                 });
+                $('#modal-enviar-solicitud-pago .modal-body [name="numero_de_cuotas"]').attr('disabled',true);
+                $('#modal-enviar-solicitud-pago .modal-body [name="pagoEnCuotasCheckbox"]').attr('disabled',true);
             }else{
                 htmlTable = `<tr>
                 <td style="text-align:center;" colspan="5">Sin data para mostrar</td>
