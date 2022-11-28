@@ -24,6 +24,10 @@
             <th>Programación de Pago </th>
             <th>Categoría</th>
             <th>Observaciones</th>
+
+            <th>Penalidad</th>
+            <th>Retención</th>
+            <th>Detracción</th>
         </tr>
     </thead>
     <tbody>
@@ -52,6 +56,10 @@
             <td>{{ $requerimiento->fecha_pago }}</td>
             <td>{{ $requerimiento->categoria }}</td>
             <td>{{ '--' }}</td>
+
+            <td>{{ $requerimiento->penalidad }}</td>
+            <td>{{ $requerimiento->retencion }}</td>
+            <td>{{ $requerimiento->detraccion }}</td>
         </tr>
         @endforeach
     </tbody>
