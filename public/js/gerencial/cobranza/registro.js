@@ -122,12 +122,12 @@ function listarRegistros(filtros) {
             {
                 render: function (data, type, row) {
                     html='';
-                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-edit"></i></button>';
-                        html+='<button type="button" class="btn btn-primary btn-flat botonList modal-fase" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-comments"></i></button>';
+                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'" data-toggle="tooltip" data-widget="collapse" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
+                        html+='<button type="button" class="btn btn-primary btn-flat botonList modal-fase" data-id="'+row['id_registro_cobranza']+'" title="Fases"><i class="fas fa-comments"></i></button>';
                         if (row['id_estado_doc'] ===5) {
-                            html+='<button type="button" class="btn btn btn-flat botonList modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-exclamation-triangle text-black"></i></button>'
+                            html+='<button type="button" class="btn btn btn-flat botonList modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'" title="Penalidades"><i class="fas fa-exclamation-triangle text-black"></i></button>'
                         }
-                        html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-trash"></i></button>';
+                        html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar" data-id="'+row['id_registro_cobranza']+'" title="Eliminar"><i class="fas fa-trash"></i></button>';
 
                     html+='';
                     return html;

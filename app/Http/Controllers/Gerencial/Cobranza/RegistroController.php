@@ -1277,9 +1277,23 @@ class RegistroController extends Controller
     }
     public function scriptMatchCobranzaPenalidad()
     {
+        $penalidades = Penalidad::get();
+        foreach ($penalidades as $key => $value) {
+            if ($value->id_cobranza!==null && $value->id_cobranza!=='') {
+                $registro_cobranza = RegistroCobranza::where('id_cobranza_old',$value->id_cobranza)->first();
+
+
+                $update = Penalidad::find($value->id_penalidad);
+                $update->id_registro_cobranza = $registro_cobranza->id_registro_cobranza;
+                $update->save();
+            }
+
+        }
+
         return response()->json([
             "success"=>true,
-            "status"=>200
+            "status"=>200,
+            "data"=>$penalidades
         ]);
     }
     public function exportarExcel($request)
@@ -1397,10 +1411,9 @@ class RegistroController extends Controller
 
             # penalidad
             $penalidad_gerencial = Penalidad::where('estado',1)
-                ->where('tipo','PENALIDAD')
-                ->where('id_cobranza',$value->id_cobranza_old)
-                ->orWhere('id_registro_cobranza',$value->id_registro_cobranza)
+                ->where('id_registro_cobranza',$value->id_registro_cobranza)
                 ->orderBy('id_penalidad', 'desc')
+                ->where('tipo','PENALIDAD')
                 ->first();
             $value->penalidad = '-';
             if ($penalidad_gerencial) {
@@ -1408,10 +1421,9 @@ class RegistroController extends Controller
             }
             # detraccion
             $penalidad_detraccion = Penalidad::where('estado',1)
-                ->where('tipo','DETRACCION')
-                ->where('id_cobranza',$value->id_cobranza_old)
-                ->orWhere('id_registro_cobranza',$value->id_registro_cobranza)
+                ->where('id_registro_cobranza',$value->id_registro_cobranza)
                 ->orderBy('id_penalidad', 'desc')
+                ->where('tipo','DETRACCION')
                 ->first();
             $value->detraccion = '--';
             if ($penalidad_detraccion) {
@@ -1419,27 +1431,13 @@ class RegistroController extends Controller
             }
             # retencion
             $penalidad_retencion = Penalidad::where('estado',1)
-                ->where('tipo','RETENCION')
-                ->where('id_cobranza',$value->id_cobranza_old)
-                ->orWhere('id_registro_cobranza',$value->id_registro_cobranza)
+                ->where('id_registro_cobranza',$value->id_registro_cobranza)
                 ->orderBy('id_penalidad', 'desc')
+                ->where('tipo','RETENCION')
                 ->first();
             $value->retencion = '---';
             if ($penalidad_retencion) {
                 $value->retencion = $penalidad_retencion->tipo;
-            }
-            if ($value->id_registro_cobranza === 6029) {
-                $penalidad_retencion = Penalidad::where('estado',1)
-                ->where('tipo','RETENCION')
-                ->where('id_cobranza',$value->id_cobranza_old)
-                ->orWhere('id_registro_cobranza',$value->id_registro_cobranza)
-                ->orderBy('id_penalidad', 'desc')
-                ->get();
-                return response()->json([
-                    $value,
-                    $penalidad_retencion
-
-                ]);exit;
             }
 
         }

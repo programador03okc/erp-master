@@ -1060,7 +1060,7 @@ Cobranzas
 @endsection
 @section('scripts')
 <script>
-
+$.widget.bridge('uibutton', $.ui.button);
 </script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
@@ -1079,6 +1079,7 @@ Cobranzas
 <script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
 <script src="{{ asset('js/gerencial/cobranza/registro.js') }}"></script>
 <script>
+
     $(document).ready(function() {
         $('.select2').select2();
         $('.search-vendedor-guardar').select2({
