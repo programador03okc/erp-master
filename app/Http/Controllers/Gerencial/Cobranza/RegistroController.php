@@ -1102,16 +1102,14 @@ class RegistroController extends Controller
     public function obtenerPenalidades($id_registro_cobranza)
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id_registro_cobranza)->first();
-
+        // return $registro_cobranza;exit;
         $penalidad_gerencial = Penalidad::where('estado',1);
-
-        if (!empty($registro_cobranza->id_cobranza_old)) {
-            $penalidad_gerencial = $penalidad_gerencial->where('id_cobranza',$registro_cobranza->id_cobranza_old);
-        }
-
-        if (!empty($registro_cobranza->id_registro_cobranza)) {
-            $penalidad_gerencial = $penalidad_gerencial->where('id_registro_cobranza',$id_registro_cobranza);
-        }
+        $penalidad_gerencial = $penalidad_gerencial->where('id_cobranza',$registro_cobranza->id_cobranza_old)->orWhere('id_registro_cobranza',$id_registro_cobranza);
+        // if (!empty($registro_cobranza->id_cobranza_old)) {
+        //     $penalidad_gerencial = $penalidad_gerencial->where('id_cobranza',$registro_cobranza->id_cobranza_old);
+        // }else{
+        //     $penalidad_gerencial = $penalidad_gerencial->where('id_registro_cobranza',$id_registro_cobranza);
+        // }
 
         $penalidad_gerencial = $penalidad_gerencial->get();
 
@@ -1277,6 +1275,13 @@ class RegistroController extends Controller
             "status"=>200
         ]);
     }
+    public function scriptMatchCobranzaPenalidad()
+    {
+        return response()->json([
+            "success"=>true,
+            "status"=>200
+        ]);
+    }
     public function exportarExcel($request)
     {
         $request = json_decode($request);
@@ -1334,15 +1339,6 @@ class RegistroController extends Controller
 
             }
 
-            // if ($value->id_empresa!==null && $value->id_empresa !=='') {
-            //     $id_cliente =$data->id_empresa;
-
-            // }else{
-            //     $id_cliente =$value->id_empresa_old;
-            //     $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$id_cliente)->first();
-            //     $id_cliente= $adm_contri->id_contribuyente;
-            // }
-
             $empresa = DB::table('administracion.adm_empresa')
             ->select(
                 'adm_empresa.id_contribuyente',
@@ -1396,6 +1392,56 @@ class RegistroController extends Controller
                 $programacion_pago = ProgramacionPago::where('id_cobranza',$value->id_cobranza_old)->where('estado',1)->first();
             }
             $value->fecha_pago = $programacion_pago? $programacion_pago->fecha:'--';
+
+            #penalidad / retencion / detraccion
+
+            # penalidad
+            $penalidad_gerencial = Penalidad::where('estado',1)
+                ->where('tipo','PENALIDAD')
+                ->where('id_cobranza',$value->id_cobranza_old)
+                ->orWhere('id_registro_cobranza',$value->id_registro_cobranza)
+                ->orderBy('id_penalidad', 'desc')
+                ->first();
+            $value->penalidad = '-';
+            if ($penalidad_gerencial) {
+                $value->penalidad = $penalidad_gerencial->tipo;
+            }
+            # detraccion
+            $penalidad_detraccion = Penalidad::where('estado',1)
+                ->where('tipo','DETRACCION')
+                ->where('id_cobranza',$value->id_cobranza_old)
+                ->orWhere('id_registro_cobranza',$value->id_registro_cobranza)
+                ->orderBy('id_penalidad', 'desc')
+                ->first();
+            $value->detraccion = '--';
+            if ($penalidad_detraccion) {
+                $value->detraccion = $penalidad_detraccion->tipo;
+            }
+            # retencion
+            $penalidad_retencion = Penalidad::where('estado',1)
+                ->where('tipo','RETENCION')
+                ->where('id_cobranza',$value->id_cobranza_old)
+                ->orWhere('id_registro_cobranza',$value->id_registro_cobranza)
+                ->orderBy('id_penalidad', 'desc')
+                ->first();
+            $value->retencion = '---';
+            if ($penalidad_retencion) {
+                $value->retencion = $penalidad_retencion->tipo;
+            }
+            if ($value->id_registro_cobranza === 6029) {
+                $penalidad_retencion = Penalidad::where('estado',1)
+                ->where('tipo','RETENCION')
+                ->where('id_cobranza',$value->id_cobranza_old)
+                ->orWhere('id_registro_cobranza',$value->id_registro_cobranza)
+                ->orderBy('id_penalidad', 'desc')
+                ->get();
+                return response()->json([
+                    $value,
+                    $penalidad_retencion
+
+                ]);exit;
+            }
+
         }
         return Excel::download(new CobranzasExpor($data), 'reporte_requerimientos_bienes_servicios.xlsx');
         // return response()->json($data);
