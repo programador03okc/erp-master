@@ -416,6 +416,7 @@ class MigrateProductoSoftlinkController extends Controller
     {
         $productos = DB::table('almacen.alm_prod_serie')
             ->select(
+                'alm_prod_serie.id_prod_serie',
                 'alm_prod_serie.serie',
                 'alm_prod_serie.id_almacen',
                 'alm_prod.id_producto',
@@ -448,20 +449,14 @@ class MigrateProductoSoftlinkController extends Controller
                 ->first();
 
             if ($data !== null) {
-                $s = DB::table('almacen.alm_prod_serie')
-                    ->where([['serie', '=', $p->serie], ['id_almacen', '=', $p->id_almacen], ['estado', '=', 1]])
-                    ->first();
-
-                if ($s !== null && $s->fecha_ingreso_soft == null) {
-                    DB::table('almacen.alm_prod_serie')
-                        ->where('id_prod_serie', $s->id_prod_serie)
-                        ->update([
-                            'fecha_ingreso_soft' => $data->fecha_almacen,
-                            'precio_unitario_soft' => $data->unitario,
-                            'doc_ingreso_soft' => $data->serie_numero,
-                            'moneda_soft' => $data->id_moneda,
-                        ]);
-                }
+                DB::table('almacen.alm_prod_serie')
+                    ->where('id_prod_serie', $p->id_prod_serie)
+                    ->update([
+                        'fecha_ingreso_soft' => $data->fecha_almacen,
+                        'precio_unitario_soft' => $data->unitario,
+                        'doc_ingreso_soft' => $data->serie_numero,
+                        'moneda_soft' => $data->id_moneda,
+                    ]);
             }
         }
 
