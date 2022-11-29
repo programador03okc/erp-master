@@ -3284,7 +3284,6 @@ class ListarRequerimientoPagoView {
                 selectCuenta.removeChild(selectCuenta.lastChild);
             }
         }
-
     }
 
     listarEnResultadoDestinatario(data, idTipoDestinatario) {
