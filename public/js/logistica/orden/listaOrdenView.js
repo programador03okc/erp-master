@@ -1002,8 +1002,8 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
 
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = '';
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value = '';
+        // document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = '';
+        // document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="";
 
         let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
