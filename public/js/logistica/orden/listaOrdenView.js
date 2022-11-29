@@ -1024,7 +1024,8 @@ class ListaOrdenView {
     }
 
     modalEnviarOrdenAPago(obj) {
-
+        $('#modal-enviar-solicitud-pago .modal-body [name="numero_de_cuotas"]').removeAttr('disabled');
+        $('#modal-enviar-solicitud-pago .modal-body [name="pagoEnCuotasCheckbox"]').removeAttr('disabled');
         tempArchivoAdjuntoRequerimientoCabeceraList=[];
         $(":file").filestyle('clear');
         this.limpiarTabla('adjuntosCabecera');
@@ -1146,6 +1147,7 @@ class ListaOrdenView {
             let htmlTable = '';
 
             let sumaMontoTotalMontoCuota=0;
+
             if (res.hasOwnProperty('detalle') && res.detalle.length > 0) {
                 (res.detalle).forEach((element,index) => {
                     if(element.id_estado !=7){
@@ -1187,6 +1189,7 @@ class ListaOrdenView {
                 htmlTable = `<tr>
                 <td style="text-align:center;" colspan="5">Sin data para mostrar</td>
                 </tr>`;
+
             }
             $('#form-enviar_solicitud_pago #body_historial_de_envios_a_pago_en_cuotas').html(htmlTable)
 
