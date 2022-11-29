@@ -1408,7 +1408,9 @@ class RegistroController extends Controller
             $value->fecha_pago = $programacion_pago? $programacion_pago->fecha:'--';
 
             #penalidad / retencion / detraccion
-
+            $value->penalidad_importe='0';
+            $value->detraccion_importe='0';
+            $value->retencion_importe='0';
             # penalidad
             $penalidad_gerencial = Penalidad::where('estado',1)
                 ->where('id_registro_cobranza',$value->id_registro_cobranza)
@@ -1418,6 +1420,7 @@ class RegistroController extends Controller
             $value->penalidad = '-';
             if ($penalidad_gerencial) {
                 $value->penalidad = $penalidad_gerencial->tipo;
+                $value->penalidad_importe = $penalidad_gerencial->monto;
             }
             # detraccion
             $penalidad_detraccion = Penalidad::where('estado',1)
@@ -1428,6 +1431,7 @@ class RegistroController extends Controller
             $value->detraccion = '--';
             if ($penalidad_detraccion) {
                 $value->detraccion = $penalidad_detraccion->tipo;
+                $value->detraccion_importe = $penalidad_detraccion->monto;
             }
             # retencion
             $penalidad_retencion = Penalidad::where('estado',1)
@@ -1438,6 +1442,7 @@ class RegistroController extends Controller
             $value->retencion = '---';
             if ($penalidad_retencion) {
                 $value->retencion = $penalidad_retencion->tipo;
+                $value->retencion_importe = $penalidad_retencion->monto;
             }
 
         }

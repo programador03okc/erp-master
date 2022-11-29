@@ -26,8 +26,11 @@
             <th>Observaciones</th>
 
             <th>Penalidad</th>
+            <th>Penalidad Monto</th>
             <th>Retención</th>
+            <th>Retención Monto</th>
             <th>Detracción</th>
+            <th>Detracción Monto</th>
         </tr>
     </thead>
     <tbody>
@@ -58,8 +61,12 @@
             <td>{{ '--' }}</td>
 
             <td>{{ $requerimiento->penalidad }}</td>
+            <td>{{ $requerimiento->penalidad_importe }}</td>
             <td>{{ $requerimiento->retencion }}</td>
+            <td>{{ $requerimiento->retencion_importe }}</td>
             <td>{{ $requerimiento->detraccion }}</td>
+            <td>{{ $requerimiento->detraccion_importe }}</td>
+
         </tr>
         @endforeach
     </tbody>
