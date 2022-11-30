@@ -187,4 +187,9 @@ class MigracionAlmacenSoftLinkController extends Controller
         }
         return response()->json($productos, 200);
     }
+    public function view_actualizar_productos()
+    {
+        // return view('Migraciones/actualiz');
+        return view('migraciones.actualizar_productos');
+    }
 }

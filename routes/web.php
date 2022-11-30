@@ -2086,6 +2086,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importarSeries')->name('importar');
 			Route::get('exportar', 'Migraciones\MigracionAlmacenSoftLinkController@exportarSeries')->name('exportar');
 			Route::get('test', 'Migraciones\MigracionAlmacenSoftLinkController@testSeries')->name('test');
+            # actualizar productos al softlink
+            Route::get('actualizar-productos', 'Migraciones\MigracionAlmacenSoftLinkController@view_actualizar_productos')->name('actualizar.productos.softlink');
 		});
 	});
 
