@@ -804,6 +804,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 			});
 		});
+        Route::group(['as' => 'ecommerce.', 'prefix' => 'ecommerce'], function () {
+            Route::get('index', 'EcommerceController@index')->name('index');
+            Route::get('crear', 'EcommerceController@crear')->name('crear');
+            Route::post('guardar', 'EcommerceController@guardar')->name('guardar');
+            Route::post('buscar-trabajador', 'EcommerceController@buscarTrabajador');
+        });
 	});
 
 	Route::group(['as' => 'logistica.', 'prefix' => 'logistica'], function () {
@@ -2004,6 +2010,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('enviarAPago', 'Tesoreria\RegistroPagoController@enviarAPago')->name('enviar-pago');
 				Route::post('revertirEnvio', 'Tesoreria\RegistroPagoController@revertirEnvio')->name('revertir-envio');
 				Route::get('verAdjuntos/{id}', 'Tesoreria\RegistroPagoController@verAdjuntos')->name('ver-adjuntos');
+				Route::post('anular-adjunto-requerimiento-pago-tesoreria', 'Tesoreria\RegistroPagoController@anularAdjuntoTesoreria');
+
 				Route::get('verAdjuntosPago/{id}', 'Tesoreria\RegistroPagoController@verAdjuntosPago')->name('ver-adjuntos-pago');
 				Route::get('actualizarEstadoPago', 'Tesoreria\RegistroPagoController@actualizarEstadoPago')->name('actualizar-estados-pago');
 
@@ -2173,10 +2181,20 @@ Route::group(['middleware' => ['auth']], function () {
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
 
 			// });
-			Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
-			Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
-			Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
-			Route::get('script-fase', 'Gerencial\Cobranza\RegistroController@scriptFase');
+            #script 1
+            Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
+            #script 2
+            Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
+            #script 3
+            Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
+            #script 4
+            Route::get('script-fase', 'Gerencial\Cobranza\RegistroController@scriptFase');
+            #script 5
+            Route::get('script-conbranza', 'Gerencial\Cobranza\RegistroController@scriptCobranza');
+            #script 6
+            Route::get('script-empresa-unicos', 'Gerencial\Cobranza\RegistroController@scriptEmpresaUnicos');
+            #scrip 7
+            Route::get('script-match-cobranza-penalidad', 'Gerencial\Cobranza\RegistroController@scriptMatchCobranzaPenalidad');
 
 
 			Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
@@ -2190,6 +2208,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('eliminar-registro-cobranza/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@eliminarRegistroCobranza');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
+            #exportar excel
+			Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
 		});
 	});
 	Route::get('config', function () {

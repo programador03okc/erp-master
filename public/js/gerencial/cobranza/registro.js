@@ -60,6 +60,17 @@ function listarRegistros(filtros) {
 
                 },
                 className: 'btn-default btn-sm'
+            },
+            {
+                text: '<i class="fas fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnExcel'
+                },
+                action: () => {
+                    exportarExcel();
+
+                },
+                className: 'btn-default btn-sm'
             }
         ],
         ajax: {
@@ -111,12 +122,12 @@ function listarRegistros(filtros) {
             {
                 render: function (data, type, row) {
                     html='';
-                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-edit"></i></button>';
-                        html+='<button type="button" class="btn btn-primary btn-flat botonList modal-fase" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-comments"></i></button>';
+                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'" data-toggle="tooltip" data-widget="collapse" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
+                        html+='<button type="button" class="btn btn-primary btn-flat botonList modal-fase" data-id="'+row['id_registro_cobranza']+'" title="Fases"><i class="fas fa-comments"></i></button>';
                         if (row['id_estado_doc'] ===5) {
-                            html+='<button type="button" class="btn btn btn-flat botonList modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-exclamation-triangle text-black"></i></button>'
+                            html+='<button type="button" class="btn btn btn-flat botonList modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'" title="Penalidades"><i class="fas fa-exclamation-triangle text-black"></i></button>'
                         }
-                        html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar" data-id="'+row['id_registro_cobranza']+'"><i class="fas fa-trash"></i></button>';
+                        html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar" data-id="'+row['id_registro_cobranza']+'" title="Eliminar"><i class="fas fa-trash"></i></button>';
 
                     html+='';
                     return html;
@@ -766,6 +777,7 @@ $(document).on('click','.editar-registro',function () {
         dataType: 'JSON'
     }).done(function( data ) {
         if (data.status===200) {
+            console.log(data);
             $('#modal-editar-cobranza').modal('show');
 
             $('[data-form="editar-formulario"] .modal-body select[name="empresa"] option').removeAttr('selected');
@@ -804,12 +816,13 @@ $(document).on('click','.editar-registro',function () {
             // $('[data-form="editar-formulario"] .modal-body input[name="atraso"]').val(data.data.id_cliente);
             $('[data-form="editar-formulario"] .modal-body input[name="plazo_credito"]').val(data.data.plazo_credito);
 
+            $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
+            $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
             if (data.vendedor) {
                 $('.search-vendedor').val(null).trigger('change');
                 var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, false, false);
                 $('.search-vendedor').append(newOption).trigger('change');
-                $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
-                $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
+
             }
 
 
@@ -910,7 +923,7 @@ $(document).on('click','.modal-fase',function () {
                 '</tr>';
             });
             $('[data-table="table-fase"]').html(html);
-            $('#listar-registros').DataTable().ajax.reload();
+            // $('#listar-registros').DataTable().ajax.reload();
         }else{
             $('[data-table="table-fase"]').html(html);
         }
@@ -1193,3 +1206,7 @@ $(document).on('click','.eliminar',function (e) {
       })
 
 });
+function exportarExcel() {
+    console.log(JSON.stringify(data_filtros));
+    window.open('exportar-excel/'+JSON.stringify(data_filtros));
+}

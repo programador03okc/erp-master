@@ -21,12 +21,13 @@
     {{-- @endif --}}
     {{-- @if(Auth::user()->tieneSubModulo(52)) --}}
         {{-- @if(Auth::user()->tieneAplicacion(132)) --}}
-    <li><a href="{{route('necesidades.pago.listado.index')}}"><i class="fas fa-file-invoice-dollar"></i> <span>Requerimiento de pago</span></a></li>
+    <li><a href= "{{route('necesidades.pago.listado.index')}}"><i class="fas fa-file-invoice-dollar"></i> <span>Requerimiento de pago</span></a></li>
         {{-- @endif --}}
 
     {{-- @endif --}}
     {{-- @if(Auth::user()->tieneAplicacion(134)) --}}
         <li><a href="{{route('necesidades.revisar-aprobar.listado.index')}}"><i class="fas fa-stamp"></i> <span>Revisar / aprobar</span></a></li>
     {{-- @endif --}}
+    {{-- <li><a href="{{route('necesidades.ecommerce.index')}}"><i class="fas fa-shopping-cart"></i> <span>ECOMMERCE</span></a></li> --}}
 </ul>
 @endsection

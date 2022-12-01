@@ -4283,6 +4283,7 @@ class OrdenController extends Controller
 
     function registrarSolicitudDePagar(Request $request)
     {
+        // return $request;exit;
         try {
             DB::beginTransaction();
 
@@ -4622,7 +4623,7 @@ class OrdenController extends Controller
     public function listarCategoriasAdjuntos()
     {
         // $categoria_adjunto =
-        return DB::table('logistica.categoria_adjunto')
+        return DB::table('logistica.categoria_adjunto')->where('estado',1)
             ->get();
     }
     public function guardarAdjuntoOrden(Request $request)

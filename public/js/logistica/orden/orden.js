@@ -721,7 +721,7 @@ function construirFormularioOrden(data) {
         document.querySelector("button[name='btn-relacionar-a-oc-softlink']").setAttribute("disabled", true);
     }
 
-    // construir detalle 
+    // construir detalle
     limpiarTabla('listaDetalleOrden');
     vista_extendida();
     let detalle = data.detalle;
@@ -761,7 +761,7 @@ function construirFormularioOrden(data) {
 
                     </td>
                     <td>${(detalle[i].detalle_requerimiento ? detalle[i].detalle_requerimiento.cantidad : '')}</td>
-                    <td>${(cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : '')}</td> 
+                    <td>${(cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : '')}</td>
                     <td>${(cantidad_atendido_orden > 0 ? cantidad_atendido_orden : '')}</td>
                     <td>
                         <input class="form-control cantidad_a_comprar input-sm text-right ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : 0}" disabled>
@@ -787,7 +787,7 @@ function construirFormularioOrden(data) {
                 <td>(No aplica) <input type="hidden" value=""></td>
                 <td>(No aplica) <input type="hidden" value=""></td>
                 <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}" style="width:100%;height: 60px;"> ${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}</textarea> 
+                <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}" style="width:100%;height: 60px;"> ${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}</textarea>
                     <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;" disabled>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
                 </td>
                 <td><select name="unidad[]" class="form-control  input-sm" value="${detalle[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
@@ -969,7 +969,7 @@ function listarDetalleOrdeRequerimiento(data) {
                 <td>(No aplica) <input type="hidden" value=""></td>
                 <td>(No aplica) <input type="hidden" value=""></td>
                 <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-                <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(data[i].descripcion ? data[i].descripcion : '')}" style="width:100%;height: 60px;"> ${(data[i].descripcion ? data[i].descripcion : '')}</textarea> 
+                <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control activation" value="${(data[i].descripcion ? data[i].descripcion : '')}" style="width:100%;height: 60px;"> ${(data[i].descripcion ? data[i].descripcion : '')}</textarea>
                 <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;">${(data[i].descripcion_complementaria ? data[i].descripcion_complementaria : '')}</textarea>
                 </td>
                 <td><select name="unidad[]" class="form-control input-sm" value="${data[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
@@ -1250,7 +1250,7 @@ function listarCatalogoProductos(tipo) {
                     function (data, type, row) {
                         switch (tipo) {
                             case 'OBSEQUIOS':
-                                let btnProductoObsequioSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio" 
+                                let btnProductoObsequioSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectObsequio"
                                 data-id-producto="${row.id_producto}"
                                 data-codigo="${row.codigo}"
                                 data-codigo-softlink="${row.cod_softlink}"
@@ -1258,7 +1258,7 @@ function listarCatalogoProductos(tipo) {
                                 data-descripcion="${row.descripcion}"
                                 data-unidad-medida="${row.abreviatura_unidad_medida}"
                                 data-id-unidad-medida="${row.id_unidad_medida}"
-                                
+
                                 >Agregar obsequio</button>`;
                                 // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
                                 return btnProductoObsequioSeleccionar;
@@ -1266,7 +1266,7 @@ function listarCatalogoProductos(tipo) {
                                 break;
                             case 'PRODUCTOS':
 
-                                let btnProductoSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectProducto" 
+                                let btnProductoSeleccionar = `<button class="btn btn-success btn-xs handleClickSelectProducto"
                             data-id-producto="${row.id_producto}"
                             data-codigo="${row.codigo}"
                             data-codigo-softlink="${row.cod_softlink}"
@@ -1274,7 +1274,7 @@ function listarCatalogoProductos(tipo) {
                             data-descripcion="${row.descripcion}"
                             data-unidad-medida="${row.abreviatura_unidad_medida}"
                             data-id-unidad-medida="${row.id_unidad_medida}"
-                            
+
                             >Agregar producto</button>`;
                                 // let btnVerSaldo = `<button class="btn btn-sm btn-info" onClick="verSaldoProducto('${row.id_producto}');">Stock</button>')`;
                                 return btnProductoSeleccionar;
@@ -1416,7 +1416,7 @@ function agregarServicio() {
     <td>(No aplica) <input type="hidden" value=""></td>
     <td>(No aplica) <input type="hidden" value=""></td>
     <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
-    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="" style="width:100%;height: 60px;"> </textarea>  
+    <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="" style="width:100%;height: 60px;"> </textarea>
         <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;"></textarea>
     </td>
     <td>Servicio<input type="hidden"  name="unidad[]" value="38"></td>
@@ -1441,7 +1441,7 @@ function agregarServicio() {
 </tr>`);
 }
 
-// guardar orden 
+// guardar orden
 function save_orden(data, action) {
     // let payload_orden = this.get_header_orden_requerimiento();
     // payload_orden.detalle = (typeof detalleOrdenList != 'undefined') ? detalleOrdenList : detalleOrdenList;

@@ -10,22 +10,36 @@
             <form action="" data-form="guardar-adjuntos" enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento_pago" />
-                    <div class="row">
-                        <div class="col-md-12">
-                            <fieldset class="group-table" id="fieldsetDatosProveedor">
-                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de la cabecera</strong></h5>
+                    <fieldset class="group-table" id="fieldsetDatosProveedor">
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{-- <fieldset class="group-table" id="fieldsetDatosProveedor"> --}}
+                                    <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de la cabecera</strong></h5>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table id="adjuntosCabecera" class="mytable table table-condensed table-bordered table-okc-view" >
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                {{-- </fieldset> --}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos en el detalle</strong></h5>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <table id="adjuntosCabecera" class="mytable table table-condensed table-bordered table-okc-view" >
+                                        <table id="adjuntosDetalle" class="mytable table table-condensed table-bordered table-okc-view" >
                                             <tbody></tbody>
                                         </table>
                                     </div>
                                 </div>
-                            </fieldset>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
                     <br>
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-md-12">
                             <fieldset class="group-table" id="fieldsetDatosProveedor">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos en el detalle</strong></h5>
@@ -38,18 +52,17 @@
                                 </div>
                             </fieldset>
                         </div>
-                    </div>
+                    </div> --}}
                     <br>
-                    <div class="row">
-                        <div class="col-md-12" style="margin-bottom: 15px;">
-                            <fieldset class="group-table">
+                    <fieldset class="group-table">
+                        <div class="row">
+                            <div class="col-md-12" style="margin-bottom: 15px;">
                                 <div class="form-group">
                                     <input type="hidden" name="codigo_requerimiento">
                                     <input type="hidden" name="id_requerimiento_pago">
                                     <h5 style="display:flex;justify-content: space-between;"><strong>Adjunto multiple de tesoreria</strong></h5>
 
                                     <input type="file" multiple="multiple" class="filestyle" name="adjuntos[]" multiple data-action="adjuntos" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo"  data-iconName="fa fa-folder-open" required/>
-                                    <br>
                                     <div style="display:flex; justify-content: space-between;">
                                         <h6>Máximo de 2MB por subida.</h6>
                                         <h6>Carga actual: <span class="label label-default" id="peso-estimado">0MB</span></h6>
@@ -58,12 +71,10 @@
                                 <table id="" class="table text-center" >
                                     <tbody data-action="table-body"></tbody>
                                 </table>
-                            </fieldset>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <fieldset class="group-table">
+                        <div class="row">
+                            <div class="col-md-12">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de tesoreria</strong></h5>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -72,9 +83,9 @@
                                         </table>
                                     </div>
                                 </div>
-                            </fieldset>
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success guardar-adjuntos"><i class="fa fa-save"></i> Guardar</button>

@@ -1655,6 +1655,16 @@ class ComprasPendientesController extends Controller
                     // }
 
                     if($aprobacion->id_aprobacion >0){
+
+                        $trazabilidad = new Trazabilidad();
+                        $trazabilidad->id_requerimiento = $requerimiento->id_requerimiento;
+                        $trazabilidad->id_usuario = Auth::user()->id_usuario;
+                        $trazabilidad->accion = 'ELABORADO';
+                        $trazabilidad->descripcion = 'Requerimiento observado.' . (isset( $request->sustento) ? ($request->sustento) : '');
+                        $trazabilidad->fecha_registro = new Carbon();
+                        $trazabilidad->save();
+
+
                         $mensaje='Requerimiento logístico observado';
                         $requerimiento->estado=3;
                         $requerimiento->save();

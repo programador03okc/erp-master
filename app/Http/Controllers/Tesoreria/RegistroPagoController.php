@@ -12,6 +12,8 @@ use App\Models\Logistica\PagoCuota;
 use App\Models\Logistica\PagoCuotaDetalle;
 use App\Models\Rrhh\Persona;
 use App\Models\Tesoreria\RegistroPago;
+use App\Models\Tesoreria\RegistroPagoAdjuntos;
+use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPagoAdjunto;
 use App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle;
 use App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto;
@@ -23,6 +25,7 @@ use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Maatwebsite\Excel\Facades\Excel;
 use Debugbar;
+use Exception;
 
 class RegistroPagoController extends Controller
 {
@@ -335,6 +338,30 @@ class RegistroPagoController extends Controller
         return response()->json($adjuntos);
     }
 
+    function anularAdjuntoTesoreria(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $estado_accion = '';
+            $adjunto = RequerimientoPagoAdjunto::find($request->id_adjunto);
+            if (isset($adjunto)) {
+                $adjunto->id_estado = 7;
+                $adjunto->save();
+                $estado_accion = 'success';
+                $mensaje = 'Adjuntos anulado';
+            } else {
+                $estado_accion = 'warning';
+                $mensaje = 'Hubo un problema y no se pudo anular el adjuntos';
+            }
+            DB::commit();
+
+            return response()->json(['status' => $estado_accion, 'mensaje' => $mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al anular el adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
     /*
     public function pagosRequerimientos($id_requerimiento_pago)
     {
@@ -772,6 +799,7 @@ class RegistroPagoController extends Controller
 
     function verAdjuntos($id_requerimiento_pago)
     {
+        $usuarioPropietarioDeRequerimiento = RequerimientoPago::find($id_requerimiento_pago)->id_usuario;
         $adjuntoPadre = RequerimientoPagoAdjunto::where([['id_requerimiento_pago', $id_requerimiento_pago], ['id_estado', '!=', 7]])->with('categoriaAdjunto')->get();
         $adjuntoDetalle = RequerimientoPagoAdjuntoDetalle::join('tesoreria.requerimiento_pago_detalle', 'requerimiento_pago_detalle.id_requerimiento_pago_detalle', '=', 'requerimiento_pago_detalle_adjunto.id_requerimiento_pago_detalle')
             ->where([['requerimiento_pago_detalle.id_requerimiento_pago', $id_requerimiento_pago], ['requerimiento_pago_detalle_adjunto.id_estado', '!=', 7]])->get();
@@ -780,7 +808,9 @@ class RegistroPagoController extends Controller
             ->where('id_requerimiento_pago',$id_requerimiento_pago)
             ->join('tesoreria.registro_pago_adjuntos','registro_pago_adjuntos.id_pago', '=','registro_pago.id_pago')
             ->get();
-        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::where('id_requerimiento_pago',$id_requerimiento_pago)->where('id_categoria_adjunto', 5)->get();
+        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::where('id_requerimiento_pago',$id_requerimiento_pago)
+        ->where('id_categoria_adjunto',5)
+        ->get();
         return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle, 'adjuntos_pago'=>$adjuntos_pagos,'adjuntos_pagos_complementarios'=>$adjuntos_pagos_complementarios]);
     }
 

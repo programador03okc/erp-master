@@ -1538,6 +1538,7 @@ class ListarRequerimientoPagoView {
                 document.querySelector("input[name='nombre_destinatario']").closest('div').parentElement.classList.add('has-error');
             }
         }
+        console.log(document.querySelector("select[name='id_cuenta']").value);
         if ((document.querySelector("select[name='id_cuenta']").value == '' || (document.querySelector("input[name='id_cuenta_persona']").value == '' && document.querySelector("input[name='id_cuenta_contribuyente']").value == ''))) {
             continuar = false;
             if (document.querySelector("select[name='id_cuenta']").closest('div').parentElement.querySelector("span") == null) {
@@ -2694,7 +2695,7 @@ class ListarRequerimientoPagoView {
                         action: 'GUARDAR',
                         file: file
                     };
-                  
+
                     this.addToTablaArchivosRequerimientoPagoCabecera(payload);
 
                     tempArchivoAdjuntoRequerimientoPagoCabeceraList.push(payload);
@@ -3163,7 +3164,6 @@ class ListarRequerimientoPagoView {
                                         selectCuenta.removeChild(selectCuenta.lastChild);
                                     }
                                 }
-                                
                                 (response.data[0].cuenta_persona).forEach(element => {
                                     option += `
                                     <option

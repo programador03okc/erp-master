@@ -66,6 +66,7 @@ function obtenerListaAdjuntosPago(idRequerimientoPago) {
                 });
             },
             success(response) {
+                // console.log(response);
                 resolve(response);
                 $('#adjuntosPago').LoadingOverlay("hide", true);
 
