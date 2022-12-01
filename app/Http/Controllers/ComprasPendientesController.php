@@ -1619,7 +1619,7 @@ class ComprasPendientesController extends Controller
                 $idRolUsuarioList[] = $rol->id_rol;
             }
 
-            if(in_array(4,$idRolUsuarioList)==true){ //usuario en sesion tiene rol logistica?
+            if(in_array(4,$idRolUsuarioList)==true || in_array(17,$idRolUsuarioList)==true){ //usuario en sesion tiene rol logistica?
                 if(intval($request->id_requerimiento) >0){
                     $documento = $this->obtenerIdDocumento(1,$request->id_requerimiento);
                     $requerimiento = Requerimiento::find($request->id_requerimiento);
