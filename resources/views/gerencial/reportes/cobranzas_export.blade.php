@@ -55,7 +55,7 @@
             <td>{{ $requerimiento->estado }}</td>
             <td>{{ $requerimiento->fase }}</td>
             <td>{{ $requerimiento->area }}</td>
-            <td>{{ '--' }}</td>
+            <td>{{ $requerimiento->vendedor }}</td>
             <td>{{ $requerimiento->fecha_pago }}</td>
             <td>{{ $requerimiento->categoria }}</td>
             <td>{{ '--' }}</td>
