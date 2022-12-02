@@ -1023,8 +1023,20 @@ class OrdenController extends Controller
     }
     public function listaOrdenesElaboradas(Request $request)
     {
+        $filtro= $request->filtro;
+        $ordenes = OrdenesView::where([['id_estado', '>=', 1], ['id_tp_documento', '!=', 13]])
+        ->when(($filtro !=null || $filtro !='SIN_FILTRO' ), function ($query) use ($filtro) {
+            switch ($filtro) {
+                case 'ORDENES_SIN_ENVIAR_A_PAGO':
+                    return $query->where('ordenes_view.estado_pago', '=', 1);
 
-        $ordenes = OrdenesView::where([['id_estado', '>=', 1], ['id_tp_documento', '!=', 13]]);
+                    break;
+                
+                default:
+                    break;
+            }
+        })
+        ;
         // return datatables($ordenes)
         // ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
         //     $query->whereHas('data_requerimiento.codigo_requerimiento', function ($q) use ($keyword) {

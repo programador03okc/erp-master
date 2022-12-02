@@ -8,14 +8,7 @@ var tempArchivoAdjuntoRequerimientoCabeceraList=[];
 class ListaOrdenView {
     constructor(listaOrdenCtrl) {
         this.listaOrdenCtrl = listaOrdenCtrl;
-
-        this.ActualParametroTipoOrdenCabecera = 'SIN_FILTRO';
-        this.ActualParametroEmpresaCabecera = 'SIN_FILTRO';
-        this.ActualParametroSedeCabecera = 'SIN_FILTRO';
-        this.ActualParametroFechaDesdeCabecera = 'SIN_FILTRO';
-        this.ActualParametroFechaHasta = 'SIN_FILTRO';
-        this.ActualParametroEstadoCabecera = 'SIN_FILTRO';
-
+        this.filtro = 'SIN_FILTRO';
     }
 
     init() {
@@ -71,6 +64,13 @@ class ListaOrdenView {
         });
         $('#listaOrdenes').on("click", "button.handleClickModalEnviarOrdenAPago", (e) => {
             this.modalEnviarOrdenAPago(e.currentTarget);
+        });
+        $(document).on("change", "select.handleChangeFiltroListaOrdenes", (e) => {
+            // this.modalEnviarOrdenAPago(e.currentTarget);
+            this.filtro = e.currentTarget.value;
+
+            this.mostrarListaOrdenesElaboradas(e.currentTarget.value)
+
         });
 
         $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeTipoDestinatario", (e) => {
@@ -130,45 +130,45 @@ class ListaOrdenView {
             this.documentosVinculados(e.currentTarget);
         });
 
-        $('#modal-filtro-lista-ordenes-elaboradas').on("change", "select.handleChangeUpdateValorFiltroOrdenesElaboradas", (e) => {
-            this.updateValorFiltroOrdenesElaboradas();
-        });
+        // $('#modal-filtro-lista-ordenes-elaboradas').on("change", "select.handleChangeUpdateValorFiltroOrdenesElaboradas", (e) => {
+        //     this.updateValorFiltroOrdenesElaboradas();
+        // });
 
-        $('#modal-filtro-lista-ordenes-elaboradas').on("change", "select.handleChangeFiltroEmpresa", (e) => {
-            this.handleChangeFiltroEmpresa(e);
-        });
-
-
-        $('#modal-filtro-lista-ordenes-elaboradas').on("click", "input[type=checkbox]", (e) => {
-            this.estadoCheckFiltroOrdenesElaboradasCabecera(e);
-        });
-
-        $('#modal-filtro-lista-ordenes-elaboradas').on('hidden.bs.modal', () => {
-            this.updateValorFiltroOrdenesElaboradas();
-            if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
-                // this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
-            } else {
-                // this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera, this.ActualParametroEmpresaCabecera, this.ActualParametroSedeCabecera, this.ActualParametroFechaDesdeCabecera, this.ActualParametroFechaHastaCabecera, this.ActualParametroEstadoCabecera);
-            }
-        });
+        // $('#modal-filtro-lista-ordenes-elaboradas').on("change", "select.handleChangeFiltroEmpresa", (e) => {
+        //     this.handleChangeFiltroEmpresa(e);
+        // });
 
 
-        $('#modal-filtro-lista-items-orden-elaboradas').on("change", "select.handleChangeFiltroEmpresa", (e) => {
-            this.handleChangeFiltroEmpresa(e);
-        });
-        $('#modal-filtro-lista-items-orden-elaboradas').on("click", "input[type=checkbox]", (e) => {
-            this.estadoCheckFiltroOrdenesElaboradasDetalle(e);
-        });
-        $('#modal-filtro-lista-items-orden-elaboradas').on('hidden.bs.modal', () => {
-            this.updateValorFiltroDetalleOrdenesElaboradas();
-            if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
-                // this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+        // $('#modal-filtro-lista-ordenes-elaboradas').on("click", "input[type=checkbox]", (e) => {
+        //     this.estadoCheckFiltroOrdenesElaboradasCabecera(e);
+        // });
 
-            } else {
-                // this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle, this.ActualParametroSedeDetalle, this.ActualParametroFechaDesdeDetalle, this.ActualParametroFechaHastaDetalle, this.ActualParametroEstadoDetalle);
+        // $('#modal-filtro-lista-ordenes-elaboradas').on('hidden.bs.modal', () => {
+        //     this.updateValorFiltroOrdenesElaboradas();
+        //     if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
+        //         // this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+        //     } else {
+        //         // this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera, this.ActualParametroEmpresaCabecera, this.ActualParametroSedeCabecera, this.ActualParametroFechaDesdeCabecera, this.ActualParametroFechaHastaCabecera, this.ActualParametroEstadoCabecera);
+        //     }
+        // });
 
-            }
-        });
+
+        // $('#modal-filtro-lista-items-orden-elaboradas').on("change", "select.handleChangeFiltroEmpresa", (e) => {
+        //     this.handleChangeFiltroEmpresa(e);
+        // });
+        // $('#modal-filtro-lista-items-orden-elaboradas').on("click", "input[type=checkbox]", (e) => {
+        //     this.estadoCheckFiltroOrdenesElaboradasDetalle(e);
+        // });
+        // $('#modal-filtro-lista-items-orden-elaboradas').on('hidden.bs.modal', () => {
+        //     this.updateValorFiltroDetalleOrdenesElaboradas();
+        //     if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
+        //         // this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+
+        //     } else {
+        //         // this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle, this.ActualParametroSedeDetalle, this.ActualParametroFechaDesdeDetalle, this.ActualParametroFechaHastaDetalle, this.ActualParametroEstadoDetalle);
+
+        //     }
+        // });
         $(document).on('click','.adjuntar-archivos', (e)=> {
             tempArchivoAdjuntoRequerimientoCabeceraList=[];
             $(":file").filestyle('clear');
@@ -318,253 +318,23 @@ class ListaOrdenView {
         document.querySelector("button[id='btnTipoVistaPorItemPara'").classList.remove('active');
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.remove('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.add('oculto');
-        if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
+        // if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
             // this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
             this.mostrarListaOrdenesElaboradas();
 
-        }
+        // }
     }
     tipoVistaPorItem() {
         document.querySelector("button[id='btnTipoVistaPorItemPara'").classList.add('active');
         document.querySelector("button[id='btnTipoVistaPorCabecera'").classList.remove('active');
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.add('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.remove('oculto');
-        if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
+        // if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
             // this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
             this.mostrarListaItemsOrdenesElaboradas();
-        }
+        // }
     }
 
-    // filtros
-
-
-
-
-    filtroTablaListaOrdenesVistaCabecera() {
-        $('#modal-filtro-lista-ordenes-elaboradas').modal({
-            show: true,
-            backdrop: 'true'
-        });
-    }
-
-    filtroTablaListaOrdenesVistaDetalle() {
-        $('#modal-filtro-lista-items-orden-elaboradas').modal({
-            show: true,
-            backdrop: 'true'
-        });
-    }
-
-    getNameModalActive() {
-
-        if (document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']").classList.contains("in") == true) {
-            return document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas'] div.modal-body").firstElementChild.getAttribute('id');
-        } else if (document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']").classList.contains("in") == true) {
-            return document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas'] div.modal-body").firstElementChild.getAttribute('id');
-        } else {
-            return null;
-        }
-
-    }
-
-
-
-    handleChangeFiltroEmpresa(event) {
-        let id_empresa = event.target.value;
-        this.listaOrdenCtrl.getDataSelectSede(id_empresa).then((res) => {
-            this.llenarSelectSede(res);
-        }).catch(function (err) {
-            console.log(err)
-        })
-
-    }
-
-    llenarSelectSede(array) {
-        let selectElement = document.querySelector("div[id='" + this.getNameModalActive() + "'] select[name='sede']");
-
-        if (selectElement.options.length > 0) {
-            var i, L = selectElement.options.length - 1;
-            for (i = L; i >= 0; i--) {
-                selectElement.remove(i);
-            }
-        }
-
-        array.forEach(element => {
-            let option = document.createElement("option");
-            option.text = element.descripcion;
-            option.value = element.id_sede;
-            selectElement.add(option);
-        });
-    }
-
-    mostrarCantidadFiltrosActivosCabeceraOrden() {
-        document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span[id='cantidadFiltrosActivosCabecera']").textContent = cantidadFiltrosActivosCabecera;
-
-    }
-    mostrarCantidadFiltrosActivosDetalleOrden() {
-        document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span[id='cantidadFiltrosActivosDetalle']").textContent = cantidadFiltrosActivosDetalle;
-
-    }
-
-    estadoCheckFiltroOrdenesElaboradasCabecera(e) {
-        const modalFiltrosOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']");
-        switch (e.currentTarget.getAttribute('name')) {
-            case 'chkTipoOrden':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='tipoOrden']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='tipoOrden']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkEmpresa':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='empresa']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='empresa']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkSede':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='sede']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='sede']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkFechaRegistro':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly")
-                    modalFiltrosOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
-                    modalFiltrosOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkEstado':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='estado']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='estado']").setAttribute("readOnly", true)
-                }
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    estadoCheckFiltroOrdenesElaboradasDetalle(e) {
-        const modalFiltrosDetalleOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']");
-        switch (e.currentTarget.getAttribute('name')) {
-            case 'chkEmpresa':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='empresa']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='empresa']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkSede':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='sede']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='sede']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkFechaRegistro':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly")
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkEstado':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='estado']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='estado']").setAttribute("readOnly", true)
-                }
-                break;
-            default:
-                break;
-        }
-
-    }
-
-
-    updateValorFiltroOrdenesElaboradas() {
-        const modalFiltroListaOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']");
-        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='tipoOrden']").getAttribute("readonly") == null) {
-            this.ActualParametroTipoOrdenCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='tipoOrden']").value;
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
-            this.ActualParametroEmpresaCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").value;
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").getAttribute("readonly") == null) {
-            this.ActualParametroSedeCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").value;
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
-            this.ActualParametroFechaDesdeCabecera = modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
-            this.ActualParametroFechaHastaCabecera = modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='estado']").getAttribute("readonly") == null) {
-            this.ActualParametroEstadoCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='estado']").value;
-        }
-    }
-    updateValorFiltroDetalleOrdenesElaboradas() {
-        const modalFiltroListaDetalleOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']");
-
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
-            this.ActualParametroEmpresaDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='empresa']").value;
-        }
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='sede']").getAttribute("readonly") == null) {
-            this.ActualParametroSedeDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='sede']").value;
-        }
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
-            this.ActualParametroFechaDesdeDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
-        }
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
-            this.ActualParametroFechaHastaDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
-        }
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='estado']").getAttribute("readonly") == null) {
-            this.ActualParametroEstadoDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='estado']").value;
-        }
-    }
-
-    // obtenerListaOrdenesElaboradas(tipoOrden = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
-    //     this.listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado).then((res) => {
-    //         this.construirTablaListaOrdenesElaboradas(res);
-    //     }).catch((err) => {
-    //         console.log(err)
-    //     })
-    // }
-
-
-
-    updateContadorFiltroOrdenesElaboradas() {
-        let contadorCheckActivo = 0;
-        const allCheckBoxFiltroOrdenesElaboradasNivelCabecera = document.querySelectorAll("div[id='modal-filtro-lista-ordenes-elaboradas'] input[type='checkbox']");
-        allCheckBoxFiltroOrdenesElaboradasNivelCabecera.forEach(element => {
-            if (element.checked == true) {
-                contadorCheckActivo++;
-            }
-        });
-        document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span") ? document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo : false
-        return contadorCheckActivo;
-    }
-
-    updateContadorFiltroDetalleOrdenesElaboradas() {
-        let contadorCheckActivo = 0;
-        const allCheckBoxFiltroOrdenesElaboradasNivelDetalle = document.querySelectorAll("div[id='modal-filtro-lista-items-orden-elaboradas'] input[type='checkbox']");
-        allCheckBoxFiltroOrdenesElaboradasNivelDetalle.forEach(element => {
-            if (element.checked == true) {
-                contadorCheckActivo++;
-            }
-        });
-        document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span") ? document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo : false
-        return contadorCheckActivo;
-    }
 
     construirDetalleOrdenElaboradas(table_id, row, response) {
         var html = '';
@@ -1297,25 +1067,7 @@ class ListaOrdenView {
             console.log(err)
         })
     }
-    // obtenerMontosParaPago(idOrden) {
-        // console.log(idOrden);
-        // this.getMontoparaPago(idOrden).then((res) => {
-        //     // console.log(res);
-        //     if (res.tipo_estado == 'success') {
-        //     } else {
-        //         Lobibox.notify(res.tipo_estado, {
-        //             title: false,
-        //             size: 'mini',
-        //             rounded: true,
-        //             sound: false,
-        //             delayIndicator: false,
-        //             msg: res.mensaje
-        //         });
-        //     }
-        // }).catch(function (err) {
-        //     console.log(err)
-        // })
-    // }
+
 
     llenarInputsDeDestinatario(data) {
         // console.log(data);
@@ -1842,23 +1594,24 @@ class ListaOrdenView {
     // ###============ Fin enviar orden a pago ============###
 
 
-    mostrarListaOrdenesElaboradas(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
+    mostrarListaOrdenesElaboradas(filtro = 'SIN_FILTRO') {
+
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
-        const button_filtro = (array_accesos.find(element => element === 287)?{
-                text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
-                attr: {
-                    id: 'btnFiltrosListaOrdenesElaboradas',
-                    disabled: true
-                },
-                action: () => {
-                    // this.abrirModalFiltrosRequerimientosElaborados();
+        // const button_filtro = (array_accesos.find(element => element === 287)?{
+        //         text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+        //         attr: {
+        //             id: 'btnFiltrosListaOrdenesElaboradas',
+        //             disabled: true
+        //         },
+        //         action: () => {
+        //             // this.abrirModalFiltrosRequerimientosElaborados();
 
-                },
-                className: 'btn-default btn-sm'
-            }:[]),
-            button_descargar_excel = (array_accesos.find(element => element === 244)?{
+        //         },
+        //         className: 'btn-default btn-sm'
+        //     }:[]),
+          const  button_descargar_excel = (array_accesos.find(element => element === 244)?{
                 text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
                 attr: {
                     id: 'btnDescargarListaOrdenesElaboradasExcel',
@@ -1873,7 +1626,7 @@ class ListaOrdenView {
             }:[]);
         $tablaListaOrdenesElaborados = $('#listaOrdenes').DataTable({
             'dom': vardataTables[1],
-            'buttons': [button_filtro,button_descargar_excel],
+            'buttons': [button_descargar_excel],
             'language': vardataTables[0],
             'order': [[6, 'desc']],
             'bLengthChange': false,
@@ -1882,7 +1635,7 @@ class ListaOrdenView {
             'ajax': {
                 'url': 'lista-ordenes-elaboradas',
                 'type': 'POST',
-                'data': { 'meOrAll': meOrAll, 'idEmpresa': idEmpresa, 'idSede': idSede, 'idGrupo': idGrupo, 'idDivision': idDivision, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'idEstado': idEstado },
+                'data': { 'filtro': filtro},
                 beforeSend: data => {
                     $("#listaOrdenes").LoadingOverlay("show", {
                         imageAutoResize: true,
@@ -2033,7 +1786,14 @@ class ListaOrdenView {
                 //Boton de busqueda
                 const $filter = $('#listaOrdenes_filter');
                 const $input = $filter.find('input');
+                
+                const selectFiltro= '<select class="form-control input-sm ml-4 handleChangeFiltroListaOrdenes" id="selectFiltroListaOrden" style="margin-left: 1rem;"> <option value="SIN_FILTRO" >Todo</option> <option value="ORDENES_SIN_ENVIAR_A_PAGO">Ordenes sin envío a pago</option> </select>';
+                document.querySelector("div[id='listaOrdenes_wrapper'] div[class='dt-buttons btn-group']").insertAdjacentHTML('afterbegin', selectFiltro);
+                document.querySelector("select[id='selectFiltroListaOrden']").value=that.filtro;
+
                 $filter.append('<button id="btnBuscarOrden" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+
+
                 $input.off();
                 $input.on('keyup', (e) => {
                     if (e.key == 'Enter') {
@@ -2047,6 +1807,7 @@ class ListaOrdenView {
 
             },
             "drawCallback": function (settings) {
+
                 if ($tablaListaOrdenesElaborados.rows().data().length == 0) {
                     Lobibox.notify('info', {
                         title: false,
@@ -2082,23 +1843,23 @@ class ListaOrdenView {
 
 
 
-    mostrarListaItemsOrdenesElaboradas(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
+    mostrarListaItemsOrdenesElaboradas() {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
-        const button_filtro = (array_accesos.find(element => element === 288)?{
-                text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
-                attr: {
-                    id: 'btnFiltrosListaItemsOrdenesElaboradas',
-                    disabled: true
-                },
-                action: () => {
-                    // this.abrirModalFiltrosRequerimientosElaborados();
+        // const button_filtro = (array_accesos.find(element => element === 288)?{
+        //         text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+        //         attr: {
+        //             id: 'btnFiltrosListaItemsOrdenesElaboradas',
+        //             disabled: true
+        //         },
+        //         action: () => {
+        //             // this.abrirModalFiltrosRequerimientosElaborados();
 
-                },
-                className: 'btn-default btn-sm'
-            }:[]),
-            button_descargar_excel= (array_accesos.find(element => element === 251)?{
+        //         },
+        //         className: 'btn-default btn-sm'
+        //     }:[]),
+           const button_descargar_excel= (array_accesos.find(element => element === 251)?{
                 text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
                 attr: {
                     id: 'btnDescargarListaItemsOrdenesElaboradasExcel',
@@ -2113,7 +1874,7 @@ class ListaOrdenView {
             }:[]);
         $tablaListaItemsOrdenesElaborados = $('#listaItemsOrden').DataTable({
             'dom': vardataTables[1],
-            'buttons': [button_filtro,button_descargar_excel],
+            'buttons': [button_descargar_excel],
             'language': vardataTables[0],
             'order': [[15, 'desc']],
             'bLengthChange': false,
@@ -2122,7 +1883,7 @@ class ListaOrdenView {
             'ajax': {
                 'url': 'lista-items-ordenes-elaboradas',
                 'type': 'POST',
-                'data': { 'meOrAll': meOrAll, 'idEmpresa': idEmpresa, 'idSede': idSede, 'idGrupo': idGrupo, 'idDivision': idDivision, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'idEstado': idEstado },
+                // 'data': { 'meOrAll': meOrAll, 'idEmpresa': idEmpresa, 'idSede': idSede, 'idGrupo': idGrupo, 'idDivision': idDivision, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'idEstado': idEstado },
                 beforeSend: data => {
                     $("#listaItemsOrden").LoadingOverlay("show", {
                         imageAutoResize: true,
