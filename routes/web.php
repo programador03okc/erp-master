@@ -1209,6 +1209,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 	/**Almacén */
 	Route::group(['as' => 'almacen.', 'prefix' => 'almacen'], function () {
+        #scrip 1
+        Route::get('script-categoria', 'AlmacenController@scripCategoria');
 
 		Route::get('index', 'AlmacenController@view_main_almacen')->name('index');
 
