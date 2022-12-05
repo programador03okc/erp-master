@@ -1444,9 +1444,49 @@ class RegistroController extends Controller
                 $value->retencion = $penalidad_retencion->tipo;
                 $value->retencion_importe = $penalidad_retencion->monto;
             }
+            if (intval($value->vendedor>0)) {
+                $vendedor = Vendedor::where('id_vendedor',intval($value->vendedor))->first();
+                if ($vendedor) {
+                    $value->vendedor = $vendedor->nombre;
+                }
+            }
 
         }
         return Excel::download(new CobranzasExpor($data), 'reporte_requerimientos_bienes_servicios.xlsx');
         // return response()->json($data);
+    }
+    public function scriptMatchCobranzaVendedor()
+    {
+        $vendedores_gerencial   = DB::table('gerencial.vendedor')->get();
+        $registro_cobranza      = RegistroCobranza::where('estado',1)->where('vendedor','!=','--')->where('vendedor','!=',null)->get();
+        $vendedores_excluidos = [];
+        foreach ($registro_cobranza as $key => $value) {
+
+            if ($value->vendedor!=='--' && $value->vendedor!==null && !intval($value->vendedor)) {
+                $new_sentence = str_replace('.', '', $value->vendedor);
+                $new_sentence = strtoupper($new_sentence);
+                $vendedor = Vendedor::where('nombre','like','%'.$new_sentence.'%')->first();
+
+                if (!$vendedor) {
+                    array_push($vendedores_excluidos,$new_sentence);
+
+                }else{
+                    $actualizar_registro_cobranza = RegistroCobranza::find($value->id_registro_cobranza);
+                    $actualizar_registro_cobranza->vendedor = $vendedor->id_vendedor;
+                    $actualizar_registro_cobranza->save();
+                }
+
+
+                // $registro     = RegistroCobranza::where('id_registro_cobranza',$value->id_registro_cobranza)->first();
+                // return response()->json([$registro,$new_sentence,$vendedor]);exit;
+            }
+
+
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "no_encontrados"=>$vendedores_excluidos
+        ]);
     }
 }
