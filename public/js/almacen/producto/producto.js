@@ -386,22 +386,22 @@ function validaProducto() {
     var id_moneda = $('[name=id_moneda]').val();
     var msj = '';
 
-    if (id_categoria == '' || id_categoria == '0') {
+    if (id_categoria == '' || id_categoria == '0' || id_categoria == null) {
         msj += (msj == '' ? 'Es necesario que elija una SubCategoría' : ', una SubCategoría');
     }
-    if (id_subcategoria == '' || id_subcategoria == '0') {
+    if (id_subcategoria == '' || id_subcategoria == '0' || id_subcategoria == null) {
         msj += (msj == '' ? 'Es necesario que elija una Marca' : ', una Marca');
     }
-    if (id_clasif == '' || id_clasif == '0') {
+    if (id_clasif == '' || id_clasif == '0' || id_clasif == null) {
         msj += (msj == '' ? 'Es necesario que alija una Clasificación' : ', una clasificación');
     }
-    if (descripcion == '') {
+    if (descripcion == '' || descripcion == null) {
         msj += (msj == '' ? 'Es necesario que ingrese una Descripción' : ', una descripción');
     }
-    if (id_unidad_medida == '0') {
+    if (id_unidad_medida == '0' || id_unidad_medida == null) {
         msj += (msj == '' ? 'Es necesario que seleccione una Unidad de Medida' : ', una unidad de medida');
     }
-    if (id_moneda == '') {
+    if (id_moneda == '' || id_moneda == null) {
         msj += (msj == '' ? 'Es necesario que seleccione una moneda' : ', una moneda');
     }
     return msj;
