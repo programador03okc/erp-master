@@ -1209,6 +1209,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 	/**Almacén */
 	Route::group(['as' => 'almacen.', 'prefix' => 'almacen'], function () {
+        #script 1
+        Route::get('script-categoria', 'AlmacenController@scripCategoria');
 
 		Route::get('index', 'AlmacenController@view_main_almacen')->name('index');
 
@@ -2086,6 +2088,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importarSeries')->name('importar');
 			Route::get('exportar', 'Migraciones\MigracionAlmacenSoftLinkController@exportarSeries')->name('exportar');
 			Route::get('test', 'Migraciones\MigracionAlmacenSoftLinkController@testSeries')->name('test');
+            # actualizar productos al softlink
+            Route::get('actualizar-productos', 'Migraciones\MigracionAlmacenSoftLinkController@view_actualizar_productos')->name('actualizar.productos.softlink');
 		});
 	});
 
@@ -2195,6 +2199,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('script-empresa-unicos', 'Gerencial\Cobranza\RegistroController@scriptEmpresaUnicos');
             #scrip 7
             Route::get('script-match-cobranza-penalidad', 'Gerencial\Cobranza\RegistroController@scriptMatchCobranzaPenalidad');
+            #scrip 8
+            Route::get('script-match-cobranza-vendedor', 'Gerencial\Cobranza\RegistroController@scriptMatchCobranzaVendedor');
 
 
 			Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
