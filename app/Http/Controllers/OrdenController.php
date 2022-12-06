@@ -1705,6 +1705,8 @@ class OrdenController extends Controller
                 'log_det_ord_compra.garantia',
                 'log_det_ord_compra.estado',
                 'log_det_ord_compra.personal_autorizado',
+                'und_prod.descripcion AS unidad_medida_producto',
+
                 // DB::raw("(pers_aut.nombres) || ' ' || (pers_aut.apellido_paterno) || ' ' || (pers_aut.apellido_materno) AS nombre_personal_autorizado"),
                 'log_det_ord_compra.id_producto',
                 'log_det_ord_compra.lugar_despacho',
@@ -1720,6 +1722,7 @@ class OrdenController extends Controller
             ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
             ->leftJoin('almacen.alm_item', 'alm_item.id_item', '=', 'log_det_ord_compra.id_item')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
+            ->leftJoin('almacen.alm_und_medida as und_prod', 'und_prod.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftJoin('configuracion.sis_usua as sis_usua_aut', 'sis_usua_aut.id_usuario', '=', 'log_det_ord_compra.personal_autorizado')
             ->leftJoin('rrhh.rrhh_trab as trab_aut', 'trab_aut.id_trabajador', '=', 'sis_usua_aut.id_trabajador')
             ->leftJoin('rrhh.rrhh_postu as post_aut', 'post_aut.id_postulante', '=', 'trab_aut.id_postulante')
@@ -1836,6 +1839,7 @@ class OrdenController extends Controller
                     'descripcion_complementaria' => $data->descripcion_complementaria,
                     'cantidad' => $data->cantidad,
                     'id_unidad_medida' => $data->id_unidad_medida,
+                    'unidad_medida_producto' => $data->unidad_medida_producto,
                     'unidad_medida' => $data->unidad_medida,
                     'precio' => $data->precio,
                     // 'flete' => $data->flete,
@@ -2112,7 +2116,7 @@ class OrdenController extends Controller
             } else {
                 $html .= '<td>' . ($data['descripcion_adicional'] ? $data['descripcion_adicional'] : $data['descripcion_adicional']) . ' ' . ($data['descripcion_complementaria'] ? $data['descripcion_complementaria'] : '') . '</td>';
             }
-            $html .= '<td>' . $data['unidad_medida'] . '</td>';
+            $html .= '<td>' . ($data['unidad_medida_producto']==null || $data['unidad_medida_producto']==''?$data['unidad_medida']:$data['unidad_medida_producto']) . '</td>';
             $html .= '<td style="text-align:center">' . $data['cantidad'] . '</td>';
             $html .= '<td style="text-align:center">' . $ordenArray['head']['moneda_simbolo'] . number_format($data['precio'], 2) . '</td>';
             // $html .= '<td class="right">' . number_format((($data['cantidad'] * $data['precio']) - (($data['cantidad']* $data['precio'])/1.18)),2,'.','') . '</td>';
@@ -4625,6 +4629,7 @@ class OrdenController extends Controller
                 'descripcion_producto' => $d['descripcion_producto'] ? $d['descripcion_producto'] : $d['descripcion_adicional'],
                 'cantidad' => $d['cantidad'] ?? '',
                 'abreviatura_unidad_medida_det_orden' => $d['abreviatura_unidad_medida_det_orden'] ?? '',
+                'abreviatura_unidad_medida_producto' => $d['abreviatura_unidad_medida_producto'] ?? '',
                 'simbolo_moneda_producto' => $d['simbolo_moneda_producto'] ?? '',
                 'precio' => $d['precio'] ?? '',
                 'cc_fila_precio' => $d['cc_fila_precio'] ?? '',
