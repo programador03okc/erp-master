@@ -2018,7 +2018,7 @@ class ListaOrdenView {
 
 
     exportarListaOrdenesElaboradasNivelCabeceraExcel() {
-        window.open('exportar-lista-ordenes-elaboradas-nivel-cabecera-excel');
+        window.open(`exportar-lista-ordenes-elaboradas-nivel-cabecera-excel/${this.filtro}`);
     }
     exportarListaOrdenesElaboradasNivelDetalleExcel() {
         window.open('exportar-lista-ordenes-elaboradas-nivel-detalle-excel');

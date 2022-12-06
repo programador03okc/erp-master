@@ -1028,7 +1028,7 @@ class OrdenController extends Controller
         ->when(($filtro !=null || $filtro !='SIN_FILTRO' ), function ($query) use ($filtro) {
             switch ($filtro) {
                 case 'ORDENES_SIN_ENVIAR_A_PAGO':
-                    return $query->where('ordenes_view.estado_pago', '=', 1);
+                    return $query->whereIn('ordenes_view.estado_pago', [1]);
 
                     break;
                 
@@ -4023,10 +4023,11 @@ class OrdenController extends Controller
         return $output;
     }
 
-    public function exportListaOrdenesNivelCabeceraExcel()
+    public function exportListaOrdenesNivelCabeceraExcel($filtro)
     {
-        // return Orden::reporteListaOrdenes();
-        return Excel::download(new ListOrdenesHeadExport, 'lista de ordenes.xlsx');
+
+        // return $this->reporteListaOrdenes($filtro);
+        return Excel::download(new ListOrdenesHeadExport($filtro), 'lista de ordenes.xlsx');
     }
     public function exportListaOrdenesNivelDetalleExcel()
     {
@@ -4557,10 +4558,23 @@ class OrdenController extends Controller
 
 
 
-    public static function reporteListaOrdenes()
+    public static function reporteListaOrdenes($filtro='SIN_FILTRO')
     {
+      
+
         $data = [];
         $ord_compra = OrdenesView::where('id_estado', '>=', 1)
+            ->when(($filtro!='SIN_FILTRO'), function ($query) use ($filtro) {
+                switch ($filtro) {
+                    case 'ORDENES_SIN_ENVIAR_A_PAGO':
+                        return $query->whereIn('ordenes_view.estado_pago',[1]);
+                        break;
+                    
+                    default:
+                        # code...
+                        break;
+                }
+            })
             ->orderBy('ordenes_view.fecha_emision', 'desc')
             ->get();
 
@@ -4580,7 +4594,7 @@ class OrdenController extends Controller
                 'fecha_ultimo_ingreso_almacen' => $d['fecha_ultimo_ingreso_almacen'] ?? '',
                 'razon_social_proveedor' => $d['razon_social_proveedor'] ?? '',
                 'estado_orden' => $d['descripcion_estado'] ?? '',
-                'estado_pago' => $d['descripcion_estado_pago'] ?? '',
+                'estado_pago' => $d['descripcion_estado_pago'] ?? '-',
                 'monto_total' => $d['monto_total'] ?? '',
                 'monto_total_cdp' =>  $d['data_importe_oportunidad'] ?? ''
             ];

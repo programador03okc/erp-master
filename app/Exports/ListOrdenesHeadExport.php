@@ -9,10 +9,16 @@ class ListOrdenesHeadExport implements FromCollection, WithHeadings
     /**
     * @return \Illuminate\Support\Collection
     */
+
+    public function __construct(string $filtro)
+    {
+        $this->filtro = $filtro;
+    }
+    
     public function collection()
     {
         // $data =Orden::reporteListaOrdenes();
-        $data =(new OrdenController)->reporteListaOrdenes();
+        $data =(new OrdenController)->reporteListaOrdenes($this->filtro);
         return collect($data);
 
 
@@ -32,7 +38,6 @@ class ListOrdenesHeadExport implements FromCollection, WithHeadings
             "Tiempo atención logística",
             "Fecha último ingreso almacén",
             "Proveedor",
-            "Condición",
             "Estado de orden",
             "Estado de pago",
             "Importe total orden",
