@@ -943,7 +943,7 @@ Route::group(['middleware' => ['auth']], function () {
 						// Route::get('generar_orden_pdf/{id}', 'OrdenController@generar_orden_pdf'); // PDF
 						Route::get('verSession', 'LogisticaController@verSession');
 						// Route::get('explorar-orden/{id_orden}', 'LogisticaController@explorar_orden');
-						Route::get('exportar-lista-ordenes-elaboradas-nivel-cabecera-excel', 'OrdenController@exportListaOrdenesNivelCabeceraExcel');
+						Route::get('exportar-lista-ordenes-elaboradas-nivel-cabecera-excel/{filtro?}', 'OrdenController@exportListaOrdenesNivelCabeceraExcel');
 						Route::get('exportar-lista-ordenes-elaboradas-nivel-detalle-excel', 'OrdenController@exportListaOrdenesNivelDetalleExcel');
 
 						// nivel item
