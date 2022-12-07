@@ -500,7 +500,7 @@ function listarPagoEnCuotas(tipo,id){
                     html += '<tr id="' + element.id_pago_cuota_detalle + '">' +
                         '<td style="border: none; text-align: center">' + i + '</td>' +
                         '<td style="border: none; text-align: center; color: #8b3447 !important;font-weight: bold;">' + (element.monto_cuota !== null ? element.monto_cuota : '') + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
+                        '<td style="border: none; text-align: center">' + ((element.observacion)?element.observacion:'') + '</td>' +
                         '<td style="border: none; text-align: center">' + (numeroCuotas>1?(i+'/'+numeroCuotas):i)+ '</td>' +
                         '<td style="border: none; text-align: center">' + enlaceAdjunto.toString().replace(",","<br>") + '</td>' +
                         '<td style="border: none; text-align: center">' + (element.fecha_autorizacion !=null?element.fecha_autorizacion:'') + '</td>' +
