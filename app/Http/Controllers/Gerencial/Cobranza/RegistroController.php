@@ -813,10 +813,11 @@ class RegistroController extends Controller
             ));
         }
 
-        $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado',1)->first();
-        if (!$programacion_pago) {
-            $programacion_pago = ProgramacionPago::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('estado',1)->first();
-        }
+        $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)
+        ->where('estado',1)
+        ->orWhere('id_cobranza',$registro_cobranza->id_cobranza_old)
+        ->orderBy('id_programacion_pago','desc')
+        ->first();
         return response()->json([
             "status"=>200,
             "success"=>true,

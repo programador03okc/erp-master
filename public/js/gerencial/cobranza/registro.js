@@ -830,15 +830,26 @@ $(document).on('click','.editar-registro',function () {
             $('[data-form="editar-formulario"] .modal-body input[name="id_registro_cobranza"]').val(data.data.id_registro_cobranza);
 
             fecha_emision = new Date($('[data-form="editar-formulario"] input[name="fecha_rec"]').val().split('/').reverse().join('-')).getTime();
-            fecha_vencimiento= new Date($('[data-form="editar-formulario"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime();
+            // fecha_vencimiento= new Date($('[data-form="editar-formulario"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime();
 
-            numero_dias = fecha_vencimiento - fecha_emision;
-            numero_dias = numero_dias/(1000*60*60*24)
-            numero_dias = numero_dias*-1;
-            if (numero_dias<=0) {
-                numero_dias = 0;
+            // numero_dias = fecha_vencimiento - fecha_emision;
+            // numero_dias = numero_dias/(1000*60*60*24)
+            // numero_dias = numero_dias*-1;
+            // if (numero_dias<=0) {
+            //     numero_dias = 0;
+            // }
+            // $('[data-form="editar-formulario"] input[name="atraso"]').val(numero_dias);
+
+            var fecha_actual = new Date().getTime();
+            var atraso = fecha_actual - fecha_emision;
+            atraso = atraso/(1000*60*60*24);
+            if (atraso>0) {
+                atraso = Math.trunc(atraso);
+            }else{
+                atraso = 0;
             }
-            $('[data-form="editar-formulario"] input[name="atraso"]').val(numero_dias);
+            $('[data-form="editar-formulario"] input[name="atraso"]').val(atraso);
+
 
         }
     }).fail( function(jqXHR, textStatus, errorThrown) {
@@ -860,7 +871,24 @@ $(document).on('change click','.dias-atraso',function () {
     if (numero_dias<=0) {
         numero_dias = 0;
     }
-    $('[data-form="'+data_form+'"] input[name="atraso"]').val(numero_dias);
+
+
+
+    var fecha_actual = new Date().getTime();
+    var atraso = fecha_actual - fecha_emision;
+    atraso = atraso/(1000*60*60*24);
+    if (atraso>0) {
+        atraso = Math.trunc(atraso);
+    }else{
+        atraso = 0;
+    }
+
+
+    $('[data-form="'+data_form+'"] input[name="atraso"]').val(atraso);
+
+
+
+    $('[data-form="editar-formulario"] input[name="atraso"]').val(atraso);
 });
 
 $(document).on('submit','[data-form="editar-formulario"]',function (e) {

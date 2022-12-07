@@ -575,7 +575,7 @@ Cobranzas
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="fecha_ppago">Fecha Pago (próx)</label>
-                                <input type="date" class="form-control input-sm text-center dias-atraso" data-form="editar-formulario" name="fecha_ppago" value="{{date('Y-m-d')}}">
+                                <input type="date" class="form-control input-sm text-center dias-atraso" data-form="editar-formulario" name="fecha_ppago" value="">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -1060,7 +1060,7 @@ Cobranzas
 @endsection
 @section('scripts')
 <script>
-$.widget.bridge('uibutton', $.ui.button);
+// $.widget.bridge('uibutton', $.ui.button);
 </script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
     <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>

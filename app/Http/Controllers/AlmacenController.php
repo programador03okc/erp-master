@@ -7126,733 +7126,712 @@ class AlmacenController extends Controller
     public function scripCategoria()
     {
         $clasificacion = array(
-            "00"=>"*OTROS",
-            "01"=>"ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO",
-            "02"=>"EQUIPOS ELECTRICOS",
-            "03"=>"EQUIPOS, APARATOS Y ACCESORIOS INFORMÁTICOS",
-            "04"=>"HERRAMIENTAS Y MATERIALES PARA PRODUCCION",
-            "05"=>"INSUMOS Y UTILES PARA LIMPIEZA",
-            "06"=>"MOBILIARIO, APARATOS Y UTILES PARA OFICINA",
-            "07"=>"SEGURIDAD PERSONAL E INDUSTRIAL",
-            "08"=>"VALES Y MERCHANDSING",
+            array(
+                "codigo"=>"00",
+                "descripcion"=>"*OTROS",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"00",
+                        "descripcion"=>"*OTROS",
+                        "sub_categoria"=>array(
+                            array(
+                                "codigo"=>"00",
+                                "descripcion"=>"*OTROS"
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            array(
+                "codigo"=>"01",
+                "descripcion"=>"ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO",
+                        "sub_categoria"=>array(
+                            array(
+                                "codigo"=>"01",
+                                "descripcion"=>"ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO",
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            array(
+                "codigo"=>"02",
+                "descripcion"=>"EQUIPOS ELECTRICOS",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ACCESORIOS DE EQUIPOS ELÉTRICOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CABLE DE PODER"),
+                        ),
+                    ),
+                    array(
+                        "codigo"=>02,
+                        "descripcion"=>"EQUIPOS DE PROTECCION ELECTRICA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"BATERIAS PARA UPS"),
+                            array("codigo"=>"02","descripcion"=>"ESTABILIZADORES"),
+                            array("codigo"=>"03","descripcion"=>"SUPRESOR DE PICOS"),
+                            array("codigo"=>"04","descripcion"=>"TRANSFORMADORES"),
+                            array("codigo"=>"05","descripcion"=>"UPS"),
+                        ),
+                    ),
+                    array(
+                        "codigo"=>03,
+                        "descripcion"=>"EQUIPOS DE SISTEMA FOTOVOLTAICO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01", "descripcion"=>"PANEL SOLAR"),
+                            array("codigo"=>"02", "descripcion"=>"INMERSORES"),
+                            array("codigo"=>"03", "descripcion"=>"CONTROLADORES"),
+                            array("codigo"=>"04", "descripcion"=>"PARARAYOS"),
+                            array("codigo"=>"05", "descripcion"=>"BATERIAS PARA PLACAS SOLARES"),
+
+                        )
+                    ),
+                )
+            ),
+            array(
+                "codigo"=>"03",
+                "descripcion"=>"EQUIPOS, APARATOS Y ACCESORIOS INFORMÁTICOS",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ACCESORIOS DE COMPUTO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"07", "descripcion"=>"CARRITO PARA PORTATILES"),
+                            array("codigo"=>"08", "descripcion"=>"ESCRITORIO CLASICO PARA ORDENADOR"),
+                            array("codigo"=>"09", "descripcion"=>"ESCRITORIO GAMER"),
+                            array("codigo"=>"10", "descripcion"=>"FUNDA"),
+                            array("codigo"=>"11", "descripcion"=>"MALETIN"),
+                            array("codigo"=>"12", "descripcion"=>"MANDOS DE JUEGO"),
+                            array("codigo"=>"13", "descripcion"=>"MICRÓFONO"),
+                            array("codigo"=>"14", "descripcion"=>"MOCHILA"),
+                            array("codigo"=>"15", "descripcion"=>"MOUSE CLÁSICO ALÁMBRICO"),
+                            array("codigo"=>"16", "descripcion"=>"MOUSE CLÁSICO INALÁMBRICO"),
+                            array("codigo"=>"17", "descripcion"=>"MOUSE GAMER"),
+                            array("codigo"=>"18", "descripcion"=>"PARLANTES CLASICOS"),
+                            array("codigo"=>"19", "descripcion"=>"PARLANTES GAMER"),
+                            array("codigo"=>"20", "descripcion"=>"REPLICADOR DE PUERTOS"),
+                            array("codigo"=>"21", "descripcion"=>"SILLA CLASICA PARA ORDENADOR"),
+                            array("codigo"=>"22", "descripcion"=>"SILLA GAMER"),
+                            array("codigo"=>"23", "descripcion"=>"TECLADO CLÁSICO ALÁMBRICO"),
+                            array("codigo"=>"24", "descripcion"=>"TECLADO CLÁSICO INALÁMBRICO"),
+                            array("codigo"=>"25", "descripcion"=>"TECLADO GAMER"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"COMPONENTES DE COMPUTADORA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01", "descripcion"=>"BATERIA PARA COMPUTADORA"),
+                            array("codigo"=>"02", "descripcion"=>"CASES"),
+                            array("codigo"=>"03", "descripcion"=>"COOLERS"),
+                            array("codigo"=>"04", "descripcion"=>"FUENTE DE PODER"),
+                            array("codigo"=>"05", "descripcion"=>"LECTORAS"),
+                            array("codigo"=>"08", "descripcion"=>"PLACA MADRE"),
+                            array("codigo"=>"09", "descripcion"=>"OTROS COMPONENTES"),
+                            array("codigo"=>"10", "descripcion"=>"TARJETA BLUETOOH"),
+                            array("codigo"=>"11", "descripcion"=>"TARJETA DE VIDEO"),
+                            array("codigo"=>"12", "descripcion"=>"TARJETAS PCI"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"03",
+                        "descripcion"=>"DISPOSITIVOS DE ALMACENAMIENTO DE DATOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01", "descripcion"=>"ACCESORIOS PARA DISCOS DUROS"),
+                            array("codigo"=>"02", "descripcion"=>"CINTA LTO"),
+                            array("codigo"=>"03", "descripcion"=>"DISCO DURO MECÁNICO EXTERNO 2.5''"),
+                            array("codigo"=>"04", "descripcion"=>"DISCO DURO MECÁNICO EXTERNO 3.5''"),
+                            array("codigo"=>"05", "descripcion"=>"DISCO DURO MECÁNICO INTERNO 2.5''"),
+                            array("codigo"=>"06", "descripcion"=>"DISCO DURO MECÁNICO INTERNO 3.5''"),
+                            array("codigo"=>"07", "descripcion"=>"DISCO DURO PARA SERVIDOR"),
+                            array("codigo"=>"08", "descripcion"=>"DISCO DURO PARA SISTEMA DE ALMACENAMIENTO"),
+                            array("codigo"=>"09", "descripcion"=>"DISCO DURO PARA SISTEMA DE RESPALDO"),
+                            array("codigo"=>"10", "descripcion"=>"DISCO DURO SOLIDO EXTERNO 2.5''"),
+                            array("codigo"=>"11", "descripcion"=>"DISCO DURO SOLIDO INTERNO 2.5''"),
+                            array("codigo"=>"12", "descripcion"=>"DISCO DURO SOLIDO INTERNO M.2 NVMe 2230"),
+                            array("codigo"=>"13", "descripcion"=>"DISCO DURO SOLIDO INTERNO M.2 SATA"),
+                            array("codigo"=>"14", "descripcion"=>"MEMORIA USB"),
+                            array("codigo"=>"15", "descripcion"=>"TARJETA DE MEMORIA SD"),
+                            array("codigo"=>"16", "descripcion"=>"DISCO DURO SOLIDO INTERNO M.2 NVMe 2242"),
+                            array("codigo"=>"17", "descripcion"=>"DISCO DURO SOLIDO INTERNO M.2 NVMe 2280"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"04",
+                        "descripcion"=>"DISPOSITIVOS PARA CAPTURA DE IMÁGENES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01", "descripcion"=>"ACCESORIOS DE LECTOR DE CODIGOS"),
+                            array("codigo"=>"02", "descripcion"=>"CAMARA DE VIDEO"),
+                            array("codigo"=>"03", "descripcion"=>"CAMARA FOTOGRAFICA"),
+                            array("codigo"=>"04", "descripcion"=>"LECTOR DE CODIGOS"),
+                            array("codigo"=>"05", "descripcion"=>"SCANNERS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"05",
+                        "descripcion"=>"DISPOSITIVOS TELEFÓNICOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CELULARES"),
+                            array("codigo"=>"02","descripcion"=>"TELEFONO IP"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"07",
+                        "descripcion"=>"EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ACCESORIO PARA GABINETE"),
+                            array("codigo"=>"02","descripcion"=>"ACCESORIOS PARA INFRAESTRUCTURA"),
+                            array("codigo"=>"03","descripcion"=>"EQUIPO DE ADMINISTRACION TELEFONO IP"),
+                            array("codigo"=>"04","descripcion"=>"EQUIPOS FIREWALL"),
+                            array("codigo"=>"05","descripcion"=>"GABINETES"),
+                            array("codigo"=>"06","descripcion"=>"SERVIDORES"),
+                            array("codigo"=>"07","descripcion"=>"SISTEMA DE ALMACENAMIENTO"),
+                            array("codigo"=>"08","descripcion"=>"SISTEMA DE RESPALDO"),
+                            array("codigo"=>"09","descripcion"=>"SWITCH PARA ALMACENAMIENTO"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"08",
+                        "descripcion"=>"IMPRESION",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ACC. IMPRESORAS"),
+                            array("codigo"=>"02","descripcion"=>"FOTOCOPIADORAS"),
+                            array("codigo"=>"03","descripcion"=>"IMPRESORA 3D"),
+                            array("codigo"=>"04","descripcion"=>"IMPRESORA DE FOTOCHECK"),
+                            array("codigo"=>"05","descripcion"=>"IMPRESORA DE INJECCION DE TINTA"),
+                            array("codigo"=>"06","descripcion"=>"IMPRESORA ETIQUETADORA"),
+                            array("codigo"=>"07","descripcion"=>"IMPRESORA LASER"),
+                            array("codigo"=>"08","descripcion"=>"IMPRESORA MATRICIAL"),
+                            array("codigo"=>"09","descripcion"=>"IMPRESORA TERMICA"),
+                            array("codigo"=>"10","descripcion"=>"PLOTTER"),
+                            array("codigo"=>"11","descripcion"=>"IMPRESORA MULTIFUNCIONAL LASER"),
+                            array("codigo"=>"12","descripcion"=>"IMPRESORA MULTIFUNCIONAL TINTA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"09",
+                        "descripcion"=>"MONITOR, PANTALLAS, TV, PROYECTORES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ECRAN"),
+                            array("codigo"=>"02","descripcion"=>"MONITORES"),
+                            array("codigo"=>"03","descripcion"=>"PANTALLA INTERACTIVA"),
+                            array("codigo"=>"04","descripcion"=>"PIZARRA ACRILICA"),
+                            array("codigo"=>"05","descripcion"=>"PROYECTORES MULTIMEDIA"),
+                            array("codigo"=>"06","descripcion"=>"TELEVISOR"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"10",
+                        "descripcion"=>"PRODUCTOS INFORMATICOS INTANGIBLES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"LICENCIA DE SISTEMA OPERATIVO INFRAESTRUCTURA"),
+                            array("codigo"=>"02","descripcion"=>"LICENCIA DE SISTEMA OPERATIVO USUARIO"),
+                            array("codigo"=>"03","descripcion"=>"LICENCIAS DE ANTIVIRUS CONSUMO"),
+                            array("codigo"=>"04","descripcion"=>"LICENCIAS DE ANTIVIRUS CORPORATIVO"),
+                            array("codigo"=>"05","descripcion"=>"LICENCIAS DE OFFICE ESD"),
+                            array("codigo"=>"06","descripcion"=>"LICENCIAS DE OFFICE OEM"),
+                            array("codigo"=>"07","descripcion"=>"LICENCIAS DE OFFICE OLP"),
+                            array("codigo"=>"08","descripcion"=>"LICIENCIA DE OFFICE POR SUSCRIPCIÓN"),
+                            array("codigo"=>"09","descripcion"=>"SOFTWARE DE VIDEOGILANCIA"),
+                            array("codigo"=>"10","descripcion"=>"GARANTIAS EXTENDIDAS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"11",
+                        "descripcion"=>"REDES Y CONECTIVIDAD",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ACCESS POINT"),
+                            array("codigo"=>"02","descripcion"=>"CABLE FIBRA"),
+                            array("codigo"=>"03","descripcion"=>"CABLES UTP"),
+                            array("codigo"=>"04","descripcion"=>"CONECTOR RJ45"),
+                            array("codigo"=>"05","descripcion"=>"JACK"),
+                            array("codigo"=>"06","descripcion"=>"ORDENADOR DE CABLES"),
+                            array("codigo"=>"07","descripcion"=>"PATCH CORD"),
+                            array("codigo"=>"08","descripcion"=>"PATCH PANEL"),
+                            array("codigo"=>"09","descripcion"=>"ROUTER"),
+                            array("codigo"=>"10","descripcion"=>"SWITCH LAN"),
+                            array("codigo"=>"11","descripcion"=>"TARJETA DE RED"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"12",
+                        "descripcion"=>"SUMINISTROS DE IMPRESIÓN",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CINTA DE COLOR PARA FOTOCHECK"),
+                            array("codigo"=>"02","descripcion"=>"FUSOR"),
+                            array("codigo"=>"03","descripcion"=>"PAPEL TERMICO"),
+                            array("codigo"=>"04","descripcion"=>"SUMINISTRO DE CINTA MATRICIAL"),
+                            array("codigo"=>"05","descripcion"=>"SUMINISTRO DE TINTA                                                                                 "),
+                            array("codigo"=>"06","descripcion"=>"SUMINISTRO DE TONER                                                                                 "),
+                            array("codigo"=>"07","descripcion"=>"TAMBOR"),
+                            array("codigo"=>"08","descripcion"=>"TARJETAS PVC"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"13",
+                        "descripcion"=>"PROCESADOR (CPU)",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"PROCESADOR AMD RYZEN 3 S_AM4"),
+                            array("codigo"=>"02","descripcion"=>"PROCESADOR AMD RYZEN 5 S_AM4"),
+                            array("codigo"=>"03","descripcion"=>"PROCESADOR AMD RYZEN 5 S_AM5"),
+                            array("codigo"=>"04","descripcion"=>"PROCESADOR AMD RYZEN 7 S_AM4"),
+                            array("codigo"=>"05","descripcion"=>"PROCESADOR AMD RYZEN 7 S_AM5"),
+                            array("codigo"=>"06","descripcion"=>"PROCESADOR AMD RYZEN 9 S_AM4"),
+                            array("codigo"=>"07","descripcion"=>"PROCESADOR AMD RYZEN 9 S_AM5"),
+                            array("codigo"=>"08","descripcion"=>"PROCESADOR CELERON DC GXXXX S1700"),
+                            array("codigo"=>"09","descripcion"=>"PROCESADOR CORE I3 9XXX S1151-V2"),
+                            array("codigo"=>"10","descripcion"=>"PROCESADOR CORE I3 10XXX S1200"),
+                            array("codigo"=>"11","descripcion"=>"PROCESADOR CORE I3 11XXX S1200"),
+                            array("codigo"=>"12","descripcion"=>"PROCESADOR CORE I3 12XXX S1700"),
+                            array("codigo"=>"13","descripcion"=>"PROCESADOR CORE I5 7XXX S1151"),
+                            array("codigo"=>"14","descripcion"=>"PROCESADOR CORE I5 8XXX S1151-V2"),
+                            array("codigo"=>"15","descripcion"=>"PROCESADOR CORE I5 9XXX S1151-V2"),
+                            array("codigo"=>"16","descripcion"=>"PROCESADOR CORE I5 10XXX S1200"),
+                            array("codigo"=>"17","descripcion"=>"PROCESADOR CORE I5 11XXX S1200"),
+                            array("codigo"=>"18","descripcion"=>"PROCESADOR CORE I5 12XXX S1700"),
+                            array("codigo"=>"19","descripcion"=>"PROCESADOR CORE I5 13XXX S1700"),
+                            array("codigo"=>"20","descripcion"=>"PROCESADOR CORE I7 7XXX S1151"),
+                            array("codigo"=>"21","descripcion"=>"PROCESADOR CORE I7 7XXX S2066"),
+                            array("codigo"=>"22","descripcion"=>"PROCESADOR CORE I7 10XXX S1200"),
+                            array("codigo"=>"23","descripcion"=>"PROCESADOR CORE I7 11XXX S1200"),
+                            array("codigo"=>"24","descripcion"=>"PROCESADOR CORE I7 12XXX S1700"),
+                            array("codigo"=>"25","descripcion"=>"PROCESADOR CORE I7 13XXX S1700"),
+                            array("codigo"=>"26","descripcion"=>"PROCESADOR CORE I9 10XXX S1200"),
+                            array("codigo"=>"27","descripcion"=>"PROCESADOR CORE I9 11XXX S1200"),
+                            array("codigo"=>"28","descripcion"=>"PROCESADOR CORE I9 12XXX S1700"),
+                            array("codigo"=>"29","descripcion"=>"PROCESADOR CORE I9 13XXX S1700"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"14",
+                        "descripcion"=>"MEMORIA RAM NOTEBOOK",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"RAM SODIMM DDR3 1600Mhz PC3-12800"),
+                            array("codigo"=>"02","descripcion"=>"RAM SODIMM DDR4 2666Mhz PC4-21300"),
+                            array("codigo"=>"03","descripcion"=>"RAM SODIMM DDR4 2800Mhz PC4-22400"),
+                            array("codigo"=>"04","descripcion"=>"RAM SODIMM DDR4 3000Mhz PC4-24000"),
+                            array("codigo"=>"05","descripcion"=>"RAM SODIMM DDR4 3200Mhz PC4-25600"),
+                            array("codigo"=>"06","descripcion"=>"RAM SODIMM DDR5 4800Mhz PC5-38400"),
+                            array("codigo"=>"07","descripcion"=>"RAM SODIMM DDR5 5200Mhz PC5-41600"),
+                            array("codigo"=>"08","descripcion"=>"RAM SODIMM DDR5 5600Mhz PC5-44800"),
+                            array("codigo"=>"09","descripcion"=>"RAM SODIMM DDR5 6000Mhz PC5-48000"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"15",
+                        "descripcion"=>"MEMORIA RAM PC",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"RAM DDR3 1600Mhz PC3-12800"),
+                            array("codigo"=>"02","descripcion"=>"RAM DDR3 1800Mhz PC3-14400"),
+                            array("codigo"=>"03","descripcion"=>"RAM DDR3 2600Mhz PC3-20800"),
+                            array("codigo"=>"04","descripcion"=>"RAM DDR4 2666Mhz PC4-21300"),
+                            array("codigo"=>"05","descripcion"=>"RAM DDR4 3000Mhz PC4-24000"),
+                            array("codigo"=>"06","descripcion"=>"RAM DDR4 3200Mhz PC4-25600"),
+                            array("codigo"=>"07","descripcion"=>"RAM DDR4 3600Mhz PC4-28800"),
+                            array("codigo"=>"08","descripcion"=>"RAM DDR4 4000Mhz PC4-32000"),
+                            array("codigo"=>"09","descripcion"=>"RAM DDR5 4800Mhz PC5-38400"),
+                            array("codigo"=>"10","descripcion"=>"RAM DDR5 5200Mhz PC5-41600"),
+                            array("codigo"=>"11","descripcion"=>"RAM DDR5 5600Mhz PC5-44800"),
+                            array("codigo"=>"12","descripcion"=>"RAM DDR5 6000Mhz PC5-48000"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"16",
+                        "descripcion"=>"COMPUTADORA ALL IN ONE",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"COMPUTADORA ALL-IN-ONE AMD RYZEN 3"),
+                            array("codigo"=>"02","descripcion"=>"COMPUTADORA ALL-IN-ONE AMD RYZEN 5"),
+                            array("codigo"=>"03","descripcion"=>"COMPUTADORA ALL-IN-ONE AMD RYZEN 7"),
+                            array("codigo"=>"04","descripcion"=>"COMPUTADORA ALL-IN-ONE CELERON"),
+                            array("codigo"=>"05","descripcion"=>"COMPUTADORA ALL-IN-ONE CORE I3"),
+                            array("codigo"=>"06","descripcion"=>"COMPUTADORA ALL-IN-ONE CORE I5"),
+                            array("codigo"=>"07","descripcion"=>"COMPUTADORA ALL-IN-ONE CORE I7"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"17",
+                        "descripcion"=>"COMPUTADORA DE ESCRITORIO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"COMPUTADORA AMD RYZEN 5"),
+                            array("codigo"=>"02","descripcion"=>"COMPUTADORA AMD RYZEN 7"),
+                            array("codigo"=>"03","descripcion"=>"COMPUTADORA AMD RYZEN 9"),
+                            array("codigo"=>"04","descripcion"=>"COMPUTADORA CELERON"),
+                            array("codigo"=>"05","descripcion"=>"COMPUTADORA CORE I3"),
+                            array("codigo"=>"06","descripcion"=>"COMPUTADORA CORE I5"),
+                            array("codigo"=>"07","descripcion"=>"COMPUTADORA CORE I7"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"18",
+                        "descripcion"=>"COMPUTADORA PORTÁTIL",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"NOTEBOOK CELERON"),
+                            array("codigo"=>"02","descripcion"=>"NOTEBOOK CELERON DUAL CORE"),
+                            array("codigo"=>"03","descripcion"=>"NOTEBOOK ATOM"),
+                            array("codigo"=>"04","descripcion"=>"NOTEBOOK CORE I3"),
+                            array("codigo"=>"05","descripcion"=>"NOTEBOOK CORE I5"),
+                            array("codigo"=>"06","descripcion"=>"NOTEBOOK CORE I7"),
+                            array("codigo"=>"07","descripcion"=>"NOTEBOOK AMD ATHLON"),
+                            array("codigo"=>"08","descripcion"=>"NOTEBOOK AMD A SERIES"),
+                            array("codigo"=>"09","descripcion"=>"NOTEBOOK PENTIUM QUAD CORE"),
+                            array("codigo"=>"10","descripcion"=>"NOTEBOOK AMD RYZEN 5"),
+                            array("codigo"=>"11","descripcion"=>"NOTEBOOK AMD RYZEN 3"),
+                            array("codigo"=>"12","descripcion"=>"NOTEBOOK AMD RYZEN 7"),
+                            array("codigo"=>"13","descripcion"=>"NOTEBOOK GAMING"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"19",
+                        "descripcion"=>"ESTACIÓN DE TRABAJO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ESTACIÓN DE TRABAJO")
+                        )
+                    ),
+                    array(
+                        "codigo"=>"20",
+                        "descripcion"=>"REPUESTOS DE EQUIPOS DE COMPUTO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"REPUESTOS DE EQUIPOS DE COMPUTO")
+                        )
+                    ),
+                    array(
+                        "codigo"=>"21",
+                        "descripcion"=>"TABLETA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"TABLETA")
+                        )
+                    ),
+                )
+            ),
+            array(
+                "codigo"=>"04",
+                "descripcion"=>"HERRAMIENTAS Y MATERIALES PARA PRODUCCION",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ACCESORIOS PARA HERRAMIENTAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"BROCAS"),
+                            array("codigo"=>"02","descripcion"=>"CAJA DE HERRAMIENTAS PORTATIL DE PLÁSTICO "),
+                            array("codigo"=>"03","descripcion"=>"CARGADORES PARA DESTORNILLADORES Y ATORNILLADORES INALAMBRICOS"),
+                            array("codigo"=>"04","descripcion"=>"DISCOS ABRASIVOS"),
+                            array("codigo"=>"05","descripcion"=>"DISCOS DIAMANTADOS"),
+                            array("codigo"=>"06","descripcion"=>"DISCOS SIERRA"),
+                            array("codigo"=>"07","descripcion"=>"DISCOS TRASLAPADOS"),
+                            array("codigo"=>"08","descripcion"=>"PUNTAS PARA ATORNILLADOR"),
+                            array("codigo"=>"09","descripcion"=>"DADOS PARA ATORNILLADOR"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"HERRAMIENTAS AUTOMOTRICES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CABLES PASA-CORRIENTE DE BATERIA"),
+                            array("codigo"=>"02","descripcion"=>"PROBADOR DE CIRCUITOS"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"03",
+                        "descripcion"=>"HERRAMIENTAS DE CERTIFICACIÓN",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CERTIFICADOR DE DATOS"),
+                            array("codigo"=>"02","descripcion"=>"MEGÓMETRO DIGITAL"),
+                            array("codigo"=>"03","descripcion"=>"MULTIMETRO DIGITAL"),
+                            array("codigo"=>"04","descripcion"=>"PINZA AMPERIMÉTRICA"),
+                            array("codigo"=>"05","descripcion"=>"TELURÓMETRO DIGITAL"),
+                            array("codigo"=>"06","descripcion"=>"TESTEADOR DE CABLES  DE RED"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"04",
+                        "descripcion"=>"HERRAMIENTAS DE CONSTRUCCIÓN",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"07","descripcion"=>"PISTOLAS DE CALOR"),
+                            array("codigo"=>"08","descripcion"=>"SOPLADOR / ASPIRADOR"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"05",
+                        "descripcion"=>"HERRAMIENTAS ELÉCTRICAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"MEDIDOR DE DISTANCIA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"05",
+                        "descripcion"=>"HERRAMIENTAS MECÁNICAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"02","descripcion"=>"JUEGO DE HERRAMIENTAS MECÁNICAS"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"06",
+                        "descripcion"=>"HERRAMIENTAS METALMECÁNICAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ESMERILES"),
+                            array("codigo"=>"02","descripcion"=>"PULIDORA"),
+                            array("codigo"=>"03","descripcion"=>"TRONZADORA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"07",
+                        "descripcion"=>"HERRAMIENTAS NEUMÁTICAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ADAPTADOR"),
+                            array("codigo"=>"02","descripcion"=>"EXTENSIÓN"),
+                            array("codigo"=>"03","descripcion"=>"JUNTA UNIVERSAL"),
+                            array("codigo"=>"04","descripcion"=>"LLAVE o PISTOLA DE IMPACTO"),
+                            array("codigo"=>"05","descripcion"=>"LLAVES COMBINADAS"),
+                            array("codigo"=>"06","descripcion"=>"MANGO ARTICULADO PARA DADOS"),
+                            array("codigo"=>"07","descripcion"=>"RATCHET NEUMÁTICO"),
+                            array("codigo"=>"08","descripcion"=>"TALADRO NEUMÁTICO REVERSIBLE"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"08",
+                        "descripcion"=>"HERRAMIENTAS PARA CONCRETO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"MARTILLO CINCELADOR"),
+                            array("codigo"=>"02","descripcion"=>"ROTO MARTILLO"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"09",
+                        "descripcion"=>"HERRAMIENTAS PARA MADERA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CEPILLOS CARPINTERO"),
+                            array("codigo"=>"02","descripcion"=>"LIJADORAS ELECTRICA"),
+                            array("codigo"=>"03","descripcion"=>"REBAJADORAS / FRESADORAS"),
+                            array("codigo"=>"04","descripcion"=>"SIERRAS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"10",
+                        "descripcion"=>"HERRAMIENTAS PARA REDES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CORTADOR DE CABLE"),
+                            array("codigo"=>"02","descripcion"=>"CRIMPEADOR RJ45"),
+                            array("codigo"=>"03","descripcion"=>"PONCHADOR PARA JACK"),
+                            array("codigo"=>"04","descripcion"=>"FUSIONADORA DE FIBRA OPTICA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"11",
+                        "descripcion"=>"MATERIALES PARA PRODUCCÍÓN",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CEMENTO"),
+                            array("codigo"=>"02","descripcion"=>"CUTTER"),
+                            array("codigo"=>"03","descripcion"=>"LIJAS PARA CEMENTO"),
+                            array("codigo"=>"04","descripcion"=>"LIJAS PARA METAL"),
+                            array("codigo"=>"05","descripcion"=>"LIJAS PARA MADERA"),
+                            array("codigo"=>"06","descripcion"=>"PINTURAS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"12",
+                        "descripcion"=>"TALADROS Y ATORNILLADORES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ATORNILLADOR ALÁMBRICO"),
+                            array("codigo"=>"02","descripcion"=>"TALADRO ALÁMBRICO DE ROTACIÓN"),
+                            array("codigo"=>"03","descripcion"=>"TALADRO ALÁMBRICO PERCUTOR"),
+                            array("codigo"=>"04","descripcion"=>"ATORNILLADORES INALÁMBRICO"),
+                            array("codigo"=>"05","descripcion"=>"TALADRO INALÁMBRICO DE ROTACIÓN"),
+                            array("codigo"=>"06","descripcion"=>"TALADRO INALÁMBRICO PERCUTOR"),
+
+                        )
+                    ),
+
+                )
+            ),
+            array(
+                "codigo"=>"05",
+                "descripcion"=>"INSUMOS Y UTILES PARA LIMPIEZA",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"INSUMOS Y UTILES PARA LIMPIEZA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"INSUMOS Y UTILES PARA LIMPIEZA"),
+                        )
+                    )
+
+                )
+            ),
+            array(
+                "codigo"=>"06",
+                "descripcion"=>"MOBILIARIO, APARATOS Y UTILES PARA OFICINA",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"MUEBLES PARA OFICINAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ESCRITORIOS"),
+                            array("codigo"=>"02","descripcion"=>"SILLAS"),
+                            array("codigo"=>"03","descripcion"=>"ORGANIZADORES"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"UTILES PARA OFICINA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"04","descripcion"=>"UTILES PARA OFICINA")
+                        )
+                    ),
+                )
+            ),
+            array(
+                "codigo"=>"07",
+                "descripcion"=>"SEGURIDAD PERSONAL E INDUSTRIAL",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ARTÍCULOS DE BIOSEGURIDAD",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"GAFAS DE PROTECCIÓN"),
+                            array("codigo"=>"02","descripcion"=>"MASCARILLAS"),
+                            array("codigo"=>"03","descripcion"=>"PROTECTORES FACIALES"),
+                            array("codigo"=>"04","descripcion"=>"RESPIRADORES"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"DISPOSITIVOS CONTRA INCENDIO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ALARMA CONTRAINCENDIO"),
+                            array("codigo"=>"02","descripcion"=>"DETECTOR DE INCENDIOS"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"03",
+                        "descripcion"=>"DISPOSITIVOS MÉDICOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"OXÍMETROS"),
+                            array("codigo"=>"02","descripcion"=>"TERMÓMETROS A DISTANCIA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"04",
+                        "descripcion"=>"DISPOSITIVOS PARA CONTROL DE ACCESO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ACCESORIOS DE SISTEMA DE SEGURIDAD"),
+                            array("codigo"=>"02","descripcion"=>"CONTROL BIOMETRICO"),
+                            array("codigo"=>"03","descripcion"=>"LECTORES DE TARJETA DE ACCESO"),
+                            array("codigo"=>"04","descripcion"=>"SENSORES DE MOVIMIENTO"),
+                            array("codigo"=>"05","descripcion"=>"SISTEMA DE PUERTA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"05",
+                        "descripcion"=>"EPP EQUIPOS DE PROTECCIÓN PERSONAL",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"PROTECCIÓN ANTICAIDA"),
+                            array("codigo"=>"02","descripcion"=>"ROPA DE TRABAJO"),
+                            array("codigo"=>"03","descripcion"=>"PROTECCIÓN RESPIRATORIA"),
+                            array("codigo"=>"04","descripcion"=>"PROTECCIÓN DE CABEZA"),
+                            array("codigo"=>"05","descripcion"=>"PROTECCIÓN AUDITIVA"),
+                            array("codigo"=>"06","descripcion"=>"PROTECCIÓN VISUAL Y FACIAL"),
+                            array("codigo"=>"07","descripcion"=>"PROTECCIÓN DE MANOS"),
+                            array("codigo"=>"08","descripcion"=>"PROTECCIÓN CONTRA CAIDAS"),
+                            array("codigo"=>"09","descripcion"=>"PROTECCIÓN FACIAL"),
+                            array("codigo"=>"10","descripcion"=>"PROTECCIÓN CORPORAL"),
+                            array("codigo"=>"11","descripcion"=>"PROTECCIÓN DE PIES"),
+                            array("codigo"=>"12","descripcion"=>"SEGURIDAD VIAL"),
+                            array("codigo"=>"13","descripcion"=>"BLOQUEO DE SEGURIDAD LOCK/TAG OUT"),
+                            array("codigo"=>"14","descripcion"=>"OTROS EPPS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"06",
+                        "descripcion"=>"ELEMENTOS DE SEGURIDAD INDUSTRIAL",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CINTAS DE SEGURIDAD"),
+                            array("codigo"=>"02","descripcion"=>"CONOS DE SEGURIDAD"),
+                            array("codigo"=>"03","descripcion"=>"EXTINTOR"),
+                            array("codigo"=>"04","descripcion"=>"LETREROS DE SEGURIDAD"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"07",
+                        "descripcion"=>"VIGILANCIA DE VIDEO",
+                        "sub_categoria"=>array(
+                            array("codgio"=>"01","descripcion"=>"ACCESORIOS DE VIDEO VIGILANCIA"),
+                            array("codgio"=>"02","descripcion"=>"CAMARAS ANALOGICAS"),
+                            array("codgio"=>"03","descripcion"=>"CAMARAS IP"),
+                            array("codgio"=>"04","descripcion"=>"DVRs SISTEMAS DE ADMINISTRACION DE CAMARAS ANALOGICAS"),
+                            array("codgio"=>"05","descripcion"=>"NVRS SISTEMAS DE ADMINISTRACION DE CAMARAS IP"),
+                        ),
+                    ),
+                )
+            ),
+            array(
+                "codigo"=>"08",
+                "descripcion"=>"VALES Y MERCHANDSING",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ACCESORIOS Y ARTÍCULOS PUBLICITARIOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"BANNERS PUBLICITARIOS"),
+                            array("codigo"=>"02","descripcion"=>"GORROS, POLOS Y OTRAS PRENDAS CON PUBLICIDAD"),
+                            array("codigo"=>"03","descripcion"=>"LAPICEROS"),
+                            array("codigo"=>"04","descripcion"=>"LLAVEROS"),
+                            array("codigo"=>"05","descripcion"=>"REVISTAS PUBLICITARIAS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"GIFTCARDS Y VALES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"GIFTCARDS"),
+                            array("codigo"=>"02","descripcion"=>"VALES"),
+                        )
+                    ),
+
+                )
+            ),
         );
-
-        $categorias=array(
-            array("00","*OTROS"),
-            array("01","ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO"),
-            array("01","ACCESORIOS DE EQUIPOS ELÉTRICOS"),
-            array("02","EQUIPOS DE PROTECCION ELECTRICA"),
-            array("02","EQUIPOS DE PROTECCION ELECTRICA"),
-            array("02","EQUIPOS DE PROTECCION ELECTRICA"),
-            array("02","EQUIPOS DE PROTECCION ELECTRICA"),
-            array("02","EQUIPOS DE PROTECCION ELECTRICA"),
-            array("03","EQUIPOS DE SISTEMA FOTOVOLTAICO"),
-            array("03","EQUIPOS DE SISTEMA FOTOVOLTAICO"),
-            array("03","EQUIPOS DE SISTEMA FOTOVOLTAICO"),
-            array("03","EQUIPOS DE SISTEMA FOTOVOLTAICO"),
-            array("03","EQUIPOS DE SISTEMA FOTOVOLTAICO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("01","ACCESORIOS DE COMPUTO"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("02","COMPONENTES DE COMPUTADORA"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("03","DISPOSITIVOS DE ALMACENAMIENTO DE DATOS"),
-            array("04","DISPOSITIVOS PARA CAPTURA DE IMÁGENES"),
-            array("04","DISPOSITIVOS PARA CAPTURA DE IMÁGENES"),
-            array("04","DISPOSITIVOS PARA CAPTURA DE IMÁGENES"),
-            array("04","DISPOSITIVOS PARA CAPTURA DE IMÁGENES"),
-            array("04","DISPOSITIVOS PARA CAPTURA DE IMÁGENES"),
-            array("05","DISPOSITIVOS TELEFÓNICOS"),
-            array("05","DISPOSITIVOS TELEFÓNICOS"),
-            array("07","EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS"),
-            array("07","EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS"),
-            array("07","EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS"),
-            array("07","EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS"),
-            array("07","EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS"),
-            array("07","EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS"),
-            array("07","EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS"),
-            array("07","EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS"),
-            array("07","EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("08","IMPRESION"),
-            array("09","MONITOR, PANTALLAS, TV, PROYECTORES"),
-            array("09","MONITOR, PANTALLAS, TV, PROYECTORES"),
-            array("09","MONITOR, PANTALLAS, TV, PROYECTORES"),
-            array("09","MONITOR, PANTALLAS, TV, PROYECTORES"),
-            array("09","MONITOR, PANTALLAS, TV, PROYECTORES"),
-            array("09","MONITOR, PANTALLAS, TV, PROYECTORES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("10","PRODUCTOS INFORMATICOS INTANGIBLES"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("11","REDES Y CONECTIVIDAD"),
-            array("12","SUMINISTROS DE IMPRESIÓN"),
-            array("12","SUMINISTROS DE IMPRESIÓN"),
-            array("12","SUMINISTROS DE IMPRESIÓN"),
-            array("12","SUMINISTROS DE IMPRESIÓN"),
-            array("12","SUMINISTROS DE IMPRESIÓN"),
-            array("12","SUMINISTROS DE IMPRESIÓN"),
-            array("12","SUMINISTROS DE IMPRESIÓN"),
-            array("12","SUMINISTROS DE IMPRESIÓN"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("13","PROCESADOR (CPU)"),
-            array("14","MEMORIA RAM NOTEBOOK"),
-            array("14","MEMORIA RAM NOTEBOOK"),
-            array("14","MEMORIA RAM NOTEBOOK"),
-            array("14","MEMORIA RAM NOTEBOOK"),
-            array("14","MEMORIA RAM NOTEBOOK"),
-            array("14","MEMORIA RAM NOTEBOOK"),
-            array("14","MEMORIA RAM NOTEBOOK"),
-            array("14","MEMORIA RAM NOTEBOOK"),
-            array("14","MEMORIA RAM NOTEBOOK"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("15","MEMORIA RAM PC"),
-            array("16","COMPUTADORA ALL IN ONE"),
-            array("16","COMPUTADORA ALL IN ONE"),
-            array("16","COMPUTADORA ALL IN ONE"),
-            array("16","COMPUTADORA ALL IN ONE"),
-            array("16","COMPUTADORA ALL IN ONE"),
-            array("16","COMPUTADORA ALL IN ONE"),
-            array("16","COMPUTADORA ALL IN ONE"),
-            array("17","COMPUTADORA DE ESCRITORIO"),
-            array("17","COMPUTADORA DE ESCRITORIO"),
-            array("17","COMPUTADORA DE ESCRITORIO"),
-            array("17","COMPUTADORA DE ESCRITORIO"),
-            array("17","COMPUTADORA DE ESCRITORIO"),
-            array("17","COMPUTADORA DE ESCRITORIO"),
-            array("17","COMPUTADORA DE ESCRITORIO"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("18","COMPUTADORA PORTÁTIL"),
-            array("19","ESTACIÓN DE TRABAJO"),
-            array("20","REPUESTOS DE EQUIPOS DE COMPUTO"),
-            array("21","TABLETA"),
-            array("01","ACCESORIOS PARA HERRAMIENTAS"),
-            array("01","ACCESORIOS PARA HERRAMIENTAS"),
-            array("01","ACCESORIOS PARA HERRAMIENTAS"),
-            array("01","ACCESORIOS PARA HERRAMIENTAS"),
-            array("01","ACCESORIOS PARA HERRAMIENTAS"),
-            array("01","ACCESORIOS PARA HERRAMIENTAS"),
-            array("01","ACCESORIOS PARA HERRAMIENTAS"),
-            array("01","ACCESORIOS PARA HERRAMIENTAS"),
-            array("01","ACCESORIOS PARA HERRAMIENTAS"),
-            array("02","HERRAMIENTAS AUTOMOTRICES"),
-            array("02","HERRAMIENTAS AUTOMOTRICES"),
-            array("03","HERRAMIENTAS DE CERTIFICACIÓN"),
-            array("03","HERRAMIENTAS DE CERTIFICACIÓN"),
-            array("03","HERRAMIENTAS DE CERTIFICACIÓN"),
-            array("03","HERRAMIENTAS DE CERTIFICACIÓN"),
-            array("03","HERRAMIENTAS DE CERTIFICACIÓN"),
-            array("03","HERRAMIENTAS DE CERTIFICACIÓN"),
-            array("04","HERRAMIENTAS DE CONSTRUCCIÓN"),
-            array("04","HERRAMIENTAS DE CONSTRUCCIÓN"),
-            array("05","HERRAMIENTAS ELÉCTRICAS"),
-            array("05","HERRAMIENTAS MECÁNICAS"),
-            array("06","HERRAMIENTAS METALMECÁNICAS"),
-            array("06","HERRAMIENTAS METALMECÁNICAS"),
-            array("06","HERRAMIENTAS METALMECÁNICAS"),
-            array("07","HERRAMIENTAS NEUMÁTICAS"),
-            array("07","HERRAMIENTAS NEUMÁTICAS"),
-            array("07","HERRAMIENTAS NEUMÁTICAS"),
-            array("07","HERRAMIENTAS NEUMÁTICAS"),
-            array("07","HERRAMIENTAS NEUMÁTICAS"),
-            array("07","HERRAMIENTAS NEUMÁTICAS"),
-            array("07","HERRAMIENTAS NEUMÁTICAS"),
-            array("07","HERRAMIENTAS NEUMÁTICAS"),
-            array("08","HERRAMIENTAS PARA CONCRETO"),
-            array("08","HERRAMIENTAS PARA CONCRETO"),
-            array("09","HERRAMIENTAS PARA MADERA"),
-            array("09","HERRAMIENTAS PARA MADERA"),
-            array("09","HERRAMIENTAS PARA MADERA"),
-            array("09","HERRAMIENTAS PARA MADERA"),
-            array("10","HERRAMIENTAS PARA REDES"),
-            array("10","HERRAMIENTAS PARA REDES"),
-            array("10","HERRAMIENTAS PARA REDES"),
-            array("10","HERRAMIENTAS PARA REDES"),
-            array("11","MATERIALES PARA PRODUCCÍÓN"),
-            array("11","MATERIALES PARA PRODUCCÍÓN"),
-            array("11","MATERIALES PARA PRODUCCÍÓN"),
-            array("11","MATERIALES PARA PRODUCCÍÓN"),
-            array("11","MATERIALES PARA PRODUCCÍÓN"),
-            array("11","MATERIALES PARA PRODUCCÍÓN"),
-            array("12","TALADROS Y ATORNILLADORES"),
-            array("12","TALADROS Y ATORNILLADORES"),
-            array("12","TALADROS Y ATORNILLADORES"),
-            array("12","TALADROS Y ATORNILLADORES"),
-            array("12","TALADROS Y ATORNILLADORES"),
-            array("12","TALADROS Y ATORNILLADORES"),
-            array("01","INSUMOS Y UTILES PARA LIMPIEZA"),
-            array("01","MUEBLES PARA OFICINAS"),
-            array("01","MUEBLES PARA OFICINAS"),
-            array("01","MUEBLES PARA OFICINAS"),
-            array("02","UTILES PARA OFICINA"),
-            array("01","ARTÍCULOS DE BIOSEGURIDAD"),
-            array("01","ARTÍCULOS DE BIOSEGURIDAD"),
-            array("01","ARTÍCULOS DE BIOSEGURIDAD"),
-            array("01","ARTÍCULOS DE BIOSEGURIDAD"),
-            array("02","DISPOSITIVOS CONTRA INCENDIO"),
-            array("02","DISPOSITIVOS CONTRA INCENDIO"),
-            array("03","DISPOSITIVOS MÉDICOS"),
-            array("03","DISPOSITIVOS MÉDICOS"),
-            array("04","DISPOSITIVOS PARA CONTROL DE ACCESO"),
-            array("04","DISPOSITIVOS PARA CONTROL DE ACCESO"),
-            array("04","DISPOSITIVOS PARA CONTROL DE ACCESO"),
-            array("04","DISPOSITIVOS PARA CONTROL DE ACCESO"),
-            array("04","DISPOSITIVOS PARA CONTROL DE ACCESO"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("05","EPP EQUIPOS DE PROTECCIÓN PERSONAL"),
-            array("06","ELEMENTOS DE SEGURIDAD INDUSTRIAL"),
-            array("06","ELEMENTOS DE SEGURIDAD INDUSTRIAL"),
-            array("06","ELEMENTOS DE SEGURIDAD INDUSTRIAL"),
-            array("06","ELEMENTOS DE SEGURIDAD INDUSTRIAL"),
-            array("07","VIGILANCIA DE VIDEO"),
-            array("07","VIGILANCIA DE VIDEO"),
-            array("07","VIGILANCIA DE VIDEO"),
-            array("07","VIGILANCIA DE VIDEO"),
-            array("07","VIGILANCIA DE VIDEO"),
-            array("01","ACCESORIOS Y ARTÍCULOS PUBLICITARIOS"),
-            array("01","ACCESORIOS Y ARTÍCULOS PUBLICITARIOS"),
-            array("01","ACCESORIOS Y ARTÍCULOS PUBLICITARIOS"),
-            array("01","ACCESORIOS Y ARTÍCULOS PUBLICITARIOS"),
-            array("01","ACCESORIOS Y ARTÍCULOS PUBLICITARIOS"),
-            array("02","GIFTCARDS Y VALES"),
-            array("02","GIFTCARDS Y VALES"),
-
-         );
-
-
-        $sub_categoria=array(
-            array("00","*OTROS"),
-            array("01","ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO"),
-            array("01","CABLE DE PODER"),
-            array("01","BATERIAS PARA UPS"),
-            array("02","ESTABILIZADORES"),
-            array("03","SUPRESOR DE PICOS"),
-            array("04","TRANSFORMADORES"),
-            array("05","UPS"),
-            array("01","PANEL SOLAR"),
-            array("02","INMERSORES"),
-            array("03","CONTROLADORES"),
-            array("04","PARARAYOS"),
-            array("05","BATERIAS PARA PLACAS SOLARES"),
-            array("01","AURICULARES CLASICOS DE BOTON"),
-            array("02","AURICULARES CLASICOS DE DIADEMA"),
-            array("03","AURICULARES DEPORTIVOS"),
-            array("04","AURICULARES GAMER"),
-            array("05","CABLES Y ADAPTADORES"),
-            array("06","CAMARA WEB"),
-            array("07","CARRITO PARA PORTATILES"),
-            array("08","ESCRITORIO CLASICO PARA ORDENADOR"),
-            array("09","ESCRITORIO GAMER"),
-            array("10","FUNDA"),
-            array("11","MALETIN"),
-            array("12","MANDOS DE JUEGO"),
-            array("13","MICRÓFONO"),
-            array("14","MOCHILA"),
-            array("15","MOUSE CLÁSICO ALÁMBRICO"),
-            array("16","MOUSE CLÁSICO INALÁMBRICO"),
-            array("17","MOUSE GAMER"),
-            array("18","PARLANTES CLASICOS"),
-            array("19","PARLANTES GAMER"),
-            array("20","REPLICADOR DE PUERTOS"),
-            array("21","SILLA CLASICA PARA ORDENADOR"),
-            array("22","SILLA GAMER"),
-            array("23","TECLADO CLÁSICO ALÁMBRICO"),
-            array("24","TECLADO CLÁSICO INALÁMBRICO"),
-            array("25","TECLADO GAMER"),
-            array("01","BATERIA PARA COMPUTADORA"),
-            array("02","CASES"),
-            array("03","COOLERS"),
-            array("04","FUENTE DE PODER"),
-            array("05","LECTORAS"),
-            array("08","PLACA MADRE"),
-            array("09","OTROS COMPONENTES"),
-            array("10","TARJETA BLUETOOH"),
-            array("11","TARJETA DE VIDEO"),
-            array("12","TARJETAS PCI"),
-            array("01","ACCESORIOS PARA DISCOS DUROS"),
-            array("02","CINTA LTO"),
-            array("03","DISCO DURO MECÁNICO EXTERNO 2.5''"),
-            array("04","DISCO DURO MECÁNICO EXTERNO 3.5''"),
-            array("05","DISCO DURO MECÁNICO INTERNO 2.5''"),
-            array("06","DISCO DURO MECÁNICO INTERNO 3.5''"),
-            array("07","DISCO DURO PARA SERVIDOR"),
-            array("08","DISCO DURO PARA SISTEMA DE ALMACENAMIENTO"),
-            array("09","DISCO DURO PARA SISTEMA DE RESPALDO"),
-            array("10","DISCO DURO SOLIDO EXTERNO 2.5''"),
-            array("11","DISCO DURO SOLIDO INTERNO 2.5''"),
-            array("12","DISCO DURO SOLIDO INTERNO M.2 NVMe 2230"),
-            array("13","DISCO DURO SOLIDO INTERNO M.2 SATA"),
-            array("14","MEMORIA USB"),
-            array("15","TARJETA DE MEMORIA SD"),
-            array("16","DISCO DURO SOLIDO INTERNO M.2 NVMe 2242"),
-            array("17","DISCO DURO SOLIDO INTERNO M.2 NVMe 2280"),
-            array("01","ACCESORIOS DE LECTOR DE CODIGOS"),
-            array("02","CAMARA DE VIDEO"),
-            array("03","CAMARA FOTOGRAFICA"),
-            array("04","LECTOR DE CODIGOS"),
-            array("05","SCANNERS"),
-            array("01","CELULARES"),
-            array("02","TELEFONO IP"),
-            array("01","ACCESORIO PARA GABINETE"),
-            array("02","ACCESORIOS PARA INFRAESTRUCTURA"),
-            array("03","EQUIPO DE ADMINISTRACION TELEFONO IP"),
-            array("04","EQUIPOS FIREWALL"),
-            array("05","GABINETES"),
-            array("06","SERVIDORES"),
-            array("07","SISTEMA DE ALMACENAMIENTO"),
-            array("08","SISTEMA DE RESPALDO"),
-            array("09","SWITCH PARA ALMACENAMIENTO"),
-            array("01","ACC. IMPRESORAS"),
-            array("02","FOTOCOPIADORAS"),
-            array("03","IMPRESORA 3D"),
-            array("04","IMPRESORA DE FOTOCHECK"),
-            array("05","IMPRESORA DE INJECCION DE TINTA"),
-            array("06","IMPRESORA ETIQUETADORA"),
-            array("07","IMPRESORA LASER"),
-            array("08","IMPRESORA MATRICIAL"),
-            array("09","IMPRESORA TERMICA"),
-            array("10","PLOTTER"),
-            array("11","IMPRESORA MULTIFUNCIONAL LASER"),
-            array("12","IMPRESORA MULTIFUNCIONAL TINTA"),
-            array("01","ECRAN"),
-            array("02","MONITORES"),
-            array("03","PANTALLA INTERACTIVA"),
-            array("04","PIZARRA ACRILICA"),
-            array("05","PROYECTORES MULTIMEDIA"),
-            array("06","TELEVISOR"),
-            array("01","LICENCIA DE SISTEMA OPERATIVO INFRAESTRUCTURA"),
-            array("02","LICENCIA DE SISTEMA OPERATIVO USUARIO"),
-            array("03","LICENCIAS DE ANTIVIRUS CONSUMO"),
-            array("04","LICENCIAS DE ANTIVIRUS CORPORATIVO"),
-            array("05","LICENCIAS DE OFFICE ESD"),
-            array("06","LICENCIAS DE OFFICE OEM"),
-            array("07","LICENCIAS DE OFFICE OLP"),
-            array("08","LICIENCIA DE OFFICE POR SUSCRIPCIÓN"),
-            array("09","SOFTWARE DE VIDEOGILANCIA"),
-            array("10","GARANTIAS EXTENDIDAS"),
-            array("01","ACCESS POINT"),
-            array("02","CABLE FIBRA"),
-            array("03","CABLES UTP"),
-            array("04","CONECTOR RJ45"),
-            array("05","JACK"),
-            array("06","ORDENADOR DE CABLES"),
-            array("07","PATCH CORD"),
-            array("08","PATCH PANEL"),
-            array("09","ROUTER"),
-            array("10","SWITCH LAN"),
-            array("11","TARJETA DE RED"),
-            array("01","CINTA DE COLOR PARA FOTOCHECK"),
-            array("02","FUSOR"),
-            array("03","PAPEL TERMICO"),
-            array("04","SUMINISTRO DE CINTA MATRICIAL"),
-            array("05","SUMINISTRO DE TINTA                                                                                 "),
-            array("06","SUMINISTRO DE TONER                                                                                 "),
-            array("07","TAMBOR"),
-            array("08","TARJETAS PVC"),
-            array("01","PROCESADOR AMD RYZEN 3 S_AM4"),
-            array("02","PROCESADOR AMD RYZEN 5 S_AM4"),
-            array("03","PROCESADOR AMD RYZEN 5 S_AM5"),
-            array("04","PROCESADOR AMD RYZEN 7 S_AM4"),
-            array("05","PROCESADOR AMD RYZEN 7 S_AM5"),
-            array("06","PROCESADOR AMD RYZEN 9 S_AM4"),
-            array("07","PROCESADOR AMD RYZEN 9 S_AM5"),
-            array("08","PROCESADOR CELERON DC GXXXX S1700"),
-            array("09","PROCESADOR CORE I3 9XXX S1151-V2"),
-            array("10","PROCESADOR CORE I3 10XXX S1200"),
-            array("11","PROCESADOR CORE I3 11XXX S1200"),
-            array("12","PROCESADOR CORE I3 12XXX S1700"),
-            array("13","PROCESADOR CORE I5 7XXX S1151"),
-            array("14","PROCESADOR CORE I5 8XXX S1151-V2"),
-            array("15","PROCESADOR CORE I5 9XXX S1151-V2"),
-            array("16","PROCESADOR CORE I5 10XXX S1200"),
-            array("17","PROCESADOR CORE I5 11XXX S1200"),
-            array("18","PROCESADOR CORE I5 12XXX S1700"),
-            array("19","PROCESADOR CORE I5 13XXX S1700"),
-            array("20","PROCESADOR CORE I7 7XXX S1151"),
-            array("21","PROCESADOR CORE I7 7XXX S2066"),
-            array("22","PROCESADOR CORE I7 10XXX S1200"),
-            array("23","PROCESADOR CORE I7 11XXX S1200"),
-            array("24","PROCESADOR CORE I7 12XXX S1700"),
-            array("25","PROCESADOR CORE I7 13XXX S1700"),
-            array("26","PROCESADOR CORE I9 10XXX S1200"),
-            array("27","PROCESADOR CORE I9 11XXX S1200"),
-            array("28","PROCESADOR CORE I9 12XXX S1700"),
-            array("29","PROCESADOR CORE I9 13XXX S1700"),
-            array("01","RAM SODIMM DDR3 1600Mhz PC3-12800"),
-            array("02","RAM SODIMM DDR4 2666Mhz PC4-21300"),
-            array("03","RAM SODIMM DDR4 2800Mhz PC4-22400"),
-            array("04","RAM SODIMM DDR4 3000Mhz PC4-24000"),
-            array("05","RAM SODIMM DDR4 3200Mhz PC4-25600"),
-            array("06","RAM SODIMM DDR5 4800Mhz PC5-38400 "),
-            array("07","RAM SODIMM DDR5 5200Mhz PC5-41600"),
-            array("08","RAM SODIMM DDR5 5600Mhz PC5-44800"),
-            array("09","RAM SODIMM DDR5 6000Mhz PC5-48000"),
-            array("01","RAM DDR3 1600Mhz PC3-12800"),
-            array("02","RAM DDR3 1800Mhz PC3-14400"),
-            array("03","RAM DDR3 2600Mhz PC3-20800"),
-            array("04","RAM DDR4 2666Mhz PC4-21300"),
-            array("05","RAM DDR4 3000Mhz PC4-24000"),
-            array("06","RAM DDR4 3200Mhz PC4-25600"),
-            array("07","RAM DDR4 3600Mhz PC4-28800"),
-            array("08","RAM DDR4 4000Mhz PC4-32000"),
-            array("09","RAM DDR5 4800Mhz PC5-38400"),
-            array("10","RAM DDR5 5200Mhz PC5-41600"),
-            array("11","RAM DDR5 5600Mhz PC5-44800"),
-            array("12","RAM DDR5 6000Mhz PC5-48000"),
-            array("01","COMPUTADORA ALL-IN-ONE AMD RYZEN 3"),
-            array("02","COMPUTADORA ALL-IN-ONE AMD RYZEN 5"),
-            array("03","COMPUTADORA ALL-IN-ONE AMD RYZEN 7"),
-            array("04","COMPUTADORA ALL-IN-ONE CELERON"),
-            array("05","COMPUTADORA ALL-IN-ONE CORE I3"),
-            array("06","COMPUTADORA ALL-IN-ONE CORE I5"),
-            array("07","COMPUTADORA ALL-IN-ONE CORE I7"),
-            array("01","COMPUTADORA AMD RYZEN 5"),
-            array("02","COMPUTADORA AMD RYZEN 7"),
-            array("03","COMPUTADORA AMD RYZEN 9"),
-            array("04","COMPUTADORA CELERON"),
-            array("05","COMPUTADORA CORE I3"),
-            array("06","COMPUTADORA CORE I5"),
-            array("07","COMPUTADORA CORE I7"),
-            array("01","NOTEBOOK CELERON"),
-            array("02","NOTEBOOK CELERON DUAL CORE"),
-            array("03","NOTEBOOK ATOM"),
-            array("04","NOTEBOOK CORE I3"),
-            array("05","NOTEBOOK CORE I5"),
-            array("06","NOTEBOOK CORE I7"),
-            array("07","NOTEBOOK AMD ATHLON"),
-            array("08","NOTEBOOK AMD A SERIES"),
-            array("09","NOTEBOOK PENTIUM QUAD CORE"),
-            array("10","NOTEBOOK AMD RYZEN 5"),
-            array("11","NOTEBOOK AMD RYZEN 3"),
-            array("12","NOTEBOOK AMD RYZEN 7"),
-            array("13","NOTEBOOK GAMING"),
-            array("01","ESTACIÓN DE TRABAJO"),
-            array("01","REPUESTOS DE EQUIPOS DE COMPUTO"),
-            array("01","TABLETA"),
-            array("01","BROCAS"),
-            array("02","CAJA DE HERRAMIENTAS PORTATIL DE PLÁSTICO "),
-            array("03","CARGADORES PARA DESTORNILLADORES Y ATORNILLADORES INALAMBRICOS"),
-            array("04","DISCOS ABRASIVOS"),
-            array("05","DISCOS DIAMANTADOS"),
-            array("06","DISCOS SIERRA"),
-            array("07","DISCOS TRASLAPADOS"),
-            array("08","PUNTAS PARA ATORNILLADOR"),
-            array("09","DADOS PARA ATORNILLADOR"),
-            array("01","CABLES PASA-CORRIENTE DE BATERIA"),
-            array("02","PROBADOR DE CIRCUITOS"),
-            array("01","CERTIFICADOR DE DATOS"),
-            array("02","MEGÓMETRO DIGITAL"),
-            array("03","MULTIMETRO DIGITAL"),
-            array("04","PINZA AMPERIMÉTRICA"),
-            array("05","TELURÓMETRO DIGITAL"),
-            array("06","TESTEADOR DE CABLES  DE RED"),
-            array("07","PISTOLAS DE CALOR"),
-            array("08","SOPLADOR / ASPIRADOR"),
-            array("01","MEDIDOR DE DISTANCIA"),
-            array("02","JUEGO DE HERRAMIENTAS MECÁNICAS"),
-            array("01","ESMERILES"),
-            array("02","PULIDORA"),
-            array("03","TRONZADORA"),
-            array("01","ADAPTADOR"),
-            array("02","EXTENSIÓN"),
-            array("03","JUNTA UNIVERSAL"),
-            array("04","LLAVE o PISTOLA DE IMPACTO"),
-            array("05","LLAVES COMBINADAS"),
-            array("06","MANGO ARTICULADO PARA DADOS"),
-            array("07","RATCHET NEUMÁTICO"),
-            array("08","TALADRO NEUMÁTICO REVERSIBLE"),
-            array("01","MARTILLO CINCELADOR"),
-            array("02","ROTO MARTILLO"),
-            array("01","CEPILLOS CARPINTERO"),
-            array("02","LIJADORAS ELECTRICA"),
-            array("03","REBAJADORAS / FRESADORAS"),
-            array("04","SIERRAS"),
-            array("01","CORTADOR DE CABLE"),
-            array("02","CRIMPEADOR RJ45"),
-            array("03","PONCHADOR PARA JACK"),
-            array("04","FUSIONADORA DE FIBRA OPTICA"),
-            array("01","CEMENTO"),
-            array("02","CUTTER"),
-            array("03","LIJAS PARA CEMENTO"),
-            array("04","LIJAS PARA METAL"),
-            array("05","LIJAS PARA MADERA"),
-            array("06","PINTURAS"),
-            array("01","ATORNILLADOR ALÁMBRICO"),
-            array("02","TALADRO ALÁMBRICO DE ROTACIÓN"),
-            array("03","TALADRO ALÁMBRICO PERCUTOR"),
-            array("04","ATORNILLADORES INALÁMBRICO"),
-            array("05","TALADRO INALÁMBRICO DE ROTACIÓN"),
-            array("06","TALADRO INALÁMBRICO PERCUTOR"),
-            array("01","INSUMOS Y UTILES PARA LIMPIEZA"),
-            array("01","ESCRITORIOS"),
-            array("02","SILLAS"),
-            array("03","ORGANIZADORES"),
-            array("04","UTILES PARA OFICINA"),
-            array("01","GAFAS DE PROTECCIÓN"),
-            array("02","MASCARILLAS"),
-            array("03","PROTECTORES FACIALES"),
-            array("04","RESPIRADORES"),
-            array("01","ALARMA CONTRAINCENDIO"),
-            array("02","DETECTOR DE INCENDIOS"),
-            array("01","OXÍMETROS"),
-            array("02","TERMÓMETROS A DISTANCIA"),
-            array("01","ACCESORIOS DE SISTEMA DE SEGURIDAD"),
-            array("02","CONTROL BIOMETRICO"),
-            array("03","LECTORES DE TARJETA DE ACCESO"),
-            array("04","SENSORES DE MOVIMIENTO"),
-            array("05","SISTEMA DE PUERTA"),
-            array("01","PROTECCIÓN ANTICAIDA"),
-            array("02","ROPA DE TRABAJO"),
-            array("03","PROTECCIÓN RESPIRATORIA"),
-            array("04","PROTECCIÓN DE CABEZA"),
-            array("05","PROTECCIÓN AUDITIVA"),
-            array("06","PROTECCIÓN VISUAL Y FACIAL"),
-            array("07","PROTECCIÓN DE MANOS"),
-            array("08","PROTECCIÓN CONTRA CAIDAS"),
-            array("09","PROTECCIÓN FACIAL"),
-            array("10","PROTECCIÓN CORPORAL"),
-            array("11","PROTECCIÓN DE PIES"),
-            array("12","SEGURIDAD VIAL"),
-            array("13","BLOQUEO DE SEGURIDAD LOCK/TAG OUT"),
-            array("14","OTROS EPPS"),
-            array("01","CINTAS DE SEGURIDAD"),
-            array("02","CONOS DE SEGURIDAD"),
-            array("03","EXTINTOR"),
-            array("04","LETREROS DE SEGURIDAD"),
-            array("01","ACCESORIOS DE VIDEO VIGILANCIA"),
-            array("02","CAMARAS ANALOGICAS"),
-            array("03","CAMARAS IP"),
-            array("04","DVRs SISTEMAS DE ADMINISTRACION DE CAMARAS ANALOGICAS"),
-            array("05","NVRS SISTEMAS DE ADMINISTRACION DE CAMARAS IP"),
-            array("01","BANNERS PUBLICITARIOS"),
-            array("02","GORROS, POLOS Y OTRAS PRENDAS CON PUBLICIDAD"),
-            array("03","LAPICEROS"),
-            array("04","LLAVEROS"),
-            array("05","REVISTAS PUBLICITARIAS"),
-            array("01","GIFTCARDS"),
-            array("02","VALES"),
-        );
-        $array_clasificaciones=array();
-        foreach ($clasificacion as $key => $value) {
-            $clasificacion = Clasificacion::where('descripcion','=',$value)->first();
-            if (!$clasificacion) {
-                $clasificacion = new Clasificacion();
-                $clasificacion->descripcion     = $value;
-                $clasificacion->estado          = 1;
-                $clasificacion->fecha_registro  = date('Y-M-d h:i:s');
-                $clasificacion->save();
-
-                $clasificacion = Clasificacion::find($clasificacion->id_clasificacion);
-                $clasificacion->cod_softlink = $clasificacion->id_clasificacion;
-                $clasificacion->save();
-            }
-            array_push($array_clasificaciones, (object)array(
-                "cod_sof"=>$key,
-                "id_clasificacion"=>$clasificacion->id_clasificacion,
-                "descripcion"=>$value
-            ));
-        }
-        $array_categoria = array();
-        if (sizeof($array_clasificaciones)>0) {
-            foreach ($array_clasificaciones as $key_clasificacion => $value_clasificacion) {
-                foreach ($categorias as $key_categoria => $value_categoria) {
-
-                    if ($value_clasificacion->cod_sof===$value_categoria[0]) {
-                        $categoria = Categoria::where('descripcion','=',$value_categoria[1])->first();
-                        if (!$categoria) {
-                            $categoria = new Categoria();
-                            $categoria->descripcion = $value_categoria[1];
-                            $categoria->estado = 1;
-                            $categoria->fecha_registro = date('Y-M-d h:i:s');
-                            $categoria->id_clasificacion = $value_clasificacion->id_clasificacion;
-                            $categoria->save();
-                        }
-                        array_push($array_categoria,(object) array(
-                            "cod_sof"=>$value_categoria[0],
-                            "id_tipo_producto"=>$categoria->id_tipo_producto,
-                            "descripcion"=>$value_categoria[1],
-                            "codigo"=>$value_clasificacion->id_clasificacion
-                        ));
-                        // return response()->json([$value_clasificacion,$value_categoria]);exit;
-                    }
-                }
-            }
-        }
-        $array_sub_categoria_codigo=array();
-        $array_sub_categoria_descripcion=array();
-        // return sizeof($array_categoria);exit;
-        foreach ($sub_categoria as $key_sub_categoria => $value_sub_categoria) {
-            foreach ($array_categoria as $key_array => $value_array) {
-                if ($value_array->cod_sof === $value_sub_categoria[0]) {
-                    $sub_categoria = new SubCategoria();
-                    $sub_categoria->id_tipo_producto = $value_array->id_tipo_producto;
-                    $sub_categoria->cod_softlink = $value_array->codigo;
-                    $sub_categoria->descripcion = $value_sub_categoria[1];
-                    $sub_categoria->estado = 1;
-                    $sub_categoria->fecha_registro = date('Y-M-d h:i:s');
-                    $sub_categoria->save();
-                }
-            }
-        }
-        // if (sizeof($array_categoria)>0) {
-        //     foreach ($array_categoria as $key_categoria => $value_categoria) {
-        //         foreach ($sub_categoria as $key_sub_categoria => $value_sub_categoria) {
-        //             if ($value_categoria->cod_sof == $value_sub_categoria[0]) {
-        //                 $sub_categoria = SubCategoria::where('descripcion','=',$value_sub_categoria[1])->first();
-        //                 if (!$sub_categoria) {
-        //                     $sub_categoria = new SubCategoria();
-        //                     $sub_categoria->id_tipo_producto = $value_categoria->id_tipo_producto;
-        //                     $sub_categoria->cod_softlink = $value_categoria->codigo;
-        //                     $sub_categoria->descripcion = $value_sub_categoria[1];
-        //                     $sub_categoria->estado = 1;
-        //                     $sub_categoria->fecha_registro = date('Y-M-d h:i:s');
-        //                     $sub_categoria->save();
-        //                 }
-        //                 array_push($array_sub_categoria,$sub_categoria);
-        //             }
-        //         }
-        //     }
-        // }
-
-
         return response()->json([
             "success"=>true,
             "status"=>200,
-            "clasificacion"=>$array_clasificaciones,
-            "categoria"=>$array_categoria,
-            // "sub_categoria"=>$array_sub_categoria
+            "data"=>$clasificacion
         ]);
     }
 }
