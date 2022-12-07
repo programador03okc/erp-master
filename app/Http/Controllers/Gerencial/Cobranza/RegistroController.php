@@ -526,6 +526,7 @@ class RegistroController extends Controller
             'requerimiento_logistico_view.id_requerimiento_logistico',
             'requerimiento_logistico_view.codigo_oportunidad',
             'requerimiento_logistico_view.nro_orden',
+            'requerimiento_logistico_view.id_contribuyente_cliente',
 
             'doc_vent_req.id_documento_venta_requerimiento',
             'doc_ven.id_doc_ven',
@@ -590,8 +591,7 @@ class RegistroController extends Controller
             }
 
             if ($contri) {
-                $update = Contribuyente::where('estado',1)
-                ->where('id_contribuyente',$contri->id_contribuyente)
+                $update = Contribuyente::where('id_contribuyente',$contri->id_contribuyente)
                 ->update(
                     [
                         'id_cliente_gerencial_old' => $value->id_cliente,
@@ -837,7 +837,10 @@ class RegistroController extends Controller
         $cobranza->id_sector        = $request->sector;
 
         $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
-        $cobranza->id_cliente_agil       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null) ;
+        $cobranza->id_cliente_agil       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null);
+
+        // $cobranza->id_cliente       = $request->id_cliente;
+        // $cobranza->id_cliente_agil       = $request->id_contribuyente;
 
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
@@ -1188,35 +1191,69 @@ class RegistroController extends Controller
         ->get();
         $array = [];
         foreach ($cobranzas as $key => $value) {
-            $registro_cobranza = new RegistroCobranza();
-            $registro_cobranza->id_empresa        = null;
-            $registro_cobranza->id_sector         = $value->id_sector;
-            $registro_cobranza->id_cliente        = $value->id_cliente;
-            $registro_cobranza->factura           = $value->factura;
-            $registro_cobranza->uu_ee             = $value->uu_ee;
-            $registro_cobranza->fuente_financ     = $value->fuente_financ;
-            $registro_cobranza->oc                = $value->oc;
-            $registro_cobranza->siaf              = $value->siaf;
-            $registro_cobranza->fecha_emision     = $value->fecha_emision;
-            $registro_cobranza->fecha_recepcion   = $value->fecha_recepcion;
-            $registro_cobranza->moneda            = $value->moneda;
-            $registro_cobranza->importe           = $value->importe;
-            $registro_cobranza->id_estado_doc     = $value->id_estado_doc;
-            $registro_cobranza->id_tipo_tramite   = $value->id_tipo_tramite;
-            $registro_cobranza->vendedor          = $value->vendedor;
-            $registro_cobranza->estado            = $value->estado;
-            $registro_cobranza->fecha_registro    = $value->fecha_registro;
-            $registro_cobranza->id_area           = $value->id_area;
-            $registro_cobranza->id_periodo        = $value->id_periodo;
-            $registro_cobranza->codigo_empresa    = $value->codigo_empresa;
-            $registro_cobranza->categoria         = $value->categoria;
-            $registro_cobranza->cdp               = $value->cdp;
-            $registro_cobranza->plazo_credito     = $value->plazo_credito;
-            $registro_cobranza->id_doc_ven       = $value->id_venta;
-            $registro_cobranza->id_cliente_agil   = null;
-            $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
-            $registro_cobranza->id_empresa_old    = $value->id_empresa;
-            $registro_cobranza->save();
+            $registro_cobranza = RegistroCobranza::where('id_cobranza_old',$value->id_cobranza)->first();
+            if (!$registro_cobranza) {
+                $registro_cobranza = new RegistroCobranza();
+                $registro_cobranza->id_empresa        = null;
+                $registro_cobranza->id_sector         = $value->id_sector;
+                $registro_cobranza->id_cliente        = $value->id_cliente;
+                $registro_cobranza->factura           = $value->factura;
+                $registro_cobranza->uu_ee             = $value->uu_ee;
+                $registro_cobranza->fuente_financ     = $value->fuente_financ;
+                $registro_cobranza->oc                = $value->oc;
+                $registro_cobranza->siaf              = $value->siaf;
+                $registro_cobranza->fecha_emision     = $value->fecha_emision;
+                $registro_cobranza->fecha_recepcion   = $value->fecha_recepcion;
+                $registro_cobranza->moneda            = $value->moneda;
+                $registro_cobranza->importe           = $value->importe;
+                $registro_cobranza->id_estado_doc     = $value->id_estado_doc;
+                $registro_cobranza->id_tipo_tramite   = $value->id_tipo_tramite;
+                $registro_cobranza->vendedor          = $value->vendedor;
+                $registro_cobranza->estado            = $value->estado;
+                $registro_cobranza->fecha_registro    = $value->fecha_registro;
+                $registro_cobranza->id_area           = $value->id_area;
+                $registro_cobranza->id_periodo        = $value->id_periodo;
+                $registro_cobranza->codigo_empresa    = $value->codigo_empresa;
+                $registro_cobranza->categoria         = $value->categoria;
+                $registro_cobranza->cdp               = $value->cdp;
+                $registro_cobranza->plazo_credito     = $value->plazo_credito;
+                $registro_cobranza->id_doc_ven       = $value->id_venta;
+                $registro_cobranza->id_cliente_agil   = null;
+                $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
+                $registro_cobranza->id_empresa_old    = $value->id_empresa;
+                $registro_cobranza->save();
+            }else{
+                $registro_cobranza = RegistroCobranza::find($registro_cobranza->id_registro_cobranza);
+                $registro_cobranza->id_empresa        = null;
+                $registro_cobranza->id_sector         = $value->id_sector;
+                $registro_cobranza->id_cliente        = $value->id_cliente;
+                $registro_cobranza->factura           = $value->factura;
+                $registro_cobranza->uu_ee             = $value->uu_ee;
+                $registro_cobranza->fuente_financ     = $value->fuente_financ;
+                $registro_cobranza->oc                = $value->oc;
+                $registro_cobranza->siaf              = $value->siaf;
+                $registro_cobranza->fecha_emision     = $value->fecha_emision;
+                $registro_cobranza->fecha_recepcion   = $value->fecha_recepcion;
+                $registro_cobranza->moneda            = $value->moneda;
+                $registro_cobranza->importe           = $value->importe;
+                $registro_cobranza->id_estado_doc     = $value->id_estado_doc;
+                $registro_cobranza->id_tipo_tramite   = $value->id_tipo_tramite;
+                $registro_cobranza->vendedor          = $value->vendedor;
+                $registro_cobranza->estado            = $value->estado;
+                $registro_cobranza->fecha_registro    = $value->fecha_registro;
+                $registro_cobranza->id_area           = $value->id_area;
+                $registro_cobranza->id_periodo        = $value->id_periodo;
+                $registro_cobranza->codigo_empresa    = $value->codigo_empresa;
+                $registro_cobranza->categoria         = $value->categoria;
+                $registro_cobranza->cdp               = $value->cdp;
+                $registro_cobranza->plazo_credito     = $value->plazo_credito;
+                $registro_cobranza->id_doc_ven       = $value->id_venta;
+                $registro_cobranza->id_cliente_agil   = null;
+                $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
+                $registro_cobranza->id_empresa_old    = $value->id_empresa;
+                $registro_cobranza->save();
+            }
+
             // array_push($array,array(
             //     // "id_registro_cobranza" => ,
             //     "id_empresa"        =>null,
@@ -1262,13 +1299,15 @@ class RegistroController extends Controller
             $cliente_gerencial = Cliente::where('id_cliente',$value->id_cliente)->first();
             if ($cliente_gerencial) {
                 $adm_contri = Contribuyente::where('nro_documento',$cliente_gerencial->ruc)->first();
+                if (!$adm_contri) {
+                    $adm_contri = Contribuyente::where('razon_social',$cliente_gerencial->nombre)->first();
+                }
                 if ($adm_contri) {
                     $nueva_cobranza = RegistroCobranza::find($value->id_registro_cobranza);
                     $nueva_cobranza->id_cliente = $adm_contri->id_cliente_gerencial_old;
                     $nueva_cobranza->save();
                 }
             }
-
         }
 
         return response()->json([
@@ -1488,6 +1527,182 @@ class RegistroController extends Controller
             "success"=>true,
             "status"=>200,
             "no_encontrados"=>$vendedores_excluidos
+        ]);
+    }
+    public function scriptEmpresaActualizacion()
+    {
+        $array_razon_social=array(
+            'UNIDAD EJECUTORA 037: PERU SEGURO 2025',
+            'UNIDAD EJECUTORA 149. PROGRAMA DE INVERSION CREACION DE REDES INTEGRADAS DE SALUD',
+            'COMPUTO Y PERIFERICOS S.A.C.',
+            'GOBIERNO REGIONAL DE CALLAO',
+            'UNIDAD EJECUTORA 406 SALUD SANCHEZ CARRION',
+            'AS.PROM.ED.COLEG. MARISCAL RAMON CASTILLA',
+            'GOBIERNO REGIONAL DE CUSCO',
+            'GOBIERNO REGIONAL DE MADRE DE DIOS',
+            'MINISTERIO PUBLICO - GERENCIA GENERAL',
+            'UNIDAD EJECUTORA HOSPITAL DE REHABILITACION DEL CALLAO',
+            'GOBIERNO REGIONAL DE HUANUCO',
+            'RED DE SALUD AREQUIPA CAYLLOMA - GRA-SALUD RED PERIFERICA AREQUIPA',
+            'UNIVERSIDAD NACIONAL AUTONOMA DE CHOTA',
+            'UNIDAD EJECUTORA 403-1169 - REGION CUSCO - HOSPITAL ANTONIO LORENA',
+            'MINISTERIO DE VIVIENDA, CONSTRUCCIÓN Y SANEAMIENTO',
+            'DIRECCION REGIONAL DE EDUCACION LIMA METROPOLITANA',
+            'MINISTERIO PUBLICO',
+            'SUPERINTENDENCIA NACIONAL DE SERVICIO DE SANEAMIENTO',
+            'PETROLEOS DEL PERU PETROPERU SA',
+            'UNIDAD EJECUTORA 405 RED DE SALUD ANGARAES',
+            'MANTINNI S.R.L.',
+            'S Y S SOLUCIONES TI S.A.C.',
+            'JUNTA DE USUARIOS DEL SECTOR HIDRÁULICO DE LA JOYA ANTIGUA',
+            'NINA GOMEZ EDWIN ROYSI',
+            'BOTICA SANTA LUCIA E.I.R.L.',
+            'DOMINIO CONSULTORES EN MARKETING S.A.C',
+            'G Y S CONSORCIO E INVERSIONES GENERALES S.A.C',
+            'ELECSEIN DEL SUR S.R.L.',
+            'MUNICIPALIDAD DISTRITAL J.CRESPO Y CASTILLO',
+            'OFICINA DE GESTION DE SERVICIOS DE SALUD ALTO',
+            'UNIDAD EJECUTORA HOSPITAL DE REHABILITACIÃN DEL CALLAO',
+            'GERENCIA SUBREGIONAL JAEN',
+            'UNIDAD EJECUTORA 003 GESTIÓN INTEGRAL DE LA CALIDAD AMBIENTAL',
+            'HOSPITAL REGIONAL LAMBAYEQUE - GRL',
+            'ORGANISMO DE EVALUACIÓN Y FISCALIZACIÓN AMBIENTAL - OEFA',
+            'INVERSIONES 5VILLA S.A.C.',
+            'ODP CONSULTORES S.A.C.',
+            'GOLD TECH E.I.R.L',
+            'ALMACENES ASOCIADOS S. A. C.',
+            'SAIRA QUISPE EDILBERTO WILFREDO',
+            'TAI TEC SOLUTIONS S.R.L.',
+            'SANTANDER URIBE MARCOS',
+            'MULTISERVICIOS',
+            'EMP. SERV. LIMP. MUNIC. PUBLICA CALLAO S.A.',
+            'SERVICIOS BASICOS DE SALUD CAÑETE-YAUYOS',
+            'FATIMA RENT A CAR E.I.R.L.',
+            'SOPORTE GERIATRICO MEDICO S.A.C.',
+            'SEGURIDAD Y VIGILANCIA VISESJA S.A.C.',
+            'CAHUANA CCOPA EDWIN FRANKLIN',
+            'PORTUGAL ALVAREZ GAHUDY ARELLY',
+            'MANUELO TAIPE DOMITILA',
+            'GINECEO S.A.C',
+            'EMPRESA MUNICIPAL ADMINISTRADORA DE PEAJE DE LIMA S.A',
+            'INTELNETPERU E.I.R.L.',
+            'PIPOL COMUNICACIONES S.A.C.',
+            'GERIATRICOS AQP SP E.I.R.L.',
+            'UNIDAD EJECUTORA 120 PROGRAMA NACIONAL DE DOTACIÓN DE MATERIALES EDUCATIVOS',
+            'D Y Q TRANSPORTES INVERSIONES Y SERVICIOS GENERALES S.A.C.',
+            'CYRUS ASISTENCIA DE CONTENEDORES S.R.L',
+            'CRUCERO THOURS S.R.L.',
+            'DIRECCIÓN SUB REGIONAL DE SALUD CHOTA',
+            'DYQ TRANSPORTES INVERSIONES Y SERVICIOS GENERALES S.A.C.',
+            'JAMES ICE CREAMS E.I.R.L.',
+            'RESTOBAR S.R.L.',
+            'C Y C NEGOCIOS E.I.R.L.',
+            'PASOL DE ILO CONTRATISTAS GENERALES E.I.R.L.',
+            'GUILLEN VALLEJO MARIA TERESA',
+            'VARINZA S.A.C.',
+            'MAMANI PAYHUANCA LEONARDO GENARO',
+            'GERENCIA REGIONAL DE SALUD DEL GOBIERNO REGIONAL DE AREQUIPA',
+            'DIRECCION REGIONAL DE SALUD MADRE DE DIOS',
+            'PROGRAMA DE COMPENSACIONES PARA LA COMPETITIVIDAD',
+            'GERENCIA REGIONAL DE TRANSPORTES Y COMUNICACIONES MOQUEGUA',
+            'UNIDAD EJECUTORA 407 HOSPITAL DE APOYO PALPA',
+            'MUNICIPALIDAD PROVINCIAL SAN ANTONIO PUTINA',
+            'UGEL CAMANA',
+            'DIRECCION REGIONAL DE TRANSPORTES Y COMUNICACIONES-CUSCO',
+            'MUNICIPALIDAD DE CHORRILLOS',
+            'DIRECCION REGIONAL DE TRANSPORTES Y COMUNICACIONES HUANUCO',
+            'SUB REGION DE SALUD BAGUA',
+            'MUNICIPIO DISTRITAL DE QUIÑOTA',
+            'EMAPA HUARAL S.A.',
+            'UNIDAD DE GESTION EDUCATIVA LOCAL MARISCAL NIETO',
+            'UNIDAD EJECUTORA 314 EDUCACION ACOMAYO',
+            'UNIDAD EJECUTORA ESCUELA NACIONAL SUPERIOR DE ARTE DRAMATICO "GUILLERMO UGARTE CHAMORRO"',
+            'SALUD HOSPITAL REGIONAL DE LORETO',
+            'PROYECTO ESPECIAL OLMOS - TINAJONES',
+            'SISTEMA NACIONAL DE EVALUACION, ACREDITACION Y CERTIFICACION DE LA CALIDAD EDUCATIVA',
+            'MARCO MARKETING CONSULTANTS PERU S.A.C.',
+            'SATTEL CHILE LIMITADA',
+            'POOL JONATHAN TORRES RODRIGUEZ',
+            'RAUL TAPIA DIAZ',
+            'CLE',
+            'MUNICIPALIDAD DISTRITAL JACOBO D HUNTER',
+            'ENTERCOMM PERU S.A.C.',
+            'ESTABLECIMIENTO DE SALUD MUNICIPAL - ESAMU',
+            'REDEES MACUSANI',
+            'ELECTRONORTE S.A.',
+            'BLANCAS LAVADO EVELYN',
+            'SERVICIO NACIONAL METEOROLOGIA E HIDROL.',
+            'MUNICIPALIDAD PROVINCIAL DE CONTUMUZA',
+            "ESCUELA NACIONAL DE MARINA MERCANTE 'ALMIRANTE MIGUEL GRAU'",
+            'UNIDAD EJECUTORA EDUCACION HUANCAYO',
+            'EMPRESA PRESTADORA DE SERVICIOS DE SANEAMIENTO DE MOYOBAMBA S.A. - EPS MOYOBAMBA S.A.',
+            'J Y C CORP S.R.L.',
+            'EMPRESA PRESTADORA DE SERVICIOS DE SANEAMIENTO DE MOYOBAMBA SOCIEDAD ANÃNIMA - EPS MOYOBAMBA S.A.',
+            'UGEL CONDESUYOS',
+            'J',
+            'UNIDAD EJECUTORA PROGRAMA NACIONAL DE CENTROS JUVENILES-PRONACEJ',
+            'PS',
+            'DRAGON TECNOLOGY E. I. R. L.',
+            'PAMELA MODA',
+            'UNIDAD TERRITORIAL DE SALUD SATIPO',
+            'PAMELA MODA Y SPORT E.I.R.L.',
+            'PURIMETRO E.I.R.L.',
+            'INDUSTRIA MAGIOBET S.R.L.',
+            'CORPORACION AGROPECUARIA DEL PACIFICO S.A.',
+            'EMP. DE TRANS. FLORES HNOS.',
+            'NUEVA LATINA CENTER S.R.L.',
+            'EMPRESA ESTACION DE SERVICIOS GENERALES JORGE E.I.R.L.',
+            'VARGAS VELASQUEZ ANTHONY DANIEL',
+            'CARITAS TACNA - MOQUEGUA',
+            'DISTRIBUCION Y SERVICIOS TOTALES S.R.L.',
+            'VENGOA FIGUEROA CONTRATISTAS GENERALES S.R.L.',
+            'CORPORACION LERIBE S.A.C',
+            'DELICIA Y ARTE CULINARIO',
+            'CONSTRUCTORA CUBA BULEJE ASOCIADOS S.A.C.',
+            'ELECTRO SUR ESTE S.A.A.',
+            'SECRETARIA TECNICA DE APOYO A LA COMISION AD HOC CREADA POR LA LEY 29625',
+            'TERAN GLOBAL IMPORT S.R.L.',
+            'DIRECCION DE RED SALUD BAGUA',
+            'COMPUSOFT DATA S.A.C.',
+            'UNIDAD EJECUTORA: UGEL CAYLLOMA',
+            'HOSPITAL DE APOYO III SULLANA',
+            'MUNICIPALIDAD PROVINCIAL TARMA',
+            'TERMINAL PORTUARIO DE CHIMBOTE',
+            'JC CONSORCIO Y SERVICIOS GENERALES S.C.R.L.',
+
+        );
+        $array_modificado=array();
+        $array_encontrados=array();
+        $array_faltantes=array();
+        $contador=0;
+        // return sizeof($array_razon_social);exit;
+        foreach ($array_razon_social as $key => $value) {
+            $cliente = Cliente::where('nombre','like','%'.$value.'%')->where('ruc','!=','undefined')->first();
+            if ($cliente) {
+                // array_push($array_encontrados,$cliente);
+                $contribuyente = Contribuyente::where('razon_social','like','%'.$cliente->nombre.'%')->where('nro_documento',null)->first();
+                if ($contribuyente) {
+
+                    $update_contribuyente = Contribuyente::find($contribuyente->id_contribuyente);
+                    $update_contribuyente->nro_documento = $cliente->ruc;
+                    $update_contribuyente->save();
+
+                    array_push($array_encontrados,$update_contribuyente);
+                }else{
+                    array_push($array_faltantes,$contribuyente);
+                }
+
+            }
+
+        }
+
+        return response()->json([
+            "status"=>200,
+            "success"=>true,
+            "count_array"=>sizeof($array_razon_social),
+            "count_vacios"=>$contador,
+            "faltantes"=>$array_faltantes,
+            "encontrados"=>$array_encontrados
         ]);
     }
 }
