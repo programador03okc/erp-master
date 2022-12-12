@@ -44,10 +44,11 @@ class OrdenesDespachoExternoController extends Controller
     function view_ordenes_despacho_externo()
     {
         $estados = DB::table('almacen.estado_envio')
-            ->where([
-                ['id_estado', '>=', 3],
-                ['id_estado', '<=', 8]
-            ])
+            // ->where([
+            //     ['id_estado', '>=', 3],
+            //     ['id_estado', '<=', 8]
+            // ])
+            ->whereIn('id_estado',[3,4,5,6,7,8,11,12,13])->orderBy('descripcion','asc')
             ->get();
         $array_accesos=[];
         $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
