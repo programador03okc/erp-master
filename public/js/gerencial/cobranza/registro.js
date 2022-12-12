@@ -146,6 +146,7 @@ function listarRegistros(filtros) {
 }
 $(document).on('click','[data-action="nuevo-registro"]',function () {
     $('#modal-cobranza').modal('show');
+    $('#formulario')[0].reset();
 });
 // $(document).on('submit','#formulario',function (e) {
 //     e.preventDefault();
@@ -549,7 +550,7 @@ $('#formulario').on('submit', function(e){
                     if (response.status===200) {
                         Swal.fire(
                           'Éxito',
-                          'Se elimino con éxito.',
+                          'Se guardo con éxito.',
                           'success'
                         ).then((result) => {
                             $('#listar-registros').DataTable().ajax.reload();
@@ -684,7 +685,7 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
                         $('[data-form="guardar-formulario"] .modal-body input[name="oc"]').val(response.data.nro_orden)
                         $('[data-form="guardar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
                         $('[data-form="guardar-formulario"] .modal-body input[name="id_cliente"]').val('')
-                        $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente_cliente)
                         $('[data-form="guardar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
                         $('[data-form="guardar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 
@@ -770,6 +771,9 @@ $(document).on('submit','[data-form="editar"]',function (e) {
 $(document).on('click','.editar-registro',function () {
     let id_registro_cobranza = $(this).data('id');
     var fecha_emision ,fecha_vencimiento, numero_dias=0;
+
+    $('#editar-formulario-cobranzas')[0].reset();
+
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -779,6 +783,7 @@ $(document).on('click','.editar-registro',function () {
     }).done(function( data ) {
         if (data.status===200) {
             console.log(data);
+
             $('#modal-editar-cobranza').modal('show');
 
             $('[data-form="editar-formulario"] .modal-body select[name="empresa"] option').removeAttr('selected');
@@ -795,7 +800,10 @@ $(document).on('click','.editar-registro',function () {
 
             $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val(data.data.id_cliente);
             $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(data.data.id_cliente_agil);
-            $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.cliente[0].razon_social);
+            if (data.cliente.length>0) {
+                $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.cliente[0].razon_social);
+            }
+
             $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(data.data.cdp);
             $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(data.data.oc);
             $('[data-form="editar-formulario"] .modal-body input[name="fact"]').val(data.data.factura);
