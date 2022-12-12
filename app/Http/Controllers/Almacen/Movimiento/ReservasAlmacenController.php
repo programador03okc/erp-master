@@ -8,6 +8,7 @@ use App\Models\Almacen\Almacen;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\models\Configuracion\AccesosUsuarios;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -81,18 +82,20 @@ class ReservasAlmacenController extends Controller
     function anularReserva(Request $request)
 
     {
-        $id_reserva = $request->id;
-        $id_detalle=$request->id_detalle;
 
-
-        $rspta = DB::table('almacen.alm_reserva')->where('id_reserva', $id_reserva)->update(['estado' => 7]);
+        $rspta = DB::table('almacen.alm_reserva')->where('id_reserva', $request->id)->update([
+            'usuario_anulacion' => Auth::user()->id_usuario,
+            'motivo_anulacion' => isset($request->motivo_de_anulacion)?$request->motivo_de_anulacion:'',
+            'estado' => 7,
+            'deleted_at' =>  new Carbon()
+        ]);
         $Requerimiento = DB::table('almacen.alm_req')
         ->join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
-        ->where('alm_det_req.id_detalle_requerimiento', $id_detalle)->first();
+        ->where('alm_det_req.id_detalle_requerimiento', $request->id_detalle)->first();
         $nuevoEstado=[];
 
         if (intval($request->id_tipo_requerimiento)!==4) {
-            DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($id_detalle);
+            DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->id_detalle);
             $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR', [$Requerimiento->id_requerimiento]);
         }
 

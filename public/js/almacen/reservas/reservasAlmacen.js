@@ -248,44 +248,77 @@ $("#form-editarReserva").on("submit", function (e) {
 
 
 $("#reservasAlmacen tbody").on("click", "button.anular", function () {
-    Swal.fire({
-        title: "¿Está seguro que desea anular ésta reserva?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#00a65a", //"#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Sí, Anular"
-    }).then(result => {
+    let motivoDeAnulacion = '';
 
+    Swal.fire({
+        title: "¿Está seguro que desea anular ésta reserva?. Escriba un motivo",
+        input: 'textarea',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Registrar',
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then(result => {
+        motivoDeAnulacion = result.value;
+        let formData = new FormData();
+        formData.append(`id`, $(this).data("id"));
+        formData.append(`id_tipo_requerimiento`, $(this).attr('data-id-tipo-requerimiento'));
+        formData.append(`id_detalle`, $(this).data('detalle'));
+        formData.append(`motivo_de_anulacion`, motivoDeAnulacion);
+        
+        if(motivoDeAnulacion == null || (motivoDeAnulacion).trim()==''){
+
+            Swal.fire(
+                '',
+                'Debe ingresar un motivo para anular',
+                'info'
+            );
+            return false;
+        } 
         if (result.isConfirmed) {
-            var id = $(this).data("id");
-            var id_detalle = $(this).data('detalle'),
-                id_tipo_requerimiento = $(this).attr('data-id-tipo-requerimiento');
-            $.ajax({
-                type: 'POST',
-                url: 'anularReserva',
-                data:{id_tipo_requerimiento:id_tipo_requerimiento,id:id,id_detalle:id_detalle},
-                dataType: 'JSON',
-                success: function (response) {
-                    console.log(response);
-                    if (response.respuesta > 0) {
-                        Lobibox.notify("success", {
-                            title: false,
-                            size: "mini",
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: 'Se anuló correctamente.'
+                $.ajax({
+                    type: 'POST',
+                    url: 'anularReserva',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'JSON',
+                    beforeSend: (data) => { // Are not working with dataType:'jsonp'
+
+                        $('#wrapper-okc').LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
                         });
-                        $('#reservasAlmacen').DataTable().ajax.reload(null, false);
+                    },
+                    success:  (response) =>{
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        console.log(response);
+                        if (response.respuesta > 0) {
+                            Lobibox.notify("success", {
+                                title: false,
+                                size: "mini",
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: 'Se anuló correctamente.'
+                            });
+                            $('#reservasAlmacen').DataTable().ajax.reload(null, false);
+                        }
+                    },
+                    fail: (jqXHR, textStatus, errorThrown) => {
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un problema en el servidor al intentar anular la reserva, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
                     }
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
+                });
         }
     });
 

@@ -833,6 +833,9 @@ class ComprasPendientesController extends Controller
             if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
 
                 $reserva = Reserva::where('id_reserva', $request->idReserva)->first();
+                $reserva->usuario_anulacion =Auth::user()->id_usuario;
+                $reserva->deleted_at = new Carbon();
+                $reserva->motivo_anulacion = isset($request->motivoDeAnulacion)?$request->motivoDeAnulacion:'';
                 $reserva->estado = 7;
                 $reserva->save();
 
@@ -893,6 +896,9 @@ class ComprasPendientesController extends Controller
                         if($r->id_guia_com_det==null && $r->id_trans_detalle ==null && $r->id_transformado ==null){
                             $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
                             $reserva->estado = 7;
+                            $reserva->usuario_anulacion =Auth::user()->id_usuario;
+                            $reserva->deleted_at = new Carbon();
+                            $reserva->motivo_anulacion = isset($request->motivoDeAnulacion)?$request->motivoDeAnulacion:'';
                             $reserva->save();
                             $tipo_estado = 'success';
                             $cantidadReservasAnuladas++;
@@ -1330,7 +1336,7 @@ class ComprasPendientesController extends Controller
                 // fin trazabilidad
 
                 OrdenCompraDetalle::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento]])->update(['estado' => 7]);
-                Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento]])->update(['estado' => 7]);
+                Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento]])->update(['estado' => 7,'deleted_at'=>new Carbon(), 'usuario_anulacion'=>Auth::user()->id_usuario,'motivo_anulacion'=>'Anular item en orden/reserva']);
                 DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
 
                 $status = 200;
