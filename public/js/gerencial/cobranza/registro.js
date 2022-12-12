@@ -147,6 +147,7 @@ function listarRegistros(filtros) {
 $(document).on('click','[data-action="nuevo-registro"]',function () {
     $('#modal-cobranza').modal('show');
     $('#formulario')[0].reset();
+    $('.search-vendedor-guardar').val(null).trigger('change');
 });
 // $(document).on('submit','#formulario',function (e) {
 //     e.preventDefault();
@@ -773,6 +774,7 @@ $(document).on('click','.editar-registro',function () {
     var fecha_emision ,fecha_vencimiento, numero_dias=0;
 
     $('#editar-formulario-cobranzas')[0].reset();
+    // $('.search-vendedor-guardar').val(null).trigger('change');
 
     $.ajax({
         type: 'GET',
