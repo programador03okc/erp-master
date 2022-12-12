@@ -1,31 +1,30 @@
 <table>
     <thead>
         <tr>
-        <th>Cód. Orden</th>
-        <th>Cód. Requerimiento</th>
-        <th>Cód. Producto</th>
-        <th>Bien comprado/ servicio contratado</th>
-        <th>Rubro Proveedor</th>
-        <th>Razón Social del Proveedor</th>
-        <th>RUC del Proveedor</th>
-        <th>Domicilio Fiscal/Principal</th>
-        <th>Provincia</th>
-        <th>Fecha de presentación del comprobante de pago.</th>
-        <th>Fecha de cancelación del comprobante de pago</th>
-        <th>Tiempo de cancelación(# días)</th>
-        <th>Cantidad</th>
-        <th>Moneda</th>
-        <th>Precio Soles</th>
-        <th>Precio Dolares</th>
-        <th>Monto Soles inc IGV</th>
-        <th>Monto Dólares inc IGV</th>
-        <th>Tipo de Comprobante de Pago</th>
-        <th>N° Comprobante de Pago</th>
-        <th>Empresa - sede</th>
-        <th>Grupo</th>
-        <th>Proyecto</th>
-        <th>Estado pago</th>
-
+            <th><b>Cód. Orden</b></th>
+            <th><b>Cód. Requerimiento</b></th>
+            <th><b>Cód. Producto</b></th>
+            <th><b>Bien comprado/ servicio contratado</b></th>
+            <th><b>Rubro Proveedor</b></th>
+            <th><b>Razón Social del Proveedor</b></th>
+            <th><b>RUC del Proveedor</b></th>
+            <th><b>Domicilio Fiscal/Principal</b></th>
+            <th><b>Provincia</b></th>
+            <th><b>Fecha de presentación del comprobante de pago.</b></th>
+            <th><b>Fecha de cancelación del comprobante de pago</b></th>
+            <th><b>Tiempo de cancelación(# días)</b></th>
+            <th><b>Cantidad</b></th>
+            <th><b>Moneda</b></th>
+            <th><b>Precio Soles</b></th>
+            <th><b>Precio Dolares</b></th>
+            <th><b>Monto Soles inc IGV</b></th>
+            <th><b>Monto Dólares inc IGV</b></th>
+            <th><b>Tipo de Comprobante de Pago</b></th>
+            <th><b>N° Comprobante de Pago</b></th>
+            <th><b>Empresa - sede</b></th>
+            <th><b>Grupo</b></th>
+            <th><b>Proyecto</b></th>
+            <th><b>Estado pago</b></th>
         </tr>
     </thead>
     <tbody>
