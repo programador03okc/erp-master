@@ -793,17 +793,26 @@ class RegistroController extends Controller
             $vendedor = Vendedor::where('nombre','like','%'.$registro_cobranza->vendedor.'%')->first();
         }
         // return $vendedor;exit;
-        $contribuyente = Contribuyente::where('id_contribuyente',$registro_cobranza->id_cliente_agil)->first();
+        $contribuyente = array();
+        if ($registro_cobranza->id_cliente_agil!==null) {
+            $contribuyente = Contribuyente::where('id_contribuyente',$registro_cobranza->id_cliente_agil)->first();
+        }
+
         if (!$contribuyente) {
-            $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$registro_cobranza->id_cliente)->first();
-            // $contribuyente = Cliente::where('id_cliente',$registro_cobranza->id_cliente)->first();
-            // return $contribuyente;exit;
-            array_push($cliente_array,array(
-                "id_cliente"=>null,
-                "id_contribuyente"=>$contribuyente->id_contribuyente,
-                "nro_documento"=>$contribuyente->nro_documento,
-                "razon_social"=>$contribuyente->razon_social
-            ));
+            if ($registro_cobranza->id_cliente!==null) {
+                $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$registro_cobranza->id_cliente)->first();
+            }
+
+            if ($contribuyente) {
+                array_push($cliente_array,array(
+                    "id_cliente"=>null,
+                    "id_contribuyente"=>$contribuyente->id_contribuyente,
+                    "nro_documento"=>$contribuyente->nro_documento,
+                    "razon_social"=>$contribuyente->razon_social
+                ));
+            }
+
+
         }else{
             array_push($cliente_array,array(
                 "id_cliente"=>null,

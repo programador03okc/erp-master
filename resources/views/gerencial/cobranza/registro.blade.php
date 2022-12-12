@@ -391,7 +391,7 @@ Cobranzas
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cobranza" data-action="modal">
 	<div class="modal-dialog" style="width: 70%;">
 		<div class="modal-content">
-			<form data-form="editar-formulario">
+			<form data-form="editar-formulario" id="editar-formulario-cobranzas">
 				<div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title">Editar Registro de Cobranza</h3>
