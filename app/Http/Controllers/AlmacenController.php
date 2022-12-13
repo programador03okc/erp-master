@@ -19,6 +19,7 @@ use App\models\Configuracion\AccesosUsuarios;
 use App\Exports\ReporteStockSeriesExcel;
 use App\Models\almacen\Catalogo\Categoria;
 use App\Models\almacen\Catalogo\Clasificacion;
+use App\Models\almacen\Catalogo\Marca;
 use App\Models\Almacen\Catalogo\SubCategoria;
 use App\Models\Almacen\StockSeriesView;
 use Exception;
@@ -7134,10 +7135,7 @@ class AlmacenController extends Controller
                         "codigo"=>"00",
                         "descripcion"=>"*OTROS",
                         "sub_categoria"=>array(
-                            array(
-                                "codigo"=>"00",
-                                "descripcion"=>"*OTROS"
-                            ),
+                            array("codigo"=>"00","descripcion"=>"*OTROS"),
                         ),
                     ),
                 ),
@@ -7221,7 +7219,6 @@ class AlmacenController extends Controller
                             array("codigo"=>"23", "descripcion"=>"TECLADO CLÁSICO ALÁMBRICO"),
                             array("codigo"=>"24", "descripcion"=>"TECLADO CLÁSICO INALÁMBRICO"),
                             array("codigo"=>"25", "descripcion"=>"TECLADO GAMER"),
-
                         )
                     ),
                     array(
@@ -7826,12 +7823,144 @@ class AlmacenController extends Controller
                     ),
 
                 )
-            ),
+            )
         );
+        // return $clasificacion;exit;
+        // $clasificacion = (array) $clasificacion;
+        $array_almacen_clasificacion = array();
+        $array_almacen_categoria = array();
+        foreach ($clasificacion as $key => $value) {
+            $clasificacion = Clasificacion::where('descripcion',$value['descripcion'])->where('estado',1)->first();
+
+
+            if (!$clasificacion) {
+                $clasificacion = new Clasificacion();
+                $clasificacion->descripcion = $value['descripcion'];
+                $clasificacion->fecha_registro = date('Y-M-d H:i:s');
+                $clasificacion->estado = 1;
+                // $clasificacion->cod_softlink =;
+                $clasificacion->save();
+
+                $clasificacion = Clasificacion::find($clasificacion->id_clasificacion);
+                $clasificacion->cod_softlink = $clasificacion->id_clasificacion;
+                $clasificacion->save();
+
+            }
+            $value['id_clasificacion'] = $clasificacion->id_clasificacion;
+
+            foreach ($value['categorias'] as $key_categoria => $value_categoria) {
+                // $categoria = Categoria::where('descripcion',$value_categoria['descripcion'])->where('estado',1)->first();
+                // if (!$categoria) {
+                    $categoria = new Categoria();
+                    $categoria->descripcion = $value_categoria['descripcion'];
+                    $categoria->estado = 1;
+                    $categoria->fecha_registro = date('Y-M-d H:i:s');
+                    $categoria->id_clasificacion = $clasificacion->id_clasificacion;
+                    $categoria->save();
+                    // return response()->json($array_almacen_categoria);
+                // }
+
+                foreach ($value_categoria['sub_categoria'] as $key => $value_sub_categoria) {
+                    // $sub_categoria = SubCategoria::where('descripcion',$value_sub_categoria['descripcion'])->where('estado',1)->first();
+                    // if (!$sub_categoria) {
+                        $sub_categoria = new SubCategoria();
+                        $sub_categoria->id_tipo_producto = $categoria->id_tipo_producto;
+                        $sub_categoria->cod_softlink = $clasificacion->id_clasificacion;
+                        $sub_categoria->descripcion = $value_sub_categoria['descripcion'];
+                        $sub_categoria->estado = 1;
+                        $sub_categoria->fecha_registro = date('Y-M-d H:i:s');
+                        $sub_categoria->save();
+                    // }
+                }
+
+            }
+            // return $clasificacion;
+        }
+        // return response()->json($array_almacen_categoria);
         return response()->json([
             "success"=>true,
             "status"=>200,
             "data"=>$clasificacion
+        ]);
+    }
+    public function scripActualizarCategoriasSoftlink()
+    {
+
+        $array = array(
+            "*OTROS",
+            "ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO",
+            "EQUIPOS ELECTRICOS",
+            "EQUIPOS, APARATOS Y ACCESORIOS INFORMÁTICOS",
+            "HERRAMIENTAS Y MATERIALES PARA PRODUCCION",
+            "INSUMOS Y UTILES PARA LIMPIEZA",
+            "MOBILIARIO, APARATOS Y UTILES PARA OFICINA",
+            "SEGURIDAD PERSONAL E INDUSTRIAL",
+            "VALES Y MERCHANDSING",
+        );
+        $array_clasificacion = array();
+        $array_sub_categoria = array();
+
+        foreach ($array as $key => $value) {
+            $clasificacion  = Clasificacion::where('estado',1)->where('descripcion',$value)->first();
+            array_push($array_clasificacion,$clasificacion);
+        }
+
+        foreach ($array_clasificacion as $key => $value) {
+            $categoria = Categoria::where('id_clasificacion',$value->id_clasificacion)->get();
+            $value->categoria = $categoria;
+            foreach ($value->categoria as $key_categoria => $value_categoria) {
+                $sub_categoria = SubCategoria::where('id_tipo_producto',$value_categoria->id_tipo_producto)->get();
+                $value_categoria->sub_categoria = $sub_categoria;
+            }
+        }
+
+        foreach ($array_clasificacion as $key => $value) {
+            // return trim($value->descripcion);exit;
+            $soplinea = DB::connection('soft')->table('soplinea')->where('nom_line',trim($value->descripcion))->first();
+
+            if (!$soplinea) {
+                DB::connection('soft')->table('soplinea')->insert(
+                    [
+                        'cod_line' => $value->id_clasificacion,
+                        'nom_line' => trim($value->descripcion),
+                        'cod_sunat' => '',
+                        'cod_osce' => ''
+                    ]
+                );
+            }
+
+
+            foreach ($value->categoria as $key_categoria => $value_categoria) {
+                foreach ($value_categoria->sub_categoria as $key_sub_categoria => $value_sub_categoria) {
+                    $cod_sub1 = '';
+                    $cod_cate = DB::connection('soft')->table('sopsub1')->orderBy('cod_sub1','DESC')->first();
+                    do {
+
+                        $cod_sub1 = (intval($cod_cate->cod_sub1) + 1);
+                        $cod_cate = DB::connection('soft')->table('sopsub1')->where('cod_sub1',$cod_sub1)->first();
+
+                    } while ($cod_cate);
+
+                    $categoria_soflink = DB::connection('soft')->table('sopsub1')->where('nom_sub1',trim($value_sub_categoria->descripcion))->first();
+
+                    if (!$categoria_soflink) {
+                        DB::connection('soft')->table('sopsub1')->insert(
+                            [
+                                'cod_sub1' => $cod_sub1,
+                                'nom_sub1' => trim($value_sub_categoria->descripcion),
+                                'por_dcto' => 0,
+                                'num_corr' => 0,
+                                'cod_line' => $value->id_clasificacion
+                            ]
+                        );
+                    }
+                }
+            }
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "message"=>"actualizacion de categorias en el softlink",
         ]);
     }
 }
