@@ -11,10 +11,16 @@ class Persona extends Model
     protected $table = 'rrhh.rrhh_perso';
     protected $primaryKey = 'id_persona';
     public $timestamps = false;
+    protected $fillable = ['nombres','apellido_paterno','apellido_materno'];
 
     protected $appends = [
         'nombre_completo'
     ];
+
+    // public function getApellidoMaternoAttribute()
+    // {
+    //     return ($this->apellido_materno);
+    // }
 
     public function getNombreCompletoAttribute()
     {
@@ -43,4 +49,8 @@ class Persona extends Model
     {
         return $this->hasOne('App\Models\Contabilidad\TipoCuenta', 'id_tipo_cuenta', 'id_tipo_cuenta');
     }
+    // public function postulante()
+    // {
+    //     return $this->hasOne('App\Models\Contabilidad\Postulante', 'id_persona', 'id_persona');
+    // }
 }

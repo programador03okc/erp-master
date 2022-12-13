@@ -46,6 +46,8 @@ use App\Models\Configuracion\Grupo;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Presupuestos\Presupuesto;
+use App\Models\Rrhh\Persona;
+use App\Models\Rrhh\Postulante;
 use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RegistroPagoAdjuntos;
 use App\Models\Tesoreria\RequerimientoPago;
@@ -3919,7 +3921,7 @@ class RequerimientoController extends Controller
         $detalleRequerimiento = DetalleRequerimiento::where("id_detalle_requerimiento", $idDetalleRequerimiento)
             ->with(['unidadMedida', 'producto', 'reserva' => function ($q) {
                 $q->where('alm_reserva.estado', '=', 1);
-            }, 'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona', 'reserva.estado', 'estado'])
+            }, 'reserva.almacen', 'reserva.usuario', 'reserva.estado', 'estado'])
 
             ->first();
         if ($detalleRequerimiento) {
@@ -3945,8 +3947,10 @@ class RequerimientoController extends Controller
     public function historialReservaProducto($idDetalleRequerimiento)
     {
         $detalleRequerimiento = DetalleRequerimiento::where("id_detalle_requerimiento", $idDetalleRequerimiento)
-            ->with(['unidadMedida', 'producto', 'reserva', 'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona', 'reserva.estado', 'estado'])
+            ->with(['unidadMedida', 'producto', 'reserva.almacen', 'reserva.usuario',  'reserva.estado', 'estado'])
             ->first();
+            // return response()->json(($detalleRequerimiento));
+            // exit();
         if ($detalleRequerimiento) {
             return ['data' => $detalleRequerimiento, 'status' => 200];
         } else {
@@ -3964,7 +3968,7 @@ class RequerimientoController extends Controller
             })
             ->with(['unidadMedida', 'producto', 'producto.moneda', 'reserva' => function ($q) {
                 $q->where('alm_reserva.estado', '=', 1);
-            }, 'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona', 'reserva.estado', 'estado'])
+            }, 'reserva.almacen', 'reserva.usuario', 'reserva.estado', 'estado'])
             ->get();
 
         if ($detalleRequerimiento) {

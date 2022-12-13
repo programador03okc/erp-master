@@ -250,6 +250,7 @@ class ComprasLocales {
                 break;
         }
     }
+    
     updateValorFiltro(){
         const modalFiltro = document.querySelector("div[id='modal-filtro-reporte-compra-locales']");
         if(modalFiltro.querySelector("select[name='empresa']").getAttribute("readonly") ==null){
@@ -516,7 +517,6 @@ class ComprasLocales {
             console.log(err)
         })
     }
-
 
     obteneAdjuntosPago(idOrden) {
         return new Promise(function (resolve, reject) {

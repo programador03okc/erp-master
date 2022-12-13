@@ -1813,7 +1813,7 @@ class RequerimientoPendienteView {
                 <td>${(element.codigo != null && element.codigo != '') ? element.codigo : (element.id_reserva)}</td>
                 <td>${element.almacen.descripcion}</td>
                 <td>${element.stock_comprometido}</td>
-                <td>${element.usuario.trabajador.postulante.persona.nombres.concat(' ', element.usuario.trabajador.postulante.persona.apellido_paterno ?? '')}</td>
+                <td>${element.usuario.nombre_corto}</td>
                 <td>${element.estado.estado_doc}</td>
                 </tr>`);
             });
@@ -2022,7 +2022,7 @@ class RequerimientoPendienteView {
                 <td>${(element.codigo != null && element.codigo != '') ? element.codigo : (element.id_reserva)}</td>
                 <td>${element.almacen.descripcion}</td>
                 <td>${element.stock_comprometido}</td>
-                <td>${element.usuario.trabajador.postulante.persona.nombres.concat(' ', element.usuario.trabajador.postulante.persona.apellido_paterno ?? '')}</td>
+                <td>${element.usuario.nombre_corto}</td>
                 <td>${element.estado.estado_doc}</td>
                 <td><button type="button" class="btn btn-xs btn-danger btnAnularReserva handleClickAnularReserva" data-codigo-reserva="${element.codigo}" data-id-reserva="${element.id_reserva}"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" title="Anular"><i class="fas fa-times fa-xs"></i></button></td>
                 </tr>`);
@@ -2081,22 +2081,33 @@ class RequerimientoPendienteView {
 
     anularReserva(obj) {
         let idProducto = document.querySelector("div[id='modal-nueva-reserva'] input[name='idProducto']").value;
-
+        let motivoDeAnulacion='';
         Swal.fire({
-            title: 'Esta seguro que desea anular la reserva ' + (obj.dataset.codigoReserva != '' ? obj.dataset.codigoReserva : obj.dataset.idReserva) + '?',
-            text: "No podrás revertir esto.",
-            icon: 'warning',
+            title: 'Esta seguro que desea anular la reserva ' + (obj.dataset.codigoReserva != '' ? obj.dataset.codigoReserva : obj.dataset.idReserva) + '?. Escriba un motivo',
+            input: 'textarea',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, anular'
-
+            confirmButtonText: 'Registrar',
+            
+            allowOutsideClick: () => !Swal.isLoading()
         }).then((result) => {
+            motivoDeAnulacion = result.value;
+            let formData = new FormData();
+            formData.append(`idReserva`, obj.dataset.idReserva);
+            formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
+            formData.append(`motivoDeAnulacion`, motivoDeAnulacion);
+            if(motivoDeAnulacion == null || (motivoDeAnulacion).trim()==''){
+
+                Swal.fire(
+                    '',
+                    'Debe ingresar un motivo para anular',
+                    'info'
+                );
+                return false;
+            } 
             if (result.isConfirmed) {
-                let formData = new FormData();
-                formData.append(`idReserva`, obj.dataset.idReserva);
-                formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
 
                 $.ajax({
                     type: 'POST',
@@ -2178,6 +2189,7 @@ class RequerimientoPendienteView {
             }
         })
 
+        $(document).off('focusin.modal'); // fix focus textarea de sweetalert
     }
 
     // handleChangeObtenerStockAlmacen() {
@@ -3268,22 +3280,31 @@ class RequerimientoPendienteView {
     }
 
     anularReservaActiva(obj) {
+        let motivoDeAnulacion = '';
 
         Swal.fire({
-            title: '¿Está seguro que desea anular la reserva ?',
-            text: obj.dataset.descripcion,
-            icon: 'warning',
+            title: '¿Está seguro que desea anular la reserva?. Escriba un motivo',
+            input: 'textarea',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, anular reserva'
-
+            confirmButtonText: 'Registrar',
+            allowOutsideClick: () => !Swal.isLoading()
         }).then((result) => {
+            motivoDeAnulacion = result.value;
+            let formData = new FormData();
+            formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
+            formData.append(`motivoDeAnulacion`, motivoDeAnulacion);
+            if(motivoDeAnulacion == null || (motivoDeAnulacion).trim()==''){
+                Swal.fire(
+                    '',
+                    'Debe ingresar un motivo para anular',
+                    'info'
+                );
+                return false;
+            } 
             if (result.isConfirmed) {
-                let formData = new FormData();
-                formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
-
                 $.ajax({
                     type: 'POST',
                     url: 'anular-toda-reserva-detalle-requerimiento',
