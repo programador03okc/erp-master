@@ -305,6 +305,12 @@ $("#reservasAlmacen tbody").on("click", "button.anular", function () {
                                 msg: 'Se anuló correctamente.'
                             });
                             $('#reservasAlmacen').DataTable().ajax.reload(null, false);
+                        }else{
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                response.tipo_estado
+                            );
                         }
                     },
                     fail: (jqXHR, textStatus, errorThrown) => {
