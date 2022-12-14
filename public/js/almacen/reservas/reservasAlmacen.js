@@ -120,7 +120,7 @@ function listarReservasAlmacen(id_usuario) {
             {
                 data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color', className: "text-center",
                 'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+                    return '<span class=" '+(row['estado']==7?'handleClickDetalleAnulacion':'')+' label label-' + row['bootstrap_color'] + '" data-usuario-anulacion="'+row['usuario_anulacion']+'" data-motivo-anulacion="'+row['motivo_anulacion']+'"  data-fecha-anulacion="'+row['deleted_at']+'"  '+(row['estado']==7?'style="cursor:pointer;"':'')+' >' + row['estado_doc'] + '</span>'
                 }
             },
         ],
@@ -199,6 +199,21 @@ $("#reservasAlmacen tbody").on("click", "button.editar", function () {
     $('[name=id_almacen_reserva]').val(alm);
     $('[name=stock_comprometido]').val(stock);
     $('#codigo_req').text(codigo);
+});
+$("#reservasAlmacen tbody").on("click", "span.handleClickDetalleAnulacion", function () {
+    var usuario_anulacion = $(this).data("usuarioAnulacion");
+    var motivo_anulacion = $(this).data("motivoAnulacion");
+    var fecha_anulacion = $(this).data("fechaAnulacion");
+
+    var swal_html = `<dl>
+    <dt>Anulado por</dt>
+    <dd>${usuario_anulacion}</dd>
+    <dt style="ma">Motivo</dt>
+    <dd>${motivo_anulacion}</dd>
+    <dt>Fecha anulación</dt>
+    <dd>${fecha_anulacion}</dd>
+  </dl>`;
+    Swal.fire({title:"Detalle de Anulación", html: swal_html});
 });
 
 

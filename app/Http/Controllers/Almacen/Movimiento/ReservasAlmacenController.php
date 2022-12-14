@@ -52,11 +52,13 @@ class ReservasAlmacenController extends Controller
                 'trans.codigo as codigo_transferencia',
                 'transformacion.codigo as codigo_transformado',
                 'materia.codigo as codigo_materia',
+                'usu_anulacion.nombre_corto as usuario_anulacion'
             )
             ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_reserva.id_producto')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_reserva.id_almacen_reserva')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'alm_reserva.estado')
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_reserva.usuario_registro')
+            ->leftjoin('configuracion.sis_usua as usu_anulacion', 'usu_anulacion.id_usuario', '=', 'alm_reserva.usuario_anulacion')
             ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'alm_reserva.id_detalle_requerimiento')
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'alm_reserva.id_guia_com_det')
