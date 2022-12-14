@@ -1211,6 +1211,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::group(['as' => 'almacen.', 'prefix' => 'almacen'], function () {
         #script 1
         Route::get('script-categoria', 'AlmacenController@scripCategoria');
+        #script 2
+        Route::get('script-actualizar-categoria-softlink', 'AlmacenController@scripActualizarCategoriasSoftlink');
 
 		Route::get('index', 'AlmacenController@view_main_almacen')->name('index');
 
