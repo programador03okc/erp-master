@@ -144,16 +144,20 @@ class DetalleRequerimiento extends Model
 
         $detalleRequerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $idDetalleRequerimiento)->first();
 
-        if (($cantidadAtendidaConOrden == 0) && ($cantidadAtendidaConAlmacen == 0)) {
-            $detalleRequerimiento->estado = 1; //elaborado
-        } elseif (($cantidadAtendidaConOrden == 0) && ($cantidadAtendidaConAlmacen == $detalleRequerimiento->cantidad)) {
-            $detalleRequerimiento->estado = 28; //almacen total
-        } elseif ($cantidadAtendidaConOrden + $cantidadAtendidaConAlmacen >= $detalleRequerimiento->cantidad) {
-            $detalleRequerimiento->estado = 5; //antendido total
-        } else {
-            $detalleRequerimiento->estado = 15; //atendido parcial
+        if($detalleRequerimiento->estado != 23){ // si el estado era despacho externo, no debe actualizar el estado
+            if (($cantidadAtendidaConOrden == 0) && ($cantidadAtendidaConAlmacen == 0)) {
+                $detalleRequerimiento->estado = 1; //elaborado
+            } elseif (($cantidadAtendidaConOrden == 0) && ($cantidadAtendidaConAlmacen == $detalleRequerimiento->cantidad)) {
+                $detalleRequerimiento->estado = 28; //almacen total
+            } elseif ($cantidadAtendidaConOrden + $cantidadAtendidaConAlmacen >= $detalleRequerimiento->cantidad) {
+                $detalleRequerimiento->estado = 5; //antendido total
+            } else {
+                $detalleRequerimiento->estado = 15; //atendido parcial
+            }
+            $detalleRequerimiento->save();
         }
-        $detalleRequerimiento->save();
+
+        return $detalleRequerimiento;
     }
     public function ccfila()
     {

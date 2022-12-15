@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\reporteRequerimientosAtendidosExcel;
 use App\Exports\solicitudCotizacionExcel;
+use App\Helpers\Almacen\ReservaHelper;
 use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use App\Http\Controllers\Almacen\Movimiento\SalidaPdfController;
@@ -828,30 +829,37 @@ class ComprasPendientesController extends Controller
 
         try {
             DB::beginTransaction();
-
-            $requerimientoHelper = new RequerimientoHelper();
-            if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
-
-                $reserva = Reserva::where('id_reserva', $request->idReserva)->first();
-                $reserva->usuario_anulacion =Auth::user()->id_usuario;
-                $reserva->deleted_at = new Carbon();
-                $reserva->motivo_anulacion = isset($request->motivoDeAnulacion)?$request->motivoDeAnulacion:'';
-                $reserva->estado = 7;
-                $reserva->save();
-
-
-                $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario.trabajador.postulante.persona', 'estado')->where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1]])->get();
-                DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
-                // actualizar estado de requerimiento
-                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->first();
-                $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR',[$Requerimiento->id_requerimiento]);
-
-                //     (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
+            if($request->idReserva>0){
+                $reservaHelper = new ReservaHelper();
+                $reserva=$reservaHelper->anularReservaDeProducto($request->idReserva,null,$request->motivoDeAnulacion);
                 DB::commit();
-                return response()->json(['id_reserva' => $reserva->id_reserva, 'data' => $ReservasProductoActualizadas, 'tipo_estado' => 'success', 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
+                return response()->json(['id_reserva' =>  $reserva['id_reserva'] , 'data' => $reserva['data'], 'tipo_estado' => $reserva['tipo_estado'], 'mensaje' => $reserva['mensaje'], 'estado_requerimiento' => $reserva['estado_requerimiento'], 'lista_finalizados' => $reserva['lista_finalizados'], 'lista_restablecidos' => $reserva['lista_restablecidos']]);
             } else {
-                return response()->json(['id_reserva' => 0, 'data' => [], 'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
+                return response()->json(['id_reserva' => 0, 'data' => [],'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva, existe un id reserva']);
             }
+            // $requerimientoHelper = new RequerimientoHelper();
+            // if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
+
+            //     $reserva = Reserva::where('id_reserva', $request->idReserva)->first();
+            //     $reserva->usuario_anulacion =Auth::user()->id_usuario;
+            //     $reserva->deleted_at = new Carbon();
+            //     $reserva->motivo_anulacion = isset($request->motivoDeAnulacion)?$request->motivoDeAnulacion:'';
+            //     $reserva->estado = 7;
+            //     $reserva->save();
+
+
+            //     $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario.trabajador.postulante.persona', 'estado')->where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1]])->get();
+            //     DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
+            //     // actualizar estado de requerimiento
+            //     $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->first();
+            //     $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR',[$Requerimiento->id_requerimiento]);
+
+            //     //     (new LogisticaController)->generarTransferenciaRequerimiento($id_requerimiento, $id_sede, $data);
+            //     DB::commit();
+            //     return response()->json(['id_reserva' => $reserva->id_reserva, 'data' => $ReservasProductoActualizadas, 'tipo_estado' => 'success', 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
+            // } else {
+            //     return response()->json(['id_reserva' => 0, 'data' => [], 'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
+            // }
         } catch (\PDOException $e) {
             DB::rollBack();
             return response()->json(['id_reserva' => 0, 'data' => [], 'estado_requerimiento' => [], 'tipo_estado' => 'error', 'mensaje' => 'Hubo un problema en el servidor al intentar anular la reserva. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
@@ -862,85 +870,11 @@ class ComprasPendientesController extends Controller
 
         try {
             DB::beginTransaction();
-            $tipo_estado = '';
-            $mensaje = '';
-            $requerimientoHelper = new RequerimientoHelper();
-            $cantidadReservasAnuladas=0;
-            $totalReservas=0;
-            $CantidadGuiaComDet=0;
-            $CantidadTransDetalle=0;
-            $CantidadTransformado=0;
-            $cantidadEstadoElaborado=0;
-            $mensajeAdicional='';
-            if ($requerimientoHelper->EstaHabilitadoRequerimiento([$request->idDetalleRequerimiento]) == true) {
-
-                $reservas = Reserva::where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', '!=', 7]])->get();
-                foreach ($reservas as $r) {
-                    $totalReservas++;
-                    if($r->estado==1 ){
-                        if($r->id_guia_com_det>0){
-                            if(GuiaCompraDetalle::find($r->id_guia_com_det)->estado !=7){
-                                $CantidadGuiaComDet++;
-                            }
-                        }
-                        if($r->id_trans_detalle>0){
-                            if(TransferenciaDetalle::find($r->id_trans_detalle)->estado !=7){
-                                $CantidadTransDetalle++;
-                            }
-                        }
-                        if($r->id_transformado>0){
-                            if(Transformacion::find($r->id_transformado)->estado != 7){
-                                $CantidadTransformado++;
-                            }
-                        }
-                        if($r->id_guia_com_det==null && $r->id_trans_detalle ==null && $r->id_transformado ==null){
-                            $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
-                            $reserva->estado = 7;
-                            $reserva->usuario_anulacion =Auth::user()->id_usuario;
-                            $reserva->deleted_at = new Carbon();
-                            $reserva->motivo_anulacion = isset($request->motivoDeAnulacion)?$request->motivoDeAnulacion:'';
-                            $reserva->save();
-                            $tipo_estado = 'success';
-                            $cantidadReservasAnuladas++;
-                            $mensaje='Reserva Anulada';
-                        }
-                    }else{
-                        $cantidadEstadoElaborado++;
-                    }
-                }
-
-                if($cantidadEstadoElaborado>0){
-                    $mensajeAdicional.=' Estados de reserva no permitido para anular.';
-                }
-                if($CantidadGuiaComDet>0){
-                    $mensajeAdicional.=' Vínculo con guía.';
-                }
-                if($CantidadTransDetalle>0){
-                    $mensajeAdicional.=' Vínculo con trasnferencia.';
-
-                }
-                if($CantidadTransformado>0){
-                    $mensajeAdicional.=' Vínculo con item transformado.';
-
-                }
-
-                if(($cantidadReservasAnuladas>0) && ($totalReservas==$cantidadReservasAnuladas)){
-                    $mensaje='Se anuló todas las reservas correspondientes al producto. ';
-                }else if($cantidadReservasAnuladas < $totalReservas && $cantidadReservasAnuladas!=0){
-                    $mensaje='Se puedo anular '.$cantidadReservasAnuladas.' reserva(s). '.$mensajeAdicional;
-                }else if($cantidadReservasAnuladas==0){
-                    $tipo_estado = 'warning';
-                    $mensaje='No se pudo anular la reserva. '.$mensajeAdicional;
-                }
-
-                $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario.trabajador.postulante.persona', 'estado')->where([['id_detalle_requerimiento', $request->idDetalleRequerimiento], ['estado', 1]])->get();
-                DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($request->idDetalleRequerimiento);
-                // actualizar estado de requerimiento
-                $Requerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $request->idDetalleRequerimiento)->first();
-                $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR',[$Requerimiento->id_requerimiento]);
-
+            if($request->idDetalleRequerimiento>0){
+                $reservaHelper = new ReservaHelper();
+                $reserva=  $reservaHelper->anularTodaReservaDeProducto($request->idDetalleRequerimiento,$request->motivoDeAnulacion);
                 DB::commit();
-                return response()->json(['data' => $ReservasProductoActualizadas, 'tipo_estado' => $tipo_estado, 'mensaje' => $mensaje, 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']]);
+                return response()->json(['data' => $reserva['data'], 'tipo_estado' => $reserva['tipo_estado'], 'mensaje' => $reserva['mensaje'], 'estado_requerimiento' => $reserva['estado_requerimiento'], 'lista_finalizados' => $reserva['lista_finalizados'], 'lista_restablecidos' => $reserva['lista_restablecidos']]);
             } else {
                 return response()->json(['data' => [],'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
             }
