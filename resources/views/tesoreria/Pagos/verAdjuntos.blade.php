@@ -63,7 +63,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de tesoreria</strong></h5>
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Otros adjuntos de tesoreria</strong></h5>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <table id="" class="table" >
