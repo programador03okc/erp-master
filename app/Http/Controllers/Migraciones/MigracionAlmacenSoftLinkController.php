@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Migraciones;
 
+use App\Exports\ModeloPorductosAgilSoftlinkExport;
 use App\Exports\ProductoSerieExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Imports\AgilSoftlinkImport;
 use App\Imports\AlmacenImport;
 use App\Imports\ProductoSerieImport;
 use App\Models\Almacen\Almacen;
@@ -191,5 +193,34 @@ class MigracionAlmacenSoftLinkController extends Controller
     {
         // return view('Migraciones/actualiz');
         return view('migraciones.actualizar_productos');
+    }
+    public function descargarModelo()
+    {
+        return Excel::download(new ModeloPorductosAgilSoftlinkExport(), 'modelo_de_agil_softlink.xlsx');
+    }
+    public function enviarModeloAgilSoftlink(Request $request)
+    {
+
+        $collection = Excel::toCollection(new AgilSoftlinkImport, $request->file('archivo'))[0];
+
+        $array_productos_soflink = array();
+        $array_productos_soflink_faltantes = array();
+        foreach ($collection as $key => $value) {
+            if ($key!==0) {
+                $producto_softlink = DB::connection('soft')->table('sopprod')->where('cod_prod',$value[1])->first();
+                if ($producto_softlink) {
+                    array_push($array_productos_soflink,$producto_softlink);
+                }else{
+                    array_push($array_productos_soflink_faltantes,$value);
+                }
+
+            }
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "habilitados"=>$array_productos_soflink,
+            "faltantes"=>$array_productos_soflink_faltantes
+        ]);
     }
 }

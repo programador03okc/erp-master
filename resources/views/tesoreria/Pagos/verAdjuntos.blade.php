@@ -11,6 +11,7 @@
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento_pago" />
                     <fieldset class="group-table" id="fieldsetDatosProveedor">
+                        <legend style="border-bottom: 0px solid #e5e5e5;width: 40% !important"><h5>Adjuntos de requerimiento</h5></legend>
                         <div class="row">
                             <div class="col-md-12">
                                 {{-- <fieldset class="group-table" id="fieldsetDatosProveedor"> --}}
@@ -39,22 +40,9 @@
                         </div>
                     </fieldset>
                     <br>
-                    {{-- <div class="row">
-                        <div class="col-md-12">
-                            <fieldset class="group-table" id="fieldsetDatosProveedor">
-                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos en el detalle</strong></h5>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <table id="adjuntosDetalle" class="mytable table table-condensed table-bordered table-okc-view" >
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div> --}}
                     <br>
                     <fieldset class="group-table">
+                        <legend style="border-bottom: 0px solid #e5e5e5;width: 30%;"><h5>Adjuntos de tesoreria</h5></legend>
                         <div class="row">
                             <div class="col-md-12" style="margin-bottom: 15px;">
                                 <div class="form-group">
