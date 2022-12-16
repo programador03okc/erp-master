@@ -162,6 +162,28 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default" style="margin-bottom: 0px;">
+                    <div class="panel-heading"><strong>Ingresos</strong></div>
+                    <table id="listaIngresosDevolucion" class="table">
+                        <thead>
+                            <tr>
+                                <th>Guía Compra</th>
+                                <th>Factura</th>
+                                <th>Razon Social del Proveedor</th>
+                                <th>Cod.Ingreso</th>
+                                <th width='8%' style="padding:0px;">
+                                    <i class="fas fa-plus-square icon-tabla green boton edition" data-toggle="tooltip"
+                                     data-placement="bottom" title="Agregar Ingreso" onClick="verIngresos();"></i>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default" style="margin-bottom: 0px;">
                     <div class="panel-heading"><strong>Incidencias</strong></div>
                     <table id="listaIncidenciasDevolucion" class="table">
                         <thead>
