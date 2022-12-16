@@ -51,6 +51,7 @@ use App\Models\Rrhh\Postulante;
 use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RegistroPagoAdjuntos;
 use App\Models\Tesoreria\RequerimientoPago;
+use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -1177,7 +1178,20 @@ class RequerimientoController extends Controller
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
         $nuevoEstado=1;
         if ($requerimiento->estado == 3) { // si el estado actual es observado
-            if($request->monto_total <= $requerimiento->monto_total){
+            $tipo_modena = TipoCambio::where('estado',1)->orderBy('id_tp_cambio','DESC')->first();
+            // return $tipo_modena->compra;exit;
+            $soles_request = $request->monto_total;
+            if ($request->moneda == 2) {
+                $soles_request = $request->monto_total *  $tipo_modena->compra;
+            }
+            $soles_requerimiento = $requerimiento->monto_total;
+            if ($requerimiento->id_moneda ==2) {
+                $soles_requerimiento = $requerimiento->monto_total *  $tipo_modena->compra;
+            }
+
+            // if($request->monto_total <= $requerimiento->monto_total){
+
+            if(intval($soles_request) <= intval($soles_requerimiento)){
                 $requerimiento->estado = $requerimiento->estado_anterior;
                 $nuevoEstado=$requerimiento->estado_anterior;
             }else{
@@ -1185,7 +1199,7 @@ class RequerimientoController extends Controller
                 $nuevoEstado=1;
 
             }
-
+            // return response()->json([$soles_request,$soles_requerimiento,$request->moneda, $requerimiento->estado]);exit;
             $trazabilidad = new Trazabilidad();
             $trazabilidad->id_requerimiento = $request->id_requerimiento;
             $trazabilidad->id_usuario = Auth::user()->id_usuario;
@@ -1207,7 +1221,7 @@ class RequerimientoController extends Controller
             $aprobacion->id_rol = null;
             $aprobacion->tiene_sustento = false;
             $aprobacion->save();
-            
+
 
             $idDocumento = Documento::getIdDocAprob($request->id_requerimiento, 1);
             // $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
@@ -1630,7 +1644,7 @@ class RequerimientoController extends Controller
                     LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
                     LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
                 WHERE alm_req.id_requerimiento = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =1 and adm_aprobacion.id_vobo =1 order by adm_aprobacion.fecha_vobo desc limit 1 ) AS ultimo_aprobador")
-            
+
 
             )
 

@@ -2092,6 +2092,9 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('test', 'Migraciones\MigracionAlmacenSoftLinkController@testSeries')->name('test');
             # actualizar productos al softlink
             Route::get('actualizar-productos', 'Migraciones\MigracionAlmacenSoftLinkController@view_actualizar_productos')->name('actualizar.productos.softlink');
+
+            Route::get('descargar-modelo', 'Migraciones\MigracionAlmacenSoftLinkController@descargarModelo');
+            Route::post('enviar-modelo-agil-softlink', 'Migraciones\MigracionAlmacenSoftLinkController@enviarModeloAgilSoftlink')->name('actualizar');
 		});
 	});
 
