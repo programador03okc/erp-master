@@ -207,11 +207,18 @@ class MigracionAlmacenSoftLinkController extends Controller
         $array_productos_soflink_faltantes = array();
         foreach ($collection as $key => $value) {
             if ($key!==0) {
-                $producto_softlink = DB::connection('soft')->table('sopprod')->where('cod_prod',$value[1])->first();
-                if ($producto_softlink) {
-                    array_push($array_productos_soflink,$producto_softlink);
-                }else{
-                    array_push($array_productos_soflink_faltantes,$value);
+                if ($value[1]) {
+                    $producto_softlink = DB::connection('soft')->table('sopprod')->where('cod_prod',$value[1])->first();
+                    if ($producto_softlink) {
+                        array_push($array_productos_soflink,$producto_softlink);
+                        DB::connection('soft')
+                        ->table('sopprod')
+                        ->where('cod_prod',$value[1])
+                        ->update(['nom_prod' =>$value[3]]);
+                    }else{
+
+                        array_push($array_productos_soflink_faltantes,$value);
+                    }
                 }
 
             }
