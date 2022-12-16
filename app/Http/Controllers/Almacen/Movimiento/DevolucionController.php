@@ -59,6 +59,7 @@ class DevolucionController extends Controller
         $lista = DB::table('cas.devolucion')
             ->select(
                 'devolucion.*',
+                'devolucion_tipo.descripcion as tipo_descripcion',
                 'sis_usua.nombre_corto',
                 'devolucion_estado.descripcion as estado_doc',
                 'devolucion_estado.bootstrap_color',
@@ -73,6 +74,7 @@ class DevolucionController extends Controller
             )
             ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'devolucion.registrado_por')
             ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'devolucion.id_almacen')
+            ->leftjoin('cas.devolucion_tipo', 'devolucion_tipo.id', '=', 'devolucion.id_tipo')
             // ->join('configuracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
             ->leftJoin('configuracion.sis_usua as usuario_conforme', 'usuario_conforme.id_usuario', '=', 'devolucion.revisado_por')
             ->leftJoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'devolucion.id_cliente')
