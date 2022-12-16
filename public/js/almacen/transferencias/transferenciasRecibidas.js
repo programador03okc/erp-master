@@ -260,7 +260,8 @@ $("#listaTransferenciasRecibidas tbody").on("click", "a.transferencia", function
     // }
 });
 
-$("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", function () {
+$("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", function (e) {
+    (e.currentTarget).setAttribute("disabled",true);
     var id = $(this).data("id");
     var dc = $(this).data("dc");
     console.log(id);
@@ -276,10 +277,12 @@ $("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", funct
                 confirmButtonText: "Si, Autogenerar"
             }).then(result => {
                 if (result.isConfirmed) {
+                    (e.currentTarget).removeAttribute("disabled");
                     autogenerarDocsCompra(id);
                 }
             });
         } else {
+            (e.currentTarget).removeAttribute("disabled");
             Lobibox.notify("warning", {
                 title: false,
                 size: "mini",
@@ -290,6 +293,7 @@ $("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", funct
             });
         }
     } else {
+        (e.currentTarget).removeAttribute("disabled");
         Lobibox.notify("error", {
             title: false,
             size: "mini",
