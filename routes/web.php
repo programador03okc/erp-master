@@ -57,6 +57,8 @@ Route::get('admin', function () {
 
 //Route::get('/', 'LoginController@index');
 Route::get('modulos', 'LoginController@index')->name('modulos');
+Route::get('clave', 'LoginController@actualizarContraseña')->name('actualizar');
+Route::post('modificar-clave', 'LoginController@modificarClave')->name('modificar.clave');
 //Route::post('iniciar_sesion', 'LoginController@iniciar_sesion');
 Route::get('cargar_usuarios/{user}', 'LoginController@mostrar_roles');
 //Route::get('logout', 'LoginController@cerrar_sesion');
