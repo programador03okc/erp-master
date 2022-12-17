@@ -43,7 +43,7 @@ function listarDevoluciones() {
                     return (row['fecha_registro'] !== undefined ? formatDate(row['fecha_registro']) : '');
                 }
             },
-            { 'data': 'tipo' },
+            { 'data': 'tipo_descripcion', name: 'devolucion_tipo.descripcion' },
             { 'data': 'razon_social', name: 'adm_contri.razon_social' },
             { 'data': 'almacen_descripcion', name: 'alm_almacen.descripcion' },
             { 'data': 'observacion' },

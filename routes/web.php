@@ -1513,7 +1513,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('validarEdicion/{id}', 'Almacen\Movimiento\DevolucionController@validarEdicion');
 				Route::get('anularDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@anularDevolucion');
 				Route::get('listarSalidasVenta/{alm}/{id}', 'Almacen\Movimiento\DevolucionController@listarSalidasVenta');
-				Route::get('obtenerSalidaDetalle/{id}', 'Almacen\Movimiento\DevolucionController@obtenerSalidaDetalle');
+				Route::get('listarIngresos/{alm}/{id}', 'Almacen\Movimiento\DevolucionController@listarIngresos');
+				Route::get('obtenerMovimientoDetalle/{id}', 'Almacen\Movimiento\DevolucionController@obtenerMovimientoDetalle');
 				Route::get('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
 			});
 
@@ -1921,7 +1922,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('validarEdicion/{id}', 'Almacen\Movimiento\DevolucionController@validarEdicion');
 				Route::get('anularDevolucion/{id}', 'Almacen\Movimiento\DevolucionController@anularDevolucion');
 				Route::get('listarSalidasVenta/{alm}/{id}', 'Almacen\Movimiento\DevolucionController@listarSalidasVenta');
-				Route::get('obtenerSalidaDetalle/{id}', 'Almacen\Movimiento\DevolucionController@obtenerSalidaDetalle');
+				Route::get('listarIngresos/{alm}/{id}', 'Almacen\Movimiento\DevolucionController@listarIngresos');
+				Route::get('obtenerMovimientoDetalle/{id}', 'Almacen\Movimiento\DevolucionController@obtenerMovimientoDetalle');
 				Route::get('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
 			});
 
