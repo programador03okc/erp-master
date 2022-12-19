@@ -7,6 +7,7 @@ Kardex por Producto
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -20,10 +21,12 @@ Kardex por Producto
 @section('content')
 <div class="page-main" type="kardex_detallado">
 
+
+    @if (in_array(172,$array_accesos) || in_array(171,$array_accesos) )
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
-
+                @if (in_array(171,$array_accesos))
                 <div class="row">
                     <div class="col-md-12">
                         @if (in_array(171,$array_accesos))
@@ -40,6 +43,7 @@ Kardex por Producto
                         @endif
                     </div>
                 </div>
+                @endif
                 <div class="row">
                     <div class="col-md-3">
                         <h5>Empresas</h5>
@@ -125,6 +129,16 @@ Kardex por Producto
             </div>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 @include('almacen.producto.productoModal')
 @endsection

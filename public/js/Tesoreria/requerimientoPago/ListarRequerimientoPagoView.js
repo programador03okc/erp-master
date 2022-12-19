@@ -500,8 +500,12 @@ class ListarRequerimientoPagoView {
 
     }
 
-    descargarListaRequerimientosElaboradosExcel() {
+    descargarListaCabeceraRequerimientoPagoElaboradosExcel() {
         window.open(`listado-requerimientos-pagos-export-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
+
+    }
+    descargarListaItemsRequerimientoPagoElaboradosExcel() {
+        window.open(`listado-items-requerimientos-pagos-export-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
 
     }
 
@@ -510,6 +514,7 @@ class ListarRequerimientoPagoView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
+<<<<<<< HEAD
         var button_nuevo = (array_accesos.find(element => element === 20)?{
             text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
             attr: {
@@ -552,6 +557,73 @@ class ListarRequerimientoPagoView {
                 button_nuevo,
                 button_filtros,
                 button_descargar_excel
+=======
+        const button_crear_nuevo_requerimiento = (array_accesos.find(element => element === 20)?{
+                text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+                attr: {
+                    id: 'btnNuevoRequerimientoPago',
+                    title: 'Crear nuevo requerimiento de pago',
+                },
+                action: () => {
+                    this.nuevoRequerimientoPago();
+
+                },
+                className: 'btn-success btn-sm'
+            }:[]),
+            button_filtros = (array_accesos.find(element => element === 21)?{
+                text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaRequerimientosElaborados',
+                    disabled: false
+                },
+                action: () => {
+                    this.abrirModalFiltrosRequerimientosElaborados();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel_cabecera = (array_accesos.find(element => element === 22)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel cabecera',
+                attr: {
+                    id: 'btnDescargarListaRequerimientosElaboradosExcel'
+                },
+                action: () => {
+                    this.descargarListaCabeceraRequerimientoPagoElaboradosExcel();
+
+                },
+
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel_items = (array_accesos.find(element => element === 22)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel item',
+                attr: {
+                    id: 'btnDescargarListaRequerimientosElaboradosExcel'
+                },
+                action: () => {
+                    this.descargarListaItemsRequerimientoPagoElaboradosExcel();
+
+                },
+
+                className: 'btn-default btn-sm'
+            }:[]);
+        $tablaListaRequerimientoPago = $('#ListaRequerimientoPago').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [button_crear_nuevo_requerimiento
+                // {
+                //     text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+                //     attr: {
+                //         id: 'btnNuevoRequerimientoPago',
+                //         title: tieneAccionCrearRequerimientoPago > 0 ? 'Crear nuevo requerimiento de pago' : 'No tiene persmiso para crear un requerimiento de pago',
+                //         disabled: tieneAccionCrearRequerimientoPago > 0 ? false : true
+                //     },
+                //     action: () => {
+                //         this.nuevoRequerimientoPago();
+
+                //     },
+                //     className: 'btn-success btn-sm'
+                // }
+                ,button_filtros,button_descargar_excel_cabecera,button_descargar_excel_items
+>>>>>>> develop
             ],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
@@ -937,7 +1009,7 @@ class ListarRequerimientoPagoView {
         // console.log( data.adjunto);
         let idFila = data != null && data.id_requerimiento_pago_detalle > 0 ? data.id_requerimiento_pago_detalle : (this.makeId());
         let cantidadAdjuntos = data != null && data.adjunto ? (data.adjunto).filter((element, i) => element.id_estado != 7).length : 0;
-        console.log(data);
+        // console.log(data);
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
         <td>
             <input type="hidden"  class="idEstado" name="idEstado[]" value="${data != null && data.id_estado}">
@@ -975,7 +1047,14 @@ class ListarRequerimientoPagoView {
                 <input class="form-control input-sm precio text-right handleCheckStatusValue handleBurUpdateSubtotal" type="number" min="0" name="precioUnitario[]"  placeholder="Precio U." value="${data != null && typeof data.precio_unitario === 'string' ? data.precio_unitario : ""}">
             </div>
         </td>
+
         <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='moneda']").options[document.querySelector("select[name='moneda']").selectedIndex].dataset.simbolo}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
+        <td>
+            <div class="form-group">
+            <h5></h5>
+                <textarea class="form-control input-sm motivo handleCheckStatusValue" name="motivo[]" placeholder="Motivo">${data != null && typeof data.motivo === 'string' ? data.motivo : ""}</textarea>
+            </div>
+        </td>
         <td>
             <div class="btn-group" role="group">
                 <input type="hidden" class="tipoItem" name="tipoItem[]" value="2">
@@ -1409,7 +1488,6 @@ class ListarRequerimientoPagoView {
         for (let index = 0; index < childrenTableTbody.length; index++) {
             // console.log(childrenTableTbody[index]);
             if(parseInt(childrenTableTbody[index].querySelector("input[class='idEstado']").value) !=7){
-                console.log('emtra');
                 let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
                 let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
                 total += (cantidad * precioUnitario);
@@ -1505,6 +1583,7 @@ class ListarRequerimientoPagoView {
                 document.querySelector("input[name='nombre_destinatario']").closest('div').parentElement.classList.add('has-error');
             }
         }
+        console.log(document.querySelector("select[name='id_cuenta']").value);
         if ((document.querySelector("select[name='id_cuenta']").value == '' || (document.querySelector("input[name='id_cuenta_persona']").value == '' && document.querySelector("input[name='id_cuenta_contribuyente']").value == ''))) {
             continuar = false;
             if (document.querySelector("select[name='id_cuenta']").closest('div').parentElement.querySelector("span") == null) {
@@ -1579,9 +1658,9 @@ class ListarRequerimientoPagoView {
             tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].category = parseInt(obj.value) > 0 ? parseInt(obj.value) : 1;
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
             }else{
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
             }
         } else {
             Swal.fire(
@@ -1598,9 +1677,9 @@ class ListarRequerimientoPagoView {
 // console.log(tempArchivoAdjuntoRequerimientoPagoCabeceraList);
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
             }else{
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
             }
         } else {
             Swal.fire(
@@ -1617,23 +1696,31 @@ class ListarRequerimientoPagoView {
             let formData = new FormData($('#form-requerimiento-pago')[0]);
 
             if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+                formData.append(`archivoAdjuntoRequerimientoPagoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoCabeceraList));
+
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-                    formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFile${element.category}[]`, element.file);
-                    formData.append(`id_adjunto[]`, element.id);
-                    formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
-                    formData.append(`categoria_adjunto[]`, element.category);
-                    formData.append(`archivo_adjunto[]`, element.file);
-                    // formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
-                    formData.append(`nombre_real_adjunto[]`, element.nameFile);
-                    formData.append(`accion_adjunto[]`, 'GUARDAR');
-                });
+                    formData.append(`archivo_adjunto_list[]`, element.file);
+            });
+                // tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
+                //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFile${element.category}[]`, element.file);
+                //     formData.append(`id_adjunto[]`, element.id);
+                //     formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
+                //     formData.append(`categoria_adjunto[]`, element.category);
+                //     formData.append(`archivo_adjunto[]`, element.file);
+                //     // formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
+                //     formData.append(`nombre_real_adjunto[]`, element.nameFile);
+                //     formData.append(`action[]`, 'GUARDAR');
+                // });
             }
             if (tempArchivoAdjuntoRequerimientoPagoDetalleList.length > 0) {
+                formData.append(`archivoAdjuntoRequerimientoPagoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoDetalleList));
+
                 tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
-                    formData.append(`archivoAdjuntoRequerimientoPagoDetalle${element.id}[]`, element.file);
-                    // if(Number.isInteger(element.id)){
-                    // }
+                    formData.append(`archivo_adjunto_detalle_list[]`, element.file);
                 });
+                // tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
+                //     formData.append(`archivoAdjuntoRequerimientoPagoDetalle${element.id}[]`, element.file);
+                // });
             }
 
             $.ajax({
@@ -1728,37 +1815,20 @@ class ListarRequerimientoPagoView {
                 let formData = new FormData($('#form-requerimiento-pago')[0]);
 
                 if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
-                    tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-                        if (element.action == 'GUARDAR') {
-                            formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileGuardar${element.category}[]`, element.file);
-                            formData.append(`fecha_emision[]`, element.fecha_emision);
+                    formData.append(`archivoAdjuntoRequerimientoPagoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoCabeceraList));
 
-                        }
-                        // //? actualizar adjuntos, actualmente no se actualizan archivos por otros
-                        // else if(element.action == 'ACTUALIZAR'){
-                        //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileActualizar${element.category}[]`, element.file);
-                        // //? eliminar adjuntos, actualmente no se elimina en disco
-                        // }else if(element.action =='ELIMINAR'){
-                        //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileEliminar${element.category}[]`, element.file);
-                        // }
+                    tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
+                            formData.append(`archivo_adjunto_list[]`, element.file);
                     });
                 }
 
                 if (tempArchivoAdjuntoRequerimientoPagoDetalleList.length > 0) {
+                    formData.append(`archivoAdjuntoRequerimientoPagoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoDetalleList));
+
                     tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
-                        if (element.action == 'GUARDAR') {
-                            formData.append(`archivoAdjuntoRequerimientoPagoDetalleGuardar${element.id}[]`, element.file);
-                            // formData.append(`fecha_emision[]`, element.fecha_emision);
-                        }
+                            formData.append(`archivo_adjunto_detalle_list[]`, element.file);
                     });
                 }
-
-                // formData.append(`idArchivoAdjuntoRequerimientoPagoCabeceraParaElminar`, JSON.stringify(tempIdArchivoAdjuntoRequerimientoPagoCabeceraToDeleteList));
-                formData.append(`archivoAdjuntoRequerimientoPagoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoCabeceraList));
-                formData.append(`archivoAdjuntoRequerimientoPagoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoDetalleList));
-
-                // formData.append(`idArchivoAdjuntoRequerimientoPagoDetalleParaElminar`, JSON.stringify(tempIdArchivoAdjuntoRequerimientoPagoDetalleToDeleteList));
-
 
                 $.ajax({
                     type: 'POST',
@@ -2128,6 +2198,7 @@ class ListarRequerimientoPagoView {
                 <td style="text-align:center;">${data.detalle[i].cantidad >= 0 ? data.detalle[i].cantidad : ''}</td>
                 <td style="text-align:right;">${data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : ''}${Util.formatoNumero(data.detalle[i].precio_unitario, 2)}</td>
                 <td style="text-align:right;">${data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : ''}${(data.detalle[i].subtotal ? Util.formatoNumero(data.detalle[i].subtotal, 2) : (Util.formatoNumero((data.detalle[i].cantidad * data.detalle[i].precio_unitario), 2)))}</td>
+                <td style="text-align:left;">${data.detalle[i].motivo != null ? data.detalle[i].motivo : ''}</td>
                 <td style="text-align:center;">${data.detalle[i].estado != null ? data.detalle[i].estado.estado_doc : ''}</td>
                 <td style="text-align: center;">
                 ${cantidadAdjuntosItem > 0 ? '<a title="Ver archivos adjuntos de item" style="cursor:pointer;" class="handleClickAdjuntarArchivoDetalle" data-tipo-modal="lectura" data-id="' + data.detalle[i].id_requerimiento_pago_detalle + '" >Ver (<span>' + cantidadAdjuntosItem + '</span>)</a>' : '-'}
@@ -2612,7 +2683,7 @@ class ListarRequerimientoPagoView {
         } else {
             if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
                 let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.dataset.id);
-                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ELIMINAR';
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ELIMINAR';
             } else {
                 Swal.fire(
                     '',
@@ -2666,9 +2737,10 @@ class ListarRequerimientoPagoView {
                         category: 1, //default: otros adjuntos
                         fecha_emision: moment().format("YYYY-MM-DD"), //default: fecha hoy
                         nameFile: file.name,
-                        action_adjunto: 'GUARDAR',
+                        action: 'GUARDAR',
                         file: file
                     };
+
                     this.addToTablaArchivosRequerimientoPagoCabecera(payload);
 
                     tempArchivoAdjuntoRequerimientoPagoCabeceraList.push(payload);
@@ -2832,6 +2904,7 @@ class ListarRequerimientoPagoView {
             if (regExp.test(idRequerimientoPagoDetalle) == false) {
                 tempArchivoAdjuntoRequerimientoPagoDetalleList = [];
                 this.getAdjuntosRequerimientoPagoDetalle(idRequerimientoPagoDetalle).then((adjuntoList) => {
+                    // console.log(adjuntoList);
                     (adjuntoList).forEach(element => {
                         if(element.id_estado !=7){ // omitir anulados
 
@@ -2929,7 +3002,7 @@ class ListarRequerimientoPagoView {
                         id: objBotonAdjuntoRequerimientoPagoDetalleSeleccionado.dataset.id,
                         id_requerimiento_pago_detalle: objBotonAdjuntoRequerimientoPagoDetalleSeleccionado.dataset.id,
                         nameFile: file.name,
-                        action_adjunto: 'GUARDAR',
+                        action: 'GUARDAR',
                         file: file
                     };
                     this.agregarRegistroEnTablaAdjuntoRequerimientoPagoDetalle(payload);
@@ -3100,6 +3173,7 @@ class ListarRequerimientoPagoView {
 
     buscarDestinatarioPorNumeroDeDocumento(obj) {
         let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_tipo_destinatario']").value);
+        let option = ``;
         let nroDocumento = (obj.value).trim();
         if (nroDocumento.length > 0 && idTipoDestinatario > 0) {
             $.ajax({
@@ -3117,7 +3191,6 @@ class ListarRequerimientoPagoView {
                 },
                 success: (response) => {
                     $("input[name='nombre_destinatario']").LoadingOverlay("hide", true);
-
 
                     if (response.tipo_estado == 'success') {
                         if (response.data != null && response.data.length > 0) {
@@ -3137,16 +3210,16 @@ class ListarRequerimientoPagoView {
                                     }
                                 }
                                 (response.data[0].cuenta_persona).forEach(element => {
-                                    document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
-                                        <option
-                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
-                                            data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}"
-                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
-                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
-                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
-                                            value="${element.id_cuenta_bancaria}"
-                                            >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}</option>
-                                        `);
+                                    option += `
+                                    <option
+                                        data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                                        data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}"
+                                        data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                                        data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                                        data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
+                                        value="${element.id_cuenta_bancaria}">${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}
+                                    </option>`;
+                                    document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
                                 });
 
 
@@ -3165,16 +3238,16 @@ class ListarRequerimientoPagoView {
                                     }
                                 }
                                 (response.data[0].cuenta_contribuyente).forEach(element => {
-                                    document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
-                                        <option
-                                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
-                                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}"
-                                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
-                                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
-                                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
-                                            value="${element.id_cuenta_contribuyente}"
-                                            >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}</option>
-                                        `);
+                                    option += `
+                                    <option
+                                        data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                                        data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}"
+                                        data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                                        data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                                        data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
+                                        value="${element.id_cuenta_contribuyente}">${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}
+                                    </option>`;
+                                    document.querySelector("div[id='modal-requerimiento-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
 
                                 });
                             }
@@ -3256,11 +3329,9 @@ class ListarRequerimientoPagoView {
                 selectCuenta.removeChild(selectCuenta.lastChild);
             }
         }
-
     }
 
     listarEnResultadoDestinatario(data, idTipoDestinatario) {
-
         document.querySelector("div[id='modal-requerimiento-pago'] span[id='cantidadDestinatariosEncontrados']").textContent = data.length;
         document.querySelector("div[id='modal-requerimiento-pago'] table[id='listaDestinatariosEncontrados']").innerHTML = '';
         data.forEach(element => {

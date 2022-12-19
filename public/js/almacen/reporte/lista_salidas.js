@@ -110,7 +110,28 @@ function actualizarLista(option=null){
 
 
 
+    const button_filtro = (array_accesos.find(element => element === 164)?{
+            text: '<i class="fas fa-filter"></i> Filtros : 0',
+            attr: {
+                id: 'btnFiltros'
+            },
+            action: () => {
+                open_filtros();
 
+            },
+            className: 'btn-default btn-sm'
+        }:[]),
+        button_descargar_excel = (array_accesos.find(element => element === 165)?{
+            text: '<i class="far fa-file-excel"></i> Descargar',
+            attr: {
+                id: 'btnDescargarExcel'
+            },
+            action: () => {
+                descargarSalidasExcel();
+
+            },
+            className: 'btn-default btn-sm'
+        }:[]);
     var vardataTables = funcDatatables();
     var button_filtros = (array_accesos.find(element => element === 164)?{
         text: '<i class="fas fa-filter"></i> Filtros : 0',
@@ -138,7 +159,11 @@ function actualizarLista(option=null){
         $tablaListaSalidas = $('#listaSalidas').DataTable({
         'destroy': true,
         'dom': vardataTables[1],
+<<<<<<< HEAD
         'buttons': [button_filtros,button_descargar_Excel],
+=======
+        'buttons': [button_filtro,button_descargar_excel],
+>>>>>>> develop
         'language' : vardataTables[0],
         "scrollX": true,
         'serverSide': true,

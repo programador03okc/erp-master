@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ReporteComprasLocalesExcel;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Sede;
 use App\models\Configuracion\AccesosUsuarios;
@@ -17,6 +18,11 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Auth;
+<<<<<<< HEAD
+=======
+use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
+>>>>>>> develop
 
 // use Maatwebsite\Excel\Facades\Excel;
 
@@ -52,6 +58,10 @@ class ReporteLogisticaController extends Controller{
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
 		return view('logistica/reportes/transito_ordenes_compra',compact('empresas','grupos','array_accesos'));
 	}
 
@@ -215,9 +225,6 @@ class ReporteLogisticaController extends Controller{
 		$fechaRegistroDesde = $request->fechaRegistroDesde;
         $fechaRegistroHasta = $request->fechaRegistroHasta;
 		$data = $this->obtenerDataTransitoOrdenesCompra($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta);
-
-
-
 		return datatables($data)->rawColumns(['monto','requerimientos','cuadro_costo','tiene_transformacion','cantidad_equipos'])->toJson();
 
 	}
@@ -233,80 +240,113 @@ class ReporteLogisticaController extends Controller{
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
+<<<<<<< HEAD
 		return view('logistica/reportes/compras_locales',compact('empresas','grupos','proyectos','estadosPago','fechaActual','array_accesos'));
+=======
+		return view('logistica/reportes/compras_locales', get_defined_vars());
+>>>>>>> develop
 	}
 
-	public function listaComprasLocales(Request $request){
+    public function obtenerFiltrosCompras(Request $request)
+    {
+        if ($request->chkFechaRegistro == 'on') {
+            $request->session()->put('clFechaRegistroDesde', $request->fechaRegistroDesde);
+            $request->session()->put('clFechaRegistroHasta', $request->fechaRegistroHasta);
+        } else {
+            $request->session()->forget('clFechaRegistroDesde');
+            $request->session()->forget('clFechaRegistroHasta');
+        }
 
-        // return $request;
-		$idEmpresa = $request->idEmpresa;
-        $idSede = $request->idSede;
-		$fechaRegistroDesde = $request->fechaRegistroDesde;
-        $fechaRegistroHasta = $request->fechaRegistroHasta;
-        $fechaRegistroDesdeCancelacion = $request->fechaRegistroDesdeCancelacion;
-        $fechaRegistroHastaCancelacion = $request->fechaRegistroHastaCancelacion;
-        $razonSocialProveedor = $request->razon_social_proveedor;
-        $idGrupo = $request->idGrupo;
-        $idProyecto = $request->idProyecto;
-        $observacionOrden = $request->observacionOrden;
-        $estadoPago = $request->estadoPago;
+        if ($request->chkFechaCancelacion == 'on') {
+            $request->session()->put('clFechaCancelacionDesde', $request->fechaCancelacionDesde);
+            $request->session()->put('clFechaCancelacionHasta', $request->fechaCancelacionHasta);
+        } else {
+            $request->session()->forget('clFechaCancelacionDesde');
+            $request->session()->forget('clFechaCancelacionHasta');
+        }
 
-		$data = $this->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago);
+        if ($request->chkEmpresa == 'on') {
+            $request->session()->put('clEmpresa', $request->empresa);
+        } else {
+            $request->session()->forget('clEmpresa');
+        }
 
+        if ($request->chkGrupo == 'on') {
+            $request->session()->put('clGrupo', $request->grupo);
+        } else {
+            $request->session()->forget('clGrupo');
+        }
+
+        if ($request->chkProyecto == 'on') {
+            $request->session()->put('clProyecto', $request->proyecto);
+        } else {
+            $request->session()->forget('clProyecto');
+        }
+
+        if ($request->chkEstadoPago == 'on') {
+            $request->session()->put('clEstadoPago', $request->estadoPago);
+        } else {
+            $request->session()->forget('clEstadoPago');
+        }
+
+        if ($request->chkRazonSocialProveedor == 'on') {
+            $request->session()->put('clProveedor', $request->razon_social_proveedor);
+        } else {
+            $request->session()->forget('clProveedor');
+        }
+
+        if ($request->chkCompraLocal == 'on') {
+            $request->session()->put('clTipoReporte', $request->tipo_reporte);
+        } else {
+            $request->session()->forget('clTipoReporte');
+        }
+
+        return response()->json(array('Filtros actualizados' => $request->session()->put('clEmpresa', $request->empresa)), 200);
+    }
+
+	public function listarCompras(Request $request)
+    {
+        $this->obtenerFiltrosCompras($request);
+        $data = $this->obtenerReporteCompras();
 		return datatables($data)->toJson();
 
 	}
 
-	public function obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago){
-		$data = ComprasLocalesView::when(($idEmpresa > 0), function ($query) use($idEmpresa) {
-			$sedes= Sede::where('id_empresa',$idEmpresa)->get();
-			$idSedeList=[];
-			foreach($sedes as $sede){
-				$idSedeList[]=$sede->id_sede;
-			}
-            return $query->whereIn('id_sede', $idSedeList);
-        })
-        ->when(($idSede > 0), function ($query) use($idSede) {
-            return $query->where('id_sede',$idSede);
-        })
+    public function obtenerReporteCompras()
+    {
+        $data = ComprasLocalesView::orderBy('fecha_emision', 'desc');
 
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde) {
-            return $query->where('compras_locales_view.fecha_emision_comprobante_contribuyente' ,'>=',$fechaRegistroDesde);
-        })
-        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroHasta) {
-            return $query->where('compras_locales_view.fecha_emision_comprobante_contribuyente' ,'<=',$fechaRegistroHasta);
-        })
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesde,$fechaRegistroHasta) {
-            return $query->whereBetween('compras_locales_view.fecha_emision_comprobante_contribuyente' ,[$fechaRegistroDesde,$fechaRegistroHasta]);
-        })
+        if (session()->has('clFechaRegistroDesde')) {
+            $data = $data->whereBetween('fecha_emision_comprobante_contribuyente', [session('clFechaRegistroDesde'), session('clFechaRegistroHasta')]);
+        }
+        if (session()->has('clFechaCancelacionDesde')) {
+            $data = $data->whereBetween('fecha_pago', [session('clFechaCancelacionDesde'), session('clFechaCancelacionHasta')]);
+        }
+        if (session()->has('clEmpresa')) {
+            $data = $data->where('id_empresa', session()->get('clEmpresa'));
+        }
+        if (session()->has('clGrupo')) {
+            $data = $data->where('id_grupo', session()->get('clGrupo'));
+        }
+        if (session()->has('clProyecto')) {
+            $data = $data->where('id_proyecto', session()->get('clProyecto'));
+        }
+        if (session()->has('clEstadoPago')) {
+            $data = $data->where('id_requerimiento_pago_estado', session()->get('clEstadoPago'));
+        }
+        if (session()->has('clProveedor')) {
+            $data = $data->where('razon_social_contribuyente', 'like', '%'.session()->get('clProveedor').'%');
+        }
+        if (session()->has('clTipoReporte')) {
+            if (session()->get('clTipoReporte') == true) {
+                $data = $data->where('compra_local', true);
+            }
+        }
+        return $data->get();
+    }
 
-        ->when((($fechaRegistroDesdeCancelacion != 'SIN_FILTRO') and ($fechaRegistroHastaCancelacion == 'SIN_FILTRO')), function ($query) use($fechaRegistroDesdeCancelacion) {
-            return $query->where('compras_locales_view.fecha_pago' ,'>=',$fechaRegistroDesdeCancelacion);
-        })
-        ->when((($fechaRegistroDesdeCancelacion == 'SIN_FILTRO') and ($fechaRegistroHastaCancelacion != 'SIN_FILTRO')), function ($query) use($fechaRegistroHastaCancelacion) {
-            return $query->where('compras_locales_view.fecha_pago' ,'<=',$fechaRegistroHastaCancelacion);
-        })
-        ->when((($fechaRegistroDesdeCancelacion != 'SIN_FILTRO') and ($fechaRegistroHastaCancelacion != 'SIN_FILTRO')), function ($query) use($fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion) {
-            return $query->whereBetween('compras_locales_view.fecha_pago' ,[$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion]);
-        })
-        ->when((($razonSocialProveedor != 'SIN_FILTRO')), function ($query) use($razonSocialProveedor) {
-            return $query->where('compras_locales_view.razon_social_contribuyente' ,'like','%'.$razonSocialProveedor.'%');
-        })
-        ->when((($idGrupo != 'SIN_FILTRO')), function ($query) use($idGrupo) {
-            return $query->where('compras_locales_view.id_grupo' ,'=',$idGrupo);
-        })
-        ->when((($idProyecto != 'SIN_FILTRO')), function ($query) use($idProyecto) {
-            return $query->where('compras_locales_view.razon_social_contribuyente' ,'=',$idProyecto);
-        })
-        ->when((($observacionOrden != 'SIN_FILTRO')), function ($query) use($observacionOrden) {
-			return $query->where('compras_locales_view.observacion_orden' ,'like','%'.$observacionOrden.'%');
-        })
-		->when((($estadoPago != 'SIN_FILTRO')), function ($query) use($estadoPago) {
-			return $query->where('compras_locales_view.id_requerimiento_pago_estado' ,'=',$estadoPago);
-		})
-        ;
-
-
-		return $data;
-	}
+    public function reporteCompraLocalesExcel()
+    {
+        return Excel::download(new ReporteComprasLocalesExcel(), 'reporte_compra_locales.xlsx');
+    }
 }

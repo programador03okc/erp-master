@@ -29,6 +29,8 @@ Producto
 @endsection
 
 @section('content')
+
+@if (sizeof($array_accesos_botonera)!==0)
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="producto">
@@ -310,7 +312,16 @@ Producto
         </div>
     </div>
 </div>
-
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @include('almacen.producto.subcategoriaModal')
 @include('almacen.producto.productoModal')
 @endsection

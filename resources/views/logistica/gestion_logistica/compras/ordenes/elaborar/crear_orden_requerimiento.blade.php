@@ -9,7 +9,21 @@ Orden de compra / servicio
 @endsection
 
 @section('estilos')
-<link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+    <style>
+        .mt-4 {
+            margin-top: 35px;
+        }
+        .mb-0 {
+            margin-bottom: 0; 
+        }
+        .label-check {
+            font-weight: normal;
+            font-size: 15px;
+            cursor: pointer;
+        }
+    </style>
 @endsection
 
 @section('breadcrumb')
@@ -37,6 +51,7 @@ Orden de compra / servicio
                     </div>
                     <div>
                         @if (in_array(284,$array_accesos))
+<<<<<<< HEAD
                             <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
                         @endif
                         @if (in_array(285,$array_accesos))
@@ -47,6 +62,17 @@ Orden de compra / servicio
                             <button type="button" name="btn-relacionar-a-oc-softlink" id="btn-relacionar-a-oc-softlink" class="btn btn-success btn-sm" title="Relacionar a OC de Softlink" onclick="listarOcSoftlink(event);" disabled><i class="fas fa-object-group"></i> Relacionar a OC de softlink</button>
                         @endif
 
+=======
+                           <button type="button" name="btn-imprimir-orden-pdf" class="btn btn-info btn-sm handleClickImprimirOrdenPdf" title="Imprimir orden en .pdf" disabled><i class="fas fa-print"></i> Imprimir</button>
+                        @endif
+                        @if (in_array(285,$array_accesos))
+                        <button type="button" name="btn-migrar-orden-softlink" class="btn btn-warning btn-sm handleClickMigrarOrdenASoftlink" title="Migrar orden a softlink" disabled><i class="fad fa-clone"></i>  Migrar Orden a soflink</button>
+                        @endif
+                        <button type="button" name="btn-enviar-email-finalizacion-cuadro-presupuesto" class="btn btn-default btn-sm handleClickEstadoCuadroPresupuesto oculto" id="btn-enviar-email-finalizacion-cuadro-presupuesto" style="background-color: #9b659b; color:#fff;" title="Enviar email finalización CDP"><i class="fas fa-info-circle"></i> Estado CDP</button>
+                        @if (in_array(286,$array_accesos))
+                        <button type="button" name="btn-relacionar-a-oc-softlink" id="btn-relacionar-a-oc-softlink" class="btn btn-success btn-sm" title="Relacionar a OC de Softlink" onclick="listarOcSoftlink(event);" disabled><i class="fas fa-object-group"></i> Relacionar a OC de softlink</button>
+                        @endif
+>>>>>>> develop
 
                     </div>
                 </h4>
@@ -255,7 +281,6 @@ Orden de compra / servicio
                                 @endforeach
                             </select>
                         </div>
-
                     </div>
                 </fieldset>
             </div>
@@ -293,7 +318,8 @@ Orden de compra / servicio
                                 </button>
                             </div>
                         </div>
-
+                    </div>
+                    <div class="row">
                         <div class="col-md-3" id="group-datos_para_despacho-personal_autorizado">
                             <h5>Personal autorizado #2</h5>
                             <div style="display:flex;">
@@ -304,27 +330,30 @@ Orden de compra / servicio
                                 </button>
                             </div>
                         </div>
-
+                        <div class="col-md-2 text-center">
+                            <div class="form-group mt-4 mb-0">
+                                <label class="label-check"><input type="checkbox" class="minimal" id="compra_local" name="compra_local"> Compras locales</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12" id="group-datos_para_despacho-observacion">
                             <h5>Observación</h5>
                             <div style="display:flex;">
                                 <textarea class="form-control activation" name="observacion" cols="100" rows="100" style="height:50px;" disabled></textarea>
                             </div>
                         </div>
-
                     </div>
                 </fieldset>
             </div>
         </div>
-
-
 
         <div class="group-table">
             <div class="row">
                 <div class="col-sm-12">
                     <fieldset class="group-importes">
                         <legend>
-                            <h6>Item's de requerimiento</h6>
+                            <h6>Items de requerimiento</h6>
                         </legend>
                         <div class="btn-group" role="group" aria-label="...">
                         @if((in_array(Auth::user()->id_usuario,[3,17,27,1,77])))
@@ -379,9 +408,7 @@ Orden de compra / servicio
                 </div>
             </div>
         </div>
-
 </div>
-
 <br>
 
 
@@ -436,6 +463,7 @@ Orden de compra / servicio
 @endsection
 
 @section('scripts')
+<<<<<<< HEAD
 <script src="{{ asset('js/util.js')}}"></script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
@@ -462,4 +490,33 @@ Orden de compra / servicio
         seleccionarMenu(window.location);
     };
 </script>
+=======
+    <script src="{{ asset('js/util.js')}}"></script>
+    <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+
+    <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            seleccionarMenu(window.location);
+            $(".sidebar-mini").addClass("sidebar-collapse");
+            $('input[type="checkbox"].minimal').iCheck({ checkboxClass: 'icheckbox_minimal-blue' });
+        });
+    </script>
+
+    <script src="{{('/js/logistica/proveedores/listaProveedoresModal.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/listaProveedoresModal.js'))}}"></script>
+    <script src="{{('/js/logistica/proveedores/cuentasBancariasProveedor.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/cuentasBancariasProveedor.js'))}}"></script>
+    <script src="{{('/js/logistica/add_proveedor.js')}}?v={{filemtime(public_path('/js/logistica/add_proveedor.js'))}}"></script>
+    <script src="{{ asset('js/publico/ubigeoModal.js')}}?v={{filemtime(public_path('js/publico/ubigeoModal.js'))}}"></script>
+    <script src="{{('/js/logistica/proveedores/proveedorContactoModal.js')}}?v={{filemtime(public_path('/js/logistica/proveedores/proveedorContactoModal.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/trabajadorModal.js')}}?v={{filemtime(public_path('/js/logistica/orden/trabajadorModal.js'))}}"></script>
+    <script src="{{ asset('js/publico/consulta_sunat.js')}}?v={{filemtime(public_path('js/publico/consulta_sunat.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/orden.js')}}?v={{filemtime(public_path('/js/logistica/orden/orden.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/relacionarOcSoftlink.js')}}?v={{filemtime(public_path('/js/logistica/orden/relacionarOcSoftlink.js'))}}"></script>
+    <script src="{{('/js/logistica/orden/vincularRequerimientoConOrdenModal.js')}}?v={{filemtime(public_path('/js/logistica/orden/vincularRequerimientoConOrdenModal.js'))}}"></script>
+>>>>>>> develop
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Logistica;
 
+use App\Exports\reporteItemsRequerimientosBienesServiciosExcel;
 use App\Exports\reporteRequerimientosBienesServiciosExcel;
 use App\Helpers\NotificacionHelper;
 use App\Http\Controllers\Almacen\Reporte\SaldosController;
@@ -45,9 +46,12 @@ use App\Models\Configuracion\Grupo;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Presupuestos\Presupuesto;
+use App\Models\Rrhh\Persona;
+use App\Models\Rrhh\Postulante;
 use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RegistroPagoAdjuntos;
 use App\Models\Tesoreria\RequerimientoPago;
+use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -90,14 +94,23 @@ class RequerimientoController extends Controller
         $categoria_adjunto = CategoriaAdjunto::mostrar();
         $tipo_cambio = (new SaldosController)->tipo_cambio_compra(new Carbon());
 
+<<<<<<< HEAD
         $array_accesos=array();
+=======
+        $array_accesos=[];
+>>>>>>> develop
         $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
+<<<<<<< HEAD
         $array_accesos_botonera=array();
 
         // $accesos_botonera = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->where('id_modulo',57)->where('id_padre',54)->get();
+=======
+
+        $array_accesos_botonera=array();
+>>>>>>> develop
         $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
         ->select('accesos.*')
         ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
@@ -109,10 +122,15 @@ class RequerimientoController extends Controller
             $value->accesos;
             array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
         }
+<<<<<<< HEAD
         // return $array_accesos_botonera;exit;
         // return in_array('224',$array_accesos,true);
 
         return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones', 'array_accesos','array_accesos_botonera'));
+=======
+        $modulo = 'necesidades';
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones','array_accesos','array_accesos_botonera','modulo'));
+>>>>>>> develop
     }
 
 
@@ -210,6 +228,99 @@ class RequerimientoController extends Controller
             ->get();
 
         return response()->json($detalles);
+    }
+
+    public function listaDetalleRequerimiento($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
+    {
+        $detalleRequerimientoList = DB::table('almacen.alm_det_req')
+        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+        ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
+        ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
+        ->leftJoin('configuracion.sis_grupo', 'alm_req.id_grupo', '=', 'sis_grupo.id_grupo')
+        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+        ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
+        ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
+        ->leftJoin('administracion.adm_empresa', 'alm_req.id_empresa', '=', 'adm_empresa.id_empresa')
+        ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
+        ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('almacen.alm_tp_req', 'alm_tp_req.id_tipo_requerimiento', '=', 'alm_req.id_tipo_requerimiento')
+        ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
+        ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
+        ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+
+        ->select(
+
+            'alm_prod.descripcion as descripcion_producto',
+            'alm_det_req.descripcion as descripcion_detalle_requerimiento',
+            'alm_det_req.motivo',
+            'alm_det_req.cantidad',
+            'alm_det_req.precio_unitario',
+            'alm_det_req.subtotal',
+            'alm_det_req.fecha_registro',
+            'adm_prioridad.descripcion as prioridad',
+            'alm_tp_req.descripcion AS tipo_requerimiento',
+            'alm_req.codigo',
+            'oportunidades.codigo_oportunidad',
+            'alm_req.concepto',
+            'alm_req.codigo',
+            'alm_req.observacion',
+            'sis_moneda.simbolo as simbolo_moneda',
+            'sis_sede.codigo as sede',
+            'sis_sede.descripcion as descripcion_empresa_sede',
+            'adm_contri.razon_social as empresa_razon_social',
+            'sis_identi.descripcion as empresa_tipo_documento',
+            'proy_proyecto.descripcion AS descripcion_proyecto',
+            'sis_grupo.descripcion as grupo',
+            'division.descripcion as division',
+            'alm_req.monto_total',
+            'presup_par.codigo as partida',
+            'presup_par.id_partida',
+            'centro_costo.codigo as centro_costo',
+            'centro_costo.id_centro_costo',
+            'adm_estado_doc.estado_doc as estado_requerimiento'
+
+        )
+        ->when(($meOrAll === 'ME'), function ($query) {
+            $idUsuario = Auth::user()->id_usuario;
+            return $query->whereRaw('alm_req.id_usuario = ' . $idUsuario);
+        })
+        ->when(($meOrAll === 'ALL'), function ($query) {
+            return $query->whereRaw('alm_req.id_usuario > 0');
+        })
+        ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
+            return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
+        })
+        ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
+            return $query->whereRaw('alm_req.id_sede = ' . $idSede);
+        })
+        ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
+            return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
+        })
+        ->when((intval($idDivision) > 0), function ($query)  use ($idDivision) {
+            return $query->whereRaw('alm_req.division_id = ' . $idDivision);
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+            return $query->where('alm_req.fecha_registro', '>=', $fechaRegistroDesde);
+        })
+        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+            return $query->where('alm_req.fecha_registro', '<=', $fechaRegistroHasta);
+        })
+        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+            return $query->whereBetween('alm_req.fecha_registro', [$fechaRegistroDesde, $fechaRegistroHasta]);
+        })
+
+        ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
+            return $query->whereRaw('alm_req.estado = ' . $idEstado);
+        })
+        ->where([['alm_det_req.estado','!=',7],['alm_req.estado','!=',7]])
+        ->orderBy('alm_det_req.fecha_registro','desc')
+        ->get();
+
+        return $detalleRequerimientoList;
+
     }
 
     public function mostrarRequerimiento($id, $codigo)
@@ -1037,6 +1148,35 @@ class RequerimientoController extends Controller
         return response()->json($detalleAdjuntos);
     }
 
+    public function obtenerIdDocumento($tipoDocumento,$idReq){
+        $result = [];
+
+        $documento = Documento::where([['id_doc',$idReq],['id_tp_documento',$tipoDocumento]])->first();
+
+        if( !empty($documento)){
+            $result =[
+                'id'=> $documento->id_doc_aprob,
+                'mensaje'=>'Id encontrado',
+                'estado'=>'success'
+        ];
+
+        }else{
+            $result =[
+            'id'=>0,
+            'mensaje'=>'No se encontro el id',
+            'estado'=>'error'
+        ];
+
+        }
+
+        return $result;
+
+    }
+
+    public function getDescripcionEstado($idEstado){
+       return ( Estado::find($idEstado)->estado_doc)??'';
+    }
+
     public function actualizarRequerimiento(Request $request)
     {
         // dd($request->all());
@@ -1053,13 +1193,30 @@ class RequerimientoController extends Controller
         }
 
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
+        $nuevoEstado=1;
         if ($requerimiento->estado == 3) { // si el estado actual es observado
-            if($request->monto_total <= $requerimiento->monto_total){
-                $requerimiento->estado = $requerimiento->estado_anterior;
-            }else{
-                $requerimiento->estado = 1; // elaborado
+            $tipo_modena = TipoCambio::where('estado',1)->orderBy('id_tp_cambio','DESC')->first();
+            // return $tipo_modena->compra;exit;
+            $soles_request = $request->monto_total;
+            if ($request->moneda == 2) {
+                $soles_request = $request->monto_total *  $tipo_modena->compra;
+            }
+            $soles_requerimiento = $requerimiento->monto_total;
+            if ($requerimiento->id_moneda ==2) {
+                $soles_requerimiento = $requerimiento->monto_total *  $tipo_modena->compra;
             }
 
+            // if($request->monto_total <= $requerimiento->monto_total){
+
+            if(intval($soles_request) <= intval($soles_requerimiento)){
+                $requerimiento->estado = $requerimiento->estado_anterior;
+                $nuevoEstado=$requerimiento->estado_anterior;
+            }else{
+                $requerimiento->estado = 1; // elaborado
+                $nuevoEstado=1;
+
+            }
+            // return response()->json([$soles_request,$soles_requerimiento,$request->moneda, $requerimiento->estado]);exit;
             $trazabilidad = new Trazabilidad();
             $trazabilidad->id_requerimiento = $request->id_requerimiento;
             $trazabilidad->id_usuario = Auth::user()->id_usuario;
@@ -1067,6 +1224,21 @@ class RequerimientoController extends Controller
             $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
             $trazabilidad->fecha_registro = new Carbon();
             $trazabilidad->save();
+
+            if(intval($request->id_requerimiento) >0){
+                $documento = $this->obtenerIdDocumento(1,$request->id_requerimiento);
+            }
+            $aprobacion = new Aprobacion();
+            $aprobacion->id_flujo = null;
+            $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+            $aprobacion->id_usuario = Auth::user()->id_usuario;
+            $aprobacion->id_vobo = 8; // sustentado
+            $aprobacion->fecha_vobo = new Carbon();
+            $aprobacion->detalle_observacion = 'El Sistema utilizó el sustento del usuario para determinar el nuevo estado del requerimiento, en este momento su estado es '. $this->getDescripcionEstado($nuevoEstado); // comentario
+            $aprobacion->id_rol = null;
+            $aprobacion->tiene_sustento = false;
+            $aprobacion->save();
+
 
             $idDocumento = Documento::getIdDocAprob($request->id_requerimiento, 1);
             // $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
@@ -1076,7 +1248,6 @@ class RequerimientoController extends Controller
                     $aprobacion = Aprobacion::where("id_aprobacion", $value->id_aprobacion)->first();
                     $aprobacion->tiene_sustento = true;
                     $aprobacion->save();
-
                 }
             }
             // $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
@@ -1391,6 +1562,20 @@ class RequerimientoController extends Controller
                 }
                 $mensaje = 'Se anulo el requerimiento ' . $requerimiento->codigo;
                 $tipoMensaje = 'success';
+
+                if(intval($requerimiento->id_requerimiento) >0){
+                    $documento = $this->obtenerIdDocumento(1,$requerimiento->id_requerimiento);
+                }
+                $aprobacion = new Aprobacion();
+                $aprobacion->id_flujo = null;
+                $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+                $aprobacion->id_usuario = Auth::user()->id_usuario;
+                $aprobacion->id_vobo = 7; // Anulado
+                $aprobacion->fecha_vobo = new Carbon();
+                $aprobacion->detalle_observacion = null; // comentario
+                $aprobacion->id_rol = null;
+                $aprobacion->tiene_sustento = false;
+                $aprobacion->save();
             }
 
             DB::commit();
@@ -1439,6 +1624,7 @@ class RequerimientoController extends Controller
                 'alm_req.id_grupo',
                 'alm_req.id_empresa',
                 'adm_contri.razon_social',
+                'sis_sede.codigo as sede',
                 'adm_contri.nro_documento',
                 'adm_contri.id_doc_identidad',
                 'sis_identi.descripcion as tipo_documento_identidad',
@@ -1468,7 +1654,14 @@ class RequerimientoController extends Controller
                 DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
                 FROM almacen.alm_det_req
                 WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
-                alm_det_req.estado != 7) AS monto_total")
+                alm_det_req.estado != 7) AS monto_total"),
+                DB::raw("(SELECT sis_usua.nombre_corto
+                FROM administracion.adm_documentos_aprob
+                     INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                    LEFT JOIN administracion.adm_vobo ON adm_vobo.id_vobo = adm_aprobacion.id_vobo
+                    LEFT JOIN configuracion.sis_usua ON sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE alm_req.id_requerimiento = adm_documentos_aprob.id_doc and adm_documentos_aprob.id_tp_documento =1 and adm_aprobacion.id_vobo =1 order by adm_aprobacion.fecha_vobo desc limit 1 ) AS ultimo_aprobador")
+
 
             )
 
@@ -1530,7 +1723,8 @@ class RequerimientoController extends Controller
             $idGrupoDeUsuarioEnSesionList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
         }
 
-        $requerimientos = Requerimiento::with('detalle')->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
+        $requerimientos = Requerimiento::with('detalle')
+            ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
@@ -1637,7 +1831,7 @@ class RequerimientoController extends Controller
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
-            ->where('alm_req.flg_compras', '=', 0)
+            ->where([['alm_req.flg_compras', '=', 0],['adm_documentos_aprob.id_tp_documento', '=', 1]])
             ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList);
 
         return datatables($requerimientos)
@@ -1689,7 +1883,11 @@ class RequerimientoController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
+<<<<<<< HEAD
         return view('logistica/requerimientos/lista_requerimientos', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades', 'estados', 'array_accesos'));
+=======
+        return view('logistica/requerimientos/lista_requerimientos', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades', 'estados','array_accesos'));
+>>>>>>> develop
     }
 
 
@@ -3758,7 +3956,7 @@ class RequerimientoController extends Controller
         $detalleRequerimiento = DetalleRequerimiento::where("id_detalle_requerimiento", $idDetalleRequerimiento)
             ->with(['unidadMedida', 'producto', 'reserva' => function ($q) {
                 $q->where('alm_reserva.estado', '=', 1);
-            }, 'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona', 'reserva.estado', 'estado'])
+            }, 'reserva.almacen', 'reserva.usuario', 'reserva.estado', 'estado'])
 
             ->first();
         if ($detalleRequerimiento) {
@@ -3784,8 +3982,10 @@ class RequerimientoController extends Controller
     public function historialReservaProducto($idDetalleRequerimiento)
     {
         $detalleRequerimiento = DetalleRequerimiento::where("id_detalle_requerimiento", $idDetalleRequerimiento)
-            ->with(['unidadMedida', 'producto', 'reserva', 'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona', 'reserva.estado', 'estado'])
+            ->with(['unidadMedida', 'producto', 'reserva.almacen', 'reserva.usuario',  'reserva.estado', 'estado'])
             ->first();
+            // return response()->json(($detalleRequerimiento));
+            // exit();
         if ($detalleRequerimiento) {
             return ['data' => $detalleRequerimiento, 'status' => 200];
         } else {
@@ -3803,7 +4003,7 @@ class RequerimientoController extends Controller
             })
             ->with(['unidadMedida', 'producto', 'producto.moneda', 'reserva' => function ($q) {
                 $q->where('alm_reserva.estado', '=', 1);
-            }, 'reserva.almacen', 'reserva.usuario', 'reserva.usuario.trabajador.postulante.persona', 'reserva.estado', 'estado'])
+            }, 'reserva.almacen', 'reserva.usuario', 'reserva.estado', 'estado'])
             ->get();
 
         if ($detalleRequerimiento) {
@@ -3904,6 +4104,10 @@ class RequerimientoController extends Controller
     public function reporteRequerimientosBienesServiciosExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
     {
         return Excel::download(new reporteRequerimientosBienesServiciosExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado), 'reporte_requerimientos_bienes_servicios.xlsx');
+    }
+    public function reporteItemsRequerimientosBienesServiciosExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
+    {
+        return Excel::download(new reporteItemsRequerimientosBienesServiciosExcel($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado), 'reporte_requerimientos_bienes_servicios.xlsx');
     }
 
     public function listarTodoArchivoAdjuntoRequerimientoLogistico($idRequerimiento)

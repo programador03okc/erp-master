@@ -40,6 +40,7 @@ function listarTransferenciasRecibidas() {
             $("#btnBuscarRecibidas").on("click", e => {
                 tableTransferenciasRecibidas.search($input.val()).draw();
             });
+<<<<<<< HEAD
 
             $('#listaTransferenciasRecibidas_wrapper .dt-buttons').append(
                 ``+(array_accesos.find(element => element === 282)?`<div class="col-md-5" style="text-align: center;margin-top: 7px;"><label>Almacén Destino:</label></div>
@@ -49,6 +50,17 @@ function listarTransferenciasRecibidas() {
                     </select>
                 </div>`:``)+``
             );
+=======
+            (array_accesos.find(element => element === 282)?$('#listaTransferenciasRecibidas_wrapper .dt-buttons').append(
+                `<div class="col-md-5" style="text-align: center;margin-top: 7px;"><label>Almacén Destino:</label></div>
+                    <div class="col-md-4" style="display:flex">
+                        <select class="form-control" id="selectAlmacenDestinoRecibido" >
+                            <option value="0" selected>Todos los almacenes</option>
+                        </select>
+                    </div>`
+            ):'')
+
+>>>>>>> develop
             mostrarAlmacenes('recibido');
             $("#selectAlmacenDestinoRecibido").on("change", function (e) {
                 var alm = $(this).val();
@@ -120,16 +132,32 @@ function listarTransferenciasRecibidas() {
                         (array_accesos.find(element => element === 135)?`<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>`:``)+`
+<<<<<<< HEAD
                             ${(row['doc_ven'] == '-') ?
                                 ``+(array_accesos.find(element => element === 137)?`<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row["id_transferencia"]}" data-guia="${row["id_guia_com"]}" data-ing="${row["id_ingreso"]}" title="Anular" >
                                 <i class="fas fa-trash"></i></button>`:``)+``: ''}
-                            ${row['id_empresa_origen'] !== row['id_empresa_destino'] ?
+=======
 
+                            ${(row['doc_ven'] == '-') ?
+                            (array_accesos.find(element => element === 137)?`<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row["id_transferencia"]}" data-guia="${row["id_guia_com"]}" data-ing="${row["id_ingreso"]}" title="Anular" >
+                            <i class="fas fa-trash"></i></button>`:``)
+                                : ''}
+>>>>>>> develop
+                            ${row['id_empresa_origen'] !== row['id_empresa_destino'] ?
+                            (array_accesos.find(element => element === 136)?`<button type="button" class="autogenerar btn btn-success boton btn-flat" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row["id_doc_ven"]}" data-dc="${row["doc_com"]}" title="Autogenerar Docs de Compra" >
+                            <i class="fas fa-sync-alt"></i></button>`:``)
+                                : ''}
+
+<<<<<<< HEAD
                                 ``+(array_accesos.find(element => element === 136)?`<button type="button" class="autogenerar btn btn-success boton btn-flat" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row["id_doc_ven"]}" data-dc="${row["doc_com"]}" title="Autogenerar Docs de Compra" >
                                 <i class="fas fa-sync-alt"></i></button>`:``)+``: ''}
 
+=======
+>>>>>>> develop
                             </div>`;
                     }
                 },
@@ -258,7 +286,8 @@ $("#listaTransferenciasRecibidas tbody").on("click", "a.transferencia", function
     // }
 });
 
-$("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", function () {
+$("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", function (e) {
+    (e.currentTarget).setAttribute("disabled",true);
     var id = $(this).data("id");
     var dc = $(this).data("dc");
     console.log(id);
@@ -274,10 +303,12 @@ $("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", funct
                 confirmButtonText: "Si, Autogenerar"
             }).then(result => {
                 if (result.isConfirmed) {
+                    (e.currentTarget).removeAttribute("disabled");
                     autogenerarDocsCompra(id);
                 }
             });
         } else {
+            (e.currentTarget).removeAttribute("disabled");
             Lobibox.notify("warning", {
                 title: false,
                 size: "mini",
@@ -288,6 +319,7 @@ $("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", funct
             });
         }
     } else {
+        (e.currentTarget).removeAttribute("disabled");
         Lobibox.notify("error", {
             title: false,
             size: "mini",

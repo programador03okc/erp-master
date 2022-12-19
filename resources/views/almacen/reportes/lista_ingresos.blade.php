@@ -8,6 +8,7 @@ Lista de Ingresos
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
 <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 <style>
     .dataTables_scrollBody thead tr[role="row"]{
     visibility: collapse !important;
@@ -24,6 +25,8 @@ Lista de Ingresos
 @endsection
 
 @section('content')
+
+@if (in_array(162,$array_accesos) || in_array(163,$array_accesos))
 <div class="page-main" type="lista_ingresos">
     <!-- <legend class="mylegend">
         <h2>Lista de Ingresos</h2>
@@ -101,7 +104,16 @@ Lista de Ingresos
         </div>
     </div>
 </div>
-
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-filtros" style="overflow-y: scroll;">
     <div class="modal-dialog">
         <div class="modal-content" style="width:600px;">

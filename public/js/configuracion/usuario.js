@@ -584,4 +584,62 @@ $(document).on('submit','[data-form="cambio-clave"]',function (e) {
         })
     }
 });
+$(document).on('change','input.dni-unico',function () {
+    var documento = $(this).val();
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'validar-documento',
+        data: {documento:documento},
+        dataType: 'JSON',
+        success: function(response){
+            if (response.status===200) {
+                Swal.fire(
+                    'Información',
+                    'El número de documento se encuentra en uso',
+                    'warning'
+                );
+                $('#formPage [name="nro_documento"]').val('');
+            }
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+$(document).on('change','input.usuario-unico',function () {
+    var nombre = $('#formPage [name="nombres"]').val(),
+        apellido = $('#formPage [name="apellido_paterno"]').val(),
+        apellido_materno = $('#formPage [name="apellido_materno"]').val(),
+        usuario='';
+
+    if (nombre!=='' && apellido!=='' && apellido_materno!=='') {
+        usuario = nombre.charAt(0)+apellido;
+        usuario = usuario.toLowerCase();
+        validarUsuario(usuario)
+    }
+});
+function validarUsuario(usuario) {
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'validar-usuario',
+        data: {usuario:usuario},
+        dataType: 'JSON',
+        success: function(response){
+            if (response.status===200) {
+                usuario=usuario+$('#formPage [name="apellido_materno"]').val().charAt(0);
+                usuario= usuario.toLowerCase();
+                validarUsuario(usuario)
+            }else{
+                $('#formPage [name="usuario"]').val(usuario);
+            }
+        }
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+}
 

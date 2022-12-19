@@ -34,6 +34,7 @@ class IncidenciaController extends Controller
         $divisiones = DB::table('administracion.division')->where([['estado', '=', 1], ['grupo_id', '=', 2]])->get();
         $usuarios = Usuario::join('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
             ->where([['sis_usua.estado', '=', 1], ['usuario_rol.id_rol', '=', 20]])->get(); //20 CAS
+
         $medios = MedioReporte::where('estado', 1)->get();
         $modos = ModoIncidencia::where('estado', 1)->get();
         $atiende = AtiendeIncidencia::where('estado', 1)->get();
@@ -118,13 +119,15 @@ class IncidenciaController extends Controller
     {
         // $lista = Incidencia::with('contribuyente', 'responsable', 'estado')->where([['estado', '!=', 7]]);
         $lista = DB::table('cas.incidencia')
-            ->select(
+        ->select(
                 'incidencia.id_incidencia',
                 'incidencia.codigo',
                 'incidencia.fecha_reporte',
                 'adm_contri.razon_social',
                 'adm_contri.id_contribuyente',
                 'sis_usua.nombre_corto',
+                'incidencia.factura',
+                'incidencia.falla_reportada',
                 'incidencia_estado.descripcion as estado_descripcion',
             )
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'incidencia.id_responsable')

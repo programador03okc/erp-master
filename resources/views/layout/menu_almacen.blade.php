@@ -10,8 +10,13 @@
         <ul class="treeview-menu">
             {{-- @if(Auth::user()->tieneAplicacion(75)) --}}
             <li><a href="{{route('almacen.catalogos.catalogo-productos.index')}}"> Catálogo de Productos</a></li>
+<<<<<<< HEAD
             {{-- @endif
             @if(Auth::user()->tieneAplicacion(73)) --}}
+=======
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(73)) --}}
+>>>>>>> develop
             <li><a href="{{route('almacen.catalogos.clasificaciones.index')}}"> Clasificación</a></li>
             {{-- @endif
             @if(Auth::user()->tieneAplicacion(70)) --}}
@@ -48,7 +53,11 @@
         </ul>
     </li>
     {{-- @endif --}}
+<<<<<<< HEAD
     {{-- <!-- @if(Auth::user()->tieneSubModulo(20)) --> --}}
+=======
+    <!-- @if(Auth::user()->tieneSubModulo(20)) -->
+>>>>>>> develop
     <!-- <li class="treeview">
                 <a href="#"><i class="fab fa-stack-overflow"></i> Control de Stock
                     <span class="pull-right-container">
@@ -64,7 +73,11 @@
                 {{-- @endif --}}
                 </ul>
             </li> -->
+<<<<<<< HEAD
     {{-- <!-- @endif --> --}}
+=======
+    <!-- @endif -->
+>>>>>>> develop
     {{-- @if(Auth::user()->tieneSubModulo(21)) --}}
     <li class="treeview">
         <a href="#">
@@ -73,6 +86,7 @@
         <ul class="treeview-menu">
             {{-- @if(Auth::user()->tieneAplicacion(82)) --}}
             <li><a href="{{route('almacen.movimientos.pendientes-ingreso.index')}}"> Atención de Ingresos </a></li>
+<<<<<<< HEAD
             {{-- @endif
             @if(Auth::user()->tieneAplicacion(83)) --}}
             <li><a href="{{route('almacen.movimientos.pendientes-salida.index')}}"> Atención de Salidas </a></li>
@@ -82,6 +96,17 @@
             {{-- @endif --}}
             <li><a href="{{route('almacen.movimientos.customizacion.index')}}"> Customización </a></li>
             {{-- @if (Auth::user()->id_usuario == 3) --}}
+=======
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(83)) --}}
+            <li><a href="{{route('almacen.movimientos.pendientes-salida.index')}}"> Atención de Salidas </a></li>
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(86)) --}}
+            <li><a href="{{route('almacen.transferencias.gestion-transferencias.index')}}"> Transferencias </a></li>
+            {{-- @endif --}}
+            <li><a href="{{route('almacen.movimientos.customizacion.index')}}"> Customización </a></li>
+            {{-- @if (in_array(Auth::user()->id_usuario,[1,3,27,17,64,16,118,119,93,77])) --}}
+>>>>>>> develop
             <li><a href="{{route('almacen.movimientos.devolucion.index')}}"> Devolución </a></li>
             {{-- @endif --}}
             <li><a href="{{route('almacen.movimientos.prorrateo.index')}}"> Prorrateo de Costos </a></li>
@@ -111,6 +136,7 @@
         <ul class="treeview-menu">
             {{-- @if(Auth::user()->tieneAplicacion(89)) --}}
             <li><a href="{{route('almacen.reportes.saldos.index')}}"> Saldos Actuales </a></li>
+<<<<<<< HEAD
             {{-- @endif
             @if(Auth::user()->tieneAplicacion(90)) --}}
             <li><a href="{{route('almacen.reportes.lista-ingresos.index')}}"> Reporte de Ingresos </a></li>
@@ -132,14 +158,45 @@
             {{-- @endif
             @if(Auth::user()->tieneAplicacion(96)) --}}
             <li><a href="{{route('almacen.reportes.kardex-series.index')}}"> Kardex de Series </a></li>
+=======
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(90)) --}}
+            <li><a href="{{route('almacen.reportes.lista-ingresos.index')}}"> Reporte de Ingresos </a></li>
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(91)) --}}
+            <li><a href="{{route('almacen.reportes.lista-salidas.index')}}"> Reporte de Salidas </a></li>
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(92)) --}}
+            <li><a href="{{route('almacen.reportes.detalle-ingresos.index')}}"> Detalle Ingresos </a></li>
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(93)) --}}
+            <li><a href="{{route('almacen.reportes.detalle-salidas.index')}}"> Detalle Salidas </a></li>
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(94)) --}}
+            <li><a href="{{route('almacen.reportes.kardex-general.index')}}"> Kardex General </a></li>
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(95)) --}}
+            <li><a href="{{route('almacen.reportes.kardex-productos.index')}}"> Kardex por Producto </a></li>
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(96)) --}}
+            <li><a href="{{route('almacen.reportes.kardex-series.index')}}"> Kardex de Series </a></li>
+            {{-- @endif--}}
+            {{-- @if(Auth::user()->tieneAplicacion(96)) --}} <!-- !TO-DO: falta crear su propio acceso -->
+            <li><a href="{{route('almacen.reportes.stock-series.index')}}"> Stock de Series </a></li>
+>>>>>>> develop
             {{-- @endif --}}
             <!-- @if(Auth::user()->tieneAplicacion(97))
             <li><a href="{{route('almacen.reportes.documentos-prorrateo.index')}}"> Documentos de Prorrateo </a></li>
             @endif -->
         </ul>
     </li>
+<<<<<<< HEAD
     {{-- @endif
     @if(Auth::user()->tieneSubModulo(43)) --}}
+=======
+    {{-- @endif --}}
+    {{-- @if(Auth::user()->tieneSubModulo(43)) --}}
+>>>>>>> develop
     <li class="treeview">
         <a href="#">
             <i class="fas fa-stream"></i> <span>Variables</span> <i class="fa fa-angle-left pull-right"></i>
@@ -147,6 +204,7 @@
         <ul class="treeview-menu">
             {{-- @if(Auth::user()->tieneAplicacion(98)) --}}
             <li><a href="{{route('almacen.variables.series-numeros.index')}}"> Series-Números </a></li>
+<<<<<<< HEAD
             {{-- @endif
             @if(Auth::user()->tieneAplicacion(99)) --}}
             <li><a href="{{route('almacen.variables.tipos-movimiento.index')}}"> Tipos de Operación </a></li>
@@ -155,6 +213,16 @@
             <li><a href="{{route('almacen.variables.tipos-documento.index')}}"> Tipos de Documentos </a></li>
             {{-- @endif
             @if(Auth::user()->tieneAplicacion(101)) --}}
+=======
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(99)) --}}
+            <li><a href="{{route('almacen.variables.tipos-movimiento.index')}}"> Tipos de Operación </a></li>
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(100)) --}}
+            <li><a href="{{route('almacen.variables.tipos-documento.index')}}"> Tipos de Documentos </a></li>
+            {{-- @endif --}}
+            {{-- @if(Auth::user()->tieneAplicacion(101)) --}}
+>>>>>>> develop
             <li><a href="{{route('almacen.variables.unidades-medida.index')}}"> Unidades de Medida </a></li>
             {{-- @endif --}}
         </ul>

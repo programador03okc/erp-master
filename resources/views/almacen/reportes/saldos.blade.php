@@ -7,6 +7,7 @@ Saldos Actuales
 
 @section('estilos')
     <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
     <style>
         button.botones {
             margin-top: 35px;
@@ -29,6 +30,8 @@ Saldos Actuales
 @endsection
 
 @section('content')
+
+@if (in_array(159,$array_accesos) || in_array(160,$array_accesos) || in_array(161,$array_accesos))
 <div class="page-main" type="saldos">
     <div class="box box-solid">
         <div class="box-body">
@@ -37,8 +40,13 @@ Saldos Actuales
                     <form id="formulario" method="POST">
                         @csrf
                         <div class="row">
+<<<<<<< HEAD
                             {{-- @if (in_array(159,$array_accesos)) --}}
                             <div class="col-md-4">
+=======
+                            @if (in_array(159,$array_accesos))
+                            <div class="col-md-3">
+>>>>>>> develop
                                 <div class="form-group">
                                     <h5>Almacén</h5>
                                     <select name="almacen[]" class="selectpicker" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10">
@@ -48,41 +56,77 @@ Saldos Actuales
                                     </select>
                                 </div>
                             </div>
+<<<<<<< HEAD
                             {{-- @endif --}}
                             <div class="col-md-8">
                                 <div class="row">
                                     {{-- @if (in_array(159,$array_accesos)) --}}
+=======
+                            @endif
+
+                            <div class="col-md-9">
+                                <div class="row">
+                                    @if (in_array(159,$array_accesos))
+>>>>>>> develop
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <h5>Hasta</h5>
                                             <input type="date" name="fecha" class="form-control text-center" value="{{ $fecha->format('Y-m-d') }}">
                                         </div>
                                     </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
                                     <div class="col-md-2">
                                         <button type="button" class="btn btn-block botones btn-success" onclick="procesar();">
                                             <i class="fas fa-search"></i> Procesar
                                         </button>
                                     </div>
+<<<<<<< HEAD
                                     {{-- @endif --}}
                                     {{-- @if (in_array(160,$array_accesos)) --}}
+=======
+                                    @endif
+                                    @if (in_array(160,$array_accesos))
+>>>>>>> develop
                                     <div class="col-md-2">
                                         <button type="button" class="btn btn-block botones btn-primary export" onclick="exportar();" disabled>
                                             <i class="fas fa-download"></i> Exportar
                                         </button>
                                     </div>
+<<<<<<< HEAD
                                     <div class="col-md-3">
+=======
+                                    <div class="col-md-2">
+>>>>>>> develop
                                         <button type="button" class="btn btn-block botones btn-warning export" onclick="exportarSeries();" disabled>
                                             <i class="fas fa-download"></i> Exportar series
                                         </button>
                                     </div>
+<<<<<<< HEAD
                                     {{-- @endif --}}
                                     {{-- @if (in_array(161,$array_accesos)) --}}
                                     <div class="col-md-3">
+=======
+                                    @endif
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-block botones btn-info" onclick="exportarAntiguedades();">
+                                            <i class="fas fa-download"></i> Antiguedades
+                                        </button>
+                                    </div>
+                                    @if (in_array(161,$array_accesos))
+                                    <div class="col-md-2">
+>>>>>>> develop
                                         <button type="button" class="btn btn-block botones btn-danger" onclick="exportarSoftLink();">
                                             <i class="fas fa-download"></i> Stock Valorizado
                                         </button>
                                     </div>
+<<<<<<< HEAD
                                     {{-- @endif --}}
+=======
+                                    @endif
+>>>>>>> develop
                                 </div>
                             </div>
                         </div>
@@ -120,6 +164,16 @@ Saldos Actuales
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @include('almacen.reportes.verRequerimientoReservas')
 @endsection
 
@@ -322,6 +376,13 @@ Saldos Actuales
             window.location.href = "{{ route('almacen.reportes.saldos.exportarSeries') }}";
         }
 
+<<<<<<< HEAD
+=======
+        function exportarAntiguedades() {
+            window.location.href = "{{ route('almacen.reportes.saldos.exportarAntiguedades') }}";
+        }
+
+>>>>>>> develop
         function exportarSoftLink() {
             var route = "{{ route('almacen.reportes.saldos.exportar-valorizacion') }}";
             var almacen = $(".selectpicker").val();

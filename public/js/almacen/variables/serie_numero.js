@@ -17,6 +17,7 @@ $(function(){
 });
 function listar_series_numeros(){
     var vardataTables = funcDatatables();
+<<<<<<< HEAD
     var button_copiar = (array_accesos.find(element => element === 181)?vardataTables[2][0]:[]) ,
         button_excel = (array_accesos.find(element => element === 182)?vardataTables[2][1]:[]) ,
         button_pdf = (array_accesos.find(element => element === 183)?vardataTables[2][2]:[]) ,
@@ -24,6 +25,16 @@ function listar_series_numeros(){
     $('#listaSerieNumero').dataTable({
         'dom': vardataTables[1],
         'buttons': [button_copiar,button_excel,button_pdf,button_imprimir],
+=======
+    console.log(vardataTables[2]);
+    const button_copiar= (array_accesos.find(element => element === 181)?vardataTables[2][0]:[]),
+        button_descargar_excel= (array_accesos.find(element => element === 182)?vardataTables[2][1]:[]),
+        button_descargar_pdf= (array_accesos.find(element => element === 183)?vardataTables[2][2]:[]),
+        button_imprimir= (array_accesos.find(element => element === 184)?vardataTables[2][3]:[]);
+    $('#listaSerieNumero').dataTable({
+        'dom': vardataTables[1],
+        'buttons': [button_copiar,button_descargar_excel,button_descargar_pdf,button_imprimir],
+>>>>>>> develop
         'language' : vardataTables[0],
         'ajax': 'listar_series_numeros',
         'columns': [

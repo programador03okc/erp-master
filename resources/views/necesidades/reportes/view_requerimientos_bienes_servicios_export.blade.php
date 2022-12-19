@@ -9,13 +9,15 @@
             <th>Fecha Entrega</th>
             <th>Tipo Req.</th>
             <th>Empresa</th>
+            <th>Sede</th>
             <th>Grupo</th>
             <th>División</th>
             <th>Proyecto/presupuesto</th>
             <th>Moneda</th>
             <th>Monto Total</th>
             <th>Observacion</th>
-            <th>Creado por</th>
+            <th>Elaborado por</th>
+            <th>Aprobado por</th>
             <th>Estado</th>
         </tr>
     </thead>
@@ -30,6 +32,7 @@
             <td>{{ $requerimiento["fecha_entrega"] }}</td>
             <td>{{ $requerimiento["tipo_requerimiento"] }}</td>
             <td>{{ $requerimiento["razon_social"] }}</td>
+            <td>{{ $requerimiento["sede"] }}</td>
             <td>{{ $requerimiento["grupo"] }}</td>
             <td>{{ $requerimiento["division"] }}</td>
             <td>{{ $requerimiento["descripcion_proyecto"] }}</td>
@@ -37,6 +40,7 @@
             <td>{{ $requerimiento["monto_total"] }}</td>
             <td>{{ $requerimiento["observacion"] }}</td>
             <td>{{ $requerimiento["nombre_usuario"] }}</td>
+            <td>{{ $requerimiento["ultimo_aprobador"] }}</td>
             <td>{{ $requerimiento["estado_doc"] }}</td>
 
         </tr>

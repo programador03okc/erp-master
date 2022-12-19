@@ -11,6 +11,7 @@ Transferencias
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -22,6 +23,7 @@ Transferencias
 @endsection
 
 @section('content')
+@if (in_array(123,$array_accesos) || in_array(127,$array_accesos) || in_array(131,$array_accesos)|| in_array(133,$array_accesos))
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="transferencias">
@@ -176,14 +178,21 @@ Transferencias
                                 @csrf()
                                 <input type="hidden" name="id_almacen_destino_recibida" value="0">
                             </form>
+<<<<<<< HEAD
                             {{-- @if (Auth::user()->id_usuario == 3) --}}
                             @if (in_array(134,$array_accesos))
+=======
+                            @if (Auth::user()->id_usuario == 3)
+>>>>>>> develop
                             <button data-toggle="tooltip" data-placement="bottom" title="Actualizar Ventas Internas"
                                 class="btn btn-success btn-sm exportar" style="color:#fff !important;" onClick="exportarVentasInternasActualizadas()">
                                 <i class="fas fa-file-excel"></i> Actualizar Ventas Internas
                             </button>
+<<<<<<< HEAD
                             @endif
                             @if (in_array(279,$array_accesos))
+=======
+>>>>>>> develop
                             <button data-toggle="tooltip" data-placement="bottom" title="Actualizar Ventas Internas"
                                 class="btn btn-success btn-sm exportar" style="color:#fff !important;" onClick="exportarValorizacionesIngresos()">
                                 <i class="fas fa-file-excel"></i> Actualizar Ingresos Cambio moneda
@@ -222,6 +231,17 @@ Transferencias
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
+
 @include('almacen.guias.guia_com_ver')
 @include('almacen.transferencias.transferenciaCreate')
 @include('almacen.transferencias.transferenciaRecibir')
@@ -257,6 +277,7 @@ Transferencias
 
 <script>
     let csrf_token = "{{ csrf_token() }}";
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn';
@@ -277,7 +298,11 @@ Transferencias
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/guia_ven_series.js')}}?v={{filemtime(public_path('js/almacen/guia/guia_ven_series.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
+<<<<<<< HEAD
 <script>
     var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
 </script>
+=======
+
+>>>>>>> develop
 @endsection

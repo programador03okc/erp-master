@@ -27,7 +27,12 @@ class PosicionController extends Controller
             $value->accesos;
             array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
         }
+<<<<<<< HEAD
         return view('almacen/ubicacion/ubicacion', compact('almacenes','estantes','niveles','array_accesos_botonera'));
+=======
+        $modulo='almacen';
+        return view('almacen/ubicacion/ubicacion', compact('almacenes','estantes','niveles','array_accesos_botonera','modulo'));
+>>>>>>> develop
     }
     public function mostrar_estantes_cbo(){
         $data = DB::table('almacen.alm_ubi_estante')

@@ -157,8 +157,13 @@ class TransitoOrdenesCompra {
     mostrar(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO') {
         let that = this;
         vista_extendida();
+<<<<<<< HEAD
         var vardataTables = funcDatatables(),
             button_filtro=(array_accesos.find(element => element === 280)?{
+=======
+        var vardataTables = funcDatatables();
+        const button_filtros = (array_accesos.find(element => element === 280)?{
+>>>>>>> develop
                 text: '<i class="fas fa-filter"></i> Filtros : 0',
                 attr: {
                     id: 'btnFiltrosListaTransitoOrdenesCompra'
@@ -169,7 +174,11 @@ class TransitoOrdenesCompra {
                 },
                 className: 'btn-default btn-sm'
             }:[]),
+<<<<<<< HEAD
             button_descargar=(array_accesos.find(element => element === 274)?{
+=======
+            button_descargar_excel = (array_accesos.find(element => element === 274)?{
+>>>>>>> develop
                 text: '<i class="far fa-file-excel"></i> Descargar',
                 attr: {
                     id: 'btnDescargarListaTransitoOrdenesCompra'
@@ -182,7 +191,11 @@ class TransitoOrdenesCompra {
             }:[]);
         $tablaListaTransitoOrdenesCompra= $('#listaTransitoOrdenesCompra').DataTable({
             'dom': vardataTables[1],
+<<<<<<< HEAD
             'buttons': [button_filtro,button_descargar],
+=======
+            'buttons': [button_filtros,button_descargar_excel],
+>>>>>>> develop
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,

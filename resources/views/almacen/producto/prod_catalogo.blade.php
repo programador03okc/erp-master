@@ -4,9 +4,13 @@
 @section('cabecera')
 Catálogo de Productos
 @endsection
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
+@endsection
 
 @section('content')
 <div class="page-main" type="producto">
+<<<<<<< HEAD
     <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;padding-top: 10px;">
         <div class="row">
             <div class="col-md-12">
@@ -17,6 +21,16 @@ Catálogo de Productos
                 <table class="mytable table table-condensed table-bordered table-okc-view" id="listaProductoCatalogo">
                     <thead>
                         <tr>
+=======
+
+        @if (in_array(37,$array_accesos) || in_array(38,$array_accesos) || in_array(39,$array_accesos) || in_array(40,$array_accesos))
+        <div class="thumbnail" style="padding-left: 10px;padding-right: 10px;padding-top: 10px;">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="mytable table table-condensed table-bordered table-okc-view" id="listaProductoCatalogo">
+                        <thead>
+                            <tr>
+>>>>>>> develop
                             <th></th>
                             <th>Part Number</th>
                             <th>Código Agile</th>
@@ -27,18 +41,42 @@ Catálogo de Productos
                             <th>Control de Series</th>
                             <th>Unid. Med.</th>
                             <th>Marca</th>
+<<<<<<< HEAD
                             <th>Subcategoría</th>
+=======
+                            <th>Subcatgoría</th>
+>>>>>>> develop
                             <th>Categoría</th>
                             <th>Clasificación</th>
                             <th>Fecha registro</th>
                             <th>Registrado por</th>
+<<<<<<< HEAD
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
+=======
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+>>>>>>> develop
             </div>
         </div>
-    </div>
+        @else
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger pulse" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error de Accesos:</span>
+                    Solicite los accesos
+                </div>
+            </div>
+        </div>
+        @endif
+
+
 </div>
 @endsection
 

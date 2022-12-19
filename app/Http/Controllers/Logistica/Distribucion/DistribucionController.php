@@ -540,7 +540,7 @@ class DistribucionController extends Controller
             ->leftjoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oportunidades.id_entidad')
             ->join('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.estado')
             ->where('orden_despacho_grupo_det.estado', 1)
-            ->whereIn('orden_despacho.estado', [2, 3, 4, 5, 6, 7, 8, 9, 10])
+            ->whereIn('orden_despacho.estado', [2, 3, 4, 5, 6, 7, 8, 9, 10]) // ! revisar nuevos estado agregadoa 11,12,13 en estado_envio
             ->get();
         $output['data'] = $data;
         return response()->json($output);
@@ -720,11 +720,11 @@ class DistribucionController extends Controller
     public function mostrarEstados(Request $request)
     {
         $estados = DB::table('almacen.estado_envio')
-            ->where([
-                ['id_estado', '>=', 3],
-                ['id_estado', '<=', 8]
-            ])
-            // ->whereIn('id_estado', json_decode($request->estados))
+            // ->where([
+            //     ['id_estado', '>=', 3],
+            //     ['id_estado', '<=', 8]
+            // ])
+            ->whereIn('id_estado',[3,4,5,6,7,8,11,12,13])->orderBy('descripcion','asc')
             ->get();
         return response()->json($estados);
     }

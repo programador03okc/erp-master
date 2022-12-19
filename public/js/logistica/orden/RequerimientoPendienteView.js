@@ -498,7 +498,11 @@ class RequerimientoPendienteView {
 
     renderRequerimientoPendienteList(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', reserva = 'SIN_FILTRO', orden = 'SIN_FILTRO') {
         let that = this;
+<<<<<<< HEAD
         var button_nueva_orden = (array_accesos.find(element => element === 228)?{
+=======
+        const button_nueva_orden = (array_accesos.find(element => element === 228)?{
+>>>>>>> develop
                 text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nueva orden',
                 attr: {
                     disabled: true,
@@ -509,8 +513,13 @@ class RequerimientoPendienteView {
 
                 },
                 className: 'btn-warning btn-sm'
+<<<<<<< HEAD
             }:[]) ,
             button_filtros = (array_accesos.find(element => element === 229)?{
+=======
+            }:[]),
+            button_filtro = (array_accesos.find(element => element === 229)?{
+>>>>>>> develop
                 text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                 attr: {
                     id: 'btnFiltrosRequerimientosPendientes'
@@ -520,10 +529,17 @@ class RequerimientoPendienteView {
 
                 },
                 className: 'btn-default btn-sm'
+<<<<<<< HEAD
             }:[]) ;
         $tablaListaRequerimientosPendientes = $('#listaRequerimientosPendientes').DataTable({
             'dom': vardataTables[1],
             'buttons': [button_nueva_orden,button_filtros],
+=======
+            }:[]);
+        $tablaListaRequerimientosPendientes = $('#listaRequerimientosPendientes').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [button_nueva_orden,button_filtro],
+>>>>>>> develop
             'language': vardataTables[0],
             'order': [[3, 'desc']],
             'bLengthChange': false,
@@ -558,9 +574,6 @@ class RequerimientoPendienteView {
                 { 'data': 'observacion', 'name': 'alm_req.observacion', 'className': 'text-center' },
                 { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc', 'className': 'text-center' },
                 { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'className': 'text-center', "searchable": false }
-
-
-
             ],
             'columnDefs': [
                 {
@@ -610,11 +623,17 @@ class RequerimientoPendienteView {
                         if (tieneTransformacion == true && cantidadItemBase == 0) {
                             return ('<div class="btn-group" role="group">' +
                                 '</div>' +
+<<<<<<< HEAD
                                 '<div class="btn-group" role="group">' +
                                 (array_accesos.find(element => element === 226)?'<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">' +
                                 '<i class="fas fa-eye fa-sm"></i>' +
                                 '</button>':'')
                                  +
+=======
+                                '<div class="btn-group" role="group">' +(array_accesos.find(element => element === 226)?'<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">' +
+                                '<i class="fas fa-eye fa-sm"></i>' +
+                                '</button>':'') +
+>>>>>>> develop
 
                                 '</div>');
                         } else {
@@ -628,9 +647,14 @@ class RequerimientoPendienteView {
                             let btnAtenderAlmacen = '';
                             let btnCrearOrdenCompra = '';
                             let btnGestionarEstadoRequerimiento = '';
+<<<<<<< HEAD
                             let btnObservarRequerimientoLogistico = ''; // * para activar comentario de abajo para habilitar botoón de observar logístico
                             // let btnObservarRequerimientoLogistico = '<button type="button" class="btn btn-warning btn-xs handleClickObservarRequerimientoLogistico" name="btnObservarRequerimientoLogistico" title="Observar requerimiento" data-codigo-requerimiento="' + row.codigo + '" data-id-requerimiento="' + row.id_requerimiento + '"  data-observacion-logistica-sin-sustento="'+observacionLogisticaSinSustento+'"  ><i class="fas fa-exclamation-circle"></i></button>';
                             let btnCrearOrdenServicio = (array_accesos.find(element => element === 224)?'<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  >OS</button>':'') ;
+=======
+                            let btnObservarRequerimientoLogistico = '<button type="button" class="btn btn-warning btn-xs handleClickObservarRequerimientoLogistico" name="btnObservarRequerimientoLogistico" title="Observar requerimiento" data-codigo-requerimiento="' + row.codigo + '" data-id-requerimiento="' + row.id_requerimiento + '"  data-observacion-logistica-sin-sustento="'+observacionLogisticaSinSustento+'"  ><i class="fas fa-exclamation-circle"></i></button>';
+                            let btnCrearOrdenServicio = (array_accesos.find(element => element === 224)?'<button type="button" class="btn btn-warning btn-xs handleClickCrearOrdenServicioPorRequerimiento" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '"  >OS</button>':'');
+>>>>>>> develop
                             let btnExportarExcel = (array_accesos.find(element => element === 221)?'<button type="button" class="btn btn-default btn-xs handleClickSolicitudCotizacionExcel" name="btnSolicitudCotizacionExcel" title="Solicitud cotización excel" data-id-requerimiento="' + row.id_requerimiento + '" style="color:green;" ><i class="far fa-file-excel"></i></button>':'');
                             // if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
                                 // btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row['id_requerimiento'] + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
@@ -641,9 +665,13 @@ class RequerimientoPendienteView {
                                 if (row.estado == 38 || row.estado == 39) { // estado por regularizar | estado  en pausa
 
                                     btnAtenderAlmacen = (array_accesos.find(element => element === 225)?'<button type="button" class="btn btn-primary btn-xs" name="btnOpenModalAtenderConAlmacen" title="Reserva en almacén" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" data-almacen-requerimiento="' + row.almacen_requerimiento + '" disabled><i class="fas fa-dolly fa-sm"></i></button>':'');
+<<<<<<< HEAD
 
                                     btnCrearOrdenCompra = (array_accesos.find(element => element === 283)?'<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  disabled>OC</button>':'');
 
+=======
+                                    btnCrearOrdenCompra = (array_accesos.find(element => element === 283)?'<button type="button" class="btn btn-warning btn-xs" name="btnCrearOrdenCompraPorRequerimiento" title="Crear Orden de Compra" data-id-requerimiento="' + row.id_requerimiento + '"  disabled>OC</button>':'');
+>>>>>>> develop
                                     btnCrearOrdenServicio = (array_accesos.find(element => element === 224)?'<button type="button" class="btn btn-danger btn-xs" name="btnCrearOrdenServicioPorRequerimiento" title="Crear Orden de Servicio" data-id-requerimiento="' + row.id_requerimiento + '" disabled >OS</button>':'');
 
                                 } else {
@@ -663,7 +691,11 @@ class RequerimientoPendienteView {
 
                             let btnVercuadroCostos = '';
                             if (row.id_tipo_requerimiento == 1) {
+<<<<<<< HEAD
                                 btnVercuadroCostos = (array_accesos.find(element => element === 226)?'<button type="button" class="btn btn-default btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>':'');
+=======
+                                btnVercuadroCostos = array_accesos.find(element => element === 226)?'<button type="button" class="btn btn-default btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-eye fa-sm"></i></button>':'';
+>>>>>>> develop
                             }
 
 
@@ -848,7 +880,11 @@ class RequerimientoPendienteView {
 
     renderRequerimientoAtendidosList(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', reserva = 'SIN_FILTRO', orden = 'SIN_FILTRO') {
         let that = this;
+<<<<<<< HEAD
         var button_filtros = (array_accesos.find(element => element === 230)?{
+=======
+        const button_filtros = (array_accesos.find(element => element === 230)?{
+>>>>>>> develop
                 text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                 attr: {
                     id: 'btnFiltrosRequerimientosAtendidos'
@@ -859,8 +895,13 @@ class RequerimientoPendienteView {
                 },
                 className: 'btn-default btn-sm'
             }:[]),
+<<<<<<< HEAD
             button_descargar_excel = (array_accesos.find(element => element === 231)?{
                 text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+=======
+            button_descarga_Excel = (array_accesos.find(element => element === 231)?{
+                text: '<psan class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+>>>>>>> develop
                 attr: {
                     id: 'btnExportarTablaRequerimientosAtendidosExcel'
                 },
@@ -872,7 +913,11 @@ class RequerimientoPendienteView {
             }:[]);
         $tablaListaRequerimientosAtendidos = $('#listaRequerimientosAtendidos').DataTable({
             'dom': vardataTables[1],
+<<<<<<< HEAD
             'buttons': [button_filtros,button_descargar_excel],
+=======
+            'buttons': [button_filtros,button_descarga_Excel],
+>>>>>>> develop
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,
@@ -945,8 +990,12 @@ class RequerimientoPendienteView {
                                 '</div>' +
                                 '<div class="btn-group" role="group">' +(array_accesos.find(element => element === 235)?'<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">' +
                                 '<i class="fas fa-eye fa-sm"></i>' +
+<<<<<<< HEAD
                                 '</button>':'')
                                  +
+=======
+                                '</button>':'')+
+>>>>>>> develop
 
                                 '</div>');
                         } else {
@@ -1822,7 +1871,7 @@ class RequerimientoPendienteView {
                 <td>${(element.codigo != null && element.codigo != '') ? element.codigo : (element.id_reserva)}</td>
                 <td>${element.almacen.descripcion}</td>
                 <td>${element.stock_comprometido}</td>
-                <td>${element.usuario.trabajador.postulante.persona.nombres.concat(' ', element.usuario.trabajador.postulante.persona.apellido_paterno ?? '')}</td>
+                <td>${element.usuario.nombre_corto}</td>
                 <td>${element.estado.estado_doc}</td>
                 </tr>`);
             });
@@ -2026,15 +2075,17 @@ class RequerimientoPendienteView {
         let cantidadTotalStockComprometido = 0;
         if (data.length > 0) {
             (data).forEach(element => {
-                cantidadTotalStockComprometido += parseFloat(element.stock_comprometido);
-                document.querySelector("tbody[id='bodyListaConReserva']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-                <td>${(element.codigo != null && element.codigo != '') ? element.codigo : (element.id_reserva)}</td>
-                <td>${element.almacen.descripcion}</td>
-                <td>${element.stock_comprometido}</td>
-                <td>${element.usuario.trabajador.postulante.persona.nombres.concat(' ', element.usuario.trabajador.postulante.persona.apellido_paterno ?? '')}</td>
-                <td>${element.estado.estado_doc}</td>
-                <td><button type="button" class="btn btn-xs btn-danger btnAnularReserva handleClickAnularReserva" data-codigo-reserva="${element.codigo}" data-id-reserva="${element.id_reserva}"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" title="Anular"><i class="fas fa-times fa-xs"></i></button></td>
-                </tr>`);
+                if(element.estado.id_estado_doc!=7){
+                    cantidadTotalStockComprometido += parseFloat(element.stock_comprometido);
+                    document.querySelector("tbody[id='bodyListaConReserva']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                    <td>${(element.codigo != null && element.codigo != '') ? element.codigo : (element.id_reserva)}</td>
+                    <td>${element.almacen.descripcion}</td>
+                    <td>${element.stock_comprometido}</td>
+                    <td>${element.usuario.nombre_corto}</td>
+                    <td>${element.estado.estado_doc}</td>
+                    <td><button type="button" class="btn btn-xs btn-danger btnAnularReserva handleClickAnularReserva" data-codigo-reserva="${element.codigo}" data-id-reserva="${element.id_reserva}"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" title="Anular"><i class="fas fa-times fa-xs"></i></button></td>
+                    </tr>`);
+                }
             });
             document.querySelector("table[id='listaConReserva'] label[name='totalReservado']").textContent = cantidadTotalStockComprometido;
         } else {
@@ -2090,22 +2141,33 @@ class RequerimientoPendienteView {
 
     anularReserva(obj) {
         let idProducto = document.querySelector("div[id='modal-nueva-reserva'] input[name='idProducto']").value;
-
+        let motivoDeAnulacion='';
         Swal.fire({
-            title: 'Esta seguro que desea anular la reserva ' + (obj.dataset.codigoReserva != '' ? obj.dataset.codigoReserva : obj.dataset.idReserva) + '?',
-            text: "No podrás revertir esto.",
-            icon: 'warning',
+            title: 'Esta seguro que desea anular la reserva ' + (obj.dataset.codigoReserva != '' ? obj.dataset.codigoReserva : obj.dataset.idReserva) + '?. Escriba un motivo',
+            input: 'textarea',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, anular'
-
+            confirmButtonText: 'Registrar',
+            
+            allowOutsideClick: () => !Swal.isLoading()
         }).then((result) => {
+            motivoDeAnulacion = result.value;
+            let formData = new FormData();
+            formData.append(`idReserva`, obj.dataset.idReserva);
+            formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
+            formData.append(`motivoDeAnulacion`, motivoDeAnulacion);
+            if(motivoDeAnulacion == null || (motivoDeAnulacion).trim()==''){
+
+                Swal.fire(
+                    '',
+                    'Debe ingresar un motivo para anular',
+                    'info'
+                );
+                return false;
+            } 
             if (result.isConfirmed) {
-                let formData = new FormData();
-                formData.append(`idReserva`, obj.dataset.idReserva);
-                formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
 
                 $.ajax({
                     type: 'POST',
@@ -2127,16 +2189,16 @@ class RequerimientoPendienteView {
                         if (response.id_reserva > 0) {
                             $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
 
-                            Lobibox.notify('success', {
+                            Lobibox.notify(response.tipo_estado, {
                                 title: false,
                                 size: 'mini',
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Reserva anulada`
+                                msg: response.mensaje
                             });
 
-                            this.listarTablaListaConReserva(response.data)
+                            this.listarTablaListaConReserva(response.data);
                             this.llenarTablaModalAtenderConAlmacen(document.querySelector("form[id='form-nueva-reserva'] input[name='idRequerimiento']").value);
 
 
@@ -2187,6 +2249,7 @@ class RequerimientoPendienteView {
             }
         })
 
+        $(document).off('focusin.modal'); // fix focus textarea de sweetalert
     }
 
     // handleChangeObtenerStockAlmacen() {
@@ -3277,22 +3340,31 @@ class RequerimientoPendienteView {
     }
 
     anularReservaActiva(obj) {
+        let motivoDeAnulacion = '';
 
         Swal.fire({
-            title: '¿Está seguro que desea anular la reserva ?',
-            text: obj.dataset.descripcion,
-            icon: 'warning',
+            title: '¿Está seguro que desea anular la reserva?. Escriba un motivo',
+            input: 'textarea',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, anular reserva'
-
+            confirmButtonText: 'Registrar',
+            allowOutsideClick: () => !Swal.isLoading()
         }).then((result) => {
+            motivoDeAnulacion = result.value;
+            let formData = new FormData();
+            formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
+            formData.append(`motivoDeAnulacion`, motivoDeAnulacion);
+            if(motivoDeAnulacion == null || (motivoDeAnulacion).trim()==''){
+                Swal.fire(
+                    '',
+                    'Debe ingresar un motivo para anular',
+                    'info'
+                );
+                return false;
+            } 
             if (result.isConfirmed) {
-                let formData = new FormData();
-                formData.append(`idDetalleRequerimiento`, obj.dataset.idDetalleRequerimiento);
-
                 $.ajax({
                     type: 'POST',
                     url: 'anular-toda-reserva-detalle-requerimiento',

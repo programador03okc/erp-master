@@ -91,14 +91,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="nro_documento">N° de documento</label>
-                                <input type="number" class="form-control" id="nro_documento" name="nro_documento" required>
+                                <input type="number" class="form-control dni-unico" id="nro_documento" name="nro_documento" required>
                                 <small id="emailHelp" class="form-text text-muted">N° de documento de identificación.</small>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="nombres">Nombres:</label>
-                                <input type="text" class="form-control" id="nombres" name="nombres" required>
+                                <input type="text" class="form-control usuario-unico" id="nombres" name="nombres" required>
                             </div>
                         </div>
                     </div>
@@ -106,13 +106,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="apellido_paterno">Apellido Paterno : </label>
-                                <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" required>
+                                <input type="text" class="form-control usuario-unico" id="apellido_paterno" name="apellido_paterno" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="apellido_materno">Apellido Materno : </label>
-                                <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" required>
+                                <input type="text" class="form-control usuario-unico" id="apellido_materno" name="apellido_materno" required>
                             </div>
                         </div>
                     </div>
@@ -302,12 +302,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="usuario">Usuario : </label>
-                                <input type="text" class="form-control" id="usuario" name="usuario" required>
+                                <label for="nombre_corto">Nombre corto : </label>
+                                <input type="text" class="form-control" id="nombre_corto" name="nombre_corto" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+<<<<<<< HEAD
                                 <label for="nombre_corto">Nombre corto : </label>
                                 <input type="text" class="form-control" id="nombre_corto" name="nombre_corto" required>
                             </div>
@@ -317,6 +318,17 @@
                                 <label for="clave">Clave : </label>
                                 <input type="password" class="form-control" id="clave" name="clave" required>
                             </div>
+=======
+                                <label for="usuario">Usuario : </label>
+                                <input type="text" class="form-control usuario-unico" id="usuario" name="usuario" value="" required >
+                            </div>
+                        </div>
+                        {{-- <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clave">Clave : </label>
+                                <input type="password" class="form-control" id="clave" name="clave" required>
+                            </div>
+>>>>>>> develop
                         </div> --}}
                     </div>
                     {{-- <div class="row"> --}}
@@ -799,18 +811,27 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="usuario_modificar">Usuario : </label>
-                                <input type="text" class="form-control" id="usuario_modificar" name="usuario" required>
+                                <label for="nombre_corto_modificar">Nombre corto : </label>
+                                <input type="text" class="form-control" id="nombre_corto_modificar" name="nombre_corto" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="usuario_modificar">Usuario : </label>
+                                <input type="text" class="form-control" id="usuario_modificar" name="usuario" required>
+                            </div>
+                        </div>
+                        {{-- <div class="col-md-6">
+                            <div class="form-group">
+<<<<<<< HEAD
                                 <label for="nombre_corto_modificar">Nombre corto : </label>
                                 <input type="text" class="form-control" id="nombre_corto_modificar" name="nombre_corto" required>
                             </div>
                         </div>
                         {{-- <div class="col-md-6">
                             <div class="form-group">
+=======
+>>>>>>> develop
                                 <label for="clave_modificar">Clave : </label>
                                 <input type="password" class="form-control" id="clave_modificar" name="clave" >
                             </div>

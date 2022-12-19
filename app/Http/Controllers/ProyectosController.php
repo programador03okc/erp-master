@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Comercial\ClienteController;
 use App\Http\Controllers\Proyectos\Catalogos\GenericoController;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Presupuestos\CentroCosto;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;

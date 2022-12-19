@@ -29,6 +29,8 @@ Series-Numeros
 
 @section('content')
 <div class="page-main" type="serie_numero">
+
+    @if (sizeof($array_accesos_botonera)!==0 || in_array(181,$array_accesos) ||in_array(182,$array_accesos)||in_array(183,$array_accesos)||in_array(184,$array_accesos))
     <div class="row">
         <div class="col-md-7">
             <fieldset class="group-table">
@@ -101,7 +103,18 @@ Series-Numeros
             </form>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
+
 @endsection
 
 @section('scripts')

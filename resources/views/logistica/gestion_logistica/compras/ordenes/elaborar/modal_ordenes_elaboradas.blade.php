@@ -10,20 +10,20 @@
                     <thead>
                         <tr>
                             <th hidden>Id</th>
-                            <th style="width: 10%; text-align:center;">Fecha Em.</th>
-                            <th style="width: 10%; text-align:center;">Nro.Orden</th>
-                            <th style="width: 10%; text-align:center;">Cod. Softlink</th>
-                            <th style="width: 8%; text-align:center;">RUC</th>
-                            <th style="width: 20%; text-align:center;">Proveedor</th>
-                            <th style="width: 5%; text-align:center;">Moneda</th>
-                            <th style="width: 8%; text-align:center;">Empresa-Sede</th>
-                            <th style="width: 8%; text-align:center;">Estado</th>
-                            <th style="width: 10%; text-align:center;">Acción</th>
+                            <th width="10%" style="text-align:center;">Fecha Em.</th>
+                            <th width="10%" style="text-align:center;">Nro.Orden</th>
+                            <th width="10%" style="text-align:center;">Cod. Softlink</th>
+                            <th widt="8%" style="text-align:center;">RUC</th>
+                            <th width="20%" style="text-align:center;">Proveedor</th>
+                            <th widt="5%" style="text-align:center;">Moneda</th>
+                            <th widt="8%" style="text-align:center;">Empresa-Sede</th>
+                            <th widt="8%" style="text-align:center;">Estado</th>
+                            <th width="10%" style="text-align:center;">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr id="default_tr">
-                            <td colspan="9"> No hay datos registrados</td>
+                            <td colspan="10"> No hay datos registrados</td>
                         </tr>
                     </tbody>
                 </table>

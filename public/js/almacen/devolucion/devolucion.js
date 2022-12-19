@@ -1,5 +1,6 @@
 let items = [];
 let salidas = [];
+let ingresos = [];
 let incidencias = [];
 let usuarioSession = '';
 let usuarioNombreSession = '';
@@ -50,11 +51,16 @@ $(".nueva-devolucion").on('click', function () {
 
     $("#listaProductosDevolucion tbody").html("");
     $("#listaSalidasDevolucion tbody").html("");
+    $("#listaIngresosDevolucion tbody").html("");
     $("#listaIncidenciasDevolucion tbody").html("");
 
     items = [];
     incidencias = [];
     salidas = [];
+<<<<<<< HEAD
+=======
+    ingresos = [];
+>>>>>>> develop
 
     $("[name=modo]").val("edicion");
     $("[name=id_devolucion]").val("");
@@ -84,11 +90,16 @@ $(".cancelar").on('click', function () {
 
     $("#listaProductosDevolucion tbody").html("");
     $("#listaSalidasDevolucion tbody").html("");
+    $("#listaIngresosDevolucion tbody").html("");
     $("#listaIncidenciasDevolucion tbody").html("");
 
     items = [];
     incidencias = [];
     salidas = [];
+<<<<<<< HEAD
+=======
+    ingresos = [];
+>>>>>>> develop
 
     $("[name=modo]").val("");
     $("[name=id_devolucion]").val("");
@@ -169,6 +180,7 @@ $("#form-devolucion").on("submit", function (e) {
                 detalle.push({
                     'id_detalle': element.id_detalle,
                     'id_salida_detalle': (element.id_salida_detalle !== undefined ? element.id_salida_detalle : null),
+                    'id_ingreso_detalle': (element.id_ingreso_detalle !== undefined ? element.id_ingreso_detalle : null),
                     'id_producto': element.id_producto,
                     'cantidad': element.cantidad,
                     'estado': element.estado,
@@ -183,9 +195,25 @@ $("#form-devolucion").on("submit", function (e) {
                     'estado': element.estado,
                 });
             });
+<<<<<<< HEAD
             data += '&items=' + JSON.stringify(detalle) +
                 '&incidencias=' + JSON.stringify(incidencias) +
                 '&salidas=' + JSON.stringify(salidas_venta);
+=======
+            let ingresos_compra = [];
+            ingresos.forEach(function (element) {
+                ingresos_compra.push({
+                    'id': element.id,
+                    'id_devolucion': element.id_devolucion,
+                    'id_ingreso': element.id_ingreso,
+                    'estado': element.estado,
+                });
+            });
+            data += '&items=' + JSON.stringify(detalle) +
+                '&incidencias=' + JSON.stringify(incidencias) +
+                '&salidas=' + JSON.stringify(salidas_venta) +
+                '&ingresos=' + JSON.stringify(ingresos_compra);
+>>>>>>> develop
             console.log(data);
             guardarDevolucion(data);
         }
@@ -284,7 +312,13 @@ function mostrarDevolucion(id) {
             $('[name=id_proveedor]').val(response.devolucion.id_proveedor);
             $('[name=id_cliente]').val(response.devolucion.id_cliente);
             $('[name=id_contribuyente]').val(response.devolucion.id_contribuyente);
+<<<<<<< HEAD
             $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social);
+=======
+            // $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social);
+            $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social !== null ?
+                response.devolucion.proveedor_razon_social : response.devolucion.cliente_razon_social);
+>>>>>>> develop
             $('[name=id_tipo]').val(response.devolucion.id_tipo);
 
             $('#codigo').text(response.devolucion.codigo);
@@ -298,10 +332,12 @@ function mostrarDevolucion(id) {
 
             items = response.detalle;
             salidas = response.salidas;
+            ingresos = response.ingresos;
             incidencias = response.incidencias;
 
             mostrarProductos();
             mostrarSalidas();
+            mostrarIngresos();
             mostrarIncidencias();
 
             $(".edition").attr('disabled', 'true');

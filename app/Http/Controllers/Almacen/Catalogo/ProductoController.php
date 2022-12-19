@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+<<<<<<< HEAD
 use Maatwebsite\Excel\Facades\Excel;
+=======
+use Debugbar;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductosExport;
+>>>>>>> develop
 
 date_default_timezone_set('America/Lima');
 class ProductoController extends Controller
@@ -604,35 +610,87 @@ class ProductoController extends Controller
     public function mostrar_productos()
     {
         $data = DB::table('almacen.view_catalogo_productos')->get();
+<<<<<<< HEAD
         /*DB::table('almacen.alm_prod')
+=======
+
+        // $data = DB::table('almacen.alm_prod')
+        //     ->select(
+        //         'alm_prod.id_producto',
+        //         'alm_prod.part_number',
+        //         'alm_prod.codigo',
+        //         'alm_prod.cod_softlink',
+        //         'alm_prod.descripcion',
+        //         'sis_moneda.simbolo',
+        //         DB::raw("CASE WHEN series=true THEN 'SI'
+        //                 ELSE 'NO' END  AS series"),
+        //         'alm_und_medida.abreviatura',
+        //         'alm_subcat.cod_softlink as cod_sub_cat',
+        //         'alm_subcat.descripcion as subcat_descripcion',
+        //         'alm_cat_prod.cod_softlink as cod_cat',
+        //         'alm_cat_prod.descripcion as cat_descripcion',
+        //         'alm_tp_prod.id_tipo_producto',
+        //         'alm_tp_prod.descripcion as tipo_descripcion',
+        //         'alm_clasif.id_clasificacion',
+        //         'alm_clasif.descripcion as clasif_descripcion'
+        //     )
+        //     ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
+        //     ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
+        //     ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
+        //     ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
+        //     ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+        //     ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
+        //     ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+    }
+
+    public function productosExcel()
+    {
+        $productos = DB::table('almacen.alm_prod')
+>>>>>>> develop
             ->select(
                 'alm_prod.id_producto',
                 'alm_prod.part_number',
                 'alm_prod.codigo',
                 'alm_prod.cod_softlink',
                 'alm_prod.descripcion',
+<<<<<<< HEAD
                 'sis_moneda.simbolo',
                 DB::raw("CASE WHEN series=true THEN 'SI'
                         ELSE 'NO' END  AS series"),
+=======
+                'alm_prod.notas',
+                'alm_prod.series',
+                'alm_prod.fecha_registro',
+                'sis_moneda.simbolo',
+>>>>>>> develop
                 'alm_und_medida.abreviatura',
-                'alm_subcat.cod_softlink as cod_sub_cat',
                 'alm_subcat.descripcion as subcat_descripcion',
-                'alm_cat_prod.cod_softlink as cod_cat',
                 'alm_cat_prod.descripcion as cat_descripcion',
-                'alm_tp_prod.id_tipo_producto',
                 'alm_tp_prod.descripcion as tipo_descripcion',
-                'alm_clasif.id_clasificacion',
-                'alm_clasif.descripcion as clasif_descripcion'
+                'alm_clasif.descripcion as clasif_descripcion',
+                'sis_usua.nombre_corto'
             )
             ->join('almacen.alm_subcat', 'alm_subcat.id_subcategoria', '=', 'alm_prod.id_subcategoria')
             ->join('almacen.alm_cat_prod', 'alm_cat_prod.id_categoria', '=', 'alm_prod.id_categoria')
             ->join('almacen.alm_tp_prod', 'alm_tp_prod.id_tipo_producto', '=', 'alm_cat_prod.id_tipo_producto')
             ->join('almacen.alm_clasif', 'alm_clasif.id_clasificacion', '=', 'alm_tp_prod.id_clasificacion')
+            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_prod.id_usuario')
             ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
             ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'alm_prod.id_moneda')
             ->where('alm_prod.estado', 1)
+<<<<<<< HEAD
             ->get();*/
         $output['data'] = $data;
         return response()->json($output);
+=======
+            ->get();
+
+        // return response()->json($productos);
+        return Excel::download(new ProductosExport(
+            $productos,
+        ), 'Catalogo de Productos.xlsx');
+>>>>>>> develop
     }
 }

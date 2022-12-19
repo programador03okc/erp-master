@@ -19,6 +19,10 @@ class SubCategoriaController extends Controller
         $clasificaciones = Clasificacion::where('estado', 1)->get();
         $tipos = Categoria::where('estado', 1)->get();
 
+<<<<<<< HEAD
+=======
+        $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
+>>>>>>> develop
         $array_accesos_botonera=array();
         $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
         ->select('accesos.*')
@@ -31,7 +35,13 @@ class SubCategoriaController extends Controller
             $value->accesos;
             array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
         }
+<<<<<<< HEAD
         return view('almacen/producto/subCategoria', compact('tipos', 'clasificaciones','array_accesos_botonera'));
+=======
+        $modulo='almacen';
+
+        return view('almacen/producto/subCategoria', compact('tipos', 'clasificaciones','modulo','array_accesos_botonera'));
+>>>>>>> develop
     }
 
     public function mostrarSubCategoriasPorCategoria($id_tipo)

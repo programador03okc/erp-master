@@ -1,11 +1,15 @@
 function iniciar(permiso) {
     // $("#tab-ordenes section:first form").attr('form', 'formulario');
     listarDespachosPendientes(permiso);
+    listarDevoluciones();
 
     $('#myTabDespachosPendientes a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         let tab = $(e.target).attr("href")
         if (tab == '#pendientes') {
             $("#despachosPendientes").DataTable().ajax.reload(null, false);
+        }
+        else if (tab == '#devoluciones') {
+            $("#listaDevoluciones").DataTable().ajax.reload(null, false);
         }
         else if (tab == '#salidas') {
             listarDespachosEntregados(permiso);
@@ -43,14 +47,24 @@ let $tableSalidas;
 function listarDespachosPendientes(permiso) {
     var vardataTables = funcDatatables();
     let botones = [];
+<<<<<<< HEAD
     var button_exportar_excel = (array_accesos.find(element => element === 113)?{
+=======
+    // if (acceso == '1') {
+    const button_descargar_excel = (array_accesos.find(element => element === 113) ? {
+>>>>>>> develop
         text: ' Exportar a Excel',
         action: function () {
             exportarDespachosPendientes();
         }, className: 'btn-success btnExportarPendientes'
+<<<<<<< HEAD
     }:[]);
     // if (acceso == '1') {
     botones.push(button_exportar_excel);
+=======
+    } : []);
+    botones.push(button_descargar_excel);
+>>>>>>> develop
     // }
 
     $("#despachosPendientes").on('search.dt', function () {
@@ -184,6 +198,7 @@ function listarDespachosPendientes(permiso) {
             {
                 'render': function (data, type, row) {
 
+<<<<<<< HEAD
                     return ``+(array_accesos.find(element => element === 114)?`<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                     data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                     <i class="fas fa-chevron-down"></i></button>`:``)+`` +
@@ -195,6 +210,19 @@ function listarDespachosPendientes(permiso) {
                     (array_accesos.find(element => element === 116)?`<button type="button" class="btn btn-success btn-flat boton ver-adjuntos" title="Ver Adjuntos" data-id="${row['id_requerimiento']}" data-codigo="${row['codigo_req']}">
                     <i class="fas fa-file-archive"></i></button>`:``)
 
+=======
+                    return `` + (array_accesos.find(element => element === 114) ? `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
+                    data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                    <i class="fas fa-chevron-down"></i></button>`: []) +
+                        (array_accesos.find(element => element === 115) ?
+                            `<button type="button" class="guia btn btn-warning btn-flat boton" data-toggle="tooltip"
+                            data-placement="bottom" title="Generar Guía"
+                            ${(row['estado_requerimiento'] == 39 || row['estado_requerimiento'] == 38) ? 'disabled' : ''} >
+                            <i class="fas fa-sign-in-alt"></i></button>`: []) +
+                        (array_accesos.find(element => element === 116) ?
+                            `<button type="button" class="btn btn-success btn-flat boton ver-adjuntos" title="Ver Adjuntos" data-id="${row['id_requerimiento']}" data-codigo="${row['codigo_req']}">
+                            <i class="fas fa-file-archive"></i></button>`: [])
+>>>>>>> develop
 
                 }, targets: 9
             }
@@ -303,13 +331,22 @@ $('#despachosPendientes tbody').on('click', 'td button.detalle', function () {
 function listarDespachosEntregados(permiso) {
     var vardataTables = funcDatatables();
     let botones = [];
+<<<<<<< HEAD
     var button_exportar_excel = (array_accesos.find(element => element === 118)?{
+=======
+    const button_descargr_excel = (array_accesos.find(element => element === 37) ? {
+>>>>>>> develop
         text: ' Exportar Excel',
         action: function () {
             exportarSalidasProcesadas();
         }, className: 'btn-success btnExportarSalidasProcesadas'
+<<<<<<< HEAD
     }:[]);
     botones.push(button_exportar_excel);
+=======
+    } : []);
+    botones.push(button_descargr_excel);
+>>>>>>> develop
     $('#despachosEntregados').DataTable({
         'dom': vardataTables[1],
         'buttons': botones,
@@ -417,6 +454,7 @@ function listarDespachosEntregados(permiso) {
                         if (row['estado'] !== 7) {
                             return `<div style="display:flex;">
                                     ${row['id_guia_ven'] == null && row['id_transformacion'] !== null ? '' :
+<<<<<<< HEAD
                                     ` `+(array_accesos.find(element => element === 119)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
                                     data-placement="bottom" title="Editar Guía de Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
                                     data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>`:``)+
@@ -438,6 +476,32 @@ function listarDespachosEntregados(permiso) {
                             data-fecha="${row['fecha_anulacion']}" data-comentario="${row['comentario_anulacion']}"
                             data-usuario="${row['usuario_anulacion_nombre']}"
                             ><i class="fas fa-eye"></i></button>`:``)+``;
+=======
+                                    (array_accesos.find(element => element === 119) ? `<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
+                                    data-placement="bottom" title="Editar Guía de Salidaa" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                    data-od="${row['id_od']}"><i class="fas fa-edit"></i></button>` : ``) +
+                                    (array_accesos.find(element => element === 120) ?
+                                        `<button type="button" class="imprimir btn btn-info btn-flat boton" data-toggle="tooltip"
+                                        data-placement="bottom" title="Descargar formato de impresión" data-guia="${row['id_guia_ven']}">
+                                        <i class="fas fa-print"></i></button>`: ``) +
+                                    (array_accesos.find(element => element === 121) ? `
+                                    <button type="button" class="btn btn-success btn-flat boton ver-adjuntos" title="Ver Adjuntos" data-id="${row['id_requerimiento']}">
+                                        <i class="fas fa-file-archive"></i></button>
+                                        `: ``)}
+
+                                    ${(row['id_guia_ven'] == null && row['id_transformacion'] !== null)
+                                    || row['estado_od'] == 21 || row['estado_od'] == 1 ?
+                                    (array_accesos.find(element => element === 122) ? `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
+                                        data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
+                                        data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>` : ``) : ''}
+                                </div>`;
+                        } else {
+                            return (array_accesos.find(element => element === 281) ? `<button type="button" class="anulacion btn btn-default btn-flat boton" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver datos de la Anulación" data-id="${row['id_mov_alm']}"
+                                data-fecha="${row['fecha_anulacion']}" data-comentario="${row['comentario_anulacion']}"
+                                data-usuario="${row['usuario_anulacion_nombre']}"
+                                ><i class="fas fa-eye"></i></button>`: ``);
+>>>>>>> develop
                         }
                     } else {
                         return '';
@@ -567,7 +631,7 @@ function exportarDespachosPendientes() {
 function exportarSalidasProcesadas() {
     $('#formFiltrosSalidasProcesadas').trigger('submit');
 }
-$(document).on('click','.ver-adjuntos',function () {
+$(document).on('click', '.ver-adjuntos', function () {
     var data_id = $(this).attr('data-id'),
         codigo = $(this).attr('data-codigo');
     $('#modal-ver-adjuntos').modal('show');
@@ -575,12 +639,12 @@ $(document).on('click','.ver-adjuntos',function () {
     verAdjuntos(data_id);
 });
 function verAdjuntos(id) {
-    var html='';
+    var html = '';
     $.ajax({
         type: 'GET',
         url: 'atencion-ver-adjuntos',
         data: {
-            id:id,
+            id: id,
         },
         // processData: false,
         // contentType: false,
@@ -588,19 +652,19 @@ function verAdjuntos(id) {
         beforeSend: (data) => {
         },
         success: (response) => {
-            if (response.status===200) {
+            if (response.status === 200) {
                 console.log(response);
 
                 $.each(response.data, function (indexInArray, valueOfElement) {
-                    if (valueOfElement.descripcion==='Contabilidad') {
-                        html+='<tr data-key="'+valueOfElement.id_adjuntos+'">'
-                            html+='<td>'
-                                html+='<a href="/files/tesoreria/adjuntos_facturas/'+valueOfElement.archivo+'" target="_blank"><i class="fa fa-file-download"></i> '+valueOfElement.archivo+'</a>'
-                            html+='</td>'
-                            html+='<td>'
-                                html+=''+valueOfElement.fecha_registro
-                            html+='</td>'
-                        html+='</tr>'
+                    if (valueOfElement.descripcion === 'Contabilidad') {
+                        html += '<tr data-key="' + valueOfElement.id_adjuntos + '">'
+                        html += '<td>'
+                        html += '<a href="/files/tesoreria/adjuntos_facturas/' + valueOfElement.archivo + '" target="_blank"><i class="fa fa-file-download"></i> ' + valueOfElement.archivo + '</a>'
+                        html += '</td>'
+                        html += '<td>'
+                        html += '' + valueOfElement.fecha_registro
+                        html += '</td>'
+                        html += '</tr>'
                     }
 
                 });

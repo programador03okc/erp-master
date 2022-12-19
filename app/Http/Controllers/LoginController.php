@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Configuracion\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\VarDumper\Cloner\Data;
+use App\Helpers\StringHelper;
 
 class LoginController extends Controller{
 
@@ -33,7 +37,7 @@ class LoginController extends Controller{
     }
 
     function select_modules(){
-        $sql = DB::table('configuracion.sis_modulo')->where([['id_padre', '=', 0],['estado','!=',7]])->orderBy('descripcion', 'ASC')->get();
+        $sql = DB::table('configuracion.modulos')->where([['id_padre', '=', 0],['estado','!=',7]])->orderBy('descripcion', 'ASC')->get();
         $html = '';
 
         foreach ($sql as $row){
@@ -42,15 +46,30 @@ class LoginController extends Controller{
             $link = $row->ruta;
             $rutas = '';
 
-            $html .=
-            '<div class="col-md-3">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Módulo</div>
-                    <div class="panel-body">
-                        <h4><a class="panel-link" href="'.$link.'/index">'.$name.'</a></h4>
+            if ($id===169) {
+                if (in_array(Auth::user()->id_usuario, [1,31,6,129])) {
+                    $html .=
+                    '<div class="col-md-3">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Módulo</div>
+                            <div class="panel-body">
+                                <h4><a class="panel-link" href="'.$link.'">'.$name.'</a></h4>
+                            </div>
+                        </div>
+                    </div>';
+                }
+            }else{
+                $html .=
+                '<div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Módulo</div>
+                        <div class="panel-body ">
+                            <h4><a class="panel-link" href="'.$link.'/index">'.$name.'</a></h4>
+                        </div>
                     </div>
-                </div>
-            </div>';
+                </div>';
+            }
+
         }
         return $html;
     }
@@ -99,5 +118,36 @@ class LoginController extends Controller{
         }
         $array = array('rol' => $roles);
         return response($array);
+    }
+    public function actualizarContraseña()
+    {
+        $usuario = Usuario::where('id_usuario',Auth::user()->id_usuario)->first();
+        $success = true;
+        $hoy = date("Y-m-d");
+        if (date("Y-m-d",strtotime($usuario->fecha_registro."+ 45 days")) > $hoy) {
+            $success = false;
+        }
+        return response()->json([
+            "success"=>$success,
+            "status"=>200
+        ]);
+    }
+    public function modificarClave(Request $request)
+    {
+        $success = false;
+        if ($request->clave === $request->repita_clave) {
+
+            $usuario = Usuario::find(Auth::user()->id_usuario);
+            $usuario->clave = StringHelper::encode5t($request->clave);
+            $usuario->fecha_registro = date('Y-m-d', time());
+            $usuario->save();
+            if ($usuario) {
+                $success=true;
+            }
+        }
+        return response()->json([
+            "success"=>$success,
+            "status"=>200
+        ]);
     }
 }

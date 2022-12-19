@@ -356,7 +356,11 @@ class RevisarAprobarController extends Controller{
                     // Debugbar::info($idRolUsuarioList);
                     // Debugbar::info(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList));
 
+<<<<<<< HEAD
                     if (((count(array_intersect($nextIdRolAprobanteList, $idRolUsuarioList))) > 0) == true || (count(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList))) > 0) {
+=======
+                    if ( in_array(6,$idRolUsuarioList) || ((count(array_intersect($nextIdRolAprobanteList, $idRolUsuarioList))) > 0) == true || (count(array_intersect($idRolAprobanteEnCualquierOrdenList, $idRolUsuarioList))) > 0) {
+>>>>>>> develop
 
 
                             $element->setAttribute('id_flujo',$nextIdFlujo);
@@ -468,7 +472,13 @@ class RevisarAprobarController extends Controller{
                 }
                 break;
             case '3':
+
+                if($requerimiento->estado !=3){
+                    $requerimiento->estado_anterior = $requerimiento->estado;
+                }
                 $requerimiento->estado = 3;
+
+
                 break;
             case '5':
                 $requerimiento->estado = 12;
@@ -494,6 +504,9 @@ class RevisarAprobarController extends Controller{
                 break;
             case '3':
                 $requerimientoPago->id_estado = 3;
+                if($requerimientoPago->estado !=3){
+                    $requerimientoPago->estado_anterior = $requerimientoPago->id_estado;
+                }
                 break;
             case '5':
                 $requerimientoPago->id_estado = 4;

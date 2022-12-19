@@ -19,7 +19,7 @@ Búsqueda sensitiva de Series
 
 @section('content')
 <div class="page-main" type="kardex_series">
-
+    @if (in_array(173,$array_accesos))
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
@@ -46,7 +46,11 @@ Búsqueda sensitiva de Series
                         </div>
                     </div>
                 </div>
+<<<<<<< HEAD
 
+=======
+                @if (in_array(173,$array_accesos))
+>>>>>>> develop
                 <div class="row">
                     <div class="col-md-4">
                         <button type="button" class="btn btn-primary" data-toggle="tooltip"
@@ -77,7 +81,20 @@ Búsqueda sensitiva de Series
             </div>
         </div>
     </div>
+<<<<<<< HEAD
 
+=======
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
+>>>>>>> develop
 </div>
 @include('almacen.reportes.modalKardexSerie')
 @endsection

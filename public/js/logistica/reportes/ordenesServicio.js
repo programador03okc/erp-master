@@ -27,8 +27,13 @@ class OrdenesServicio {
     mostrar(idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde='SIN_FILTRO',fechaRegistroHasta='SIN_FILTRO') {
         let that = this;
         vista_extendida();
+<<<<<<< HEAD
         var vardataTables = funcDatatables(),
             button_descargar = (array_accesos.find(element => element === 275)?{
+=======
+        var vardataTables = funcDatatables();
+        const button_descargar_excel=(array_accesos.find(element => element === 275)?{
+>>>>>>> develop
                 text: '<i class="far fa-file-excel"></i> Descargar',
                 attr: {
                     id: 'btnDescargarListaOrdenesServicio'
@@ -41,7 +46,11 @@ class OrdenesServicio {
             }:[]);
         $tablaListaOrdenesServicio= $('#listaOrdenesServicio').DataTable({
             'dom': vardataTables[1],
+<<<<<<< HEAD
             'buttons': [button_descargar],
+=======
+            'buttons': [button_descargar_excel],
+>>>>>>> develop
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,

@@ -22,6 +22,7 @@ Listado de requerimientos logísticos
 
 @section('content')
 <div class="page-main" type="lista_requerimiento">
+    @if (in_array(33,$array_accesos) || in_array(19,$array_accesos) || in_array(36,$array_accesos) || in_array(35,$array_accesos) || in_array(34,$array_accesos) || in_array(18,$array_accesos))
     <div class="row">
         <div class="col-md-12">
             <fieldset class="group-table">
@@ -123,6 +124,19 @@ Listado de requerimientos logísticos
             </fieldset>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error de Accesos:</span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
+
+
 </div>
 
 <!-- modal -->
@@ -182,7 +196,13 @@ Listado de requerimientos logísticos
 <script>
     var roles = JSON.parse('{!!$roles!!}');
     var grupos = JSON.parse('{!!$gruposUsuario!!}');
+<<<<<<< HEAD
     var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
+=======
+
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
+
+>>>>>>> develop
     $(document).ready(function() {
         seleccionarMenu(window.location);
         const requerimientoModel = new RequerimientoModel();

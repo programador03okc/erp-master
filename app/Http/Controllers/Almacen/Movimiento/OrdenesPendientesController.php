@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Almacen\Movimiento;
 use App\Models\Almacen\MovimientoDetalle;
 use App\Models\almacen\Reserva;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
@@ -62,11 +63,19 @@ class OrdenesPendientesController extends Controller
         $nro_ot_pendientes = $this->nroTransformacionesPendientes();
         $nro_dev_pendientes = $this->nroDevolucionesPendientes();
 
+<<<<<<< HEAD
         // $array_accesos = [];
         // $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
         // foreach ($accesos_usuario as $key => $value) {
         //     array_push($array_accesos, $value->id_acceso);
         // }
+=======
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
+>>>>>>> develop
 
         return view('almacen/guias/ordenesPendientes', compact(
             'almacenes',
@@ -88,7 +97,11 @@ class OrdenesPendientesController extends Controller
             'nro_oc_pendientes',
             'nro_ot_pendientes',
             'nro_dev_pendientes',
+<<<<<<< HEAD
             // 'array_accesos',
+=======
+            'array_accesos',
+>>>>>>> develop
         ));
     }
 
@@ -475,7 +488,8 @@ class OrdenesPendientesController extends Controller
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')
             ->where([
-                ['log_det_ord_compra.id_orden_compra', '=', $id_orden]
+                ['log_det_ord_compra.id_orden_compra', '=', $id_orden],
+                ['log_det_ord_compra.estado', '!=', 7]
             ])
             ->get();
         return response()->json($detalle);
@@ -867,7 +881,10 @@ class OrdenesPendientesController extends Controller
                                 //         ['id_producto', '=', $det->id_producto]
                                 //     ])
                                 //     ->first();
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
                                 $det_req = DB::table('almacen.transfor_transformado')
                                     ->select('alm_det_req.*')
                                     ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_transformado.id_od_detalle')
@@ -928,7 +945,11 @@ class OrdenesPendientesController extends Controller
                                         'serie' => $serie,
                                         'estado' => 1,
                                         'fecha_registro' => $fecha_registro,
-                                        'id_guia_com_det' => $id_guia_com_det
+                                        'id_guia_com_det' => $id_guia_com_det,
+                                        'fecha_ingreso_soft' => $request->fecha_almacen,
+                                        'precio_unitario_soft' => $det->unitario,
+                                        'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
+                                        'moneda_soft' => $det->id_moneda,
                                     ]
                                 );
                             }
@@ -1094,7 +1115,11 @@ class OrdenesPendientesController extends Controller
                                     'serie' => $serie,
                                     'estado' => 1,
                                     'fecha_registro' => $fecha_registro,
-                                    'id_guia_com_det' => $id_guia_com_det
+                                    'id_guia_com_det' => $id_guia_com_det,
+                                    'fecha_ingreso_soft' => $request->fecha_almacen,
+                                    'precio_unitario_soft' => $det->precio,
+                                    'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
+                                    'moneda_soft' => $det->id_moneda_orden,
                                 ]
                             );
                         }
@@ -1174,7 +1199,11 @@ class OrdenesPendientesController extends Controller
                                         'serie' => $serie,
                                         'estado' => 1,
                                         'fecha_registro' => $fecha_registro,
-                                        'id_guia_com_det' => $id_guia_com_det
+                                        'id_guia_com_det' => $id_guia_com_det,
+                                        'fecha_ingreso_soft' => $request->fecha_almacen,
+                                        'precio_unitario_soft' => $det->unitario,
+                                        'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
+                                        'moneda_soft' => $request->moneda_devolucion,
                                     ]
                                 );
                             }

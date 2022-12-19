@@ -10,6 +10,7 @@ Reservas de almacén
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 <style>
     #despachosPendientes_filter,
     #despachosEntregados_filter{
@@ -27,6 +28,8 @@ Reservas de almacén
 @endsection
 
 @section('content')
+
+@if (in_array(155,$array_accesos) || in_array(156,$array_accesos) || in_array(154,$array_accesos))
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="reservasAlmacen">
@@ -69,6 +72,16 @@ Reservas de almacén
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @include('almacen.reservas.editarReserva')
 @endsection
 

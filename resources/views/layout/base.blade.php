@@ -82,6 +82,36 @@
 			</div>
 		</div>
 	</div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="atualizar-contraseña" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
+        <div class="modal-dialog" style="width:30%;">
+            <div class="modal-content">
+                <form data-form="actualizar-contraseña">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="titulo">Actualizar contraseña</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Ingrese su nueva contraseña</label>
+                                    <input class="form-control" type="password" name="clave" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Repita su contraseña</label>
+                                    <input class="form-control" type="password" name="repita_clave" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 	<script type="text/javascript">
 		var auth_user = <?= $auth_user ?>;
         // console.log(auth_user);
@@ -100,11 +130,60 @@
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 	<script>
-		$(document).ready(function() {
-			notificacionesNoLeidas();
-		});
+		// $(document).ready(function() {
+		// 	notificacionesNoLeidas();
+
+        //     $.ajax({
+		// 		url: '{{ route("actualizar") }}',
+		// 		data: {_token: '{{ csrf_token() }}'},
+		// 		type: 'GET',
+		// 		dataType: 'JSON',
+		// 		success: function (data) {
+		// 			if (data.success===true) {
+        //                 $('#atualizar-contraseña').modal('show');
+        //             }
+		// 		}
+		// 	});
+		// });
+        $(document).on('submit','[data-form="actualizar-contraseña"]',function (e) {
+            e.preventDefault();
+            var data = $(this).serialize();
+            $.ajax({
+                type: 'POST',
+                url: 'modificar-clave',
+                data: data,
+                // processData: false,
+                // contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+
+                }
+            }).done(function(response) {
+                console.log(response);
+                if (response.success===true) {
+                    $('#atualizar-contraseña').modal('hide');
+                    Swal.fire(
+                    'Éxito',
+                    'Se actualizo con éxito',
+                    'success'
+                    )
+                }else{
+                    Swal.fire(
+                    'Información',
+                    'Ingrese de nuevo su clave',
+                    'warning'
+                    )
+                }
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+            console.log(data);
+        });
 	</script>
 	<script>
 		function seleccionarMenu(url) {

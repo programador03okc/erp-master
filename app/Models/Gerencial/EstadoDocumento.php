@@ -13,6 +13,6 @@ class EstadoDocumento extends Model
 
     public function cobranza()
     {
-        return $this->belongsTo(Cobranza::class, 'id_estado_doc', 'id_estado_doc');
+        return $this->belongsTo(RegistroCobranza::class, 'id_estado_doc', 'id_estado_doc');
     }
 }

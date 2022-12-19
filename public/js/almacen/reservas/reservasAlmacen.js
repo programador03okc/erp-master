@@ -120,7 +120,7 @@ function listarReservasAlmacen(id_usuario) {
             {
                 data: 'estado_doc', name: 'adm_estado_doc.bootstrap_color', className: "text-center",
                 'render': function (data, type, row) {
-                    return '<span class="label label-' + row['bootstrap_color'] + '">' + row['estado_doc'] + '</span>'
+                    return '<span class=" '+(row['estado']==7?'handleClickDetalleAnulacion':'')+' label label-' + row['bootstrap_color'] + '" data-usuario-anulacion="'+row['usuario_anulacion']+'" data-motivo-anulacion="'+row['motivo_anulacion']+'"  data-fecha-anulacion="'+row['deleted_at']+'"  '+(row['estado']==7?'style="cursor:pointer;"':'')+' >' + row['estado_doc'] + '</span>'
                 }
             },
         ],
@@ -132,28 +132,64 @@ function listarReservasAlmacen(id_usuario) {
 
                 'render': function (data, type, row) {
 
+<<<<<<< HEAD
                     let $btn_editar = (id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93') ?
                     ``+(array_accesos.find(element => element === 155)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
+=======
+                    // let $btn_editar = (id_usuario == '3' || id_usuario == '16' || id_usuario == '17' || id_usuario == '93') ?
+                    // ((row['estado']===1)?
+                    // (array_accesos.find(element => element === 155)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
+>>>>>>> develop
 
-                        data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
+                    // data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
 
-                        data-almacen="${row['id_almacen_reserva']}"  data-stock="${row['stock_comprometido']}"
+                    // data-almacen="${row['id_almacen_reserva']}"  data-stock="${row['stock_comprometido']}"
 
-                        data-codigo="${row['codigo_req']}">
+                    // data-codigo="${row['codigo_req']}">
 
-                        <i class="fas fa-edit"></i>
+                    // <i class="fas fa-edit"></i>
 
+<<<<<<< HEAD
                     </button>`:``)+``: '';
+=======
+                    // </button>`:``):``)
+                    // : '';
+>>>>>>> develop
 
+                    let $btn_editar = array_accesos.find(element => element === 155)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
 
+                    data-placement="bottom" title="Editar Reserva"  data-id="${row['id_reserva']}"
+
+                    data-almacen="${row['id_almacen_reserva']}"  data-stock="${row['stock_comprometido']}"
+
+                    data-codigo="${row['codigo_req']}">
+
+                    <i class="fas fa-edit"></i>
+
+                    </button>`:``;
+
+                    let $btn_eliminar = (row['numero'] == null && row['estado']===1 || row['id_tipo_requerimiento']===4) ?
+
+                    (array_accesos.find(element => element === 156)?`<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
+
+                    data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}" data-id-tipo-requerimiento="${row['id_tipo_requerimiento']}">
+
+<<<<<<< HEAD
                     let $btn_eliminar = (row['numero'] !== null) ?
                     (array_accesos.find(element => element === 156)?`<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
 
                     data-placement="bottom" title="Anular Reserva" data-id="${row['id_reserva']}" data-detalle="${row['id_detalle_requerimiento']}">
+=======
+
+>>>>>>> develop
 
                     <i class="fas fa-trash"></i>
 
+<<<<<<< HEAD
                 </button>`:``)
+=======
+                    </button>`:``)
+>>>>>>> develop
                     :'';
 
                     return $btn_editar+$btn_eliminar;
@@ -183,6 +219,21 @@ $("#reservasAlmacen tbody").on("click", "button.editar", function () {
     $('[name=id_almacen_reserva]').val(alm);
     $('[name=stock_comprometido]').val(stock);
     $('#codigo_req').text(codigo);
+});
+$("#reservasAlmacen tbody").on("click", "span.handleClickDetalleAnulacion", function () {
+    var usuario_anulacion = $(this).data("usuarioAnulacion");
+    var motivo_anulacion = $(this).data("motivoAnulacion");
+    var fecha_anulacion = $(this).data("fechaAnulacion");
+
+    var swal_html = `<dl>
+    <dt>Anulado por</dt>
+    <dd>${usuario_anulacion}</dd>
+    <dt style="ma">Motivo</dt>
+    <dd>${motivo_anulacion}</dd>
+    <dt>Fecha anulación</dt>
+    <dd>${fecha_anulacion}</dd>
+  </dl>`;
+    Swal.fire({title:"Detalle de Anulación", html: swal_html});
 });
 
 
@@ -232,42 +283,83 @@ $("#form-editarReserva").on("submit", function (e) {
 
 
 $("#reservasAlmacen tbody").on("click", "button.anular", function () {
-    Swal.fire({
-        title: "¿Está seguro que desea anular ésta reserva?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#00a65a", //"#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Sí, Anular"
-    }).then(result => {
+    let motivoDeAnulacion = '';
 
+    Swal.fire({
+        title: "¿Está seguro que desea anular ésta reserva?. Escriba un motivo",
+        input: 'textarea',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Registrar',
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then(result => {
+        motivoDeAnulacion = result.value;
+        let formData = new FormData();
+        formData.append(`id`, $(this).data("id"));
+        formData.append(`id_tipo_requerimiento`, $(this).attr('data-id-tipo-requerimiento'));
+        formData.append(`id_detalle`, $(this).data('detalle'));
+        formData.append(`motivo_de_anulacion`, motivoDeAnulacion);
+        
+        if(motivoDeAnulacion == null || (motivoDeAnulacion).trim()==''){
+
+            Swal.fire(
+                '',
+                'Debe ingresar un motivo para anular',
+                'info'
+            );
+            return false;
+        } 
         if (result.isConfirmed) {
-            var id = $(this).data("id");
-            var id_detalle = $(this).data('detalle');
-            $.ajax({
-                type: 'GET',
-                url: 'anularReserva/' + id+'/'+id_detalle,
-                dataType: 'JSON',
-                success: function (response) {
-                    console.log(response);
-                    if (response.respuesta > 0) {
-                        Lobibox.notify("success", {
-                            title: false,
-                            size: "mini",
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: 'Se anuló correctamente.'
+                $.ajax({
+                    type: 'POST',
+                    url: 'anularReserva',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'JSON',
+                    beforeSend: (data) => { // Are not working with dataType:'jsonp'
+
+                        $('#wrapper-okc').LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            imageColor: "#3c8dbc"
                         });
-                        $('#reservasAlmacen').DataTable().ajax.reload(null, false);
+                    },
+                    success:  (response) =>{
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        console.log(response);
+                        if (response.respuesta > 0) {
+                            Lobibox.notify("success", {
+                                title: false,
+                                size: "mini",
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: 'Se anuló correctamente.'
+                            });
+                            $('#reservasAlmacen').DataTable().ajax.reload(null, false);
+                        }else{
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                response.tipo_estado
+                            );
+                        }
+                    },
+                    fail: (jqXHR, textStatus, errorThrown) => {
+                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                        Swal.fire(
+                            '',
+                            'Lo sentimos hubo un problema en el servidor al intentar anular la reserva, por favor vuelva a intentarlo',
+                            'error'
+                        );
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
                     }
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
+                });
         }
     });
 

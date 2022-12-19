@@ -43,7 +43,11 @@ function listarDevoluciones() {
                     return (row['fecha_registro'] !== undefined ? formatDate(row['fecha_registro']) : '');
                 }
             },
+<<<<<<< HEAD
             { 'data': 'tipo' },
+=======
+            { 'data': 'tipo_descripcion', name: 'devolucion_tipo.descripcion' },
+>>>>>>> develop
             { 'data': 'razon_social', name: 'adm_contri.razon_social' },
             { 'data': 'almacen_descripcion', name: 'alm_almacen.descripcion' },
             { 'data': 'observacion' },
@@ -76,7 +80,11 @@ function listarDevoluciones() {
                             data-placement="bottom" data-id="${row['id_devolucion']}" title="Agregar ficha técnica" >
                             <i class="fas fa-plus"></i></button>
 
+<<<<<<< HEAD
                             ${row['estado'] == 1 ?
+=======
+                            ${row['id_tipo'] == 1 ? (row['estado'] == 1 ?
+>>>>>>> develop
                                 `<button type="button" class="conformidad btn btn-primary boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row['id_devolucion']}" title="Conformidad" >
                             <i class="fas fa-check"></i></button>`
@@ -85,7 +93,12 @@ function listarDevoluciones() {
                                     `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row['id_devolucion']}" title="Revertir conformidad" >
                             <i class="fas fa-backspace"></i></button>`
+<<<<<<< HEAD
                                     : ''
+=======
+                                    : '')
+                                : ''
+>>>>>>> develop
                             }
                         </div>`;
                     }, className: "text-center"

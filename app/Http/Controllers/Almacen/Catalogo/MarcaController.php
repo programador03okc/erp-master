@@ -28,7 +28,12 @@ class MarcaController extends Controller
             $value->accesos;
             array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
         }
+<<<<<<< HEAD
         return view('almacen/producto/marca',compact('array_accesos_botonera'));
+=======
+        $modulo='almacen';
+        return view('almacen/producto/marca',compact('modulo','array_accesos_botonera'));
+>>>>>>> develop
     }
 
     public static function mostrar_subcategorias_cbo()

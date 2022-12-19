@@ -21,9 +21,9 @@
                             </div>
                         </div>
                     </fieldset>
-                    <br>
-                    <fieldset class="group-table">
-                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos del pago</strong></h5>
+                    {{-- <br> --}}
+                    {{-- <fieldset class="group-table"> --}}
+                        {{-- <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos del pago</strong></h5>
                         <div class="row">
                             <div class="col-md-12">
                                 <table id="adjuntosPago" class="mytable table table-condensed table-bordered table-okc-view">
@@ -37,13 +37,14 @@
                                     <tbody id="body_archivos_pago"></tbody>
                                 </table>
                             </div>
-                        </div>
-                    </fieldset>
+                        </div> --}}
+                    {{-- </fieldset> --}}
                     <br>
                     <fieldset class="group-table">
-                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de la cabecera</strong></h5>
+                        <legend style="border-bottom: 0px solid #e5e5e5;width: 30%;"><h5>Adjuntos de requerimiento</h5></legend>
                         <div class="row">
                             <div class="col-md-12">
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de la cabecera</strong></h5>
                                 <table id="adjuntosCabecera" class="mytable table table-condensed table-bordered table-okc-view">
                                     <tbody id="body_archivos_requerimiento_pago_cabecera">
                                         <thead>
@@ -56,14 +57,57 @@
                                 </table>
                             </div>
                         </div>
-                    </fieldset>
-                    <br>
-                    <fieldset class="group-table">
-                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos en el detalle</strong></h5>
                         <div class="row">
                             <div class="col-md-12">
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos en el detalle</strong></h5>
                                 <table id="adjuntosDetalle" class="mytable table table-condensed table-bordered table-okc-view">
                                     <tbody id="body_archivos_requerimiento_pago_detalle"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <br>
+                    {{-- <fieldset class="group-table">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos en el detalle</strong></h5>
+                                <table id="adjuntosDetalle" class="mytable table table-condensed table-bordered table-okc-view">
+                                    <tbody id="body_archivos_requerimiento_pago_detalle"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <br> --}}
+                    <fieldset class="group-table">
+                        <legend style="border-bottom: 0px solid #e5e5e5;width: 25%;"><h5>Adjuntos de tesoreria</h5></legend>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos del pago</strong></h5>
+                                <table id="adjuntosPago" class="mytable table table-condensed table-bordered table-okc-view">
+                                    <thead>
+                                        <tr>
+                                            <th>Adjunto</th>
+                                            <th>Fecha pago</th>
+                                            <th>Observación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="body_archivos_pago"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Otros adjuntos de tesorería</strong></h5>
+                                <table class="mytable table table-condensed table-bordered table-okc-view">
+                                    <thead>
+                                        <th>Adjunto</th>
+                                        <th>Fecha emisión</th>
+                                        <th>Tipo adjunto</th>
+                                    </thead>
+                                    <tbody data-table="adjuntos-tesoreria">
+
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

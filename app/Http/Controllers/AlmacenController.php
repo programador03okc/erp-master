@@ -16,7 +16,17 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReporteIngresosExcel;
 use App\Exports\ReporteSalidasExcel;
 use App\models\Configuracion\AccesosUsuarios;
+<<<<<<< HEAD
+=======
+use App\Exports\ReporteStockSeriesExcel;
+use App\Models\almacen\Catalogo\Categoria;
+use App\Models\almacen\Catalogo\Clasificacion;
+use App\Models\almacen\Catalogo\Marca;
+use App\Models\Almacen\Catalogo\SubCategoria;
+use App\Models\Almacen\StockSeriesView;
+>>>>>>> develop
 use Exception;
+use Yajra\DataTables\Facades\DataTables;
 
 date_default_timezone_set('America/Lima');
 
@@ -165,14 +175,24 @@ class AlmacenController extends Controller
         ->select('accesos.*')
         ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
         ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+<<<<<<< HEAD
         ->where('accesos_usuarios.id_modulo',85)
         ->where('accesos_usuarios.id_padre',39)
+=======
+        ->where('accesos_usuarios.id_modulo',65)
+        ->where('accesos_usuarios.id_padre',4)
+>>>>>>> develop
         ->get();
         foreach ($accesos_botonera as $key => $value) {
             $value->accesos;
             array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
         }
+<<<<<<< HEAD
         return view('almacen/variables/tipo_movimiento',compact('array_accesos','array_accesos_botonera'));
+=======
+        $modulo='almacen';
+        return view('almacen/variables/tipo_movimiento',compact('array_accesos','array_accesos_botonera','modulo'));
+>>>>>>> develop
     }
     function view_unid_med()
     {
@@ -181,20 +201,33 @@ class AlmacenController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
         $array_accesos_botonera=array();
         $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
         ->select('accesos.*')
         ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
         ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+<<<<<<< HEAD
         ->where('accesos_usuarios.id_modulo',87)
         ->where('accesos_usuarios.id_padre',39)
+=======
+        ->where('accesos_usuarios.id_modulo',65)
+        ->where('accesos_usuarios.id_padre',4)
+>>>>>>> develop
         ->get();
         foreach ($accesos_botonera as $key => $value) {
             $value->accesos;
             array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
         }
+<<<<<<< HEAD
         return view('almacen/variables/unid_med',compact('array_accesos','array_accesos_botonera'));
+=======
+        $modulo='almacen';
+        return view('almacen/variables/unid_med',compact('array_accesos','array_accesos_botonera','modulo'));
+>>>>>>> develop
     }
 
     function view_guia_compra()
@@ -270,7 +303,16 @@ class AlmacenController extends Controller
         }
         $empresas = AlmacenController::select_empresa();
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
+<<<<<<< HEAD
         return view('almacen/reportes/kardex_general', compact('almacenes', 'empresas', 'array_accesos'));
+=======
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('almacen/reportes/kardex_general', compact('almacenes', 'empresas','array_accesos'));
+>>>>>>> develop
     }
     function view_kardex_detallado()
     {
@@ -281,10 +323,19 @@ class AlmacenController extends Controller
         }
         $empresas = AlmacenController::select_empresa();
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
+<<<<<<< HEAD
+=======
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+>>>>>>> develop
         return view('almacen/reportes/kardex_detallado', compact('almacenes', 'empresas','array_accesos'));
     }
     function view_tipo_doc_almacen()
     {
+
         $tp_doc = $this->mostrar_tp_doc_cbo();
         $array_accesos=[];
         $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
@@ -296,14 +347,24 @@ class AlmacenController extends Controller
         ->select('accesos.*')
         ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
         ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+<<<<<<< HEAD
         ->where('accesos_usuarios.id_modulo',86)
         ->where('accesos_usuarios.id_padre',39)
+=======
+        ->where('accesos_usuarios.id_modulo',65)
+        ->where('accesos_usuarios.id_padre',4)
+>>>>>>> develop
         ->get();
         foreach ($accesos_botonera as $key => $value) {
             $value->accesos;
             array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
         }
+<<<<<<< HEAD
         return view('almacen/variables/tipo_doc_almacen', compact('tp_doc','array_accesos_botonera','array_accesos'));
+=======
+        $modulo='almacen';
+        return view('almacen/variables/tipo_doc_almacen', compact('tp_doc','array_accesos','array_accesos_botonera','modulo'));
+>>>>>>> develop
     }
     function view_ingresos()
     {
@@ -355,6 +416,14 @@ class AlmacenController extends Controller
         $empresas = AlmacenController::select_empresa();
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc_almacen = $this->tp_doc_almacen_cbo_sal();
+<<<<<<< HEAD
+=======
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+>>>>>>> develop
         return view('almacen/reportes/busqueda_salidas', compact('almacenes', 'empresas', 'tp_doc_almacen','array_accesos'));
     }
 
@@ -380,8 +449,30 @@ class AlmacenController extends Controller
 
         $tipos = $this->select_cont_tp_doc();
         $sedes = AlmacenController::mostrar_sedes_cbo();
+<<<<<<< HEAD
 
         return view('almacen/variables/serie_numero', compact('tipos', 'sedes','array_accesos','array_accesos_botonera'));
+=======
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        $array_accesos_botonera=array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+        ->select('accesos.*')
+        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
+        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+        ->where('accesos_usuarios.id_modulo',65)
+        ->where('accesos_usuarios.id_padre',4)
+        ->get();
+        foreach ($accesos_botonera as $key => $value) {
+            $value->accesos;
+            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+        }
+        $modulo='almacen';
+        return view('almacen/variables/serie_numero', compact('tipos', 'sedes','array_accesos','array_accesos_botonera','modulo'));
+>>>>>>> develop
     }
     function view_docs_prorrateo()
     {
@@ -2795,7 +2886,11 @@ class AlmacenController extends Controller
         $movimientos = [];
         $codigo = '';
 
+        $costo_promedio = 0;
+        $saldo_valor_aux = 0;
+        $valor_salida=0;
         foreach ($query as $d) {
+
 
             if ($d->prod_codigo !== $codigo) {
                 $saldo = 0;
@@ -2803,6 +2898,7 @@ class AlmacenController extends Controller
             }
             $ordenes = "";
             $comprobantes_array = [];
+
 
             if ($d->id_tp_mov == 1 || $d->id_tp_mov == 0) {
                 $saldo += $d->cantidad;
@@ -2836,10 +2932,18 @@ class AlmacenController extends Controller
                         array_push($comprobantes_array, $doc->serie . '-' . $doc->numero);
                     }
                 }
+                $saldo_valor_aux += $d->valorizacion;
             } else if ($d->id_tp_mov == 2) {
                 $saldo -= $d->cantidad;
                 $saldo_valor -= $d->valorizacion;
+
+                $valor_salida = (int) $costo_promedio * (int) $d->cantidad;
+                $saldo_valor_aux -= $valor_salida;
             }
+
+            $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor_aux / $saldo);
+            $costo_promedio = number_format($costo_promedio, 4, ".", ",");
+
             $codigo = $d->prod_codigo;
 
             $nuevo = [
@@ -2871,6 +2975,8 @@ class AlmacenController extends Controller
                 "cod_transferencia" => $d->cod_transferencia,
                 "orden" => $ordenes,
                 "docs" => implode(', ', $comprobantes_array),
+
+                "costo_promedio_2"=>$costo_promedio
             ];
             array_push($movimientos, $nuevo);
         }
@@ -7007,6 +7113,60 @@ class AlmacenController extends Controller
         return response()->json($output);
     }
 
+    function view_stock_series()
+    {
+        return view('almacen/reportes/stock_series');
+    }
+
+
+    public function obtener_data_stock_series(){
+        set_time_limit(0);
+
+        $stockSeries = StockSeriesView::where('estado','!=',7)->orderBy('fecha_ingreso','desc')->get();
+
+        $data=[];
+        foreach($stockSeries as $element){
+            $data[]=[
+                'almacen'=>$element->almacen??'',
+                'codigo_producto'=>$element->codigo_producto??'',
+                'part_number'=>$element->part_number??'',
+                'serie'=>$element->serie??'',
+                'descripcion'=>$element->descripcion??'',
+                'unidad_medida'=>$element->unidad_medida??'',
+                'afecto_igv'=>$element->afecto_igv??'',
+                'fecha_ingreso'=>$element->fecha_ingreso??'',
+                'guia_fecha_emision'=>$element->guia_fecha_emision??'',
+                'documento_compra'=>$element->documento_compra??''
+            ];
+        }
+        return $data;
+        // return response()->json($data);
+
+    }
+    public function listar_stock_series(){
+        $data = StockSeriesView::where('estado','!=',7);
+        return DataTables::of($data)
+        ->editColumn('fecha_ingreso', function ($data) {
+            return date('d-m-Y', strtotime($data->fecha_ingreso));
+        })
+        ->editColumn('guia_fecha_emision', function ($data) {
+            return date('d-m-Y', strtotime($data->guia_fecha_emision));
+        })
+        ->filterColumn('fecha_ingreso', function ($query, $keyword) {
+            $keywords = date('Y-m-d', strtotime($keyword));
+            $query->where('stock_series_view.fecha_ingreso', '>=', $keywords.' 00:00:00')->where('stock_series_view.fecha_ingreso', '<=', $keywords.' 23:59:59');
+        })
+        ->filterColumn('guia_fecha_emision', function ($query, $keyword) {
+            $keywords = date('Y-m-d', strtotime($keyword));
+            $query->where('stock_series_view.guia_fecha_emision', '>=', $keywords.' 00:00:00')->where('stock_series_view.guia_fecha_emision', '<=', $keywords.' 23:59:59');
+        })
+        ->make(true);
+    }
+
+    public function exportar_stock_series_excel()
+    {
+        return Excel::download(new ReporteStockSeriesExcel(), 'stock_series.xlsx');
+    }
 
     ////////////////////////////////////////
     public static function leftZero($lenght, $number)
@@ -7045,5 +7205,844 @@ class AlmacenController extends Controller
             $str = base64_decode(strrev($str));
         }
         return $str;
+    }
+    public function scripCategoria()
+    {
+        $clasificacion = array(
+            array(
+                "codigo"=>"00",
+                "descripcion"=>"*OTROS",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"00",
+                        "descripcion"=>"*OTROS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"00","descripcion"=>"*OTROS"),
+                        ),
+                    ),
+                ),
+            ),
+            array(
+                "codigo"=>"01",
+                "descripcion"=>"ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO",
+                        "sub_categoria"=>array(
+                            array(
+                                "codigo"=>"01",
+                                "descripcion"=>"ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO",
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            array(
+                "codigo"=>"02",
+                "descripcion"=>"EQUIPOS ELECTRICOS",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ACCESORIOS DE EQUIPOS ELÉTRICOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CABLE DE PODER"),
+                        ),
+                    ),
+                    array(
+                        "codigo"=>02,
+                        "descripcion"=>"EQUIPOS DE PROTECCION ELECTRICA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"BATERIAS PARA UPS"),
+                            array("codigo"=>"02","descripcion"=>"ESTABILIZADORES"),
+                            array("codigo"=>"03","descripcion"=>"SUPRESOR DE PICOS"),
+                            array("codigo"=>"04","descripcion"=>"TRANSFORMADORES"),
+                            array("codigo"=>"05","descripcion"=>"UPS"),
+                        ),
+                    ),
+                    array(
+                        "codigo"=>03,
+                        "descripcion"=>"EQUIPOS DE SISTEMA FOTOVOLTAICO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01", "descripcion"=>"PANEL SOLAR"),
+                            array("codigo"=>"02", "descripcion"=>"INMERSORES"),
+                            array("codigo"=>"03", "descripcion"=>"CONTROLADORES"),
+                            array("codigo"=>"04", "descripcion"=>"PARARAYOS"),
+                            array("codigo"=>"05", "descripcion"=>"BATERIAS PARA PLACAS SOLARES"),
+
+                        )
+                    ),
+                )
+            ),
+            array(
+                "codigo"=>"03",
+                "descripcion"=>"EQUIPOS, APARATOS Y ACCESORIOS INFORMÁTICOS",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ACCESORIOS DE COMPUTO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"07", "descripcion"=>"CARRITO PARA PORTATILES"),
+                            array("codigo"=>"08", "descripcion"=>"ESCRITORIO CLASICO PARA ORDENADOR"),
+                            array("codigo"=>"09", "descripcion"=>"ESCRITORIO GAMER"),
+                            array("codigo"=>"10", "descripcion"=>"FUNDA"),
+                            array("codigo"=>"11", "descripcion"=>"MALETIN"),
+                            array("codigo"=>"12", "descripcion"=>"MANDOS DE JUEGO"),
+                            array("codigo"=>"13", "descripcion"=>"MICRÓFONO"),
+                            array("codigo"=>"14", "descripcion"=>"MOCHILA"),
+                            array("codigo"=>"15", "descripcion"=>"MOUSE CLÁSICO ALÁMBRICO"),
+                            array("codigo"=>"16", "descripcion"=>"MOUSE CLÁSICO INALÁMBRICO"),
+                            array("codigo"=>"17", "descripcion"=>"MOUSE GAMER"),
+                            array("codigo"=>"18", "descripcion"=>"PARLANTES CLASICOS"),
+                            array("codigo"=>"19", "descripcion"=>"PARLANTES GAMER"),
+                            array("codigo"=>"20", "descripcion"=>"REPLICADOR DE PUERTOS"),
+                            array("codigo"=>"21", "descripcion"=>"SILLA CLASICA PARA ORDENADOR"),
+                            array("codigo"=>"22", "descripcion"=>"SILLA GAMER"),
+                            array("codigo"=>"23", "descripcion"=>"TECLADO CLÁSICO ALÁMBRICO"),
+                            array("codigo"=>"24", "descripcion"=>"TECLADO CLÁSICO INALÁMBRICO"),
+                            array("codigo"=>"25", "descripcion"=>"TECLADO GAMER"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"COMPONENTES DE COMPUTADORA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01", "descripcion"=>"BATERIA PARA COMPUTADORA"),
+                            array("codigo"=>"02", "descripcion"=>"CASES"),
+                            array("codigo"=>"03", "descripcion"=>"COOLERS"),
+                            array("codigo"=>"04", "descripcion"=>"FUENTE DE PODER"),
+                            array("codigo"=>"05", "descripcion"=>"LECTORAS"),
+                            array("codigo"=>"08", "descripcion"=>"PLACA MADRE"),
+                            array("codigo"=>"09", "descripcion"=>"OTROS COMPONENTES"),
+                            array("codigo"=>"10", "descripcion"=>"TARJETA BLUETOOH"),
+                            array("codigo"=>"11", "descripcion"=>"TARJETA DE VIDEO"),
+                            array("codigo"=>"12", "descripcion"=>"TARJETAS PCI"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"03",
+                        "descripcion"=>"DISPOSITIVOS DE ALMACENAMIENTO DE DATOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01", "descripcion"=>"ACCESORIOS PARA DISCOS DUROS"),
+                            array("codigo"=>"02", "descripcion"=>"CINTA LTO"),
+                            array("codigo"=>"03", "descripcion"=>"DISCO DURO MECÁNICO EXTERNO 2.5''"),
+                            array("codigo"=>"04", "descripcion"=>"DISCO DURO MECÁNICO EXTERNO 3.5''"),
+                            array("codigo"=>"05", "descripcion"=>"DISCO DURO MECÁNICO INTERNO 2.5''"),
+                            array("codigo"=>"06", "descripcion"=>"DISCO DURO MECÁNICO INTERNO 3.5''"),
+                            array("codigo"=>"07", "descripcion"=>"DISCO DURO PARA SERVIDOR"),
+                            array("codigo"=>"08", "descripcion"=>"DISCO DURO PARA SISTEMA DE ALMACENAMIENTO"),
+                            array("codigo"=>"09", "descripcion"=>"DISCO DURO PARA SISTEMA DE RESPALDO"),
+                            array("codigo"=>"10", "descripcion"=>"DISCO DURO SOLIDO EXTERNO 2.5''"),
+                            array("codigo"=>"11", "descripcion"=>"DISCO DURO SOLIDO INTERNO 2.5''"),
+                            array("codigo"=>"12", "descripcion"=>"DISCO DURO SOLIDO INTERNO M.2 NVMe 2230"),
+                            array("codigo"=>"13", "descripcion"=>"DISCO DURO SOLIDO INTERNO M.2 SATA"),
+                            array("codigo"=>"14", "descripcion"=>"MEMORIA USB"),
+                            array("codigo"=>"15", "descripcion"=>"TARJETA DE MEMORIA SD"),
+                            array("codigo"=>"16", "descripcion"=>"DISCO DURO SOLIDO INTERNO M.2 NVMe 2242"),
+                            array("codigo"=>"17", "descripcion"=>"DISCO DURO SOLIDO INTERNO M.2 NVMe 2280"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"04",
+                        "descripcion"=>"DISPOSITIVOS PARA CAPTURA DE IMÁGENES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01", "descripcion"=>"ACCESORIOS DE LECTOR DE CODIGOS"),
+                            array("codigo"=>"02", "descripcion"=>"CAMARA DE VIDEO"),
+                            array("codigo"=>"03", "descripcion"=>"CAMARA FOTOGRAFICA"),
+                            array("codigo"=>"04", "descripcion"=>"LECTOR DE CODIGOS"),
+                            array("codigo"=>"05", "descripcion"=>"SCANNERS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"05",
+                        "descripcion"=>"DISPOSITIVOS TELEFÓNICOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CELULARES"),
+                            array("codigo"=>"02","descripcion"=>"TELEFONO IP"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"07",
+                        "descripcion"=>"EQUIPOS DE INFRAESTRUCTURA PARA CENTRO DE DATOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ACCESORIO PARA GABINETE"),
+                            array("codigo"=>"02","descripcion"=>"ACCESORIOS PARA INFRAESTRUCTURA"),
+                            array("codigo"=>"03","descripcion"=>"EQUIPO DE ADMINISTRACION TELEFONO IP"),
+                            array("codigo"=>"04","descripcion"=>"EQUIPOS FIREWALL"),
+                            array("codigo"=>"05","descripcion"=>"GABINETES"),
+                            array("codigo"=>"06","descripcion"=>"SERVIDORES"),
+                            array("codigo"=>"07","descripcion"=>"SISTEMA DE ALMACENAMIENTO"),
+                            array("codigo"=>"08","descripcion"=>"SISTEMA DE RESPALDO"),
+                            array("codigo"=>"09","descripcion"=>"SWITCH PARA ALMACENAMIENTO"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"08",
+                        "descripcion"=>"IMPRESION",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ACC. IMPRESORAS"),
+                            array("codigo"=>"02","descripcion"=>"FOTOCOPIADORAS"),
+                            array("codigo"=>"03","descripcion"=>"IMPRESORA 3D"),
+                            array("codigo"=>"04","descripcion"=>"IMPRESORA DE FOTOCHECK"),
+                            array("codigo"=>"05","descripcion"=>"IMPRESORA DE INJECCION DE TINTA"),
+                            array("codigo"=>"06","descripcion"=>"IMPRESORA ETIQUETADORA"),
+                            array("codigo"=>"07","descripcion"=>"IMPRESORA LASER"),
+                            array("codigo"=>"08","descripcion"=>"IMPRESORA MATRICIAL"),
+                            array("codigo"=>"09","descripcion"=>"IMPRESORA TERMICA"),
+                            array("codigo"=>"10","descripcion"=>"PLOTTER"),
+                            array("codigo"=>"11","descripcion"=>"IMPRESORA MULTIFUNCIONAL LASER"),
+                            array("codigo"=>"12","descripcion"=>"IMPRESORA MULTIFUNCIONAL TINTA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"09",
+                        "descripcion"=>"MONITOR, PANTALLAS, TV, PROYECTORES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ECRAN"),
+                            array("codigo"=>"02","descripcion"=>"MONITORES"),
+                            array("codigo"=>"03","descripcion"=>"PANTALLA INTERACTIVA"),
+                            array("codigo"=>"04","descripcion"=>"PIZARRA ACRILICA"),
+                            array("codigo"=>"05","descripcion"=>"PROYECTORES MULTIMEDIA"),
+                            array("codigo"=>"06","descripcion"=>"TELEVISOR"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"10",
+                        "descripcion"=>"PRODUCTOS INFORMATICOS INTANGIBLES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"LICENCIA DE SISTEMA OPERATIVO INFRAESTRUCTURA"),
+                            array("codigo"=>"02","descripcion"=>"LICENCIA DE SISTEMA OPERATIVO USUARIO"),
+                            array("codigo"=>"03","descripcion"=>"LICENCIAS DE ANTIVIRUS CONSUMO"),
+                            array("codigo"=>"04","descripcion"=>"LICENCIAS DE ANTIVIRUS CORPORATIVO"),
+                            array("codigo"=>"05","descripcion"=>"LICENCIAS DE OFFICE ESD"),
+                            array("codigo"=>"06","descripcion"=>"LICENCIAS DE OFFICE OEM"),
+                            array("codigo"=>"07","descripcion"=>"LICENCIAS DE OFFICE OLP"),
+                            array("codigo"=>"08","descripcion"=>"LICIENCIA DE OFFICE POR SUSCRIPCIÓN"),
+                            array("codigo"=>"09","descripcion"=>"SOFTWARE DE VIDEOGILANCIA"),
+                            array("codigo"=>"10","descripcion"=>"GARANTIAS EXTENDIDAS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"11",
+                        "descripcion"=>"REDES Y CONECTIVIDAD",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ACCESS POINT"),
+                            array("codigo"=>"02","descripcion"=>"CABLE FIBRA"),
+                            array("codigo"=>"03","descripcion"=>"CABLES UTP"),
+                            array("codigo"=>"04","descripcion"=>"CONECTOR RJ45"),
+                            array("codigo"=>"05","descripcion"=>"JACK"),
+                            array("codigo"=>"06","descripcion"=>"ORDENADOR DE CABLES"),
+                            array("codigo"=>"07","descripcion"=>"PATCH CORD"),
+                            array("codigo"=>"08","descripcion"=>"PATCH PANEL"),
+                            array("codigo"=>"09","descripcion"=>"ROUTER"),
+                            array("codigo"=>"10","descripcion"=>"SWITCH LAN"),
+                            array("codigo"=>"11","descripcion"=>"TARJETA DE RED"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"12",
+                        "descripcion"=>"SUMINISTROS DE IMPRESIÓN",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CINTA DE COLOR PARA FOTOCHECK"),
+                            array("codigo"=>"02","descripcion"=>"FUSOR"),
+                            array("codigo"=>"03","descripcion"=>"PAPEL TERMICO"),
+                            array("codigo"=>"04","descripcion"=>"SUMINISTRO DE CINTA MATRICIAL"),
+                            array("codigo"=>"05","descripcion"=>"SUMINISTRO DE TINTA                                                                                 "),
+                            array("codigo"=>"06","descripcion"=>"SUMINISTRO DE TONER                                                                                 "),
+                            array("codigo"=>"07","descripcion"=>"TAMBOR"),
+                            array("codigo"=>"08","descripcion"=>"TARJETAS PVC"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"13",
+                        "descripcion"=>"PROCESADOR (CPU)",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"PROCESADOR AMD RYZEN 3 S_AM4"),
+                            array("codigo"=>"02","descripcion"=>"PROCESADOR AMD RYZEN 5 S_AM4"),
+                            array("codigo"=>"03","descripcion"=>"PROCESADOR AMD RYZEN 5 S_AM5"),
+                            array("codigo"=>"04","descripcion"=>"PROCESADOR AMD RYZEN 7 S_AM4"),
+                            array("codigo"=>"05","descripcion"=>"PROCESADOR AMD RYZEN 7 S_AM5"),
+                            array("codigo"=>"06","descripcion"=>"PROCESADOR AMD RYZEN 9 S_AM4"),
+                            array("codigo"=>"07","descripcion"=>"PROCESADOR AMD RYZEN 9 S_AM5"),
+                            array("codigo"=>"08","descripcion"=>"PROCESADOR CELERON DC GXXXX S1700"),
+                            array("codigo"=>"09","descripcion"=>"PROCESADOR CORE I3 9XXX S1151-V2"),
+                            array("codigo"=>"10","descripcion"=>"PROCESADOR CORE I3 10XXX S1200"),
+                            array("codigo"=>"11","descripcion"=>"PROCESADOR CORE I3 11XXX S1200"),
+                            array("codigo"=>"12","descripcion"=>"PROCESADOR CORE I3 12XXX S1700"),
+                            array("codigo"=>"13","descripcion"=>"PROCESADOR CORE I5 7XXX S1151"),
+                            array("codigo"=>"14","descripcion"=>"PROCESADOR CORE I5 8XXX S1151-V2"),
+                            array("codigo"=>"15","descripcion"=>"PROCESADOR CORE I5 9XXX S1151-V2"),
+                            array("codigo"=>"16","descripcion"=>"PROCESADOR CORE I5 10XXX S1200"),
+                            array("codigo"=>"17","descripcion"=>"PROCESADOR CORE I5 11XXX S1200"),
+                            array("codigo"=>"18","descripcion"=>"PROCESADOR CORE I5 12XXX S1700"),
+                            array("codigo"=>"19","descripcion"=>"PROCESADOR CORE I5 13XXX S1700"),
+                            array("codigo"=>"20","descripcion"=>"PROCESADOR CORE I7 7XXX S1151"),
+                            array("codigo"=>"21","descripcion"=>"PROCESADOR CORE I7 7XXX S2066"),
+                            array("codigo"=>"22","descripcion"=>"PROCESADOR CORE I7 10XXX S1200"),
+                            array("codigo"=>"23","descripcion"=>"PROCESADOR CORE I7 11XXX S1200"),
+                            array("codigo"=>"24","descripcion"=>"PROCESADOR CORE I7 12XXX S1700"),
+                            array("codigo"=>"25","descripcion"=>"PROCESADOR CORE I7 13XXX S1700"),
+                            array("codigo"=>"26","descripcion"=>"PROCESADOR CORE I9 10XXX S1200"),
+                            array("codigo"=>"27","descripcion"=>"PROCESADOR CORE I9 11XXX S1200"),
+                            array("codigo"=>"28","descripcion"=>"PROCESADOR CORE I9 12XXX S1700"),
+                            array("codigo"=>"29","descripcion"=>"PROCESADOR CORE I9 13XXX S1700"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"14",
+                        "descripcion"=>"MEMORIA RAM NOTEBOOK",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"RAM SODIMM DDR3 1600Mhz PC3-12800"),
+                            array("codigo"=>"02","descripcion"=>"RAM SODIMM DDR4 2666Mhz PC4-21300"),
+                            array("codigo"=>"03","descripcion"=>"RAM SODIMM DDR4 2800Mhz PC4-22400"),
+                            array("codigo"=>"04","descripcion"=>"RAM SODIMM DDR4 3000Mhz PC4-24000"),
+                            array("codigo"=>"05","descripcion"=>"RAM SODIMM DDR4 3200Mhz PC4-25600"),
+                            array("codigo"=>"06","descripcion"=>"RAM SODIMM DDR5 4800Mhz PC5-38400"),
+                            array("codigo"=>"07","descripcion"=>"RAM SODIMM DDR5 5200Mhz PC5-41600"),
+                            array("codigo"=>"08","descripcion"=>"RAM SODIMM DDR5 5600Mhz PC5-44800"),
+                            array("codigo"=>"09","descripcion"=>"RAM SODIMM DDR5 6000Mhz PC5-48000"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"15",
+                        "descripcion"=>"MEMORIA RAM PC",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"RAM DDR3 1600Mhz PC3-12800"),
+                            array("codigo"=>"02","descripcion"=>"RAM DDR3 1800Mhz PC3-14400"),
+                            array("codigo"=>"03","descripcion"=>"RAM DDR3 2600Mhz PC3-20800"),
+                            array("codigo"=>"04","descripcion"=>"RAM DDR4 2666Mhz PC4-21300"),
+                            array("codigo"=>"05","descripcion"=>"RAM DDR4 3000Mhz PC4-24000"),
+                            array("codigo"=>"06","descripcion"=>"RAM DDR4 3200Mhz PC4-25600"),
+                            array("codigo"=>"07","descripcion"=>"RAM DDR4 3600Mhz PC4-28800"),
+                            array("codigo"=>"08","descripcion"=>"RAM DDR4 4000Mhz PC4-32000"),
+                            array("codigo"=>"09","descripcion"=>"RAM DDR5 4800Mhz PC5-38400"),
+                            array("codigo"=>"10","descripcion"=>"RAM DDR5 5200Mhz PC5-41600"),
+                            array("codigo"=>"11","descripcion"=>"RAM DDR5 5600Mhz PC5-44800"),
+                            array("codigo"=>"12","descripcion"=>"RAM DDR5 6000Mhz PC5-48000"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"16",
+                        "descripcion"=>"COMPUTADORA ALL IN ONE",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"COMPUTADORA ALL-IN-ONE AMD RYZEN 3"),
+                            array("codigo"=>"02","descripcion"=>"COMPUTADORA ALL-IN-ONE AMD RYZEN 5"),
+                            array("codigo"=>"03","descripcion"=>"COMPUTADORA ALL-IN-ONE AMD RYZEN 7"),
+                            array("codigo"=>"04","descripcion"=>"COMPUTADORA ALL-IN-ONE CELERON"),
+                            array("codigo"=>"05","descripcion"=>"COMPUTADORA ALL-IN-ONE CORE I3"),
+                            array("codigo"=>"06","descripcion"=>"COMPUTADORA ALL-IN-ONE CORE I5"),
+                            array("codigo"=>"07","descripcion"=>"COMPUTADORA ALL-IN-ONE CORE I7"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"17",
+                        "descripcion"=>"COMPUTADORA DE ESCRITORIO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"COMPUTADORA AMD RYZEN 5"),
+                            array("codigo"=>"02","descripcion"=>"COMPUTADORA AMD RYZEN 7"),
+                            array("codigo"=>"03","descripcion"=>"COMPUTADORA AMD RYZEN 9"),
+                            array("codigo"=>"04","descripcion"=>"COMPUTADORA CELERON"),
+                            array("codigo"=>"05","descripcion"=>"COMPUTADORA CORE I3"),
+                            array("codigo"=>"06","descripcion"=>"COMPUTADORA CORE I5"),
+                            array("codigo"=>"07","descripcion"=>"COMPUTADORA CORE I7"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"18",
+                        "descripcion"=>"COMPUTADORA PORTÁTIL",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"NOTEBOOK CELERON"),
+                            array("codigo"=>"02","descripcion"=>"NOTEBOOK CELERON DUAL CORE"),
+                            array("codigo"=>"03","descripcion"=>"NOTEBOOK ATOM"),
+                            array("codigo"=>"04","descripcion"=>"NOTEBOOK CORE I3"),
+                            array("codigo"=>"05","descripcion"=>"NOTEBOOK CORE I5"),
+                            array("codigo"=>"06","descripcion"=>"NOTEBOOK CORE I7"),
+                            array("codigo"=>"07","descripcion"=>"NOTEBOOK AMD ATHLON"),
+                            array("codigo"=>"08","descripcion"=>"NOTEBOOK AMD A SERIES"),
+                            array("codigo"=>"09","descripcion"=>"NOTEBOOK PENTIUM QUAD CORE"),
+                            array("codigo"=>"10","descripcion"=>"NOTEBOOK AMD RYZEN 5"),
+                            array("codigo"=>"11","descripcion"=>"NOTEBOOK AMD RYZEN 3"),
+                            array("codigo"=>"12","descripcion"=>"NOTEBOOK AMD RYZEN 7"),
+                            array("codigo"=>"13","descripcion"=>"NOTEBOOK GAMING"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"19",
+                        "descripcion"=>"ESTACIÓN DE TRABAJO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ESTACIÓN DE TRABAJO")
+                        )
+                    ),
+                    array(
+                        "codigo"=>"20",
+                        "descripcion"=>"REPUESTOS DE EQUIPOS DE COMPUTO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"REPUESTOS DE EQUIPOS DE COMPUTO")
+                        )
+                    ),
+                    array(
+                        "codigo"=>"21",
+                        "descripcion"=>"TABLETA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"TABLETA")
+                        )
+                    ),
+                )
+            ),
+            array(
+                "codigo"=>"04",
+                "descripcion"=>"HERRAMIENTAS Y MATERIALES PARA PRODUCCION",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ACCESORIOS PARA HERRAMIENTAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"BROCAS"),
+                            array("codigo"=>"02","descripcion"=>"CAJA DE HERRAMIENTAS PORTATIL DE PLÁSTICO "),
+                            array("codigo"=>"03","descripcion"=>"CARGADORES PARA DESTORNILLADORES Y ATORNILLADORES INALAMBRICOS"),
+                            array("codigo"=>"04","descripcion"=>"DISCOS ABRASIVOS"),
+                            array("codigo"=>"05","descripcion"=>"DISCOS DIAMANTADOS"),
+                            array("codigo"=>"06","descripcion"=>"DISCOS SIERRA"),
+                            array("codigo"=>"07","descripcion"=>"DISCOS TRASLAPADOS"),
+                            array("codigo"=>"08","descripcion"=>"PUNTAS PARA ATORNILLADOR"),
+                            array("codigo"=>"09","descripcion"=>"DADOS PARA ATORNILLADOR"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"HERRAMIENTAS AUTOMOTRICES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CABLES PASA-CORRIENTE DE BATERIA"),
+                            array("codigo"=>"02","descripcion"=>"PROBADOR DE CIRCUITOS"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"03",
+                        "descripcion"=>"HERRAMIENTAS DE CERTIFICACIÓN",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CERTIFICADOR DE DATOS"),
+                            array("codigo"=>"02","descripcion"=>"MEGÓMETRO DIGITAL"),
+                            array("codigo"=>"03","descripcion"=>"MULTIMETRO DIGITAL"),
+                            array("codigo"=>"04","descripcion"=>"PINZA AMPERIMÉTRICA"),
+                            array("codigo"=>"05","descripcion"=>"TELURÓMETRO DIGITAL"),
+                            array("codigo"=>"06","descripcion"=>"TESTEADOR DE CABLES  DE RED"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"04",
+                        "descripcion"=>"HERRAMIENTAS DE CONSTRUCCIÓN",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"07","descripcion"=>"PISTOLAS DE CALOR"),
+                            array("codigo"=>"08","descripcion"=>"SOPLADOR / ASPIRADOR"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"05",
+                        "descripcion"=>"HERRAMIENTAS ELÉCTRICAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"MEDIDOR DE DISTANCIA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"05",
+                        "descripcion"=>"HERRAMIENTAS MECÁNICAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"02","descripcion"=>"JUEGO DE HERRAMIENTAS MECÁNICAS"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"06",
+                        "descripcion"=>"HERRAMIENTAS METALMECÁNICAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ESMERILES"),
+                            array("codigo"=>"02","descripcion"=>"PULIDORA"),
+                            array("codigo"=>"03","descripcion"=>"TRONZADORA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"07",
+                        "descripcion"=>"HERRAMIENTAS NEUMÁTICAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ADAPTADOR"),
+                            array("codigo"=>"02","descripcion"=>"EXTENSIÓN"),
+                            array("codigo"=>"03","descripcion"=>"JUNTA UNIVERSAL"),
+                            array("codigo"=>"04","descripcion"=>"LLAVE o PISTOLA DE IMPACTO"),
+                            array("codigo"=>"05","descripcion"=>"LLAVES COMBINADAS"),
+                            array("codigo"=>"06","descripcion"=>"MANGO ARTICULADO PARA DADOS"),
+                            array("codigo"=>"07","descripcion"=>"RATCHET NEUMÁTICO"),
+                            array("codigo"=>"08","descripcion"=>"TALADRO NEUMÁTICO REVERSIBLE"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"08",
+                        "descripcion"=>"HERRAMIENTAS PARA CONCRETO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"MARTILLO CINCELADOR"),
+                            array("codigo"=>"02","descripcion"=>"ROTO MARTILLO"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"09",
+                        "descripcion"=>"HERRAMIENTAS PARA MADERA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CEPILLOS CARPINTERO"),
+                            array("codigo"=>"02","descripcion"=>"LIJADORAS ELECTRICA"),
+                            array("codigo"=>"03","descripcion"=>"REBAJADORAS / FRESADORAS"),
+                            array("codigo"=>"04","descripcion"=>"SIERRAS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"10",
+                        "descripcion"=>"HERRAMIENTAS PARA REDES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CORTADOR DE CABLE"),
+                            array("codigo"=>"02","descripcion"=>"CRIMPEADOR RJ45"),
+                            array("codigo"=>"03","descripcion"=>"PONCHADOR PARA JACK"),
+                            array("codigo"=>"04","descripcion"=>"FUSIONADORA DE FIBRA OPTICA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"11",
+                        "descripcion"=>"MATERIALES PARA PRODUCCÍÓN",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CEMENTO"),
+                            array("codigo"=>"02","descripcion"=>"CUTTER"),
+                            array("codigo"=>"03","descripcion"=>"LIJAS PARA CEMENTO"),
+                            array("codigo"=>"04","descripcion"=>"LIJAS PARA METAL"),
+                            array("codigo"=>"05","descripcion"=>"LIJAS PARA MADERA"),
+                            array("codigo"=>"06","descripcion"=>"PINTURAS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"12",
+                        "descripcion"=>"TALADROS Y ATORNILLADORES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ATORNILLADOR ALÁMBRICO"),
+                            array("codigo"=>"02","descripcion"=>"TALADRO ALÁMBRICO DE ROTACIÓN"),
+                            array("codigo"=>"03","descripcion"=>"TALADRO ALÁMBRICO PERCUTOR"),
+                            array("codigo"=>"04","descripcion"=>"ATORNILLADORES INALÁMBRICO"),
+                            array("codigo"=>"05","descripcion"=>"TALADRO INALÁMBRICO DE ROTACIÓN"),
+                            array("codigo"=>"06","descripcion"=>"TALADRO INALÁMBRICO PERCUTOR"),
+
+                        )
+                    ),
+
+                )
+            ),
+            array(
+                "codigo"=>"05",
+                "descripcion"=>"INSUMOS Y UTILES PARA LIMPIEZA",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"INSUMOS Y UTILES PARA LIMPIEZA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"INSUMOS Y UTILES PARA LIMPIEZA"),
+                        )
+                    )
+
+                )
+            ),
+            array(
+                "codigo"=>"06",
+                "descripcion"=>"MOBILIARIO, APARATOS Y UTILES PARA OFICINA",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"MUEBLES PARA OFICINAS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ESCRITORIOS"),
+                            array("codigo"=>"02","descripcion"=>"SILLAS"),
+                            array("codigo"=>"03","descripcion"=>"ORGANIZADORES"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"UTILES PARA OFICINA",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"04","descripcion"=>"UTILES PARA OFICINA")
+                        )
+                    ),
+                )
+            ),
+            array(
+                "codigo"=>"07",
+                "descripcion"=>"SEGURIDAD PERSONAL E INDUSTRIAL",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ARTÍCULOS DE BIOSEGURIDAD",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"GAFAS DE PROTECCIÓN"),
+                            array("codigo"=>"02","descripcion"=>"MASCARILLAS"),
+                            array("codigo"=>"03","descripcion"=>"PROTECTORES FACIALES"),
+                            array("codigo"=>"04","descripcion"=>"RESPIRADORES"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"DISPOSITIVOS CONTRA INCENDIO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ALARMA CONTRAINCENDIO"),
+                            array("codigo"=>"02","descripcion"=>"DETECTOR DE INCENDIOS"),
+                        )
+                    ),
+                    array(
+                        "codigo"=>"03",
+                        "descripcion"=>"DISPOSITIVOS MÉDICOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"OXÍMETROS"),
+                            array("codigo"=>"02","descripcion"=>"TERMÓMETROS A DISTANCIA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"04",
+                        "descripcion"=>"DISPOSITIVOS PARA CONTROL DE ACCESO",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"ACCESORIOS DE SISTEMA DE SEGURIDAD"),
+                            array("codigo"=>"02","descripcion"=>"CONTROL BIOMETRICO"),
+                            array("codigo"=>"03","descripcion"=>"LECTORES DE TARJETA DE ACCESO"),
+                            array("codigo"=>"04","descripcion"=>"SENSORES DE MOVIMIENTO"),
+                            array("codigo"=>"05","descripcion"=>"SISTEMA DE PUERTA"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"05",
+                        "descripcion"=>"EPP EQUIPOS DE PROTECCIÓN PERSONAL",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"PROTECCIÓN ANTICAIDA"),
+                            array("codigo"=>"02","descripcion"=>"ROPA DE TRABAJO"),
+                            array("codigo"=>"03","descripcion"=>"PROTECCIÓN RESPIRATORIA"),
+                            array("codigo"=>"04","descripcion"=>"PROTECCIÓN DE CABEZA"),
+                            array("codigo"=>"05","descripcion"=>"PROTECCIÓN AUDITIVA"),
+                            array("codigo"=>"06","descripcion"=>"PROTECCIÓN VISUAL Y FACIAL"),
+                            array("codigo"=>"07","descripcion"=>"PROTECCIÓN DE MANOS"),
+                            array("codigo"=>"08","descripcion"=>"PROTECCIÓN CONTRA CAIDAS"),
+                            array("codigo"=>"09","descripcion"=>"PROTECCIÓN FACIAL"),
+                            array("codigo"=>"10","descripcion"=>"PROTECCIÓN CORPORAL"),
+                            array("codigo"=>"11","descripcion"=>"PROTECCIÓN DE PIES"),
+                            array("codigo"=>"12","descripcion"=>"SEGURIDAD VIAL"),
+                            array("codigo"=>"13","descripcion"=>"BLOQUEO DE SEGURIDAD LOCK/TAG OUT"),
+                            array("codigo"=>"14","descripcion"=>"OTROS EPPS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"06",
+                        "descripcion"=>"ELEMENTOS DE SEGURIDAD INDUSTRIAL",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"CINTAS DE SEGURIDAD"),
+                            array("codigo"=>"02","descripcion"=>"CONOS DE SEGURIDAD"),
+                            array("codigo"=>"03","descripcion"=>"EXTINTOR"),
+                            array("codigo"=>"04","descripcion"=>"LETREROS DE SEGURIDAD"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"07",
+                        "descripcion"=>"VIGILANCIA DE VIDEO",
+                        "sub_categoria"=>array(
+                            array("codgio"=>"01","descripcion"=>"ACCESORIOS DE VIDEO VIGILANCIA"),
+                            array("codgio"=>"02","descripcion"=>"CAMARAS ANALOGICAS"),
+                            array("codgio"=>"03","descripcion"=>"CAMARAS IP"),
+                            array("codgio"=>"04","descripcion"=>"DVRs SISTEMAS DE ADMINISTRACION DE CAMARAS ANALOGICAS"),
+                            array("codgio"=>"05","descripcion"=>"NVRS SISTEMAS DE ADMINISTRACION DE CAMARAS IP"),
+                        ),
+                    ),
+                )
+            ),
+            array(
+                "codigo"=>"08",
+                "descripcion"=>"VALES Y MERCHANDSING",
+                "categorias"=>array(
+                    array(
+                        "codigo"=>"01",
+                        "descripcion"=>"ACCESORIOS Y ARTÍCULOS PUBLICITARIOS",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"BANNERS PUBLICITARIOS"),
+                            array("codigo"=>"02","descripcion"=>"GORROS, POLOS Y OTRAS PRENDAS CON PUBLICIDAD"),
+                            array("codigo"=>"03","descripcion"=>"LAPICEROS"),
+                            array("codigo"=>"04","descripcion"=>"LLAVEROS"),
+                            array("codigo"=>"05","descripcion"=>"REVISTAS PUBLICITARIAS"),
+
+                        )
+                    ),
+                    array(
+                        "codigo"=>"02",
+                        "descripcion"=>"GIFTCARDS Y VALES",
+                        "sub_categoria"=>array(
+                            array("codigo"=>"01","descripcion"=>"GIFTCARDS"),
+                            array("codigo"=>"02","descripcion"=>"VALES"),
+                        )
+                    ),
+
+                )
+            )
+        );
+        // return $clasificacion;exit;
+        // $clasificacion = (array) $clasificacion;
+        $array_almacen_clasificacion = array();
+        $array_almacen_categoria = array();
+        foreach ($clasificacion as $key => $value) {
+            $clasificacion = Clasificacion::where('descripcion',$value['descripcion'])->where('estado',1)->first();
+
+
+            if (!$clasificacion) {
+                $clasificacion = new Clasificacion();
+                $clasificacion->descripcion = $value['descripcion'];
+                $clasificacion->fecha_registro = date('Y-M-d H:i:s');
+                $clasificacion->estado = 1;
+                // $clasificacion->cod_softlink =;
+                $clasificacion->save();
+
+                $clasificacion = Clasificacion::find($clasificacion->id_clasificacion);
+                $clasificacion->cod_softlink = $clasificacion->id_clasificacion;
+                $clasificacion->save();
+
+            }
+            $value['id_clasificacion'] = $clasificacion->id_clasificacion;
+
+            foreach ($value['categorias'] as $key_categoria => $value_categoria) {
+                // $categoria = Categoria::where('descripcion',$value_categoria['descripcion'])->where('estado',1)->first();
+                // if (!$categoria) {
+                    $categoria = new Categoria();
+                    $categoria->descripcion = $value_categoria['descripcion'];
+                    $categoria->estado = 1;
+                    $categoria->fecha_registro = date('Y-M-d H:i:s');
+                    $categoria->id_clasificacion = $clasificacion->id_clasificacion;
+                    $categoria->save();
+                    // return response()->json($array_almacen_categoria);
+                // }
+
+                foreach ($value_categoria['sub_categoria'] as $key => $value_sub_categoria) {
+                    // $sub_categoria = SubCategoria::where('descripcion',$value_sub_categoria['descripcion'])->where('estado',1)->first();
+                    // if (!$sub_categoria) {
+                        $sub_categoria = new SubCategoria();
+                        $sub_categoria->id_tipo_producto = $categoria->id_tipo_producto;
+                        $sub_categoria->cod_softlink = $clasificacion->id_clasificacion;
+                        $sub_categoria->descripcion = $value_sub_categoria['descripcion'];
+                        $sub_categoria->estado = 1;
+                        $sub_categoria->fecha_registro = date('Y-M-d H:i:s');
+                        $sub_categoria->save();
+                    // }
+                }
+
+            }
+            // return $clasificacion;
+        }
+        // return response()->json($array_almacen_categoria);
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$clasificacion
+        ]);
+    }
+    public function scripActualizarCategoriasSoftlink()
+    {
+
+        $array = array(
+            "*OTROS",
+            "ALIMENTOS Y BEBIDAS DE CONSUMO HUMANO",
+            "EQUIPOS ELECTRICOS",
+            "EQUIPOS, APARATOS Y ACCESORIOS INFORMÁTICOS",
+            "HERRAMIENTAS Y MATERIALES PARA PRODUCCION",
+            "INSUMOS Y UTILES PARA LIMPIEZA",
+            "MOBILIARIO, APARATOS Y UTILES PARA OFICINA",
+            "SEGURIDAD PERSONAL E INDUSTRIAL",
+            "VALES Y MERCHANDSING",
+        );
+        $array_clasificacion = array();
+        $array_sub_categoria = array();
+
+        foreach ($array as $key => $value) {
+            $clasificacion  = Clasificacion::where('estado',1)->where('descripcion',$value)->first();
+            array_push($array_clasificacion,$clasificacion);
+        }
+
+        foreach ($array_clasificacion as $key => $value) {
+            $categoria = Categoria::where('id_clasificacion',$value->id_clasificacion)->get();
+            $value->categoria = $categoria;
+            foreach ($value->categoria as $key_categoria => $value_categoria) {
+                $sub_categoria = SubCategoria::where('id_tipo_producto',$value_categoria->id_tipo_producto)->get();
+                $value_categoria->sub_categoria = $sub_categoria;
+            }
+        }
+
+        foreach ($array_clasificacion as $key => $value) {
+            // return trim($value->descripcion);exit;
+            $soplinea = DB::connection('soft')->table('soplinea')->where('nom_line',trim($value->descripcion))->first();
+
+            if (!$soplinea) {
+                DB::connection('soft')->table('soplinea')->insert(
+                    [
+                        'cod_line' => $value->id_clasificacion,
+                        'nom_line' => trim($value->descripcion),
+                        'cod_sunat' => '',
+                        'cod_osce' => ''
+                    ]
+                );
+            }
+
+
+            foreach ($value->categoria as $key_categoria => $value_categoria) {
+                foreach ($value_categoria->sub_categoria as $key_sub_categoria => $value_sub_categoria) {
+                    $cod_sub1 = '';
+                    $cod_cate = DB::connection('soft')->table('sopsub1')->orderBy('cod_sub1','DESC')->first();
+                    do {
+
+                        $cod_sub1 = (intval($cod_cate->cod_sub1) + 1);
+                        $cod_cate = DB::connection('soft')->table('sopsub1')->where('cod_sub1',$cod_sub1)->first();
+
+                    } while ($cod_cate);
+
+                    $categoria_soflink = DB::connection('soft')->table('sopsub1')->where('nom_sub1',trim($value_sub_categoria->descripcion))->first();
+
+                    if (!$categoria_soflink) {
+                        DB::connection('soft')->table('sopsub1')->insert(
+                            [
+                                'cod_sub1' => $cod_sub1,
+                                'nom_sub1' => trim($value_sub_categoria->descripcion),
+                                'por_dcto' => 0,
+                                'num_corr' => 0,
+                                'cod_line' => $value->id_clasificacion
+                            ]
+                        );
+                    }
+                }
+            }
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "message"=>"actualizacion de categorias en el softlink",
+        ]);
     }
 }

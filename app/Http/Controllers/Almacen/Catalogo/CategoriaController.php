@@ -15,21 +15,33 @@ class CategoriaController extends Controller
     function view_categoria()
     {
         $clasificaciones = ClasificacionController::mostrar_clasificaciones_cbo();
+<<<<<<< HEAD
 
+=======
+>>>>>>> develop
         $array_accesos_botonera=array();
         $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
         ->select('accesos.*')
         ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
         ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
+<<<<<<< HEAD
         ->where('accesos_usuarios.id_modulo',62)
+=======
+        ->where('accesos_usuarios.id_modulo',61)
+>>>>>>> develop
         ->where('accesos_usuarios.id_padre',4)
         ->get();
         foreach ($accesos_botonera as $key => $value) {
             $value->accesos;
             array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
         }
+<<<<<<< HEAD
         // return $array_accesos_botonera;
         return view('almacen/producto/categoria', compact('clasificaciones','array_accesos_botonera'));
+=======
+        $modulo='almacen';
+        return view('almacen/producto/categoria', compact('clasificaciones','array_accesos_botonera','modulo'));
+>>>>>>> develop
     }
     public static function mostrar_tipos_cbo()
     {

@@ -6,8 +6,9 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Tesoreria\RequerimientoPagoController;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class ListadoRequerimientoPagoExport implements FromView
+class ListadoRequerimientoPagoExport implements FromView,ShouldAutoSize
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -43,7 +44,7 @@ class ListadoRequerimientoPagoExport implements FromView
         foreach($requerimientos as $element){
 
 
-            $requerimientosDetalle = (new RequerimientoPagoController)->obtenerRequerimientosElaboradosDetalle($element->id_requerimiento_pago);
+            $requerimientosDetalle = (new RequerimientoPagoController)->obtenerRequerimientosPagoElaboradosConDetalle($element->id_requerimiento_pago);
 
             $ordenesPago = (new RequerimientoPagoController)->ordenesPago($element->id_requerimiento_pago);
             $pago_total = 0;
@@ -72,6 +73,7 @@ class ListadoRequerimientoPagoExport implements FromView
                     'nombre_usuario'=> $element->usuario_nombre_corto,
                     'observacion'=> $element->observacion,
                     'estado_doc'=> $element->nombre_estado,
+                    'ultimo_aprobador'=>$element->ultimo_aprobador,
 
                     'fecha_autorizacion'=>$requerimientosDetalle->fecha_autorizacion!==null ?$requerimientosDetalle->fecha_autorizacion:'',
                     'pago_total'=>$pago_total,

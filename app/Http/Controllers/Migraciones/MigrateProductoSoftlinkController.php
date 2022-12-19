@@ -357,4 +357,154 @@ class MigrateProductoSoftlinkController extends Controller
         }
         return $zeros . $number;
     }
+
+    public function actualizarFechasIngresoSoft($id_almacen)
+    {
+        $productos = DB::table('almacen.alm_prod_serie')
+            ->select(
+                'alm_prod_serie.serie',
+                'alm_prod_serie.id_almacen',
+                'alm_prod.id_producto',
+                'alm_prod.cod_softlink',
+                'alm_almacen.codigo'
+            )
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_serie.id_almacen')
+            ->whereNull('id_guia_com_det')
+            ->whereNull('id_base')
+            ->whereNull('alm_prod_serie.fecha_ingreso_soft')
+            ->where('alm_prod_serie.estado', 1)
+            ->where('alm_prod_serie.id_almacen', $id_almacen)
+            ->get();
+
+        foreach ($productos as $p) {
+            $prod = DB::connection('soft')->table('series')
+                ->select(
+                    'series.fecha_ing',
+                    'detmov.pre_prod',
+                    'movimien.num_docu',
+                    'movimien.tip_mone'
+                )
+                ->join('detmov', 'detmov.unico', '=', 'series.unicodet_i')
+                ->join('movimien', 'movimien.mov_id', '=', 'detmov.mov_id')
+                ->where('series.serie', strval(trim($p->serie)))
+                ->orderBy('series.fecha_ing', 'asc')
+                ->first();
+
+            if ($prod !== null) {
+
+                $fec = $prod->fecha_ing;
+                $pre = $prod->pre_prod;
+                $doc = $prod->num_docu;
+                $mon = $prod->tip_mone;
+
+                DB::table('almacen.alm_prod_serie')
+                    ->where('serie', $p->serie)
+                    ->update([
+                        'fecha_ingreso_soft' => $fec,
+                        'precio_unitario_soft' => $pre,
+                        'doc_ingreso_soft' => $doc,
+                        'moneda_soft' => $mon,
+                    ]);
+            }
+        }
+
+        return response()->json(array('tipo' => 'success', 'mensaje' => 'Se actualizó correctamente '));
+    }
+
+    public function actualizarFechasIngresoAgile($id_almacen)
+    {
+        $productos = DB::table('almacen.alm_prod_serie')
+            ->select(
+                'alm_prod_serie.id_prod_serie',
+                'alm_prod_serie.serie',
+                'alm_prod_serie.id_almacen',
+                'alm_prod.id_producto',
+                'alm_prod.cod_softlink',
+                'alm_almacen.codigo'
+            )
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_serie.id_prod')
+            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_prod_serie.id_almacen')
+            ->whereNull('alm_prod_serie.fecha_ingreso_soft')
+            ->where('alm_prod_serie.estado', 1)
+            ->where('alm_prod_serie.id_almacen', $id_almacen)
+            // ->whereIn('alm_prod_serie.id_prod_serie', [53305, 53887])
+            ->get();
+
+        foreach ($productos as $p) {
+            $data = DB::table('almacen.alm_prod_serie')
+                ->select(
+                    'guia_com.fecha_almacen',
+                    'guia_com_det.unitario',
+                    DB::raw("guia_com.serie || '-' || guia_com.numero as serie_numero"),
+                    'log_ord_compra.id_moneda',
+                    'alm_prod.id_moneda as id_moneda_producto',
+
+                    'ingreso_transformado.fecha_emision as fecha_transformado',
+                    'transformado.id_moneda as id_moneda_transformado',
+                    'transformado.codigo as codigo_transformado',
+                    'transfor_transformado.valor_unitario as unitario_transformado',
+
+                    'ingreso_sobrante.fecha_emision as fecha_sobrante',
+                    'sobrante.id_moneda as id_moneda_sobrante',
+                    'sobrante.codigo as codigo_sobrante',
+                    'transfor_sobrante.valor_unitario as unitario_sobrante'
+                )
+                ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'alm_prod_serie.id_guia_com_det')
+                ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+                ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
+                ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
+                ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+
+                ->leftjoin('almacen.mov_alm_det as ingreso_sobrante_det',  'ingreso_sobrante_det.id_sobrante', '=', 'alm_prod_serie.id_sobrante')
+                ->leftjoin('almacen.mov_alm as ingreso_sobrante',  'ingreso_sobrante.id_mov_alm', '=', 'ingreso_sobrante_det.id_mov_alm')
+                ->leftjoin('almacen.transfor_sobrante',  'transfor_sobrante.id_sobrante', '=', 'alm_prod_serie.id_sobrante')
+                ->leftjoin('almacen.transformacion as sobrante', 'sobrante.id_transformacion', '=', 'transfor_sobrante.id_transformacion')
+
+                ->leftjoin('almacen.mov_alm_det as ingreso_transformado_det',  'ingreso_transformado_det.id_transformado', '=', 'alm_prod_serie.id_transformado')
+                ->leftjoin('almacen.mov_alm as ingreso_transformado',  'ingreso_transformado.id_mov_alm', '=', 'ingreso_transformado_det.id_mov_alm')
+                ->leftjoin('almacen.transfor_transformado',  'transfor_transformado.id_transformado', '=', 'alm_prod_serie.id_transformado')
+                ->leftjoin('almacen.transformacion as transformado', 'transformado.id_transformacion', '=', 'transfor_transformado.id_transformacion')
+
+                ->where('alm_prod_serie.serie', $p->serie)
+                ->where('alm_prod_serie.id_almacen', $p->id_almacen)
+                ->where('alm_prod_serie.estado', 1)
+                ->orderBy('alm_prod_serie.fecha_registro', 'asc')
+                ->first();
+
+            if ($data !== null) {
+
+                if ($data->serie_numero !== null) {
+                    DB::table('almacen.alm_prod_serie')
+                        ->where('id_prod_serie', $p->id_prod_serie)
+                        ->update([
+                            'fecha_ingreso_soft' => $data->fecha_almacen,
+                            'precio_unitario_soft' => $data->unitario,
+                            'doc_ingreso_soft' => $data->serie_numero,
+                            'moneda_soft' => ($data->id_moneda !== null ? $data->id_moneda : $data->id_moneda_producto),
+                        ]);
+                } else if ($data->codigo_sobrante !== null) {
+                    DB::table('almacen.alm_prod_serie')
+                        ->where('id_prod_serie', $p->id_prod_serie)
+                        ->update([
+                            'fecha_ingreso_soft' => $data->fecha_sobrante,
+                            'precio_unitario_soft' => $data->unitario_sobrante,
+                            'doc_ingreso_soft' => $data->codigo_sobrante,
+                            'moneda_soft' => ($data->id_moneda_sobrante !== null ? $data->id_moneda_sobrante : $data->id_moneda_producto),
+                        ]);
+                } else if ($data->codigo_transformado !== null) {
+                    DB::table('almacen.alm_prod_serie')
+                        ->where('id_prod_serie', $p->id_prod_serie)
+                        ->update([
+                            'fecha_ingreso_soft' => $data->fecha_transformado,
+                            'precio_unitario_soft' => $data->unitario_transformado,
+                            'doc_ingreso_soft' => $data->codigo_transformado,
+                            'moneda_soft' => ($data->id_moneda_transformado !== null ? $data->id_moneda_transformado : $data->id_moneda_producto),
+                        ]);
+                }
+            }
+        }
+
+        return response()->json(array('tipo' => 'success', 'mensaje' => 'Se actualizó correctamente '));
+    }
 }

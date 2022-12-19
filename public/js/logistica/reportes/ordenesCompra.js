@@ -192,9 +192,37 @@ class OrdenesCompra {
         }:[]);
         vista_extendida();
         var vardataTables = funcDatatables();
+<<<<<<< HEAD
         $tablaListaOrdenesCompra= $('#listaOrdenesCompra').DataTable({
             'dom': vardataTables[1],
             'buttons': [buton_filtro,button_descargar],
+=======
+        const button_filtros = (array_accesos.find(element => element === 271)?{
+                text: '<i class="fas fa-filter"></i> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaOrdenesCompra'
+                },
+                action: () => {
+                    this.abrirModalFiltrosListaOrdenesCompra();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel  = (array_accesos.find(element => element === 272)?{
+                text: '<i class="far fa-file-excel"></i> Descargar',
+                attr: {
+                    id: 'btnDescargarListaOrdenesCompra'
+                },
+                action: () => {
+                    this.descargarListaOrdenesCompra();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
+        $tablaListaOrdenesCompra= $('#listaOrdenesCompra').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [button_filtros,button_descargar_excel ],
+>>>>>>> develop
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,

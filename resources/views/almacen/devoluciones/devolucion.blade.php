@@ -18,13 +18,24 @@ Orden Devolución
 @endsection
 
 @section('content')
-
+@if (in_array(Auth::user()->id_usuario,[1,3,27,17,64,16,118,119,93,77,135]))
 @include('almacen.devoluciones.devolucionContenido')
-
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error de Accesos:</span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @include('almacen.devoluciones.devolucionModal')
 @include('almacen.customizacion.productoCatalogoModal')
 @include('almacen.devoluciones.contribuyenteModal')
 @include('almacen.devoluciones.salidasModal')
+@include('almacen.devoluciones.ingresosModal')
 @include('cas.incidencias.incidenciaModal')
 @endsection
 
@@ -44,9 +55,11 @@ Orden Devolución
 <script src="{{ asset('js/almacen/devolucion/devolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/devolucion.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/devolucionModal.js')}}?v={{filemtime(public_path('js/almacen/devolucion/devolucionModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/salidasDevolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/salidasDevolucion.js'))}}"></script>
+<script src="{{ asset('js/almacen/devolucion/ingresosDevolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/ingresosDevolucion.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/incidenciasDevolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/incidenciasDevolucion.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/productosDevolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/productosDevolucion.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/salidasModal.js')}}?v={{filemtime(public_path('js/almacen/devolucion/salidasModal.js'))}}"></script>
+<script src="{{ asset('js/almacen/devolucion/ingresosModal.js')}}?v={{filemtime(public_path('js/almacen/devolucion/ingresosModal.js'))}}"></script>
 <script src="{{ asset('js/cas/incidencias/incidenciaModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/incidenciaModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/contribuyenteModal.js')}}?v={{filemtime(public_path('js/almacen/devolucion/contribuyenteModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/customizacion/productoCatalogoModal.js')}}?v={{filemtime(public_path('js/almacen/customizacion/productoCatalogoModal.js'))}}"></script>

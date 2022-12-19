@@ -31,7 +31,7 @@ function verSalidasVenta() {
 function obtenerSalida(id_salida) {
     $.ajax({
         type: 'GET',
-        url: 'obtenerSalidaDetalle/' + id_salida,
+        url: 'obtenerMovimientoDetalle/' + id_salida,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);

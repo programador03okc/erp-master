@@ -8,14 +8,7 @@ var tempArchivoAdjuntoRequerimientoCabeceraList=[];
 class ListaOrdenView {
     constructor(listaOrdenCtrl) {
         this.listaOrdenCtrl = listaOrdenCtrl;
-
-        this.ActualParametroTipoOrdenCabecera = 'SIN_FILTRO';
-        this.ActualParametroEmpresaCabecera = 'SIN_FILTRO';
-        this.ActualParametroSedeCabecera = 'SIN_FILTRO';
-        this.ActualParametroFechaDesdeCabecera = 'SIN_FILTRO';
-        this.ActualParametroFechaHasta = 'SIN_FILTRO';
-        this.ActualParametroEstadoCabecera = 'SIN_FILTRO';
-
+        this.filtro = 'SIN_FILTRO';
     }
 
     init() {
@@ -72,6 +65,13 @@ class ListaOrdenView {
         $('#listaOrdenes').on("click", "button.handleClickModalEnviarOrdenAPago", (e) => {
             this.modalEnviarOrdenAPago(e.currentTarget);
         });
+        $(document).on("change", "select.handleChangeFiltroListaOrdenes", (e) => {
+            // this.modalEnviarOrdenAPago(e.currentTarget);
+            this.filtro = e.currentTarget.value;
+
+            this.mostrarListaOrdenesElaboradas(e.currentTarget.value)
+
+        });
 
         $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeTipoDestinatario", (e) => {
             this.changeTipoDestinatario(e.currentTarget);
@@ -100,6 +100,14 @@ class ListaOrdenView {
         $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeCuenta", (e) => {
             this.actualizarIdCuentaBancariaDeInput(e.currentTarget);
         });
+        $('#modal-enviar-solicitud-pago').on("click", "input.handleCkeckPagoCuotas", (e) => {
+            this.updateLabelModalEnviarSolicitudPago(e.currentTarget.checked);
+        });
+
+        $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeNumeroDeCuotas", (e) => {
+            this.updateMontoAPagarEnCuotas();
+        });
+
 
         $('#listaDestinatariosEncontrados').on("click", "tr.handleClickSeleccionarDestinatario", (e) => {
             this.seleccionarDestinatario(e.currentTarget);
@@ -122,45 +130,45 @@ class ListaOrdenView {
             this.documentosVinculados(e.currentTarget);
         });
 
-        $('#modal-filtro-lista-ordenes-elaboradas').on("change", "select.handleChangeUpdateValorFiltroOrdenesElaboradas", (e) => {
-            this.updateValorFiltroOrdenesElaboradas();
-        });
+        // $('#modal-filtro-lista-ordenes-elaboradas').on("change", "select.handleChangeUpdateValorFiltroOrdenesElaboradas", (e) => {
+        //     this.updateValorFiltroOrdenesElaboradas();
+        // });
 
-        $('#modal-filtro-lista-ordenes-elaboradas').on("change", "select.handleChangeFiltroEmpresa", (e) => {
-            this.handleChangeFiltroEmpresa(e);
-        });
-
-
-        $('#modal-filtro-lista-ordenes-elaboradas').on("click", "input[type=checkbox]", (e) => {
-            this.estadoCheckFiltroOrdenesElaboradasCabecera(e);
-        });
-
-        $('#modal-filtro-lista-ordenes-elaboradas').on('hidden.bs.modal', () => {
-            this.updateValorFiltroOrdenesElaboradas();
-            if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
-                // this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
-            } else {
-                // this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera, this.ActualParametroEmpresaCabecera, this.ActualParametroSedeCabecera, this.ActualParametroFechaDesdeCabecera, this.ActualParametroFechaHastaCabecera, this.ActualParametroEstadoCabecera);
-            }
-        });
+        // $('#modal-filtro-lista-ordenes-elaboradas').on("change", "select.handleChangeFiltroEmpresa", (e) => {
+        //     this.handleChangeFiltroEmpresa(e);
+        // });
 
 
-        $('#modal-filtro-lista-items-orden-elaboradas').on("change", "select.handleChangeFiltroEmpresa", (e) => {
-            this.handleChangeFiltroEmpresa(e);
-        });
-        $('#modal-filtro-lista-items-orden-elaboradas').on("click", "input[type=checkbox]", (e) => {
-            this.estadoCheckFiltroOrdenesElaboradasDetalle(e);
-        });
-        $('#modal-filtro-lista-items-orden-elaboradas').on('hidden.bs.modal', () => {
-            this.updateValorFiltroDetalleOrdenesElaboradas();
-            if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
-                // this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+        // $('#modal-filtro-lista-ordenes-elaboradas').on("click", "input[type=checkbox]", (e) => {
+        //     this.estadoCheckFiltroOrdenesElaboradasCabecera(e);
+        // });
 
-            } else {
-                // this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle, this.ActualParametroSedeDetalle, this.ActualParametroFechaDesdeDetalle, this.ActualParametroFechaHastaDetalle, this.ActualParametroEstadoDetalle);
+        // $('#modal-filtro-lista-ordenes-elaboradas').on('hidden.bs.modal', () => {
+        //     this.updateValorFiltroOrdenesElaboradas();
+        //     if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
+        //         // this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+        //     } else {
+        //         // this.obtenerListaOrdenesElaboradas(this.ActualParametroTipoOrdenCabecera, this.ActualParametroEmpresaCabecera, this.ActualParametroSedeCabecera, this.ActualParametroFechaDesdeCabecera, this.ActualParametroFechaHastaCabecera, this.ActualParametroEstadoCabecera);
+        //     }
+        // });
 
-            }
-        });
+
+        // $('#modal-filtro-lista-items-orden-elaboradas').on("change", "select.handleChangeFiltroEmpresa", (e) => {
+        //     this.handleChangeFiltroEmpresa(e);
+        // });
+        // $('#modal-filtro-lista-items-orden-elaboradas').on("click", "input[type=checkbox]", (e) => {
+        //     this.estadoCheckFiltroOrdenesElaboradasDetalle(e);
+        // });
+        // $('#modal-filtro-lista-items-orden-elaboradas').on('hidden.bs.modal', () => {
+        //     this.updateValorFiltroDetalleOrdenesElaboradas();
+        //     if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
+        //         // this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
+
+        //     } else {
+        //         // this.obtenerListaDetalleOrdenesElaboradas(this.ActualParametroEmpresaDetalle, this.ActualParametroSedeDetalle, this.ActualParametroFechaDesdeDetalle, this.ActualParametroFechaHastaDetalle, this.ActualParametroEstadoDetalle);
+
+        //     }
+        // });
         $(document).on('click','.adjuntar-archivos', (e)=> {
             tempArchivoAdjuntoRequerimientoCabeceraList=[];
             $(":file").filestyle('clear');
@@ -174,7 +182,7 @@ class ListaOrdenView {
             $('#modal-adjuntar-orden').modal('show');
             this.obteneAdjuntosOrden(data_id).then((res) => {
 
-                let htmlPago = '';
+                let htmlAdjunto = '';
                 // console.log(res.length);
                 if (res.length > 0) {
                     (res).forEach(element => {
@@ -184,6 +192,7 @@ class ListaOrdenView {
                                 'id':element.id_adjunto,
                                 'category':element.categoria_adjunto_id,
                                 'fecha_emision':element.fecha_emision,
+<<<<<<< HEAD
                                 'nro_comprobante':element.nro_comprobante,
                                 'nameFile':element.archivo,
                                 'action':'',
@@ -211,6 +220,65 @@ class ListaOrdenView {
                                     htmlPago+='<div style="display:flex;"><button type="button" class="btn btn-sm btn-warning boton handleClickEditarAdjuntoProveedor" title="Editar" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-edit"></i> </button>'
                                     htmlPago+='<button type="button" class="btn btn-sm btn-danger boton handleClickAnularAdjuntoProveedor" title="Anular" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-trash"></i> </button></div>'
                                 htmlPago+='</td>'
+=======
+                                'nro_comprobante':(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:""),
+                                'nameFile':element.archivo,
+                                'accion':'',
+                                'file': null
+                        }
+                        );
+
+                            htmlAdjunto+= '<tr id="'+element.id_adjunto+'">'
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+='<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>'
+                                htmlAdjunto+='</td>'
+
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+='<span name="fecha_emision_text">'+element.fecha_emision+'</span><input type="date" class="form-control handleChangeFechaEmision oculto" name="fecha_emision" placeholder="Fecha emisión"  value="'+element.fecha_emision+'">'
+                                htmlAdjunto+='</td>'
+
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+='<span name="nro_comprobante_text">'+(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:"")+'</span><input type="text" class="form-control handleChangeNroComprobante oculto" name="nro_comprobante"  placeholder="Nro comprobante" value="'+element.nro_comprobante+'">'
+                                htmlAdjunto+='</td>'
+
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+=''+element.descripcion+''
+                                htmlAdjunto+='</td>'
+                                htmlAdjunto+='<td>'
+                                    htmlAdjunto+='<div style="display:flex;"><button type="button" class="btn btn-sm btn-warning boton handleClickEditarAdjuntoProveedor" title="Editar" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-edit"></i> </button>'
+                                    htmlAdjunto+='<button type="button" class="btn btn-sm btn-danger boton handleClickAnularAdjuntoProveedor" title="Anular" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-trash"></i> </button></div>'
+                                htmlAdjunto+='</td>'
+                            htmlAdjunto+= '</tr>'
+
+                    });
+                }else{
+                    htmlAdjunto = `<tr>
+                    <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
+                    </tr>`;
+                }
+                $('#form-adjunto-orden #body_adjuntos_logisticos').html(htmlAdjunto)
+
+
+            }).catch(function (err) {
+                console.log(err)
+            })
+
+            this.obteneAdjuntosPago(data_id).then((res) => {
+
+                let htmlPago = '';
+                console.log(res.data);
+                if (res.data.length > 0) {
+                    (res.data).forEach(element => {
+
+                            htmlPago+= '<tr id="'+element.id_orden+'">'
+
+                                element.adjuntos.forEach(nombreAdjunto => {
+                                    htmlPago+='<td>'
+                                        htmlPago+='<a href="/files/tesoreria/pagos/'+nombreAdjunto+'" target="_blank">'+nombreAdjunto+'</a>'
+                                    htmlPago+='</td>'
+
+                                });
+>>>>>>> develop
                             htmlPago+= '</tr>'
 
                     });
@@ -219,7 +287,11 @@ class ListaOrdenView {
                     <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
                     </tr>`;
                 }
+<<<<<<< HEAD
                 $('#form-adjunto-orden #body_adjuntos_logisticos').html(htmlPago)
+=======
+                $('#form-adjunto-orden #body_adjuntos_pago').html(htmlPago)
+>>>>>>> develop
 
 
             }).catch(function (err) {
@@ -230,7 +302,7 @@ class ListaOrdenView {
         $(document).on("change", "input.handleChangeAgregarAdjuntoRequerimientoCompraCabecera", (e) => {
             this.agregarAdjuntoRequerimientoCabeceraCompra(e.currentTarget);
         });
-        $('#modal-adjuntar-orden').on("click", "button.handleClickEliminarArchivoCabeceraRequerimientoCompra", (e) => {
+        $(document).on("click", "button.handleClickEliminarArchivoCabeceraRequerimientoCompra", (e) => {
             this.eliminarAdjuntoRequerimientoCompraCabecera(e.currentTarget);
         });
         $(document).on("submit", "#form-adjunto-orden", (e) => {
@@ -239,9 +311,10 @@ class ListaOrdenView {
             this.guardarAdjuntos();
         });
 
-        $('#modal-adjuntar-orden').on("change", "input.handleChangeFechaEmision", (e) => {
+        $(document).on("change", "input.handleChangeFechaEmision", (e) => {
             this.actualizarFechaEmisionDeAdjunto(e.currentTarget);
         });
+<<<<<<< HEAD
         $('#modal-adjuntar-orden').on("change", "input.handleChangeNroComprobante", (e) => {
             this.actualizarNroComprobanteDeAdjunto(e.currentTarget);
         });
@@ -251,16 +324,31 @@ class ListaOrdenView {
         $('#modal-adjuntar-orden').on("click", "button.handleClickAnularAdjuntoProveedor", (e) => {
             this.anularAdjuntoProveedor(e.currentTarget);
         });
+=======
+        $(document).on("change", "input.handleChangeNroComprobante", (e) => {
+            this.actualizarNroComprobanteDeAdjunto(e.currentTarget);
+        });
+        $(document).on("click", "button.handleClickEditarAdjuntoProveedor", (e) => {
+            this.editarAdjuntoProveedor(e.currentTarget);
+        });
+        $(document).on("click", "button.handleClickAnularAdjuntoProveedor", (e) => {
+            this.anularAdjuntoProveedor(e.currentTarget);
+        });
+
+>>>>>>> develop
 
     }
 
     limpiarTabla(idElement) {
-        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
-        if (nodeTbody != null) {
-            while (nodeTbody.children.length > 0) {
-                nodeTbody.removeChild(nodeTbody.lastChild);
+        let nodeTbodyList = document.querySelectorAll("table[id='" + idElement + "'] tbody");
+        nodeTbodyList.forEach(element => {
+            if (element != null) {
+                while (element.children.length > 0) {
+                    element.removeChild(element.lastChild);
+                }
             }
-        }
+
+        });
     }
 
     vista_extendida() {
@@ -276,253 +364,23 @@ class ListaOrdenView {
         document.querySelector("button[id='btnTipoVistaPorItemPara'").classList.remove('active');
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.remove('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.add('oculto');
-        if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
+        // if (this.updateContadorFiltroOrdenesElaboradas() == 0) {
             // this.obtenerListaOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
             this.mostrarListaOrdenesElaboradas();
 
-        }
+        // }
     }
     tipoVistaPorItem() {
         document.querySelector("button[id='btnTipoVistaPorItemPara'").classList.add('active');
         document.querySelector("button[id='btnTipoVistaPorCabecera'").classList.remove('active');
         document.querySelector("div[id='contenedor-tabla-nivel-cabecera']").classList.add('oculto');
         document.querySelector("div[id='contenedor-tabla-nivel-item']").classList.remove('oculto');
-        if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
+        // if (this.updateContadorFiltroDetalleOrdenesElaboradas() == 0) {
             // this.obtenerListaDetalleOrdenesElaboradas('SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO', 'SIN_FILTRO');
             this.mostrarListaItemsOrdenesElaboradas();
-        }
+        // }
     }
 
-    // filtros
-
-
-
-
-    filtroTablaListaOrdenesVistaCabecera() {
-        $('#modal-filtro-lista-ordenes-elaboradas').modal({
-            show: true,
-            backdrop: 'true'
-        });
-    }
-
-    filtroTablaListaOrdenesVistaDetalle() {
-        $('#modal-filtro-lista-items-orden-elaboradas').modal({
-            show: true,
-            backdrop: 'true'
-        });
-    }
-
-    getNameModalActive() {
-
-        if (document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']").classList.contains("in") == true) {
-            return document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas'] div.modal-body").firstElementChild.getAttribute('id');
-        } else if (document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']").classList.contains("in") == true) {
-            return document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas'] div.modal-body").firstElementChild.getAttribute('id');
-        } else {
-            return null;
-        }
-
-    }
-
-
-
-    handleChangeFiltroEmpresa(event) {
-        let id_empresa = event.target.value;
-        this.listaOrdenCtrl.getDataSelectSede(id_empresa).then((res) => {
-            this.llenarSelectSede(res);
-        }).catch(function (err) {
-            console.log(err)
-        })
-
-    }
-
-    llenarSelectSede(array) {
-        let selectElement = document.querySelector("div[id='" + this.getNameModalActive() + "'] select[name='sede']");
-
-        if (selectElement.options.length > 0) {
-            var i, L = selectElement.options.length - 1;
-            for (i = L; i >= 0; i--) {
-                selectElement.remove(i);
-            }
-        }
-
-        array.forEach(element => {
-            let option = document.createElement("option");
-            option.text = element.descripcion;
-            option.value = element.id_sede;
-            selectElement.add(option);
-        });
-    }
-
-    mostrarCantidadFiltrosActivosCabeceraOrden() {
-        document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span[id='cantidadFiltrosActivosCabecera']").textContent = cantidadFiltrosActivosCabecera;
-
-    }
-    mostrarCantidadFiltrosActivosDetalleOrden() {
-        document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span[id='cantidadFiltrosActivosDetalle']").textContent = cantidadFiltrosActivosDetalle;
-
-    }
-
-    estadoCheckFiltroOrdenesElaboradasCabecera(e) {
-        const modalFiltrosOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']");
-        switch (e.currentTarget.getAttribute('name')) {
-            case 'chkTipoOrden':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='tipoOrden']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='tipoOrden']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkEmpresa':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='empresa']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='empresa']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkSede':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='sede']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='sede']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkFechaRegistro':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly")
-                    modalFiltrosOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
-                    modalFiltrosOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkEstado':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='estado']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosOrdenesElaboradas.querySelector("select[name='estado']").setAttribute("readOnly", true)
-                }
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    estadoCheckFiltroOrdenesElaboradasDetalle(e) {
-        const modalFiltrosDetalleOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']");
-        switch (e.currentTarget.getAttribute('name')) {
-            case 'chkEmpresa':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='empresa']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='empresa']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkSede':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='sede']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='sede']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkFechaRegistro':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").removeAttribute("readOnly")
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").setAttribute("readOnly", true)
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").setAttribute("readOnly", true)
-                }
-                break;
-            case 'chkEstado':
-                if (e.currentTarget.checked == true) {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='estado']").removeAttribute("readOnly")
-                } else {
-                    modalFiltrosDetalleOrdenesElaboradas.querySelector("select[name='estado']").setAttribute("readOnly", true)
-                }
-                break;
-            default:
-                break;
-        }
-
-    }
-
-
-    updateValorFiltroOrdenesElaboradas() {
-        const modalFiltroListaOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-ordenes-elaboradas']");
-        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='tipoOrden']").getAttribute("readonly") == null) {
-            this.ActualParametroTipoOrdenCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='tipoOrden']").value;
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
-            this.ActualParametroEmpresaCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='empresa']").value;
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").getAttribute("readonly") == null) {
-            this.ActualParametroSedeCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='sede']").value;
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
-            this.ActualParametroFechaDesdeCabecera = modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
-            this.ActualParametroFechaHastaCabecera = modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalFiltroListaOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
-        }
-        if (modalFiltroListaOrdenesElaboradas.querySelector("select[name='estado']").getAttribute("readonly") == null) {
-            this.ActualParametroEstadoCabecera = modalFiltroListaOrdenesElaboradas.querySelector("select[name='estado']").value;
-        }
-    }
-    updateValorFiltroDetalleOrdenesElaboradas() {
-        const modalFiltroListaDetalleOrdenesElaboradas = document.querySelector("div[id='modal-filtro-lista-items-orden-elaboradas']");
-
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='empresa']").getAttribute("readonly") == null) {
-            this.ActualParametroEmpresaDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='empresa']").value;
-        }
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='sede']").getAttribute("readonly") == null) {
-            this.ActualParametroSedeDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='sede']").value;
-        }
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").getAttribute("readonly") == null) {
-            this.ActualParametroFechaDesdeDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value.length > 0 ? modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroDesde']").value : 'SIN_FILTRO';
-        }
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").getAttribute("readonly") == null) {
-            this.ActualParametroFechaHastaDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value.length > 0 ? modalFiltroListaDetalleOrdenesElaboradas.querySelector("input[name='fechaRegistroHasta']").value : 'SIN_FILTRO';
-        }
-        if (modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='estado']").getAttribute("readonly") == null) {
-            this.ActualParametroEstadoDetalle = modalFiltroListaDetalleOrdenesElaboradas.querySelector("select[name='estado']").value;
-        }
-    }
-
-    // obtenerListaOrdenesElaboradas(tipoOrden = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
-    //     this.listaOrdenCtrl.obtenerListaOrdenesElaboradas(tipoOrden, idEmpresa, idSede, fechaRegistroDesde, fechaRegistroHasta, idEstado).then((res) => {
-    //         this.construirTablaListaOrdenesElaboradas(res);
-    //     }).catch((err) => {
-    //         console.log(err)
-    //     })
-    // }
-
-
-
-    updateContadorFiltroOrdenesElaboradas() {
-        let contadorCheckActivo = 0;
-        const allCheckBoxFiltroOrdenesElaboradasNivelCabecera = document.querySelectorAll("div[id='modal-filtro-lista-ordenes-elaboradas'] input[type='checkbox']");
-        allCheckBoxFiltroOrdenesElaboradasNivelCabecera.forEach(element => {
-            if (element.checked == true) {
-                contadorCheckActivo++;
-            }
-        });
-        document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span") ? document.querySelector("button[id='btnFiltroListaOrdenCabecera'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo : false
-        return contadorCheckActivo;
-    }
-
-    updateContadorFiltroDetalleOrdenesElaboradas() {
-        let contadorCheckActivo = 0;
-        const allCheckBoxFiltroOrdenesElaboradasNivelDetalle = document.querySelectorAll("div[id='modal-filtro-lista-items-orden-elaboradas'] input[type='checkbox']");
-        allCheckBoxFiltroOrdenesElaboradasNivelDetalle.forEach(element => {
-            if (element.checked == true) {
-                contadorCheckActivo++;
-            }
-        });
-        document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span") ? document.querySelector("button[id='btnFiltroListaOrdenDetalle'] span").innerHTML = '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : ' + contadorCheckActivo : false
-        return contadorCheckActivo;
-    }
 
     construirDetalleOrdenElaboradas(table_id, row, response) {
         var html = '';
@@ -546,8 +404,8 @@ class ListaOrdenView {
                     <td style="border: none;">${element.descripcion ? element.descripcion : (element.descripcion_adicional ? element.descripcion_adicional : '')}</td>
                     <td style="border: none;">${element.cantidad ? element.cantidad : ''}</td>
                     <td style="border: none;">${element.abreviatura ? element.abreviatura : ''}</td>
-                    <td style="border: none;">${element.moneda_simbolo}${$.number(element.precio, 2)}</td>
-                    <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad * element.precio), 2)}</td>
+                    <td style="border: none;">${element.moneda_simbolo}${$.number(element.precio, 2,".",",")}</td>
+                    <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad * element.precio), 2,".",",")}</td>
                     <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
 
                     </tr>`;
@@ -959,6 +817,11 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value = "";
+
+        // document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = '';
+        // document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value = '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent="";
+
         let selectCuenta = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']");
         if (selectCuenta != null) {
             while (selectCuenta.children.length > 0) {
@@ -977,22 +840,42 @@ class ListaOrdenView {
     }
 
     modalEnviarOrdenAPago(obj) {
+        $('#modal-enviar-solicitud-pago .modal-body [name="numero_de_cuotas"]').removeAttr('disabled');
+        $('#modal-enviar-solicitud-pago .modal-body [name="pagoEnCuotasCheckbox"]').removeAttr('disabled');
+        tempArchivoAdjuntoRequerimientoCabeceraList=[];
+        $(":file").filestyle('clear');
+        this.limpiarTabla('adjuntosCabecera');
+        this.limpiarTabla('historialEnviosAPagoLogistica');
+        $('#form-enviar_solicitud_pago')[0].reset();
+        document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='estadoHistorialEnvioAPagoLogistica']").textContent= '';
+        document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='sumaMontoTotalPagado']").textContent= '';
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value= '';
+
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = '';
         this.limpiarFormEnviarOrdenAPago();
         this.restablecerValoresPorDefectoFormEnviarOrdenAPago();
-        $('#modal-enviar-solicitud-pago').modal({
-            show: true,
-            backdrop: 'static'
-        });
 
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = 1;
+
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").setAttribute("data-monto-total-orden",obj.dataset.montoTotalOrden);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = $.number(obj.dataset.montoTotalOrden,2,".",",");
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =parseFloat(obj.dataset.montoTotalOrden)>0 ?(parseFloat(obj.dataset.montoTotalOrden)).toFixed(2):0;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value =(parseInt(obj.dataset.numeroDeCuotas));
+
+        // document.querySelector("div[id='modal-enviar-solicitud-pago'] div[name='simboloMoneda']").textContent = obj.dataset.simboloMonedaOrden;
+        $( "div[name*='simboloMoneda']" ).text(obj.dataset.simboloMonedaOrden);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
 
+        // this.updateLabelModalEnviarSolicitudPago((obj.dataset.tienePagoEnCuotas === "true"));
+        this.updateLabelModalEnviarSolicitudPago(JSON.parse((obj.dataset.tienePagoEnCuotas).toLowerCase()));
+
+
         if (obj.dataset.estadoPago == 8) {
-            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago;
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago>0?obj.dataset.idPrioridadPago:1;
             document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = obj.dataset.idTipoDestinatarioPago;
 
             if (obj.dataset.idTipoDestinatarioPago == 1) {
@@ -1019,6 +902,169 @@ class ListaOrdenView {
             this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor)
         }
 
+        // this.obtenerMontosParaPago(obj.dataset.idOrdenCompra);
+
+        this.obteneAdjuntosOrden(obj.dataset.idOrdenCompra).then((res) => {
+
+            let htmlAdjunto = '';
+            // console.log(res.length);
+            if (res.length > 0) {
+                (res).forEach(element => {
+
+                    tempArchivoAdjuntoRequerimientoCabeceraList.push(
+                        {
+                            'id':element.id_adjunto,
+                            'category':element.categoria_adjunto_id,
+                            'fecha_emision':element.fecha_emision,
+                            'nro_comprobante':(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:""),
+                            'nameFile':element.archivo,
+                            'accion':'',
+                            'file':[element.id_adjunto]
+                    }
+                    );
+
+                        htmlAdjunto+= '<tr id="'+element.id_adjunto+'">'
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+='<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>'
+                            htmlAdjunto+='</td>'
+
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+='<span name="fecha_emision_text">'+element.fecha_emision+'</span><input type="date" class="form-control handleChangeFechaEmision oculto" name="fecha_emision" placeholder="Fecha emisión"  value="'+element.fecha_emision+'">'
+                            htmlAdjunto+='</td>'
+
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+='<span name="nro_comprobante_text">'+(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:"")+'</span><input type="text" class="form-control handleChangeNroComprobante oculto" name="nro_comprobante"  placeholder="Nro comprobante" value="'+element.nro_comprobante+'">'
+                            htmlAdjunto+='</td>'
+
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+=''+element.descripcion+''
+                            htmlAdjunto+='</td>'
+                            htmlAdjunto+='<td>'
+                                htmlAdjunto+='<div style="display:flex;"><button type="button" class="btn btn-sm btn-warning boton handleClickEditarAdjuntoProveedor" title="Editar" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-edit"></i> </button>'
+                                htmlAdjunto+='<button type="button" class="btn btn-sm btn-danger boton handleClickAnularAdjuntoProveedor" title="Anular" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-trash"></i> </button></div>'
+                            htmlAdjunto+='</td>'
+                        htmlAdjunto+= '</tr>'
+
+                });
+            }else{
+                htmlAdjunto = `<tr>
+                <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
+                </tr>`;
+            }
+            $('#form-enviar_solicitud_pago #body_adjuntos_logisticos').html(htmlAdjunto)
+
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+        this.obteneHistorialDeEnviosAPagoEnCuotas(obj.dataset.idOrdenCompra).then((res) => {
+            console.log(res);
+            let htmlTable = '';
+
+            let sumaMontoTotalMontoCuota=0;
+
+            if (res.hasOwnProperty('detalle') && res.detalle.length > 0) {
+                (res.detalle).forEach((element,index) => {
+                    if(element.id_estado !=7){
+                        sumaMontoTotalMontoCuota+=parseFloat(element.monto_cuota);
+                    }
+                    let enlaceAdjunto=[];
+                        htmlTable+= '<tr id="'+element.id_pago_cuota_detalle+'">'
+                            htmlTable+='<td>'
+                                htmlTable+= index+1;
+                            htmlTable+='</td>'
+
+                            htmlTable+='<td>'
+                                htmlTable+= $.number(element.monto_cuota,2,".",",");
+                            htmlTable+='</td>'
+
+                            htmlTable+='<td>'
+                                htmlTable+= element.observacion??'';
+                            htmlTable+='</td>'
+
+                            htmlTable+='<td>'
+                                htmlTable+= element.fecha_registro
+                            htmlTable+='</td>'
+                            htmlTable+='<td>'
+
+                                if(element.adjuntos.length >0){
+                                    (element.adjuntos).forEach(adjunto => {
+                                        enlaceAdjunto.push(`<a href="files/logistica/comporbantes_proveedor/${adjunto.archivo}" target="_blank">${adjunto.archivo}</a>`);
+                                    });
+                                }
+
+                                htmlTable+=enlaceAdjunto.toString().replace(",","<br>");
+                            htmlTable+='</td>'
+                        htmlTable+= '</tr>'
+
+                });
+                $('#modal-enviar-solicitud-pago .modal-body [name="numero_de_cuotas"]').attr('disabled',true);
+                $('#modal-enviar-solicitud-pago .modal-body [name="pagoEnCuotasCheckbox"]').attr('disabled',true);
+            }else{
+                htmlTable = `<tr>
+                <td style="text-align:center;" colspan="5">Sin data para mostrar</td>
+                </tr>`;
+
+            }
+            $('#form-enviar_solicitud_pago #body_historial_de_envios_a_pago_en_cuotas').html(htmlTable)
+
+            document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='sumaMontoTotalPagado']").textContent= sumaMontoTotalMontoCuota;
+
+            if(parseFloat(sumaMontoTotalMontoCuota) == parseFloat(document.querySelector("input[name='monto_total_orden']").dataset.montoTotalOrden)){
+                document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='estadoHistorialEnvioAPagoLogistica']").textContent= "Cuotas completadas, Orden pagada";
+            }else{
+                document.querySelector("table[id='historialEnviosAPagoLogistica'] span[name='estadoHistorialEnvioAPagoLogistica']").textContent= '';
+            }
+
+
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+        this.updateMontoAPagarEnCuotas();
+
+        $('#modal-enviar-solicitud-pago').modal({
+            show: true,
+            backdrop: 'static'
+        });
+    }
+
+    updateLabelModalEnviarSolicitudPago(tienePagoEnCuotas){
+
+        if(tienePagoEnCuotas ===true){
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='pagoEnCuotasCheckbox']").checked = true;
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").setAttribute("readOnly",true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").removeAttribute("disabled");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent = "(Pago en cuotas)";
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-historialEnviosAPagoLogistica']").removeAttribute("hidden");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-adjuntosLogisticosRegistrados']").setAttribute("hidden",true);
+        }else{
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='pagoEnCuotasCheckbox']").checked = false;
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='condicion_de_envio_pago']").textContent = "";
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").setAttribute("disabled",true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").removeAttribute("readOnly");
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-historialEnviosAPagoLogistica']").setAttribute("hidden",true);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] div[id='group-adjuntosLogisticosRegistrados']").removeAttribute("hidden");
+
+        }
+    }
+
+    updateMontoAPagarEnCuotas(){
+        let numeroDeCuotas = document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value??0;
+        // console.log(numeroDeCuotas);
+        if (numeroDeCuotas > 1){
+            let cuota= parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden) / parseInt(numeroDeCuotas);
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value=(cuota);
+        }
+
+        if (numeroDeCuotas == 1){
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").removeAttribute("readonly");
+        }else{
+            document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").setAttribute("readonly",true);
+
+        }
     }
 
     getContribuyentePorIdProveedor(id) {
@@ -1067,6 +1113,7 @@ class ListaOrdenView {
             console.log(err)
         })
     }
+
 
     llenarInputsDeDestinatario(data) {
         // console.log(data);
@@ -1126,6 +1173,11 @@ class ListaOrdenView {
                 continuar = true;
             }
         }
+        if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value >1)&& (document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value == (document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='historialEnviosAPagoLogistica'] tbody").childElementCount))){
+            menseje.push('No se puede superar el limite de cuota establecida');
+            continuar = false;
+
+        }
 
         if (menseje.length > 0) {
             Swal.fire(
@@ -1141,7 +1193,14 @@ class ListaOrdenView {
         // console.log('enviar a pago');
 
         if (this.validarFormularioEnvioOrdenAPago()) {
+
             let formData = new FormData($('#form-enviar_solicitud_pago')[0]);
+            if(tempArchivoAdjuntoRequerimientoCabeceraList.length>0){
+                formData.append(`archivoAdjuntoRequerimientoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoCabeceraList));
+                tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
+                    formData.append(`archivo_adjunto_list[]`, element.file);
+            });
+            }
             $.ajax({
                 type: 'POST',
                 url: 'registrar-solicitud-de-pago',
@@ -1253,6 +1312,7 @@ class ListaOrdenView {
 
     buscarDestinatarioPorNumeroDeDocumento(obj) {
         let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value);
+        let option = `<option value="" selected disabled>Elija una opción</option>`;
         if (idTipoDestinatario == 1) {
 
             let nroDocumento = (obj.value).trim();
@@ -1273,7 +1333,6 @@ class ListaOrdenView {
                     success: (response) => {
                         $("input[name='nombre_destinatario']").LoadingOverlay("hide", true);
 
-
                         if (response.tipo_estado == 'success') {
                             if (response.data != null && response.data.length > 0) {
                                 if (idTipoDestinatario == 1) { // persona
@@ -1292,16 +1351,16 @@ class ListaOrdenView {
                                         }
                                     }
                                     (response.data[0].cuenta_persona).forEach(element => {
-                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+                                        option += `
                                         <option
                                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
                                             data-nro-cci="${element.nro_cci != null && element.nro_cci != "" ? element.nro_cci : ''}"
                                             data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
                                             data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
                                             data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
-                                            value="${element.id_cuenta_bancaria}"
-                                            >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}</option>
-                                        `);
+                                            value="${element.id_cuenta_bancaria}">${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}
+                                        </option>`;
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
                                     });
 
 
@@ -1320,16 +1379,16 @@ class ListaOrdenView {
                                         }
                                     }
                                     (response.data[0].cuenta_contribuyente).forEach(element => {
-                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', `
+                                        option += `
                                         <option
                                             data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
                                             data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}"
                                             data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
                                             data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
                                             data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
-                                            value="${element.id_cuenta_contribuyente}"
-                                            >${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}</option>
-                                        `);
+                                            value="${element.id_cuenta_contribuyente}">${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}
+                                        </option>`;
+                                        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
 
                                     });
                                 }
@@ -1472,6 +1531,8 @@ class ListaOrdenView {
             );
         }
     }
+
+
     buscarDestinatarioPorNombre(obj) {
         let nombreDestinatario = obj.value;
         let idTipoDestinatario = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value);
@@ -1579,10 +1640,12 @@ class ListaOrdenView {
     // ###============ Fin enviar orden a pago ============###
 
 
-    mostrarListaOrdenesElaboradas(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
+    mostrarListaOrdenesElaboradas(filtro = 'SIN_FILTRO') {
+
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
+<<<<<<< HEAD
         var button_filtros = (array_accesos.find(element => element === 287)?{
             text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
             attr: {
@@ -1612,6 +1675,36 @@ class ListaOrdenView {
         $tablaListaOrdenesElaborados = $('#listaOrdenes').DataTable({
             'dom': vardataTables[1],
             'buttons': [button_filtros,button_descargar_excel],
+=======
+        // const button_filtro = (array_accesos.find(element => element === 287)?{
+        //         text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+        //         attr: {
+        //             id: 'btnFiltrosListaOrdenesElaboradas',
+        //             disabled: true
+        //         },
+        //         action: () => {
+        //             // this.abrirModalFiltrosRequerimientosElaborados();
+
+        //         },
+        //         className: 'btn-default btn-sm'
+        //     }:[]),
+          const  button_descargar_excel = (array_accesos.find(element => element === 244)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                attr: {
+                    id: 'btnDescargarListaOrdenesElaboradasExcel',
+                    disabled: false
+
+                },
+                action: () => {
+                    this.exportarListaOrdenesElaboradasNivelCabeceraExcel();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
+        $tablaListaOrdenesElaborados = $('#listaOrdenes').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [button_descargar_excel],
+>>>>>>> develop
             'language': vardataTables[0],
             'order': [[6, 'desc']],
             'bLengthChange': false,
@@ -1620,7 +1713,7 @@ class ListaOrdenView {
             'ajax': {
                 'url': 'lista-ordenes-elaboradas',
                 'type': 'POST',
-                'data': { 'meOrAll': meOrAll, 'idEmpresa': idEmpresa, 'idSede': idSede, 'idGrupo': idGrupo, 'idDivision': idDivision, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'idEstado': idEstado },
+                'data': { 'filtro': filtro},
                 beforeSend: data => {
                     $("#listaOrdenes").LoadingOverlay("show", {
                         imageAutoResize: true,
@@ -1692,7 +1785,7 @@ class ListaOrdenView {
                 { 'data': 'descripcion_estado_pago', 'name': 'descripcion_estado_pago','className': 'text-center' },
                 { 'data': 'monto_total', 'className': 'text-right',
                     render: function (data, type, row) {
-                        return row.simbolo_moneda + $.number(row.monto_total,2);
+                        return row.simbolo_moneda + $.number(row.monto_total,2,".",",");
                     }
                 },
                 {
@@ -1724,12 +1817,17 @@ class ListaOrdenView {
                             let btnImprimirOrden = (array_accesos.find(element => element === 252)?'<button type="button" class="btn btn-sm btn-warning boton handleClickAbrirOrdenPDF" title="Abrir orden PDF"  data-toggle="tooltip" data-placement="bottom" data-id-orden-compra="' + row.id + '"  data-id-pago=""> <i class="fas fa-file-pdf"></i> </button>':'');
 
                             let btnAnularOrden = '';
+<<<<<<< HEAD
                             if (row.fecha_ultimo_ingreso_almacen != null || [5,6,8,9].includes(row.estado_pago) ==true) {
+=======
+                            if (row.fecha_ultimo_ingreso_almacen != null || [5,6,8,9, 10].includes(row.estado_pago) ==true) {
+>>>>>>> develop
                                 btnAnularOrden = (array_accesos.find(element => element === 248)?'<button type="button" class="btn btn-sm btn-default boton" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '" disabled ><i class="fas fa-backspace fa-xs"></i></button>':'');
                             } else {
                                 btnAnularOrden = (array_accesos.find(element => element === 248)?'<button type="button" class="btn btn-sm btn-danger boton handleClickAnularOrden" name="btnAnularOrden" title="Anular orden" data-codigo-orden="' + row.codigo + '" data-id-orden-compra="' + row.id + '"><i class="fas fa-backspace fa-xs"></i></button>':'');
                             }
                             let btnVerDetalle = (array_accesos.find(element => element === 245)?`<button type="button" class="ver-detalle btn btn-sm btn-primary boton handleCliclVerDetalleOrden" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id}">
+<<<<<<< HEAD
                             <i class="fas fa-chevron-down"></i>
                             </button>`:``);
                             let btnEnviarAPago = (array_accesos.find(element => element === 247)?`<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
@@ -1750,6 +1848,32 @@ class ListaOrdenView {
                             </button>`:'');
 
                             let btnAdjuntar = (array_accesos.find(element => element === 249)?`<button type="button"  class="btn btn-default adjuntar-archivos" data-toggle="tooltip" title="Adjuntar archivos" data-codigo="${row.codigo}" data-id="${row.id}" data-codigo="${row.codigo}" ><i class="fas fa-paperclip fa-xs"></i></button>`:'') ;
+=======
+                                                <i class="fas fa-chevron-down"></i>
+                                                </button>`:'');
+                            let btnEnviarAPago = (array_accesos.find(element => element === 247)?`<button type="button" class="btn btn-sm btn-${([5, 6, 8, 9].includes((row.estado_pago)) ? 'success' : 'info')} boton handleClickModalEnviarOrdenAPago" name="btnEnviarOrdenAPago" ${row.tiene_pago_en_cuotas == true?'style="background-color:purple""':''} title="${([5, 6, 8,9].includes((row.estado_pago)) ? 'Ya se envió a pago' : 'Enviar a pago?')}"
+                                data-id-orden-compra="${row.id ?? ''}"
+                                data-codigo-orden="${row.codigo ?? ''}"
+                                data-monto-total-orden="${row.monto_total ?? ''}"
+                                data-simbolo-moneda-orden="${row.simbolo_moneda ?? ''}"
+                                data-id-proveedor="${row.id_proveedor ?? ''}"
+                                data-id-cuenta-principal="${row.id_cta_principal ?? ''}"
+                                data-estado-pago="${row.estado_pago ?? ''}"
+                                data-id-prioridad-pago="${row.id_prioridad_pago ?? ''}"
+                                data-id-tipo-destinatario-pago="${row.id_tipo_destinatario_pago ?? ''}"
+                                data-id-cuenta-contribuyente-pago="${row.id_cta_principal ?? ''}"
+                                data-id-contribuyente-pago="${row.id_contribuyente ?? ''}"
+                                data-tiene-pago-en-cuotas="${JSON.parse((row.tiene_pago_en_cuotas)) ?? false}"
+                                data-numero-de-cuotas="${(row.numero_de_cuotas) ?? 0}"
+
+                                data-id-persona-pago="${row.id_persona_pago ?? ''}"
+                                data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"
+                                data-comentario-pago="${row.comentario_pago ?? ''}" >
+                                    <i class="fas fa-money-check-alt fa-xs"></i>
+                                </button>`:'');
+
+                            let btnAdjuntar = (array_accesos.find(element => element === 249)?`<button type="button"  class="btn btn-default adjuntar-archivos" data-toggle="tooltip" title="Adjuntar archivos" data-codigo="${row.codigo}" data-id="${row.id}" data-codigo="${row.codigo}" ><i class="fas fa-paperclip fa-xs"></i></button>`:'');
+>>>>>>> develop
                             let containerCloseBrackets = '</div>';
                             return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnEnviarAPago + btnAnularOrden + btnAdjuntar + containerCloseBrackets);
 
@@ -1767,7 +1891,14 @@ class ListaOrdenView {
                 //Boton de busqueda
                 const $filter = $('#listaOrdenes_filter');
                 const $input = $filter.find('input');
+                
+                const selectFiltro= '<select class="form-control input-sm ml-4 handleChangeFiltroListaOrdenes" id="selectFiltroListaOrden" style="margin-left: 1rem;"> <option value="SIN_FILTRO" >Todo</option> <option value="ORDENES_SIN_ENVIAR_A_PAGO">Ordenes sin envío a pago</option> </select>';
+                document.querySelector("div[id='listaOrdenes_wrapper'] div[class='dt-buttons btn-group']").insertAdjacentHTML('afterbegin', selectFiltro);
+                document.querySelector("select[id='selectFiltroListaOrden']").value=that.filtro;
+
                 $filter.append('<button id="btnBuscarOrden" class="btn btn-default btn-sm pull-right" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>');
+
+
                 $input.off();
                 $input.on('keyup', (e) => {
                     if (e.key == 'Enter') {
@@ -1781,6 +1912,7 @@ class ListaOrdenView {
 
             },
             "drawCallback": function (settings) {
+
                 if ($tablaListaOrdenesElaborados.rows().data().length == 0) {
                     Lobibox.notify('info', {
                         title: false,
@@ -1816,10 +1948,11 @@ class ListaOrdenView {
 
 
 
-    mostrarListaItemsOrdenesElaboradas(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
+    mostrarListaItemsOrdenesElaboradas() {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
+<<<<<<< HEAD
         var button_filtros = (array_accesos.find(element => element === 288)?{
             text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
             attr: {
@@ -1848,6 +1981,36 @@ class ListaOrdenView {
         $tablaListaItemsOrdenesElaborados = $('#listaItemsOrden').DataTable({
             'dom': vardataTables[1],
             'buttons': [button_filtros,button_descargar_excel],
+=======
+        // const button_filtro = (array_accesos.find(element => element === 288)?{
+        //         text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+        //         attr: {
+        //             id: 'btnFiltrosListaItemsOrdenesElaboradas',
+        //             disabled: true
+        //         },
+        //         action: () => {
+        //             // this.abrirModalFiltrosRequerimientosElaborados();
+
+        //         },
+        //         className: 'btn-default btn-sm'
+        //     }:[]),
+           const button_descargar_excel= (array_accesos.find(element => element === 251)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                attr: {
+                    id: 'btnDescargarListaItemsOrdenesElaboradasExcel',
+                    disabled: false
+
+                },
+                action: () => {
+                    this.exportarListaOrdenesElaboradasNivelDetalleExcel();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
+        $tablaListaItemsOrdenesElaborados = $('#listaItemsOrden').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [button_descargar_excel],
+>>>>>>> develop
             'language': vardataTables[0],
             'order': [[15, 'desc']],
             'bLengthChange': false,
@@ -1856,7 +2019,7 @@ class ListaOrdenView {
             'ajax': {
                 'url': 'lista-items-ordenes-elaboradas',
                 'type': 'POST',
-                'data': { 'meOrAll': meOrAll, 'idEmpresa': idEmpresa, 'idSede': idSede, 'idGrupo': idGrupo, 'idDivision': idDivision, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'idEstado': idEstado },
+                // 'data': { 'meOrAll': meOrAll, 'idEmpresa': idEmpresa, 'idSede': idSede, 'idGrupo': idGrupo, 'idDivision': idDivision, 'fechaRegistroDesde': fechaRegistroDesde, 'fechaRegistroHasta': fechaRegistroHasta, 'idEstado': idEstado },
                 beforeSend: data => {
                     $("#listaItemsOrden").LoadingOverlay("show", {
                         imageAutoResize: true,
@@ -1896,12 +2059,12 @@ class ListaOrdenView {
                 { 'data': 'abreviatura_unidad_medida_det_orden', 'name': 'abreviatura_unidad_medida_det_orden' },
                 { 'data': 'precio', 'className': 'text-right',
                 render: function (data, type, row) {
-                    return row.simbolo_moneda_orden + $.number(row.precio,2);
+                    return row.simbolo_moneda_orden + $.number(row.precio,2,".",",");
                     }
                 },
                 { 'data': 'cc_fila_precio', 'className': 'text-right',
                 render: function (data, type, row) {
-                    return (row.cc_moneda =='s'?'S/':(row.cc_moneda=='d'?'$':'')) + $.number(row.cc_fila_precio,2);
+                    return (row.cc_moneda =='s'?'S/':(row.cc_moneda=='d'?'$':'')) + $.number(row.cc_fila_precio,2,".",",");
                     }
                 },
                 { 'data': 'fecha_emision', 'name': 'fecha_emision','className': 'text-center' },
@@ -1991,7 +2154,7 @@ class ListaOrdenView {
 
 
     exportarListaOrdenesElaboradasNivelCabeceraExcel() {
-        window.open('exportar-lista-ordenes-elaboradas-nivel-cabecera-excel');
+        window.open(`exportar-lista-ordenes-elaboradas-nivel-cabecera-excel/${this.filtro}`);
     }
     exportarListaOrdenesElaboradasNivelDetalleExcel() {
         window.open('exportar-lista-ordenes-elaboradas-nivel-detalle-excel');
@@ -2016,7 +2179,7 @@ class ListaOrdenView {
                             fecha_emision: moment().format('YYYY-MM-DD'),
                             nro_comprobante: '',
                             nameFile: file.name,
-                            action: 'GUARDAR',
+                            accion: 'GUARDAR',
                             file: file
                         };
                         this.addToTablaArchivosRequerimientoCabecera(payload);
@@ -2053,9 +2216,15 @@ class ListaOrdenView {
             }
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoCabeceraList[indice].id) == false) {
+<<<<<<< HEAD
                 tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ACTUALIZAR';
             } else {
                 tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'GUARDAR';
+=======
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ACTUALIZAR';
+            } else {
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'GUARDAR';
+>>>>>>> develop
             }
 
         } else {
@@ -2078,7 +2247,11 @@ class ListaOrdenView {
         if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
             let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
             tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ANULAR';
+<<<<<<< HEAD
             obj.closest('tr').classList.add("gb-danger");
+=======
+            obj.closest('tr').classList.add("bg-danger");
+>>>>>>> develop
         } else {
             Swal.fire(
                 '',
@@ -2098,9 +2271,9 @@ class ListaOrdenView {
             }
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoCabeceraList[indice].id) == false) {
-                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ACTUALIZAR';
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ACTUALIZAR';
             } else {
-                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'GUARDAR';
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'GUARDAR';
             }
 
         } else {
@@ -2162,8 +2335,13 @@ class ListaOrdenView {
             let html = '';
             html = `<tr id="${payload.id}" style="text-align:center">
             <td style="text-align:left;">${payload.nameFile}</td>
+<<<<<<< HEAD
             <td style="text-align:left;"><input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" placeholder="Fecha emisión"  value="${moment().format("YYYY-MM-DD")}" required></td>
             <td style="text-align:left;"><input type="text" class="form-control handleChangeNroComprobante" name="nro_comprobante"  placeholder="Nro comprobante" required></td>
+=======
+            <td style="text-align:left;"><input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" placeholder="Fecha emisión"  value="${moment().format("YYYY-MM-DD")}"></td>
+            <td style="text-align:left;"><input type="text" class="form-control handleChangeNroComprobante" name="nro_comprobante"  placeholder="Nro comprobante"></td>
+>>>>>>> develop
             <td>
                 <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
             `;
@@ -2184,7 +2362,7 @@ class ListaOrdenView {
             </td>
             </tr>`;
 
-            document.querySelector("div[id='modal-adjuntar-orden'] tbody[id='body_archivos_requerimiento_compra_cabecera']").insertAdjacentHTML('beforeend', html);
+            document.querySelector("div[id='"+document.querySelector("div[class='modal fade in']").id+"'] tbody[id='body_archivos_requerimiento_compra_cabecera']").insertAdjacentHTML('beforeend', html);
 
         }).catch(function (err) {
             console.log(err)
@@ -2206,7 +2384,7 @@ class ListaOrdenView {
             tamañoTotalArchivoParaSubir+=element.size;
 
         });
-            document.querySelector("div[id='modal-adjuntar-orden'] span[id='tamaño_total_archivos_para_subir']").textContent= $.number((tamañoTotalArchivoParaSubir/1000000),2)+'MB';
+            document.querySelector("div[id='modal-adjuntar-orden'] span[id='tamaño_total_archivos_para_subir']").textContent= $.number((tamañoTotalArchivoParaSubir/1000000),2,".",",")+'MB';
     }
     eliminarAdjuntoRequerimientoCompraCabecera(obj){
         obj.closest("tr").remove();
@@ -2216,7 +2394,7 @@ class ListaOrdenView {
         } else {
             if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
                 let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.dataset.id);
-                tempArchivoAdjuntoRequerimientoCabeceraList[indice].action = 'ELIMINAR';
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ELIMINAR';
             } else {
                 Swal.fire(
                     '',
@@ -2234,24 +2412,35 @@ class ListaOrdenView {
 
             if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
                 tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
+<<<<<<< HEAD
                     
+=======
+
+>>>>>>> develop
                         formData.append(`id_adjunto[]`, element.id);
                         formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
                         formData.append(`nro_comprobante_adjunto[]`, element.nro_comprobante);
                         formData.append(`categoria_adjunto[]`, element.category);
-                        formData.append(`archivoAdjuntoRequerimientoCabeceraFileGuardar${element.category}[]`, element.file);
+                        formData.append(`archivo_adjunto_list[]`, element.file);
                         formData.append(`nombre_real_adjunto[]`, element.nameFile);
+<<<<<<< HEAD
                         formData.append(`accion[]`, element.action);
                     
+=======
+                        formData.append(`accion[]`, element.accion);
+
+>>>>>>> develop
                 });
+
             }
 
             $.ajax({
                 type: 'POST',
                 url: 'guardar-adjunto-orden',
-                data: formData,
+                enctype: 'multipart/form-data',
                 processData: false,
                 contentType: false,
+                data: formData,
                 dataType: 'JSON',
                 beforeSend:  (data)=> { // Are not working with dataType:'jsonp'
                     $('#modal-adjuntar-orden .modal-content').LoadingOverlay("show", {
@@ -2325,6 +2514,48 @@ class ListaOrdenView {
                 },
                 error: function (err) {
                     // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                    reject(err)
+                }
+            });
+        });
+    }
+    obteneHistorialDeEnviosAPagoEnCuotas(id_orden) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `historial-de-envios-a-pago-en-cuotas/${id_orden}`,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+            },
+                success(response) {
+                    resolve(response);
+                },
+                error: function (err) {
+                    reject(err)
+                }
+            });
+        });
+    }
+
+    obteneAdjuntosPago(idOrden) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url: `listar-archivos-adjuntos-pago-requerimiento/${idOrden}`,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                $('#modal-adjuntar-orden #adjuntosPago').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+                success(response) {
+                    $('#modal-adjuntar-orden #adjuntosPago').LoadingOverlay("hide", true);
+                    resolve(response);
+                },
+                error: function (err) {
+                    $('#modal-adjuntar-orden #adjuntosPago').LoadingOverlay("hide", true);
                     reject(err)
                 }
             });

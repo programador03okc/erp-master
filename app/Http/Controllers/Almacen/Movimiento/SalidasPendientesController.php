@@ -30,6 +30,7 @@ class SalidasPendientesController extends Controller
         $usuarios = AlmacenController::select_usuarios();
         $motivos_anu = AlmacenController::select_motivo_anu();
         $nro_od_pendientes = $this->nroDespachosPendientes();
+<<<<<<< HEAD
         $array_accesos=[];
         $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
@@ -38,6 +39,16 @@ class SalidasPendientesController extends Controller
         return view(
             'almacen/guias/despachosPendientes',
             compact('tp_operacion', 'clasificaciones', 'usuarios', 'motivos_anu', 'nro_od_pendientes','array_accesos')
+=======
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
+        return view(
+            'almacen/guias/despachosPendientes',
+            compact('tp_operacion', 'clasificaciones', 'usuarios', 'motivos_anu', 'nro_od_pendientes', 'array_accesos')
+>>>>>>> develop
         );
     }
 
@@ -505,7 +516,7 @@ class SalidasPendientesController extends Controller
             ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
-            ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+            ->leftjoin('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'guia_ven.id_cliente')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
             ->leftjoin('configuracion.sis_usua as usua_anula', 'usua_anula.id_usuario', '=', 'mov_alm.usuario_anulacion')
             ->join('almacen.tp_ope', 'tp_ope.id_operacion', '=', 'mov_alm.id_operacion')
@@ -583,7 +594,7 @@ class SalidasPendientesController extends Controller
                             ->update(['estado' => 1]);
 
                         $detalle = DB::table('almacen.guia_ven_det')
-                            ->select('guia_ven_det.id_guia_ven_det', 'alm_det_req.id_detalle_requerimiento')
+                            ->select('guia_ven_det.id_guia_ven_det', 'alm_det_req.id_detalle_requerimiento', 'guia_ven_det.id_od_det')
                             ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
                             ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
                             ->where('id_guia_ven', $request->id_guia_ven)
@@ -609,6 +620,13 @@ class SalidasPendientesController extends Controller
                                         ->where('id_reserva', $res->id_reserva)
                                         ->update(['estado' => 1]);
                                 }
+                            }
+
+                            if ($det->id_od_det !== null) {
+                                //revierte la reserva
+                                DB::table('almacen.orden_despacho_det')
+                                    ->where('id_od_detalle', $det->id_od_det)
+                                    ->update(['estado' => 1]);
                             }
                         }
                         $msj = 'La salida fue anulada con éxito.';
@@ -1742,14 +1760,82 @@ class SalidasPendientesController extends Controller
             DB::rollBack();
             return response()->json(['tipo' => 'danger', 'mensaje' => 'Algo salió mal. Inténtelo nuevamente.', 200]);
         }
-    }public function verAdjuntos(Request $request)
+    }
+    public function verAdjuntos(Request $request)
     {
 
-        $data = Adjuntos::where('estado',1)->where('id_requerimiento',$request->id)->get();
+        $data = Adjuntos::where('estado', 1)->where('id_requerimiento', $request->id)->get();
         return response()->json([
-            "success"=>true,
-            "status"=>200,
-            "data"=>$data
+            "success" => true,
+            "status" => 200,
+            "data" => $data
         ]);
+    }
+
+    public function mostrarClientes()
+    {
+        $data = DB::table('comercial.com_cliente')
+            ->select('com_cliente.id_cliente', 'adm_contri.nro_documento', 'adm_contri.razon_social')
+            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
+            ->where('com_cliente.estado', 1)
+            ->get();
+        $output['data'] = $data;
+        return response()->json($output);
+    }
+
+    public function guardarCliente(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $array = [];
+
+            $contribuyente = DB::table('contabilidad.adm_contri')
+                ->where('nro_documento', trim($request->nro_documento))
+                ->first();
+
+            if ($contribuyente !== null) {
+                $array = array(
+                    'tipo' => 'warning',
+                    'mensaje' => 'Ya existe el RUC ingresado.',
+                );
+            } else {
+                $id_contribuyente = DB::table('contabilidad.adm_contri')
+                    ->insertGetId(
+                        [
+                            'nro_documento' => trim($request->nro_documento),
+                            'razon_social' => strtoupper(trim($request->razon_social)),
+                            'telefono' => trim($request->telefono),
+                            'direccion_fiscal' => trim($request->direccion_fiscal),
+                            'fecha_registro' => date('Y-m-d H:i:s'),
+                            'estado' => 1,
+                            'transportista' => false
+                        ],
+                        'id_contribuyente'
+                    );
+
+                DB::table('comercial.com_cliente')
+                    ->insert([
+                        'id_contribuyente' => $id_contribuyente,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ]);
+
+                $array = array(
+                    'tipo' => 'success',
+                    'mensaje' => 'Se guardó el cliente correctamente',
+                );
+            }
+            DB::commit();
+            return response()->json($array);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(
+                array(
+                    'tipo' => 'error',
+                    'mensaje' => 'Hubo un problema. Por favor intente de nuevo',
+                    'error' => $e->getMessage()
+                )
+            );
+        }
     }
 }

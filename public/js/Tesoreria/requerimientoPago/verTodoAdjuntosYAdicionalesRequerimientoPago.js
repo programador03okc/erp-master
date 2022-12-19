@@ -66,6 +66,7 @@ function obtenerListaAdjuntosPago(idRequerimientoPago) {
                 });
             },
             success(response) {
+                // console.log(response);
                 resolve(response);
                 $('#adjuntosPago').LoadingOverlay("hide", true);
 
@@ -160,9 +161,9 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
             console.log(err)
         })
     }
+    adjuntosTesoreria(idRequerimientoPago);
 
 }
-
 
 function estaHabilitadoLaExtension(file) {
     let extension = (file.name.match(/(?<=\.)\w+$/g) != null) ? file.name.match(/(?<=\.)\w+$/g)[0].toLowerCase() : ''; // assuming that this file has any extension
@@ -492,17 +493,8 @@ function guardarAdjuntos() {
 
         if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
             tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-                if (element.action == 'GUARDAR') {
-                    formData.append(`id_adjunto[]`, element.id);
-                    formData.append(`fecha_emision_adjunto[]`, element.fecha_emision);
-                    formData.append(`categoria_adjunto[]`, element.category);
-                    formData.append(`archivo_adjunto[]`, element.file);
-                    // formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFileGuardar${element.category}[]`, element.file);
-                    formData.append(`nombre_real_adjunto[]`, element.nameFile);
-                    formData.append(`accion_adjunto[]`, 'GUARDAR');
+                formData.append(`archivo_adjunto_list[]`, element.file);
 
-
-                }
             });
         }
 
@@ -565,4 +557,40 @@ function guardarAdjuntos() {
             'warning'
         );
     }
+}
+
+function adjuntosTesoreria(idRequerimientoPago) {
+    var html='';
+    $.ajax({
+        type: 'GET',
+        url: 'obtener-adjuntos-tesoreria/'+idRequerimientoPago,
+        dataType: 'JSON',
+
+    }).done(function(response) {
+        // if (response.data_pagos.length>0) {
+        //     response.data_pagos.forEach(element => {
+        //         html+='<tr>';
+        //             html+='<td>'+element.archivo+'</td>';
+        //             html+='<td>'+element.fecha_registro+'</td>';
+        //             html+='<td>'+element.descripcion+'</td>';
+        //         html+='</tr>'
+        //     });
+        //     $('#modal-ver-agregar-adjuntos-requerimiento-pago [data-table="adjuntos-tesoreria"]').html(html);
+        // }
+        if (response.data.length>0) {
+            response.data.forEach(element => {
+                html+='<tr>';
+                    html+='<td> <a target="_blank" href="/files/tesoreria/pagos/'+element.archivo+'">'+element.archivo+'</a></td>';
+                    html+='<td>'+element.fecha_registro+'</td>';
+                    html+='<td>'+element.descripcion+'</td>';
+                html+='</tr>'
+            });
+            $('#modal-ver-agregar-adjuntos-requerimiento-pago [data-table="adjuntos-tesoreria"]').html(html);
+        }
+        console.log(response);
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
 }

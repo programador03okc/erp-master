@@ -196,10 +196,27 @@ class ListarProveedorView {
             className: 'btn-success btn-sm'
         }:[]);
         var vardataTables = funcDatatables();
+<<<<<<< HEAD
         $tablaListaProveedores = $('#listaProveedores').DataTable({
             'dom': vardataTables[1],
             'buttons': [button_nuevo
                 ,
+=======
+        const button_nuevo = (array_accesos.find(element => element === 254)?{
+                text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+                attr:  {
+                    id: 'btnCrearProveedor'
+                },
+                action: ()=>{
+                    this.nuevoProveedor();
+
+                },
+                className: 'btn-success btn-sm'
+            }:[]);
+        $tablaListaProveedores = $('#listaProveedores').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [button_nuevo,
+>>>>>>> develop
                 // {
                 //     text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                 //     attr:  {
@@ -251,9 +268,15 @@ class ListarProveedorView {
                     'render': function (data, type, row) {
 
                         return `<center><div class="btn-group" role="group" style="margin-bottom: 5px;">
+<<<<<<< HEAD
                             `+(array_accesos.find(element => element === 255)?`<button type="button" class="btn btn-xs btn-info btnVerDetalle handleClickVerDetalleProveedor" data-id-proveedor="${row.id_proveedor}" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>`:'')+
                             (array_accesos.find(element => element === 256)?`<button type="button" class="btn btn-xs btn-warning btnEditarProveedor handleClickEditarProveedor" data-id-proveedor="${row.id_proveedor}" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>`:'')+
                             (array_accesos.find(element => element === 257)?`<button type="button" class="btn btn-xs btn-danger btnAnularProveedor handleClickAnularProveedor" data-id-proveedor="${row.id_proveedor}" title="Anular" ><i class="fas fa-times fa-xs"></i></button>`:'')+`
+=======
+                            `+(array_accesos.find(element => element === 255)?`<button type="button" class="btn btn-xs btn-info btnVerDetalle handleClickVerDetalleProveedor" data-id-proveedor="${row.id_proveedor}" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>`:``)+
+                            (array_accesos.find(element => element === 256)?`<button type="button" class="btn btn-xs btn-warning btnEditarProveedor handleClickEditarProveedor" data-id-proveedor="${row.id_proveedor}" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>`:``)+
+                            (array_accesos.find(element => element === 257)?`<button type="button" class="btn btn-xs btn-danger btnAnularProveedor handleClickAnularProveedor" data-id-proveedor="${row.id_proveedor}" title="Anular" ><i class="fas fa-times fa-xs"></i></button>`:``)+`
+>>>>>>> develop
                         </div></center>`;
                     }, targets: 9
                 },

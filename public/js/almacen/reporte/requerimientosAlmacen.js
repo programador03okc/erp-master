@@ -142,7 +142,11 @@ function listarRequerimientosAlmacen(id_usuario) {
             {
                 'render': function (data, type, row) {
 
+<<<<<<< HEAD
                     return ``+(array_accesos.find(element => element === 157)?`<button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
+=======
+                    return (array_accesos.find(element => element === 157)?`<button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
+>>>>>>> develop
                     data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                     <i class="fas fa-chevron-down"></i></button>`:``)+`
 
@@ -150,12 +154,21 @@ function listarRequerimientosAlmacen(id_usuario) {
                             `<button type="button" class="transferencia btn btn-success btn-flat btn-xs " data-toggle="tooltip"
                     data-placement="bottom" title="Ver transferencias" data-id="${row['id_requerimiento']}">
                     <i class="fas fa-exchange-alt"></i></button>`: ''
+<<<<<<< HEAD
                     }
                     `+(array_accesos.find(element => element === 158)?`<button type="button" class="cambio btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
                     data-placement="bottom" title="Cambio de almacén" data-id="${row['id_requerimiento']}"
                     data-almacen="${row['id_almacen']}" data-codigo="${row['codigo']}">
                     <i class="fas fa-sync-alt"></i></button>`:``) +`
                     `;
+=======
+                        }
+
+                    `+(array_accesos.find(element => element === 158)?`<button type="button" class="cambio btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
+                    data-placement="bottom" title="Cambio de almacén" data-id="${row['id_requerimiento']}"
+                    data-almacen="${row['id_almacen']}" data-codigo="${row['codigo']}">
+                    <i class="fas fa-sync-alt"></i></button>`:``)+``;
+>>>>>>> develop
 
                 }, targets: 11
             }

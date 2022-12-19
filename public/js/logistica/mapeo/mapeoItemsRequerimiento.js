@@ -114,22 +114,30 @@ function mostrar_detalle() {
 
         var regExp = /[a-zA-Z]/g; //expresión regular
          
-        if ((regExp.test(element.id_detalle_requerimiento) != true)) {
-            cantidadRervas = (element.reserva).filter(function(item){
-                if (item.estado != 7) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }).length;
-
-            cantidadOrdenes = (element.ordenes_compra).filter(function(item){
-                if (item.estado != 7) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }).length;
+        if ((regExp.test(element.id_detalle_requerimiento) != true) || element.estado !=7) {
+            console.log(element);
+            if(element.reserva!= null){
+                cantidadRervas = (element.reserva).filter(function(item){
+                    if (item.estado != 7) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }).length;
+            }else{
+                cantidadRervas=0;
+            }
+            if(element.ordenes_compra != null){
+                cantidadOrdenes = (element.ordenes_compra).filter(function(item){
+                    if (item.estado != 7) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }).length;
+            }else{
+                cantidadOrdenes=0;
+            }
 
         if (pn !== null) {
             link_pn = `
@@ -214,7 +222,6 @@ function mostrar_detalle() {
         </tr>`;
         i++;
     });
-
     $('#detalleItemsRequerimiento tbody').html(html);
 
 }
@@ -335,8 +342,15 @@ function openAsignarProducto(partnumber, desc, id, type) {
 
     $(".nav-tabs a[href='#crear']").on("click", function(e) {
         Swal.fire({
+<<<<<<< HEAD
             title: "Para crear nuevo productos contactar con el responsable de mantenimiento de catálogo",
             icon: "info",
+=======
+            title: "Para crear nuevos productos contactar con el responsable de mantenimiento de catálogo",
+            icon: "info",
+        }).then (function() {
+            window.open('/almacen/catalogos/productos/index', '_blank');
+>>>>>>> develop
         });
         e.preventDefault();
         return false;

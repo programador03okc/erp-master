@@ -178,7 +178,7 @@ function listarCuentasBancariasContribuyente(idProveedor) {
             'Hubo un problema al intentar obtener la lista de cuentas bancarias, por favor vuelva a intentarlo',
             'error'
         );
-        console.log(err)
+        // console.log(err)
     })
 
 

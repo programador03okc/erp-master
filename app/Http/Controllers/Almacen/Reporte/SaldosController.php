@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Almacen\Reporte;
 
+use App\Exports\ReporteAntiguedadesExcel;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReporteSaldosExport;
 use App\Exports\ReporteSaldosSeriesExport;
@@ -26,11 +27,19 @@ class SaldosController extends Controller
     {
         $fecha = new Carbon();
         $almacenes = DB::table('almacen.alm_almacen')->where('estado', 1)->orderBy('codigo', 'asc')->get();
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
         $array_accesos = [];
         $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos, $value->id_acceso);
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
         return view('almacen/reportes/saldos', get_defined_vars(), compact('array_accesos'));
     }
 
@@ -210,6 +219,14 @@ class SaldosController extends Controller
         return Excel::download(new ReporteSaldosSeriesExport(), 'reporte_saldos_series.xlsx');
     }
 
+<<<<<<< HEAD
+=======
+    public function exportarAntiguedades()
+    {
+        return Excel::download(new ReporteAntiguedadesExcel(), 'reporte_antiguedades.xlsx');
+    }
+
+>>>>>>> develop
     public function prueba()
     {
         $fecha = '2022-05-20';
@@ -252,49 +269,112 @@ class SaldosController extends Controller
 
     public function valorizacion(Request $request)
     {
-        $productos = $this->listar_productos($request->almacen, $request->fecha);
+        // $productos = $this->listar_productos($request->almacen, $request->fecha);
+        $productos = DB::table('almacen.alm_prod_ubi')
+            ->select(
+                'alm_prod_ubi.*',
+                'alm_prod.codigo',
+                'alm_prod.cod_softlink',
+                'alm_prod.descripcion',
+                'alm_und_medida.abreviatura',
+                'alm_prod.id_moneda',
+            )
+            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_prod_ubi.id_producto')
+            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            ->where([
+                ['alm_prod_ubi.estado', '=', 1],
+                ['alm_prod.estado', '=', 1],
+                ['alm_prod_ubi.id_almacen', '=', $request->almacen]
+            ]);
+
         $data = [];
         $alm = DB::table('almacen.alm_almacen')->where('id_almacen', $request->almacen)->first();
-        $tca = DB::table('contabilidad.cont_tp_cambio')->where('fecha', $request->fecha);
-        $tc = ($tca->count() > 0) ? (float) $tca->first()->compra : 1;
+        $tca = DB::table('contabilidad.cont_tp_cambio')->where('fecha', '<=', $request->fecha);
+        $tc = ($tca->count() > 0) ? (float) $tca->first()->venta : 1;
 
-        foreach ($productos as $row => $value) {
+        foreach ($productos->get() as $value) {
             $sum_ing = 0;
             $sum_sal = 0;
             $sum_val_sol = 0;
             $count = 0;
 
+            // $movimientos = DB::table('almacen.mov_alm')
+            //     ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
+            //     ->select('mov_alm.codigo', 'mov_alm.id_tp_mov', 'mov_alm.fecha_emision', 'mov_alm_det.id_producto', 'mov_alm_det.cantidad', 'mov_alm_det.valorizacion')
+            //     ->where('mov_alm.id_almacen', $request->almacen)
+            //     ->where('mov_alm.fecha_emision', '<=', $request->fecha)
+            //     ->where('mov_alm_det.id_producto', $value);
+
             $movimientos = DB::table('almacen.mov_alm')
                 ->join('almacen.mov_alm_det', 'mov_alm_det.id_mov_alm', '=', 'mov_alm.id_mov_alm')
-                ->select('mov_alm.codigo', 'mov_alm.id_tp_mov', 'mov_alm.fecha_emision', 'mov_alm_det.id_producto', 'mov_alm_det.cantidad', 'mov_alm_det.valorizacion')
-                ->where('mov_alm.id_almacen', $request->almacen)->where('mov_alm.fecha_emision', '<=', $request->fecha)->where('mov_alm_det.id_producto', $value);
+                ->select(
+                    'mov_alm.id_tp_mov',
+                    'mov_alm.fecha_emision',
+                    'mov_alm_det.id_producto',
+                    'mov_alm_det.cantidad',
+                    'mov_alm_det.valorizacion',
+                    'mov_alm_det.valorizacion',
+                )
+                ->where('mov_alm.id_almacen', $request->almacen)
+                ->where('mov_alm.fecha_emision', '<=', $request->fecha)
+                ->where('mov_alm_det.id_producto', $value->id_producto)
+                ->where('mov_alm_det.estado', 1)
+                ->orderBy('mov_alm.fecha_emision', 'asc')
+                ->orderBy('mov_alm.id_tp_mov', 'asc');
 
             if ($movimientos->count() > 0) {
-                $prod = DB::table('almacen.alm_prod')->where('id_producto', $value)->first();
+                // $prod = DB::table('almacen.alm_prod')
+                //     ->select('alm_prod.codigo', 'alm_prod.cod_softlink', 'alm_prod.descripcion', 'alm_prod.id_moneda')
+                //     ->where('id_producto', $value)->first();
+
+                // foreach ($movimientos->get() as $key) {
+                //     if ($key->id_tp_mov == 0 || $key->id_tp_mov == 1) {
+                //         $sum_ing += (float) $key->cantidad;
+                //     } else if ($key->id_tp_mov == 2) {
+                //         $sum_sal += (float) $key->cantidad;
+                //     }
+                //     $sum_val_sol += (float) $key->valorizacion;
+                //     $count++;
+                // }
+                $saldo = 0;
+                $saldo_valor = 0;
+                $costo_promedio = 0;
 
                 foreach ($movimientos->get() as $key) {
                     if ($key->id_tp_mov == 0 || $key->id_tp_mov == 1) {
-                        $sum_ing += (float) $key->cantidad;
+                        $saldo += $key->cantidad;
+                        $saldo_valor += $key->valorizacion;
                     } else if ($key->id_tp_mov == 2) {
-                        $sum_sal += (float) $key->cantidad;
+                        $saldo -= $key->cantidad;
+                        $valor_salida = $costo_promedio * $key->cantidad;
+                        $saldo_valor -= $valor_salida;
                     }
-                    $sum_val_sol += (float) $key->valorizacion;
-                    $count++;
+                    $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
                 }
 
-                $sum_stock = $sum_ing - $sum_sal;
-                $sum_valor_sol = $sum_val_sol / $count;
-                $sum_valor_dol = $sum_valor_sol / $tc;
+                $sum_stock = $saldo; //$sum_ing - $sum_sal;
 
-                $data[] = [
-                    'id_producto'       => $value,
-                    'codigo'            => ($prod->codigo != null) ?  $prod->codigo : '',
-                    'codigo_softlink'   => ($prod->cod_softlink != null) ?  $prod->cod_softlink : '',
-                    'producto'          => $prod->descripcion,
-                    'stock'             => $sum_stock,
-                    'valorizacion_sol'  => $sum_valor_sol,
-                    'valorizacion_dol'  => $sum_valor_dol
-                ];
+                if ($value->id_moneda == 1) {
+                    $sum_valor_sol = $saldo_valor;
+                    $sum_valor_dol = $saldo_valor / $tc;
+                } else {
+                    $sum_valor_sol = $saldo_valor * $tc;
+                    $sum_valor_dol = $saldo_valor;
+                }
+                // $sum_valor_sol = $sum_val_sol / $count;
+                // $sum_valor_dol = $sum_valor_sol / $tc;
+
+                if ($sum_stock > 0) {
+                    $data[] = [
+                        'id_producto'       => $value,
+                        'codigo'            => ($value->codigo != null) ?  $value->codigo : '',
+                        'codigo_softlink'   => ($value->cod_softlink != null) ?  $value->cod_softlink : '',
+                        'producto'          => $value->descripcion,
+                        'stock'             => $sum_stock,
+                        'valorizacion_sol'  => $sum_valor_sol,
+                        'valorizacion_dol'  => $sum_valor_dol
+                    ];
+                }
             }
         }
         return Excel::download(new ValorizacionExport($data, $alm->descripcion, $request->fecha, $tc), 'valorizacion.xlsx');

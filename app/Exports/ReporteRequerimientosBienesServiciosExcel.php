@@ -5,9 +5,11 @@ namespace App\Exports;
 use App\Http\Controllers\Logistica\RequerimientoController;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+
 use Carbon\Carbon;
 
-class reporteRequerimientosBienesServiciosExcel implements FromView
+class reporteRequerimientosBienesServiciosExcel implements FromView,ShouldAutoSize
 {
 
 
@@ -44,7 +46,8 @@ class reporteRequerimientosBienesServiciosExcel implements FromView
                 'fecha_registro'=> $element->fecha_registro,
                 'fecha_entrega'=> $element->fecha_entrega,
                 'tipo_requerimiento'=> $element->tipo_requerimiento,
-                'razon_social'=> $element->descripcion_empresa_sede,
+                'razon_social'=> $element->razon_social,
+                'sede'=> $element->sede,
                 'grupo'=> $element->grupo,
                 'division'=> $element->division,
                 'descripcion_proyecto'=> $element->descripcion_proyecto,
@@ -52,6 +55,7 @@ class reporteRequerimientosBienesServiciosExcel implements FromView
                 'monto_total'=> number_format($element->monto_total,2),
                 'observacion'=> $element->observacion,
                 'nombre_usuario'=> $element->nombre_usuario,
+                'ultimo_aprobador'=>$element->ultimo_aprobador,
                 'observacion'=> $element->observacion,
                 'estado_doc'=> $element->nombre_estado
 

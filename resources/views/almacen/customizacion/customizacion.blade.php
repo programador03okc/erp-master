@@ -7,6 +7,7 @@ Customización
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -18,7 +19,7 @@ Customización
 @endsection
 
 @section('content')
-
+@if (in_array(138,$array_accesos) || in_array(139,$array_accesos) || in_array(140,$array_accesos) || in_array(141,$array_accesos)|| in_array(142,$array_accesos))
 <div class="page-main" type="customizacion">
 
     <div class="box">
@@ -61,6 +62,10 @@ Customización
                         <i class="fas fa-share"></i> Procesar
                     </button>
                     @endif
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop
                     <button type="button" class="btn btn-sm btn-default imprimir-ingreso" data-toggle="tooltip" data-placement="bottom"
                         title="Imprimir Ingreso" onClick="imprimirIngreso();"><i class="fas fa-file-pdf"></i> Ingreso</button>
 
@@ -286,6 +291,17 @@ Customización
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
+
 @include('almacen.customizacion.transformacionModal')
 @include('almacen.customizacion.transformacionProcesar')
 @include('almacen.customizacion.productoCatalogoModal')

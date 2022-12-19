@@ -14,7 +14,9 @@
 @section('cabecera')
     Marca
 @endsection
-
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
+@endsection
 @section('breadcrumb')
 <ol class="breadcrumb">
   <li><a href="{{route('almacen.index')}}"><i class="fas fa-tachometer-alt"></i> Almacenes</a></li>
@@ -25,6 +27,7 @@
 
 @section('content')
 <div class="page-main" type="marca">
+    @if (sizeof($array_accesos_botonera)!==0)
     <div class="row">
         <div class="col-md-6">
             <fieldset class="group-table">
@@ -70,6 +73,17 @@
             </form>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
+
 </div>
 @endsection
 

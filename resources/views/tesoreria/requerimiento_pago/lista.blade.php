@@ -9,6 +9,7 @@ Listado de requerimientos de pago
 @endsection
 
 @section('estilos')
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -21,39 +22,52 @@ Listado de requerimientos de pago
 
 @section('content')
 <div class="page-main" type="lista_requerimiento_pago">
-    <div class="row">
-        <div class="col-md-12">
-            <fieldset class="group-table">
-                <div class="box box-widget">
-                    <div class="box-body">
-                        <div class="table-responsive">
-                            <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientoPago" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center"></th>
-                                        <th class="text-center" style="width:2%">Prio.</th>
-                                        <th class="text-center" style="width:8%">Código</th>
-                                        <th class="text-center" style="width:20%">Concepto</th>
-                                        <th class="text-center" style="width:15%">Tipo Req.</th>
-                                        <th class="text-center" style="width:8%">Fecha registro</th>
-                                        <th class="text-center" style="width:10%">Empresa - sede</th>
-                                        <th class="text-center">Grupo</th>
-                                        <th class="text-center">División</th>
-                                        <th class="text-center">Proyecto/presupuesto</th>
-                                        <th class="text-center">Monto Total</th>
-                                        <th class="text-center">Creado por</th>
-                                        <th class="text-center" style="width:5%;">Estado</th>
-                                        <th class="text-center" style="width:10%">Acción</th>
-                                    </tr>
-                                </thead>
-                            </table>
 
+    @if (in_array(13,$array_accesos) || in_array(20,$array_accesos) || in_array(30,$array_accesos) || in_array(21,$array_accesos) || in_array(31,$array_accesos) || in_array(22,$array_accesos))
+        <div class="row">
+            <div class="col-md-12">
+                <fieldset class="group-table">
+                    <div class="box box-widget">
+                        <div class="box-body">
+                            <div class="table-responsive">
+                                <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="ListaRequerimientoPago" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center"></th>
+                                            <th class="text-center" style="width:2%">Prio.</th>
+                                            <th class="text-center" style="width:8%">Código</th>
+                                            <th class="text-center" style="width:20%">Concepto</th>
+                                            <th class="text-center" style="width:15%">Tipo Req.</th>
+                                            <th class="text-center" style="width:8%">Fecha registro</th>
+                                            <th class="text-center" style="width:10%">Empresa - sede</th>
+                                            <th class="text-center">Grupo</th>
+                                            <th class="text-center">División</th>
+                                            <th class="text-center">Proyecto/presupuesto</th>
+                                            <th class="text-center">Monto Total</th>
+                                            <th class="text-center">Creado por</th>
+                                            <th class="text-center" style="width:5%;">Estado</th>
+                                            <th class="text-center" style="width:10%">Acción</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                            </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
+                </fieldset>
+            </div>
+        </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error de Accesos:</span>
+                Solicite los accesos
+            </div>
         </div>
     </div>
+    @endif
 </div>
 
 

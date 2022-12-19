@@ -7,6 +7,7 @@ function listarRequerimientosPendientes(usuario) {
     var vardataTables = funcDatatables();
     let botones = [];
     // if (acceso == '1') {
+<<<<<<< HEAD
         (array_accesos.find(element => element === 259)?botones.push(
             // {
             //     text: ' Priorizar seleccionados',
@@ -22,6 +23,23 @@ function listarRequerimientosPendientes(usuario) {
             }
         ):'')
 
+=======
+    const button_descargar_excel=(array_accesos.find(element => element === 259)?{
+            text: ' Exportar Excel',
+            action: function () {
+                exportarDespachosExternos();
+            }, className: 'btn-success btnExportarDespachosExternos'
+        }:[]);
+    botones.push(
+        // {
+        //     text: ' Priorizar seleccionados',
+        //     action: function () {
+        //         priorizar();
+        //     }, className: 'btn-primary disabled btnPriorizar'
+        // },
+        button_descargar_excel
+    );
+>>>>>>> develop
     // }
 
     $("#requerimientosEnProceso").on('search.dt', function () {
@@ -246,16 +264,27 @@ function listarRequerimientosPendientes(usuario) {
             {
                 'render': function (data, type, row) {
                     return `<div>
+<<<<<<< HEAD
                     <div style="display:flex;">
                         `+(array_accesos.find(element => element === 260)?`<button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
                         <i class="fas fa-chevron-down"></i></button>`:'')+`
 
                         ${row['tiene_transformacion'] ? (array_accesos.find(element => element === 261)?`<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+=======
+                    <div style="display:flex;">`+
+                        (array_accesos.find(element => element === 260)?`<button type="button" class="detalle btn btn-default btn-flat btn-xs " data-toggle="tooltip"
+                        data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
+                        <i class="fas fa-chevron-down"></i></button>`:``)+`
+
+                        ${row['tiene_transformacion'] ?
+                        (array_accesos.find(element => element === 261)?`<button type="button" class="interno btn btn-${row['codigo_despacho_interno'] !== null ? 'danger' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+>>>>>>> develop
                         data-placement="bottom" title="Despacho Interno" data-id="${row['id_requerimiento']}"
                         data-estado="${row['estado_di']}" data-estado-despacho="${row['estado_despacho']}"
                         data-idod="${row['id_despacho_interno']}" >
                         <strong>ODI</strong></button>`:'')
+<<<<<<< HEAD
                              : ''}
 
                         ${row['id_requerimiento'] !== null ? (array_accesos.find(element => element === 262)?`<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
@@ -264,6 +293,16 @@ function listarRequerimientosPendientes(usuario) {
                         <strong>ODE</strong></button>`:'')+
                             `
                             `: ''}
+=======
+                        : ''}
+
+                        ${row['id_requerimiento'] !== null ?
+                        (array_accesos.find(element => element === 262)?`<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                            data-placement="bottom" title="Orden de Despacho" data-id="${row['id_requerimiento']}" data-tipo="${row['id_tipo_requerimiento']}"
+                            data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
+                            <strong>ODE</strong></button>
+                            `:''): ''}
+>>>>>>> develop
                         `+
 
                         // <button type="button" class="envio btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
@@ -276,6 +315,7 @@ function listarRequerimientosPendientes(usuario) {
                         //     <i class="fas fa-route"></i></button>
 
                         /*(row['id_od'] == null && row['productos_no_mapeados'] == 0)*/
+<<<<<<< HEAD
                         `${row["tiene_comentarios"] ? (array_accesos.find(element => element === 263)?`<button type="button" class="comentarios btn btn-default btn-flat btn-xs" data-toggle="tooltip"
                         data-placement="bottom" title="Ver comentarios mgcp" data-oc="${row["id_oc_propia"]}" data-tp="${row["tipo"]}"
                         data-nro="${row["nro_orden"]}" style="background-color: #e4a8ff;">
@@ -297,6 +337,34 @@ function listarRequerimientosPendientes(usuario) {
                             ``+(array_accesos.find(element => element === 267)?`<button type="button" class="estados btn btn-${row["count_estados_envios"] > 0 ? 'primary' : 'default'} btn-flat btn-xs" data-toggle="tooltip"
                             data-placement="bottom" title="Ver Trazabilidad de Envío" data-id="${row["id_od"]}">
                             <i class="fas fa-route"></i></button>`:'')+`</div>`: '') +
+=======
+                        `${row["tiene_comentarios"] ?
+                        (array_accesos.find(element => element === 263)?`<button type="button" class="comentarios btn btn-default btn-flat btn-xs" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver comentarios mgcp" data-oc="${row["id_oc_propia"]}" data-tp="${row["tipo"]}"
+                                data-nro="${row["nro_orden"]}" style="background-color: #e4a8ff;">
+                                <i class="fas fa-comment"></i></button>`:'') : ''
+                        }
+                        ${row['id_od'] !== null ?
+                        (array_accesos.find(element => element === 265)?`<button type="button" class="btn btn-success btn-flat btn-xs adjuntos-despacho" data-toggle="tooltip"
+                                data-placement="bottom" title="Ver adjuntos de notificaciones"
+                                >
+                                <i class="fas fa-file-archive"></i></button>`:'') : ''
+                        }
+                        </div>
+                        <div style="display:flex;">
+                            `+(array_accesos.find(element => element === 264)?`<button type="button" class="contacto btn btn-${(row['id_contacto'] !== null && row['enviar_contacto']) ? 'success' : 'default'} btn-flat btn-xs "
+                            data-toggle="tooltip" data-placement="bottom" data-id="${row['id_od']}" title="Datos del contacto" >
+                            <i class="fas fa-id-badge"></i></button>`:``)+`
+                        `+
+                        (row['id_od'] !== null ?
+                            ``+(array_accesos.find(element => element === 266)?`<button type="button" class="transportista btn btn-${row['id_transportista'] !== null ? 'info' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
+                            data-placement="bottom" data-od="${row['id_od']}" data-idreq="${row['id_requerimiento']}" title="Agencia de transporte" >
+                            <i class="fas fa-truck"></i></button>`:``)+`
+
+                            `+(array_accesos.find(element => element === 267)?`<button type="button" class="estados btn btn-${row["count_estados_envios"] > 0 ? 'primary' : 'default'} btn-flat btn-xs" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver Trazabilidad de Envío" data-id="${row["id_od"]}">
+                            <i class="fas fa-route"></i></button></div>`:``)+``: '') +
+>>>>>>> develop
                         // ((row['id_od'] !== null && parseInt(row['estado_od']) == 1) ?
                         //     `<button type="button" class="anular_od btn btn-flat btn-danger btn-xs boton" data-toggle="tooltip"
                         //             data-placement="bottom" data-id="${row['id_od']}" data-cod="${row['codigo_od']}" title="Anular Orden Despacho Externo" >

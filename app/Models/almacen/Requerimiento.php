@@ -344,51 +344,25 @@ class Requerimiento extends Model
                     }
                 }
                 if ($total_estado_elaborado > 0) {
-                    DB::table('almacen.alm_req')
-                        ->where('alm_req.id_requerimiento', $idRequerimiento)
-                        ->update(
-                            [
-                                'estado' => 2 // aprobado
-                            ]
-                        );
                     $estadoActual = ['id' => 2, 'descripcion' => 'Aprobado'];
                 } elseif ($total_estado_elaborado == 0 && $total_estado_atentido_parcial > 0) {
-                    DB::table('almacen.alm_req')
-                        ->where('alm_req.id_requerimiento', $idRequerimiento)
-                        ->update(
-                            [
-                                'estado' => 15 // atendido parcial
-                            ]
-                        );
                     $estadoActual = ['id' => 15, 'descripcion' => 'Atendido parcial'];
                 } elseif ($total_estado_elaborado == 0 && $total_estado_almacen_parcial > 0) {
-                    DB::table('almacen.alm_req')
-                        ->where('alm_req.id_requerimiento', $idRequerimiento)
-                        ->update(
-                            [
-                                'estado' => 27 // almacen parcial
-                            ]
-                        );
-                    $estadoActual = ['id' => 15, 'descripcion' => 'Atendido parcial'];
+                    $estadoActual = ['id' => 27, 'descripcion' => 'Almacen parcial'];
                 } elseif ($total_estado_elaborado == 0 && $total_estado_atentido_parcial == 0 && $total_estado_atentido_total > 0) {
-                    DB::table('almacen.alm_req')
-                        ->where('alm_req.id_requerimiento', $idRequerimiento)
-                        ->update(
-                            [
-                                'estado' => 5 // atendido total
-                            ]
-                        );
                     $estadoActual = ['id' => 5, 'descripcion' => 'Atendido total'];
                 } elseif ($total_estado_elaborado == 0 && $total_estado_atentido_parcial == 0 && $total_estado_atentido_total == 0 && $total_estado_almacen_total > 0) {
-                    DB::table('almacen.alm_req')
-                        ->where('alm_req.id_requerimiento', $idRequerimiento)
-                        ->update(
-                            [
-                                'estado' => 28 // almacen total
-                            ]
-                        );
                     $estadoActual = ['id' => 28, 'descripcion' => 'Almacén total'];
                 }
+
+                DB::table('almacen.alm_req')
+                ->where('alm_req.id_requerimiento', $idRequerimiento)
+                ->update(
+                    [
+                        'estado' => $estadoActual['id']
+                    ]
+                );
+
             }
             if(Auth::user()->id_usuario==17 || Auth::user()->id_usuario==3){ // si usuario es rhuancac, reconodir no finalizar CDP
                 $finalizadosORestablecido['lista_finalizados']=[];
@@ -398,7 +372,6 @@ class Requerimiento extends Model
             }
 
         }
-        // return ['estado_actual'=>$estadoActual,'lista_finalizados'=>[],'lista_restablecidos'=>[]];
         return ['estado_actual'=>$estadoActual,'lista_finalizados'=>$finalizadosORestablecido['lista_finalizados'],'lista_restablecidos'=>$finalizadosORestablecido['lista_restablecidos']];
 
     }

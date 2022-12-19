@@ -11,39 +11,11 @@ use phpDocumentor\Reflection\Types\Integer;
 class ReporteComprasLocalesExcel implements FromView
 {
 
-
-    public function __construct(string $idEmpresa,string $idSede, string $fechaRegistroDesde, string $fechaRegistroHasta, string $fechaRegistroDesdeCancelacion, string $fechaRegistroHastaCancelacion, string $razonSocialProveedor, string $idGrupo, string $idProyecto, string $observacionOrden, string $estadoPago)
+    public function view(): View
     {
-        $this->idEmpresa = $idEmpresa;
-        $this->idsede = $idSede;
-        $this->fechaRegistroDesde = $fechaRegistroDesde;
-        $this->fechaRegistroHasta = $fechaRegistroHasta;
-        $this->fechaRegistroDesdeCancelacion = $fechaRegistroDesdeCancelacion;
-        $this->fechaRegistroHastaCancelacion = $fechaRegistroHastaCancelacion;
-        $this->razonSocialProveedor = $razonSocialProveedor;
-        $this->idGrupo = $idGrupo;
-        $this->idProyecto = $idProyecto;
-        $this->observacionOrden = $observacionOrden;
-        $this->estadoPago = $estadoPago;
-    }
+        $comLocales = (new ReporteLogisticaController)->obtenerReporteCompras();
 
-    public function view(): View{
-        $idEmpresa= $this->idEmpresa;
-        $idSede = $this->idsede;
-        $fechaRegistroDesde = $this->fechaRegistroDesde;
-        $fechaRegistroHasta = $this->fechaRegistroHasta;
-
-        $fechaRegistroDesdeCancelacion = $this->fechaRegistroDesdeCancelacion;
-        $fechaRegistroHastaCancelacion = $this->fechaRegistroHastaCancelacion;
-        $razonSocialProveedor = $this->razonSocialProveedor;
-        $idGrupo =  $this->idGrupo;
-        $idProyecto = $this->idProyecto;
-        $observacionOrden = $this->observacionOrden;
-        $estadoPago = $this->estadoPago;
-
-        $comLocales = (new ReporteLogisticaController)->obtenerDataComprasLocales($idEmpresa,$idSede,$fechaRegistroDesde,$fechaRegistroHasta,$fechaRegistroDesdeCancelacion,$fechaRegistroHastaCancelacion,$razonSocialProveedor,$idGrupo,$idProyecto,$observacionOrden,$estadoPago)->orderBy('fecha_emision','desc')->get();
-
-        $data=[];
+        $data = [];
         foreach($comLocales as $element){
             $data[]=[
                 'codigo'=> $element->codigo??'',
@@ -58,20 +30,21 @@ class ReporteComprasLocalesExcel implements FromView
                 'fecha_emision_comprobante_contribuyente'=> $element->fecha_emision_comprobante_contribuyente??'',
                 'fecha_pago'=> $element->fecha_pago??'',
                 'tiempo_cancelacion'=> $element->tiempo_cancelacion??'',
-                'moneda_doc_com'=> $element->moneda_doc_com??'',
+                'cantidad'=> $element->cantidad??'',
+                'moneda_orden'=> $element->moneda_orden??'',
+                'total_precio_soles_item'=> $element->total_precio_soles_item??'',
+                'total_precio_dolares_item'=> $element->total_precio_dolares_item??'',
                 'total_a_pagar_soles'=> $element->total_a_pagar_soles??'',
                 'total_a_pagar_dolares'=> $element->total_a_pagar_dolares??'',
                 'tipo_doc_com'=> $element->tipo_doc_com??'',
-                'nro_doc_com'=> $element->nro_doc_com??'',
+                'nro_comprobante'=> $element->nro_comprobante??'',
                 'descripcion_sede_empresa'=> $element->descripcion_sede_empresa??'',
                 'descripcion_grupo'=> $element->descripcion_grupo??'',
                 'descripcion_proyecto'=> $element->descripcion_proyecto??'',
                 'descripcion_estado_pago'=> $element->descripcion_estado_pago??''
             ];
         }
-        return view('logistica.reportes.view_compras_locales_export', [
-            'comprasLocales' => $data
-        ]);
+        return view('logistica.reportes.view_compras_locales_export', ['comprasLocales' => $data]);
     }
 
 }

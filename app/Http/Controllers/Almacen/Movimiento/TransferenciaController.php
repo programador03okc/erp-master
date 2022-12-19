@@ -33,10 +33,17 @@ class TransferenciaController extends Controller
         $nro_pendientes = $this->nroPendientes();
         $nro_por_enviar = $this->nroPorEnviar();
         $nro_por_recibir = $this->nroPorRecibir();
+<<<<<<< HEAD
         $array_accesos=[];
         $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
+=======
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+>>>>>>> develop
         }
         return view(
             'almacen/transferencias/listarTransferencias',
@@ -841,7 +848,13 @@ class TransferenciaController extends Controller
             foreach ($detalle as $d) {
 
                 $det = DB::table('almacen.guia_ven_det')
-                    ->select('guia_ven_det.*', 'mov_alm_det.valorizacion', 'mov_alm_det.cantidad as cant_mov')
+                    ->select(
+                        'guia_ven_det.*',
+                        'mov_alm_det.valorizacion',
+                        'mov_alm_det.cantidad as cant_mov',
+                        'alm_prod.id_moneda as id_moneda_producto'
+                    )
+                    ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_ven_det.id_producto')
                     ->leftJoin('almacen.mov_alm_det', function ($join) {
                         $join->on('mov_alm_det.id_guia_ven_det', '=', 'guia_ven_det.id_guia_ven_det');
                         $join->where('mov_alm_det.estado', '!=', 7);
@@ -887,7 +900,11 @@ class TransferenciaController extends Controller
                             'estado' => 1,
                             'fecha_registro' => date('Y-m-d H:i:s'),
                             'id_guia_com_det' => $id_guia_com_det,
-                            'id_almacen' => $request->id_almacen_destino
+                            'id_almacen' => $request->id_almacen_destino,
+                            'fecha_ingreso_soft' => $request->fecha_almacen_recibir,
+                            'precio_unitario_soft' => $unitario,
+                            'doc_ingreso_soft' => ($guia_ven->serie . '-' . $guia_ven->numero),
+                            'moneda_soft' => $det->id_moneda_producto,
                         ]);
                     }
 

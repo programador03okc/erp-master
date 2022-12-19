@@ -19,9 +19,12 @@ class AccesosUsuarios extends Model
     public function moduloPadre()
     {
         return $this->hasOne(TableConfiguracionModulo::class, 'id_modulo', 'id_padre');
+<<<<<<< HEAD
     }
     public function usuario()
     {
         return $this->belongsTo(SisUsua::class, 'id_usuario', 'id_usuario')->where('estado',1);
+=======
+>>>>>>> develop
     }
 }

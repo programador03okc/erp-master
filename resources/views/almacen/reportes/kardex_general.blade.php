@@ -6,6 +6,7 @@
 @section('estilos')
     <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
     <style>
         button.botones {
             margin-top: 35px;
@@ -29,7 +30,11 @@
 
 @section('content')
 <div class="page-main" type="kardex_general">
+<<<<<<< HEAD
 
+=======
+    @if (in_array(168,$array_accesos)||in_array(169,$array_accesos)||in_array(170,$array_accesos))
+>>>>>>> develop
     <div class="box box-solid">
         <div class="box-body">
             <div class="col-md-12" style="padding-top:10px;padding-bottom:10px;">
@@ -52,8 +57,12 @@
                         <button type="button" class="btn btn-default" data-toggle="tooltip"
                             data-placement="bottom" title="Ingrese los filtros"
                             onClick="open_filtros();"> <i class="fas fa-filter"></i> Filtros
+<<<<<<< HEAD
                         </button>
                         @endif
+=======
+                        </button>@endif
+>>>>>>> develop
                     </div>
                 </div>
                 <div class="row">
@@ -95,7 +104,16 @@
             </div>
         </div>
     </div>
-
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 @include('almacen.reportes.kardex_filtro')
 @endsection

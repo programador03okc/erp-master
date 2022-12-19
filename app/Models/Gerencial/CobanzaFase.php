@@ -14,6 +14,6 @@ class CobanzaFase extends Model
 
     public function cobranza()
     {
-        return $this->belongsTo(Cobranza::class,'id_cobranza', 'id_cobranza');
+        return $this->belongsTo(RegistroCobranza::class,'id_cobranza', 'id_cobranza');
     }
 }

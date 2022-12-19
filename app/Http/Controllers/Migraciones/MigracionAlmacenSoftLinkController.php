@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers\Migraciones;
 
+use App\Exports\ModeloPorductosAgilSoftlinkExport;
+use App\Exports\ProductoSerieExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Imports\AgilSoftlinkImport;
 use App\Imports\AlmacenImport;
+use App\Imports\ProductoSerieImport;
+use App\Models\Almacen\Almacen;
+use App\Models\almacen\softlink\ProductoSerie;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-
+ini_set('max_execution_time', 0);
 class MigracionAlmacenSoftLinkController extends Controller
 {
     public function __construct()
@@ -20,6 +26,12 @@ class MigracionAlmacenSoftLinkController extends Controller
     public function index()
     {
         return view('Migraciones/migrar-softlink');
+    }
+
+    public function view_migracion_series()
+    {
+        $almacenes = Almacen::orderBy('descripcion', 'asc')->get();
+        return view('Migraciones/migrar-serie-softlink', get_defined_vars());
     }
 
     public function importar(Request $request)
@@ -78,6 +90,30 @@ class MigracionAlmacenSoftLinkController extends Controller
         return response()->json(array('response' => $response, 'alert' => $alert, 'message' => $msj, 'error' => $error), 200);
     }
 
+    public function importarSeries(Request $request)
+    {
+        try {
+            $almacen = $request->almacen;
+            $import = new ProductoSerieImport($almacen);
+            Excel::import($import, $request->file('archivo'));
+            $response = 'ok';
+            $alert = 'success';
+            $msj = 'Se ha importado '.$import->getRowCount().' productos con serie';
+            $error = '';
+        } catch (Exception $ex) {
+            $response = 'error';
+            $alert = 'danger';
+            $msj ='Hubo un problema al importar. Por favor intente de nuevo';
+            $error = $ex;
+        }
+        return response()->json(array('response' => $response, 'alert' => $alert, 'message' => $msj, 'error' => $error), 200);
+    }
+
+    public function exportarSeries()
+    {
+        return Excel::download(new ProductoSerieExport(), 'reporte-series.xlsx');
+    }
+
     public function movimientos()
     {
         $main = array();
@@ -121,5 +157,77 @@ class MigracionAlmacenSoftLinkController extends Controller
             $data[] = ['almacen' => $main, 'saldos' => $detail];
         }
         return response()->json($data, 200);
+    }
+
+    public function testSeries()
+    {
+        $productos = [];
+        $lista = ProductoSerie::select('id_almacen', 'nombre', 'fecha', 'documento', DB::raw('COUNT(*) AS conteo'))
+                            ->groupBy('id_almacen', 'nombre', 'fecha', 'documento')->orderBy('nombre', 'asc')->get();
+
+        foreach ($lista as $item) {
+            $queryProducto = ProductoSerie::where([['nombre', $item->nombre], ['fecha', $item->fecha], ['documento', $item->documento]])->first();
+            $querySeries = ProductoSerie::select('serie')->where([['nombre', $item->nombre], ['fecha', $item->fecha], ['documento', $item->documento]])->get();
+            $queryAlmacen = Almacen::find($item->id_almacen);
+            $listaSerie = '';
+
+            foreach ($querySeries as $key) {
+                // array_push($listaSerie, $key->serie);
+                $listaSerie .= $key->serie.' ';
+            }
+
+            $productos[] = [
+                "almacen"   => $queryAlmacen->descripcion,
+                "producto"  => $item->nombre,
+                "fecha"     => $item->fecha,
+                "periodo"   => date('Y', strtotime($item->fecha)),
+                "documento" => $item->documento,
+                "codigo"    => $queryProducto->codigo,
+                "total"     => $item->conteo,
+                "series"    => rtrim($listaSerie)
+            ];
+        }
+        return response()->json($productos, 200);
+    }
+    public function view_actualizar_productos()
+    {
+        // return view('Migraciones/actualiz');
+        return view('migraciones.actualizar_productos');
+    }
+    public function descargarModelo()
+    {
+        return Excel::download(new ModeloPorductosAgilSoftlinkExport(), 'modelo_de_agil_softlink.xlsx');
+    }
+    public function enviarModeloAgilSoftlink(Request $request)
+    {
+
+        $collection = Excel::toCollection(new AgilSoftlinkImport, $request->file('archivo'))[0];
+
+        $array_productos_soflink = array();
+        $array_productos_soflink_faltantes = array();
+        foreach ($collection as $key => $value) {
+            if ($key!==0) {
+                if ($value[1]) {
+                    $producto_softlink = DB::connection('soft')->table('sopprod')->where('cod_prod',$value[1])->first();
+                    if ($producto_softlink) {
+                        array_push($array_productos_soflink,$producto_softlink);
+                        DB::connection('soft')
+                        ->table('sopprod')
+                        ->where('cod_prod',$value[1])
+                        ->update(['nom_prod' =>$value[3]]);
+                    }else{
+
+                        array_push($array_productos_soflink_faltantes,$value);
+                    }
+                }
+
+            }
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "habilitados"=>$array_productos_soflink,
+            "faltantes"=>$array_productos_soflink_faltantes
+        ]);
     }
 }

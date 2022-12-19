@@ -9,6 +9,7 @@ Revisar/aprobar
 @endsection
 
 @section('estilos')
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -20,10 +21,13 @@ Revisar/aprobar
 
 @section('content')
 <div id="lista_documentos_para_revisar_aprobar">
+
+@if (in_array(24,$array_accesos) || in_array(23,$array_accesos))
     <div class="row">
         <div class="col-md-12">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
+<<<<<<< HEAD
                 @if (in_array(23, ($array_accesos)))
                     <li role="presentation" class="handleClickTabDocumentosPendientesRevisar active"><a href="#documentos_pendientes" aria-controls="documentos_pendientes" role="tab" data-toggle="tab">Documentos para revisar</a></li>
                 @endif
@@ -35,6 +39,18 @@ Revisar/aprobar
             <!-- Tab panes -->
             <div class="tab-content">
                 @if (in_array(23, ($array_accesos)))
+=======
+                @if (in_array(23,$array_accesos))
+                <li role="presentation" class="handleClickTabDocumentosPendientesRevisar active"><a href="#documentos_pendientes" aria-controls="documentos_pendientes" role="tab" data-toggle="tab">Documentos para revisar</a></li>
+                @endif
+                @if (in_array(24,$array_accesos))
+                <li role="presentation" class="handleClickTabDocumentosAprobados"><a href="#documentos_aprobados" aria-controls="documentos_aprobados" role="tab" data-toggle="tab">Documentos aprobados</a></li>
+                @endif
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                @if (in_array(23,$array_accesos))
+>>>>>>> develop
                 <div role="tabpanel" class="tab-pane active" id="documentos_pendientes">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -74,7 +90,11 @@ Revisar/aprobar
                     </div>
                 </div>
                 @endif
+<<<<<<< HEAD
                 @if (in_array(24, ($array_accesos)))
+=======
+                @if (in_array(24,$array_accesos))
+>>>>>>> develop
                 <div role="tabpanel" class="tab-pane" id="documentos_aprobados">
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -117,6 +137,17 @@ Revisar/aprobar
 
         </div>
     </div>
+ @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error de Accesos:</span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 @include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')

@@ -7,6 +7,7 @@ Orden Devolución
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -18,8 +19,20 @@ Orden Devolución
 @endsection
 
 @section('content')
+@if (in_array(Auth::user()->id_usuario,[1,3,27,17,77,93,64,8,71,76]))
+    @include('almacen.devoluciones.devolucionContenido')
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error de Accesos:</span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 
-@include('almacen.devoluciones.devolucionContenido')
 
 @include('almacen.devoluciones.devolucionModal')
 @include('almacen.customizacion.productoCatalogoModal')
@@ -52,6 +65,7 @@ Orden Devolución
 <script src="{{ asset('js/almacen/customizacion/productoCatalogoModal.js')}}?v={{filemtime(public_path('js/almacen/customizacion/productoCatalogoModal.js'))}}"></script>
 
 <script>
+    console.log('{{Auth::user()->id_usuario}}');
     $(document).ready(function() {
         seleccionarMenu(window.location);
         usuarioSession = '{{Auth::user()->id_usuario}}';

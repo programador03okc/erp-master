@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Models\almacen\Catalogo\Clasificacion;
 use App\Models\Almacen\Producto;
 use App\models\Configuracion\AccesosUsuarios;
+<<<<<<< HEAD
+=======
+use Illuminate\Support\Facades\Auth;
+>>>>>>> develop
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +19,11 @@ class ClasificacionController extends Controller
     function view_clasificacion()
     {
         $array_accesos_botonera=array();
+<<<<<<< HEAD
         $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado',1)
+=======
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
+>>>>>>> develop
         ->select('accesos.*')
         ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
         ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
@@ -26,7 +34,12 @@ class ClasificacionController extends Controller
             $value->accesos;
             array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
         }
+<<<<<<< HEAD
         return view('almacen/producto/clasificacion',compact('array_accesos_botonera'));
+=======
+        $modulo='almacen';
+        return view('almacen/producto/clasificacion',compact('array_accesos_botonera','modulo'));
+>>>>>>> develop
     }
     public static function mostrar_clasificaciones_cbo()
     {

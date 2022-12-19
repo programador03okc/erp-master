@@ -35,7 +35,12 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                 ->where('mov_alm.fecha_emision', '<=', session()->get('filtroFecha'))
                 ->where('mov_alm_det.id_producto', $d->id_producto)
                 ->where('mov_alm_det.estado', 1)
+<<<<<<< HEAD
                 ->orderBy('mov_alm.fecha_emision');
+=======
+                ->orderBy('mov_alm.fecha_emision', 'asc')
+                ->orderBy('mov_alm.id_tp_mov', 'asc');
+>>>>>>> develop
 
             if ($movimientos->count() > 0) {
                 $saldo = 0;
@@ -44,6 +49,7 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
 
                 foreach ($movimientos->get() as $key) {
                     if ($key->id_tp_mov == 0 || $key->id_tp_mov == 1) {
+<<<<<<< HEAD
                         $saldo += (float) $key->cantidad;
                         $saldo_valor += (float) $key->valorizacion;
                     } else if ($key->id_tp_mov == 2) {
@@ -52,6 +58,16 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                         $saldo_valor -= (float) $valor_salida;
                     }
                     $costo_promedio = (float) ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+=======
+                        $saldo += $key->cantidad;
+                        $saldo_valor += $key->valorizacion;
+                    } else if ($key->id_tp_mov == 2) {
+                        $saldo -= $key->cantidad;
+                        $valor_salida = $costo_promedio * $key->cantidad;
+                        $saldo_valor -= $valor_salida;
+                    }
+                    $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+>>>>>>> develop
                 }
 
                 $reserva = ($d->cantidad_reserva == null) ? 0 : $d->cantidad_reserva;
@@ -70,6 +86,27 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                         $join->where('guia_com.fecha_almacen', '<=', $fecha);
                         $join->where('guia_com.estado', 1);
                     })
+<<<<<<< HEAD
+=======
+                    ->leftjoin('almacen.guia_com_det as guia_sobrante_det', function ($join) {
+                        $join->on('guia_sobrante_det.id_sobrante', '=', 'alm_prod_serie.id_sobrante');
+                        $join->where('guia_sobrante_det.estado', 1);
+                    })
+                    ->leftjoin('almacen.guia_com as guia_sobrante', function ($join) use ($fecha) {
+                        $join->on('guia_sobrante.id_guia', '=', 'guia_sobrante_det.id_guia_com');
+                        $join->where('guia_sobrante.fecha_almacen', '<=', $fecha);
+                        $join->where('guia_sobrante.estado', 1);
+                    })
+                    ->leftjoin('almacen.guia_com_det as guia_transformado_det', function ($join) {
+                        $join->on('guia_transformado_det.id_transformado', '=', 'alm_prod_serie.id_transformado');
+                        $join->where('guia_transformado_det.estado', 1);
+                    })
+                    ->leftjoin('almacen.guia_com as guia_transformado', function ($join) use ($fecha) {
+                        $join->on('guia_transformado.id_guia', '=', 'guia_transformado_det.id_guia_com');
+                        $join->where('guia_transformado.fecha_almacen', '<=', $fecha);
+                        $join->where('guia_transformado.estado', 1);
+                    })
+>>>>>>> develop
                     ->where([
                         ['alm_prod_serie.id_prod', '=', $d->id_producto],
                         ['alm_prod_serie.id_almacen', '=', $d->id_almacen],
@@ -95,11 +132,19 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                     $data[] = [
                         'id_producto'           => $d->id_producto,
                         'id_almacen'            => $d->id_almacen,
+<<<<<<< HEAD
                         'codigo'                => ($d->codigo != null) ?  $d->codigo : '',
                         'cod_softlink'          => ($d->cod_softlink != null) ?  $d->cod_softlink : '',
                         'part_number'           => ($d->part_number != null) ?  trim($d->part_number) : '',
                         'producto'              => trim($d->producto),
                         'categoria'             => trim($d->categoria),
+=======
+                        'codigo'                => ($d->codigo != null) ?  str_replace("'", "", $d->codigo) : '',
+                        'cod_softlink'          => ($d->cod_softlink != null) ?  str_replace("'", "", str_replace("", "", $d->cod_softlink)) : '',
+                        'part_number'           => ($d->part_number != null) ?  str_replace("'", "", str_replace("", "", trim($d->part_number))) : '',
+                        'producto'              => str_replace("'", "", str_replace("", "", $d->producto)),
+                        'categoria'             => str_replace("'", "", trim($d->categoria)),
+>>>>>>> develop
                         'simbolo'               => ($d->simbolo != null) ?  $d->simbolo : '',
                         'valorizacion'          => $saldo_valor,
                         'costo_promedio'        => $costo_promedio,
@@ -107,9 +152,15 @@ class ReporteSaldosSeriesExport implements FromView, WithColumnFormatting, WithS
                         'stock'                 => $saldo,
                         'reserva'               => $reserva,
                         'disponible'            => ($saldo - $reserva),
+<<<<<<< HEAD
                         'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  $d->almacen_descripcion : '',
                         'count_series'          => count($series),
                         'series'                => $strSeries
+=======
+                        'almacen_descripcion'   => ($d->almacen_descripcion != null) ?  str_replace("'", "", $d->almacen_descripcion) : '',
+                        'count_series'          => count($series),
+                        'series'                => str_replace("'", "", str_replace("", "", $strSeries))
+>>>>>>> develop
                     ];
                 }
             }

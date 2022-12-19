@@ -10,6 +10,7 @@ Reportes de transito de ordenes de compra
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -22,6 +23,7 @@ Reportes de transito de ordenes de compra
 
 @section('content')
 <div class="page-main" type="reporte_transito_ordenes_compra">
+    @if (in_array(268,$array_accesos)||in_array(269,$array_accesos)||in_array(270,$array_accesos))
     <div class="row">
         <div class="col-md-12">
             <fieldset class="group-table">
@@ -45,6 +47,17 @@ Reportes de transito de ordenes de compra
             </fieldset>
         </div>
     </div>
+    @else
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger pulse" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error de Accesos:</span>
+                Solicite los accesos
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
 
 

@@ -46,6 +46,7 @@ function listarOrdenesPendientes() {
     }
     // }:[]);
 
+<<<<<<< HEAD
     var button_exportar_excel = {//(array_accesos.find(element => element === 100)?{
         text: ' Exportar Excel',
         action: function () {
@@ -56,6 +57,25 @@ function listarOrdenesPendientes() {
 
     let botones = [];
     botones.push(button_ingresar_guia, button_exportar_excel);
+=======
+    let botones = [];
+    const button_ingresar_guia = (array_accesos.find(element => element === 99)?{
+            text: ' Ingresar Guía',
+            action: function () {
+                open_guia_create_seleccionadas();
+            }, className: 'btn-primary disabled btnIngresarGuia'
+        }:[]),
+        button_descargar_excel = (array_accesos.find(element => element === 100)?{
+            text: ' Exportar Excel',
+            action: function () {
+                exportarOrdenesPendientes();
+            }, className: 'btn-success btnExportarOrdenesPendientes'
+        }:[]);
+    // if (acceso == '1') {
+    //     botones.push(button_ingresar_guia,button_descargar_excel);
+    // }
+    botones.push(button_ingresar_guia,button_descargar_excel);
+>>>>>>> develop
 
     $("#ordenesPendientes").on('search.dt', function () {
         $('#ordenesPendientes_filter input').prop('disabled', true);
@@ -99,6 +119,7 @@ function listarOrdenesPendientes() {
             });
 
             const $form = $('#formFiltrosOrdenesPendientes');
+<<<<<<< HEAD
             $('#ordenesPendientes_wrapper .dt-buttons').append(
                 `<div style="display:flex">
                     <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaInicio"
@@ -108,8 +129,20 @@ function listarOrdenesPendientes() {
                     <select class="form-control" id="selectOrdenPendienteSede">
                         <option value="0" selected>Mostrar Todos</option>
                     </select>
+=======
+            (array_accesos.find(element => element === 101)?$('#ordenesPendientes_wrapper .dt-buttons').append(
+                `<div style="display:flex"><input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaInicio"
+                    value="${$form.find('input[name=ordenes_fecha_inicio]').val()}"/>
+                <input type="text" class="form-control date-picker" size="10" id="txtOrdenPendienteFechaFin"
+                    value="${$form.find('input[name=ordenes_fecha_fin]').val()}"/>
+                <select class="form-control" id="selectOrdenPendienteSede">
+                    <option value="0" selected>Mostrar Todos</option>
+                </select>
+
+>>>>>>> develop
                 </div>`
-            );
+            ):''),
+
             $('input.date-picker').datepicker({
                 language: "es",
                 orientation: "bottom auto",
@@ -226,6 +259,7 @@ function listarOrdenesPendientes() {
                 searchable: false,
                 orderable: false,
                 render: function (data, type, row) {
+<<<<<<< HEAD
                     // if (acceso == "1") {
                     return `<div style="display:flex;">
                         <button type="button" class="ver-detalle btn btn-default boton btn-flat" data-toggle="tooltip"
@@ -242,6 +276,26 @@ function listarOrdenesPendientes() {
                     //         <i class="fas fa-chevron-down"></i></button>`
                     //     );
                     // }
+=======
+                    if (acceso == "1") {
+                        return `<div style="display:flex;">`+
+                        (array_accesos.find(element => element === 102)?`<button type="button" class="ver-detalle btn btn-default boton btn-flat" data-toggle="tooltip"
+                        data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
+                        <i class="fas fa-chevron-down"></i></button>`:``)+
+                        (array_accesos.find(element => element === 103)?`<button type="button" class="guia btn btn-info boton btn-flat" data-toggle="tooltip"
+                        data-placement="bottom" title="Generar Guía" >
+                        <i class="fas fa-sign-in-alt"></i></button>
+                        </div>`:``)+`
+
+                            `;
+                    } else {
+                        return (
+                            (array_accesos.find(element => element === 102)?`<button type="button" class="ver-detalle btn btn-default boton" data-toggle="tooltip"
+                            data-placement="bottom" title="Ver Detalle" data-id="${row["id_orden_compra"]}">
+                            <i class="fas fa-chevron-down"></i></button>`:``)
+                        );
+                    }
+>>>>>>> develop
                 },
                 targets: 9
             }

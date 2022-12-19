@@ -107,9 +107,15 @@
             {{-- @endif --}}
 </ul>
 </li>
+<<<<<<< HEAD
 {{-- @endif
 @if(Auth::user()->tieneSubModuloPadre(49)) --}}
 {{-- <li class="treeview">
+=======
+{{-- @endif --}}
+@if(Auth::user()->tieneSubModuloPadre(49))
+<li class="treeview">
+>>>>>>> develop
     <a href="#"><i class="fas fa-boxes"></i> Activos
         <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
@@ -209,7 +215,7 @@
         <li><a href="{{route('logistica.gestion-logistica.reportes.ordenes-compra')}}"><i class="far fa-circle fa-xs"></i> Ordenes de compras</a></li>
         <li><a href="{{route('logistica.gestion-logistica.reportes.transito-ordenes-compra')}}"><i class="far fa-circle fa-xs"></i> Transito de ordenes de compras</a></li>
         <li><a href="{{route('logistica.gestion-logistica.reportes.ordenes-servicio')}}"><i class="far fa-circle fa-xs"></i> Ordenes de servicio</a></li>
-        <li><a href="{{route('logistica.gestion-logistica.reportes.compras-locales')}}"><i class="far fa-circle fa-xs"></i> Compras locales</a></li>
+        <li><a href="{{route('logistica.gestion-logistica.reportes.compras-locales')}}"><i class="far fa-circle fa-xs"></i> Compras</a></li>
     </ul>
 </li>
 {{-- @endif --}}

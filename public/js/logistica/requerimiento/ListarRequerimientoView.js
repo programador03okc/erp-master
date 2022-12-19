@@ -301,12 +301,17 @@ class ListarRequerimientoView {
         window.open(`reporte-requerimientos-bienes-servicios-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
 
     }
+    descargarListaItemsRequerimientosElaboradosExcel() {
+        window.open(`reporte-items-requerimientos-bienes-servicios-excel/${this.ActualParametroAllOrMe}/${this.ActualParametroEmpresa}/${this.ActualParametroSede}/${this.ActualParametroGrupo}/${this.ActualParametroDivision}/${this.ActualParametroFechaDesde}/${this.ActualParametroFechaHasta}/${this.ActualParametroEstado}`);
+
+    }
 
     mostrar(meOrAll = 'SIN_FILTRO', idEmpresa = 'SIN_FILTRO', idSede = 'SIN_FILTRO', idGrupo = 'SIN_FILTRO', idDivision = 'SIN_FILTRO', fechaRegistroDesde = 'SIN_FILTRO', fechaRegistroHasta = 'SIN_FILTRO', idEstado = 'SIN_FILTRO') {
         // console.log(meOrAll,idEmpresa,idSede,idGrupo,idDivision,fechaRegistroDesde,fechaRegistroHasta,idEstado);
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
+<<<<<<< HEAD
         var button_filtros = (array_accesos.find(element => element === 36)?{
                     text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                     attr: {
@@ -336,6 +341,44 @@ class ListarRequerimientoView {
                 button_filtros,
                 button_descarga
             ],
+=======
+        const button_filtro = (array_accesos.find(element => element === 18)?{
+                text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
+                attr: {
+                    id: 'btnFiltrosListaRequerimientosElaborados'
+                },
+                action: () => {
+                    this.abrirModalFiltrosRequerimientosElaborados();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel_cabecera = (array_accesos.find(element => element === 19)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel cabecera',
+                attr: {
+                    id: 'btnDescargarListaRequerimientosElaboradosExcel'
+                },
+                action: () => {
+                    this.descargarListaRequerimientosElaboradosExcel();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel_items = (array_accesos.find(element => element === 19)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel items',
+                attr: {
+                    id: 'btnDescargarListaItemsRequerimientosElaboradosExcel'
+                },
+                action: () => {
+                    this.descargarListaItemsRequerimientosElaboradosExcel();
+
+                },
+                className: 'btn-default btn-sm'
+            }:[]);
+        $tablaListaRequerimientosElaborados = $('#ListaRequerimientosElaborados').DataTable({
+            'dom': vardataTables[1],
+            'buttons': [button_filtro,button_descargar_excel_cabecera,button_descargar_excel_items],
+>>>>>>> develop
             'language': vardataTables[0],
             'order': [[0, 'desc']],
             'bLengthChange': false,
@@ -854,7 +897,7 @@ class ListarRequerimientoView {
             for (let i = 0; i < data.length; i++) {
                 html += `<tr>
                     <td style="text-align:center;">${data[i].nombre_corto ? data[i].nombre_corto : ''}</td>
-                    <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}${data[i].tiene_sustento == true ? ' (Con sustento de usuario)' : ''}</td>
+                    <td style="text-align:center;">${data[i].accion ? data[i].accion : ''}</td>
                     <td style="text-align:left;">${data[i].detalle_observacion ? data[i].detalle_observacion : ''}</td>
                     <td style="text-align:center;">${data[i].fecha_vobo ? data[i].fecha_vobo : ''}</td>
                 </tr>`;
