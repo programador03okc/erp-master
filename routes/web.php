@@ -1480,6 +1480,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardarCliente', 'Almacen\Movimiento\SalidasPendientesController@guardarCliente')->name('guardarCliente');
 
 				Route::get('listarDevolucionesSalidas', 'Almacen\Movimiento\DevolucionController@listarDevolucionesSalidas');
+				Route::get('verDetalleDevolucion/{id}', 'Almacen\Movimiento\SalidasPendientesController@verDetalleDevolucion');
 			});
 
 			Route::group(['as' => 'customizacion.', 'prefix' => 'customizacion'], function () {

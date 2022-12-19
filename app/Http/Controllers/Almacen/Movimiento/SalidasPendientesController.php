@@ -831,6 +831,50 @@ class SalidasPendientesController extends Controller
         return response()->json($lista);
     }
 
+    public function verDetalleDevolucion($id_devolucion)
+    {
+        $lista = DB::table('cas.devolucion_detalle')
+            ->select(
+                'devolucion_detalle.id_detalle',
+                'devolucion_detalle.cantidad',
+                'alm_prod.id_producto',
+                'alm_prod.codigo',
+                'alm_prod.descripcion',
+                'alm_prod.series as control_series',
+                'alm_prod.part_number',
+                'alm_prod.id_unidad_medida',
+                'alm_und_medida.abreviatura',
+                'devolucion.id_almacen',
+                // DB::raw("(SELECT SUM(guia_ven_det.cantidad)
+                //         FROM almacen.guia_ven_det
+                //         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
+                //             and guia_ven_det.estado != 7) as cantidad_despachada"),
+                // 'alm_reserva.id_reserva',
+                // 'alm_reserva.id_almacen_reserva',
+                'alm_almacen.descripcion as almacen_reserva',
+                // DB::raw("(SELECT SUM(alm_reserva.stock_comprometido)
+                //         FROM almacen.alm_reserva
+                //         WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
+                //             and alm_reserva.estado = 1) as stock_comprometido"),
+                // 'alm_reserva.stock_comprometido'
+            )
+            ->leftJoin('cas.devolucion', 'devolucion.id_devolucion', '=', 'devolucion_detalle.id_devolucion')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'devolucion_detalle.id_producto')
+            ->leftJoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
+            // ->leftJoin('almacen.alm_reserva', function ($join) {
+            //     $join->on('alm_reserva.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+            //     $join->where('alm_reserva.estado', '!=', 7);
+            //     $join->where('alm_reserva.estado', '!=', 5);
+            // })
+            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'devolucion.id_almacen')
+            ->where([
+                ['devolucion_detalle.id_devolucion', '=', $id_devolucion],
+                ['devolucion_detalle.estado', '!=', 7],
+            ])->get();
+
+        return response()->json($lista);
+    }
+
     public function imprimir_salida($id_sal)
     {
         $id = GenericoAlmacenController::decode5t($id_sal);

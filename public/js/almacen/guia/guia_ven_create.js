@@ -16,15 +16,16 @@ function open_guia_create(data) {
         $('#name_title').addClass('blue');
     } else {
         $('[name=id_operacion]').val(data.id_tipo == 2 ? 6 : 25).trigger('change.select2');
-        $('#name_title').text('Devolución: ' + data.codigo);
+        $('#name_title').text('Devolución ');
         $('#name_title').removeClass();
         $('#name_title').addClass('green');
     }
     console.log(data);
-    $('#codigo_req').text(data.codigo_req);
+    $('#codigo_req').text(data.codigo_req !== undefined ? data.codigo_req : data.codigo);
     $('#almacen_req').text(data.almacen_descripcion);
     $('[name=id_guia_clas]').val(1);
     $('[name=id_od]').val(data.id_od);
+    $('[name=id_devolucion]').val(data.id_devolucion !== undefined ? data.id_devolucion : '');
     $('[name=id_almacen]').val(data.id_almacen);
     $('[name=id_sede]').val(data.id_sede);
     $('[name=id_cliente]').val(data.id_cliente);
@@ -42,9 +43,12 @@ function open_guia_create(data) {
         actualizarItemsODE(data.id_requerimiento);
     }
     detalle = [];
+    $('#detalleGuiaVenta tbody').html('');
 
     if (data.id_requerimiento !== undefined) {
         listarDetalleOrdenDespacho(data.id_requerimiento, data.id_od, (data.aplica_cambios ? 'si' : 'no'), (data.tiene_transformacion ? 'si' : 'no'));
+    } else {
+        listarDetalleDevolucion(data.id_devolucion);
     }
     // cargar_almacenes(data.id_sede, 'id_almacen');
     // var tp_doc_almacen = 2;//guia venta
@@ -146,6 +150,50 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
     });
 }
 
+
+function listarDetalleDevolucion(id_devolucion) {
+    detalle = [];
+    $.ajax({
+        type: 'GET',
+        url: 'verDetalleDevolucion/' + id_devolucion,
+        dataType: 'JSON',
+        success: function (response) {
+            console.log(response);
+            response.forEach(element => {
+                //cantidad (requerimiento)  cantidad_despachada (cantidad atendidas q tienen salida)
+                detalle.push({
+                    'id_od_detalle': null,
+                    'id_detalle_requerimiento': null,
+                    'id_detalle_devolucion': element.id_detalle,
+                    'id_producto': element.id_producto,
+                    'id_unidad_medida': element.id_unidad_medida,
+                    'codigo': element.codigo,
+                    'part_number': element.part_number,
+                    'descripcion': element.descripcion,
+                    'cantidad_despachada': 0,
+                    'cantidad_despacho': 0,
+                    'cantidad': element.cantidad,
+                    'abreviatura': element.abreviatura,
+                    'control_series': element.control_series,
+                    'suma_reservas': element.cantidad, //element.stock_comprometido ?? 0,
+                    'id_almacen_reserva': element.id_almacen,
+                    'almacen_reserva': element.almacen_reserva,
+                    'series': []
+                });
+
+                $('[name=id_almacen]').val(element.id_almacen);
+
+            });
+
+            mostrar_detalle();
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
 function mostrar_detalle() {
     var html = '';
     var html_series = '';
@@ -163,15 +211,17 @@ function mostrar_detalle() {
             }
         });
         html += `<tr>
-        <td>${element.suma_reservas > 0 ? `<input type="checkbox" value="${element.id_detalle_requerimiento}" checked/>` : ''}</td>
+        <td>${element.suma_reservas > 0 ? `<input type="checkbox" value="${element.id_detalle_requerimiento !== undefined ? element.id_detalle_requerimiento : element.id_detalle_devolucion}" checked/>` : ''}</td>
         <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo !== null ? element.codigo : ''}</a></td>
         <td>${element.part_number !== null ? element.part_number : ''}</td>
         <td>${element.descripcion !== null ? element.descripcion : '(producto no mapeado)'}<br><strong>${html_series}</strong></td>
         <td>${element.almacen_reserva ?? ''}</td>
         <td>${element.suma_reservas !== null ? element.suma_reservas : ''}</td>
         <td>${element.cantidad_despachada}</td>
-        <td><input class="right cantidad" type="number" value="${element.cantidad}" min="0.01" name="cantidad" style="width:80px;"
-        step=".01" max="${element.cantidad}" data-id="${element.id_detalle_requerimiento}"/></td>
+        <td>${element.id_detalle_requerimiento !== null ?
+                `<input class="right cantidad" type="number" value="${element.cantidad}" min="0.01" name="cantidad" style="width:80px;"
+        step=".01" max="${element.cantidad}" data-id="${element.id_detalle_requerimiento}"/>`
+                : element.cantidad}</td>
         <td>${element.abreviatura !== null ? element.abreviatura : ''}</td>
         <td>
         ${element.control_series ?
@@ -328,6 +378,19 @@ $("#form-guia_ven_create").on("submit", function (e) {
             sound: false,
             delayIndicator: false,
             msg: 'Ingreso una cantidad mayor a la que puede despachar en ' + cantidad_sobregirada + ' productos.'
+        });
+        valida++;
+    }
+    var id_dev = $('[name=id_devolucion]').val();
+
+    if (id_dev !== '') {
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Proceso en construcción.'
         });
         valida++;
     }

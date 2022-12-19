@@ -13,6 +13,7 @@
                     <input type="text" class="oculto" name="id_sede">
                     <input type="text" class="oculto" name="id_persona">
                     <input type="text" class="oculto" name="id_requerimiento">
+                    <input type="text" class="oculto" name="id_devolucion">
                     <div class="row">
                         <input type="hidden" name="_token" value="{{csrf_token()}}" id="token_guia">
                         <div class="col-md-3">
