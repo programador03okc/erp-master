@@ -79,6 +79,12 @@ function listarDevoluciones() {
     });
 }
 
+$('#listaDevoluciones tbody').on("click", "button.guia", function () {
+    var data = $('#listaDevoluciones').DataTable().row($(this).parents("tr")).data();
+    console.log(data);
+    open_guia_create(data);
+});
+
 $("#listaDevoluciones tbody").on("click", "a.ver-devolucion", function () {
     var id = $(this).data("id");
     console.log('id_devolucion ' + id);

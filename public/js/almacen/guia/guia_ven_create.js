@@ -9,11 +9,16 @@ function open_guia_create(data) {
         $('#name_title').text('Despacho Interno');
         $('#name_title').removeClass();
         $('#name_title').addClass('red');
-    } else {
+    } else if (data.aplica_cambios == false) {
         $('[name=id_operacion]').val(1).trigger('change.select2');
         $('#name_title').text('Despacho Externo');
         $('#name_title').removeClass();
         $('#name_title').addClass('blue');
+    } else {
+        $('[name=id_operacion]').val(data.id_tipo == 2 ? 6 : 25).trigger('change.select2');
+        $('#name_title').text('Devolución: ' + data.codigo);
+        $('#name_title').removeClass();
+        $('#name_title').addClass('green');
     }
     console.log(data);
     $('#codigo_req').text(data.codigo_req);
@@ -33,11 +38,14 @@ function open_guia_create(data) {
 
     if (data.aplica_cambios) {
         actualizarItemsODI(data.id_requerimiento);
-    } else {
+    } else if (data.aplica_cambios == false) {
         actualizarItemsODE(data.id_requerimiento);
     }
     detalle = [];
-    listarDetalleOrdenDespacho(data.id_requerimiento, data.id_od, (data.aplica_cambios ? 'si' : 'no'), (data.tiene_transformacion ? 'si' : 'no'));
+
+    if (data.id_requerimiento !== undefined) {
+        listarDetalleOrdenDespacho(data.id_requerimiento, data.id_od, (data.aplica_cambios ? 'si' : 'no'), (data.tiene_transformacion ? 'si' : 'no'));
+    }
     // cargar_almacenes(data.id_sede, 'id_almacen');
     // var tp_doc_almacen = 2;//guia venta
     // next_serie_numero(data.id_sede,tp_doc_almacen);
