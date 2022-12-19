@@ -3,6 +3,8 @@
 namespace App\Exports;
 
 use App\Http\Controllers\Almacen\Reporte\SaldosController;
+use App\Models\Tesoreria\TipoCambio;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromView;
@@ -73,6 +75,9 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
         // $fecha_ingreso_soft = null;
         // $doc_ingreso_soft = '';
 
+        $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', new Carbon()]])
+            ->orderBy('fecha', 'DESC')->first();
+
         foreach ($query->get() as $q) {
             /*
             $movimientos = DB::table('almacen.mov_alm')
@@ -138,12 +143,14 @@ class ReporteAntiguedadesExcel implements FromView, WithColumnFormatting, WithSt
                 'precio_unitario_soft'  => ($q->precio_unitario_soft !== null ? $q->precio_unitario_soft : ''),
                 'doc_ingreso_soft'      => ($q->doc_ingreso_soft !== null ? $q->doc_ingreso_soft : ''),
                 'moneda_soft'           => ($q->moneda_soft !== null ? $q->moneda_soft : ''),
+                'unitario_soles'        => ($q->moneda_soft == 1 ? $q->precio_unitario_soft : ($q->precio_unitario_soft * $tipo_cambio->venta)),
+                'unitario_dolares'      => ($q->moneda_soft == 2 ? $q->precio_unitario_soft : ($q->precio_unitario_soft / $tipo_cambio->venta))
             ];
             //     }
             // }
 
         }
-        return view('almacen.export.reporteAntiguedades', ['saldos' => $data]);
+        return view('almacen.export.reporteAntiguedades', ['saldos' => $data, 'tipo_cambio' => $tipo_cambio->venta]);
     }
 
     public function styles(Worksheet $sheet)

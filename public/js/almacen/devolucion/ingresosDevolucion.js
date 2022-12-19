@@ -1,5 +1,5 @@
 
-function verSalidasVenta() {
+function verIngresos() {
     var id_almacen = $('[name=id_almacen]').val();
     var id_contribuyente = $('[name=id_contribuyente]').val();
 
@@ -24,14 +24,14 @@ function verSalidasVenta() {
         });
     }
     if (id_almacen !== '' && id_contribuyente !== '') {
-        abrirSalidasModal(id_almacen, id_contribuyente);
+        abrirIngresosModal(id_almacen, id_contribuyente);
     }
 }
 
-function obtenerSalida(id_salida) {
+function obtenerIngreso(id_ingreso) {
     $.ajax({
         type: 'GET',
-        url: 'obtenerMovimientoDetalle/' + id_salida,
+        url: 'obtenerMovimientoDetalle/' + id_ingreso,
         dataType: 'JSON',
         success: function (response) {
             console.log(response);
@@ -39,7 +39,7 @@ function obtenerSalida(id_salida) {
                 items.push({
                     'id_detalle': 0,
                     'id_mov_alm': sel.id_mov_alm,
-                    'id_salida_detalle': sel.id_mov_alm_det,
+                    'id_ingreso_detalle': sel.id_mov_alm_det,
                     'id_producto': sel.id_producto,
                     'part_number': sel.part_number,
                     'codigo': sel.codigo,
@@ -64,11 +64,11 @@ function obtenerSalida(id_salida) {
     });
 }
 
-function mostrarSalidas() {
-    $("#listaSalidasDevolucion tbody").html('');
+function mostrarIngresos() {
+    $("#listaIngresosDevolucion tbody").html('');
     var row = '';
 
-    salidas.forEach(sel => {
+    ingresos.forEach(sel => {
         if (sel.estado == 1) {
             row += `<tr>
                 <td style="text-align:center">${sel.serie_numero_guia}</td>
@@ -76,37 +76,37 @@ function mostrarSalidas() {
                 <td style="text-align:center">${sel.razon_social}</td>
                 <td style="text-align:center">${sel.codigo}</td>
                 <td>
-                    <i class="fas fa-trash icon-tabla red boton delete" data-id="${sel.id_salida}"
+                    <i class="fas fa-trash icon-tabla red boton delete" data-id="${sel.id_ingreso}"
                         data-toggle="tooltip" data-placement="bottom" title="Eliminar" ></i>
                 </td>
             </tr>`;
         }
     })
-    $("#listaSalidasDevolucion tbody").html(row);
+    $("#listaIngresosDevolucion tbody").html(row);
 }
 
 // Delete row on delete button click
-$('#listaSalidasDevolucion tbody').on("click", ".delete", function () {
+$('#listaIngresosDevolucion tbody').on("click", ".delete", function () {
     var anula = confirm("¿Esta seguro que desea anular ésta salida?");
 
     if (anula) {
         let id_mov_alm = $(this).data('id');
 
         if (id_mov_alm !== '') {
-            salidas.forEach(sal => {
-                if (sal.id_salida == id_mov_alm) {
+            ingresos.forEach(sal => {
+                if (sal.id_ingreso == id_mov_alm) {
                     if (sal.id == 0) {
-                        let index = salidas.findIndex(function (item, i) {
+                        let index = ingresos.findIndex(function (item, i) {
                             return item.id == sal.id &&
-                                item.id_salida == id_mov_alm;
+                                item.id_ingreso == id_mov_alm;
                         });
-                        salidas.splice(index, 1);
+                        ingresos.splice(index, 1);
                     } else {
                         sal.estado = 7;
                     }
                 }
             });
-            console.log(salidas);
+            console.log(ingresos);
 
             items.forEach(element => {
                 if (element.id_mov_alm == id_mov_alm) {
@@ -124,6 +124,6 @@ $('#listaSalidasDevolucion tbody').on("click", ".delete", function () {
         }
         $(this).parents("tr").remove();
         mostrarProductos();
-        mostrarSalidas();
+        mostrarIngresos();
     }
 });

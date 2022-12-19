@@ -928,7 +928,11 @@ class OrdenesPendientesController extends Controller
                                         'serie' => $serie,
                                         'estado' => 1,
                                         'fecha_registro' => $fecha_registro,
-                                        'id_guia_com_det' => $id_guia_com_det
+                                        'id_guia_com_det' => $id_guia_com_det,
+                                        'fecha_ingreso_soft' => $request->fecha_almacen,
+                                        'precio_unitario_soft' => $det->unitario,
+                                        'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
+                                        'moneda_soft' => $det->id_moneda,
                                     ]
                                 );
                             }
@@ -1094,7 +1098,11 @@ class OrdenesPendientesController extends Controller
                                     'serie' => $serie,
                                     'estado' => 1,
                                     'fecha_registro' => $fecha_registro,
-                                    'id_guia_com_det' => $id_guia_com_det
+                                    'id_guia_com_det' => $id_guia_com_det,
+                                    'fecha_ingreso_soft' => $request->fecha_almacen,
+                                    'precio_unitario_soft' => $det->precio,
+                                    'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
+                                    'moneda_soft' => $det->id_moneda_orden,
                                 ]
                             );
                         }
@@ -1174,7 +1182,11 @@ class OrdenesPendientesController extends Controller
                                         'serie' => $serie,
                                         'estado' => 1,
                                         'fecha_registro' => $fecha_registro,
-                                        'id_guia_com_det' => $id_guia_com_det
+                                        'id_guia_com_det' => $id_guia_com_det,
+                                        'fecha_ingreso_soft' => $request->fecha_almacen,
+                                        'precio_unitario_soft' => $det->unitario,
+                                        'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
+                                        'moneda_soft' => $request->moneda_devolucion,
                                     ]
                                 );
                             }

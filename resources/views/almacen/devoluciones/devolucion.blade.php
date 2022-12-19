@@ -35,6 +35,7 @@ Orden Devolución
 @include('almacen.customizacion.productoCatalogoModal')
 @include('almacen.devoluciones.contribuyenteModal')
 @include('almacen.devoluciones.salidasModal')
+@include('almacen.devoluciones.ingresosModal')
 @include('cas.incidencias.incidenciaModal')
 @endsection
 
@@ -54,9 +55,11 @@ Orden Devolución
 <script src="{{ asset('js/almacen/devolucion/devolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/devolucion.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/devolucionModal.js')}}?v={{filemtime(public_path('js/almacen/devolucion/devolucionModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/salidasDevolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/salidasDevolucion.js'))}}"></script>
+<script src="{{ asset('js/almacen/devolucion/ingresosDevolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/ingresosDevolucion.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/incidenciasDevolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/incidenciasDevolucion.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/productosDevolucion.js')}}?v={{filemtime(public_path('js/almacen/devolucion/productosDevolucion.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/salidasModal.js')}}?v={{filemtime(public_path('js/almacen/devolucion/salidasModal.js'))}}"></script>
+<script src="{{ asset('js/almacen/devolucion/ingresosModal.js')}}?v={{filemtime(public_path('js/almacen/devolucion/ingresosModal.js'))}}"></script>
 <script src="{{ asset('js/cas/incidencias/incidenciaModal.js')}}?v={{filemtime(public_path('js/cas/incidencias/incidenciaModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/devolucion/contribuyenteModal.js')}}?v={{filemtime(public_path('js/almacen/devolucion/contribuyenteModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/customizacion/productoCatalogoModal.js')}}?v={{filemtime(public_path('js/almacen/customizacion/productoCatalogoModal.js'))}}"></script>
