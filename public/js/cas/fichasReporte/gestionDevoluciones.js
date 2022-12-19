@@ -76,7 +76,7 @@ function listarDevoluciones() {
                             data-placement="bottom" data-id="${row['id_devolucion']}" title="Agregar ficha técnica" >
                             <i class="fas fa-plus"></i></button>
 
-                            ${row['estado'] == 1 ?
+                            ${row['id_tipo'] == 1 ? (row['estado'] == 1 ?
                                 `<button type="button" class="conformidad btn btn-primary boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row['id_devolucion']}" title="Conformidad" >
                             <i class="fas fa-check"></i></button>`
@@ -85,7 +85,8 @@ function listarDevoluciones() {
                                     `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row['id_devolucion']}" title="Revertir conformidad" >
                             <i class="fas fa-backspace"></i></button>`
-                                    : ''
+                                    : '')
+                                : ''
                             }
                         </div>`;
                     }, className: "text-center"

@@ -133,21 +133,21 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 	<script>
-		$(document).ready(function() {
-			notificacionesNoLeidas();
+		// $(document).ready(function() {
+		// 	notificacionesNoLeidas();
 
-            $.ajax({
-				url: '{{ route("actualizar") }}',
-				data: {_token: '{{ csrf_token() }}'},
-				type: 'GET',
-				dataType: 'JSON',
-				success: function (data) {
-					if (data.success===true) {
-                        $('#atualizar-contraseña').modal('show');
-                    }
-				}
-			});
-		});
+        //     $.ajax({
+		// 		url: '{{ route("actualizar") }}',
+		// 		data: {_token: '{{ csrf_token() }}'},
+		// 		type: 'GET',
+		// 		dataType: 'JSON',
+		// 		success: function (data) {
+		// 			if (data.success===true) {
+        //                 $('#atualizar-contraseña').modal('show');
+        //             }
+		// 		}
+		// 	});
+		// });
         $(document).on('submit','[data-form="actualizar-contraseña"]',function (e) {
             e.preventDefault();
             var data = $(this).serialize();

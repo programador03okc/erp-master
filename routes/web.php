@@ -806,12 +806,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 			});
 		});
-        Route::group(['as' => 'ecommerce.', 'prefix' => 'ecommerce'], function () {
-            Route::get('index', 'EcommerceController@index')->name('index');
-            Route::get('crear', 'EcommerceController@crear')->name('crear');
-            Route::post('guardar', 'EcommerceController@guardar')->name('guardar');
-            Route::post('buscar-trabajador', 'EcommerceController@buscarTrabajador');
-        });
+		Route::group(['as' => 'ecommerce.', 'prefix' => 'ecommerce'], function () {
+			Route::get('index', 'EcommerceController@index')->name('index');
+			Route::get('crear', 'EcommerceController@crear')->name('crear');
+			Route::post('guardar', 'EcommerceController@guardar')->name('guardar');
+			Route::post('buscar-trabajador', 'EcommerceController@buscarTrabajador');
+		});
 	});
 
 	Route::group(['as' => 'logistica.', 'prefix' => 'logistica'], function () {
@@ -1211,10 +1211,10 @@ Route::group(['middleware' => ['auth']], function () {
 
 	/**Almacén */
 	Route::group(['as' => 'almacen.', 'prefix' => 'almacen'], function () {
-        #script 1
-        Route::get('script-categoria', 'AlmacenController@scripCategoria');
-        #script 2
-        Route::get('script-actualizar-categoria-softlink', 'AlmacenController@scripActualizarCategoriasSoftlink');
+		#script 1
+		Route::get('script-categoria', 'AlmacenController@scripCategoria');
+		#script 2
+		Route::get('script-actualizar-categoria-softlink', 'AlmacenController@scripActualizarCategoriasSoftlink');
 
 		Route::get('index', 'AlmacenController@view_main_almacen')->name('index');
 
@@ -1478,6 +1478,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('atencion-ver-adjuntos', 'Almacen\Movimiento\SalidasPendientesController@verAdjuntos');
 				Route::get('mostrarClientes', 'Almacen\Movimiento\SalidasPendientesController@mostrarClientes')->name('mostrarClientes');
 				Route::post('guardarCliente', 'Almacen\Movimiento\SalidasPendientesController@guardarCliente')->name('guardarCliente');
+
+				Route::get('listarDevolucionesSalidas', 'Almacen\Movimiento\DevolucionController@listarDevolucionesSalidas');
 			});
 
 			Route::group(['as' => 'customizacion.', 'prefix' => 'customizacion'], function () {
@@ -2094,11 +2096,11 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('importar', 'Migraciones\MigracionAlmacenSoftLinkController@importarSeries')->name('importar');
 			Route::get('exportar', 'Migraciones\MigracionAlmacenSoftLinkController@exportarSeries')->name('exportar');
 			Route::get('test', 'Migraciones\MigracionAlmacenSoftLinkController@testSeries')->name('test');
-            # actualizar productos al softlink
-            Route::get('actualizar-productos', 'Migraciones\MigracionAlmacenSoftLinkController@view_actualizar_productos')->name('actualizar.productos.softlink');
+			# actualizar productos al softlink
+			Route::get('actualizar-productos', 'Migraciones\MigracionAlmacenSoftLinkController@view_actualizar_productos')->name('actualizar.productos.softlink');
 
-            Route::get('descargar-modelo', 'Migraciones\MigracionAlmacenSoftLinkController@descargarModelo');
-            Route::post('enviar-modelo-agil-softlink', 'Migraciones\MigracionAlmacenSoftLinkController@enviarModeloAgilSoftlink')->name('actualizar');
+			Route::get('descargar-modelo', 'Migraciones\MigracionAlmacenSoftLinkController@descargarModelo');
+			Route::post('enviar-modelo-agil-softlink', 'Migraciones\MigracionAlmacenSoftLinkController@enviarModeloAgilSoftlink')->name('actualizar');
 		});
 	});
 
@@ -2194,24 +2196,24 @@ Route::group(['middleware' => ['auth']], function () {
 			// Route::group(['as' => 'registro.', 'prefix' => 'registro'], function () {
 
 			// });
-            #script 1
-            Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
-            #script 2
-            Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
-            #script 3
-            Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
-            #script 4
-            Route::get('script-fase', 'Gerencial\Cobranza\RegistroController@scriptFase');
-            #script 5
-            Route::get('script-conbranza', 'Gerencial\Cobranza\RegistroController@scriptCobranza');
-            #script 6
-            Route::get('script-empresa-unicos', 'Gerencial\Cobranza\RegistroController@scriptEmpresaUnicos');
-            #scrip 7
-            Route::get('script-match-cobranza-penalidad', 'Gerencial\Cobranza\RegistroController@scriptMatchCobranzaPenalidad');
-            #scrip 8
-            Route::get('script-match-cobranza-vendedor', 'Gerencial\Cobranza\RegistroController@scriptMatchCobranzaVendedor');
-            #scrip 9
-            Route::get('script-empresa-actualizacion', 'Gerencial\Cobranza\RegistroController@scriptEmpresaActualizacion');
+			#script 1
+			Route::get('script-cliente-ruc', 'Gerencial\Cobranza\RegistroController@scriptClienteRuc');
+			#script 2
+			Route::get('script-cliente', 'Gerencial\Cobranza\RegistroController@scriptCliente');
+			#script 3
+			Route::get('script-empresa', 'Gerencial\Cobranza\RegistroController@scriptEmpresa');
+			#script 4
+			Route::get('script-fase', 'Gerencial\Cobranza\RegistroController@scriptFase');
+			#script 5
+			Route::get('script-conbranza', 'Gerencial\Cobranza\RegistroController@scriptCobranza');
+			#script 6
+			Route::get('script-empresa-unicos', 'Gerencial\Cobranza\RegistroController@scriptEmpresaUnicos');
+			#scrip 7
+			Route::get('script-match-cobranza-penalidad', 'Gerencial\Cobranza\RegistroController@scriptMatchCobranzaPenalidad');
+			#scrip 8
+			Route::get('script-match-cobranza-vendedor', 'Gerencial\Cobranza\RegistroController@scriptMatchCobranzaVendedor');
+			#scrip 9
+			Route::get('script-empresa-actualizacion', 'Gerencial\Cobranza\RegistroController@scriptEmpresaActualizacion');
 
 			Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
 			Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
@@ -2224,7 +2226,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('eliminar-registro-cobranza/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@eliminarRegistroCobranza');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
-            #exportar excel
+			#exportar excel
 			Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
 		});
 	});
