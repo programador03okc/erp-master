@@ -799,10 +799,28 @@ class RequerimientoController extends Controller
             $count = count($request->descripcion);
             $montoTotal = 0;
             $cantidadItemConTransformacion=0;
+            $cantidadTipoDetalleProducto = 0;
+            $cantidadTipoDetalleServicio = 0;
+            $idTipoDetalle=null;
             for ($i = 0; $i < $count; $i++) {
                 if(isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1){
                     $cantidadItemConTransformacion++;
                 }
+                if(isset($request->tipoItem[$i]) && $request->tipoItem[$i] > 0){
+                    if(intval($request->tipoItem[$i]) ==1){
+                        $cantidadTipoDetalleProducto++;
+                    }else if(intval($request->tipoItem[$i]) ==2){
+                        $cantidadTipoDetalleServicio++;
+                    }
+                }
+            }
+
+            if($cantidadTipoDetalleProducto>0 && $cantidadTipoDetalleServicio==0 ){
+                $idTipoDetalle= 1;
+            }else if($cantidadTipoDetalleProducto==0 && $cantidadTipoDetalleServicio>0 ){
+                $idTipoDetalle= 2;
+            }else{
+                $idTipoDetalle= 3;
             }
 
             $requerimiento = new Requerimiento();
@@ -847,6 +865,7 @@ class RequerimientoController extends Controller
             $requerimiento->division_id = $request->division;
             $requerimiento->trabajador_id = $request->id_trabajador;
             $requerimiento->id_incidencia = isset($request->id_incidencia) && $request->id_incidencia!=null ? $request->id_incidencia : null;
+            $requerimiento->id_tipo_detalle = $idTipoDetalle;
             $requerimiento->save();
             $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimiento1;
             $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimiento2;
@@ -1169,10 +1188,29 @@ class RequerimientoController extends Controller
         $count = count($request->descripcion);
 
         $cantidadItemConTransformacion=0;
+        $cantidadTipoDetalleProducto = 0;
+        $cantidadTipoDetalleServicio = 0;
+        $idTipoDetalle=null;
+
         for ($i = 0; $i < $count; $i++) {
             if(isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1){
                 $cantidadItemConTransformacion++;
             }
+            if(isset($request->tipoItem[$i]) && $request->tipoItem[$i] > 0){
+                if(intval($request->tipoItem[$i]) ==1){
+                    $cantidadTipoDetalleProducto++;
+                }else if(intval($request->tipoItem[$i]) ==2){
+                    $cantidadTipoDetalleServicio++;
+                }
+            }
+        }
+
+        if($cantidadTipoDetalleProducto>0 && $cantidadTipoDetalleServicio==0 ){
+            $idTipoDetalle= 1;
+        }else if($cantidadTipoDetalleProducto==0 && $cantidadTipoDetalleServicio>0 ){
+            $idTipoDetalle= 2;
+        }else{
+            $idTipoDetalle= 3;
         }
 
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
@@ -1276,6 +1314,7 @@ class RequerimientoController extends Controller
         $requerimiento->trabajador_id = $request->id_trabajador;
 
         $requerimiento->id_incidencia = $request->id_incidencia > 0 ? $request->id_incidencia : null;
+        $requerimiento->id_tipo_detalle = $idTipoDetalle;
         $requerimiento->save();
         $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1;
         $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2;
