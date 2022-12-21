@@ -91,17 +91,10 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="alert alert-warning" role="alert">
-                                    Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Ingrese su nueva contraseña</label>
-                                    <input class="form-control contraseña-validar" type="text" id="clave" name="clave" minlength="8"  required>
+                                    <input class="form-control contraseña-validar" type="password" id="clave" name="clave" minlength="8"  required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -111,7 +104,17 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-warning" role="alert">
+                                    <p>Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos.</p>
+                                    <p>Ejemplos:</p>
+                                    <p>Inicio01.</p>
+                                    <p>Inicio01.@</p>
+                                    <p>@'+*}-+</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
@@ -174,7 +177,7 @@
                     success=false;
                     Swal.fire(
                         'Información',
-                        'Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos.',
+                        'Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos. Ejemplos: Inicio01., Inicio01.@, @"+*}-+',
                         'warning',
                     );
 

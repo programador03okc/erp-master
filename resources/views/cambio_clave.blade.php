@@ -166,7 +166,7 @@
         var clave = $('[data-form="form-step2"] [name="clave"]').val(),
             repita_clave = $('[data-form="form-step2"] [name="repita_clave"]').val(),
             // regularExpression  = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%.*?&])([A-Za-z\d$@$!%*?&]|[^ ])$/;
-            regularExpression = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8}$/;
+            regularExpression = /^(?=^.{8,}$)((.)(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
             success=false;
 
         if (regularExpression.test(clave)) {
