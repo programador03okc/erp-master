@@ -794,8 +794,8 @@ class ListaOrdenView {
     }
 
     modalEnviarOrdenAPago(obj) {
-        $('#modal-enviar-solicitud-pago .modal-body [name="numero_de_cuotas"]').removeAttr('disabled');
-        $('#modal-enviar-solicitud-pago .modal-body [name="pagoEnCuotasCheckbox"]').removeAttr('disabled');
+        document.querySelector("select[name='numero_de_cuotas']").removeAttribute("disabled");
+        document.querySelector("input[name='pagoEnCuotasCheckbox']").removeAttribute("disabled");
         tempArchivoAdjuntoRequerimientoCabeceraList=[];
         $(":file").filestyle('clear');
         this.limpiarTabla('adjuntosCabecera');
@@ -953,8 +953,9 @@ class ListaOrdenView {
                         htmlTable+= '</tr>'
 
                 });
-                $('#modal-enviar-solicitud-pago .modal-body [name="numero_de_cuotas"]').attr('disabled',true);
-                $('#modal-enviar-solicitud-pago .modal-body [name="pagoEnCuotasCheckbox"]').attr('disabled',true);
+                document.querySelector("select[name='numero_de_cuotas']").setAttribute("disabled",true);
+                document.querySelector("input[name='pagoEnCuotasCheckbox']").setAttribute("disabled",true);
+
             }else{
                 htmlTable = `<tr>
                 <td style="text-align:center;" colspan="5">Sin data para mostrar</td>
@@ -1151,6 +1152,7 @@ class ListaOrdenView {
             let formData = new FormData($('#form-enviar_solicitud_pago')[0]);
             if(tempArchivoAdjuntoRequerimientoCabeceraList.length>0){
                 formData.append(`archivoAdjuntoRequerimientoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoCabeceraList));
+                formData.append(`pagoEnCuotasCheckbox`, document.querySelector("input[name='pagoEnCuotasCheckbox']").checked);
                 tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
                     formData.append(`archivo_adjunto_list[]`, element.file);
             });

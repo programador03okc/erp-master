@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Configuracion\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\VarDumper\Cloner\Data;
+use App\Helpers\StringHelper;
 
 class LoginController extends Controller{
 
@@ -116,4 +119,37 @@ class LoginController extends Controller{
         $array = array('rol' => $roles);
         return response($array);
     }
+    public function actualizarContraseña()
+    {
+        $usuario = Usuario::where('id_usuario',Auth::user()->id_usuario)->first();
+        $success = true;
+        $hoy = date("Y-m-d");
+        if (date("Y-m-d",strtotime($usuario->fecha_registro."+ 45 days")) > $hoy) {
+            $success = false;
+        }
+        return response()->json([
+            "success"=>$success,
+            "status"=>200
+        ]);
+    }
+    public function modificarClave(Request $request)
+    {
+        // return response()->json($request);exit;
+        $success = false;
+        if ($request->clave === $request->repita_clave) {
+
+            $usuario = Usuario::find(Auth::user()->id_usuario);
+            $usuario->clave = StringHelper::encode5t($request->clave);
+            $usuario->fecha_registro = date('Y-m-d', time());
+            $usuario->save();
+            if ($usuario) {
+                $success=true;
+            }
+        }
+        return response()->json([
+            "success"=>$success,
+            "status"=>200
+        ]);
+    }
+
 }

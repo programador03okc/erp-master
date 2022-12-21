@@ -4294,10 +4294,10 @@ class OrdenController extends Controller
 
             if (!empty($orden)) {
                 //ya fue autorizado?
-                if ($orden->estado_pago !== 5) {
+                Debugbar::info(isset($request->pagoEnCuotasCheckbox));
+                if (intval($orden->estado_pago) !== 5) {
                     //ya fue pagado?
-                    if ($orden->estado_pago !== 6) {
-                        // Debugbar::info(isset($request->pagoEnCuotasCheckbox));
+                    if (intval($orden->estado_pago) !== 6) {
                         if (isset($request->pagoEnCuotasCheckbox) == true) {
                             $registoSolicitudPagoEnCuotas = $this->registrarSolicitudDePagarEnCuotas($request);
                             $arrayRspta = array(

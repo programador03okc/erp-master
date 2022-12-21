@@ -1,5 +1,6 @@
 let items = [];
 let salidas = [];
+let ingresos = [];
 let incidencias = [];
 let usuarioSession = '';
 let usuarioNombreSession = '';
@@ -38,11 +39,13 @@ $(".nueva-devolucion").on('click', function () {
 
     $("#listaProductosDevolucion tbody").html("");
     $("#listaSalidasDevolucion tbody").html("");
+    $("#listaIngresosDevolucion tbody").html("");
     $("#listaIncidenciasDevolucion tbody").html("");
 
     items = [];
     incidencias = [];
     salidas = [];
+    ingresos = [];
 
     $("[name=modo]").val("edicion");
     $("[name=id_devolucion]").val("");
@@ -72,11 +75,13 @@ $(".cancelar").on('click', function () {
 
     $("#listaProductosDevolucion tbody").html("");
     $("#listaSalidasDevolucion tbody").html("");
+    $("#listaIngresosDevolucion tbody").html("");
     $("#listaIncidenciasDevolucion tbody").html("");
 
     items = [];
     incidencias = [];
     salidas = [];
+    ingresos = [];
 
     $("[name=modo]").val("");
     $("[name=id_devolucion]").val("");
@@ -157,6 +162,7 @@ $("#form-devolucion").on("submit", function (e) {
                 detalle.push({
                     'id_detalle': element.id_detalle,
                     'id_salida_detalle': (element.id_salida_detalle !== undefined ? element.id_salida_detalle : null),
+                    'id_ingreso_detalle': (element.id_ingreso_detalle !== undefined ? element.id_ingreso_detalle : null),
                     'id_producto': element.id_producto,
                     'cantidad': element.cantidad,
                     'estado': element.estado,
@@ -171,9 +177,19 @@ $("#form-devolucion").on("submit", function (e) {
                     'estado': element.estado,
                 });
             });
+            let ingresos_compra = [];
+            ingresos.forEach(function (element) {
+                ingresos_compra.push({
+                    'id': element.id,
+                    'id_devolucion': element.id_devolucion,
+                    'id_ingreso': element.id_ingreso,
+                    'estado': element.estado,
+                });
+            });
             data += '&items=' + JSON.stringify(detalle) +
                 '&incidencias=' + JSON.stringify(incidencias) +
-                '&salidas=' + JSON.stringify(salidas_venta);
+                '&salidas=' + JSON.stringify(salidas_venta) +
+                '&ingresos=' + JSON.stringify(ingresos_compra);
             console.log(data);
             guardarDevolucion(data);
         }
@@ -288,10 +304,12 @@ function mostrarDevolucion(id) {
 
             items = response.detalle;
             salidas = response.salidas;
+            ingresos = response.ingresos;
             incidencias = response.incidencias;
 
             mostrarProductos();
             mostrarSalidas();
+            mostrarIngresos();
             mostrarIncidencias();
 
             $(".edition").attr('disabled', 'true');

@@ -38,6 +38,9 @@ Atención de Salidas
                     @if (in_array(112,$array_accesos))
                     <li class="active"><a data-toggle="tab" href="#pendientes">Despachos Pendientes <span id="nro_despachos" class="badge badge-info">{{$nro_od_pendientes}}</span></a></li>
                     @endif
+                    @if (in_array(112,$array_accesos))
+                    <li class=""><a data-toggle="tab" href="#devoluciones">Devoluciones Pendientes </a></li>
+                    @endif
                     @if (in_array(117,$array_accesos))
                     <li class=""><a data-toggle="tab" href="#salidas">Salidas Procesadas</a></li>
                     @endif
@@ -73,6 +76,33 @@ Atención de Salidas
                                     </thead>
                                     <tbody></tbody>
                                     <tfoot></tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    @if (in_array(112,$array_accesos))
+                    <div id="devoluciones" class="tab-pane fade ">
+                        <div class="row" style="padding-top:10px;">
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaDevoluciones">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th width="5%">Código</th>
+                                            <th width="10%">Estado</th>
+                                            <th width="10%">Fecha registro</th>
+                                            <th width="5%">Tipo</th>
+                                            <th width="10%">Razón Social</th>
+                                            <th width="10%">Almacén</th>
+                                            <th width="20%">Concepto</th>
+                                            {{-- <th width="10%">Fichas Técnicas</th> --}}
+                                            <th width="10%">Elaborado Por</th>
+                                            {{-- <th width="10%">Revisado Por</th> --}}
+                                            <th width="6%">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
@@ -194,6 +224,7 @@ Atención de Salidas
 <script src="{{ asset('js/almacen/guia/salidaAlmacen.js')}}?v={{filemtime(public_path('js/almacen/guia/salidaAlmacen.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/clienteModal.js')}}?v={{filemtime(public_path('js/almacen/guia/clienteModal.js'))}}"></script>
 <script src="{{ asset('js/almacen/guia/agregarCliente.js')}}?v={{filemtime(public_path('js/almacen/guia/agregarCliente.js'))}}"></script>
+<script src="{{ asset('js/almacen/guia/devolucionesSalidasPendientes.js')}}?v={{filemtime(public_path('js/almacen/guia/devolucionesSalidasPendientes.js'))}}"></script>
 <script src="{{ asset('js/almacen/distribucion/verDetalleRequerimiento.js')}}?v={{filemtime(public_path('js/almacen/distribucion/verDetalleRequerimiento.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/facturacion/archivosMgcp.js')}}?v={{filemtime(public_path('js/tesoreria/facturacion/archivosMgcp.js'))}}"></script>
 <script>

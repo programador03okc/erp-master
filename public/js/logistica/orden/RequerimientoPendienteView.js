@@ -2017,15 +2017,17 @@ class RequerimientoPendienteView {
         let cantidadTotalStockComprometido = 0;
         if (data.length > 0) {
             (data).forEach(element => {
-                cantidadTotalStockComprometido += parseFloat(element.stock_comprometido);
-                document.querySelector("tbody[id='bodyListaConReserva']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
-                <td>${(element.codigo != null && element.codigo != '') ? element.codigo : (element.id_reserva)}</td>
-                <td>${element.almacen.descripcion}</td>
-                <td>${element.stock_comprometido}</td>
-                <td>${element.usuario.nombre_corto}</td>
-                <td>${element.estado.estado_doc}</td>
-                <td><button type="button" class="btn btn-xs btn-danger btnAnularReserva handleClickAnularReserva" data-codigo-reserva="${element.codigo}" data-id-reserva="${element.id_reserva}"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" title="Anular"><i class="fas fa-times fa-xs"></i></button></td>
-                </tr>`);
+                if(element.estado.id_estado_doc!=7){
+                    cantidadTotalStockComprometido += parseFloat(element.stock_comprometido);
+                    document.querySelector("tbody[id='bodyListaConReserva']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
+                    <td>${(element.codigo != null && element.codigo != '') ? element.codigo : (element.id_reserva)}</td>
+                    <td>${element.almacen.descripcion}</td>
+                    <td>${element.stock_comprometido}</td>
+                    <td>${element.usuario.nombre_corto}</td>
+                    <td>${element.estado.estado_doc}</td>
+                    <td><button type="button" class="btn btn-xs btn-danger btnAnularReserva handleClickAnularReserva" data-codigo-reserva="${element.codigo}" data-id-reserva="${element.id_reserva}"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" title="Anular"><i class="fas fa-times fa-xs"></i></button></td>
+                    </tr>`);
+                }
             });
             document.querySelector("table[id='listaConReserva'] label[name='totalReservado']").textContent = cantidadTotalStockComprometido;
         } else {
@@ -2129,16 +2131,16 @@ class RequerimientoPendienteView {
                         if (response.id_reserva > 0) {
                             $('#modal-nueva-reserva .modal-content').LoadingOverlay("hide", true);
 
-                            Lobibox.notify('success', {
+                            Lobibox.notify(response.tipo_estado, {
                                 title: false,
                                 size: 'mini',
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: `Reserva anulada`
+                                msg: response.mensaje
                             });
 
-                            this.listarTablaListaConReserva(response.data)
+                            this.listarTablaListaConReserva(response.data);
                             this.llenarTablaModalAtenderConAlmacen(document.querySelector("form[id='form-nueva-reserva'] input[name='idRequerimiento']").value);
 
 

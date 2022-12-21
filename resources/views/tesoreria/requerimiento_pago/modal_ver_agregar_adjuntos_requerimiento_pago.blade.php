@@ -41,7 +41,7 @@
                     {{-- </fieldset> --}}
                     <br>
                     <fieldset class="group-table">
-
+                        <legend style="border-bottom: 0px solid #e5e5e5;width: 30%;"><h5>Adjuntos de requerimiento</h5></legend>
                         <div class="row">
                             <div class="col-md-12">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de la cabecera</strong></h5>
@@ -79,7 +79,7 @@
                     </fieldset>
                     <br> --}}
                     <fieldset class="group-table">
-
+                        <legend style="border-bottom: 0px solid #e5e5e5;width: 25%;"><h5>Adjuntos de tesoreria</h5></legend>
                         <div class="row">
                             <div class="col-md-12">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos del pago</strong></h5>
@@ -98,7 +98,7 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos de tesorería</strong></h5>
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Otros adjuntos de tesorería</strong></h5>
                                 <table class="mytable table table-condensed table-bordered table-okc-view">
                                     <thead>
                                         <th>Adjunto</th>

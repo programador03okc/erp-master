@@ -17,5 +17,5 @@ Módulos
         </div>
     </div>
     <script>
-		</script>
+    </script>
 @endsection
