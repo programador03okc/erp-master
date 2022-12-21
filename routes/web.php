@@ -61,6 +61,8 @@ Route::get('modulos', 'LoginController@index')->name('modulos');
 Route::get('recueperar-clave', 'RecuperarClaveController@recuperarClave')->name('recuperar.clave');
 Route::post('enviar-correo', 'RecuperarClaveController@enviarCorreo')->name('enviar.correo');
 Route::get('recueperar-clave/ingresar-nueva-clave', 'RecuperarClaveController@ingresarNuevaClave')->name('recuperar.clave.ingresar');
+Route::post('buscar-codigo', 'RecuperarClaveController@buscarCodigo')->name('buscar.codigo');
+Route::post('guardar-cambio-clave', 'RecuperarClaveController@guardarCambioClave')->name('guardar.cambio.clave');
 
 Route::get('clave', 'LoginController@actualizarContraseña')->name('actualizar');
 Route::post('modificar-clave', 'LoginController@modificarClave')->name('modificarClave');

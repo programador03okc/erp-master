@@ -6,7 +6,7 @@ use App\Mail\RecuperarClaveMailable;
 use App\Models\Configuracion\SisUsua;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-
+use App\Helpers\StringHelper;
 class RecuperarClaveController extends Controller
 {
     //
@@ -44,5 +44,38 @@ class RecuperarClaveController extends Controller
     public function ingresarNuevaClave()
     {
         return view('cambio_clave');
+    }
+    public function buscarCodigo(Request $request)
+    {
+        $codigo = strlen($request->codigo);
+        $status =404;
+        $success=false;
+        $usuario = SisUsua::where('codigo',$request->codigo)->where('usuario',$request->usuario)->first();
+        if ($codigo>=4) {
+            if ($usuario) {
+                $status =200;
+                $success=true;
+            }
+        }
+
+        return response()->json([
+            "success"=>$success,
+            "status"=>$status,
+            "data"=>$usuario
+        ]);
+    }
+    public function guardarCambioClave(Request $request)
+    {
+
+        if ($request->clave === $request->repita_clave) {
+            $usuario = SisUsua::find($request->id_usuario);
+            $usuario->clave = StringHelper::encode5t($request->clave);
+            $usuario->fecha_registro = date('Y-m-d', time());
+            $usuario->save();
+        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+        ]);
     }
 }

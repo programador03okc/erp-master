@@ -93,7 +93,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="alert alert-warning" role="alert">
-                                    Esto significa que su contraseña debe tener al menos 8 caracteres alfanuméricos (a-z,A-Z,1-9,.*$).
+                                    Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos.
                                 </div>
                             </div>
                         </div>

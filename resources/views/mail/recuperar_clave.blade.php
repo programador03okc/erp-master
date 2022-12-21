@@ -69,12 +69,12 @@
                                             <img src="{{ asset('images/logo_okc.png') }}" height="100px" />
                                         </td>
                                     </tr>
-                                    <tr>
+                                    {{-- <tr>
                                         <td style="" align="center">
                                             <a href="mailto:pyventas01@proyectec.com.pe" style="color: #fff;text-decoration: none">pyventas01@proyectec.com.pe</a>&nbsp;&nbsp;&nbsp;&nbsp;
                                             <a href="tel:+51 966 003 009" style="color: #fff; text-decoration: none">+51 966 003 009</a>
                                         </td>
-                                    </tr>
+                                    </tr> --}}
                                 </table>
                             </td>
                         </tr>
