@@ -17,7 +17,7 @@
                         <input style="display: none" name="cod_padre"/>
                         <div class="col-md-4">
                             <h5>Código</h5>
-                            <input type="text" name="codigo" class="form-control" readOnly/>
+                            <input type="text" name="codigo" class="form-control" />
                         </div>
                     </div>
                     <div class="row">

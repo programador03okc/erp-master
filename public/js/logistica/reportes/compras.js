@@ -63,7 +63,7 @@ class Compras {
                     }
                 });
                 $('#btnBuscar').on('click', (e) => {
-                    $tabla.search($input.val()).draw();
+                    $tablaListaCompras.search($input.val()).draw();
                 });
             },
             drawCallback: function (settings) {
