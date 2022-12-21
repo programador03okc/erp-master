@@ -146,6 +146,7 @@ class Compras {
     }
 
     abrirModalFiltros = () => {
+        $('#formulario-filtros')[0].reset();
         $('#modal-filtros').modal({ show: true,  backdrop: 'true' });
     }
 
