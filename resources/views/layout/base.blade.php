@@ -85,25 +85,33 @@
     <div class="modal fade" tabindex="-1" role="dialog" id="atualizar-contraseña" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
         <div class="modal-dialog" style="width:30%;">
             <div class="modal-content">
-                <form data-form="actualizar-contraseña">
+                <form data-form="actualizar-contraseña" accept="{{ route('modificarClave') }}" method="POST">
                     <div class="modal-header">
                         <h3 class="modal-title" id="titulo">Actualizar contraseña</h3>
                     </div>
                     <div class="modal-body">
                         <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-warning" role="alert">
+                                    Esto significa que su contraseña debe tener al menos 8 caracteres alfanuméricos (a-z,A-Z,1-9,.*$).
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Ingrese su nueva contraseña</label>
-                                    <input class="form-control" type="password" name="clave" required>
+                                    <input class="form-control contraseña-validar" type="password" id="clave" name="clave" minlength="8"  required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Repita su contraseña</label>
-                                    <input class="form-control" type="password" name="repita_clave" required>
+                                    <input class="form-control contraseña-validar" type="password" name="repita_clave" minlength="8" required>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
@@ -130,59 +138,88 @@
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    // <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 	<script>
-		// $(document).ready(function() {
-		// 	notificacionesNoLeidas();
+		$(document).ready(function() {
+			notificacionesNoLeidas();
 
-        //     $.ajax({
-		// 		url: '{{ route("actualizar") }}',
-		// 		data: {_token: '{{ csrf_token() }}'},
-		// 		type: 'GET',
-		// 		dataType: 'JSON',
-		// 		success: function (data) {
-		// 			if (data.success===true) {
-        //                 $('#atualizar-contraseña').modal('show');
-        //             }
-		// 		}
-		// 	});
-		// });
+            $.ajax({
+				url: '{{ route("actualizar") }}',
+				data: {_token: '{{ csrf_token() }}'},
+				type: 'GET',
+				dataType: 'JSON',
+				success: function (data) {
+					if (data.success===true) {
+                        $('#atualizar-contraseña').modal('show');
+                    }
+				}
+			});
+		});
         $(document).on('submit','[data-form="actualizar-contraseña"]',function (e) {
             e.preventDefault();
             var data = $(this).serialize();
-            $.ajax({
-                type: 'POST',
-                url: 'modificar-clave',
-                data: data,
-                // processData: false,
-                // contentType: false,
-                dataType: 'JSON',
-                beforeSend: (data) => {
+            var clave = $('.contraseña-validar[name="clave"]').val(),
+                repita_clave = $('.contraseña-validar[name="repita_clave"]').val(),
+                // regularExpression  = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%.*?&])([A-Za-z\d$@$!%*?&]|[^ ])$/;
+                regularExpression = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8}$/
+;
+                success=false;
 
+            if (clave === repita_clave) {
+                if (regularExpression.test(clave)) {
+                    success=true;
+                } else {
+                    success=false;
                 }
-            }).done(function(response) {
-                console.log(response);
-                if (response.success===true) {
-                    $('#atualizar-contraseña').modal('hide');
-                    Swal.fire(
-                    'Éxito',
-                    'Se actualizo con éxito',
-                    'success'
-                    )
-                }else{
-                    Swal.fire(
+            }
+
+
+
+            if (success) {
+                $.ajax({
+                    type: 'POST',
+                    // url: 'modificar-clave',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    url: '/modificar-clave',
+                    data: data,
+                    // processData: false,
+                    // contentType: false,
+                    dataType: 'JSON',
+                    beforeSend: (data) => {
+
+                    }
+                }).done(function(response) {
+                    // console.log(response);
+                    if (response.success===true) {
+                        $('#atualizar-contraseña').modal('hide');
+                        Swal.fire(
+                        'Éxito',
+                        'Se actualizo con éxito',
+                        'success'
+                        )
+                    }else{
+                        Swal.fire(
+                        'Información',
+                        'Ingrese de nuevo su clave',
+                        'warning'
+                        )
+                    }
+                }).fail( function( jqXHR, textStatus, errorThrown ){
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            }else{
+                Swal.fire(
                     'Información',
-                    'Ingrese de nuevo su clave',
+                    'Ingrese correctamente su clave',
                     'warning'
-                    )
-                }
-            }).fail( function( jqXHR, textStatus, errorThrown ){
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
-            console.log(data);
+                );
+            }
+
         });
 	</script>
 	<script>

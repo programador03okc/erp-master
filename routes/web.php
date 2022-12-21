@@ -57,8 +57,14 @@ Route::get('admin', function () {
 
 //Route::get('/', 'LoginController@index');
 Route::get('modulos', 'LoginController@index')->name('modulos');
+
+Route::get('recueperar-clave', 'RecuperarClaveController@recuperarClave')->name('recuperar.clave');
+Route::post('enviar-correo', 'RecuperarClaveController@enviarCorreo')->name('enviar.correo');
+Route::get('recueperar-clave/ingresar-nueva-clave', 'RecuperarClaveController@ingresarNuevaClave')->name('recuperar.clave.ingresar');
+
 Route::get('clave', 'LoginController@actualizarContraseña')->name('actualizar');
-Route::post('modificar-clave', 'LoginController@modificarClave')->name('modificar.clave');
+Route::post('modificar-clave', 'LoginController@modificarClave')->name('modificarClave');
+
 //Route::post('iniciar_sesion', 'LoginController@iniciar_sesion');
 Route::get('cargar_usuarios/{user}', 'LoginController@mostrar_roles');
 //Route::get('logout', 'LoginController@cerrar_sesion');

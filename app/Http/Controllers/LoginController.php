@@ -134,6 +134,7 @@ class LoginController extends Controller{
     }
     public function modificarClave(Request $request)
     {
+        // return response()->json($request);exit;
         $success = false;
         if ($request->clave === $request->repita_clave) {
 
@@ -150,4 +151,5 @@ class LoginController extends Controller{
             "status"=>200
         ]);
     }
+
 }
