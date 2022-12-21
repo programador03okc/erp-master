@@ -59,6 +59,7 @@
                                         <th style="text-align:center; width:10%;">Empresa - sede</th>
                                         <th style="text-align:center; width:10%;">Grupo</th>
                                         <th style="text-align:center; width:20%;">Proyecto</th>
+                                        <th style="text-align:center; width:5%;">C.L</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -221,8 +222,8 @@
                                     </label>
                                     <div class="col-sm-8">
                                         <select name="tipo_reporte" class="form-control">
-                                            <option value="false" @if (session('clTipoReporte') == false) selected @else '' @endif>Compras generales</option>
-                                            <option value="true" @if (session('clTipoReporte') == true) selected @else '' @endif>Compras locales</option>
+                                            <option value="false" @if (session('clTipoReporte') == false) selected @endif>Compras generales</option>
+                                            <option value="true" @if (session('clTipoReporte') == true) selected @endif>Compras locales</option>
                                         </select>
                                     </div>
                                 </div>
