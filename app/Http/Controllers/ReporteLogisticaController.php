@@ -290,45 +290,45 @@ class ReporteLogisticaController extends Controller{
         } else {
             $request->session()->forget('clTipoReporte');
         }
-
-        return response()->json(array('Filtros actualizados' => $request->session()->put('clEmpresa', $request->empresa)), 200);
     }
 
 	public function listarCompras(Request $request)
     {
         $this->obtenerFiltrosCompras($request);
-        $data = $this->obtenerReporteCompras();
+        $data = $this->obtenerReporteCompras($request);
 		return datatables($data)->toJson();
 
 	}
 
-    public function obtenerReporteCompras()
+    public function obtenerReporteCompras(Request $request)
     {
         $data = ComprasLocalesView::orderBy('fecha_emision', 'desc');
 
-        if (session()->has('clFechaRegistroDesde')) {
+        if ($request->session()->has('clFechaRegistroDesde')) {
             $data = $data->whereBetween('fecha_emision_comprobante_contribuyente', [session('clFechaRegistroDesde'), session('clFechaRegistroHasta')]);
         }
-        if (session()->has('clFechaCancelacionDesde')) {
+        if ($request->session()->has('clFechaCancelacionDesde')) {
             $data = $data->whereBetween('fecha_pago', [session('clFechaCancelacionDesde'), session('clFechaCancelacionHasta')]);
         }
-        if (session()->has('clEmpresa')) {
-            $data = $data->where('id_empresa', session()->get('clEmpresa'));
+        if ($request->session()->has('clEmpresa')) {
+            $data = $data->where('id_empresa', $request->session()->get('clEmpresa'));
+        } else {
+            $data = $data->where('id_empresa', '>', 0);
         }
-        if (session()->has('clGrupo')) {
-            $data = $data->where('id_grupo', session()->get('clGrupo'));
+        if ($request->session()->has('clGrupo')) {
+            $data = $data->where('id_grupo', $request->session()->get('clGrupo'));
         }
-        if (session()->has('clProyecto')) {
-            $data = $data->where('id_proyecto', session()->get('clProyecto'));
+        if ($request->session()->has('clProyecto')) {
+            $data = $data->where('id_proyecto', $request->session()->get('clProyecto'));
         }
-        if (session()->has('clEstadoPago')) {
-            $data = $data->where('id_requerimiento_pago_estado', session()->get('clEstadoPago'));
+        if ($request->session()->has('clEstadoPago')) {
+            $data = $data->where('id_requerimiento_pago_estado', $request->session()->get('clEstadoPago'));
         }
-        if (session()->has('clProveedor')) {
-            $data = $data->where('razon_social_contribuyente', 'like', '%'.session()->get('clProveedor').'%');
+        if ($request->session()->has('clProveedor')) {
+            $data = $data->where('razon_social_contribuyente', 'like', '%'.$request->session()->get('clProveedor').'%');
         }
-        if (session()->has('clTipoReporte')) {
-            if (session()->get('clTipoReporte') == true) {
+        if ($request->session()->has('clTipoReporte')) {
+            if ($request->session()->get('clTipoReporte') == true) {
                 $data = $data->where('compra_local', true);
             }
         }

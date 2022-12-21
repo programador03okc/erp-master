@@ -1603,6 +1603,7 @@ class OrdenController extends Controller
             'cta_detra.nro_cuenta as nro_cuenta_detraccion',
             'log_ord_compra.plazo_entrega',
             'log_ord_compra.observacion',
+            'log_ord_compra.compra_local',
             'log_ord_compra.en_almacen',
             'log_ord_compra.id_occ',
             'log_ord_compra.id_sede',
@@ -1753,6 +1754,7 @@ class OrdenController extends Controller
                     'moneda_simbolo' => $data->moneda_simbolo,
                     'incluye_igv' => $data->incluye_igv,
                     'observacion' => $data->observacion,
+                    'compra_local' => $data->compra_local,
                     'sustento_anulacion' => $data->sustento_anulacion,
                     'estado' => $data->estado,
                     // 'monto_igv' => $data->monto_igv,
@@ -1914,6 +1916,7 @@ class OrdenController extends Controller
 
         return $result;
     }
+
     public function imprimir_orden_por_requerimiento_pdf($id_orden_compra)
     {
         $ordenArray = $this->get_orden_por_requerimiento($id_orden_compra);
@@ -2176,24 +2179,24 @@ class OrdenController extends Controller
 
         $personal_autorizado_1 = $ordenArray['head']['datos_para_despacho']['personal_autorizado_1'] > 0 ? ($ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado_1'] . ' (' . $ordenArray['head']['datos_para_despacho']['documento_idendidad_personal_autorizado_1'] . ': ' . $ordenArray['head']['datos_para_despacho']['nro_documento_personal_autorizado_1'] . ')') : '';
         $personal_autorizado_2 = $ordenArray['head']['datos_para_despacho']['personal_autorizado_2'] > 0 ? ($ordenArray['head']['datos_para_despacho']['nombre_personal_autorizado_2'] . ' (' . $ordenArray['head']['datos_para_despacho']['documento_idendidad_personal_autorizado_2'] . ': ' . $ordenArray['head']['datos_para_despacho']['nro_documento_personal_autorizado_2'] . ')') : '';
+        $compra_local = ($ordenArray['head']['compra_local']) ? ' (COMPRA LOCAL)' : '';
 
         $html .= '
-                <table width="100%" border=0>
+            <table width="100%" border=0>
                 <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Shipping details' : 'Datos para el despacho') . ':</caption>
 
                 <tr>
-                    <td nowrap  width="15%" class="verticalTop subtitle">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Delivery address' : 'Dirección entrega') . ': </td>
+                    <td nowrap width="15%" class="verticalTop subtitle">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Delivery address' : 'Dirección entrega') . ': </td>
                     <td class="verticalTop">' . $ordenArray['head']['datos_para_despacho']['direccion_destino'] . '<br>' . $ordenArray['head']['datos_para_despacho']['ubigeo_destino'] . '</td>
                     <td width="15%" class="verticalTop subtitle">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Authorized receiver' : 'Personal autorizado') . ':</td>
                     <td class="verticalTop">' . $personal_autorizado_1 . ($personal_autorizado_2 ? ("<br>" . $personal_autorizado_2) : "") . '</td>
                 </tr>
                 <tr>
-                    <td nowrap  width="15%" class="subtitle">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Comments' : 'Observación') . ':</td>
-                    <td class="verticalTop">' . $ordenArray['head']['observacion'] . '</td>
+                    <td nowrap width="15%" class="subtitle">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Comments' : 'Observación') . ':</td>
+                    <td class="verticalTop">' . $ordenArray['head']['observacion'] . ' '. $compra_local . '</td>
                 </tr>
-                </table>
-                <br>
-
+            </table>
+            <br>
         ';
 
         $html .= '
@@ -2580,6 +2583,7 @@ class OrdenController extends Controller
             return false;
         }
     }
+
     function cambioElEstadoActualReq($id_requerimiento)
     {
         $alm_req = DB::table('almacen.alm_req')
@@ -2999,9 +3003,6 @@ class OrdenController extends Controller
         return $nuevoEstadoCabeceraRequerimiento;
     }
 
-
-
-
     function actualizarNuevoEstadoRequerimiento($tipoPeticion, $idOrden, $codigo)
     {
 
@@ -3074,10 +3075,6 @@ class OrdenController extends Controller
             'error' => $finalizadosORestablecido['error']
         ];
     }
-
-
-
-
 
     public function actualizar_orden_por_requerimiento(Request $request)
     {
@@ -3522,8 +3519,6 @@ class OrdenController extends Controller
         return json_encode($output);
     }
 
-
-
     function tieneIngresoAlmacen($id_orden)
     {
         $status = 0;
@@ -3613,7 +3608,6 @@ class OrdenController extends Controller
         $output = ['status' => $status, 'tipo_estado' => $tipo_estado, 'mensaje' => $msj, 'data' => $data];
         return $output;
     }
-
 
     function makeRevertirOrden($id_orden, $sustento)
     {
@@ -3781,7 +3775,6 @@ class OrdenController extends Controller
         $output = ['status' => $status, 'tipo_estado' => $tipo_estado, 'mensaje' => $msj, 'requerimientoIdList' => $id_requerimiento_list, 'notificacion' => $notificacion];
         return $output;
     }
-
 
     function makeAnularItemOrdenByIdDetalleRequerimiento($idOrden, $idDetalleRequerimiento)
     {
@@ -4301,10 +4294,10 @@ class OrdenController extends Controller
 
             if (!empty($orden)) {
                 //ya fue autorizado?
-                if ($orden->estado_pago !== 5) {
+                Debugbar::info(isset($request->pagoEnCuotasCheckbox));
+                if (intval($orden->estado_pago) !== 5) {
                     //ya fue pagado?
-                    if ($orden->estado_pago !== 6) {
-                        // Debugbar::info(isset($request->pagoEnCuotasCheckbox));
+                    if (intval($orden->estado_pago) !== 6) {
                         if (isset($request->pagoEnCuotasCheckbox) == true) {
                             $registoSolicitudPagoEnCuotas = $this->registrarSolicitudDePagarEnCuotas($request);
                             $arrayRspta = array(

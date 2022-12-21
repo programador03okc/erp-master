@@ -63,7 +63,7 @@ class Compras {
                     }
                 });
                 $('#btnBuscar').on('click', (e) => {
-                    $tabla.search($input.val()).draw();
+                    $tablaListaCompras.search($input.val()).draw();
                 });
             },
             drawCallback: function (settings) {
@@ -121,6 +121,11 @@ class Compras {
                 {data: 'descripcion_sede_empresa', className: 'text-center'},
                 {data: 'descripcion_grupo', className: 'text-center'},
                 {data: 'descripcion_proyecto', className: 'text-left'},
+                {
+                    render: function (data, type, row) {
+                        return (row.compra_local) ? 'SI' : 'NO';
+                    }, className: 'text-center'
+                },
             ],
             buttons: buttons
         });

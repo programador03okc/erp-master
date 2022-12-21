@@ -55,7 +55,7 @@ Iniciar sesión
         <br>
         <div class="row text-center">
             <p class="text-muted" data-toggle="modal" data-target="#myModal"><span class="badge">{{config('global.version')}}</span><br><abbr title="Ver notas de Versión">Notas de Lanzamiento</abbr></p>
-            <a href="{{ route('recuperar.clave') }}" target="_blanck">¿Olvidaste tu contraseña?</a>
+            <!-- <a href="{{ route('recuperar.clave') }}" target="_blanck">¿Olvidaste tu contraseña?</a> -->
         </div>
 
     </div>
