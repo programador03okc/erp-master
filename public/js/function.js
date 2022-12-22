@@ -788,6 +788,7 @@ function execSetting() {
                         if (response > 0) {
                             alert("Contraseña correctamente actualizada.");
                             $("#formSettingsPassword")[0].reset();
+                            $('#modal-settings').modal('hide');
                         } else if (response == 0) {
                             alert("La contraseña actual no es correcta.");
                             $("[name=pass_old]").focus();
