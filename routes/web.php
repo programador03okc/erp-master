@@ -2188,7 +2188,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('clientes/crear', 'Gerencial\Cobranza\ClienteController@crear')->name('clientes.crear');
 			Route::post('clientes/editar', 'Gerencial\Cobranza\ClienteController@editar')->name('clientes.editar');
 			Route::post('clientes/actualizar', 'Gerencial\Cobranza\ClienteController@actualizar')->name('clientes.actulizar');
-			Route::post('clientes/eliminar', 'Gerencial\Cobranza\ClienteController@eliminar')->name('clientes.actulizar');
+			Route::post('clientes/eliminar', 'Gerencial\Cobranza\ClienteController@eliminar')->name('clientes.eliminar');
 
 			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
 			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');

@@ -26,7 +26,7 @@ class ClienteController extends Controller
     }
     public function listarCliente()
     {
-        $data = Contribuyente::where('estado',1)->orderBy('id_contribuyente', 'desc')->get();
+        $data = Contribuyente::where('estado',1)->orderBy('id_contribuyente', 'desc');
 
         return DataTables::of($data)
         // ->toJson();
@@ -40,6 +40,7 @@ class ClienteController extends Controller
         $title= 'Información';
         $text=  'Este usuario ya esta registrado';
         $icon = 'warning';
+        // return $contribuyente;exit;
         if (!$contribuyente) {
             $success = true;
             $status = 200;

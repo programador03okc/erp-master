@@ -141,7 +141,6 @@ $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
                 contentType: false,
                 dataType: 'JSON',
                 beforeSend: (data) => {
-                    console.log(data);
                 }
             }).done(function(response) {
                 return response
@@ -161,10 +160,11 @@ $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.isConfirmed) {
+            }).then((resultado) => {
+                if (resultado.isConfirmed) {
                     if (result.value.status===200) {
                         $('#nuevo-cliente').modal('hide');
+                        $('#listar-clientes').DataTable().ajax.reload();
                     }
 
                 }
@@ -277,6 +277,7 @@ $(document).on('submit','[data-form="editar-cliente"]',function (e) {
                 if (result.isConfirmed) {
                     if (resultado.value.status===200) {
                         $('#editar-cliente').modal('hide');
+                        $('#listar-clientes').DataTable().ajax.reload();
                     }
                 }
             })
