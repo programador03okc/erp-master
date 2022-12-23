@@ -66,13 +66,29 @@ class MigrateProductoSoftlinkController extends Controller
                 $cod_prod = $prod->cod_prod;
                 $cod_clasi = $this->obtenerClasificacion($producto->clasificacion);
                 $cod_cate = $this->obtenerCategoria($producto->categoria, $producto->id_categoria);
+                $cod_subc = $this->obtenerSubCategoria($producto->subcategoria, $producto->id_subcategoria);
+
+                $cod_unid = $this->obtenerUnidadMedida($producto->abreviatura);
                 // return $cod_cate;exit;
                 DB::connection('soft')
                 ->table('sopprod')
                 ->where('cod_prod',$cod_prod)
                 ->update(
-                    ['cod_clasi' =>$cod_clasi,
-                    'cod_cate' =>$cod_cate]
+                    [
+                        'cod_prod' => $cod_prod,
+                        'cod_clasi' => $cod_clasi,
+                        'cod_cate' => $cod_cate,
+                        'cod_subc' => $cod_subc,
+                        'cod_espe' => trim($producto->part_number),
+                        'cod_sunat' => '',
+                        'nom_prod' => trim($producto->descripcion),
+                        'cod_unid' => $cod_unid,
+                        'nom_unid' => trim($producto->abreviatura),
+                        'ult_edicion' => date('Y-m-d H:i:s'),
+                        'tip_moneda' => $producto->id_moneda,
+                        'flg_serie' => ($producto->series ? 1 : 0), //Revisar
+                        'txt_observa' => ($producto->notas !== null ? $producto->notas : '')
+                    ]
                 );
             } //Si no existe, genera el producto
             else {
