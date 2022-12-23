@@ -7919,6 +7919,7 @@ class AlmacenController extends Controller
             $soplinea = DB::connection('soft')->table('soplinea')->where('nom_line',trim($value->descripcion))->first();
 
             if (!$soplinea) {
+
                 DB::connection('soft')->table('soplinea')->insert(
                     [
                         'cod_line' => $value->id_clasificacion,
@@ -7941,7 +7942,7 @@ class AlmacenController extends Controller
 
                     } while ($cod_cate);
 
-                    $categoria_soflink = DB::connection('soft')->table('sopsub1')->where('nom_sub1',trim($value_sub_categoria->descripcion))->first();
+                    $categoria_soflink = DB::connection('soft')->table('sopsub1')->where('nom_sub1',trim($value_sub_categoria->descripcion))->where('cod_line',$value->id_clasificacion)->first();
 
                     if (!$categoria_soflink) {
                         DB::connection('soft')->table('sopsub1')->insert(

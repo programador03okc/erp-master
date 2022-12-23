@@ -39,6 +39,7 @@ class MigrateProductoSoftlinkController extends Controller
             //Verifica si esxiste el producto
             $prod = null;
             if (!empty($producto->part_number)) { //if ($producto->part_number !== null && $producto->part_number !== '') {
+                // return [$producto];exit;
                 $prod = DB::connection('soft')->table('sopprod')
                     ->select('cod_prod')
                     ->join('sopsub2', 'sopsub2.cod_sub2', '=', 'sopprod.cod_subc')
@@ -47,6 +48,7 @@ class MigrateProductoSoftlinkController extends Controller
                         ['sopsub2.nom_sub2', '=', $producto->subcategoria]
                     ])
                     ->first();
+
             } else if ($producto->descripcion !== null && $producto->descripcion !== '') {
                 $prod = DB::connection('soft')->table('sopprod')
                     ->select('cod_prod')
@@ -57,10 +59,21 @@ class MigrateProductoSoftlinkController extends Controller
                     ])
                     ->first();
             }
+
             $cod_prod = null;
             //Si existe copia el cod_prod
             if ($prod !== null) {
                 $cod_prod = $prod->cod_prod;
+                $cod_clasi = $this->obtenerClasificacion($producto->clasificacion);
+                $cod_cate = $this->obtenerCategoria($producto->categoria, $producto->id_categoria);
+                // return $cod_cate;exit;
+                DB::connection('soft')
+                ->table('sopprod')
+                ->where('cod_prod',$cod_prod)
+                ->update(
+                    ['cod_clasi' =>$cod_clasi,
+                    'cod_cate' =>$cod_cate]
+                );
             } //Si no existe, genera el producto
             else {
                 //obtiene el sgte codigo

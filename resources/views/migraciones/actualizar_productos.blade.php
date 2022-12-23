@@ -155,39 +155,6 @@
                 }
             })
 
-
-
-            // $.ajax({
-            //     type: 'POST',
-            //     url: $(this).attr('action'),
-            //     data: data ,
-            //     contentType: false,
-            //     cache: false,
-            //     processData:false,
-            //     beforeSend: function(){
-
-            //     },
-            //     success: function(response){
-
-            //         if (response.faltantes.length>0) {
-            //             $.each(response.faltantes, function (index, element) {
-            //                     html+='<tr>';
-            //                         html+='<td>'+(element[0]?element[0]:'-')+'</td>';
-            //                         html+='<td>'+(element[1]?element[1]:'-')+'</td>';
-            //                         html+='<td>'+(element[2]?element[2]:'-')+'</td>';
-            //                         html+='<td>'+
-            //                             (element[3]?element[3]:'-')+
-            //                         '</td>';
-            //                     html+='</tr>';
-            //             });
-            //             $('[data-table="productos-faltantes"]').html(html);
-            //             $('#table-productos').DataTable();
-            //             $('.ver-productos').click();
-            //             $('.box-productos').removeClass('d-none');
-            //         }
-
-            //     }
-            // });
         });
     </script>
 @endsection

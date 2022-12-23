@@ -209,12 +209,36 @@ class MigracionAlmacenSoftLinkController extends Controller
             if ($key!==0) {
                 if ($value[1]) {
                     $producto_softlink = DB::connection('soft')->table('sopprod')->where('cod_prod',$value[1])->first();
+
+                    $clasificacion_softlink = DB::connection('soft')->table('soplinea')->where('nom_line',$value[4])->first();
+                    $categoria_softlink=array();
+                    if ($clasificacion_softlink) {
+                        $categoria_softlink = DB::connection('soft')->table('sopsub1')->where('nom_sub1',$value[5])->where('cod_line',$clasificacion_softlink->cod_line)->first();
+                    }
+                    // return [$clasificacion_softlink,$categoria_softlink];exit;
                     if ($producto_softlink) {
                         array_push($array_productos_soflink,$producto_softlink);
                         DB::connection('soft')
                         ->table('sopprod')
                         ->where('cod_prod',$value[1])
-                        ->update(['nom_prod' =>$value[3]]);
+                        ->update(
+                            ['nom_prod' =>$value[3]]
+                            // ['cod_clasi' =>$value[3]],
+                            // ['cod_cate' =>$value[3]]
+
+                        );
+
+                        if ($clasificacion_softlink && $categoria_softlink) {
+                            DB::connection('soft')
+                            ->table('sopprod')
+                            ->where('cod_prod',$value[1])
+                            ->update(
+                                ['cod_clasi' =>$clasificacion_softlink->cod_line,
+                                'cod_cate' =>$categoria_softlink->cod_sub1]
+                                // ['cod_cate' =>$categoria_softlink->cod_sub1]
+
+                            );
+                        }
                     }else{
 
                         array_push($array_productos_soflink_faltantes,$value);
