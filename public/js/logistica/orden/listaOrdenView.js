@@ -1132,6 +1132,19 @@ class ListaOrdenView {
         if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value >1) && (parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value) == (parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='historialEnviosAPagoLogistica'] tbody").childElementCount)))){
             menseje.push('No se puede superar el limite de cuota establecida');
             continuar = false;
+        }
+        if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value ==1) && (parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value) > parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden)) ){
+            menseje.push('No se puede enviar un monto mayor al total de la orden');
+            continuar = false;
+
+        }
+        if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value ==1) 
+        && (
+            parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value).replace(',','')) +
+            parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[name='sumaMontoTotalPagado']").textContent) 
+            > parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden))){
+            menseje.push('El "monto a enviar" más(+) "la suma de las cutas" supera el monto total de la orden');
+            continuar = false;
 
         }
 
