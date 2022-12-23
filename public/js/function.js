@@ -771,32 +771,44 @@ function execSetting() {
         var repass = $("[name=pass_renew]").val();
         if (pass == repass) {
             var data = $("#formSettingsPassword").serialize();
-            var baseUrl = "/update_password";
-            console.log(data);
-            $.ajax({
-                type: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                },
-                url: baseUrl,
-                data: data,
-                dataType: "JSON",
-                success: function (response) {
-                    console.log(response);
-                    $(".loading").remove();
-                    if (response > 0) {
-                        alert("Contraseña correctamente actualizada.");
-                        $("#formSettingsPassword")[0].reset();
-                    } else if (response == 0) {
-                        alert("La contraseña actual no es correcta.");
-                        $("[name=pass_old]").focus();
-                    } else {
-                        alert(
-                            "Problemas al actualizar la contraseña, intentelo mas tarde."
-                        );
+            var baseUrl = "/update_password",
+            regularExpression = /^(?=^.{8,}$)((.)(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;;
+            if (regularExpression.test(pass)) {
+                $.ajax({
+                    type: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                    },
+                    url: baseUrl,
+                    data: data,
+                    dataType: "JSON",
+                    success: function (response) {
+                        console.log(response);
+                        $(".loading").remove();
+                        if (response > 0) {
+                            alert("Contraseña correctamente actualizada.");
+                            $("#formSettingsPassword")[0].reset();
+                            $('#modal-settings').modal('hide');
+                        } else if (response == 0) {
+                            alert("La contraseña actual no es correcta.");
+                            $("[name=pass_old]").focus();
+                        } else {
+                            alert(
+                                "Problemas al actualizar la contraseña, intentelo mas tarde."
+                            );
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                success=false;
+                Swal.fire(
+                    'Información',
+                    'Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos. Ejemplos: Inicio01., Inicio01.@, @"+*}-+',
+                    'warning',
+                );
+
+            }
+
             return false;
         } else {
             alert("Las contraseñas no son iguales, confirme porfavor.");
@@ -980,7 +992,7 @@ function formatDecimalDigitos(number, digitos) {
     return newNumber;
 }
 
-/* Formato miles y decimales 000,000.00 
+/* Formato miles y decimales 000,000.00
  Ejemplo: formatNumber.decimal(total,'',-2)*/
 var formatNumber = {
     separador: ",", // separador para los miles

@@ -91,13 +91,6 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="alert alert-warning" role="alert">
-                                    Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Ingrese su nueva contraseña</label>
@@ -111,7 +104,17 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-warning" role="alert">
+                                    <p>Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos.</p>
+                                    <p>Ejemplos:</p>
+                                    <p>Inicio01.</p>
+                                    <p>Inicio01.@</p>
+                                    <p>@'+*}-+</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
@@ -144,17 +147,17 @@
 		$(document).ready(function() {
 			notificacionesNoLeidas();
 
-            // $.ajax({
-			// 	url: '{{ route("actualizar") }}',
-			// 	data: {_token: '{{ csrf_token() }}'},
-			// 	type: 'GET',
-			// 	dataType: 'JSON',
-			// 	success: function (data) {
-			// 		if (data.success===true) {
-            //             $('#atualizar-contraseña').modal('show');
-            //         }
-			// 	}
-			// });
+            $.ajax({
+				url: '{{ route("actualizar") }}',
+				data: {_token: '{{ csrf_token() }}'},
+				type: 'GET',
+				dataType: 'JSON',
+				success: function (data) {
+					if (data.success===true) {
+                        $('#atualizar-contraseña').modal('show');
+                    }
+				}
+			});
 		});
         $(document).on('submit','[data-form="actualizar-contraseña"]',function (e) {
             e.preventDefault();
@@ -162,8 +165,9 @@
             var clave = $('.contraseña-validar[name="clave"]').val(),
                 repita_clave = $('.contraseña-validar[name="repita_clave"]').val(),
                 // regularExpression  = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%.*?&])([A-Za-z\d$@$!%*?&]|[^ ])$/;
-                regularExpression = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8}$/
-;
+                // regularExpression = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8}$/
+                // regularExpression = /^(?=\w*[A-Z])(?=\w*[a-z])\S{8}$/;
+                regularExpression = /^(?=^.{8,}$)((.)(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
                 success=false;
 
             if (clave === repita_clave) {
@@ -171,22 +175,29 @@
                     success=true;
                 } else {
                     success=false;
+                    Swal.fire(
+                        'Información',
+                        'Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos. Ejemplos: Inicio01., Inicio01.@, @"+*}-+',
+                        'warning',
+                    );
+
                 }
+            }else{
+                Swal.fire(
+                    'Información',
+                    'Su clave no coincide, ingrese correctamente en ambos campos su clave',
+                    'warning'
+                );
             }
-
-
 
             if (success) {
                 $.ajax({
                     type: 'POST',
-                    // url: 'modificar-clave',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     url: '/modificar-clave',
                     data: data,
-                    // processData: false,
-                    // contentType: false,
                     dataType: 'JSON',
                     beforeSend: (data) => {
 
@@ -212,12 +223,6 @@
                     console.log(textStatus);
                     console.log(errorThrown);
                 });
-            }else{
-                Swal.fire(
-                    'Información',
-                    'Ingrese correctamente su clave',
-                    'warning'
-                );
             }
 
         });

@@ -7,8 +7,8 @@
             <i class="fas fa-book"></i> <span>Cobranzas</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
         <ul class="treeview-menu">
-            {{-- <li><a href="{{route('gerencial.cobranza.cliente')}}"> Clientes</a></li> --}}
-            <li><a href="{{route('gerencial.cobranza.registro')}}"> Registro</a></li>
+            <li><a href="{{route('gerencial.cobranza.cliente')}}"> Clientes</a></li>
+            {{-- <li><a href="{{route('gerencial.cobranza.registro')}}"> Registro</a></li> --}}
         </ul>
     </li>
 
