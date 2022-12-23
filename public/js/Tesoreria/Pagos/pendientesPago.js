@@ -354,7 +354,7 @@ class RequerimientoPago {
                                 <i class="fas fa-chevron-down"></i></button>`
                                     : ''}
 
-                                    <button type="button" class="adjuntos btn btn-${parseInt(row['cantidad_adjuntos_logisticos']) == 0 ? 'default' : 'warning'} boton"
+                                    <button type="button" class="adjuntos btn btn-default boton"
                                     data-toggle="tooltip" data-placement="bottom" data-id="${row['id_orden_compra']}" data-codigo="${row['codigo']}"
                                     title="Ver adjuntos"><i class="fas fa-paperclip"></i></button>
                         </div> `;
