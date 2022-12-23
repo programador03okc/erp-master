@@ -919,14 +919,15 @@ class ListaOrdenView {
             let sumaMontoTotalMontoCuota=0;
 
             if (res.hasOwnProperty('detalle') && res.detalle.length > 0) {
+                let contadorCuota=0;
                 (res.detalle).forEach((element,index) => {
                     if(element.id_estado !=7){
+                        contadorCuota++;
                         sumaMontoTotalMontoCuota+=parseFloat(element.monto_cuota);
-                    }
                     let enlaceAdjunto=[];
                         htmlTable+= '<tr id="'+element.id_pago_cuota_detalle+'">'
                             htmlTable+='<td>'
-                                htmlTable+= index+1;
+                                htmlTable+= contadorCuota;
                             htmlTable+='</td>'
 
                             htmlTable+='<td>'
@@ -951,7 +952,7 @@ class ListaOrdenView {
                                 htmlTable+=enlaceAdjunto.toString().replace(",","<br>");
                             htmlTable+='</td>'
                         htmlTable+= '</tr>'
-
+                    }
                 });
                 document.querySelector("select[name='numero_de_cuotas']").setAttribute("disabled",true);
                 document.querySelector("input[name='pagoEnCuotasCheckbox']").setAttribute("disabled",true);

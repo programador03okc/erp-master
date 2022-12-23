@@ -1148,26 +1148,34 @@ function formatPagosEnCuotas(table_id, id, row, tipo) {
                     (element.adjuntos).forEach(element => {
                         enlaceAdjunto.push('<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>');
                     });
+                    if(element.estado.id_requerimiento_pago_estado != 7){
+                        html += '<tr id="' + element.id_pago_cuota_detalle + '">' +
+                            '<td style="border: none; text-align: center">' + (element.monto_cuota !== null ? element.monto_cuota : '') + '</td>' +
+                            '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
+                            '<td style="border: none; text-align: center">' +  (numeroCuotas>1?(i+'/'+numeroCuotas):i) + '</td>' +
+                            '<td style="border: none; text-align: center">' + enlaceAdjunto.toString().replace(",","<br>") + '</td>' +
+                            '<td style="border: none; text-align: center">' + element.creado_por.nombre_corto + '</td>' +
+                            '<td style="border: none; text-align: center">' + element.fecha_registro + '</td>' +
+                            '<td style="border: none; text-align: center">' + (element.fecha_autorizacion??'') + '</td>' +
+                            '<td style="border: none; text-align: center">' + element.estado.descripcion + '</td>' +
+                            '<td style="border: none; text-align: center">' +
+                            `<button type = "button" class= "btn btn-${element.fecha_autorizacion !=null?'success':'info'} boton" data-toggle="tooltip"
+                                data - placement="bottom"
+                                onClick = "enviarPagoEnCuotas(${orden.id_orden_compra},${element.id_pago_cuota_detalle},'${tipo}',event)" title = "${element.fecha_autorizacion !=null?'Pago Autorizado':'Autorizar pago'}" ${element.fecha_autorizacion !=null?'disabled':''}>
+                                ${element.fecha_autorizacion !=null?'<i class="fas fa-check-double"></i> Autorizado':'<i class="fas fa-check"></i> Autorizar'}
+                                </button>` +
+                                // (element.estado.id_requerimiento_pago_estado==5?`
+                                // <button type = "button" class= "btn btn-danger boton" data-toggle="tooltip"
+                                // data - placement="bottom"
+                                // onClick = "revertirPagoEnCuotas(${orden.id_orden_compra},${element.id_pago_cuota_detalle},'${tipo}',event)" title = "Revertir autorización">
+                                // <i class="fas fa-undo-alt"></i>
+                                // </button>`
+                                // :'')
+                            '</td>' +
+                            '</tr>';
+                        i++;
 
-                    html += '<tr id="' + element.id_pago_cuota_detalle + '">' +
-                        '<td style="border: none; text-align: center">' + (element.monto_cuota !== null ? element.monto_cuota : '') + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.observacion + '</td>' +
-                        '<td style="border: none; text-align: center">' +  (numeroCuotas>1?(i+'/'+numeroCuotas):i) + '</td>' +
-                        '<td style="border: none; text-align: center">' + enlaceAdjunto.toString().replace(",","<br>") + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.creado_por.nombre_corto + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.fecha_registro + '</td>' +
-                        '<td style="border: none; text-align: center">' + (element.fecha_autorizacion??'') + '</td>' +
-                        '<td style="border: none; text-align: center">' + element.estado.descripcion + '</td>' +
-                        '<td style="border: none; text-align: center">' +
-                        `<button type = "button" class= "btn btn-${element.fecha_autorizacion !=null?'success':'info'} boton" data - toggle="tooltip"
-                            data - placement="bottom"
-                            onClick = "enviarPagoEnCuotas(${orden.id_orden_compra},${element.id_pago_cuota_detalle},'${tipo}',event)" title = "${element.fecha_autorizacion !=null?'Pago Autorizado':'Autorizar pago'}" ${element.fecha_autorizacion !=null?'disabled':''}>
-                            ${element.fecha_autorizacion !=null?'<i class="fas fa-check-double"></i> Autorizado':'<i class="fas fa-check"></i> Autorizar'}
-                            </button>` +
-
-                        '</td>' +
-                        '</tr>';
-                    i++;
+                    }
                 });
                 var tabla = `<table class= "table table-sm" style = "border: none;"
                 id = "detalle_${table_id}" >

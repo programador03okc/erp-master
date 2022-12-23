@@ -735,6 +735,20 @@ class RegistroPagoController extends Controller
 
                 if ($oc->estado_pago !== 6) {
                     if ($oc->estado !== 7) {
+                        $orden=Orden::find($request->id);
+                        if($orden->tiene_pago_en_cuotas ==true){
+                            $pagoCuota = PagoCuota::where('id_orden',$request->id)->first();
+                            if(isset($pagoCuota->id_pago_cuota)){
+                                $pagoCuotaDetalle = PagoCuotaDetalle::where([['id_pago_cuota',$pagoCuota->id_pago_cuota],['id_estado',5]])->get();
+                                foreach ($pagoCuotaDetalle as $keyPcd => $pcd) {
+                                    $updatePagoCuotaDetalle= PagoCuotaDetalle::find($pcd->id_pago_cuota_detalle);
+                                    $updatePagoCuotaDetalle->id_estado= 7;
+                                    $updatePagoCuotaDetalle->fecha_autorizacion= null;
+                                    $updatePagoCuotaDetalle->save();
+
+                                }
+                            }
+                        }
                         DB::table('logistica.log_ord_compra')
                             ->where('id_orden_compra', $request->id)
                             ->update(['estado_pago' => 1]); //elaborado
