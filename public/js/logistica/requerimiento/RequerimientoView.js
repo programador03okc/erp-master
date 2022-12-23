@@ -2294,6 +2294,7 @@ class RequerimientoView {
 
 
             let typeActionForm = document.querySelector("form[id='form-requerimiento']").getAttribute("type"); //  register | edition
+            let sustento = '';
 
             if (typeActionForm == 'register') {
                 $.ajax({
@@ -2361,70 +2362,101 @@ class RequerimientoView {
                 });
             }
             if (typeActionForm == 'edition') {
-                $.ajax({
-                    type: 'POST',
-                    url: 'actualizar-requerimiento',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: 'JSON',
-                    beforeSend: (data) => {
-                        var customElement = $("<div>", {
-                            "css": {
-                                "font-size": "24px",
-                                "text-align": "center",
-                                "padding": "0px",
-                                "margin-top": "-400px"
-                            },
-                            "class": "your-custom-class",
-                            "text": "Actualizando requerimiento..."
-                        });
 
-                        $('#wrapper-okc').LoadingOverlay("show", {
-                            imageAutoResize: true,
-                            progress: true,
-                            custom: customElement,
-                            imageColor: "#3c8dbc"
-                        });
-                    },
-                    success: (response) => {
-                        if (response.id_requerimiento > 0) {
-                            $('#wrapper-okc').LoadingOverlay("hide", true);
-                            Lobibox.notify('success', {
-                                title: false,
-                                size: 'mini',
-                                rounded: true,
-                                sound: false,
-                                delayIndicator: false,
-                                msg: `Requerimiento actualizado`
-                            });
-                            this.cargarRequerimiento(response.id_requerimiento);
-                        } else {
-                            $('#wrapper-okc').LoadingOverlay("hide", true);
-                            console.log(response.mensaje);
-                            Swal.fire(
+                if(parseInt(document.querySelector("form[id='form-requerimiento'] input[name='estado']").value) == 3 
+                && parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_usuario_req']").value) == auth_user.id_usuario ){
+                    Swal.fire({
+                        title: 'Sustente la observación',
+                        input: 'textarea',
+                        inputAttributes: {
+                            autocapitalize: 'off',
+                        },
+                        inputValue: '',
+                        showCancelButton: true,
+                        confirmButtonText: 'Registrar',
+
+                        allowOutsideClick: () => !Swal.isLoading()
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            sustento = (result.value).toString();
+                            if((sustento.trim()).length > 0){
+                                formData.append(`sustento`, sustento);
+
+                                $.ajax({
+                                    type: 'POST',
+                                    url: 'actualizar-requerimiento',
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    dataType: 'JSON',
+                                    beforeSend: (data) => {
+                                        var customElement = $("<div>", {
+                                            "css": {
+                                                "font-size": "24px",
+                                                "text-align": "center",
+                                                "padding": "0px",
+                                                "margin-top": "-400px"
+                                            },
+                                            "class": "your-custom-class",
+                                            "text": "Actualizando requerimiento..."
+                                        });
+                
+                                        $('#wrapper-okc').LoadingOverlay("show", {
+                                            imageAutoResize: true,
+                                            progress: true,
+                                            custom: customElement,
+                                            imageColor: "#3c8dbc"
+                                        });
+                                    },
+                                    success: (response) => {
+                                        if (response.id_requerimiento > 0) {
+                                            $('#wrapper-okc').LoadingOverlay("hide", true);
+                                            Lobibox.notify('success', {
+                                                title: false,
+                                                size: 'mini',
+                                                rounded: true,
+                                                sound: false,
+                                                delayIndicator: false,
+                                                msg: `Requerimiento actualizado`
+                                            });
+                                            this.cargarRequerimiento(response.id_requerimiento);
+                                        } else {
+                                            $('#wrapper-okc').LoadingOverlay("hide", true);
+                                            console.log(response.mensaje);
+                                            Swal.fire(
+                                                '',
+                                                'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
+                                                'error'
+                                            );
+                
+                                        }
+                                        changeStateButton('historial'); //init.js
+                                    },
+                                    fail: (jqXHR, textStatus, errorThrown) => {
+                                        $('#wrapper-okc').LoadingOverlay("hide", true);
+                                        Swal.fire(
+                                            '',
+                                            'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
+                                            'error'
+                                        );
+                                        console.log(jqXHR);
+                                        console.log(textStatus);
+                                        console.log(errorThrown);
+                                    }
+                                });
+
+                                
+                            }else{
+                                Swal.fire(
                                 '',
-                                'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
-                                'error'
-                            );
-
+                                'Debe escribir un sustento para actualizar y levantar la observación',
+                                'warning'
+                                );
+                            }
                         }
-                        changeStateButton('historial'); //init.js
-                    },
-                    fail: (jqXHR, textStatus, errorThrown) => {
-                        $('#wrapper-okc').LoadingOverlay("hide", true);
-                        Swal.fire(
-                            '',
-                            'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
-                            'error'
-                        );
-                        console.log(jqXHR);
-                        console.log(textStatus);
-                        console.log(errorThrown);
-                    }
-                });
-
-
+                    });
+                    
+                }
             }
 
 

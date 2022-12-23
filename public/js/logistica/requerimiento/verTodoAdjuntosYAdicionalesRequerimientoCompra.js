@@ -64,6 +64,7 @@ function obteneTodoAdjuntosRequerimiento(idRequerimiento) {
     });
 }
 function obteneAdjuntosPago(idRequerimiento) {
+    // console.log(idRequerimiento);
     return new Promise(function (resolve, reject) {
         $.ajax({
             type: 'GET',

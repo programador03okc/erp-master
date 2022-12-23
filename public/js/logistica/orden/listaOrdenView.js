@@ -944,7 +944,7 @@ class ListaOrdenView {
 
                                 if(element.adjuntos.length >0){
                                     (element.adjuntos).forEach(adjunto => {
-                                        enlaceAdjunto.push(`<a href="files/logistica/comporbantes_proveedor/${adjunto.archivo}" target="_blank">${adjunto.archivo}</a>`);
+                                        enlaceAdjunto.push(`<a href="/files/logistica/comporbantes_proveedor/${adjunto.archivo}" target="_blank">${adjunto.archivo}</a>`);
                                     });
                                 }
 
@@ -1128,7 +1128,7 @@ class ListaOrdenView {
                 continuar = true;
             }
         }
-        if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value >1)&& (document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value == (document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='historialEnviosAPagoLogistica'] tbody").childElementCount))){
+        if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value >1) && (parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value) == (parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] table[id='historialEnviosAPagoLogistica'] tbody").childElementCount)))){
             menseje.push('No se puede superar el limite de cuota establecida');
             continuar = false;
 

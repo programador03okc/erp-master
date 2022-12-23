@@ -1255,7 +1255,8 @@ class RequerimientoController extends Controller
             $aprobacion->id_usuario = Auth::user()->id_usuario;
             $aprobacion->id_vobo = 8; // sustentado
             $aprobacion->fecha_vobo = new Carbon();
-            $aprobacion->detalle_observacion = 'El Sistema utilizó el sustento del usuario para determinar el nuevo estado del requerimiento, en este momento su estado es '. $this->getDescripcionEstado($nuevoEstado); // comentario
+            // $aprobacion->detalle_observacion = 'El Sistema utilizó el sustento del usuario para determinar el nuevo estado del requerimiento, en este momento su estado es '. $this->getDescripcionEstado($nuevoEstado); // comentario
+            $aprobacion->detalle_observacion = isset($request->sustento) && $request->sustento != ''?$request->sustento:''; // comentario
             $aprobacion->id_rol = null;
             $aprobacion->tiene_sustento = false;
             $aprobacion->save();
