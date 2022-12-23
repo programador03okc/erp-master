@@ -717,8 +717,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar-todo-archivos-adjuntos-requerimiento-logistico/{id}', 'Logistica\RequerimientoController@listarTodoArchivoAdjuntoRequerimientoLogistico');
 				Route::post('anular-adjunto-requerimiento-logístico-cabecera', 'Logistica\RequerimientoController@anularArchivoAdjuntoRequerimientoLogisticoCabecera');
 				Route::post('anular-adjunto-requerimiento-logístico-detalle', 'Logistica\RequerimientoController@anularArchivoAdjuntoRequerimientoLogisticoDetalle');
-
+				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');
 				Route::get('listar-archivos-adjuntos-pago/{id}', 'Logistica\RequerimientoController@listarArchivoAdjuntoPago');
+
 				Route::get('listar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-compra', 'Logistica\RequerimientoController@guardarAdjuntosAdicionales');
 
@@ -762,7 +763,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('lista-requerimiento-pago', 'Tesoreria\RequerimientoPagoController@listarRequerimientoPago')->name('lista-requerimiento-pago');
 				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');
 				// adjuntos de tesoreria
-				Route::get('obtener-adjuntos-tesoreria/{id_requerimiento_pago}', 'Tesoreria\RequerimientoPagoController@obtenerAdjuntosPago');
+				Route::get('obtener-otros-adjuntos-tesoreria/{id_requerimiento_pago}', 'Tesoreria\RequerimientoPagoController@obtenerOtrosAdjuntosTesoreria');
 				// Route::get('detalle-requerimiento-pago/{id?}', 'Tesoreria\RequerimientoPagoController@listarDetalleRequerimientoPago')->name('detalle-requerimiento-pago');
 				Route::get('listar-sedes-por-empresa/{id?}', 'Logistica\RequerimientoController@listarSedesPorEmpresa')->name('listar-sedes-por-empresa');
 				Route::get('listar-division-por-grupo/{id?}', 'Logistica\RequerimientoController@listarDivisionPorGrupo')->name('listar-division-por-grupo');
@@ -2029,7 +2030,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('enviarAPago', 'Tesoreria\RegistroPagoController@enviarAPago')->name('enviar-pago');
 				Route::post('revertirEnvio', 'Tesoreria\RegistroPagoController@revertirEnvio')->name('revertir-envio');
 				Route::get('verAdjuntos/{id}', 'Tesoreria\RegistroPagoController@verAdjuntos')->name('ver-adjuntos');
+				Route::get('verAdjuntosRegistroPagoOrden/{id}', 'Tesoreria\RegistroPagoController@verAdjuntosRegistroPagoOrden')->name('ver-adjuntos-registro-pago-orden');
 				Route::post('anular-adjunto-requerimiento-pago-tesoreria', 'Tesoreria\RegistroPagoController@anularAdjuntoTesoreria');
+				Route::get('listar-archivos-adjuntos-pago/{id}', 'Logistica\RequerimientoController@listarArchivoAdjuntoPago');
+				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');
 
 				Route::get('verAdjuntosPago/{id}', 'Tesoreria\RegistroPagoController@verAdjuntosPago')->name('ver-adjuntos-pago');
 				Route::get('actualizarEstadoPago', 'Tesoreria\RegistroPagoController@actualizarEstadoPago')->name('actualizar-estados-pago');

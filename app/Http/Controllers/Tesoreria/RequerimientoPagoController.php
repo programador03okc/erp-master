@@ -29,6 +29,7 @@ use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use App\Models\Rrhh\CuentaPersona;
 use App\Models\Rrhh\Persona;
+use App\Models\Tesoreria\OtrosAdjuntosTesoreria;
 use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use App\Models\Tesoreria\RequerimientoPago;
@@ -1651,22 +1652,18 @@ class RequerimientoPagoController extends Controller
 
         return $query;
     }
-    public function obtenerAdjuntosPago($id_requerimiento_pago)
+    public function obtenerOtrosAdjuntosTesoreria($id_requerimiento_pago)
     {
         // return $id_requerimiento_pago;exit;
 
         // return $adjuntos_pagos_complementarios;exit;
-        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::select(
-            'requerimiento_pago_adjunto.id_requerimiento_pago_adjunto',
-            'requerimiento_pago_adjunto.archivo',
-            'requerimiento_pago_adjunto.id_estado',
-            'requerimiento_pago_adjunto.fecha_registro',
-            'requerimiento_pago_adjunto.id_categoria_adjunto',
+        $adjuntos_pagos_complementarios = OtrosAdjuntosTesoreria::select(
+            'otros_adjuntos.*',
             'requerimiento_pago_categoria_adjunto.descripcion'
         )
         ->where('id_requerimiento_pago',$id_requerimiento_pago)
-        ->join('tesoreria.requerimiento_pago_categoria_adjunto','requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto','=','requerimiento_pago_adjunto.id_categoria_adjunto')
-        ->where('requerimiento_pago_adjunto.id_categoria_adjunto',5)
+        ->join('tesoreria.requerimiento_pago_categoria_adjunto','requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto','=','otros_adjuntos.id_categoria_adjunto')
+        ->where('otros_adjuntos.id_estado','!=',7)
         ->get();
 
         $adjuntos_pagos = RegistroPago::select('registro_pago_adjuntos.adjunto', 'registro_pago_adjuntos.id_adjunto')

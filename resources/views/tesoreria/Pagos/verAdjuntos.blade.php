@@ -10,7 +10,7 @@
             <form action="" data-form="guardar-adjuntos" enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="text" class="oculto" name="id_requerimiento_pago" />
-                    <fieldset class="group-table" id="fieldsetDatosProveedor">
+                    <fieldset class="group-table" id="fieldsetDatosRequerimiento">
                         <legend style="border-bottom: 0px solid #e5e5e5;width: 40% !important"><h5>Adjuntos de requerimiento</h5></legend>
                         <div class="row">
                             <div class="col-md-12">
@@ -39,8 +39,7 @@
                             </div>
                         </div>
                     </fieldset>
-                    <br>
-                    <br>
+
                     <fieldset class="group-table">
                         <legend style="border-bottom: 0px solid #e5e5e5;width: 30%;"><h5>Adjuntos de tesoreria</h5></legend>
                         <div class="row">
@@ -48,6 +47,7 @@
                                 <div class="form-group">
                                     <input type="hidden" name="codigo_requerimiento">
                                     <input type="hidden" name="id_requerimiento_pago">
+                                    <input type="hidden" name="id_orden">
                                     <h5 style="display:flex;justify-content: space-between;"><strong>Adjunto multiple de tesoreria</strong></h5>
 
                                     <input type="file" multiple="multiple" class="filestyle" name="adjuntos[]" multiple data-action="adjuntos" data-buttonName="btn-primary" data-buttonText="Seleccionar archivo"  data-iconName="fa fa-folder-open" required/>
@@ -63,11 +63,23 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
+                                <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos del pago</strong></h5>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table id="" class="table" >
+                                            <tbody id="body_archivos_pago"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Otros adjuntos de tesoreria</strong></h5>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <table id="" class="table" >
-                                            <tbody data-table="adjuntos-pagos"></tbody>
+                                            <tbody data-table="otros-adjuntos-tesoreria"></tbody>
                                         </table>
                                     </div>
                                 </div>

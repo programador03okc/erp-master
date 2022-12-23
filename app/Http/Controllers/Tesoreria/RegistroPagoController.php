@@ -11,6 +11,7 @@ use App\Models\Logistica\Orden;
 use App\Models\Logistica\PagoCuota;
 use App\Models\Logistica\PagoCuotaDetalle;
 use App\Models\Rrhh\Persona;
+use App\Models\Tesoreria\OtrosAdjuntosTesoreria;
 use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RegistroPagoAdjuntos;
 use App\Models\Tesoreria\RequerimientoPago;
@@ -808,10 +809,26 @@ class RegistroPagoController extends Controller
             ->where('id_requerimiento_pago',$id_requerimiento_pago)
             ->join('tesoreria.registro_pago_adjuntos','registro_pago_adjuntos.id_pago', '=','registro_pago.id_pago')
             ->get();
-        $adjuntos_pagos_complementarios = RequerimientoPagoAdjunto::where('id_requerimiento_pago',$id_requerimiento_pago)
-        ->where('id_categoria_adjunto',5)
+        $adjuntos_pagos_complementarios = OtrosAdjuntosTesoreria::where('id_requerimiento_pago',$id_requerimiento_pago)
+        ->where('id_estado','!=',7)
         ->get();
         return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle, 'adjuntos_pago'=>$adjuntos_pagos,'adjuntos_pagos_complementarios'=>$adjuntos_pagos_complementarios]);
+    }
+
+    function verAdjuntosRegistroPagoOrden($id_orden)
+    {
+
+        $registro_pago= RegistroPago::where([['id_oc',$id_orden],['estado','!=',7]])->first();
+        $adjuntos_pagos=[];
+        if($registro_pago !=null && $registro_pago->id_pago>0){
+            $adjuntos_pagos = RegistroPagoAdjuntos::where([['id_pago',$registro_pago->id_pago],['estado','!=',7]])->get();
+        }
+
+        $adjuntos_pagos_complementarios = OtrosAdjuntosTesoreria::where('id_orden',$id_orden)
+        ->where('id_estado','!=',7)
+        ->get();
+
+        return response()->json(['adjuntos_pago'=>$adjuntos_pagos,'adjuntos_pagos_complementarios'=>$adjuntos_pagos_complementarios]);
     }
 
     function listarAdjuntosPago($id_requerimiento_pago)
@@ -1002,30 +1019,56 @@ class RegistroPagoController extends Controller
     }
     public function guardarAdjuntosTesoreria(Request $request)
     {
-        foreach ($request->adjuntos as $key => $archivo) {
+        $mensaje='';
+        $status='warning';
+        if(count($request->adjuntos)>0){
+            foreach ($request->adjuntos as $key => $archivo) {
 
-            $fechaHoy = new Carbon();
-            $sufijo = $fechaHoy->format('YmdHis');
-            $file = $archivo->getClientOriginalName();
-            // $codigo = $codigoRequerimiento;
-            $extension = pathinfo($file, PATHINFO_EXTENSION);
-            // $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
-            $newNameFile = $request->codigo_requerimiento.$key  . $sufijo . '.' . $extension;
-            Storage::disk('archivos')->put("tesoreria/pagos/" . $newNameFile, File::get($archivo));
-
-            $adjunto = new RequerimientoPagoAdjunto();
-            $adjunto->id_requerimiento_pago = $request->id_requerimiento_pago;
-            $adjunto->archivo  = $newNameFile;
-            $adjunto->id_estado  = 1;
-            $adjunto->fecha_registro  = $fechaHoy;
-            $adjunto->id_categoria_adjunto = 5;
-            // $adjunto->id_usuario = Auth::user()->id_usuario;
-            $adjunto->save();
+                $fechaHoy = new Carbon();
+                $sufijo = $fechaHoy->format('YmdHis');
+                $file = $archivo->getClientOriginalName();
+                // $codigo = $codigoRequerimiento;
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                // $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
+                $newNameFile = $request->codigo_requerimiento.$key  . $sufijo . '.' . $extension;
+                // Storage::disk('archivos')->put("tesoreria/pagos/" . $newNameFile, File::get($archivo));
+                Storage::disk('archivos')->put("tesoreria/otros_adjuntos/" . $newNameFile, File::get($archivo));
+    
+                // $adjunto = new RequerimientoPagoAdjunto();
+                // $adjunto->id_requerimiento_pago = $request->id_requerimiento_pago;
+                // $adjunto->archivo  = $newNameFile;
+                // $adjunto->id_estado  = 1;
+                // $adjunto->fecha_registro  = $fechaHoy;
+                // $adjunto->id_categoria_adjunto = 5;
+                // // $adjunto->id_usuario = Auth::user()->id_usuario;
+                // $adjunto->save();
+    
+                $adjunto = new OtrosAdjuntosTesoreria();
+                if($request->id_requerimiento_pago > 0 && ($request->id_orden ==null || $request->id_orden =='') ){
+                    $adjunto->id_requerimiento_pago = $request->id_requerimiento_pago;                
+                }else if($request->id_orden > 0 && ($request->id_requerimiento_pago ==null || $request->id_requerimiento_pago =='') ){
+                    
+                    $adjunto->id_orden = $request->id_orden;
+                }
+                $adjunto->archivo  = $newNameFile;
+                $adjunto->id_estado  = 1;
+                $adjunto->fecha_registro  = $fechaHoy;
+                $adjunto->id_categoria_adjunto = 5;
+                $adjunto->id_usuario = Auth::user()->id_usuario;
+                $adjunto->save();
+                $mensaje = 'Se guardo el adjunto';
+                $status= 'success';
+    
+            }
+        }else{
+            $mensaje = 'Hubo un problema al intentar guardo el adjunto.';
+            $status= 'error';
         }
 
+
         return response()->json([
-            "status"=>200,
-            "success"=>true,
+            "mensaje"=>$mensaje,
+            "status"=>$status,
             "data"=>$request
         ]);
     }
