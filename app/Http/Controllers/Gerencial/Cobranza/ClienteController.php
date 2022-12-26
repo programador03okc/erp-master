@@ -140,7 +140,7 @@ class ClienteController extends Controller
         $contribuyente->save();
         if ($contribuyente) {
             $title= 'Exito';
-            $text=  'Se elimino con éxito';
+            $text=  'Se anulo con éxito';
             $icon = 'success';
             $success = true;
             $status = 200;

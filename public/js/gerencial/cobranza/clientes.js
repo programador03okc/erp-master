@@ -31,7 +31,7 @@ function listarRegistros() {
                 render: function (data, type, row) {
                     html='';
                         html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-toggle="tooltip" title="Editar" data-original-title="Editar" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-edit"></i></button>';
-                        html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar-registro" data-toggle="tooltip" title="Eliminar" data-original-title="Eliminar" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-trash"></i></button>';
+                        html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar-registro" data-toggle="tooltip" title="Eliminar" data-original-title="Anular" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-trash"></i></button>';
 
                     html+='';
                     return html;
@@ -288,7 +288,7 @@ $(document).on('click','.eliminar-registro',function () {
     var id_contribuyente = $(this).attr('data-id-contribuyente');
     Swal.fire({
         title: 'Eliminar',
-        text: "¿Está seguro de eliminar?",
+        text: "¿Está seguro de Anular?",
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
