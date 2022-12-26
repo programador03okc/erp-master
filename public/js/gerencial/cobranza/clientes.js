@@ -287,7 +287,7 @@ $(document).on('submit','[data-form="editar-cliente"]',function (e) {
 $(document).on('click','.eliminar-registro',function () {
     var id_contribuyente = $(this).attr('data-id-contribuyente');
     Swal.fire({
-        title: 'Eliminar',
+        title: 'Anular',
         text: "¿Está seguro de Anular?",
         icon: 'question',
         showCancelButton: true,
