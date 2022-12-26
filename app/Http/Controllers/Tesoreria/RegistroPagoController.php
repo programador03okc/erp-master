@@ -189,7 +189,8 @@ class RegistroPagoController extends Controller
             ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
             ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'log_ord_compra.usuario_autorizacion')
             ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'log_ord_compra.id_prioridad_pago')
-            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9,10]);
+            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9,10])
+            ->where('log_ord_compra.estado','!=',7);
 
         // return datatables($data)
         //     ->addColumn('persona', function ($data) {
