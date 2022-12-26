@@ -26,9 +26,10 @@ class ClienteController extends Controller
     }
     public function listarCliente()
     {
-        $data = Contribuyente::where('estado',1)->orderBy('id_contribuyente', 'desc');
+        $data = Contribuyente::where('estado',1);
 
         return DataTables::of($data)
+        // return datatables($data)
         // ->toJson();
         ->make(true);
     }

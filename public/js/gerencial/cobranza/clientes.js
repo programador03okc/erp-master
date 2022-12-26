@@ -3,7 +3,7 @@ $(document).ready(function () {
 });
 function listarRegistros() {
     var vardataTables = funcDatatables();
-        tableRequerimientos = $("#listar-clientes").DataTable({
+        tableClientes = $("#listar-clientes").DataTable({
         language: vardataTables[0],
         destroy: true,
         pageLength: 10,

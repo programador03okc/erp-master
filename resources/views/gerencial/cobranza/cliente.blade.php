@@ -294,7 +294,7 @@ Cobranzas
 <!-- Select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
-<script src="{{ asset('js/gerencial/cobranza/clientes.js') }}"></script>
+<script src="{{ asset('js/gerencial/cobranza/clientes.js') }}?v=2"></script>
 <script>
 
 
