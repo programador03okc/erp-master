@@ -794,8 +794,8 @@ class ListaOrdenView {
     }
 
     modalEnviarOrdenAPago(obj) {
-        document.querySelector("select[name='numero_de_cuotas']").removeAttribute("disabled");
-        document.querySelector("input[name='pagoEnCuotasCheckbox']").removeAttribute("disabled");
+            document.querySelector("select[name='numero_de_cuotas']").removeAttribute("disabled");
+            document.querySelector("input[name='pagoEnCuotasCheckbox']").removeAttribute("disabled");
         tempArchivoAdjuntoRequerimientoCabeceraList=[];
         $(":file").filestyle('clear');
         this.limpiarTabla('adjuntosCabecera');
@@ -954,8 +954,10 @@ class ListaOrdenView {
                         htmlTable+= '</tr>'
                     }
                 });
-                document.querySelector("select[name='numero_de_cuotas']").setAttribute("disabled",true);
-                document.querySelector("input[name='pagoEnCuotasCheckbox']").setAttribute("disabled",true);
+                if(obj.dataset.numeroDeCuotas>0){
+                    document.querySelector("select[name='numero_de_cuotas']").setAttribute("disabled",true);
+                    document.querySelector("input[name='pagoEnCuotasCheckbox']").setAttribute("disabled",true);
+                }
 
             }else{
                 htmlTable = `<tr>

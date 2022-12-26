@@ -88,6 +88,56 @@ function obteneAdjuntosPago(idRequerimiento) {
         });
     });
 }
+function obtenerOtrosAdjuntosTesoreria(idRequerimiento) {
+    // console.log(idRequerimiento);
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: `listar-otros-adjuntos-tesoreria-orden-requerimiento/${idRequerimiento}`,
+            dataType: 'JSON',
+            beforeSend: (data) => {
+            $('#modal-ver-agregar-adjuntos-requerimiento-compra #otrosAdjuntosDeTesoreria').LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
+        },
+            success(response) {
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #otrosAdjuntosDeTesoreria').LoadingOverlay("hide", true);
+                resolve(response);
+            },
+            error: function (err) {
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #otrosAdjuntosDeTesoreria').LoadingOverlay("hide", true);
+                reject(err)
+            }
+        });
+    });
+}
+function obtenerAdjuntosLogisticos(idRequerimiento) {
+    // console.log(idRequerimiento);
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: `listar-adjuntos-logisticos/${idRequerimiento}`,
+            dataType: 'JSON',
+            beforeSend: (data) => {
+            $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosDeLogistica').LoadingOverlay("show", {
+                imageAutoResize: true,
+                progress: true,
+                imageColor: "#3c8dbc"
+            });
+        },
+            success(response) {
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosDeLogistica').LoadingOverlay("hide", true);
+                resolve(response);
+            },
+            error: function (err) {
+                $('#modal-ver-agregar-adjuntos-requerimiento-compra #adjuntosDeLogistica').LoadingOverlay("hide", true);
+                reject(err)
+            }
+        });
+    });
+}
 
 function verAgregarAdjuntosRequerimiento(obj) {
     let idRequerimiento= obj.dataset.idRequerimiento;
@@ -169,15 +219,15 @@ function cargarAdjuntosLogisticosYPago(idRequerimiento){
 
 
         obteneAdjuntosPago(idRequerimiento).then((res) => {
-            // console.log(res.data);
+            console.log(res.data);
             let htmlPago = '';
             if (res.data.length > 0) {
                 (res.data).forEach(element => {
                         htmlPago += `<tr>
                         <td style="text-align:left;"><a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden}" target="_blank">${element.codigo_orden}</a></td>
                         <td style="text-align:left;">`;
-                        (element.adjuntos).forEach(archivo => {
-                            htmlPago+=`<p><a href="/files/tesoreria/pagos/${archivo}" target="_blank">${archivo}</a></p>`;
+                        (element.adjuntos).forEach((archivo,index) => {
+                            htmlPago+=`<p><a href="/files/tesoreria/pagos/${archivo}" target="_blank">${archivo}</a>  <span style="margin-left:4rem;">${element.fecha_adjuntos[index]??''}</span> </p>`;
                         });
                         `</td>
                         </tr>`;
@@ -189,6 +239,54 @@ function cargarAdjuntosLogisticosYPago(idRequerimiento){
                 </tr>`;
             }
             document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] tbody[id='body_archivos_pagos']").insertAdjacentHTML('beforeend', htmlPago);
+
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+        obtenerOtrosAdjuntosTesoreria(idRequerimiento).then((res) => {
+            // console.log(res.data);
+            document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] tbody[id='body_otros_adjuntos_tesoreria']").innerHTML='';
+            let htmlOtrosAdjuntosTesoreria = '';
+            if (res.data.length > 0) {
+                (res.data).forEach(element => {
+                        htmlOtrosAdjuntosTesoreria += `<tr>
+                        <td style="text-align:left;"><a href="/files/tesoreria/otros_adjuntos/${element.archivo}" target="_blank">${element.archivo}</a></td>
+                        <td style="text-align:left;">${element.fecha_registro}</td>
+                        </tr>`;
+
+                });
+            }else{
+                htmlOtrosAdjuntosTesoreria += `<tr>
+                <td style="text-align:center;" colspan="2">Sin adjuntos para mostrar</td>
+                </tr>`;
+            }
+            document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] tbody[id='body_otros_adjuntos_tesoreria']").insertAdjacentHTML('beforeend', htmlOtrosAdjuntosTesoreria);
+
+
+        }).catch(function (err) {
+            console.log(err)
+        })
+
+        obtenerAdjuntosLogisticos(idRequerimiento).then((res) => {
+            // console.log(res.data);
+            document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] tbody[id='body_adjuntos_logisticos']").innerHTML='';
+            let htmlOtrosAdjuntosTesoreria = '';
+            if (res.data.length > 0) {
+                (res.data).forEach(element => {
+                        htmlOtrosAdjuntosTesoreria += `<tr>
+                        <td style="text-align:left;"><a href="/files/logistica/comporbantes_proveedor/${element.archivo}" target="_blank">${element.archivo}</a></td>
+                        <td style="text-align:left;">${element.fecha_registro}</td>
+                        </tr>`;
+
+                });
+            }else{
+                htmlOtrosAdjuntosTesoreria += `<tr>
+                <td style="text-align:center;" colspan="2">Sin adjuntos para mostrar</td>
+                </tr>`;
+            }
+            document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] tbody[id='body_adjuntos_logisticos']").insertAdjacentHTML('beforeend', htmlOtrosAdjuntosTesoreria);
 
 
         }).catch(function (err) {

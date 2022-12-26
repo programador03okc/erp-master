@@ -719,6 +719,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anular-adjunto-requerimiento-logístico-detalle', 'Logistica\RequerimientoController@anularArchivoAdjuntoRequerimientoLogisticoDetalle');
 				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');
 				Route::get('listar-archivos-adjuntos-pago/{id}', 'Logistica\RequerimientoController@listarArchivoAdjuntoPago');
+				Route::get('listar-otros-adjuntos-tesoreria-orden-requerimiento/{id}', 'Logistica\RequerimientoController@listarOtrsAdjuntosTesoreriaOrdenRequerimiento');
+				Route::get('listar-adjuntos-logisticos/{id}', 'Logistica\RequerimientoController@listarAdjuntosLogisticos');
 
 				Route::get('listar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-compra', 'Logistica\RequerimientoController@guardarAdjuntosAdicionales');

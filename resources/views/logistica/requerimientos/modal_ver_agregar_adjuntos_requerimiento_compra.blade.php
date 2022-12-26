@@ -54,6 +54,28 @@
                             </div>
                         </div>
                     </fieldset>
+                    <br>
+                    <fieldset class="group-table">
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Otros adjuntos de tesorería</strong></h5>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="otrosAdjuntosDeTesoreria" class="mytable table table-condensed table-bordered table-okc-view">
+                                    <tbody id="body_otros_adjuntos_tesoreria"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <br>
+                    <fieldset class="group-table">
+                        <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos Logísticos</strong></h5>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="adjuntosDeLogistica" class="mytable table table-condensed table-bordered table-okc-view">
+                                    <tbody id="body_adjuntos_logisticos"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
                 </form>
             </div>
             <div class="modal-footer">

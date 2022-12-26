@@ -642,6 +642,7 @@ function verAdjuntos(id, codigo) {
                 response.adjuntos_pagos_complementarios.forEach(function (element) {
                     html += `<tr>
                         <td><a target="_blank" href="/files/tesoreria/otros_adjuntos/${element.archivo}">${element.archivo}</a></td>
+                        <td>${element.fecha_registro??''}</td>
                         <td style="text-align:center;">
                             <button type="button" class="btn btn-xs btn-danger handleClickAnularAdjuntoTesoreria" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos == true ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
                         </td>
@@ -666,6 +667,7 @@ function verAdjuntos(id, codigo) {
             (res).forEach(element => {
                     htmlPago += `<tr>
                     <td style="text-align:left;"><p><a href="/files/tesoreria/pagos/${element.adjunto}" target="_blank">${element.adjunto}</a></p>
+                    <td>${element.fecha_registro??''}</td>
                     </td>
                     </tr>`;
 
@@ -710,6 +712,7 @@ function verAdjuntosOrden(id, codigo) {
                 response.adjuntos_pagos_complementarios.forEach(function (element) {
                     html += `<tr>
                         <td><a target="_blank" href="/files/tesoreria/otros_adjuntos/${element.archivo}">${element.archivo}</a></td>
+                        <td>${element.fecha_registro??''}</td>
                         <td style="text-align:center;">
                             <button type="button" class="btn btn-xs btn-danger handleClickAnularAdjuntoTesoreria" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos == true ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
                         </td>

@@ -43,11 +43,13 @@ use App\Models\Almacen\RequerimientoLogisticoView;
 use App\Models\Almacen\Transferencia;
 use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
+use App\Models\Logistica\AdjuntosLogisticos;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Presupuestos\Presupuesto;
 use App\Models\Rrhh\Persona;
 use App\Models\Rrhh\Postulante;
+use App\Models\Tesoreria\OtrosAdjuntosTesoreria;
 use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RegistroPagoAdjuntos;
 use App\Models\Tesoreria\RequerimientoPago;
@@ -4170,7 +4172,8 @@ class RequerimientoController extends Controller
                 $dataOrden = DB::table('logistica.log_ord_compra')->select(
                     'log_ord_compra.id_orden_compra',
                     'log_ord_compra.codigo AS codigo_orden',
-                    'registro_pago_adjuntos.adjunto'
+                    'registro_pago_adjuntos.adjunto',
+                    'registro_pago_adjuntos.fecha_registro'
 
                 )
                     ->leftJoin('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_ord_compra.id_orden_compra')
@@ -4190,6 +4193,7 @@ class RequerimientoController extends Controller
                     foreach ($output as $keyOp => $op) {
                         if ($do->id_orden_compra == $op['id_orden']) {
                             $output[$keyOp]['adjuntos'][] = $do->adjunto;
+                            $output[$keyOp]['fecha_adjuntos'][] = $do->fecha_registro;
                         }
                     }
                 }
@@ -4198,6 +4202,65 @@ class RequerimientoController extends Controller
             }
         } else {
             $mensaje = 'Sin detalle requerimiento';
+        }
+
+        return ["data" => $output, "mensaje" => $mensaje];
+    }
+
+    public function listarOtrsAdjuntosTesoreriaOrdenRequerimiento($idRequerimiento)
+    {
+
+        $detalleRequerimientoList = DetalleRequerimiento::where([["id_requerimiento", $idRequerimiento], ["estado", "!=", 7]])->get();
+        $idDetalleRequerimientoList = [];
+        $idOrdenList = [];
+        $mensaje = '';
+        $output = [];
+
+        foreach ($detalleRequerimientoList as $dr) {
+            $idDetalleRequerimientoList[] = $dr->id_detalle_requerimiento;
+        }
+        if (count($idDetalleRequerimientoList) > 0) {
+            $detalleYOrdenList = OrdenCompraDetalle::with('orden')->whereIn('id_detalle_requerimiento', $idDetalleRequerimientoList)->get();
+            foreach ($detalleYOrdenList as $dyo) {
+                $idOrdenList[] = $dyo->id_orden_compra;
+            }
+            if (count($idOrdenList) > 0) {
+                $output= OtrosAdjuntosTesoreria::with('categoriaAdjunto')->whereIn('id_orden',$idOrdenList)->where('id_estado','!=',7)->get();
+                $mensaje='ok';
+            } else {
+                $mensaje = 'Sin ordenes';
+            }
+        } else {
+            $mensaje = 'Sin detalle';
+        }
+
+        return ["data" => $output, "mensaje" => $mensaje];
+    }
+    public function listarAdjuntosLogisticos($idRequerimiento)
+    {
+
+        $detalleRequerimientoList = DetalleRequerimiento::where([["id_requerimiento", $idRequerimiento], ["estado", "!=", 7]])->get();
+        $idDetalleRequerimientoList = [];
+        $idOrdenList = [];
+        $mensaje = '';
+        $output = [];
+
+        foreach ($detalleRequerimientoList as $dr) {
+            $idDetalleRequerimientoList[] = $dr->id_detalle_requerimiento;
+        }
+        if (count($idDetalleRequerimientoList) > 0) {
+            $detalleYOrdenList = OrdenCompraDetalle::with('orden')->whereIn('id_detalle_requerimiento', $idDetalleRequerimientoList)->get();
+            foreach ($detalleYOrdenList as $dyo) {
+                $idOrdenList[] = $dyo->id_orden_compra;
+            }
+            if (count($idOrdenList) > 0) {
+                $output= AdjuntosLogisticos::with('categoriaAdjunto')->whereIn('id_orden',$idOrdenList)->where('estado','!=',7)->get();
+                $mensaje='ok';
+            } else {
+                $mensaje = 'Sin ordenes';
+            }
+        } else {
+            $mensaje = 'Sin detalle';
         }
 
         return ["data" => $output, "mensaje" => $mensaje];

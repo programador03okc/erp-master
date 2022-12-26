@@ -26,4 +26,9 @@ class AdjuntosLogisticos extends Model
         $fecha = new Carbon($this->attributes['fecha_emision']);
         return $fecha->format('d-m-Y h:m');
     }
+    
+    public function categoriaAdjunto()
+    {
+        return $this->belongsTo('App\Models\Logistica\CategoriaAdjunto','categoria_adjunto_id','id_categoria_adjunto');
+    }
 }
