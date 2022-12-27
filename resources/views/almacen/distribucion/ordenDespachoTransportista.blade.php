@@ -49,7 +49,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <h5>Monto flete</h5>
+                                <h5>Monto flete <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="" name="fechaRegistroFlete"></span></h5>
                                 <div class="input-group">
                                     <span class="input-group-addon" disabled>S/</span>
                                     {{-- <input type="text" class="form-control decimal" name="fleteReal" > --}}

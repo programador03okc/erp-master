@@ -111,6 +111,8 @@ class OrdenesDespachoExternoController extends Controller
                 'orden_despacho.plazo_excedido',
                 'orden_despacho.fecha_entregada',
                 'orden_despacho.fecha_despacho_real',
+                'orden_despacho.fecha_registro_flete',
+                'orden_despacho.fecha_actualizacion_od',
                 'despachoInterno.id_od as id_despacho_interno',
                 'despachoInterno.codigo as codigo_despacho_interno',
                 'despachoInterno.estado as estado_di',
@@ -1050,6 +1052,11 @@ class OrdenesDespachoExternoController extends Controller
             $fecha_registro = date('Y-m-d H:i:s');
             $id_estado_envio = 2; //transportandose (ag transp. lima)
 
+            $fechaRegistroFlete=null;
+            if((OrdenDespacho::find($request->id_od)->importe_flete) == null && isset($request->importe_flete)){
+                $fechaRegistroFlete=new Carbon();    
+            }
+
             $data = DB::table('almacen.orden_despacho')
                 ->where('id_od', $request->id_od)
                 ->update([
@@ -1063,6 +1070,8 @@ class OrdenesDespachoExternoController extends Controller
                     'serie_guia_venta' => $request->serie_guia_venta,
                     'numero_guia_venta' => $request->numero_guia_venta,
                     'id_estado_envio' => $id_estado_envio,
+                    'fecha_actualizacion_od' =>new Carbon(),
+                    'fecha_registro_flete' =>$fechaRegistroFlete??null,
                     // 'propia'=>((isset($request->transporte_propio)&&$request->transporte_propio=='on')?true:false),
                     'credito' => ((isset($request->credito) && $request->credito == 'on') ? true : false),
                 ]);
