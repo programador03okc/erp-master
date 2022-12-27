@@ -58,7 +58,7 @@ function construirModalTrazabilidad(data) {
                     <h5 class="timeline-title">Gestion Logística</h5>
                 </div>`;
             (data.ordenes).forEach(element => {
-                OrdenesCodigo.push(`<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden_compra}" target="_blank" title="Abrir Orden">${element.codigo}</a>`)
+                OrdenesCodigo.push(`<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${element.id_orden_compra}" target="_blank" title="Abrir Orden">${element.codigo}</a> <span>(${element.estado_descripcion})</span>`)
             });
 
             htmlGestionLogistica += `
