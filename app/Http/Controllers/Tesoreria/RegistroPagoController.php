@@ -752,8 +752,8 @@ class RegistroPagoController extends Controller
                         }
                         DB::table('logistica.log_ord_compra')
                             ->where('id_orden_compra', $request->id)
-                            ->update(['estado_pago' => 8]); //aprobado para pago
-                        $msj = 'La orden fue enviada a pago exitosamente';
+                            ->update(['estado_pago' => 1]);
+                        $msj = 'La autorización y solicitud fueron revertidas';
                         $tipo = 'success';
                     } else {
                         $msj = 'La orden fue anulada';

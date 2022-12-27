@@ -321,7 +321,7 @@ class RequerimientoPago {
                                     `${permisoEnviar == '1' ?
                                         `<button type="button" class="revertir btn btn-danger boton" data-toggle="tooltip"
                                     data-placement="bottom" data-id="${row['id_orden_compra']}" data-tipo="orden"
-                                    title="Revertir autorización"><i class="fas fa-undo-alt"></i></button>` : ''}
+                                    title="Revertir autorización y solicitud de pago"><i class="fas fa-undo-alt"></i></button>` : ''}
                                     `
                                     : ''}
 

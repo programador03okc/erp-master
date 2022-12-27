@@ -954,7 +954,8 @@ class ListaOrdenView {
                         htmlTable+= '</tr>'
                     }
                 });
-                if(obj.dataset.numeroDeCuotas>0){
+                console.log(obj.dataset.numeroDeEnviosAPago);
+                if(obj.dataset.numeroDeEnviosAPago>0){
                     document.querySelector("select[name='numero_de_cuotas']").setAttribute("disabled",true);
                     document.querySelector("input[name='pagoEnCuotasCheckbox']").setAttribute("disabled",true);
                 }
@@ -1779,6 +1780,7 @@ class ListaOrdenView {
                                 data-id-contribuyente-pago="${row.id_contribuyente ?? ''}"
                                 data-tiene-pago-en-cuotas="${JSON.parse((row.tiene_pago_en_cuotas)) ?? false}"
                                 data-numero-de-cuotas="${(row.numero_de_cuotas) ?? 0}"
+                                data-numero-envios-a-pago="${(row.numero_envios_a_pago) ?? 0}"
 
                                 data-id-persona-pago="${row.id_persona_pago ?? ''}"
                                 data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"
