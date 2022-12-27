@@ -954,7 +954,7 @@ class ListaOrdenView {
                         htmlTable+= '</tr>'
                     }
                 });
-                console.log(obj.dataset.numeroDeEnviosAPago);
+                // console.log(obj.dataset.numeroDeEnviosAPago);
                 if(obj.dataset.numeroDeEnviosAPago>0){
                     document.querySelector("select[name='numero_de_cuotas']").setAttribute("disabled",true);
                     document.querySelector("input[name='pagoEnCuotasCheckbox']").setAttribute("disabled",true);
