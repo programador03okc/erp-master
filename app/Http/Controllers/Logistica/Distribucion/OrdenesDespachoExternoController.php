@@ -1053,7 +1053,8 @@ class OrdenesDespachoExternoController extends Controller
             $id_estado_envio = 2; //transportandose (ag transp. lima)
 
             $fechaRegistroFlete=null;
-            if((OrdenDespacho::find($request->id_od)->importe_flete) == null && isset($request->importe_flete)){
+            $actualOD=OrdenDespacho::find($request->id_od);
+            if(($actualOD->importe_flete == null && isset($request->importe_flete)) || ($actualOD->importe_flete !=null && $request->fecha_registro_flete ==null)){
                 $fechaRegistroFlete=new Carbon();    
             }
 
