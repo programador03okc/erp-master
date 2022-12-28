@@ -300,6 +300,81 @@ $(document).on('click','.anular-contacto',function () {
     var data_key = $(this).attr('data-key');
     $(this).closest('tr[key="'+data_key+'"]').remove();
 });
+$(document).on('click','.agregar-cuenta-bancaria',function () {
+    $('#nuevo-cuenta-bancaria').modal('show');
+});
+$('[data-form="nuevo-cuenta-bancaria"]').submit(function (e) {
+    e.preventDefault();
+    var data = $(this).serializeArray(),
+        banco = $(this).find('[name="idBanco"] option:selected').text(),
+        tipo_cuenta = $(this).find('[name="idTipoCuenta"] option:selected').text(),
+        tipo_moneda = $(this).find('[name="idMoneda"] option:selected').text(),
+        random = Math.random(),
+        html='';
+
+    html +='<tr key='+random+'>'
+        html +='<td data-select="banco">'
+            html +='<input type="hidden" name="cuenta_bancaria['+random+'][banco]" value="'+data[0].value+'">   <label>'+banco+'</label>'
+        html +='</td>'
+        html +='<td data-select="tipo_cuenta">'
+            html +='<input type="hidden" name="cuenta_bancaria['+random+'][tipo_cuenta]" value="'+data[1].value+'"> <label>'+tipo_cuenta+'</label>'
+        html +='</td>'
+        html +='<td data-select="moneda">'
+            html +='<input type="hidden" name="cuenta_bancaria['+random+'][moneda]" value="'+data[2].value+'"> <label>'+tipo_moneda+'</label>'
+        html +='</td>'
+        html +='<td data-select="numero_cuenta">'
+            html +='<input type="hidden" name="cuenta_bancaria['+random+'][numero_cuenta]" value="'+data[3].value+'"> <label>'+data[3].value+'</label>'
+        html +='</td>'
+        html +='<td data-select="cuenta_interbancaria">'
+            html +='<input type="hidden" name="cuenta_bancaria['+random+'][cuenta_interbancaria]" value="'+data[4].value+'"> <label>'+data[4].value+'</label>'
+        html +='</td>'
+        html +='<td data-select="swift">'
+            html +='<input type="hidden" name="cuenta_bancaria['+random+'][swift]" value="'+data[5].value+'"> <label>'+data[5].value+'</label>'
+        html +='</td>'
+
+        html +='<td data-select="action">'
+            html +='<button class="btn btn-warning editar-cuenta-bancaria" type="button" data-key="'+random+'"> Editar</button> <button class="btn btn-danger anular-cuenta-bancaria" type="button" data-key="'+random+'"> Anular</button>'
+        html +='</td>'
+    html +='</tr>'
+    html +='';
+
+    $('[data-table="lista-cuenta-bancaria"]').append(html);
+});
+$(document).on('click','.editar-cuenta-bancaria',function () {
+    var data_key = $(this).attr('data-key'),
+        banco                       = $(this).closest('tr[key="'+data_key+'"]').find('[data-select="banco"]').find('[name="cuenta_bancaria['+data_key+'][banco]"]').val(),
+        banco_text                  = $(this).closest('tr[key="'+data_key+'"]').find('[data-select="banco"]').find('label').text(),
+
+        tipo_cuenta                 = $(this).closest('tr[key="'+data_key+'"]').find('[data-select="tipo_cuenta"]').find('[name="cuenta_bancaria['+data_key+'][tipo_cuenta]"]').val(),
+        tipo_cuenta_text            = $(this).closest('tr[key="'+data_key+'"]').find('[data-select="tipo_cuenta"]').find('label').text(),
+
+        moneda                      = $(this).closest('tr[key="'+data_key+'"]').find('[data-select="moneda"]').find('[name="cuenta_bancaria['+data_key+'][moneda]"]').val(),
+        moneda_text                 = $(this).closest('tr[key="'+data_key+'"]').find('[data-select="moneda"]').find('label').text(),
+
+        numero_cuenta                = $(this).closest('tr[key="'+data_key+'"]').find('[data-select="numero_cuenta"]').find('[name="cuenta_bancaria['+data_key+'][numero_cuenta]"]').val(),
+
+        nuero_cuenta_interbancaria  = $(this).closest('tr[key="'+data_key+'"]').find('[data-select="cuenta_interbancaria"]').find('[name="cuenta_bancaria['+data_key+'][cuenta_interbancaria]"]').val(),
+
+        swift                       = $(this).closest('tr[key="'+data_key+'"]').find('[data-select="swift"]').find('[name="cuenta_bancaria['+data_key+'][swift]"]').val();
+
+    $('[data-form="editar-cuenta-bancaria"] [name="idBanco"] option').removeAttr("selected");
+    $('[data-form="editar-cuenta-bancaria"] [name="idTipoCuenta"] option').removeAttr("selected");
+    $('[data-form="editar-cuenta-bancaria"] [name="idMoneda"] option').removeAttr("selected");
+
+    $('[data-form="editar-cuenta-bancaria"] [name="idBanco"] option[value="'+banco+'"]').attr("selected",true);
+    $('[data-form="editar-cuenta-bancaria"] [name="idTipoCuenta"] option[value="'+tipo_cuenta+'"]').attr("selected",true);
+    $('[data-form="editar-cuenta-bancaria"] [name="idMoneda"] option[value="'+moneda+'"]').attr("selected",true);
+
+    $('[data-form="editar-cuenta-bancaria"] [name="nroCuenta"]').val(numero_cuenta);
+    $('[data-form="editar-cuenta-bancaria"] [name="nroCuentaInterbancaria"]').val(nuero_cuenta_interbancaria);
+    $('[data-form="editar-cuenta-bancaria"] [name="swift"]').val(swift);
+
+    $('#editar-cuenta-bancaria').modal('show');
+});
+$('[data-form="editar-cuenta-bancaria"]').submit(function (e) {
+    e.preventDefault();
+    var data = $(this).serializeArray();
+});
 $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
     e.preventDefault();
     var data = $(this).serialize();

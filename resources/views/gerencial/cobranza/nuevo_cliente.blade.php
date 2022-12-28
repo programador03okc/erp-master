@@ -206,7 +206,25 @@ Cobranzas
                         <div class="tab-pane" id="tab_4">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button class="btn btn-success agregar-contactos" type="button"><i class="fa fa-plus"></i> Agregar contactos</button>
+                                    <button class="btn btn-success agregar-cuenta-bancaria" type="button"><i class="fa fa-plus"></i> Agregar contactos</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="lista-cuenta-bancaria" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center" style="width:20%">Banco</th>
+                                                <th class="text-center" style="width:5%">Tipo cuenta</th>
+                                                <th class="text-center" style="width:8%">Moneda</th>
+                                                <th class="text-center" style="width:10%">Nro cuenta</th>
+                                                <th class="text-center" style="width:10%">Nro cuenta interbancaria</th>
+                                                <th class="text-center" style="width:10%">Swift</th>
+                                                <th class="text-center" style="width:10%">Acción</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody data-table="lista-cuenta-bancaria"></tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -522,6 +540,175 @@ Cobranzas
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                </div>
+            </form>
+		</div>
+	</div>
+</div>
+{{-- cuenta bancaria --}}
+<div class="modal fade" tabindex="-1" role="dialog" id="nuevo-cuenta-bancaria">
+	<div class="modal-dialog" style="width: 500px;">
+		<div class="modal-content">
+			<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title">Nuva cuenta bancria</h3>
+			</div>
+            <form action="" data-form="nuevo-cuenta-bancaria">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Banco</label>
+                                <select class="form-control group-elemento" name="idBanco"
+                                style="text-align:center;" required>
+                                    <option value="0" disabled>Elija una opción</option>
+                                    @foreach ($bancos as $banco)
+                                    <option value="{{$banco->id_banco}}">{{$banco->razon_social}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Tipo de Cuenta</label>
+                                <select class="form-control group-elemento" name="idTipoCuenta"
+                                    style="text-align:center;" required>
+                                    <option value="0" disabled>Elija una opción</option>
+                                    @foreach ($tipo_cuenta as $tipo)
+                                        <option value="{{$tipo->id_tipo_cuenta}}">{{$tipo->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Moneda</label>
+                                <select class="form-control group-elemento" name="idMoneda"
+                                    style="text-align:center;" required>
+                                    @foreach ($monedas as $moneda)
+                                        <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>N° Cuenta</label>
+                                <input type="text" class="form-control icd-okc" name="nroCuenta" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>N° Cuenta Interbancaria</label>
+                                <input type="text" class="form-control icd-okc" name="nroCuentaInterbancaria" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>SWIFT</label>
+                                <input type="text" class="form-control icd-okc" name="swift" required />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                </div>
+            </form>
+		</div>
+	</div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="editar-cuenta-bancaria">
+	<div class="modal-dialog" style="width: 500px;">
+		<div class="modal-content">
+			<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title">Editar cuenta bacnaria</h3>
+			</div>
+            <form action="" data-form="editar-cuenta-bancaria">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Banco</label>
+                                <select class="form-control group-elemento" name="idBanco"
+                                style="text-align:center;" required>
+                                    <option value="0" disabled>Elija una opción</option>
+                                    @foreach ($bancos as $banco)
+                                    <option value="{{$banco->id_banco}}">{{$banco->razon_social}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Tipo de Cuenta</label>
+                                <select class="form-control group-elemento" name="idTipoCuenta"
+                                    style="text-align:center;" required>
+                                    <option value="0" disabled>Elija una opción</option>
+                                    @foreach ($tipo_cuenta as $tipo)
+                                        <option value="{{$tipo->id_tipo_cuenta}}">{{$tipo->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Moneda</label>
+                                <select class="form-control group-elemento" name="idMoneda"
+                                    style="text-align:center;" required>
+                                    @foreach ($monedas as $moneda)
+                                        <option value="{{$moneda->id_moneda}}">{{$moneda->descripcion}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>N° Cuenta</label>
+                                <input type="text" class="form-control icd-okc" name="nroCuenta" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>N° Cuenta Interbancaria</label>
+                                <input type="text" class="form-control icd-okc" name="nroCuentaInterbancaria" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>SWIFT</label>
+                                <input type="text" class="form-control icd-okc" name="swift" required />
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>

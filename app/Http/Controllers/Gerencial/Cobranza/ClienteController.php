@@ -6,11 +6,14 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Configuracion\Departamento;
 use App\Models\Configuracion\Distrito;
+use App\Models\Configuracion\Moneda;
 use App\Models\Configuracion\Pais;
 use App\Models\Configuracion\Provincia;
+use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\Contribuyente;
 use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoContribuyente;
+use App\Models\Contabilidad\TipoCuenta;
 // use App\Models\sistema\sistema_doc_identidad;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -164,7 +167,10 @@ class ClienteController extends Controller
         $departamento = Departamento::get();
         $tipo_documentos = Identidad::where('estado',1)->get();
         $tipo_contribuyente = TipoContribuyente::where('estado',1)->get();
-        return view('gerencial/cobranza/nuevo_cliente',compact('pais','departamento','tipo_documentos','tipo_contribuyente'));
+        $monedas = Moneda::where('estado',1)->get();
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        return view('gerencial/cobranza/nuevo_cliente',compact('pais','departamento','tipo_documentos','tipo_contribuyente','monedas','bancos','tipo_cuenta'));
     }
     public function getDistrito($id_provincia)
     {
