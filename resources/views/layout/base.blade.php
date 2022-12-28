@@ -26,8 +26,14 @@
         .modal-style{
             width:30%;
         }
+        .modal-style-recuperar{
+            width: 17%;
+        }
         @media screen and (max-width: 775px) {
             .modal-style{
+                width:90%;
+            }
+            .modal-style-recuperar{
                 width:90%;
             }
             /* #atualizar-contraseña{
@@ -66,7 +72,7 @@
 	</div>
 
 	<div class="modal fade" tabindex="-1" role="dialog" id="modal-settings">
-		<div class="modal-dialog" style="width: 17%;">
+		<div class="modal-dialog modal-style-recuperar" >
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
