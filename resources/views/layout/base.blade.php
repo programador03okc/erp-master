@@ -22,6 +22,25 @@
 	<link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
 	@yield('estilos')
+    <style>
+        .modal-style{
+            width:30%;
+        }
+        .modal-style-recuperar{
+            width: 17%;
+        }
+        @media screen and (max-width: 775px) {
+            .modal-style{
+                width:90%;
+            }
+            .modal-style-recuperar{
+                width:90%;
+            }
+            /* #atualizar-contraseña{
+                padding-left: 180px !import;
+            } */
+        }
+    </style>
 </head>
 
 <body class="hold-transition skin-okc sidebar-mini">
@@ -53,7 +72,7 @@
 	</div>
 
 	<div class="modal fade" tabindex="-1" role="dialog" id="modal-settings">
-		<div class="modal-dialog" style="width: 17%;">
+		<div class="modal-dialog modal-style-recuperar">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -83,7 +102,7 @@
 		</div>
 	</div>
     <div class="modal fade" tabindex="-1" role="dialog" id="atualizar-contraseña" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
-        <div class="modal-dialog" style="width:30%;">
+        <div class="modal-dialog modal-style">
             <div class="modal-content">
                 <form data-form="actualizar-contraseña" accept="{{ route('modificarClave') }}" method="POST">
                     <div class="modal-header">
