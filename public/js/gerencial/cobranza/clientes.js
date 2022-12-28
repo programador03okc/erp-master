@@ -339,3 +339,6 @@ $(document).on('click','.eliminar-registro',function () {
     });
 
 });
+$(document).on('click','.agregar-establecimiento',function () {
+
+});

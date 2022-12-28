@@ -10,6 +10,7 @@ use App\Models\Configuracion\Pais;
 use App\Models\Configuracion\Provincia;
 use App\Models\Contabilidad\Contribuyente;
 use App\Models\Contabilidad\Identidad;
+use App\Models\Contabilidad\TipoContribuyente;
 // use App\Models\sistema\sistema_doc_identidad;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -35,6 +36,9 @@ class ClienteController extends Controller
     }
     public function crear(Request $request)
     {
+        return response()->json([
+            $request->establecimiento,
+        ]);
         $contribuyente = Contribuyente::where('nro_documento',$request->documento)->first();
         $success = false;
         $status = 400;
@@ -42,23 +46,23 @@ class ClienteController extends Controller
         $text=  'Este usuario ya esta registrado';
         $icon = 'warning';
         // return $contribuyente;exit;
-        if (!$contribuyente) {
-            $success = true;
-            $status = 200;
-            $contribuyente = new Contribuyente();
-            $contribuyente->id_doc_identidad = $request->tipo_documnto;
-            $contribuyente->nro_documento = $request->documento;
-            $contribuyente->razon_social = $request->razon_social;
-            $contribuyente->ubigeo = $request->distrito;
-            $contribuyente->id_pais = $request->pais;
-            $contribuyente->estado = 1;
-            $contribuyente->transportista = 'f';
-            $contribuyente->fecha_registro = date('Y-m-d h:i:s');
-            $contribuyente->save();
-            $title= 'Éxito';
-            $text=  'Se guardo con éxito';
-            $icon = 'success';
-        }
+        // if (!$contribuyente) {
+        //     $success = true;
+        //     $status = 200;
+        //     $contribuyente = new Contribuyente();
+        //     $contribuyente->id_doc_identidad = $request->tipo_documnto;
+        //     $contribuyente->nro_documento = $request->documento;
+        //     $contribuyente->razon_social = $request->razon_social;
+        //     $contribuyente->ubigeo = $request->distrito;
+        //     $contribuyente->id_pais = $request->pais;
+        //     $contribuyente->estado = 1;
+        //     $contribuyente->transportista = 'f';
+        //     $contribuyente->fecha_registro = date('Y-m-d h:i:s');
+        //     $contribuyente->save();
+        //     $title= 'Éxito';
+        //     $text=  'Se guardo con éxito';
+        //     $icon = 'success';
+        // }
         return response()->json([
             "success"=>$success,
             "status"=>$status,
@@ -152,6 +156,32 @@ class ClienteController extends Controller
             "title"=> $title,
             "text"=> $text,
             "icon"=> $icon,
+        ]);
+    }
+    public function nuevoCliente()
+    {
+        $pais = Pais::get();
+        $departamento = Departamento::get();
+        $tipo_documentos = Identidad::where('estado',1)->get();
+        $tipo_contribuyente = TipoContribuyente::where('estado',1)->get();
+        return view('gerencial/cobranza/nuevo_cliente',compact('pais','departamento','tipo_documentos','tipo_contribuyente'));
+    }
+    public function getDistrito($id_provincia)
+    {
+        $distrito_first = Distrito::where('id_dis',$id_provincia)->first();
+        $provincia_first = Provincia::where('id_prov',$distrito_first->id_prov)->first();
+        $departamento_first = Departamento::where('id_dpto',$provincia_first->id_dpto)->first();
+
+        $provincia_get = Provincia::where('id_dpto',$departamento_first->id_dpto)->get();
+        $distrito_get = Distrito::where('id_prov',$provincia_first->id_prov)->get();
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "distrito"=>$distrito_first,
+            "provincia"=>$provincia_first,
+            "departamento"=>$departamento_first,
+            "provincia_all"=>$provincia_get,
+            "distrito_all"=>$distrito_get
         ]);
     }
 }
