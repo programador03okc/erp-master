@@ -2264,7 +2264,6 @@ class RequerimientoView {
 
             }
         }
-
         if (continuar) {
             let formData = new FormData($('#form-requerimiento')[0]);
 
@@ -2382,69 +2381,7 @@ class RequerimientoView {
                             if((sustento.trim()).length > 0){
                                 formData.append(`sustento`, sustento);
 
-                                $.ajax({
-                                    type: 'POST',
-                                    url: 'actualizar-requerimiento',
-                                    data: formData,
-                                    processData: false,
-                                    contentType: false,
-                                    dataType: 'JSON',
-                                    beforeSend: (data) => {
-                                        var customElement = $("<div>", {
-                                            "css": {
-                                                "font-size": "24px",
-                                                "text-align": "center",
-                                                "padding": "0px",
-                                                "margin-top": "-400px"
-                                            },
-                                            "class": "your-custom-class",
-                                            "text": "Actualizando requerimiento..."
-                                        });
-                
-                                        $('#wrapper-okc').LoadingOverlay("show", {
-                                            imageAutoResize: true,
-                                            progress: true,
-                                            custom: customElement,
-                                            imageColor: "#3c8dbc"
-                                        });
-                                    },
-                                    success: (response) => {
-                                        if (response.id_requerimiento > 0) {
-                                            $('#wrapper-okc').LoadingOverlay("hide", true);
-                                            Lobibox.notify('success', {
-                                                title: false,
-                                                size: 'mini',
-                                                rounded: true,
-                                                sound: false,
-                                                delayIndicator: false,
-                                                msg: `Requerimiento actualizado`
-                                            });
-                                            this.cargarRequerimiento(response.id_requerimiento);
-                                        } else {
-                                            $('#wrapper-okc').LoadingOverlay("hide", true);
-                                            console.log(response.mensaje);
-                                            Swal.fire(
-                                                '',
-                                                'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
-                                                'error'
-                                            );
-                
-                                        }
-                                        changeStateButton('historial'); //init.js
-                                    },
-                                    fail: (jqXHR, textStatus, errorThrown) => {
-                                        $('#wrapper-okc').LoadingOverlay("hide", true);
-                                        Swal.fire(
-                                            '',
-                                            'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
-                                            'error'
-                                        );
-                                        console.log(jqXHR);
-                                        console.log(textStatus);
-                                        console.log(errorThrown);
-                                    }
-                                });
-
+                                this.actualizarRequerimiento(formData);
                                 
                             }else{
                                 Swal.fire(
@@ -2456,6 +2393,9 @@ class RequerimientoView {
                         }
                     });
                     
+                }else{
+                    this.actualizarRequerimiento(formData);
+
                 }
             }
 
@@ -2468,6 +2408,72 @@ class RequerimientoView {
             );
             console.log("no se va a guardar");
         }
+    }
+
+    actualizarRequerimiento(formData){
+        $.ajax({
+            type: 'POST',
+            url: 'actualizar-requerimiento',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'JSON',
+            beforeSend: (data) => {
+                var customElement = $("<div>", {
+                    "css": {
+                        "font-size": "24px",
+                        "text-align": "center",
+                        "padding": "0px",
+                        "margin-top": "-400px"
+                    },
+                    "class": "your-custom-class",
+                    "text": "Actualizando requerimiento..."
+                });
+
+                $('#wrapper-okc').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    custom: customElement,
+                    imageColor: "#3c8dbc"
+                });
+            },
+            success: (response) => {
+                if (response.id_requerimiento > 0) {
+                    $('#wrapper-okc').LoadingOverlay("hide", true);
+                    Lobibox.notify('success', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `Requerimiento actualizado`
+                    });
+                    this.cargarRequerimiento(response.id_requerimiento);
+                } else {
+                    $('#wrapper-okc').LoadingOverlay("hide", true);
+                    console.log(response.mensaje);
+                    Swal.fire(
+                        '',
+                        'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
+                        'error'
+                    );
+
+                }
+                changeStateButton('historial'); //init.js
+            },
+            fail: (jqXHR, textStatus, errorThrown) => {
+                $('#wrapper-okc').LoadingOverlay("hide", true);
+                Swal.fire(
+                    '',
+                    'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
+                    'error'
+                );
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+
     }
 
     anularRequerimiento(idRequerimiento) {
