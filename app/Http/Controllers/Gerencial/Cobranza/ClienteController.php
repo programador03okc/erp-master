@@ -18,6 +18,7 @@ use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
+use App\Models\mgcp\Oportunidad\Status;
 use Carbon\Carbon;
 // use App\Models\sistema\sistema_doc_identidad;
 use Yajra\DataTables\Facades\DataTables;
@@ -35,8 +36,11 @@ class ClienteController extends Controller
     }
     public function listarCliente()
     {
-        $data = Contribuyente::where('estado',1);
-
+        $data = Contribuyente::where('adm_contri.estado',1)
+        ->select(
+            'adm_contri.*'
+        )
+        ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
         return DataTables::of($data)
         // return datatables($data)
         // ->toJson();
@@ -410,5 +414,82 @@ class ClienteController extends Controller
 
         // return $cuenta_bancaria;exit;
         return view('gerencial/cobranza/editar_cliente',compact('pais','departamento','tipo_documentos','tipo_contribuyente','monedas','bancos','tipo_cuenta','distrito_first','provincia_first','departamento_first','provincia_get','distrito_get','contribuyente','cliente','establecimiento_cliente','contacto','cuenta_bancaria'));
+    }
+    public function ver($id_contribuyente)
+    {
+        $contribuyente = Contribuyente::where('id_contribuyente',$id_contribuyente)->first();
+        $pais = Pais::find($contribuyente->id_pais);
+        $distrito_first=array();
+        $provincia_first=array();
+        $departamento_first=array();
+        $provincia_get=array();
+        $distrito_get=array();
+
+        if ($contribuyente->ubigeo) {
+            $distrito_first = Distrito::where('id_dis',$contribuyente->ubigeo)->first();
+            $provincia_first = Provincia::where('id_prov',$distrito_first->id_prov)->first();
+            $departamento_first = Departamento::where('id_dpto',$provincia_first->id_dpto)->first();
+        }
+
+        $establecimiento_cliente=array();
+        $cliente = Cliente::where('id_contribuyente',$id_contribuyente)->first();
+        if ($cliente) {
+            $establecimiento_cliente = EstablecimientoCliente::where('id_cliente',$cliente->id_cliente)->where('estado',1)->get();
+        }
+
+        $contacto = ContactoContribuyente::where('id_contribuyente',$id_contribuyente)->where('estado',1)->get();
+        $cuenta_bancaria = CuentaContribuyente::where('id_contribuyente',$id_contribuyente)->where('estado',1)->get();
+
+        $data_ubigeo=array();
+        if ($establecimiento_cliente) {
+            foreach ($establecimiento_cliente as $key => $value) {
+                $data_ubigeo = $this->getDistrito($value->ubigeo);
+                $data_ubigeo = json_encode($data_ubigeo);
+                $data_ubigeo = json_decode($data_ubigeo);
+                $value->ubigeo_text = $data_ubigeo->original->departamento->descripcion.' - '. $data_ubigeo->original->provincia->descripcion.' - '.$data_ubigeo->original->distrito->descripcion;
+            }
+        }
+        if ($contacto) {
+            foreach ($contacto as $key => $value) {
+                $data_ubigeo = $this->getDistrito($value->ubigeo);
+                $data_ubigeo = json_encode($data_ubigeo);
+                $data_ubigeo = json_decode($data_ubigeo);
+                $value->ubigeo_text = $data_ubigeo->original->departamento->descripcion.' - '. $data_ubigeo->original->provincia->descripcion.' - '.$data_ubigeo->original->distrito->descripcion;
+                // return $value;exit;
+            }
+        }
+
+        if ($cuenta_bancaria) {
+            foreach ($cuenta_bancaria as $key => $value) {
+                $bancos_first = Banco::find($value->id_banco)->contribuyente;
+                $value->banco_text = $bancos_first->razon_social;
+
+                $tipo_cuenta_first = TipoCuenta::find($value->id_tipo_cuenta);
+                $value->cuenta_text = $tipo_cuenta_first->descripcion;
+
+                $moneda_first = Moneda::find($value->id_moneda);
+                $value->modena_text = $moneda_first->descripcion;
+                // return $tipo_cuenta_first;exit;
+            }
+        }
+        $tipo_documento=array();
+        $tipo_contribuyente=array();
+        $tipo_documento = Identidad::where('id_doc_identidad',$contribuyente->id_doc_identidad)->first();
+        $tipo_contribuyente = TipoContribuyente::where('id_tipo_contribuyente',$contribuyente->id_tipo_contribuyente)->first();
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "contribuyente"=>$contribuyente,
+            "distrito_first"=>$distrito_first,
+            "provincia_first"=>$provincia_first,
+            "departamento_first"=>$departamento_first,
+            "establecimiento_cliente"=>$establecimiento_cliente,
+            "contacto"=>$contacto,
+            "cuenta_bancaria"=>$cuenta_bancaria,
+            "pais"=>$pais,
+            "tipo_documento"=>$tipo_documento ? $tipo_documento : [],
+            "tipo_contribuyente"=>$tipo_contribuyente ?$tipo_contribuyente :[],
+            "cliente"=>$cliente
+        ]);
     }
 }

@@ -2194,6 +2194,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('clientes', 'Gerencial\Cobranza\ClienteController@listarCliente')->name('listar.cliente');
 			Route::post('clientes/crear', 'Gerencial\Cobranza\ClienteController@crear')->name('clientes.crear');
 			Route::post('clientes/editar', 'Gerencial\Cobranza\ClienteController@editar')->name('clientes.editar');
+			Route::get('cliente/ver/{id_contribuyente}', 'Gerencial\Cobranza\ClienteController@ver')->name('clientes.ver');
 			Route::post('clientes/actualizar', 'Gerencial\Cobranza\ClienteController@actualizar')->name('clientes.actulizar');
 			Route::post('clientes/eliminar', 'Gerencial\Cobranza\ClienteController@eliminar');
             Route::get('get-distrito/{id_provincia}', 'Gerencial\Cobranza\ClienteController@getDistrito')->name('get.distrito');

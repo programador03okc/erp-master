@@ -30,7 +30,7 @@ function listarRegistros() {
             {
                 render: function (data, type, row) {
                     html='';
-                        // html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-toggle="tooltip" title="Editar" data-original-title="Editar" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-edit"></i></button>';
+                        html+='<button type="button" class="btn btn-primary btn-flat botonList ver-registro" data-toggle="tooltip" title="Ver cliente" data-original-title="Ver cliente" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-eye"></i></button>';
 
                         html+='<a href="cliente/'+row['id_contribuyente']+'" class="btn btn-warning btn-flat botonList " data-toggle="tooltip" title="Editar" data-original-title="Editar" ><i class="fas fa-edit"></i></a>';
 
@@ -342,6 +342,145 @@ $(document).on('click','.eliminar-registro',function () {
     });
 
 });
-$(document).on('click','.agregar-establecimiento',function () {
+$(document).on('click','.ver-registro',function () {
+    var id_contribuyente = $(this).attr('data-id-contribuyente'),
+        html='';
+    $.ajax({
+        type: 'GET',
+        url: 'cliente/ver/'+id_contribuyente,
+        data: {},
+        // processData: false,
+        // contentType: false,
+        dataType: 'JSON',
+        beforeSend: (data) => {
+        }
+    }).done(function(response) {
 
+        $('#tab_datos .pais').text('');
+        if (response.pais) {
+            $('#tab_datos .pais').text(' '+response.pais.descripcion);
+        }
+
+        $('#tab_datos .departamento').text('');
+        if (response.departamento_first.length>0) {
+            $('#tab_datos .departamento').text(' '+response.departamento_first.descripcion);
+        }
+        $('#tab_datos .provincia').text('');
+        if (response.provincia_first.length>0) {
+            $('#tab_datos .provincia').text(' '+response.provincia_first.descripcion);
+        }
+        $('#tab_datos .distrito').text('');
+        if (response.distrito_first.length>0) {
+            $('#tab_datos .distrito').text(' '+response.distrito_first.descripcion);
+        }
+        $('#tab_datos .tipo_documento').text('');
+        console.log(response.tipo_documento);
+        if (response.tipo_documento.length>0) {
+            $('#tab_datos .tipo_documento').text(' '+response.tipo_documento.descripcion);
+        }
+        $('#tab_datos .tipo_contribuyente').text('');
+        if (response.tipo_contribuyente.length>0) {
+            $('#tab_datos .tipo_contribuyente').text(' '+response.tipo_contribuyente.descripcion);
+        }
+        $('#tab_datos .documento').text('');
+        $('#tab_datos .razon_social').text('');
+        $('#tab_datos .direccion').text('');
+        $('#tab_datos .telefono').text('');
+        $('#tab_datos .celular').text('');
+        $('#tab_datos .email').text('');
+        if (response.contribuyente.nro_documento) {
+            $('#tab_datos .documento').text(' '+response.contribuyente.nro_documento);
+        }
+        if (response.contribuyente.razon_social) {
+        $('#tab_datos .razon_social').text(' '+response.contribuyente.razon_social);
+        }
+        if (response.contribuyente.direccion_fiscal) {
+            $('#tab_datos .direccion').text(' '+response.contribuyente.direccion_fiscal);
+        }
+        if (response.contribuyente.nro_docutelefonomento) {
+            $('#tab_datos .telefono').text(' '+response.contribuyente.telefono);
+        }
+        if (response.contribuyente.celular) {
+            $('#tab_datos .celular').text(' '+response.contribuyente.celular);
+        }
+        if (response.contribuyente.email) {
+            $('#tab_datos .email').text(' '+response.contribuyente.email);
+        }
+        html='';
+        if (response.establecimiento_cliente.length>0) {
+            $.each(response.establecimiento_cliente, function (index, element) {
+                html +='<tr>'
+                    html +='<td data-select="direccion"><label>'+element.direccion+'</label></td>'
+                    html +='<td data-select="ubigeo"><label>'+element.ubigeo_text+'</label></td>'
+                    html +='<td data-select="horario"><label>'+element.horario+'</label></td>'
+                html +='</tr>';
+            });
+        }
+
+        $('[data-table="tbody-establecimiento"]').html(html);
+
+        html='';
+        if (response.contacto.length>0) {
+            $.each(response.contacto, function (index, element) {
+                html +='<tr>'
+                    html +='<td data-select="nombre">'
+                        html +=' <label>'+element.nombre+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="cargo">'
+                        html +='<label>'+element.cargo+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="telefono">'
+                        html +='<label>'+element.telefono+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="email">'
+                        html +='<label>'+element.email+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="direccion">'
+                        html +='<label>'+element.direccion+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="ubigeo">'
+                        html +='<label>'+element.ubigeo_text+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="horario">'
+                        html +='<label>'+element.horario+'</label>'
+                    html +='</td>'
+                html +='</tr>'
+            });
+        }
+        $('[data-table="lista-contactos"]').html(html);
+
+        if (response.cuenta_bancaria.length>0) {
+            $.each(response.cuenta_bancaria, function (index, element) {
+                html +='<tr>'
+                    html +='<td data-select="banco">'
+                        html +='<label>'+element.banco_text+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="tipo_cuenta">'
+                        html +='<label>'+element.cuenta_text+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="moneda">'
+                        html +='<label>'+element.modena_text+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="numero_cuenta">'
+                        html +='<label>'+element.nro_cuenta+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="cuenta_interbancaria">'
+                        html +='<label>'+element.nro_cuenta_interbancaria+'</label>'
+                    html +='</td>'
+                    html +='<td data-select="swift">'
+                        html +='<label>'+element.swift+'</label>'
+                    html +='</td>'
+                html +='</tr>'
+                html +='';
+            });
+        }
+        $('[data-table="lista-cuenta-bancaria"]').html(html);
+
+        $('#tab_observaciones [name="observacion"]').val(response.cliente.observacion);
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+    $('#ver-cliente').modal('show');
 });
