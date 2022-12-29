@@ -362,24 +362,25 @@ $(document).on('click','.ver-registro',function () {
         }
 
         $('#tab_datos .departamento').text('');
-        if (response.departamento_first.length>0) {
+
+        if (!$.isEmptyObject(response.departamento_first)) {
             $('#tab_datos .departamento').text(' '+response.departamento_first.descripcion);
         }
         $('#tab_datos .provincia').text('');
-        if (response.provincia_first.length>0) {
+        if (!$.isEmptyObject(response.provincia_first)) {
             $('#tab_datos .provincia').text(' '+response.provincia_first.descripcion);
         }
         $('#tab_datos .distrito').text('');
-        if (response.distrito_first.length>0) {
+        if (!$.isEmptyObject(response.distrito_first)) {
             $('#tab_datos .distrito').text(' '+response.distrito_first.descripcion);
         }
         $('#tab_datos .tipo_documento').text('');
         // console.log(response.tipo_documento);
-        if (response.tipo_documento.length>0) {
+        if (!$.isEmptyObject(response.tipo_documento)) {
             $('#tab_datos .tipo_documento').text(' '+response.tipo_documento.descripcion);
         }
         $('#tab_datos .tipo_contribuyente').text('');
-        if (response.tipo_contribuyente.length>0) {
+        if (!$.isEmptyObject(response.tipo_contribuyente)) {
             $('#tab_datos .tipo_contribuyente').text(' '+response.tipo_contribuyente.descripcion);
         }
         $('#tab_datos .documento').text('');
