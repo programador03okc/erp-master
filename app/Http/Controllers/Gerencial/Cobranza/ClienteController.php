@@ -4,16 +4,21 @@ namespace App\Http\Controllers\Gerencial\Cobranza;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Comercial\Cliente;
+use App\Models\Comercial\EstablecimientoCliente;
 use App\Models\Configuracion\Departamento;
 use App\Models\Configuracion\Distrito;
 use App\Models\Configuracion\Moneda;
 use App\Models\Configuracion\Pais;
 use App\Models\Configuracion\Provincia;
 use App\Models\Contabilidad\Banco;
+use App\Models\Contabilidad\ContactoContribuyente;
 use App\Models\Contabilidad\Contribuyente;
+use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
+use Carbon\Carbon;
 // use App\Models\sistema\sistema_doc_identidad;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -39,33 +44,98 @@ class ClienteController extends Controller
     }
     public function crear(Request $request)
     {
-        return response()->json([
-            $request->establecimiento,
-        ]);
-        $contribuyente = Contribuyente::where('nro_documento',$request->documento)->first();
         $success = false;
         $status = 400;
         $title= 'Información';
         $text=  'Este usuario ya esta registrado';
         $icon = 'warning';
-        // return $contribuyente;exit;
-        // if (!$contribuyente) {
-        //     $success = true;
-        //     $status = 200;
-        //     $contribuyente = new Contribuyente();
-        //     $contribuyente->id_doc_identidad = $request->tipo_documnto;
-        //     $contribuyente->nro_documento = $request->documento;
-        //     $contribuyente->razon_social = $request->razon_social;
-        //     $contribuyente->ubigeo = $request->distrito;
-        //     $contribuyente->id_pais = $request->pais;
-        //     $contribuyente->estado = 1;
-        //     $contribuyente->transportista = 'f';
-        //     $contribuyente->fecha_registro = date('Y-m-d h:i:s');
-        //     $contribuyente->save();
-        //     $title= 'Éxito';
-        //     $text=  'Se guardo con éxito';
-        //     $icon = 'success';
-        // }
+
+        $contribuyente = Contribuyente::where([["estado", 1], ["id_doc_identidad", $request->tipo_documnto], ["nro_documento", $request->documento]])->first();
+
+        if (!$contribuyente) {
+            $contribuyente = new Contribuyente();
+            $contribuyente->id_tipo_contribuyente = $request->tipo_contribuyente;
+            $contribuyente->id_doc_identidad = $request->tipo_documnto > 0 ? $request->tipo_documnto : null;
+            $contribuyente->nro_documento = $request->documento;
+            $contribuyente->razon_social = $request->razon_social;
+            $contribuyente->direccion_fiscal = $request->direccion;
+            $contribuyente->id_pais = $request->pais > 0 ? $request->pais : null;
+            $contribuyente->ubigeo = $request->distrito;
+            $contribuyente->telefono = $request->telefono;
+            $contribuyente->celular = $request->celular;
+            $contribuyente->email = $request->email;
+            $contribuyente->estado = 1;
+            $contribuyente->fecha_registro = new Carbon();
+            $contribuyente->transportista = false;
+            $contribuyente->save();
+
+            $success = true;
+            $status = 200;
+            $title= 'Éxito';
+            $text=  'Se registro con éxito';
+            $icon = 'success';
+        }
+
+        $com_cliente = Cliente::where('id_contribuyente',$contribuyente->id_contribuyente)->where('estado',1)->first();
+
+        if (!$com_cliente) {
+            $com_cliente = new Cliente();
+            $com_cliente->id_contribuyente = $contribuyente->id_contribuyente;
+            $com_cliente->observacion = $request->observacion;
+            $com_cliente->estado = 1;
+            $com_cliente->fecha_registro = new Carbon();
+            $com_cliente->save();
+
+            $success = true;
+            $status = 200;
+            $title= 'Éxito';
+            $text=  'Se registro con éxito';
+            $icon = 'success';
+        }
+
+        if ($status===200) {
+            foreach ( (object)$request->establecimiento as $key => $value) {
+                $establecimientoProveedor = new EstablecimientoCliente();
+                $establecimientoProveedor->id_cliente = $com_cliente->id_cliente;
+                $establecimientoProveedor->direccion = $value['direccion'];
+                $establecimientoProveedor->horario = $value['horario'];
+                $establecimientoProveedor->ubigeo = $value['ubigeo'];
+                $establecimientoProveedor->estado = 1;
+                $establecimientoProveedor->fecha_registro = new Carbon();
+                $establecimientoProveedor->save();
+            }
+
+            foreach ( (object)$request->contacto as $key => $value) {
+                $contactoContribuyente = new ContactoContribuyente();
+                $contactoContribuyente->id_contribuyente    = $contribuyente->id_contribuyente;
+                $contactoContribuyente->nombre              = $value['nombre'];
+                $contactoContribuyente->telefono            = $value['telefono'];
+                $contactoContribuyente->email               = $value['email'];
+                $contactoContribuyente->cargo               = $value['cargo'];
+                $contactoContribuyente->fecha_registro      = new Carbon();
+                $contactoContribuyente->direccion           = $value['direccion'];
+                $contactoContribuyente->estado              = 1;
+                $contactoContribuyente->horario             = $value['horario'];
+                $contactoContribuyente->ubigeo              = $value['ubigeo'];
+                $contactoContribuyente->save();
+            }
+
+            foreach ( (object)$request->cuenta_bancaria as $key => $value) {
+                $cuentaBancariaProveedor = new CuentaContribuyente();
+                $cuentaBancariaProveedor->id_contribuyente          = $contribuyente->id_contribuyente;
+                $cuentaBancariaProveedor->id_banco                  = $value['banco'];
+                $cuentaBancariaProveedor->id_tipo_cuenta            = $value['tipo_cuenta'];
+                $cuentaBancariaProveedor->id_moneda                 = $value['moneda'];
+                $cuentaBancariaProveedor->nro_cuenta                = $value['numero_cuenta'];
+                $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $value['cuenta_interbancaria'];
+                $cuentaBancariaProveedor->swift                     = $value['swift'];
+                $cuentaBancariaProveedor->estado                    = 1;
+                $cuentaBancariaProveedor->fecha_registro            = new Carbon();
+                $cuentaBancariaProveedor->save();
+            }
+        }
+
+
         return response()->json([
             "success"=>$success,
             "status"=>$status,
@@ -104,33 +174,108 @@ class ClienteController extends Controller
     }
     public function actualizar(Request $request)
     {
+        // return $request->id_contribuyente;exit;
+        $success = false;
+        $status = 400;
         $title= 'Información';
         $text=  'Este usuario ya esta registrado';
         $icon = 'warning';
-        $success = false;
-        $status = 400;
+
         $contribuyente = Contribuyente::find($request->id_contribuyente);
-        $contribuyente->id_doc_identidad = $request->tipo_documnto;
+        $contribuyente->id_tipo_contribuyente = $request->tipo_contribuyente;
+        $contribuyente->id_doc_identidad = $request->tipo_documnto > 0 ? $request->tipo_documnto : null;
         $contribuyente->nro_documento = $request->documento;
         $contribuyente->razon_social = $request->razon_social;
+        $contribuyente->direccion_fiscal = $request->direccion;
+        $contribuyente->id_pais = $request->pais > 0 ? $request->pais : null;
         $contribuyente->ubigeo = $request->distrito;
-        $contribuyente->id_pais = $request->pais;
+        $contribuyente->telefono = $request->telefono;
+        $contribuyente->celular = $request->celular;
+        $contribuyente->email = $request->email;
         $contribuyente->estado = 1;
-        // $contribuyente->transportista = 'f';
-        // $contribuyente->fecha_registro = date('Y-m-d h:i:s');
+        // $contribuyente->fecha_registro = new Carbon();
+        $contribuyente->transportista = false;
         $contribuyente->save();
+
         if ($contribuyente) {
             $success = true;
             $status = 200;
             $title= 'Éxito';
-            $text=  'Se guardo con éxito';
+            $text=  'Se registro con éxito';
             $icon = 'success';
+        }
+
+        $com_cliente = Cliente::find($request->id_cliente);
+        $com_cliente->id_contribuyente = $contribuyente->id_contribuyente;
+        $com_cliente->observacion = $request->observacion;
+        $com_cliente->estado = 1;
+        // $com_cliente->fecha_registro = new Carbon();
+        $com_cliente->save();
+
+        if ($com_cliente) {
+
+            $success = true;
+            $status = 200;
+            $title= 'Éxito';
+            $text=  'Se registro con éxito';
+            $icon = 'success';
+        }
+
+        if ($status===200) {
+            EstablecimientoCliente::where('estado', 1)
+            ->where('id_cliente', $com_cliente->id_cliente)
+            ->update(['estado' => 7]);
+            foreach ( (object)$request->establecimiento as $key => $value) {
+                $establecimientoProveedor = new EstablecimientoCliente();
+                $establecimientoProveedor->id_cliente = $com_cliente->id_cliente;
+                $establecimientoProveedor->direccion = $value['direccion'];
+                $establecimientoProveedor->horario = $value['horario'];
+                $establecimientoProveedor->ubigeo = $value['ubigeo'];
+                $establecimientoProveedor->estado = 1;
+                $establecimientoProveedor->fecha_registro = new Carbon();
+                $establecimientoProveedor->save();
+            }
+            ContactoContribuyente::where('estado', 1)
+            ->where('id_contribuyente', $contribuyente->id_contribuyente)
+            ->update(['estado' => 7]);
+            foreach ( (object)$request->contacto as $key => $value) {
+                $contactoContribuyente = new ContactoContribuyente();
+                $contactoContribuyente->id_contribuyente    = $contribuyente->id_contribuyente;
+                $contactoContribuyente->nombre              = $value['nombre'];
+                $contactoContribuyente->telefono            = $value['telefono'];
+                $contactoContribuyente->email               = $value['email'];
+                $contactoContribuyente->cargo               = $value['cargo'];
+                $contactoContribuyente->fecha_registro      = new Carbon();
+                $contactoContribuyente->direccion           = $value['direccion'];
+                $contactoContribuyente->estado              = 1;
+                $contactoContribuyente->horario             = $value['horario'];
+                $contactoContribuyente->ubigeo              = $value['ubigeo'];
+                $contactoContribuyente->save();
+            }
+            CuentaContribuyente::where('estado', 1)
+            ->where('id_contribuyente', $contribuyente->id_contribuyente)
+            ->update(['estado' => 7]);
+
+            foreach ( (object)$request->cuenta_bancaria as $key => $value) {
+                $cuentaBancariaProveedor = new CuentaContribuyente();
+                $cuentaBancariaProveedor->id_contribuyente          = $contribuyente->id_contribuyente;
+                $cuentaBancariaProveedor->id_banco                  = $value['banco'];
+                $cuentaBancariaProveedor->id_tipo_cuenta            = $value['tipo_cuenta'];
+                $cuentaBancariaProveedor->id_moneda                 = $value['moneda'];
+                $cuentaBancariaProveedor->nro_cuenta                = $value['numero_cuenta'];
+                $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $value['cuenta_interbancaria'];
+                $cuentaBancariaProveedor->swift                     = $value['swift'];
+                $cuentaBancariaProveedor->estado                    = 1;
+                $cuentaBancariaProveedor->fecha_registro            = new Carbon();
+                $cuentaBancariaProveedor->save();
+            }
         }
 
 
         return response()->json([
             "success"=>$success,
             "status"=>$status,
+            "data"=>$request->pais,
             "title"=> $title,
             "text"=> $text,
             "icon"=> $icon,
@@ -189,5 +334,81 @@ class ClienteController extends Controller
             "provincia_all"=>$provincia_get,
             "distrito_all"=>$distrito_get
         ]);
+    }
+    public function editarContribuyente($id_contribuyente)
+    {
+        $pais = Pais::get();
+        $departamento = Departamento::get();
+        $tipo_documentos = Identidad::where('estado',1)->get();
+        $tipo_contribuyente = TipoContribuyente::where('estado',1)->get();
+        $monedas = Moneda::where('estado',1)->get();
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+
+
+        $contribuyente = Contribuyente::where('id_contribuyente',$id_contribuyente)->first();
+
+        $distrito_first=array();
+        $provincia_first=array();
+        $departamento_first=array();
+        $provincia_get=array();
+        $distrito_get=array();
+
+        if ($contribuyente->ubigeo) {
+            $distrito_first = Distrito::where('id_dis',$contribuyente->ubigeo)->first();
+            $provincia_first = Provincia::where('id_prov',$distrito_first->id_prov)->first();
+            $departamento_first = Departamento::where('id_dpto',$provincia_first->id_dpto)->first();
+
+            $provincia_get = Provincia::where('id_dpto',$departamento_first->id_dpto)->get();
+            $distrito_get = Distrito::where('id_prov',$provincia_first->id_prov)->get();
+        }
+
+        $establecimiento_cliente=array();
+        $cliente = Cliente::where('id_contribuyente',$id_contribuyente)->first();
+        if ($cliente) {
+            $establecimiento_cliente = EstablecimientoCliente::where('id_cliente',$cliente->id_cliente)->where('estado',1)->get();
+        }
+
+        $contacto = ContactoContribuyente::where('id_contribuyente',$id_contribuyente)->where('estado',1)->get();
+        $cuenta_bancaria = CuentaContribuyente::where('id_contribuyente',$id_contribuyente)->where('estado',1)->get();
+
+        // return $contacto;exit;
+
+        $data_ubigeo=array();
+        if ($establecimiento_cliente) {
+            foreach ($establecimiento_cliente as $key => $value) {
+                $data_ubigeo = $this->getDistrito($value->ubigeo);
+                $data_ubigeo = json_encode($data_ubigeo);
+                $data_ubigeo = json_decode($data_ubigeo);
+                $value->ubigeo_text = $data_ubigeo->original->departamento->descripcion.' - '. $data_ubigeo->original->provincia->descripcion.' - '.$data_ubigeo->original->distrito->descripcion;
+            }
+        }
+        if ($contacto) {
+            foreach ($contacto as $key => $value) {
+                $data_ubigeo = $this->getDistrito($value->ubigeo);
+                $data_ubigeo = json_encode($data_ubigeo);
+                $data_ubigeo = json_decode($data_ubigeo);
+                $value->ubigeo_text = $data_ubigeo->original->departamento->descripcion.' - '. $data_ubigeo->original->provincia->descripcion.' - '.$data_ubigeo->original->distrito->descripcion;
+                // return $value;exit;
+            }
+        }
+
+        if ($cuenta_bancaria) {
+            foreach ($cuenta_bancaria as $key => $value) {
+                $bancos_first = Banco::find($value->id_banco)->contribuyente;
+                $value->banco_text = $bancos_first->razon_social;
+
+                $tipo_cuenta_first = TipoCuenta::find($value->id_tipo_cuenta);
+                $value->cuenta_text = $tipo_cuenta_first->descripcion;
+
+                $moneda_first = Moneda::find($value->id_moneda);
+                $value->modena_text = $moneda_first->descripcion;
+                // return $tipo_cuenta_first;exit;
+            }
+        }
+
+
+        // return $cuenta_bancaria;exit;
+        return view('gerencial/cobranza/editar_cliente',compact('pais','departamento','tipo_documentos','tipo_contribuyente','monedas','bancos','tipo_cuenta','distrito_first','provincia_first','departamento_first','provincia_get','distrito_get','contribuyente','cliente','establecimiento_cliente','contacto','cuenta_bancaria'));
     }
 }

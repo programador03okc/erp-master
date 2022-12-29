@@ -37,8 +37,8 @@ Cobranzas
                 <div class="box-header">
                     <h3 class="box-title">Lista de clientes</h3>
                     <div class="pull-right box-tools">
-                        <button type="button" class="btn btn-success" title="Nuevo Usuario" data-action="nuevo-cliente"><i class="fa fa-save"></i> Nuevo cliente</button>
-                        <a href="{{ route('gerencial.cobranza.nuevo.cliente') }}">nuevo</a>
+                        {{-- <button type="button" class="btn btn-success" title="Nuevo Usuario" data-action="nuevo-cliente"><i class="fa fa-save"></i> Nuevo cliente</button> --}}
+                        <a class="btn btn-success" title="Nuevo Usuario" href="{{ route('gerencial.cobranza.nuevo.cliente') }}"><i class="fa fa-save"></i> Nuevo cliente</a>
                         {{-- <button class="btn btn-primary" data-action="actualizar"><i class="fa fa-refresh"></i> Actualizar</button> --}}
                     </div>
                 </div>

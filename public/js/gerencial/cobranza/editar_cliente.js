@@ -107,6 +107,7 @@ $(document).on('click','.editar-establecimiento',function () {
     $('[data-form="editar-establecimiento"] [name="direccionEstablecimiento"]').val(establecimiento);
     $('[data-form="editar-establecimiento"] [name="horarioEstablecimiento"]').val(horario);
     $('[data-form="editar-establecimiento"] [name="id_establecimiento"]').val($(this).attr('data-key'));
+    // console.log(route_get_distrito);
     $.ajax({
         type: 'get',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -133,7 +134,6 @@ $(document).on('click','.editar-establecimiento',function () {
         console.log(textStatus);
         console.log(errorThrown);
     })
-    console.log(ubigeo +' - '+ horario);
 });
 $(document).on('submit','[data-form="editar-establecimiento"]',function (e) {
     e.preventDefault();
@@ -161,7 +161,7 @@ $(document).on('click','.anular-establecimiento',function () {
     var data_key = $(this).attr('data-key')
     $(this).closest('tr[key="'+data_key+'"]').remove();
 });
-// contacto
+// agregar contacto
 $(document).on('click','.agregar-contactos',function () {
     $('#nuevo-contacto').modal('show');
     $('[data-form="guardar-contacto"]')[0].reset();
@@ -239,6 +239,7 @@ $(document).on('click','.editar-contacto',function () {
             dataType: 'JSON',
             success: function(response){
                 $('[data-form="editar-contacto"] [name="departamento"] option[value="'+response.departamento.id_dpto+'"]').attr("selected",true);
+                html='';
                 $.each(response.provincia_all, function (index, element) {
                     html+='<option value="'+element.id_prov+'">'+element.descripcion+'</option>'
                 });
@@ -302,6 +303,7 @@ $(document).on('click','.anular-contacto',function () {
     var data_key = $(this).attr('data-key');
     $(this).closest('tr[key="'+data_key+'"]').remove();
 });
+// cuenta bancaria
 $(document).on('click','.agregar-cuenta-bancaria',function () {
     $('#nuevo-cuenta-bancaria').modal('show');
     $('[data-form="nuevo-cuenta-bancaria"]')[0].reset();
@@ -382,8 +384,6 @@ $('[data-form="editar-cuenta-bancaria"]').submit(function (e) {
         tipo_cuenta_text = $(this).find('[name="idTipoCuenta"] option:selected').text(),
         moneda_text = $(this).find('[name="idMoneda"] option:selected').text()
         ;
-    console.log(banco_text);
-    console.log(data);
     $('[data-table="lista-cuenta-bancaria"]').find('tr[key="'+data[0].value+'"]').find('td[data-select="banco"]').find('input[name="cuenta_bancaria['+data[0].value+'][banco]"]').val(data[1].value);
     $('[data-table="lista-cuenta-bancaria"]').find('tr[key="'+data[0].value+'"]').find('td[data-select="banco"]').find('label').text(banco_text);
 
@@ -466,7 +466,7 @@ $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
                     confirmButtonText: 'OK'
                 }).then((resultado) => {
                     if (resultado.isConfirmed) {
-                        window.location.href = "cliente";
+                        window.location.href = route_cliente;
                     }
                 })
             }else{
@@ -481,5 +481,5 @@ $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
 
 });
 $(document).on('click','.volver-cliente',function () {
-    window.location.href = "cliente";
+    window.location.href = route_cliente;
 });
