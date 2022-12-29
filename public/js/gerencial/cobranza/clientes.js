@@ -30,7 +30,10 @@ function listarRegistros() {
             {
                 render: function (data, type, row) {
                     html='';
-                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-toggle="tooltip" title="Editar" data-original-title="Editar" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-edit"></i></button>';
+                        // html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-toggle="tooltip" title="Editar" data-original-title="Editar" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-edit"></i></button>';
+
+                        html+='<a href="cliente/'+row['id_contribuyente']+'" class="btn btn-warning btn-flat botonList " data-toggle="tooltip" title="Editar" data-original-title="Editar" ><i class="fas fa-edit"></i></a>';
+
                         html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar-registro" data-toggle="tooltip" title="Anular" data-original-title="Anular" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-trash"></i></button>';
 
                     html+='';
@@ -337,5 +340,8 @@ $(document).on('click','.eliminar-registro',function () {
             }
         }
     });
+
+});
+$(document).on('click','.agregar-establecimiento',function () {
 
 });
