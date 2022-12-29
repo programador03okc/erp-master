@@ -374,7 +374,7 @@ $(document).on('click','.ver-registro',function () {
             $('#tab_datos .distrito').text(' '+response.distrito_first.descripcion);
         }
         $('#tab_datos .tipo_documento').text('');
-        console.log(response.tipo_documento);
+        // console.log(response.tipo_documento);
         if (response.tipo_documento.length>0) {
             $('#tab_datos .tipo_documento').text(' '+response.tipo_documento.descripcion);
         }
