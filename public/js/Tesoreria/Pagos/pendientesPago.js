@@ -579,12 +579,37 @@ function anularAdjuntoTesoreria(obj){
     }
 
 }
+function obteneAdjuntosOrden(id_orden) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url: `listar-archivos-adjuntos-orden/${id_orden}`,
+            dataType: 'JSON',
+            beforeSend: (data) => {
+            // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("show", {
+            //     imageAutoResize: true,
+            //     progress: true,
+            //     imageColor: "#3c8dbc"
+            // });
+        },
+            success(response) {
+                // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                resolve(response);
+            },
+            error: function (err) {
+                // $('#modal-adjuntar-orden #adjuntosDePagos').LoadingOverlay("hide", true);
+                reject(err)
+            }
+        });
+    });
+}
 
 function verAdjuntos(id, codigo) {
     $('#modal-verAdjuntos').modal({
         show: true
     });
     document.querySelector("fieldset[id='fieldsetDatosRequerimiento']").classList.remove('oculto');
+    document.querySelector("fieldset[id='fieldsetDatosOrden']").classList.add('oculto');
     $('[name=codigo_requerimiento_pago]').text(codigo);
     $('#adjuntosCabecera tbody').html('');
     $('#adjuntosDetalle tbody').html('');
@@ -690,7 +715,8 @@ function verAdjuntosOrden(id, codigo) {
         show: true
     });
     document.querySelector("fieldset[id='fieldsetDatosRequerimiento']").classList.add('oculto');
-    
+    document.querySelector("fieldset[id='fieldsetDatosOrden']").classList.remove('oculto');
+
     $('[name=codigo_requerimiento_pago]').text(codigo);
     $('[name=codigo_requerimiento_pago]').text(codigo);
     $('#adjuntosCabecera tbody').html('');
@@ -728,7 +754,43 @@ function verAdjuntosOrden(id, codigo) {
         console.log(errorThrown);
     });
 
+    obteneAdjuntosOrden(id).then((res) => {
 
+        let htmlAdjunto = '';
+        console.log(res);
+        if (res.length > 0) {
+            (res).forEach(element => {
+
+                    htmlAdjunto+= '<tr id="'+element.id_adjunto+'">'
+                        htmlAdjunto+='<td>'
+                            htmlAdjunto+='<a href="/files/logistica/comporbantes_proveedor/'+element.archivo+'" target="_blank">'+element.archivo+'</a>'
+                        htmlAdjunto+='</td>'
+
+                        htmlAdjunto+='<td>'
+                            htmlAdjunto+='<span name="fecha_emision_text">'+element.fecha_emision+'</span><input type="date" class="form-control handleChangeFechaEmision oculto" name="fecha_emision" placeholder="Fecha emisión"  value="'+element.fecha_emision+'">'
+                        htmlAdjunto+='</td>'
+
+                        htmlAdjunto+='<td>'
+                            htmlAdjunto+='<span name="nro_comprobante_text">'+(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:"")+'</span><input type="text" class="form-control handleChangeNroComprobante oculto" name="nro_comprobante"  placeholder="Nro comprobante" value="'+element.nro_comprobante+'">'
+                        htmlAdjunto+='</td>'
+
+                        htmlAdjunto+='<td>'
+                            htmlAdjunto+=''+element.descripcion+''
+                        htmlAdjunto+='</td>'
+                    htmlAdjunto+= '</tr>'
+
+            });
+        }else{
+            htmlAdjunto = `<tr>
+            <td style="text-align:center;" colspan="3">Sin adjuntos para mostrar</td>
+            </tr>`;
+        }
+        $('#body_adjuntos_logisticos').html(htmlAdjunto)
+
+
+    }).catch(function (err) {
+        console.log(err)
+    })
     
     obteneAdjuntosPago(id).then((res) => {
         // console.log(res.data);

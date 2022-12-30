@@ -39,6 +39,23 @@
                             </div>
                         </div>
                     </fieldset>
+                    <fieldset class="group-table" id="fieldsetDatosOrden">
+                        <legend style="border-bottom: 0px solid #e5e5e5;width: 40% !important"><h5>Adjuntos de Orden</h5></legend>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table id="adjuntosDetalle" class="mytable table table-condensed table-bordered table-okc-view">
+                                    <thead>
+                                        <th>Archivo</th>
+                                        <th>Fecha emisión</th>
+                                        <th>Nro comprobante</th>
+                                        <th>Tipo</th>
+                                    </thead>
+                                    <tbody id="body_adjuntos_logisticos"></tbody>
+                                </table>
+                            </div>
+                        </div>
+               
+                    </fieldset>
 
                     <fieldset class="group-table">
                         <legend style="border-bottom: 0px solid #e5e5e5;width: 30%;"><h5>Adjuntos de tesoreria</h5></legend>
