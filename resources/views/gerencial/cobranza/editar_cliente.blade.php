@@ -292,7 +292,7 @@ Cobranzas
                                 <div class="tab-pane" id="tab_4">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <button class="btn btn-success agregar-cuenta-bancaria" type="button"><i class="fa fa-plus"></i> Agregar contactos</button>
+                                            <button class="btn btn-success agregar-cuenta-bancaria" type="button"><i class="fa fa-plus"></i> Agregar cuenta bancaria</button>
                                         </div>
                                     </div>
                                     <div class="row">
