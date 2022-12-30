@@ -895,6 +895,11 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('actualizar-ajuste-estado-requerimiento', 'ComprasPendientesController@actualizarAjusteEstadoRequerimiento');
 
 					Route::post('guardar-observacion-logistica', 'ComprasPendientesController@guardarObservacionLogistica');
+
+					Route::get('retornar-requerimiento-atendido-a-lista-pedientes/{id}', 'ComprasPendientesController@retornarRequerimientoAtendidoAListaPendientes')->name('retornar-requerimiento-atendido-a-lista-pedientes');
+					Route::post('guardar-ajuste-transformacion-requerimiento', 'ComprasPendientesController@guardarAjusteTransformacionRequerimiento')->name('guardar-ajuste-transformacion-requerimiento');
+					Route::get('mostrar-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento');
+
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
@@ -1557,6 +1562,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anularReserva', 'Almacen\Movimiento\ReservasAlmacenController@anularReserva');
 				Route::post('actualizarReserva', 'Almacen\Movimiento\ReservasAlmacenController@actualizarReserva');
 				Route::get('actualizarReservas', 'Almacen\Movimiento\ReservasAlmacenController@actualizarReservas');
+				Route::post('actualizarEstadoReserva', 'Almacen\Movimiento\ReservasAlmacenController@actualizarEstadoReserva');
 			});
 
 			Route::group(['as' => 'requerimientos-almacen.', 'prefix' => 'requerimientos-almacen'], function () {

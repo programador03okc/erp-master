@@ -1635,4 +1635,91 @@ class ComprasPendientesController extends Controller
             return response()->json(['estado'=>$tipoEstado, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
+    public function retornarRequerimientoAtendidoAListaPendientes($idRequerimiento){
+        DB::beginTransaction();
+        try {
+            $mensaje = '';
+            $tipoEstado = '';
+
+            $requerimiento= Requerimiento::find($idRequerimiento);
+            if($requerimiento){
+                $requerimiento->estado = 15; // atención parcial
+                $requerimiento->save();
+                $tipoEstado = 'success';
+                $mensaje = "El requerimiento se paso a pendientes";
+
+            }else{
+                $tipoEstado = 'warning';
+                $mensaje = "Hubo un problema, no se pudo actualziar el requerimiento";
+
+            }
+
+            DB::commit();
+
+            return response()->json(['estado'=>$tipoEstado,  'mensaje'=>$mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['estado'=>$tipoEstado, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
+
+    public function guardarAjusteTransformacionRequerimiento(Request $request){
+        DB::beginTransaction();
+        try {
+            $mensaje = '';
+            $tipoEstado = '';
+            $detalleRequerimintoConTransformacion=false;
+
+
+
+            if($request->idRequerimiento>0){
+                $requerimiento= Requerimiento::find($request->idRequerimiento);
+
+                if(isset($request->checkItem) && count($request->checkItem)>0){
+                    foreach ($request->checkItem as $key => $idDetalleRequerimiento) {
+                        if($idDetalleRequerimiento>0){
+                            $detalleRequerimiento= DetalleRequerimiento::find($idDetalleRequerimiento);
+                            $detalleRequerimiento->tiene_transformacion= true;
+                            $detalleRequerimiento->save();
+                            $detalleRequerimintoConTransformacion=true;
+                        }
+                    }
+                }else{
+                    $todoDetalleRequerimiento = DetalleRequerimiento::where('id_requerimiento',$request->idRequerimiento)->get();
+                    foreach ($todoDetalleRequerimiento as $key => $item) {
+                        $detalleRequerimiento= DetalleRequerimiento::find($item->id_detalle_requerimiento);
+                        $detalleRequerimiento->tiene_transformacion= false;
+                        $detalleRequerimiento->save();
+                    }
+                }
+
+                if($detalleRequerimintoConTransformacion==true){
+                    $requerimiento->tiene_transformacion =true;
+                    $requerimiento->save();
+                    $tipoEstado = 'success';
+                    $mensaje = "El requerimiento se actualizó, tiene transformación";
+    
+                }else{
+                    $requerimiento->tiene_transformacion =false;
+                    $requerimiento->save();
+                    $tipoEstado = 'success';
+                    $mensaje = "El requerimiento se actualizó, no tiene transformación";
+                    
+                }
+                
+
+            }else{
+                $tipoEstado = 'warning';
+                $mensaje = "Hubo un problema, no se encontro un ID valido";
+
+            }
+
+            DB::commit();
+
+            return response()->json(['estado'=>$tipoEstado,  'mensaje'=>$mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['estado'=>$tipoEstado, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+    }
 }

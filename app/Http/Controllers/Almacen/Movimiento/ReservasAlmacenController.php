@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Debugbar;
+use Exception;
 
 class ReservasAlmacenController extends Controller
 {
@@ -191,4 +192,28 @@ class ReservasAlmacenController extends Controller
             'lista_reservas_actualizadas' => $lista_reservas_actualizadas
         ]);
     }
+
+    function actualizarEstadoReserva(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $mensaje = '';
+            $tipoEstado = '';
+            $rspta = DB::table('almacen.alm_reserva')
+            ->where('id_reserva', $request->id_reserva)
+            ->update([
+                'estado' => $request->id_estado,
+            ]);
+
+            $tipoEstado = 'success';
+            $mensaje = "El estado de la reserva fue actualizada";
+
+            DB::commit();
+
+            return response()->json(['estado'=>$tipoEstado,  'mensaje'=>$mensaje]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['estado'=>$tipoEstado, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
+        }
+        }
 }
