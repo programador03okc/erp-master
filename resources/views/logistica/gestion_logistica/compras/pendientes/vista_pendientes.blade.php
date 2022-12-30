@@ -154,6 +154,7 @@ Requerimientos pendientes
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_orden_de_requerimiento')
 
 @include('logistica.gestion_logistica.compras.pendientes.modal_gestionar_estado_requerimiento')
+@include('logistica.gestion_logistica.compras.pendientes.modal_ajustar_transformacion_requerimiento')
 
 
 @endsection

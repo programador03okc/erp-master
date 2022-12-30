@@ -81,6 +81,7 @@ Reservas de almacén
 </div>
 @endif
 @include('almacen.reservas.editarReserva')
+@include('almacen.reservas.ajustarEstadoReserva')
 @endsection
 
 @section('scripts')

@@ -88,8 +88,21 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickVerDetalleRequerimiento", (e) => {
             this.verDetalleRequerimientoAtendidos(e.currentTarget);
         });
-
-
+        $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickRetornarAListaPendientes", (e) => {
+            this.retornarAListaPendientes(e.currentTarget);
+        });
+        $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickAjustarTransformacion", (e) => {
+            this.ajustarTransformacion(e.currentTarget);
+        });
+        $('#modal_ajustar_transformacion_requerimiento').on("click", "input.handleCheckTransformacion", (e) => {
+            this.checkTransformacionCabecera(e.currentTarget);
+        });
+        $('#modal_ajustar_transformacion_requerimiento').on("click", "input.handleCheckItemAjustarTransformacion", (e) => {
+            this.itemAjustarTransformacion(e.currentTarget);
+        });
+        $('#modal_ajustar_transformacion_requerimiento').on("click", "button.handleClickActualizarAjusteTransformacionRequerimiento", (e) => {
+            this.actualizarAjusteTransformacionRequerimiento();
+        });
 
         $('body').on("click", "span.handleClickModalVerOrdenDeRequerimiento", (e) => { // tab para lista pendiente tab lista atendidos
             this.modalVerOrdenDeRequerimiento(e.currentTarget);
@@ -948,6 +961,8 @@ class RequerimientoPendienteView {
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnVerAdjuntosModal = (array_accesos.find(element => element === 234)?'<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>':'');
                             let btnAtenderAlmacen = '';
+                            let btnRetornarAListaPendientes = '<button type="button" class="btn btn-default btn-xs handleClickRetornarAListaPendientes" style="color:red;" name="btnRetornarAListaPendientes" title="Retornar a lista de pendiente" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-arrow-left fa-xs"></i></button>';
+                            let btnAjustarTransformacion = '<button type="button" class="btn btn-default btn-xs handleClickAjustarTransformacion" style="color:red;" name="btnAjustarTransformacion" title="Ajustar transformación" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-random"></i></button>';
                             // if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
                             //     btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
 
@@ -978,9 +993,9 @@ class RequerimientoPendienteView {
                             let closeDiv = '</div>';
 
                             if (row.cantidad_tipo_servicio > 0) {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal+ (([17,27,1,3,77].includes(auth_user.id_usuario))? (btnRetornarAListaPendientes+btnAjustarTransformacion):'') + closeDiv);
                             } else {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal+ (([17,27,1,3,77].includes(auth_user.id_usuario))? (btnRetornarAListaPendientes+btnAjustarTransformacion):'') + closeDiv);
                             }
                         }
 
@@ -1220,6 +1235,192 @@ class RequerimientoPendienteView {
         }
     }
 
+    retornarAListaPendientes(obj) {
+        let tr = obj.closest('tr');
+        var idRequerimiento = obj.dataset.idRequerimiento;
+        var codigRequerimiento = obj.dataset.codigRequerimiento;
+
+        Swal.fire({
+            title: 'Esta seguro de retornar el requerimiento '+codigRequerimiento+' a la lista de pendientes?',
+            text: "El nuevo estado de requerimiento sera: atención parcial",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, retornar'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.requerimientoPendienteCtrl.retornarRequerimientoAtendidoAListaPendientes(idRequerimiento).then((res) => {
+                    if (res.estado == 'success') {
+                        tr.remove();
+                        Lobibox.notify('success', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: res.mensaje
+                        });
+
+                    } else {
+                        Swal.fire(
+                            'Error en el servidor',
+                            res.mensaje,
+                            res.estado
+                        );
+                    }
+
+                });
+            }
+        })
+
+    }
+    ajustarTransformacion(obj) {
+        let tr = obj.closest('tr');
+        var idRequerimiento = obj.dataset.idRequerimiento;
+        var codigRequerimiento = obj.dataset.codigoRequerimiento;
+
+        $('#modal_ajustar_transformacion_requerimiento').modal({
+            show: true,
+            backdrop: 'static'
+        });
+
+        this.requerimientoPendienteCtrl.obtenerRequerimiento(idRequerimiento).then((res) => {
+            if(res.tiene_transformacion == true){
+                document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] input[name='transformacionCabecera']").checked= true;
+                document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] i[id='iconoTransformacion']").classList.add('fa-random');
+                document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='textoTieneONoTransformacion']").innerHTML="<small>(Con transformación)</small>";
+    
+            }else{
+                document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] input[name='transformacionCabecera']").checked= false;
+                document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] i[id='iconoTransformacion']").classList.remove('fa-random');
+                document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='textoTieneONoTransformacion']").innerHTML="<small>(Sin transformación)</small>";
+    
+            }
+        });
+
+        document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] input[name='idRequerimiento']").value= idRequerimiento;
+        document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='codigoRequerimiento']").textContent= codigRequerimiento;
+        document.querySelector("table[id='tablaListaItemsParaAjusteTransformacion'] tbody").innerHTML='';
+        this.requerimientoPendienteCtrl.obtenerDetalleRequerimientos(idRequerimiento).then((res) => {
+            res.map((element, index) => {
+                // console.log(element);
+                    document.querySelector("table[id='tablaListaItemsParaAjusteTransformacion'] tbody").insertAdjacentHTML('beforeend', `
+                    <tr style="text-align:center;">
+                    <td><span id="itemTieneTransformacion">${element.tiene_transformacion==true?'<i class="fas fa-random" style="color:red;"></i>':''}</span> ${element.producto_part_number??''}</td>
+                    <td>${element.producto_codigo??''}</td>
+                    <td>${element.producto_codigo_softlink??''}</td>
+                    <td style="text-align: left;">${element.producto_descripcion??element.descripcion}</td>
+                    <td>${element.estado_doc??''}</td>
+                    <td><input type="checkbox" name="checkItem[]" value="${element.id_detalle_requerimiento}" class="handleCheckItemAjustarTransformacion" data-idDetalleRequerimiento="${element.id_detalle_requerimiento}" ${element.tiene_transformacion==true?'checked':''}></td>
+                `);
+            })
+
+        }).catch((err) => {
+            console.log(err)
+            Swal.fire(
+                'Error en el servidor al intentar obtener los items del requerimiento',
+                err,
+                'error'
+            );
+        })
+ 
+
+    }
+
+    checkTransformacionCabecera(obj){
+        if(obj.checked==true){
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] i[id='iconoTransformacion']").classList.add('fa-random');
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='textoTieneONoTransformacion']").innerHTML="<small>(Con transformación)</small>";
+        }else{
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] i[id='iconoTransformacion']").classList.remove('fa-random');
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='textoTieneONoTransformacion']").innerHTML="<small>(Sin transformación)</small>";
+        }
+    }
+
+    itemAjustarTransformacion(obj){
+        
+        if(obj.checked==true){
+            
+            obj.closest("tr").children[0].querySelector("span[id='itemTieneTransformacion']").innerHTML='<i class="fas fa-random" style="color:red;"></i>'
+        }else{
+            obj.closest("tr").children[0].querySelector("span[id='itemTieneTransformacion']").innerHTML='';
+        }
+    }
+
+    actualizarAjusteTransformacionRequerimiento(){
+        const data =  $('#form-ajustar-transformacion-requerimiento').serializeArray();
+        if(data.length >0){
+            $.ajax({
+                type: 'POST',
+                url: 'guardar-ajuste-transformacion-requerimiento',
+                data: data,
+                beforeSend: (data) => { // Are not working with dataType:'jsonp'
+
+                    $('#modal_ajustar_transformacion_requerimiento .modal-content').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                },
+                success: (response) => {
+                    if (response.estado == 'success') {
+                        $('#modal_ajustar_transformacion_requerimiento .modal-content').LoadingOverlay("hide", true);
+
+                        Lobibox.notify('success', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `${response.mensaje}`
+                        });
+
+                        $('#modal_ajustar_transformacion_requerimiento').modal('hide');
+
+                        
+                        if(this.obtenerTabActivo() =='handleClickTabRequerimientosPendientes'){
+                            this.tabRequerimientosPendientes();
+
+                        }else if(this.obtenerTabActivo()=='handleClickTabRequerimientosAtendidos'){
+                            this.tabRequerimientosAtendidos();
+                        }
+
+                    } else {
+                        $('#modal_ajustar_transformacion_requerimiento .modal-content').LoadingOverlay("hide", true);
+                        // console.log(response);
+                        Swal.fire(
+                            '',
+                            response.mensaje,
+                            response.tipo_estado
+                        );
+
+                        $('#modal_ajustar_transformacion_requerimiento').modal('hide');
+
+                    }
+                },
+                fail: (jqXHR, textStatus, errorThrown) => {
+                    $('#modal_ajustar_transformacion_requerimiento .modal-content').LoadingOverlay("hide", true);
+                    Swal.fire(
+                        '',
+                        errorThrown,
+                        'error'
+                    );
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        }else{
+            Swal.fire(
+                'No hay nada que actualizar',
+                err,
+                'error'
+            );
+        }
+    }
     buildFormatListaRequerimientosPendientes(obj, table_id, id, row) {
         obj.setAttribute('disabled', true);
 

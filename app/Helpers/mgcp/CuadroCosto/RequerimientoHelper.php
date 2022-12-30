@@ -1,12 +1,12 @@
 <?php
-
-
 namespace App\Helpers\mgcp\CuadroCosto;
 
 use App\Mail\mgcp\CuadroCosto\AprobacionCuadro;
 use App\Mail\mgcp\CuadroCosto\ErrorReplicarRequerimiento;
 use App\Mail\mgcp\CuadroCosto\RespuestaSolicitud;
 use App\Mail\mgcp\CuadroCosto\SolicitudAprobacion;
+use App\Models\Administracion\Aprobacion;
+use App\Models\Administracion\Documento;
 use App\Models\Administracion\Periodo;
 use App\Models\Almacen\DetalleOrdenCompra;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -14,6 +14,7 @@ use App\Models\Almacen\OrdenCompra;
 use App\Models\Almacen\Producto;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\RequerimientoObservacion;
+use App\Models\Almacen\Reserva;
 use App\Models\Almacen\Subcategoria;
 use App\Models\Comercial\Cliente;
 use App\Models\Configuracion\Usuario;
@@ -40,7 +41,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use stdClass;
+use Debugbar;
+
 
 class RequerimientoHelper
 {
@@ -52,19 +56,20 @@ class RequerimientoHelper
     /**
      * Devuelve el requerimiento creado, el reemplazado y el estado (sin_cambios, nuevo, reemplazo)
      */
+
     public function replicarPorCuadroCosto($idOportunidad)
     {
         $cuadro = CuadroCosto::where('id_oportunidad', $idOportunidad)->first();
+
         try {
             $respuesta = new stdClass();
-
             $oportunidad = $cuadro->oportunidad;
             $ordenCompra = OrdenCompraPropiaView::where('id_oportunidad', $idOportunidad)->first();
-            $requerimiento = Requerimiento::where('id_cc', $cuadro->id)->orderBy('id_requerimiento', 'DESC')->first();
+            $requerimiento = Requerimiento::where([['id_cc', $cuadro->id], ['id_tipo_requerimiento', 1]])->orderBy('id_requerimiento', 'DESC')->first();
             //$crearRequerimiento = false;
+
             DB::beginTransaction();
             if ($requerimiento == null) { //Si requerimiento no existe
-
                 /*if ($respuesta->requerimiento->estado == self::ID_ANULADO_AGIL) { //Y está anulado
                     $crearRequerimiento = true; //Crear nuevo requerimiento
                     $respuesta->reemplazado = $respuesta->requerimiento;
@@ -74,30 +79,44 @@ class RequerimientoHelper
                     $respuesta->estado = 'sin_cambios';
                     return $respuesta;
                 }*/
-                
+
                 $requerimiento = $this->crearRequerimiento($oportunidad, $ordenCompra, $cuadro);
                 //die("OKA");
                 $this->crearDetalles($requerimiento, $cuadro);
                 $respuesta->estado = 'nuevo';
-                
             } else {
-
                 $respuesta->estado = $this->actualizarRequerimiento($requerimiento, $cuadro);
-
                 //$crearRequerimiento = true; //Requerimiento no existe y se debe crear uno
                 //$respuesta->reemplazado = null;
             }
-            $this->crearHistorialAprobacion($requerimiento, $cuadro);
+            $this->crearHistorialAprobacion($requerimiento, $cuadro, 1); // referente a la tabla administracion.adm_vobo  1=Aprobado
             DB::commit();
             $respuesta->requerimiento = $requerimiento;
-            /*if ($crearRequerimiento) {
-                
-            }*/
+
+            /*if ($crearRequerimiento) { }*/
+
             return $respuesta;
         } catch (Exception $ex) {
             DB::rollBack();
             //Envía por correo el error generado para poder corregirlo
             // Mail::to(config('global.adminEmail'))->send(new ErrorReplicarRequerimiento($cuadro, $ex->getMessage()));
+            return null;
+        }
+    }
+
+    public function retirarAprobacionCuadroCosto($cuadro)
+    {
+        try {
+            $requerimiento = Requerimiento::where('id_cc', $cuadro->id)->orderBy('id_requerimiento', 'desc')->first();
+            if ($requerimiento != null) {
+                $requerimiento->estado_anterior=$requerimiento->estado;
+                $requerimiento->estado=39;//En pausa
+                $requerimiento->save();
+            }
+
+            $this->crearHistorialAprobacion($requerimiento, $cuadro, 6, 'Retiro de aprobación por actualización de CDP'); // referente a la tabla administracion.adm_vobo  6=Pausado
+            return $requerimiento;
+        } catch (Exception $e) {
             return null;
         }
     }
@@ -108,21 +127,20 @@ class RequerimientoHelper
         $marcarRequerimientoPorRegularizar = false;
         //Analizar las filas del cuadro
         $filasCuadro = CcAmFila::where('id_cc_am', $cuadro->id)->orderBy('id', 'asc')->get();
+
         foreach ($filasCuadro as $filaCuadro) {
             //Obtiene las filas base del cuadro
-            $detalleReq = DetalleRequerimiento::where('id_cc_am_filas', $filaCuadro->id)->where('tiene_transformacion', false)->first();
+            $detalleReq = DetalleRequerimiento::where('id_cc_am_filas', $filaCuadro->id)->where('estado', '!=', 7)->where('tiene_transformacion', false)->first();
             if ($detalleReq == null) {
-                //Crea la fila del requerimiento
-                $detalleReq = $this->crearFilaRequerimiento($requerimiento, $cuadro, $filaCuadro);
-                $detalleReq->estado = self::ID_ESTADO_REGULARIZAR;
-                $detalleReq->save();
-                $marcarRequerimientoPorRegularizar = true;
-                $estado = 'actualizado';
+                //Crea la fila del requerimiento, si es un item nuevo del cdp sin importar si tiene orden/reserva el requerimiento lo crear con estado 1
+                    $detalleReq = $this->crearFilaRequerimiento($requerimiento, $cuadro, $filaCuadro);
+                    $detalleReq->save();
+                    $estado = 'actualizado';
+                // }
             } else {
                 //Actualizar fila del requerimiento
                 if ($detalleReq->cantidad != $filaCuadro->cantidad || $detalleReq->descripcion != $filaCuadro->descripcion || $detalleReq->part_number != $filaCuadro->part_no) {
-
-                    if ($detalleReq->id_producto != null) { //Si la fila estaba mapeada, que se marque por regularizar, caso contrario que se actualice la fila sin notificar al usuario
+                    if ($detalleReq->id_producto != null && $this->ItemConOrdenOReserva($detalleReq->id_detalle_requerimiento)==true) { //Si la fila estaba mapeada y tiene orden o reserva, que se marque por regularizar, caso contrario que se actualice la fila sin notificar al usuario
                         $detalleReq->estado = self::ID_ESTADO_REGULARIZAR;
                         $marcarRequerimientoPorRegularizar = true;
                     } else {
@@ -130,20 +148,22 @@ class RequerimientoHelper
                         $detalleReq->descripcion = $filaCuadro->descripcion;
                         $detalleReq->part_number = $filaCuadro->part_no;
                     }
+
                     $detalleReq->save();
                     $estado = 'actualizado';
                 }
+
                 //Busca si tiene transformación
-                $transformacionDetalleReq = DetalleRequerimiento::where('id_cc_am_filas', $filaCuadro->id)->where('tiene_transformacion', true)->first();
+                $transformacionDetalleReq = DetalleRequerimiento::where('id_cc_am_filas', $filaCuadro->id)->where('estado', '!=', 7)->where('tiene_transformacion', true)->first();
                 if ($filaCuadro->tieneTransformacion()) {
                     //Si la fila de cuadro tiene transformación y el requerimento no tiene, crear
                     if ($transformacionDetalleReq == null) {
                         $this->crearDetallePorTransformacion($filaCuadro, $requerimiento);
                     } else { //Caso contrario, actualizar
-
                         if ($transformacionDetalleReq->cantidad != $filaCuadro->cantidad || $transformacionDetalleReq->descripcion != $filaCuadro->descripcion_producto_transformado || $transformacionDetalleReq->part_number != $filaCuadro->part_no_producto_transformado) {
 
-                            if ($transformacionDetalleReq->id_producto != null) { //Si la fila estaba mapeada, que se marque por regularizar, caso contrario que se actualice la fila sin notificar al usuario
+                            if ($transformacionDetalleReq->id_producto != null && $this->ItemConOrdenOReserva($transformacionDetalleReq->id_detalle_requerimiento)==true) { //Si la fila estaba mapeada y  tiene orden o reserva, que se marque por regularizar, caso contrario que se actualice la fila sin notificar al usuario
+
                                 $transformacionDetalleReq->estado = self::ID_ESTADO_REGULARIZAR;
                                 $marcarRequerimientoPorRegularizar = true;
                             } else {
@@ -165,9 +185,10 @@ class RequerimientoHelper
                 }
             }
         }
+
         //Analizar las filas del requerimiento
         $filasRequerimiento = DetalleRequerimiento::join('almacen.alm_req', 'alm_req.id_requerimiento', 'alm_det_req.id_requerimiento')
-            ->where('id_cc', $cuadro->id)->where('alm_det_req.tiene_transformacion', false)->get();
+            ->where('id_cc', $cuadro->id)->where('alm_det_req.estado', '!=', 7)->where('alm_det_req.tiene_transformacion', false)->get();
 
         foreach ($filasRequerimiento as $filaReq) {
             $filaCuadro = CcAmFila::find($filaReq->id_cc_am_filas);
@@ -178,16 +199,47 @@ class RequerimientoHelper
                 $marcarRequerimientoPorRegularizar = true;
             }
         }
+
         if ($marcarRequerimientoPorRegularizar) {
             $requerimiento->estado = self::ID_ESTADO_REGULARIZAR;
             $estado = 'por_regularizar';
         } else {
-            $requerimiento->estado = $requerimiento->estado_anterior;
+            $requerimiento->estado = $requerimiento->estado_anterior ?? $requerimiento->estado;
         }
+
         $requerimiento->save();
         return $estado;
     }
 
+    private function RequerimientoConOrdenOReserva($idRequerimiento)
+    {
+        $tieneOrdenesReservasActivas=false;
+        $detalleRequerimiento= DetalleRequerimiento::where('id_requerimiento',$idRequerimiento)->get();
+
+        foreach ($detalleRequerimiento as $dr) {
+            $itemTieneOrdenOReserva= $this->ItemConOrdenOReserva($dr->id_detalle_requerimiento);
+            if($itemTieneOrdenOReserva ==true){
+                $tieneOrdenesReservasActivas=true;
+            }
+        }
+
+        return $tieneOrdenesReservasActivas;
+    }
+
+    private function ItemConOrdenOReserva($idDetalleRequerimiento)
+    {
+        $tieneOrdenesReservasActivas=false;
+        $cantidadDetalleOrdenes= DetalleOrdenCompra::where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])->count();
+        $cantidadReservas = Reserva::where([['id_detalle_requerimiento',$idDetalleRequerimiento],['estado','!=',7]])->count();
+
+        if($cantidadDetalleOrdenes > 0 || $cantidadReservas > 0){
+            $tieneOrdenesReservasActivas=true;
+        } 
+
+        return $tieneOrdenesReservasActivas;
+    }
+
+    
     private function crearRequerimiento($oportunidad, $ordenCompra, $cuadro)
     {
         $idUsuario = $this->obtenerIdUsuario($oportunidad->id_responsable);
@@ -198,12 +250,15 @@ class RequerimientoHelper
         $requerimiento->fecha_requerimiento = new Carbon();
         $concepto = ($ordenCompra == null ? '' : 'O/C: ' . $ordenCompra->nro_orden . ' / ');
         $requerimiento->concepto = trim($concepto . ' CDP: ' . $oportunidad->codigo_oportunidad . ' / CLIENTE: ' . $oportunidad->entidad->nombre);
+        
         /*if ($respuesta->reemplazado == null) {
             $respuesta->estado = 'nuevo';
         } else {
             $requerimiento->concepto .= ' (REEMPLAZA A ' . $respuesta->reemplazado->codigo . ')';
-            $respuesta->estado = 'reemplazado';
+
+          $respuesta->estado = 'reemplazado';
         }*/
+
         $requerimiento->id_grupo = 2; //2 es Comercial
         $requerimiento->estado = 2;
         $requerimiento->occ_softlink = ($ordenCompra == null ? null : $ordenCompra->occ);
@@ -215,12 +270,18 @@ class RequerimientoHelper
         $requerimiento->id_empresa = $ordenCompra == null ? 1 : $ordenCompra->id_empresa;
         $requerimiento->id_periodo = $this->obtenerPeriodo($requerimiento->fecha_requerimiento->year)->id_periodo;
         $requerimiento->id_sede = $ordenCompra == null ? 4 : $this->obtenerIdSede($ordenCompra->id_empresa); //sede de la empresa de donde viene el requerimiento
+
         $requerimiento->id_cliente = $this->obtenerCliente($oportunidad->id_entidad)->id_cliente;
         //die("OKA");
+
         $requerimiento->tipo_cliente = 2; //Cliente persona jurídica
         $requerimiento->direccion_entrega = $ordenCompra == null ? 'CONSULTAR CON EL CORPORATIVO' : $ordenCompra->lugar_entrega;
 
-        $requerimiento->id_almacen = $ordenCompra == null ? 2 : $this->obtenerIdAlmacen($requerimiento->id_sede); //id del almacen que va a atender con id_sede
+
+        //id del almacen que va a atender
+            //$requerimiento->id_almacen = $ordenCompra == null ? 2 : $this->obtenerIdAlmacen($ordenCompra->id_empresa);
+        //id del almacen que va a atender con id_sede
+        $requerimiento->id_almacen = $ordenCompra == null ? 2 : $this->obtenerIdAlmacen($requerimiento->id_sede);
         $requerimiento->confirmacion_pago = true;
         $requerimiento->fecha_entrega = ($ordenCompra == null ? (new Carbon()) : $ordenCompra->fecha_entrega);
         $requerimiento->id_cc = $cuadro->id;
@@ -228,39 +289,57 @@ class RequerimientoHelper
         $requerimiento->division_id = self::ID_DIVISION_UCORP;
         //$requerimiento->save();
         //$requerimiento->codigo = Requerimiento::crearCodigo(1, 0);
+
         $requerimiento->save();
         $requerimiento->codigo = Requerimiento::crearCodigo($requerimiento->id_tipo_requerimiento, $requerimiento->id_grupo, $requerimiento->id_requerimiento);
+
         $requerimiento->save();
+        $this->crearDocumentoReferencia($requerimiento);
         return $requerimiento;
     }
 
-    private function crearHistorialAprobacion($requerimiento, $cuadro)
+    private function crearDocumentoReferencia($requerimiento)
     {
-        $ultimaSolicitudCc = CcSolicitud::where('id_cc', $cuadro->id)->orderBy('id', 'DESC')->first();
-        $observacion = new RequerimientoObservacion();
-        $observacion->id_requerimiento = $requerimiento->id_requerimiento;
-        $observacion->accion = 'APROBADO';
-        $observacion->descripcion = $ultimaSolicitudCc->comentario_aprobador;
-        $observacion->id_usuario = $this->obtenerIdUsuario($ultimaSolicitudCc->enviada_a);
-        $observacion->fecha_registro = new Carbon();
-        $observacion->save();
+        if($requerimiento){
+            $documento = new Documento();
+            $documento->id_tp_documento = 1;
+            $documento->codigo_doc = $requerimiento->codigo??'';
+            $documento->id_doc = $requerimiento->id_requerimiento;
+            $documento->save();
+        }
     }
 
-    /*private function crearHistorialAnulacion(Requerimiento $requerimiento)
-    {
-        $observacion = new RequerimientoObservacion();
-        $observacion->id_requerimiento = $requerimiento->id_requerimiento;
-        $observacion->accion = 'ANULADO';
-        $observacion->descripcion = 'Anulado de forma automática por reaprobación de cuadro de presupuesto (MGC)';
-        $observacion->id_usuario = $requerimiento->id_usuario;
-        $observacion->fecha_registro = new Carbon();
-        $observacion->save();
-    }*/
 
-    /**
-     * Devuelve el ID del usuario en Agile usando el ID de usuario del MGC. En caso el usuario del MGC no esté registrado en Agile, se utiliza el ID del usuario de Agile asignado para el MGC
-     * @param int $idUsuario ID de usuario en MGC
-     */
+
+    private function crearHistorialAprobacion($requerimiento, $cuadro, $tipoAprobacion, $comentario = null)
+    {
+        $ultimaSolicitudCc = CcSolicitud::where('id_cc', $cuadro->id)->orderBy('id', 'DESC')->first();
+
+        if ($comentario != null) {
+            $comentarioDesc = $comentario;
+        } else {
+            $comentarioDesc = $ultimaSolicitudCc->comentario_aprobador;
+        }
+
+        $documento = Documento::where("id_doc",$requerimiento->id_requerimiento)->first();
+
+        if($documento && $documento->id_doc_aprob >0){
+
+            // Debugbar::info($this->obtenerIdUsuario($idUsuario));
+            $aprobacion = new Aprobacion();
+            $aprobacion->id_flujo=null;
+            $aprobacion->id_doc_aprob=$documento->id_doc_aprob;
+            $aprobacion->id_vobo=$tipoAprobacion; //positble valores => 1=Aprobado, 2=Demegado, 3=Observado, 5=Revisado, 6=Pausado
+            $aprobacion->id_usuario= $this->obtenerIdUsuario($ultimaSolicitudCc->enviada_a);
+            $aprobacion->id_usuario= null;
+            $aprobacion->fecha_vobo=new Carbon();
+            $aprobacion->detalle_observacion=$comentarioDesc;
+            $aprobacion->id_rol=null;
+            $aprobacion->tiene_sustento=null;
+            $aprobacion->save();
+        }
+    }
+
     private function obtenerIdUsuario($idUsuario): int
     {
         //Usuario por defecto en el sistema Agile en caso que no exista el usuario buscado
@@ -270,6 +349,7 @@ class RequerimientoHelper
             return self::ID_USUARIO_MGCP; //Usuario MGCP
         } else {
             return $usuarioAgil->id_usuario;
+
             /*$postulante = Postulante::where('id_persona', $persona->id_persona)->first();
             if ($postulante == null) {
                 return self::ID_USUARIO_MGCP;
@@ -292,38 +372,46 @@ class RequerimientoHelper
     /**
      * Obtiene la ID de la sede en Lima de la empresa especificada
      */
+
     private function obtenerIdSede($idEmpresa)
     {
         $id = null;
         switch ($idEmpresa) {
             case 1:
                 $id = 4;
-                break;
+            break;
+
             case 2:
                 $id = 10;
-                break;
+            break;
+
             case 3:
                 $id = 11;
-                break;
+            break;
+
             case 4:
                 $id = 12;
-                break;
+            break;
+
             case 5:
                 $id = 13;
-                break;
+            break;
+
             case 6:
                 $id = 14;
-                break;
+            break;
         }
         return $id;
     }
 
+
     /**
-     * Obtiene el ID del almacén en Lima de la empresa especificada
+     * Obtiene el ID del almacén por Sede
      */
+
     private function obtenerIdAlmacen($idSede)
     {
-    $almacenSeleccionado= DB::table('almacen.alm_almacen')
+        $almacenSeleccionado= DB::table('almacen.alm_almacen')
             ->select('alm_almacen.id_almacen')
             ->where([
                 ['alm_almacen.estado', '!=', 7],
@@ -337,6 +425,7 @@ class RequerimientoHelper
     private function crearDetalles($cabecera, $cuadro)
     {
         $filasCuadro = CcAmFila::where('id_cc_am', $cabecera->id_cc)->orderBy('id', 'asc')->get();
+
         foreach ($filasCuadro as $fila) {
             $this->crearFilaRequerimiento($cabecera, $cuadro, $fila);
         }
@@ -345,6 +434,7 @@ class RequerimientoHelper
     private function crearFilaRequerimiento($cabecera, $cuadro, $filaCuadro)
     {
         $proveedorFila = $filaCuadro->amProveedor;
+
         $detalle = new DetalleRequerimiento();
         $detalle->id_requerimiento = $cabecera->id_requerimiento;
         $detalle->cantidad = $filaCuadro->cantidad ?? 0;
@@ -356,14 +446,19 @@ class RequerimientoHelper
         $detalle->id_moneda = 2; //siempre en dólares 
         $detalle->tiene_transformacion = false; //False son los productos base
         $detalle->centro_costo_id = $cuadro->id_centro_costo;
+
         $objProducto = $this->obtenerProducto($filaCuadro->marca, $filaCuadro->part_no);
-        $detalle->id_producto = $objProducto == null ? null : $objProducto->id_producto; //Mapeo de producto si es que existe en el catálogo de Agile. El MGC no lo crea de forma automática
+
+        $detalle->id_producto = $objProducto == null ? null : $objProducto->id_producto; //Mapeo de producto si es que existe en el catálogo de Agil. El MGC no lo crea de forma automática
+
         $detalle->proveedor_id = $proveedorFila == null ? null : $this->obtenerProveedor($proveedorFila->id_proveedor)->id_proveedor;
         $detalle->precio_unitario = $proveedorFila == null ? 0 : ($proveedorFila->precio / ($proveedorFila->moneda == 'd' ? 1 :  $cuadro->tipo_cambio));
+
         $detalle->part_number = $filaCuadro->part_no;
         $detalle->descripcion = $filaCuadro->descripcion;
 
         $detalle->entrega_cliente = ($filaCuadro->tieneTransformacion() == false && (CcFilaMovimientoTransformacion::where('id_fila_ingresa', $filaCuadro->id)->first() == null));
+
         $detalle->save();
         if ($filaCuadro->tieneTransformacion()) {
             $this->crearDetallePorTransformacion($filaCuadro, $cabecera);
@@ -385,13 +480,16 @@ class RequerimientoHelper
         $detalle->tiene_transformacion = true; //$fila->tieneTransformacion();
         $detalle->part_number = $fila->part_no_producto_transformado;
         $detalle->descripcion = $fila->descripcion_producto_transformado;
+
         //$detalle->id_producto = $this->obtenerProducto($fila->marca_producto_transformado, $fila->descripcion_producto_transformado, $fila->part_no_producto_transformado)->id_producto;
+
         $detalle->proveedor_id = null;
         $detalle->precio_unitario = 0;
         $detalle->entrega_cliente = true;
         //$detalle->descripcion_adicional="PRODUCTO TRANSFORMADO";
         $detalle->save();
     }
+
 
     private function obtenerProveedor($idProveedor)
     {
@@ -405,7 +503,9 @@ class RequerimientoHelper
             $contribuyente->transportista = false;
             $contribuyente->save();
         }
+
         $proveedorAgile = \App\Models\Logistica\Proveedor::where('id_contribuyente', $contribuyente->id_contribuyente)->first();
+
         if ($proveedorAgile == null) {
             $proveedorAgile = new \App\Models\Logistica\Proveedor();
             $proveedorAgile->id_contribuyente = $contribuyente->id_contribuyente;
@@ -421,14 +521,17 @@ class RequerimientoHelper
      * @param string $marca Marca (subcategoría) del producto
      * @param string $nroParte Número de parte del producto
      */
+
     private function obtenerProducto($marca, $nroParte)
     {
         //No busca productos si no tienen Nro. de parte
         if (empty($nroParte)) {
             return null;
         }
+
         $objMarca = $this->obtenerMarca(mb_strtoupper($marca));
         //Si la marca no está registrada en la BD, se asume que el producto no está registrado
+
         if ($objMarca == null) {
             return null;
         } else {
@@ -440,49 +543,26 @@ class RequerimientoHelper
      * Devuelve un objeto del tipo Subcategoría si se encuentra la marca o NULL si no se encuentra en la BD
      * @param string $nombre Nombre de la marca a buscar
      */
+
     private function obtenerMarca($nombre)
     {
         return Subcategoria::where('descripcion', (empty($nombre) ? 'SIN MARCA' : $nombre))->first();
     }
 
-    /**
-     * Devuelve TRUE si el requerimiento fue anulado, FALSE si no se pudo anular
-     * @param Requerimiento $requerimiento Requerimiento a anular
-     */
-    /*public function anular(Requerimiento $requerimiento): bool
-    {
-        $orden = OrdenCompra::whereRaw('id_orden_compra IN (
-            SELECT log_det_ord_compra.id_orden_compra FROM  logistica.log_det_ord_compra WHERE id_detalle_requerimiento IN 
-            (SELECT alm_det_req.id_detalle_requerimiento FROM almacen.alm_det_req WHERE id_requerimiento=?)
-            )', [$requerimiento->id_requerimiento])->first();
-        if ($orden != null) {
-            if ($orden->en_almacen) {
-                return false;
-            } else {
-                $orden->estado = self::ID_ANULADO_AGIL;
-                $orden->save();
-                DetalleOrdenCompra::where('id_orden_compra', $orden->id_orden_compra)->update(['estado' => self::ID_ANULADO_AGIL]);
-            }
-        }
-        DetalleRequerimiento::where('id_requerimiento', $requerimiento->id_requerimiento)->update(['estado' => self::ID_ANULADO_AGIL]);
-        $requerimiento->estado = self::ID_ANULADO_AGIL;
-        $requerimiento->concepto = $requerimiento->concepto . ' (ANULADO POR REAPROBACIÓN DE CUADRO)';
-        $requerimiento->save();
-        $this->crearHistorialAnulacion($requerimiento);
-        return true;
-    }*/
-
     private function obtenerCliente($idEntidad)
     {
         $entidad = Entidad::find($idEntidad);
-        $contribuyente = Contribuyente::where('nro_documento', $entidad->ruc)->first();
-        /*echo 'RUC ES '.$entidad->ruc;
-        echo 'Existe: '.($contribuyente==null ? 'No' : 'Si');
-        die("FIN");*/
+        if ($entidad->ruc != null) {
+            $contribuyente = Contribuyente::where('nro_documento', $entidad->ruc)->first();
+        } else {
+            $nombreEntidad = Str::upper($entidad->nombre);
+            $contribuyente = Contribuyente::whereRaw('UPPER(razon_social) = (?)', [$nombreEntidad])->first();
+        }
+
         if ($contribuyente == null) {
             $contribuyente = new Contribuyente();
             $contribuyente->nro_documento = $entidad->ruc;
-            $contribuyente->razon_social = $entidad->nombre;
+            $contribuyente->razon_social = Str::upper($entidad->nombre);
             $contribuyente->telefono = $entidad->telefono;
             $contribuyente->direccion_fiscal = $entidad->direccion;
             $contribuyente->ubigeo = null; //Ubigeo es string en MGCP, id (int) en Agile
@@ -491,23 +571,29 @@ class RequerimientoHelper
             $contribuyente->transportista = false;
             $contribuyente->save();
         }
+
         $cliente = Cliente::where('id_contribuyente', $contribuyente->id_contribuyente)->first();
+
         if ($cliente == null) {
             $cliente = new Cliente();
             $cliente->id_contribuyente = $contribuyente->id_contribuyente;
             $cliente->save();
         }
+
         return $cliente;
     }
 
     private function obtenerPeriodo($anio)
     {
         $periodo = Periodo::where('descripcion', $anio)->first();
+        
         if ($periodo == null) {
             $periodo->descripcion = $anio;
             $periodo->estado = 1;
             $periodo->save();
         }
+
         return $periodo;
     }
 }
+
