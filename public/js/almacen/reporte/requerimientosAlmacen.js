@@ -155,7 +155,8 @@ function listarRequerimientosAlmacen(id_usuario) {
                     `+(array_accesos.find(element => element === 158)?`<button type="button" class="cambio btn btn-warning btn-flat btn-xs " data-toggle="tooltip"
                     data-placement="bottom" title="Cambio de almacén" data-id="${row['id_requerimiento']}"
                     data-almacen="${row['id_almacen']}" data-codigo="${row['codigo']}">
-                    <i class="fas fa-sync-alt"></i></button>`:``)+``;
+                    <i class="fas fa-sync-alt"></i></button>`:``)+ ``
+                    +(([17,27,1,3,77].includes(auth_user.id_usuario))? ('<button type="button" class="btn btn-default btn-xs handleClickAjustarTransformacion" style="color:red;" name="btnAjustarTransformacion" title="Ajustar transformación" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-random"></i></button>'):'');
 
                 }, targets: 11
             }
@@ -327,3 +328,188 @@ $('#requerimientosAlmacen tbody').on('click', 'td button.detalle', function () {
 
     }
 });
+
+
+$('#requerimientosAlmacen tbody').on("click", "button.handleClickAjustarTransformacion", (e) => {
+    ajustarTransformacion(e.currentTarget);
+});
+
+$('#modal_ajustar_transformacion_requerimiento').on("click", "input.handleCheckTransformacion", (e) => {
+    checkTransformacionCabecera(e.currentTarget);
+});
+$('#modal_ajustar_transformacion_requerimiento').on("click", "input.handleCheckItemAjustarTransformacion", (e) => {
+    itemAjustarTransformacion(e.currentTarget);
+});
+$('#modal_ajustar_transformacion_requerimiento').on("click", "button.handleClickActualizarAjusteTransformacionRequerimiento", (e) => {
+    actualizarAjusteTransformacionRequerimiento();
+});
+
+function obtenerRequerimiento(id){
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url:`mostrar-requerimiento/${id}`,
+            dataType: 'JSON',
+            success(response) {
+                resolve(response);
+            },
+            error: function(err) {
+            reject(err)
+            }
+            });
+        });
+}
+
+function obtenerDetalleRequerimientos(id){
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: 'GET',
+            url:`detalle-requerimiento/${id}`,
+            dataType: 'JSON',
+            success(response) {
+                resolve(response);
+            },
+            error: function(err) {
+            reject(err)
+            }
+            });
+        });
+}
+
+function ajustarTransformacion(obj) {
+    let tr = obj.closest('tr');
+    var idRequerimiento = obj.dataset.idRequerimiento;
+    var codigRequerimiento = obj.dataset.codigoRequerimiento;
+
+    $('#modal_ajustar_transformacion_requerimiento').modal({
+        show: true,
+        backdrop: 'static'
+    });
+
+    obtenerRequerimiento(idRequerimiento).then((res) => {
+        if(res.tiene_transformacion == true){
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] input[name='transformacionCabecera']").checked= true;
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] i[id='iconoTransformacion']").classList.add('fa-random');
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='textoTieneONoTransformacion']").innerHTML="<small>(Con transformación)</small>";
+
+        }else{
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] input[name='transformacionCabecera']").checked= false;
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] i[id='iconoTransformacion']").classList.remove('fa-random');
+            document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='textoTieneONoTransformacion']").innerHTML="<small>(Sin transformación)</small>";
+
+        }
+    });
+
+    document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] input[name='idRequerimiento']").value= idRequerimiento;
+    document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='codigoRequerimiento']").textContent= codigRequerimiento;
+    document.querySelector("table[id='tablaListaItemsParaAjusteTransformacion'] tbody").innerHTML='';
+    obtenerDetalleRequerimientos(idRequerimiento).then((res) => {
+        res.map((element, index) => {
+            // console.log(element);
+                document.querySelector("table[id='tablaListaItemsParaAjusteTransformacion'] tbody").insertAdjacentHTML('beforeend', `
+                <tr style="text-align:center;">
+                <td><span id="itemTieneTransformacion">${element.tiene_transformacion==true?'<i class="fas fa-random" style="color:red;"></i>':''}</span> ${element.producto_part_number??''}</td>
+                <td>${element.producto_codigo??''}</td>
+                <td>${element.producto_codigo_softlink??''}</td>
+                <td style="text-align: left;">${element.producto_descripcion??element.descripcion}</td>
+                <td>${element.estado_doc??''}</td>
+                <td><input type="checkbox" name="checkItem[]" value="${element.id_detalle_requerimiento}" class="handleCheckItemAjustarTransformacion" data-idDetalleRequerimiento="${element.id_detalle_requerimiento}" ${element.tiene_transformacion==true?'checked':''}></td>
+            `);
+        })
+
+    }).catch((err) => {
+        console.log(err)
+        Swal.fire(
+            'Error en el servidor al intentar obtener los items del requerimiento',
+            err,
+            'error'
+        );
+    })
+}
+
+function checkTransformacionCabecera(obj){
+    if(obj.checked==true){
+        document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] i[id='iconoTransformacion']").classList.add('fa-random');
+        document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='textoTieneONoTransformacion']").innerHTML="<small>(Con transformación)</small>";
+    }else{
+        document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] i[id='iconoTransformacion']").classList.remove('fa-random');
+        document.querySelector("div[id='modal_ajustar_transformacion_requerimiento'] span[id='textoTieneONoTransformacion']").innerHTML="<small>(Sin transformación)</small>";
+    }
+}
+
+function itemAjustarTransformacion(obj){
+    
+    if(obj.checked==true){
+        
+        obj.closest("tr").children[0].querySelector("span[id='itemTieneTransformacion']").innerHTML='<i class="fas fa-random" style="color:red;"></i>'
+    }else{
+        obj.closest("tr").children[0].querySelector("span[id='itemTieneTransformacion']").innerHTML='';
+    }
+}
+
+function actualizarAjusteTransformacionRequerimiento(){
+    const data =  $('#form-ajustar-transformacion-requerimiento').serializeArray();
+    if(data.length >0){
+        $.ajax({
+            type: 'POST',
+            url: 'guardar-ajuste-transformacion-requerimiento',
+            data: data,
+            beforeSend: (data) => { // Are not working with dataType:'jsonp'
+
+                $('#modal_ajustar_transformacion_requerimiento .modal-content').LoadingOverlay("show", {
+                    imageAutoResize: true,
+                    progress: true,
+                    imageColor: "#3c8dbc"
+                });
+            },
+            success: (response) => {
+                if (response.estado == 'success') {
+                    $('#modal_ajustar_transformacion_requerimiento .modal-content').LoadingOverlay("hide", true);
+
+                    Lobibox.notify('success', {
+                        title: false,
+                        size: 'mini',
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: `${response.mensaje}`
+                    });
+
+                    $('#modal_ajustar_transformacion_requerimiento').modal('hide');
+
+                    $("#requerimientosAlmacen").DataTable().ajax.reload(null, false);
+
+
+                } else {
+                    $('#modal_ajustar_transformacion_requerimiento .modal-content').LoadingOverlay("hide", true);
+                    // console.log(response);
+                    Swal.fire(
+                        '',
+                        response.mensaje,
+                        response.tipo_estado
+                    );
+
+                    $('#modal_ajustar_transformacion_requerimiento').modal('hide');
+
+                }
+            },
+            fail: (jqXHR, textStatus, errorThrown) => {
+                $('#modal_ajustar_transformacion_requerimiento .modal-content').LoadingOverlay("hide", true);
+                Swal.fire(
+                    '',
+                    errorThrown,
+                    'error'
+                );
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    }else{
+        Swal.fire(
+            'No hay nada que actualizar',
+            err,
+            'error'
+        );
+    }
+}

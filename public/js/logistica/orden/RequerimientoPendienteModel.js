@@ -406,21 +406,6 @@ class RequerimientoPendienteModel {
                 });
             });
     }
-    obtenerRequerimiento(id){
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                type: 'GET',
-                url:`mostrar-requerimiento/${id}`,
-                dataType: 'JSON',
-                success(response) {
-                    resolve(response);
-                },
-                error: function(err) {
-                reject(err)
-                }
-                });
-            });
-    }
 
 }
 

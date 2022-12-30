@@ -3926,7 +3926,7 @@ class RequerimientoController extends Controller
         $html .= '
             <tr>
                 <td  class="right" style="font-weight:bold;" colspan="6">Monto Neto</td>
-                <td class="right">' . $simbolMonedaRequerimiento . number_format($total, 2) . '</td>
+                <td class="right">' . $simbolMonedaRequerimiento . number_format($requerimiento['requerimiento'][0]['monto_subtotal'], 2) . '</td>
             </tr>
             <tr>
                 <td  class="right" style="font-weight:bold;" colspan="6">IGV</td>

@@ -76,6 +76,8 @@ Estado de Atención de Requerimientos
 @include('almacen.transferencias.verTransferenciasPorRequerimiento')
 @include('almacen.reportes.cambioRequerimiento')
 @include('logistica.gestion_logistica.compras.pendientes.modal_ver_orden_de_requerimiento')
+@include('almacen.reportes.modal_ajustar_transformacion_requerimiento')
+
 @endsection
 
 @section('scripts')

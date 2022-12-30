@@ -897,9 +897,6 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-observacion-logistica', 'ComprasPendientesController@guardarObservacionLogistica');
 
 					Route::get('retornar-requerimiento-atendido-a-lista-pedientes/{id}', 'ComprasPendientesController@retornarRequerimientoAtendidoAListaPendientes')->name('retornar-requerimiento-atendido-a-lista-pedientes');
-					Route::post('guardar-ajuste-transformacion-requerimiento', 'ComprasPendientesController@guardarAjusteTransformacionRequerimiento')->name('guardar-ajuste-transformacion-requerimiento');
-					Route::get('mostrar-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento');
-
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
@@ -1574,6 +1571,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('cambioAlmacen', 'Almacen\Reporte\ListaRequerimientosAlmacenController@cambioAlmacen');
 				Route::get('listarDetalleRequerimiento/{id}', 'Almacen\Reporte\ListaRequerimientosAlmacenController@listarDetalleRequerimiento');
 				Route::post('anularDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@anularDespachoInterno')->name('anularDespachoInterno');
+				Route::post('guardar-ajuste-transformacion-requerimiento', 'ComprasPendientesController@guardarAjusteTransformacionRequerimiento')->name('guardar-ajuste-transformacion-requerimiento');
+				Route::get('mostrar-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento');
+				Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
+
 			});
 		});
 
