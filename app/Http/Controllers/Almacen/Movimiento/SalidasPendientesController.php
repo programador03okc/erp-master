@@ -599,6 +599,7 @@ class SalidasPendientesController extends Controller
             'guia_ven.fecha_almacen',
             'guia_ven.fecha_emision as fecha_emision_guia',
             'guia_ven.id_od',
+            'guia_ven.id_devolucion',
             'guia_ven.comentario',
             'guia_ven.punto_partida',
             'guia_ven.punto_llegada',
@@ -764,6 +765,24 @@ class SalidasPendientesController extends Controller
                     DB::table('almacen.mov_alm_det')
                         ->where('id_mov_alm', $request->id_salida)
                         ->update(['estado' => 7]);
+
+                    if ($request->id_devolucion !== null) {
+                        DB::table('cas.devolucion')
+                            ->where('id_devolucion', $request->id_devolucion)
+                            ->update(['estado' => 1]);
+                    }
+                    $detalle = DB::table('almacen.guia_ven_det')
+                        ->select('guia_ven_det.id_guia_ven_det', 'alm_det_req.id_detalle_requerimiento', 'guia_ven_det.id_od_det')
+                        ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'guia_ven_det.id_od_det')
+                        ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+                        ->where('id_guia_ven', $request->id_guia_ven)
+                        ->get();
+
+                    foreach ($detalle as $det) {
+                        DB::table('almacen.alm_prod_serie')
+                            ->where('id_guia_ven_det', $det->id_guia_ven_det)
+                            ->update(['id_guia_ven_det' => null]);
+                    }
 
                     $msj = 'La salida fue anulada con éxito.';
                     $tipo = 'success';

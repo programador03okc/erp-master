@@ -10,6 +10,7 @@
                     <input type="text" class="oculto" name="id_salida"/>
                     <input type="text" class="oculto" name="id_guia_ven"/>
                     <input type="text" class="oculto" name="id_od"/>
+                    <input type="text" class="oculto" name="id_devolucion"/>
                     <input type="text" class="oculto" name="id_trans"/>
                     <div class="row">
                         <div class="col-md-12">
