@@ -50,6 +50,8 @@ $(".nueva-devolucion").on('click', function () {
     $("[name=modo]").val("edicion");
     $("[name=id_devolucion]").val("");
     $("[name=id_tipo]").val(1);
+    $('.salidas').show();
+    $('.ingresos').hide();
 
     $("[name=id_usuario]").val(usuarioSession);
     $("#nombre_registrado_por").text(usuarioNombreSession);
@@ -372,3 +374,15 @@ function anularDevolucion() {
         }
     });
 }
+
+$("[name=id_tipo]").on('change', function () {
+    var id = $(this).val();
+    console.log(id);
+    if (id == 1 || id == 3) {
+        $('.salidas').show();
+        $('.ingresos').hide();
+    } else {
+        $('.salidas').hide();
+        $('.ingresos').show();
+    }
+});

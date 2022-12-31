@@ -138,10 +138,10 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row salidas">
             <div class="col-md-12">
                 <div class="panel panel-default" style="margin-bottom: 0px;">
-                    <div class="panel-heading"><strong>Ventas</strong></div>
+                    <div class="panel-heading"><strong>Salidas</strong></div>
                     <table id="listaSalidasDevolucion" class="table">
                         <thead>
                             <tr>
@@ -159,7 +159,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row ingresos">
             <div class="col-md-12">
                 <div class="panel panel-default" style="margin-bottom: 0px;">
                     <div class="panel-heading"><strong>Ingresos</strong></div>
