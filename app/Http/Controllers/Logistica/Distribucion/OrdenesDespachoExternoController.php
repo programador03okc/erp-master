@@ -48,14 +48,14 @@ class OrdenesDespachoExternoController extends Controller
             //     ['id_estado', '>=', 3],
             //     ['id_estado', '<=', 8]
             // ])
-            ->whereIn('id_estado',[3,4,5,6,7,8,11,12,13])->orderBy('descripcion','asc')
+            ->whereIn('id_estado', [3, 4, 5, 6, 7, 8, 11, 12, 13])->orderBy('descripcion', 'asc')
             ->get();
-        $array_accesos=[];
-        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
-            array_push($array_accesos,$value->id_acceso);
+            array_push($array_accesos, $value->id_acceso);
         }
-        return view('almacen/distribucion/ordenesDespachoExterno', compact('estados','array_accesos'));
+        return view('almacen/distribucion/ordenesDespachoExterno', compact('estados', 'array_accesos'));
     }
 
     public function listarDespachosExternos(Request $request)
@@ -182,23 +182,13 @@ class OrdenesDespachoExternoController extends Controller
             ->leftJoin('contabilidad.adm_contri as transportista', 'transportista.id_contribuyente', '=', 'orden_despacho.id_transportista')
             ->leftJoin('administracion.adm_estado_doc as est_od', 'est_od.id_estado_doc', '=', 'orden_despacho.estado')
             ->leftJoin('almacen.estado_envio', 'estado_envio.id_estado', '=', 'orden_despacho.id_estado_envio')
-            // ->leftJoin('almacen.guia_ven', 'guia_ven.id_od', '=', 'orden_despacho.id_od')
-            // ->where(DB::raw('(SELECT COUNT(*) FROM almacen.alm_det_req where
-            //         alm_det_req.id_requerimiento = alm_req.id_requerimiento
-            //         and alm_det_req.estado != 7
-            //         and alm_det_req.id_tipo_item = 1)'), '>', 0)
             ->where([
                 ['alm_req.estado', '!=', 7]
                 // ['alm_req.observacion', '!=', 'Creado de forma automática por venta interna'],
                 // ['nro_productos', '>', 0]
-            ]);
+            ])
+            ->whereIn('alm_req.id_tipo_detalle', [1, 3]);
 
-        // if ($request->select_mostrar == 1) {
-        //     $data->where('orden_despacho.estado', 25);
-        // } else if ($request->select_mostrar == 2) {
-        //     $data->where('orden_despacho.estado', 25);
-        //     $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
-        // }
         return $data;
     }
 
@@ -410,10 +400,10 @@ class OrdenesDespachoExternoController extends Controller
     //         return response()->json('Algo salio mal');
     //     }
     // }
-    private function enviarOrdenDespacho(Request $request, $oportunidad, $requerimiento,$ordenDespacho)
+    private function enviarOrdenDespacho(Request $request, $oportunidad, $requerimiento, $ordenDespacho)
     {
         $archivosOc = [];
-    /*
+        /*
         if ($oportunidad !== null) {
             $ordenView = $oportunidad->ordenCompraPropia;
             //Obtencion de archivos en carpeta temporal
@@ -434,10 +424,10 @@ class OrdenesDespachoExternoController extends Controller
             }
         }*/
         $correos = [];
-        $idUsuarios=[];
+        $idUsuarios = [];
         if (config('app.debug')) {
             $correos[] = config('global.correoDebug1');
-            $idUsuarios[]=Auth::user()->id_usuario;
+            $idUsuarios[] = Auth::user()->id_usuario;
         } else {
             $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
 
@@ -459,7 +449,7 @@ class OrdenesDespachoExternoController extends Controller
         $orden_despacho = OrdenDespacho::where('id_requerimiento', $request->id_requerimiento)->first();
 
         // Mail::to($correos)->send(new EmailOrdenDespacho($oportunidad, $request->mensaje, $archivosOc, $requerimiento));
-        NotificacionHelper::notificacionOrdenDespacho($idUsuarios,$request->mensaje,$oportunidad,$requerimiento,$ordenDespacho);
+        NotificacionHelper::notificacionOrdenDespacho($idUsuarios, $request->mensaje, $oportunidad, $requerimiento, $ordenDespacho);
 
         // foreach ($archivosOc as $archivo) {
         //   unlink($archivo);
@@ -606,7 +596,7 @@ class OrdenesDespachoExternoController extends Controller
                     $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
                 }
 
-                $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento,$ordenDespacho);
+                $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento, $ordenDespacho);
 
                 if ($request->archivos) {
                     foreach ($request->archivos as $key => $value) {
@@ -623,13 +613,11 @@ class OrdenesDespachoExternoController extends Controller
                             $adjuntos_notificaciones = new AdjuntosDespacho();
                             $adjuntos_notificaciones->archivo = $newNameFile;
                             $adjuntos_notificaciones->estado = 1;
-                            $adjuntos_notificaciones->fecha_registro= date('Y-m-d H:i:s');
-                            $adjuntos_notificaciones->id_requerimiento= $request->id_requerimiento ;
-                            $adjuntos_notificaciones->id_oportunidad=$request->id_oportunidad;
+                            $adjuntos_notificaciones->fecha_registro = date('Y-m-d H:i:s');
+                            $adjuntos_notificaciones->id_requerimiento = $request->id_requerimiento;
+                            $adjuntos_notificaciones->id_oportunidad = $request->id_oportunidad;
                             $adjuntos_notificaciones->save();
-
                         }
-
                     }
                 }
             }
@@ -874,7 +862,6 @@ class OrdenesDespachoExternoController extends Controller
             if (config('app.debug')) {
                 $correos[] = config('global.correoDebug1');
                 $idUsuarios[] = Auth::user()->id_usuario;
-
             } else {
                 $idUsuarios = Usuario::getAllIdUsuariosPorRol(26);
                 $correos[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
@@ -1052,10 +1039,10 @@ class OrdenesDespachoExternoController extends Controller
             $fecha_registro = date('Y-m-d H:i:s');
             $id_estado_envio = 2; //transportandose (ag transp. lima)
 
-            $fechaRegistroFlete=null;
-            $actualOD=OrdenDespacho::find($request->id_od);
-            if(($actualOD->importe_flete == null && isset($request->importe_flete)) || ($actualOD->importe_flete !=null && $request->fecha_registro_flete ==null)){
-                $fechaRegistroFlete=new Carbon();    
+            $fechaRegistroFlete = null;
+            $actualOD = OrdenDespacho::find($request->id_od);
+            if (($actualOD->importe_flete == null && isset($request->importe_flete)) || ($actualOD->importe_flete != null && $request->fecha_registro_flete == null)) {
+                $fechaRegistroFlete = new Carbon();
             }
 
             $data = DB::table('almacen.orden_despacho')
@@ -1071,8 +1058,8 @@ class OrdenesDespachoExternoController extends Controller
                     'serie_guia_venta' => $request->serie_guia_venta,
                     'numero_guia_venta' => $request->numero_guia_venta,
                     'id_estado_envio' => $id_estado_envio,
-                    'fecha_actualizacion_od' =>new Carbon(),
-                    'fecha_registro_flete' =>$fechaRegistroFlete??null,
+                    'fecha_actualizacion_od' => new Carbon(),
+                    'fecha_registro_flete' => $fechaRegistroFlete ?? null,
                     // 'propia'=>((isset($request->transporte_propio)&&$request->transporte_propio=='on')?true:false),
                     'credito' => ((isset($request->credito) && $request->credito == 'on') ? true : false),
                 ]);
@@ -1479,12 +1466,12 @@ class OrdenesDespachoExternoController extends Controller
     }
     public function adjuntosDespacho(Request $request)
     {
-        $success=false;
-        $adjuntos_despacho = AdjuntosDespacho::where('estado',1)->where('id_oportunidad',$request->id_oportunidad)->where('id_requerimiento',$request->id_requerimiento)->get();
-        if (sizeof($adjuntos_despacho)>0) {
-            $success=true;
+        $success = false;
+        $adjuntos_despacho = AdjuntosDespacho::where('estado', 1)->where('id_oportunidad', $request->id_oportunidad)->where('id_requerimiento', $request->id_requerimiento)->get();
+        if (sizeof($adjuntos_despacho) > 0) {
+            $success = true;
         }
-        return response()->json(['success'=>$success,'data'=>$adjuntos_despacho]);
+        return response()->json(['success' => $success, 'data' => $adjuntos_despacho]);
     }
     public function prueba($id)
     {
@@ -1610,7 +1597,7 @@ class OrdenesDespachoExternoController extends Controller
             ->where([
                 ['alm_req.estado', '!=', 7]
             ])
-            ->where('alm_req.codigo',$id)->get();
+            ->where('alm_req.codigo', $id)->get();
         return $data;
     }
 }

@@ -8,6 +8,7 @@ function open_series(id_producto, id_od_detalle, cantidad, id_almacen) {
     json_series_ven = [];
     $("[name=id_od_detalle]").val(id_od_detalle);
     $("[name=id_trans_detalle]").val("");
+    $("[name=id_detalle_devolucion]").val('');
     $("[name=id_producto]").val(id_producto);
     $("[name=cant_items]").val(cantidad);
     $("[name=seleccionar_todos]").prop("checked", false);
@@ -25,6 +26,7 @@ function open_series_transferencia(id_trans_detalle, id_producto, cantidad, id_a
     listarSeries(id_producto, id_almacen);
 
     $("[name=id_od_detalle]").val("");
+    $("[name=id_detalle_devolucion]").val('');
     $("[name=id_trans_detalle]").val(id_trans_detalle);
     $("[name=id_producto]").val(id_producto);
     $("[name=cant_items]").val(cantidad);
@@ -44,14 +46,35 @@ function open_series_base(id_producto, cantidad, id_almacen) {
 
     $("[name=id_od_detalle]").val("");
     $("[name=id_trans_detalle]").val('');
+    $("[name=id_detalle_devolucion]").val('');
     $("[name=id_producto]").val('');
     $("[name=id_producto_base]").val(id_producto);
     $("[name=cant_items]").val(cantidad);
     $("[name=seleccionar_todos]").prop("checked", false);
 }
 
+function open_series_devolucion(id_producto, id_detalle_devolucion, cantidad, id_almacen) {
+    $("#modal-guia_ven_series").modal({
+        show: true
+    });
+    console.log("guia de venta x devolucion " + id_almacen);
+    let item = detalle.find(element => element.id_detalle_devolucion == id_detalle_devolucion);
+    if (item !== undefined) {
+        json_series_ven = item.series;
+    }
+    listarSeries(id_producto, id_almacen);
+
+    $("[name=id_od_detalle]").val("");
+    $("[name=id_trans_detalle]").val('');
+    $("[name=id_detalle_devolucion]").val(id_detalle_devolucion);
+    $("[name=id_producto]").val('');
+    $("[name=id_producto_base]").val('');
+    $("[name=cant_items]").val(cantidad);
+    $("[name=seleccionar_todos]").prop("checked", false);
+}
+
 function listarSeries(id_producto, id_almacen) {
-    console.log("id_producto" + id_producto);
+
     $.ajax({
         type: "GET",
         url: "listarSeriesGuiaVen/" + id_producto + "/" + id_almacen,
@@ -119,6 +142,7 @@ function guardar_series() {
 
     var id_od_detalle = $("[name=id_od_detalle]").val();
     var id_trans_detalle = $("[name=id_trans_detalle]").val();
+    var id_detalle_devolucion = $("[name=id_detalle_devolucion]").val();
     var id_base = $("[name=id_producto_base]").val();
     var cant = $("[name=cant_items]").val();
 
@@ -193,6 +217,15 @@ function guardar_series() {
                 json.series = json_series_ven;
             }
             mostrarProductosBase();
+            $("#modal-guia_ven_series").modal("hide");
+        }
+        else if (id_detalle_devolucion !== "") {
+            var json = detalle.find(element => element.id_detalle_devolucion == id_detalle_devolucion);
+
+            if (json !== null) {
+                json.series = json_series_ven;
+            }
+            mostrar_detalle();
             $("#modal-guia_ven_series").modal("hide");
         }
     }

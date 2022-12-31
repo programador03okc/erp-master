@@ -341,6 +341,8 @@ function listarDespachosEntregados(permiso) {
                             return '<span class="label label-success">Transferencia</span>';
                         } else if (row['id_transformacion'] !== null) {
                             return '<span class="label label-warning">Customización</span>';
+                        } else if (row['id_devolucion'] !== null) {
+                            return '<span class="label label-info">Devolución</span>';
                         }
                     }
             },
@@ -434,10 +436,11 @@ function listarDespachosEntregados(permiso) {
                                         `: ``)}
 
                                     ${(row['id_guia_ven'] == null && row['id_transformacion'] !== null)
+                                    || (row['id_guia_ven'] !== null && row['id_devolucion'] !== null)
                                     || row['estado_od'] == 21 || row['estado_od'] == 1 ?
                                     (array_accesos.find(element => element === 122) ? `<button type="button" class="anular btn btn-danger btn-flat boton" data-toggle="tooltip"
                                         data-placement="bottom" title="Anular Salida" data-id="${row['id_mov_alm']}" data-guia="${row['id_guia_ven']}"
-                                        data-od="${row['id_od']}"><i class="fas fa-trash"></i></button>` : ``) : ''}
+                                        data-od="${row['id_od']}" data-dev="${row['id_devolucion']}"><i class="fas fa-trash"></i></button>` : ``) : ''}
                                 </div>`;
                         } else {
                             return (array_accesos.find(element => element === 281) ? `<button type="button" class="anulacion btn btn-default btn-flat boton" data-toggle="tooltip"
@@ -489,6 +492,7 @@ $('#despachosEntregados tbody').on("click", "button.anular", function () {
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
     var id_od = $(this).data('od');
+    var id_dev = $(this).data('dev');
 
     $('#modal-guia_ven_obs').modal({
         show: true
@@ -497,6 +501,7 @@ $('#despachosEntregados tbody').on("click", "button.anular", function () {
     $('[name=id_salida]').val(id_mov_alm);
     $('[name=id_guia_ven]').val(id_guia);
     $('[name=id_od]').val(id_od);
+    $('[name=id_devolucion]').val(id_dev);
     $('[name=observacion_guia_ven]').val('');
 
     $("#submitGuiaVenObs").removeAttr("disabled");
