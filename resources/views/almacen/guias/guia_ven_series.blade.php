@@ -8,6 +8,7 @@
             <div class="modal-body">
                 <input type="text" class="oculto" name="id_od_detalle"/>
                 <input type="text" class="oculto" name="id_trans_detalle"/>
+                <input type="text" class="oculto" name="id_detalle_devolucion"/>
                 <input type="text" class="oculto" name="id_producto"/>
                 <input type="text" class="oculto" name="id_producto_base"/>
                 <input type="text" class="oculto" name="cant_items"/>

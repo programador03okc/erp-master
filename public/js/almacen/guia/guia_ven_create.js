@@ -24,7 +24,7 @@ function open_guia_create(data) {
     $('#codigo_req').text(data.codigo_req !== undefined ? data.codigo_req : data.codigo);
     $('#almacen_req').text(data.almacen_descripcion);
     $('[name=id_guia_clas]').val(1);
-    $('[name=id_od]').val(data.id_od);
+    $('[name=id_od]').val(data.id_od !== undefined ? data.id_od : '');
     $('[name=id_devolucion]').val(data.id_devolucion !== undefined ? data.id_devolucion : '');
     $('[name=id_almacen]').val(data.id_almacen);
     $('[name=id_sede]').val(data.id_sede);
@@ -171,7 +171,7 @@ function listarDetalleDevolucion(id_devolucion) {
                     'part_number': element.part_number,
                     'descripcion': element.descripcion,
                     'cantidad_despachada': 0,
-                    'cantidad_despacho': 0,
+                    'cantidad_despacho': element.cantidad,
                     'cantidad': element.cantidad,
                     'abreviatura': element.abreviatura,
                     'control_series': element.control_series,
@@ -211,7 +211,7 @@ function mostrar_detalle() {
             }
         });
         html += `<tr>
-        <td>${element.suma_reservas > 0 ? `<input type="checkbox" value="${element.id_detalle_requerimiento !== undefined ? element.id_detalle_requerimiento : element.id_detalle_devolucion}" checked/>` : ''}</td>
+        <td>${element.suma_reservas > 0 ? `<input type="checkbox" value="${element.id_detalle_requerimiento !== null ? element.id_detalle_requerimiento : element.id_detalle_devolucion}" checked/>` : ''}</td>
         <td><a href="#" class="verProducto" data-id="${element.id_producto}" >${element.codigo !== null ? element.codigo : ''}</a></td>
         <td>${element.part_number !== null ? element.part_number : ''}</td>
         <td>${element.descripcion !== null ? element.descripcion : '(producto no mapeado)'}<br><strong>${html_series}</strong></td>
@@ -226,7 +226,7 @@ function mostrar_detalle() {
         <td>
         ${element.control_series ?
                 `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series"
-        onClick="open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen});"></i>` : ''}
+        onClick="open_series_devolucion(${element.id_producto},${element.id_od_detalle !== null ? element.id_od_detalle : element.id_detalle_devolucion},${element.cantidad},${id_almacen});"></i>` : ''}
         </td>
         </tr>`;
     });
@@ -304,14 +304,15 @@ $("#form-guia_ven_create").on("submit", function (e) {
 
         detalle.forEach(element => {
 
-            if (id == element.id_detalle_requerimiento && element.cantidad > 0) {
+            if ((id == element.id_detalle_requerimiento || id == element.id_detalle_devolucion) && element.cantidad > 0) {
                 lista_detalle.push({
-                    'id_od_detalle': element.id_od_detalle,
+                    'id_od_detalle': (element.id_od_detalle ?? null),
+                    'id_detalle_devolucion': (element.id_detalle_devolucion ?? null),
                     'id_producto': element.id_producto,
                     'cantidad': element.cantidad,
                     'id_unidad_medida': element.id_unidad_medida,
-                    'id_detalle_requerimiento': element.id_detalle_requerimiento,
-                    'id_guia_com_det': element.id_guia_com_det,
+                    'id_detalle_requerimiento': (element.id_detalle_requerimiento ?? null),
+                    'id_guia_com_det': (element.id_guia_com_det ?? null),
                     'id_almacen_reserva': element.id_almacen_reserva,
                     'series': element.series
                 });
@@ -381,19 +382,19 @@ $("#form-guia_ven_create").on("submit", function (e) {
         });
         valida++;
     }
-    var id_dev = $('[name=id_devolucion]').val();
+    // var id_dev = $('[name=id_devolucion]').val();
 
-    if (id_dev !== '') {
-        Lobibox.notify('warning', {
-            title: false,
-            size: "mini",
-            rounded: true,
-            sound: false,
-            delayIndicator: false,
-            msg: 'Proceso en construcción.'
-        });
-        valida++;
-    }
+    // if (id_dev !== '') {
+    //     Lobibox.notify('warning', {
+    //         title: false,
+    //         size: "mini",
+    //         rounded: true,
+    //         sound: false,
+    //         delayIndicator: false,
+    //         msg: 'Proceso en construcción.'
+    //     });
+    //     valida++;
+    // }
     if (valida == 0) {
         $('[name=id_almacen]').val(id_almacen);
         var ser = $(this).serialize();
@@ -424,9 +425,16 @@ function guardarGuiaVenta(data) {
             $('#mensaje').text('*' + response.mensaje);
 
             if (response.tipo == 'success') {
+                var dev = $('[name=id_devolucion]').val();
+
+                if (dev !== '') {
+                    $('#listaDevoluciones').DataTable().ajax.reload(null, false);
+
+                } else {
+                    $('#despachosPendientes').DataTable().ajax.reload(null, false);
+                    $('#nro_despachos').text(response.nroDespachosPendientes);
+                }
                 $('#modal-guia_ven_create').modal('hide');
-                $('#despachosPendientes').DataTable().ajax.reload(null, false);
-                $('#nro_despachos').text(response.nroDespachosPendientes);
             }
             // var id = encode5t(id_salida);
             // window.open('imprimir_salida/'+id);

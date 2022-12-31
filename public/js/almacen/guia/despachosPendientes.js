@@ -341,6 +341,8 @@ function listarDespachosEntregados(permiso) {
                             return '<span class="label label-success">Transferencia</span>';
                         } else if (row['id_transformacion'] !== null) {
                             return '<span class="label label-warning">Customización</span>';
+                        } else {
+                            return '<span class="label label-info">Devolución</span>';
                         }
                     }
             },
