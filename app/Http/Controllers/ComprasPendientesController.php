@@ -1380,7 +1380,8 @@ class ComprasPendientesController extends Controller
                             'id_almacen'=>$d->id_almacen,
                             'descripcion'=>$d->descripcion,
                             'codigo'=>$d->codigo,
-                            'stock'=>(new SalidaPdfController)->obtenerSaldo($idProducto,$d->id_almacen,($fechaAcual->year.'-01-01'), $fechaAcual),
+                            // 'stock'=>(new SalidaPdfController)->obtenerSaldo($idProducto,$d->id_almacen,($fechaAcual->year.'-01-01'), $fechaAcual),
+                            'stock'=>(new SalidaPdfController)->obtenerSaldo($idProducto,$d->id_almacen,('2022-01-01'), $fechaAcual), //! temporal por el problema de productos sin saldo para este periodo 2023 
                             'cantidad_stock_comprometido'=>$d->cantidad_stock_comprometido
                         ];
                     }
