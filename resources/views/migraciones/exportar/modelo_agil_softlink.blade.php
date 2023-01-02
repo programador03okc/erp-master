@@ -11,8 +11,8 @@
                 <th style="background-color: #cccccc;" width="15"><b>Código Softlink</b></th>
                 <th style="background-color: #cccccc;" width="15"><b>Part Number</b></th>
                 <th style="background-color: #cccccc;" width="25"><b>DESCRIPCIÓN</b></th>
-                <th style="background-color: #cccccc;" width="25"><b>CLASIFICACIÓN SOFTLINK</b></th>
-                <th style="background-color: #cccccc;" width="25"><b>CATEGORIA SOFTLINK</b></th>
+                <th style="background-color: #cccccc;" width="25"><b>CLASIFICACION AGIL (CLASIFICACIÓN SOFTLINK)</b></th>
+                <th style="background-color: #cccccc;" width="25"><b>SUB CATEGORIA AGIL (CATEGORIA SOFTLINK)</b></th>
 
             </tr>
         </thead>
