@@ -4615,7 +4615,7 @@ class OrdenController extends Controller
                 'descripcion_producto' => $d['descripcion_producto'] ? $d['descripcion_producto'] : $d['descripcion_adicional'],
                 'cantidad' => $d['cantidad'] ?? '',
                 'abreviatura_unidad_medida_producto' => $d['abreviatura_unidad_medida_producto'] ?? ($d['abreviatura_unidad_medida_det_orden']??'') ,
-                'simbolo_moneda_producto' => $d['simbolo_moneda_producto'] ?? '',
+                'simbolo_moneda_orden' => $d['simbolo_moneda_orden'] ?? '',
                 'precio' => $d['precio'] ?? '',
                 'cc_fila_precio' => $d['cc_fila_precio'] ?? '',
                 'fecha_emision' => $d['fecha_emision'] ?? '',
