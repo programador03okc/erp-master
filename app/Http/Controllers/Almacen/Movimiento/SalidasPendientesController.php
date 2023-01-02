@@ -406,7 +406,8 @@ class SalidasPendientesController extends Controller
 
                     $tipo = 'success';
                     $mensaje = 'Se guardó correctamente la salida de almacén';
-                } else if ($request->id_devolucion !== null) { //crea la guia venta
+                } else if ($request->id_devolucion !== null) {
+                    //crea la guia venta
                     $id_guia_ven = DB::table('almacen.guia_ven')->insertGetId(
                         [
                             'id_tp_doc_almacen' => $id_tp_doc_almacen,
@@ -494,7 +495,13 @@ class SalidasPendientesController extends Controller
                             ],
                             'id_mov_alm_det'
                         );
-
+                        //atiende la reserva
+                        DB::table('almacen.alm_reserva')
+                            ->where([
+                                ['id_detalle_devolucion', '=', $det->id_detalle_devolucion],
+                                ['estado', '!=', 7]
+                            ])
+                            ->update(['estado' => 5]);
                         //Obtengo el registro de saldos
                         $ubi = DB::table('almacen.alm_prod_ubi')
                             ->where([
@@ -782,6 +789,17 @@ class SalidasPendientesController extends Controller
                         DB::table('almacen.alm_prod_serie')
                             ->where('id_guia_ven_det', $det->id_guia_ven_det)
                             ->update(['id_guia_ven_det' => null]);
+                    }
+
+                    $dev_detalles = DB::table('cas.devolucion_detalle')
+                        ->where('id_devolucion', $request->id_devolucion)
+                        ->get();
+
+                    foreach ($dev_detalles as $d) {
+
+                        DB::table('almacen.alm_reserva')
+                            ->where('id_detalle_devolucion', $d->id_detalle)
+                            ->update(['estado' => 1]);
                     }
 
                     $msj = 'La salida fue anulada con éxito.';

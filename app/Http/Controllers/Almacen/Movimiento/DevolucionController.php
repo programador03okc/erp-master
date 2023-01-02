@@ -6,6 +6,7 @@ use App\Http\Controllers\Almacen\Ubicacion\AlmacenController;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Almacen\Reserva;
 use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Presupuestos\Moneda;
 use App\Models\Tesoreria\TipoCambio;
@@ -434,6 +435,21 @@ class DevolucionController extends Controller
                     ],
                     'id_detalle'
                 );
+
+                if ($request->id_tipo == 2 or $request->id_tipo == 4) {
+                    //Genera reserva
+                    DB::table('almacen.alm_reserva')
+                        ->insert([
+                            'codigo' => Reserva::crearCodigo($request->id_almacen),
+                            'id_producto' => $item->id_producto,
+                            'stock_comprometido' => $item->cantidad,
+                            'id_almacen_reserva' => $request->id_almacen,
+                            'id_detalle_devolucion' => $id_detalle,
+                            'estado' => 1,
+                            'usuario_registro' => $usuario->id_usuario,
+                            'fecha_registro' => new Carbon(),
+                        ]);
+                }
             }
 
             $incidencias = json_decode($request->incidencias);
@@ -493,7 +509,6 @@ class DevolucionController extends Controller
             $mensaje = '';
             $tipo = '';
 
-
             $cliente = DB::table('comercial.com_cliente')
                 ->where([
                     ['id_contribuyente', '=', $request->id_contribuyente],
@@ -530,7 +545,6 @@ class DevolucionController extends Controller
                 $id_proveedor = $proveedor->id_proveedor;
             }
 
-
             DB::table('cas.devolucion')
                 ->where('id_devolucion', $request->id_devolucion)
                 ->update([
@@ -553,6 +567,10 @@ class DevolucionController extends Controller
                         DB::table('cas.devolucion_detalle')
                             ->where('id_detalle', $item->id_detalle)
                             ->update(['estado' => 7]);
+
+                        DB::table('almacen.alm_reserva')
+                            ->where('id_detalle_devolucion', $item->id_detalle)
+                            ->update(['estado' => 7]);
                     } else {
                         DB::table('cas.devolucion_detalle')
                             ->where('id_detalle', $item->id_detalle)
@@ -560,9 +578,16 @@ class DevolucionController extends Controller
                                 'id_producto' => $item->id_producto,
                                 'cantidad' => $item->cantidad,
                             ]);
+
+                        DB::table('almacen.alm_reserva')
+                            ->where('id_detalle_devolucion', $item->id_detalle)
+                            ->update([
+                                'id_producto' => $item->id_producto,
+                                'stock_comprometido' => $item->cantidad,
+                            ]);
                     }
                 } else {
-                    DB::table('cas.devolucion_detalle')->insert(
+                    $id_detalle = DB::table('cas.devolucion_detalle')->insertGetId(
                         [
                             'id_devolucion' => $request->id_devolucion,
                             'id_producto' => $item->id_producto,
@@ -571,8 +596,21 @@ class DevolucionController extends Controller
                             'cantidad' => $item->cantidad,
                             'estado' => 1,
                             'fecha_registro' => new Carbon(),
-                        ]
+                        ],
+                        'id_detalle'
                     );
+                    //Genera reserva
+                    DB::table('almacen.alm_reserva')
+                        ->insert([
+                            'codigo' => Reserva::crearCodigo($request->id_almacen),
+                            'id_producto' => $item->id_producto,
+                            'stock_comprometido' => $item->cantidad,
+                            'id_almacen_reserva' => $request->id_almacen,
+                            'id_detalle_devolucion' => $id_detalle,
+                            'estado' => 1,
+                            'usuario_registro' => $usuario->id_usuario,
+                            'fecha_registro' => new Carbon(),
+                        ]);
                 }
             }
 
