@@ -48,6 +48,11 @@
                 <th style="background-color: #cccccc;" width="18"><b>Conformidad</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Nro. de caso</b></th>
 
+                <th style="background-color: #cccccc;" width="18"><b>DPTO / PROV / DISTRITO</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>COSTO</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>PARTE REEMPLAZADO</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>PARTE FALLADA</b></th>
+
 
             </tr>
         </thead>
