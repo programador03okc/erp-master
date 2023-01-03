@@ -323,7 +323,7 @@ class RequerimientoPagoController extends Controller
 
             DB::commit();
 
-            $codigo = RequerimientoPago::crearCodigo($request->grupo, $requerimientoPago->id_requerimiento_pago);
+            $codigo = RequerimientoPago::crearCodigo($request->grupo, $requerimientoPago->id_requerimiento_pago,$request->periodo);
             $rp = RequerimientoPago::find($requerimientoPago->id_requerimiento_pago);
             $rp->codigo = $codigo;
             $rp->save();
@@ -1327,7 +1327,7 @@ class RequerimientoPagoController extends Controller
 
                 DB::commit();
 
-                $nuevoCodigo = RequerimientoPago::crearCodigo($requerimientoPago->id_grupo, $requerimientoPago->id_requerimiento_pago);
+                $nuevoCodigo = RequerimientoPago::crearCodigo($requerimientoPago->id_grupo, $requerimientoPago->id_requerimiento_pago,$nuevoRequerimientoPago->periodo);
                 $rp = RequerimientoPago::find($nuevoRequerimientoPago->id_requerimiento_pago);
                 $rp->codigo = $requerimientoPago->codigo;
                 $rp->save();
