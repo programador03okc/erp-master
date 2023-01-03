@@ -168,7 +168,7 @@ class SalidasPendientesController extends Controller
                     //Genero la salida
                     $codigo = AlmacenController::nextMovimiento(
                         2, //salida
-                        $request->fecha_almacen,
+                        $request->fecha_emision, // $request->fecha_almacen, se cambio a solicitud del sr juan mamani 3/01/2023
                         $request->id_almacen
                     );
 

@@ -746,7 +746,7 @@ class OrdenesPendientesController extends Controller
                 //Genero el ingreso
                 $codigo = GenericoAlmacenController::nextMovimiento(
                     1, //ingreso
-                    $request->fecha_almacen,
+                    $request->fecha_emision, // $request->fecha_almacen, se cambio a solicitud del sr juan mamani 3/01/2023
                     $request->id_almacen
                 );
 
