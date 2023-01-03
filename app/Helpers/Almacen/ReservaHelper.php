@@ -98,25 +98,28 @@ class ReservaHelper
                 $tipo_estado = 'warning';
                 $mensaje = 'No se pudo anular la reserva. ' . $mensajeAdicional;
             }
+            $ReservasProductoActualizadas=[];
+            $nuevoEstado['estado_actual'] = '';
+            $nuevoEstado['lista_finalizados'] = '';
+            $nuevoEstado['lista_restablecidos'] = '';
 
-            
             if ($reserva->id_detalle_requerimiento > 0) {
                 // actualizar estado de requerimiento solo si el tipo de requeriminto es distinto a 4 // compras para stock
                 $detReq = DetalleRequerimiento::where('id_detalle_requerimiento',$reserva->id_detalle_requerimiento)->first();
                 $req = Requerimiento::find($detReq->id_requerimiento);
-                if(intval($req->id_tipo_requerimiento) !== 4){
+                if(intval($req->id_tipo_requerimiento) != 4){
                     DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($reserva->id_detalle_requerimiento);
                     DB::commit();
-                    $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario', 'estado')->where([['id_detalle_requerimiento', $reserva->id_detalle_requerimiento],['estado',1]])->get();
+                    $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario', 'estado')->where('id_detalle_requerimiento', $reserva->id_detalle_requerimiento)->get();
                     $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR', [$req->id_requerimiento]);
+                }else{
+                    $mensaje='El tipo de requerimiento, Compras para Stock';
+                    $tipo_estado = 'warning';
+
                 }
 
                 // $detalleRequerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $reserva->id_detalle_requerimiento)->first();
-            } else {
-                $nuevoEstado['estado_actual'] = '';
-                $nuevoEstado['lista_finalizados'] = '';
-                $nuevoEstado['lista_restablecidos'] = '';
-            }
+            } 
             return ['id_reserva' =>$reserva->id_reserva, 'data' => $ReservasProductoActualizadas, 'tipo_estado' => $tipo_estado, 'mensaje' => $mensaje, 'estado_requerimiento' => $nuevoEstado['estado_actual'], 'lista_finalizados' => $nuevoEstado['lista_finalizados'], 'lista_restablecidos' => $nuevoEstado['lista_restablecidos']];
         
         } catch (\PDOException $e) {
