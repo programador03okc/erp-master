@@ -527,6 +527,7 @@ class RegistroController extends Controller
             'requerimiento_logistico_view.codigo_oportunidad',
             'requerimiento_logistico_view.nro_orden',
             'requerimiento_logistico_view.id_contribuyente_cliente',
+            'requerimiento_logistico_view.id_contribuyente_empresa',
 
             'doc_vent_req.id_documento_venta_requerimiento',
             'doc_ven.id_doc_ven',
@@ -876,15 +877,17 @@ class RegistroController extends Controller
         // $cobranza->id_vent          = ;
 
         $cobranza->save();
-
+        // return $request->fecha_ppago;exit;
         if ($cobranza) {
             $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$cobranza->id_registro_cobranza)->first();
+
             if ($programacion_pago) {
-                $programacion_pago = ProgramacionPago::find($cobranza->id_registro_cobranza);
+                // return $programacion_pago;exit;
+                // $programacion_pago = ProgramacionPago::find($cobranza->id_registro_cobranza);
                 // $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
                 $programacion_pago->fecha   = $request->fecha_ppago;
                 $programacion_pago->estado  = 1;
-                $programacion_pago->fecha_registro = date('Y-m-d H:i:s');
+                // $programacion_pago->fecha_registro = date('Y-m-d H:i:s');
                 $programacion_pago->save();
             }else{
                 $programacion_pago = new ProgramacionPago();
