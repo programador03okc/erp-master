@@ -33,7 +33,7 @@ class IncidenciaController extends Controller
         $tipoServicios = TipoServicio::where('estado', 1)->get();
         $divisiones = DB::table('administracion.division')->where([['estado', '=', 1], ['grupo_id', '=', 2]])->get();
         $usuarios = Usuario::join('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
-            ->where([['sis_usua.estado', '=', 1], ['usuario_rol.id_rol', '=', 20]])->get(); //20 CAS
+            ->where([['sis_usua.estado', '=', 1], ['usuario_rol.id_rol', '=', 20], ['usuario_rol.estado', '=', 1]])->get(); //20 CAS
 
         $medios = MedioReporte::where('estado', 1)->get();
         $modos = ModoIncidencia::where('estado', 1)->get();

@@ -270,6 +270,9 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Marca</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control edition limpiarIncidencia" name="marca"/>
+                                    <select class="form-control" name="marca" required>
+                                        <option value="">Elija una opción</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
