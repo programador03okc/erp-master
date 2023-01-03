@@ -7,6 +7,7 @@ use App\Http\Controllers\OrdenController;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Estado;
+use App\Models\Administracion\Periodo;
 use App\Models\Configuracion\Usuario;
 use App\Models\Logistica\OrdenCompraDetalle;
 use Carbon\Carbon;
@@ -230,29 +231,35 @@ class Requerimiento extends Model
     }
 
 
-    public static function obtenerCantidadRegistros($grupo, $idRequerimiento)
+    public static function obtenerCantidadRegistros($grupo, $idRequerimiento,$yyyy)
     {
-        $yyyy = date('Y', strtotime("now"));
+        // $yyyy = date('Y', strtotime("now"));
         $num = Requerimiento::when(($grupo > 0), function ($query) use ($grupo, $idRequerimiento) {
             return $query->Where([['id_grupo', '=', $grupo], ['id_requerimiento', '<=', $idRequerimiento]]);
         })
+            // ->where('id_periodo', '=', $idPeriodo)
             ->whereYear('fecha_registro', '=', $yyyy)
             ->count();
         return $num;
     }
 
-    public static function crearCodigo($tipoRequerimiento, $idGrupo, $idRequerimiento)
+    public static function crearCodigo($tipoRequerimiento, $idGrupo, $idRequerimiento, $idPeriodo)
     {
+
+        $Periodo=Periodo::find($idPeriodo);
+        $yyyy = $Periodo->descripcion;
+        $yy = substr($Periodo->descripcion,2,2);
+
         $documento = 'R'; //Prefijo para el codigo de requerimiento
         switch ($tipoRequerimiento) {
             case 1: # tipo MGCP
                 $documento .= 'M';
-                $num = Requerimiento::obtenerCantidadRegistros(2, $idRequerimiento);
+                $num = Requerimiento::obtenerCantidadRegistros(2, $idRequerimiento,$yyyy);
                 break;
 
             case 2: #tipo Ecommerce
                 $documento .= 'E';
-                $num = Requerimiento::obtenerCantidadRegistros(2, $idRequerimiento);
+                $num = Requerimiento::obtenerCantidadRegistros(2, $idRequerimiento,$yyyy);
                 break;
 
             case 3:
@@ -263,27 +270,27 @@ class Requerimiento extends Model
             case 7: #tipo:Bienes y Servicios, Compra para stock,Compra para activos,Compra para garantías,Otros
                 if ($idGrupo == 1) {
                     $documento .= 'A';
-                    $num = Requerimiento::obtenerCantidadRegistros(1, $idRequerimiento); //tipo: BS, grupo: Administración
+                    $num = Requerimiento::obtenerCantidadRegistros(1, $idRequerimiento,$yyyy); //tipo: BS, grupo: Administración
                 }
                 if ($idGrupo == 2) {
                     $documento .= 'C';
-                    $num = Requerimiento::obtenerCantidadRegistros(2, $idRequerimiento); //tipo: BS, grupo: Comercial
+                    $num = Requerimiento::obtenerCantidadRegistros(2, $idRequerimiento,$yyyy); //tipo: BS, grupo: Comercial
                 }
                 if ($idGrupo == 3) {
                     $documento .= 'P';
-                    $num = Requerimiento::obtenerCantidadRegistros(3, $idRequerimiento); //tipo: BS, grupo: Proyectos
+                    $num = Requerimiento::obtenerCantidadRegistros(3, $idRequerimiento,$yyyy); //tipo: BS, grupo: Proyectos
                 }
                 if ($idGrupo == 4) {
                     $documento .= 'G';
-                    $num = Requerimiento::obtenerCantidadRegistros(4, $idRequerimiento); //tipo: BS, grupo: Proyectos
+                    $num = Requerimiento::obtenerCantidadRegistros(4, $idRequerimiento,$yyyy); //tipo: BS, grupo: Proyectos
                 }
                 if ($idGrupo == 5) {
                     $documento .= 'CI';
-                    $num = Requerimiento::obtenerCantidadRegistros(5, $idRequerimiento); //tipo: BS, grupo: Proyectos
+                    $num = Requerimiento::obtenerCantidadRegistros(5, $idRequerimiento,$yyyy); //tipo: BS, grupo: Proyectos
                 }
                 if ($idGrupo == 6) {
                     $documento .= 'MK';
-                    $num = Requerimiento::obtenerCantidadRegistros(6, $idRequerimiento); //tipo: BS, grupo: Proyectos
+                    $num = Requerimiento::obtenerCantidadRegistros(6, $idRequerimiento,$yyyy); //tipo: BS, grupo: Proyectos
                 }
                 break;
 
@@ -291,8 +298,8 @@ class Requerimiento extends Model
                 $num = 0;
                 break;
         }
-        $yy = date('y', strtotime("now"));
-        $correlativo = sprintf('%04d', $num);
+        // $yy = date('y', strtotime("now"));
+        $correlativo = sprintf('%04d', $num+1);
 
         return "{$documento}-{$yy}{$correlativo}";
     }
