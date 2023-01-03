@@ -38,13 +38,43 @@
         </div>
         <div class="box-footer">
             <button class="btn btn-link descargar-modelo" type="button" title="Descargar modelo de excel"><i class="fa fa-download"></i> Modelo de excel</button>
-            <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+            <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Migrar</button>
         </div>
     </form>
 </div>
-<div class="box d-none box-productos">
+<div class="box box-success d-none box-productos-migrados">
     <div class="box-header">
-      <h3 class="box-title">Productos no encontrados</h3>
+      <h3 class="box-title">Productos migrados</h3>
+
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool ver-productos-migrados" data-widget="collapse" data-toggle="tooltip"
+                title="Collapse"
+                style="display: none;"
+                >
+          <i class="fa fa-mini"></i></button>
+      </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <table id="table-productos-migrados" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Código Agile</th>
+                    <th>Código Softlink</th>
+                    <th>Part Number</th>
+                    <th>Descripcion</th>
+                </tr>
+            </thead>
+            <tbody data-table="productos-migrados">
+
+            </tbody>
+        </table>
+    </div>
+    <!-- /.box-body -->
+</div>
+<div class="box box-danger d-none box-productos">
+    <div class="box-header">
+      <h3 class="box-title">Productos no migrados</h3>
 
       <div class="box-tools pull-right">
         <button type="button" class="btn btn-box-tool ver-productos" data-widget="collapse" data-toggle="tooltip"
@@ -95,6 +125,7 @@
             var data = new FormData($(this)[0]),
                 html='';
             $('.ver-productos').click();
+            $('.ver-productos-migrados').click();
             $('.box-productos').addClass('d-none');
 
 
@@ -132,6 +163,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     if (result.value.faltantes.length>0) {
+                        html='';
                         $.each(result.value.faltantes, function (index, element) {
                                 html+='<tr>';
                                     html+='<td>'+(element[0]?element[0]:'-')+'</td>';
@@ -147,6 +179,25 @@
                         $('.ver-productos').click();
                         $('.box-productos').removeClass('d-none');
                     }
+
+                    if (result.value.productos_migrados.length>0) {
+                        html='';
+                        $.each(result.value.productos_migrados, function (index, element) {
+                                html+='<tr>';
+                                    html+='<td>'+(element[0]?element[0]:'-')+'</td>';
+                                    html+='<td>'+(element[1]?element[1]:'-')+'</td>';
+                                    html+='<td>'+(element[2]?element[2]:'-')+'</td>';
+                                    html+='<td>'+
+                                        (element[3]?element[3]:'-')+
+                                    '</td>';
+                                html+='</tr>';
+                        });
+                        $('[data-table="productos-migrados"]').html(html);
+                        $('#table-productos-migrados').DataTable();
+                        $('.ver-productos-migrados').click();
+                        $('.box-productos-migrados').removeClass('d-none');
+                    }
+                    console.log(result.value);
                     Swal.fire(
                         '¡Éxito!',
                         'Se actualizo con éxito',

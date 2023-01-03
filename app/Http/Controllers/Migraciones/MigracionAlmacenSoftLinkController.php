@@ -10,6 +10,10 @@ use App\Imports\AgilSoftlinkImport;
 use App\Imports\AlmacenImport;
 use App\Imports\ProductoSerieImport;
 use App\Models\Almacen\Almacen;
+use App\Models\almacen\Catalogo\Categoria;
+use App\Models\almacen\Catalogo\Clasificacion;
+use App\Models\Almacen\Catalogo\SubCategoria;
+use App\Models\Almacen\Producto;
 use App\Models\almacen\softlink\ProductoSerie;
 use Carbon\Carbon;
 use Exception;
@@ -205,17 +209,30 @@ class MigracionAlmacenSoftLinkController extends Controller
 
         $array_productos_soflink = array();
         $array_productos_soflink_faltantes = array();
+        $array_productos_soflink_modificados = array();
         foreach ($collection as $key => $value) {
             if ($key!==0) {
                 if ($value[1]) {
                     $producto_softlink = DB::connection('soft')->table('sopprod')->where('cod_prod',$value[1])->first();
 
                     $clasificacion_softlink = DB::connection('soft')->table('soplinea')->where('nom_line',$value[4])->first();
+                    // return [$clasificacion_softlink];exit;
                     $categoria_softlink=array();
+
                     if ($clasificacion_softlink) {
-                        $categoria_softlink = DB::connection('soft')->table('sopsub1')->where('nom_sub1',$value[5])->where('cod_line',$clasificacion_softlink->cod_line)->first();
+                        $categoria_softlink = DB::connection('soft')->table('sopsub1')->where('nom_sub1',$value[5])->first();
                     }
-                    // return [$clasificacion_softlink,$categoria_softlink];exit;
+                    // return response()->json([
+                    //     $clasificacion_softlink,$categoria_softlink
+                    // ]);exit;
+                    $clasificacion_agil = Clasificacion::where('descripcion',$value[4])->first();
+                    $categoria_agil = Categoria::where('id_clasificacion',$clasificacion_agil->id_clasificacion)->first();
+                    $subcategoria_agil = SubCategoria::where('descripcion',$value[5])->where('id_tipo_producto',$categoria_agil->id_tipo_producto)->first();
+                    // return response()->json([
+                    //     $clasificacion_agil,
+                    //     $subcategoria_agil
+                    // ]);exit;
+
                     if ($producto_softlink) {
                         array_push($array_productos_soflink,$producto_softlink);
                         DB::connection('soft')
@@ -236,9 +253,21 @@ class MigracionAlmacenSoftLinkController extends Controller
                                 ['cod_clasi' =>$clasificacion_softlink->cod_line,
                                 'cod_cate' =>$categoria_softlink->cod_sub1]
                                 // ['cod_cate' =>$categoria_softlink->cod_sub1]
-
                             );
                         }
+
+                        if ($clasificacion_agil && $subcategoria_agil) {
+
+                            $producto = Producto::find($value[0]);
+                            $producto->id_clasif = $clasificacion_agil->id_clasificacion;
+                            $producto->id_subcategoria = $categoria_agil->id_tipo_producto;
+                            $producto->id_categoria = $subcategoria_agil->id_categoria;
+                            // $producto->id_categoria = $subcategoria_agil->id_categoria;
+
+                            $producto->save();
+                            // return $producto;exit;
+                        }
+                        array_push($array_productos_soflink_modificados,$value);
                     }else{
 
                         array_push($array_productos_soflink_faltantes,$value);
@@ -251,7 +280,8 @@ class MigracionAlmacenSoftLinkController extends Controller
             "success"=>true,
             "status"=>200,
             "habilitados"=>$array_productos_soflink,
-            "faltantes"=>$array_productos_soflink_faltantes
+            "faltantes"=>$array_productos_soflink_faltantes,
+            "productos_migrados"=>$array_productos_soflink_modificados
         ]);
     }
 }

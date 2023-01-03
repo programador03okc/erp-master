@@ -8,9 +8,8 @@
         </a>
         <ul class="treeview-menu">
             <li><a href="{{route('gerencial.cobranza.cliente')}}"> Clientes</a></li>
-            {{-- <li><a href="{{route('gerencial.cobranza.registro')}}"> Registro</a></li> --}}
+            <li><a href="{{route('gerencial.cobranza.registro')}}"> Registro</a></li>
         </ul>
     </li>
-
 </ul>
 @endsection
