@@ -123,7 +123,7 @@ Cobranzas
                                 <label for="periodo">Periodo</label>
                                 <select name="periodo" id="periodo" class="form-control input-sm">
                                     @foreach ($periodo as $item)
-                                        <option value="{{$item->id_periodo }}">{{$item->descripcion}}</option>
+                                        <option value="{{$item->id_periodo }}" {{ ($item->id_periodo===5?'selected':'') }} >{{$item->descripcion}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -439,7 +439,7 @@ Cobranzas
                                 <label for="periodo">Periodo</label>
                                 <select name="periodo" class="form-control input-sm">
                                     @foreach ($periodo as $item)
-                                        <option value="{{$item->id_periodo }}">{{$item->descripcion}}</option>
+                                        <option value="{{$item->id_periodo }}" >{{$item->descripcion}}</option>
                                     @endforeach
                                 </select>
                             </div>

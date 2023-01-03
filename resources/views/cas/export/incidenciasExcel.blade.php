@@ -48,7 +48,9 @@
                 <th style="background-color: #cccccc;" width="18"><b>Conformidad</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Nro. de caso</b></th>
 
-                <th style="background-color: #cccccc;" width="18"><b>DPTO / PROV / DISTRITO</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>DPTO</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>PROV</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>DISTRITO</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>COSTO</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>PARTE REEMPLAZADO</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>PARTE FALLADA</b></th>
@@ -95,6 +97,13 @@
                 <td>{{ $d->equipo_operativo }}</td>
                 <td>{{ $d->conformidad }}</td>
                 <td>{{ $d->nro_de_caso }}</td>
+
+                <td>{{ $d->departamento_text }}</td>
+                <td>{{ $d->provincia_text }}</td>
+                <td>{{ $d->distrito_text }}</td>
+                <td>{{ $d->importe_gastado }}</td>
+                <td>{{ $d->parte_reemplazada }}</td>
+                <td>{{ $d->comentarios_cierre }}</td>
             </tr>
 
             @endforeach

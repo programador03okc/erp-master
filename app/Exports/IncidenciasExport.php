@@ -74,7 +74,14 @@ class IncidenciasExport implements FromView
                         'equipo_operativo'=>$incidencias->equipo_operativo==true?'SI':'NO',
 
                         'conformidad'=>$incidencias->conformidad,
-                        'nro_de_caso'=>$incidencias->numero_caso
+                        'nro_de_caso'=>$incidencias->numero_caso,
+
+                        'departamento_text'=>$incidencias->departamento_text,
+                        'provincia_text'=>$incidencias->provincia_text,
+                        'distrito_text'=>$incidencias->distrito_text,
+                        'importe_gastado'=>$incidencias->importe_gastado,
+                        'parte_reemplazada'=>$incidencias->parte_reemplazada,
+                        'comentarios_cierre'=>$incidencias->comentarios_cierre
                     )
                 );
 

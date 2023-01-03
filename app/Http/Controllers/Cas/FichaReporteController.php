@@ -387,6 +387,9 @@ class FichaReporteController extends Controller
                 'adm_ctb_contac.email',
                 'oportunidades.codigo_oportunidad',
                 'oc_propias_view.id_entidad',
+                'ubi_dpto.descripcion as departamento_text',
+                'ubi_prov.descripcion as provincia_text',
+                'ubi_dis.descripcion as distrito_text',
                 DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
             )
             // ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
