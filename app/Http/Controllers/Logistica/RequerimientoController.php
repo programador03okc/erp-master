@@ -954,7 +954,7 @@ class RequerimientoController extends Controller
 
             DB::commit();
 
-            $codigo = Requerimiento::crearCodigo($request->tipo_requerimiento, $request->id_grupo, $requerimiento->id_requerimiento);
+            $codigo = Requerimiento::crearCodigo($request->tipo_requerimiento, $request->id_grupo, $requerimiento->id_requerimiento, $request->periodo);
             $req = Requerimiento::find($requerimiento->id_requerimiento);
             $req->codigo = $codigo;
             $req->save();
