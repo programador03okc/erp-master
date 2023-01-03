@@ -636,9 +636,9 @@ class RegistroController extends Controller
 
                 $response = json_decode($response);
                 // return response()->json([$response,empty($response->numeroDocumento)]);exit;
-                if ($value->ruc==='20341946531') {
-                    // return response()->json([$response,empty($response->numeroDocumento)]);exit;
-                }
+                // if ($value->ruc==='20341946531') {
+                //     return response()->json([$response,empty($response->numeroDocumento)]);exit;
+                // }
 
                 if (!empty($response->numeroDocumento)) {
 
