@@ -107,16 +107,16 @@ class ReservaHelper
                 // actualizar estado de requerimiento solo si el tipo de requeriminto es distinto a 4 // compras para stock
                 $detReq = DetalleRequerimiento::where('id_detalle_requerimiento',$reserva->id_detalle_requerimiento)->first();
                 $req = Requerimiento::find($detReq->id_requerimiento);
-                if(intval($req->id_tipo_requerimiento) != 4){
+                // if(intval($req->id_tipo_requerimiento) != 4){
                     DetalleRequerimiento::actualizarEstadoDetalleRequerimientoAtendido($reserva->id_detalle_requerimiento);
                     DB::commit();
                     $ReservasProductoActualizadas = Reserva::with('almacen', 'usuario', 'estado')->where('id_detalle_requerimiento', $reserva->id_detalle_requerimiento)->get();
                     $nuevoEstado = Requerimiento::actualizarEstadoRequerimientoAtendido('ANULAR', [$req->id_requerimiento]);
-                }else{
-                    $mensaje='El tipo de requerimiento, Compras para Stock';
-                    $tipo_estado = 'warning';
+                // }else{
+                //     $mensaje='El tipo de requerimiento, Compras para Stock';
+                //     $tipo_estado = 'warning';
 
-                }
+                // }
 
                 // $detalleRequerimiento = DetalleRequerimiento::where('id_detalle_requerimiento', $reserva->id_detalle_requerimiento)->first();
             } 
