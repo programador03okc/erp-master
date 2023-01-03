@@ -146,6 +146,7 @@ function listarReservasAlmacen(id_usuario) {
 
                     // </button>`:``):``)
                     // : '';
+                    let btnAjustaReserva = '<button type="button" class="btn btn-default btn-xs handleClickAjustarEstadoReserva" style="color:red;" name="btnRetornarAjustarReserva" title="Ajustar Estado Reserva" data-id-reserva="' + row.id_reserva + '" data-codigo-reserva="' + row.codigo + '"><i class="fas fa-sliders-h"></i></button>';
 
                     let $btn_editar = array_accesos.find(element => element === 155)?`<button type="button" class="editar btn btn-primary btn-flat boton" data-toggle="tooltip"
 
@@ -172,7 +173,7 @@ function listarReservasAlmacen(id_usuario) {
                     </button>`:``)
                     :'';
 
-                    return $btn_editar+$btn_eliminar;
+                    return $btn_editar+$btn_eliminar+((([17,27,1,3,77].includes(auth_user.id_usuario))? btnAjustaReserva :''));
 
 
                 }, targets: 15
@@ -352,6 +353,69 @@ $("#reservasAlmacen tbody").on("click", "a.verProducto", function (e) {
     var win = window.open("/almacen/catalogos/productos/index", '_blank');
     win.focus();
 });
+
+$('#reservasAlmacen tbody').on("click", "button.handleClickAjustarEstadoReserva", (e) => {
+    ajustarEstadoReserva(e.currentTarget);
+});
+
+
+function ajustarEstadoReserva(obj){
+    var idReserva = obj.dataset.idReserva;
+    var codigoReserva = obj.dataset.codigoReserva;
+
+    $('#modal-ajustarEstadoReserva').modal({
+        show: true,
+        backdrop: 'static'
+    });
+
+    document.querySelector("form[id='form-ajustarEstadoReserva'] input[name='id_reserva']").value= idReserva;
+    document.querySelector("form[id='form-ajustarEstadoReserva'] label[id='codigo_req']").innerHTML= codigoReserva;
+
+}
+$("#form-ajustarEstadoReserva").on("submit", function (e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: "¿Está seguro que desea actualizar el estado?",
+        text: "",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00a65a", //"#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "Cancelar",
+        confirmButtonText: "Sí, Actualizar"
+    }).then(result => {
+        if (result.isConfirmed) {
+
+            var data = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: 'actualizarEstadoReserva',
+                data: data,
+                dataType: 'JSON',
+                success: function (response) {
+                    console.log(response);
+                    Lobibox.notify(response.estado, {
+                        title: false,
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+                    $('#modal-ajustarEstadoReserva').modal('hide');
+                    $("#reservasAlmacen").DataTable().ajax.reload(null, false);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+        }
+    });
+});
+
 
 function actualizarReservas() {
     $.ajax({

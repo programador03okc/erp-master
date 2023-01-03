@@ -633,7 +633,8 @@ class RequerimientoPendienteCtrl{
     obtenerDetalleRequerimientos(id){
         return requerimientoPendienteModel.obtenerDetalleRequerimientos(id);
     }
-
-
-
+ 
+    retornarRequerimientoAtendidoAListaPendientes(id){
+        return requerimientoPendienteModel.retornarRequerimientoAtendidoAListaPendientes(id);
+    }
 }

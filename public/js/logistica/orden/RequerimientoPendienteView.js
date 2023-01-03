@@ -88,8 +88,9 @@ class RequerimientoPendienteView {
         $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickVerDetalleRequerimiento", (e) => {
             this.verDetalleRequerimientoAtendidos(e.currentTarget);
         });
-
-
+        $('#listaRequerimientosAtendidos tbody').on("click", "button.handleClickRetornarAListaPendientes", (e) => {
+            this.retornarAListaPendientes(e.currentTarget);
+        });
 
         $('body').on("click", "span.handleClickModalVerOrdenDeRequerimiento", (e) => { // tab para lista pendiente tab lista atendidos
             this.modalVerOrdenDeRequerimiento(e.currentTarget);
@@ -604,12 +605,15 @@ class RequerimientoPendienteView {
 
                         let tieneTransformacion = row.tiene_transformacion;
                         let cantidadItemBase = row.cantidad_items_base;
+                        let btnRetornarAListaPendientes = '<button type="button" class="btn btn-default btn-xs handleClickRetornarAListaPendientes" style="color:red;" name="btnRetornarAListaPendientes" title="Retornar a lista de pendiente" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-arrow-left fa-xs"></i></button>';
                         if (tieneTransformacion == true && cantidadItemBase == 0) {
                             return ('<div class="btn-group" role="group">' +
                                 '</div>' +
-                                '<div class="btn-group" role="group">' +(array_accesos.find(element => element === 226)?'<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">' +
+                                '<div class="btn-group" role="group">' +(array_accesos.find(element => element === 226)?'<button type="button" class="btn btn-info btn-xs handleClickOpenModalCuadroCostos" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '" >' +
                                 '<i class="fas fa-eye fa-sm"></i>' +
                                 '</button>':'') +
+
+                                (([17,27,1,3,77].includes(auth_user.id_usuario))? (btnRetornarAListaPendientes):'')+
 
                                 '</div>');
                         } else {
@@ -932,14 +936,18 @@ class RequerimientoPendienteView {
                         // if(permisoCrearOrdenPorRequerimiento == '1') {
                         let tieneTransformacion = row.tiene_transformacion;
                         let cantidadItemBase = row.cantidad_items_base;
+                        let btnRetornarAListaPendientes = '<button type="button" class="btn btn-default btn-xs handleClickRetornarAListaPendientes" style="color:red;" name="btnRetornarAListaPendientes" title="Retornar a lista de pendiente" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-arrow-left fa-xs"></i></button>';
+ 
                         if (tieneTransformacion == true && cantidadItemBase == 0) {
                             return ('<div class="btn-group" role="group">' +
                                 '</div>' +
-                                '<div class="btn-group" role="group">' +(array_accesos.find(element => element === 235)?'<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">' +
+                                '<div class="btn-group" role="group">' +(array_accesos.find(element => element === 232)?'<button type="button" class="btn btn-default btn-xs handleClickVerDetalleRequerimiento" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-chevron-down fa-sm"></i></button>':'')
+                                + (array_accesos.find(element => element === 235)?'<button type="button" class="btn btn-info btn-xs" name="btnVercuadroCostos" title="Ver Cuadro Costos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalCuadroCostos(this);">' +
                                 '<i class="fas fa-eye fa-sm"></i>' +
                                 '</button>':'')+
-
-                                '</div>');
+                                (array_accesos.find(element => element === 232)?'<button type="button" class="btn btn-default btn-xs handleClickVerDetalleRequerimiento" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-chevron-down fa-sm"></i></button>':'')
+                                +(([17,27,1,3,77].includes(auth_user.id_usuario))? (btnRetornarAListaPendientes):'')
+                                +'</div>');
                         } else {
                             let openDiv = '<div class="btn-group" role="group">';
                             let btnVerDetalleRequerimiento = (array_accesos.find(element => element === 232)?'<button type="button" class="btn btn-default btn-xs handleClickVerDetalleRequerimiento" name="btnVerDetalleRequerimiento" title="Ver detalle requerimiento" data-id-requerimiento="' + row.id_requerimiento + '" ><i class="fas fa-chevron-down fa-sm"></i></button>':'');
@@ -948,6 +956,7 @@ class RequerimientoPendienteView {
                             // let btnAgregarItemBase = '<button type="button" class="btn btn-success btn-xs" name="btnAgregarItemBase" title="Mapear productos" data-id-requerimiento="' + row.id_requerimiento + '"  onclick="requerimientoPendienteView.openModalAgregarItemBase(this);"  ><i class="fas fa-sign-out-alt"></i></button>';
                             let btnVerAdjuntosModal = (array_accesos.find(element => element === 234)?'<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>':'');
                             let btnAtenderAlmacen = '';
+                            let btnRetornarAListaPendientes = '<button type="button" class="btn btn-default btn-xs handleClickRetornarAListaPendientes" style="color:red;" name="btnRetornarAListaPendientes" title="Retornar a lista de pendiente" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '"><i class="fas fa-arrow-left fa-xs"></i></button>';
                             // if (row.cantidad_adjuntos_activos.cabecera > 0 || row.cantidad_adjuntos_activos.detalle > 0) {
                             //     btnVerAdjuntosModal = '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row.id_requerimiento + '" data-codigo-requerimiento="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>';
 
@@ -978,9 +987,9 @@ class RequerimientoPendienteView {
                             let closeDiv = '</div>';
 
                             if (row.cantidad_tipo_servicio > 0) {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal+ (([17,27,1,3,77].includes(auth_user.id_usuario))? (btnRetornarAListaPendientes):'') + closeDiv);
                             } else {
-                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal + closeDiv);
+                                return (openDiv + btnVerDetalleRequerimiento + btnAtenderAlmacen + btnVercuadroCostos + btnVerAdjuntosModal+ (([17,27,1,3,77].includes(auth_user.id_usuario))? (btnRetornarAListaPendientes):'') + closeDiv);
                             }
                         }
 
@@ -1220,6 +1229,48 @@ class RequerimientoPendienteView {
         }
     }
 
+    retornarAListaPendientes(obj) {
+        let tr = obj.closest('tr');
+        var idRequerimiento = obj.dataset.idRequerimiento;
+        var codigRequerimiento = obj.dataset.codigRequerimiento;
+
+        Swal.fire({
+            title: 'Esta seguro de retornar el requerimiento '+codigRequerimiento+' a la lista de pendientes?',
+            text: "El nuevo estado de requerimiento sera: atención parcial",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, retornar'
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.requerimientoPendienteCtrl.retornarRequerimientoAtendidoAListaPendientes(idRequerimiento).then((res) => {
+                    if (res.estado == 'success') {
+                        tr.remove();
+                        Lobibox.notify('success', {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: res.mensaje
+                        });
+
+                    } else {
+                        Swal.fire(
+                            'Error en el servidor',
+                            res.mensaje,
+                            res.estado
+                        );
+                    }
+
+                });
+            }
+        })
+
+    }
     buildFormatListaRequerimientosPendientes(obj, table_id, id, row) {
         obj.setAttribute('disabled', true);
 

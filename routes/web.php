@@ -895,6 +895,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('actualizar-ajuste-estado-requerimiento', 'ComprasPendientesController@actualizarAjusteEstadoRequerimiento');
 
 					Route::post('guardar-observacion-logistica', 'ComprasPendientesController@guardarObservacionLogistica');
+
+					Route::get('retornar-requerimiento-atendido-a-lista-pedientes/{id}', 'ComprasPendientesController@retornarRequerimientoAtendidoAListaPendientes')->name('retornar-requerimiento-atendido-a-lista-pedientes');
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
@@ -1557,6 +1559,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anularReserva', 'Almacen\Movimiento\ReservasAlmacenController@anularReserva');
 				Route::post('actualizarReserva', 'Almacen\Movimiento\ReservasAlmacenController@actualizarReserva');
 				Route::get('actualizarReservas', 'Almacen\Movimiento\ReservasAlmacenController@actualizarReservas');
+				Route::post('actualizarEstadoReserva', 'Almacen\Movimiento\ReservasAlmacenController@actualizarEstadoReserva');
 			});
 
 			Route::group(['as' => 'requerimientos-almacen.', 'prefix' => 'requerimientos-almacen'], function () {
@@ -1568,6 +1571,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('cambioAlmacen', 'Almacen\Reporte\ListaRequerimientosAlmacenController@cambioAlmacen');
 				Route::get('listarDetalleRequerimiento/{id}', 'Almacen\Reporte\ListaRequerimientosAlmacenController@listarDetalleRequerimiento');
 				Route::post('anularDespachoInterno', 'Logistica\Distribucion\OrdenesDespachoInternoController@anularDespachoInterno')->name('anularDespachoInterno');
+				Route::post('guardar-ajuste-transformacion-requerimiento', 'ComprasPendientesController@guardarAjusteTransformacionRequerimiento')->name('guardar-ajuste-transformacion-requerimiento');
+				Route::get('mostrar-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@requerimiento');
+				Route::get('detalle-requerimiento/{idRequerimiento?}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimientos');
+
 			});
 		});
 
@@ -2190,11 +2197,17 @@ Route::group(['middleware' => ['auth']], function () {
 
 		Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
 			Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
+			Route::get('crear-cliente', 'Gerencial\Cobranza\ClienteController@nuevoCliente')->name('nuevo.cliente');
 			Route::post('clientes', 'Gerencial\Cobranza\ClienteController@listarCliente')->name('listar.cliente');
 			Route::post('clientes/crear', 'Gerencial\Cobranza\ClienteController@crear')->name('clientes.crear');
 			Route::post('clientes/editar', 'Gerencial\Cobranza\ClienteController@editar')->name('clientes.editar');
+			Route::get('cliente/ver/{id_contribuyente}', 'Gerencial\Cobranza\ClienteController@ver')->name('clientes.ver');
 			Route::post('clientes/actualizar', 'Gerencial\Cobranza\ClienteController@actualizar')->name('clientes.actulizar');
-			Route::post('clientes/eliminar', 'Gerencial\Cobranza\ClienteController@eliminar')->name('clientes.eliminar');
+			Route::post('clientes/eliminar', 'Gerencial\Cobranza\ClienteController@eliminar');
+            Route::get('get-distrito/{id_provincia}', 'Gerencial\Cobranza\ClienteController@getDistrito')->name('get.distrito');
+            Route::get('cliente/get-distrito/{id_provincia}', 'Gerencial\Cobranza\ClienteController@getDistrito');
+
+            Route::get('cliente/{id_contribuyente}', 'Gerencial\Cobranza\ClienteController@editarContribuyente');
 
 			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
 			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
@@ -2202,7 +2215,10 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente');
 
 			Route::get('provincia/{id_departamento}', 'Gerencial\Cobranza\RegistroController@provincia');
+			Route::get('cliente/provincia/{id_departamento}', 'Gerencial\Cobranza\RegistroController@provincia');
 			Route::get('distrito/{id_provincia}', 'Gerencial\Cobranza\RegistroController@distrito');
+			Route::get('cliente/distrito/{id_provincia}', 'Gerencial\Cobranza\RegistroController@distrito');
+
 			Route::get('get-cliente/{id_cliente}', 'Gerencial\Cobranza\RegistroController@getCliente');
 			Route::get('buscar-factura/{factura}', 'Gerencial\Cobranza\RegistroController@getFactura');
 			Route::get('buscar-registro/{input}/{tipo}', 'Gerencial\Cobranza\RegistroController@getRegistro');

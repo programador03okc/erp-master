@@ -391,6 +391,21 @@ class RequerimientoPendienteModel {
                 });
             });
     }
+    retornarRequerimientoAtendidoAListaPendientes(id){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`retornar-requerimiento-atendido-a-lista-pedientes/${id}`,
+                dataType: 'JSON',
+                success(response) {
+                    resolve(response);
+                },
+                error: function(err) {
+                reject(err)
+                }
+                });
+            });
+    }
 
 }
 
