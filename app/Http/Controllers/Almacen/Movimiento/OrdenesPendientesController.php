@@ -1361,7 +1361,7 @@ class OrdenesPendientesController extends Controller
                                 // 'id_almacen_reserva' => $request->id_almacen
                             ]);
                     }
-                    if ($dreq->id_tipo_requerimiento !== 4) {
+                    if (intval($dreq->id_tipo_requerimiento) !== 4) {
                         DB::table('almacen.alm_reserva')
                             ->insert([
                                 'codigo' => Reserva::crearCodigo($id_almacen),
