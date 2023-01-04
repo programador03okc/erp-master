@@ -1969,6 +1969,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verFichasTecnicasAdjuntas/{id}', 'Almacen\Movimiento\DevolucionController@verFichasTecnicasAdjuntas')->name('ver-fichas-tecnicas');
 				Route::post('conformidadDevolucion', 'Almacen\Movimiento\DevolucionController@conformidadDevolucion')->name('conformidad-devolucion');
 				Route::get('revertirConformidad/{id}', 'Almacen\Movimiento\DevolucionController@revertirConformidad')->name('revertir-devolucion');
+
+                Route::post('clonarIncidencia', 'Cas\FichaReporteController@clonarIncidencia');
 			});
 		});
 	});

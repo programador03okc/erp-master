@@ -65,14 +65,36 @@ function mostrarIncidencia(id) {
             $("[name=direccion_contacto]").val(response.incidencia.direccion_contacto);
             $("[name=id_ubigeo_contacto]").val(response.incidencia.id_ubigeo_contacto);
             $("[name=ubigeo_contacto]").val(response.incidencia.ubigeo_descripcion);
-            $(".horario_contacto").text(response.incidencia.horario);
-            $(".email_contacto").text(response.incidencia.email);
+
+            if (response.incidencia.horario_contacto) {
+                $(".horario_contacto").text(response.incidencia.horario_contacto);
+                $('[name="horario_contacto"]').val(response.incidencia.horario_contacto);
+            }else{
+                $(".horario_contacto").text(response.incidencia.horario);
+                $('[name="horario_contacto"]').val(response.incidencia.horario);
+            }
+            if (response.incidencia.email_contacto) {
+                $(".email_contacto").text(response.incidencia.email_contacto);
+                $('[name="email_contacto"]').val(response.incidencia.email_contacto);
+            }else{
+                $(".email_contacto").text(response.incidencia.email);
+                $('[name="email_contacto"]').val(response.incidencia.email);
+            }
 
             $("[name=serie]").val(response.incidencia.serie);
             $("[name=producto]").val(response.incidencia.producto);
             $("[name=marca]").val(response.incidencia.marca);
             $("[name=modelo]").val(response.incidencia.modelo);
             $("[name=id_tipo]").val(response.incidencia.id_tipo);
+
+            $('select[name="marca"] option').prop("selected", false);
+            $('select[name="modelo"] option').prop("selected", false);
+            $('select[name="producto"] option').prop("selected", false);
+
+            $('select[name="marca"] option[value="'+response.incidencia.marca+'"]').prop("selected", true);
+            $('select[name="modelo"] option[value="'+response.incidencia.modelo+'"]').prop("selected", true);
+            $('select[name="producto"] option[value="'+response.incidencia.producto+'"]').prop("selected", true);
+            console.log(response);
             // response.productos.forEach(function (element) {
 
             //     listaSeriesProductos.push({
@@ -353,3 +375,23 @@ function abrirUbigeoModal(origen) {
     console.log(ubigeoOrigen);
     ubigeoModal();
 }
+$(document).on('change','select[name="marca"]',function () {
+    console.log($(this).val());
+    // $.ajax({
+    //     type: 'POST',
+    //     url: '',
+    //     data: {descripcion:$(this).val()},
+    //     // processData: false,
+    //     // contentType: false,
+    //     dataType: 'JSON',
+    //     beforeSend: (data) => {
+    //         console.log(data);
+    //     }
+    // }).done(function(response) {
+    //     return response
+    // }).fail( function( jqXHR, textStatus, errorThrown ){
+    //     console.log(jqXHR);
+    //     console.log(textStatus);
+    //     console.log(errorThrown);
+    // });
+});

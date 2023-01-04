@@ -6,7 +6,13 @@ Registro de incidencia
 @endsection
 
 @section('estilos')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+<style>
+    .d-none{
+        display: none;
+    }
+</style>
 @endsection
 
 @section('breadcrumb')
@@ -231,15 +237,15 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:5px">
                                 <label class="col-sm-3 control-label">Horario</label>
                                 <div class="col-sm-9">
-                                    <div class="form-control-static limpiarTexto horario_contacto"></div>
-                                    <input type="hidden" name="horario_contacto" value="">
+                                    <div class="form-control-static limpiarTexto horario_contacto d-none"></div>
+                                    <input class="form-control edition limpiarIncidencia" type="text" name="horario_contacto" value="">
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:5px">
                                 <label class="col-sm-3 control-label">Correo</label>
                                 <div class="col-sm-9">
-                                    <div class="form-control-static limpiarTexto email_contacto"><label class=""></label></div>
-                                    <input type="hidden" name="email_contacto" value="">
+                                    <div class="form-control-static limpiarTexto email_contacto d-none"><label class=""></label></div>
+                                    <input class="form-control edition limpiarIncidencia" type="text" name="email_contacto" value="">
                                 </div>
                             </div>
                         </div>
@@ -269,9 +275,12 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:5px">
                                 <label class="col-sm-4 control-label">Marca</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="marca"/>
-                                    <select class="form-control" name="marca" required>
+                                    <input type="text" class="form-control edition limpiarIncidencia d-none" name="marca"/>
+                                    <select class="form-control edition limpiarIncidencia select2" name="marca" required>
                                         <option value="">Elija una opción</option>
+                                        @foreach ($cas_marca as $item)
+                                        <option value="{{ $item->descripcion }}">{{ $item->descripcion }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -282,7 +291,13 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:5px">
                                 <label class="col-sm-2 control-label">Producto</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="producto" required/>
+                                    <input type="text" class="form-control edition limpiarIncidencia d-none" name="producto" />
+                                    <select class="form-control edition limpiarIncidencia" name="producto" required>
+                                        <option value="">Elija una opción</option>
+                                        @foreach ($cas_producto as $item)
+                                        <option value="{{ $item->descripcion }}">{{ $item->descripcion }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom:5px">
@@ -303,7 +318,13 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:5px">
                                 <label class="col-sm-3 control-label">Modelo</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control edition limpiarIncidencia" name="modelo"/>
+                                    <input type="text" class="form-control edition limpiarIncidencia d-none" name="modelo"/>
+                                    <select class="form-control edition limpiarIncidencia" name="modelo" required>
+                                        <option value="">Elija una opción</option>
+                                        @foreach ($cas_modelo as $item)
+                                        <option value="{{ $item->descripcion }}">{{ $item->descripcion }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -527,6 +548,7 @@ Registro de incidencia
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
@@ -552,6 +574,9 @@ Registro de incidencia
 <script>
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        $(".select2").select2({
+            tags: true
+        });
     });
 </script>
 @endsection
