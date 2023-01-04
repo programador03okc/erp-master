@@ -640,6 +640,7 @@ class RegistroController extends Controller
                 //     return response()->json([$response,empty($response->numeroDocumento)]);exit;
                 // }
 
+                // return response()->json([$response,$value]);exit;
                 if (!empty($response->numeroDocumento)) {
 
                     // $ubigeo_distrito=[];

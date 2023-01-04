@@ -4,10 +4,10 @@
     <li><a href="{{route('tesoreria.index')}}"><i class="fas fa-tachometer-alt"></i> <span>Tesorería</span></a></li>
     @if(Auth::user()->tieneAplicacion(133))
     <li>
-        <a href="{{route('tesoreria.pagos.procesar-pago.index')}}"><i class="fas fa-file-invoice-dollar"></i> 
+        <a href="{{route('tesoreria.pagos.procesar-pago.index')}}"><i class="fas fa-file-invoice-dollar"></i>
             <span>Registro de Pagos </span>
         </a>
-        
+
     </li>
     @endif
     {{-- <li class="treeview">
@@ -21,7 +21,7 @@
             <li><a href="{{route('tesoreria.pagos.procesar-pago.index')}}"><i class="far fa-circle fa-xs"></i> Registro de Pagos </a></li>
         </ul>
     </li> --}}
-    
+
     @if(Auth::user()->tieneSubModulo(44))
     <li class="treeview">
         <a href="#">

@@ -312,13 +312,13 @@ $("#reservasAlmacen tbody").on("click", "button.anular", function () {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
                         console.log(response);
                         if (response.respuesta > 0) {
-                            Lobibox.notify("success", {
+                            Lobibox.notify(response.tipo_estado, {
                                 title: false,
                                 size: "mini",
                                 rounded: true,
                                 sound: false,
                                 delayIndicator: false,
-                                msg: 'Se anuló correctamente.'
+                                msg: response.mensaje
                             });
                             $('#reservasAlmacen').DataTable().ajax.reload(null, false);
                         }else{
