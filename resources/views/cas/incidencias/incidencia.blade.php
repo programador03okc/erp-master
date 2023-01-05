@@ -276,8 +276,8 @@ Registro de incidencia
                                 <label class="col-sm-4 control-label">Marca</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control edition limpiarIncidencia d-none" name="marca"/>
-                                    <select class="form-control edition limpiarIncidencia select2" name="marca" required>
-                                        <option value="">Elija una opción</option>
+                                    <select class="form-control edition limpiarIncidencia" name="marca" required>
+                                        <option value="" disabled>Elija una opción</option>
                                         @foreach ($cas_marca as $item)
                                         <option value="{{ $item->descripcion }}">{{ $item->descripcion }}</option>
                                         @endforeach
@@ -293,7 +293,7 @@ Registro de incidencia
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control edition limpiarIncidencia d-none" name="producto" />
                                     <select class="form-control edition limpiarIncidencia" name="producto" required>
-                                        <option value="">Elija una opción</option>
+                                        <option value="" disabled>Elija una opción</option>
                                         @foreach ($cas_producto as $item)
                                         <option value="{{ $item->descripcion }}">{{ $item->descripcion }}</option>
                                         @endforeach
@@ -320,7 +320,7 @@ Registro de incidencia
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control edition limpiarIncidencia d-none" name="modelo"/>
                                     <select class="form-control edition limpiarIncidencia" name="modelo" required>
-                                        <option value="">Elija una opción</option>
+                                        <option value="" disabled>Elija una opción</option>
                                         @foreach ($cas_modelo as $item)
                                         <option value="{{ $item->descripcion }}">{{ $item->descripcion }}</option>
                                         @endforeach
