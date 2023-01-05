@@ -36,7 +36,7 @@ class ListaOrdenView {
         $('#listaOrdenes tbody').on("click", "label.handleClickAbrirOrden", (e) => {
             this.abrirOrden(e.currentTarget.dataset.idOrden);
         });
-        $('#listaDetalleOrden tbody').on("click", "label.handleClickAbrirOrden", (e) => {
+        $('#listaItemsOrden tbody').on("click", "label.handleClickAbrirOrden", (e) => {
             this.abrirOrden(e.currentTarget.dataset.idOrden);
         });
 
