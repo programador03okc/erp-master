@@ -278,9 +278,9 @@ Registro de incidencia
                                     <input type="text" class="form-control edition limpiarIncidencia d-none" name="marca"/>
                                     <select class="form-control edition limpiarIncidencia" name="marca" required>
                                         <option value="">Elija una opción</option>
-                                        @foreach ($cas_marca as $item)
+                                        {{-- @foreach ($cas_marca as $item)
                                         <option value="{{ $item->descripcion }}">{{ $item->descripcion }}</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -291,12 +291,12 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:5px">
                                 <label class="col-sm-2 control-label">Producto</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control edition limpiarIncidencia d-none" name="producto" />
-                                    <select class="form-control edition limpiarIncidencia" name="producto" required>
+                                    <input type="text" class="form-control edition limpiarIncidencia" name="producto" />
+                                    <select class="form-control edition limpiarIncidencia d-none" name="producto" required>
                                         <option value="">Elija una opción</option>
-                                        @foreach ($cas_producto as $item)
+                                        {{-- @foreach ($cas_producto as $item)
                                         <option value="{{ $item->descripcion }}">{{ $item->descripcion }}</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -319,11 +319,11 @@ Registro de incidencia
                                 <label class="col-sm-3 control-label">Modelo</label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control edition limpiarIncidencia d-none" name="modelo"/>
-                                    <select class="form-control edition limpiarIncidencia" name="modelo" required>
+                                    <select class="form-control edition limpiarIncidencia " name="modelo" required>
                                         <option value="">Elija una opción</option>
-                                        @foreach ($cas_modelo as $item)
+                                        {{-- @foreach ($cas_modelo as $item)
                                         <option value="{{ $item->descripcion }}">{{ $item->descripcion }}</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
@@ -577,6 +577,4 @@ Registro de incidencia
         $(".select2").select2({
             tags: true
         });
-    });
-</script>
-@endsection
+tion);
