@@ -31,9 +31,9 @@
             {{-- @endif --}}
             <li><a href="{{route('cas.garantias.fichas.index')}}"> Gestión de incidencias </a></li>
 
-            <li><a href="{{route('cas.garantias.fichas.index')}}"> Marca </a></li>
-            <li><a href="{{route('cas.garantias.fichas.index')}}"> Model </a></li>
-            <li><a href="{{route('cas.garantias.fichas.index')}}"> Producto </a></li>
+            <li><a href="{{route('cas.garantias.marca.inicio')}}"> Marca </a></li>
+            <li><a href="{{route('cas.garantias.modelo.inicio')}}"> Model </a></li>
+            <li><a href="{{route('cas.garantias.producto.inicio')}}"> Producto </a></li>
         </ul>
     </li>
 </ul>
