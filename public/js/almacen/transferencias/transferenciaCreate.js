@@ -103,6 +103,7 @@ let detalle = [];
 function ver_requerimiento(id_requerimiento) {
     $("#detalleRequerimiento tbody").html("");
     $("[name=id_almacen_destino]").html("");
+    $('[name=fecha_emision_transferencia]').val(fecha_actual());
     detalle = [];
     $("#modal-ver_requerimiento").modal({
         show: true
@@ -228,6 +229,7 @@ $("#form-ver_requerimiento").on("submit", function (e) {
             console.log(data);
             var id_requerimiento = $("[name=id_requerimiento]").val();
             var id_almacen_destino = $("[name=id_almacen_destino_create]").val();
+            var fecha = $("[name=fecha_emision_transferencia]").val();
             var listaItemsDetalle = [];
 
             detalle.forEach(element => {
@@ -244,7 +246,8 @@ $("#form-ver_requerimiento").on("submit", function (e) {
             var data = {
                 id_requerimiento: id_requerimiento,
                 id_almacen_destino: id_almacen_destino,
-                detalle: listaItemsDetalle
+                detalle: listaItemsDetalle,
+                fecha: fecha,
             };
             console.log(data);
             generarTransferenciaRequerimiento(data);

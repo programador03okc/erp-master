@@ -15,23 +15,22 @@
                             </select>
                         </div>
                         <div class="col-md-2">
+                            <h5>Fecha de Emisión</h5>
+                            <input type="date" class="form-control" name="fecha_emision_transferencia" value="<?= date('Y-m-d'); ?>" required>
+                        </div>
+                        <div class="col-md-2">
                             <h5>Sede Destino</h5>
                             <label name="sede_requerimiento"></label>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h5>Concepto</h5>
                             <label name="concepto"></label>
                         </div>
                         <div class="col-md-2">
                             <h5>Fecha de Requerimiento</h5>
                             <label name="fecha_requerimiento"></label>
-                            <!-- <input type="date" class="form-control" name="fecha_emision"> -->
                         </div>
                         
-                        {{-- <div class="col-md-2">
-                            <h5>Estado</h5>
-                            <label name="estado_requerimiento"></label>
-                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-md-12">
