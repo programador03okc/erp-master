@@ -1494,10 +1494,10 @@ class TransferenciaController extends Controller
         return response()->json($series);
     }
 
-    public static function transferencia_nextId($id_alm_origen)
+    public static function transferencia_nextId($id_alm_origen, $fecha)
     {
-        $yyyy = date('Y', strtotime(date('Y-m-d H:i:s')));
-        $anio = date('y', strtotime(date('Y-m-d H:i:s')));
+        $yyyy = date('Y', strtotime($fecha));
+        $anio = date('y', strtotime($fecha));
 
         $cantidad = DB::table('almacen.trans')
             ->where('id_almacen_origen', $id_alm_origen)
@@ -1651,7 +1651,7 @@ class TransferenciaController extends Controller
                 if ($array_almacen !== []) {
 
                     foreach ($array_almacen as $alm) {
-                        $codigo = TransferenciaController::transferencia_nextId($alm);
+                        $codigo = TransferenciaController::transferencia_nextId($alm, $request->fecha);
 
                         if ($mensaje == '') {
                             $mensaje = 'Se ha creado la(s) transferencia(s): ' . $codigo . ' exitosamente.';
@@ -1745,7 +1745,7 @@ class TransferenciaController extends Controller
 
             $id_usuario = Auth::user()->id_usuario;
 
-            $codigo = TransferenciaController::transferencia_nextId($request->id_almacen_origen);
+            $codigo = TransferenciaController::transferencia_nextId($request->id_almacen_origen, $request->fecha);
 
             $id_transferencia = DB::table('almacen.trans')->insertGetId(
                 [
@@ -1922,7 +1922,7 @@ class TransferenciaController extends Controller
         ]);
     }
 
-
+    /*
     public function guardar_guia_transferencia(Request $request)
     {
 
@@ -2107,7 +2107,7 @@ class TransferenciaController extends Controller
             // return response()->json($e);
         }
     }
-
+*/
     function almacenesPorUsuario()
     {
         return DB::table('almacen.alm_almacen_usuario')

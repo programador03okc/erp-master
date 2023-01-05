@@ -7,6 +7,7 @@ function openNuevaTransferencia() {
     $('[name=id_almacen_origen_nueva]').val('');
     $('[name=id_almacen_destino_nueva]').val('');
     $('[name=concepto]').val('');
+    $('[name=fecha_emision_nuevo]').val(fecha_actual());
 
     itemsTransferencia = [];
     $('#detalleTransferencia tbody').html('');
@@ -175,12 +176,14 @@ $("#form-nuevaTransferencia").on("submit", function (e) {
         var id_almacen_origen = $("[name=id_almacen_origen_nueva]").val();
         var id_almacen_destino = $("[name=id_almacen_destino_nueva]").val();
         var concepto = $("[name=concepto_nuevo]").val();
+        var fecha = $("[name=fecha_emision_nuevo]").val();
 
         var data = {
             id_almacen_origen: id_almacen_origen,
             id_almacen_destino: id_almacen_destino,
             concepto: concepto,
-            detalle: listaItems
+            detalle: listaItems,
+            fecha: fecha,
         };
         // data += '&detalle=' + JSON.stringify(listaItems);
         console.log(data);
