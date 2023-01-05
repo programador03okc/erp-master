@@ -4,6 +4,7 @@ namespace App\Models\Tesoreria;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Administracion\Documento;
+use App\Models\Administracion\Periodo;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Rrhh\Persona;
@@ -94,45 +95,50 @@ class RequerimientoPago extends Model
         }
     }
 
-    public static function obtenerCantidadRegistros($grupo, $idRequerimientoPago)
+    public static function obtenerCantidadRegistros($grupo, $idRequerimientoPago, $idPeriodo)
     {
-        $yyyy = date('Y', strtotime("now"));
+        // $yyyy = date('Y', strtotime("now"));
         $num = RequerimientoPago::when(($grupo > 0), function ($query) use ($grupo, $idRequerimientoPago) {
             return $query->Where([['id_grupo', '=', $grupo], ['id_requerimiento_pago', '<=', $idRequerimientoPago]]);
         })
-            ->whereYear('fecha_registro', '=', $yyyy)
+            ->where('id_periodo',$idPeriodo)
+            // ->whereYear('fecha_registro', '=', $yyyy)
             ->count();
         return $num;
     }
 
-    public static function crearCodigo($idGrupo, $idRequerimientoPago)
+    public static function crearCodigo($idGrupo, $idRequerimientoPago, $idPeriodo)
     {
+        $Periodo=Periodo::find($idPeriodo);
+        $yyyy = $Periodo->descripcion;
+        $yy = substr($Periodo->descripcion,2,2);
+
         $documento = 'RP'; //Prefijo para el codigo de requerimiento
         if ($idGrupo == 1) {
             $documento .= 'A';
-            $num = RequerimientoPago::obtenerCantidadRegistros(1, $idRequerimientoPago); //tipo: BS, grupo: Administración
+            $num = RequerimientoPago::obtenerCantidadRegistros(1, $idRequerimientoPago, $idPeriodo); //tipo: BS, grupo: Administración
         }
         if ($idGrupo == 2) {
             $documento .= 'C';
-            $num = RequerimientoPago::obtenerCantidadRegistros(2, $idRequerimientoPago); //tipo: BS, grupo: Comercial
+            $num = RequerimientoPago::obtenerCantidadRegistros(2, $idRequerimientoPago, $idPeriodo); //tipo: BS, grupo: Comercial
         }
         if ($idGrupo == 3) {
             $documento .= 'P';
-            $num = RequerimientoPago::obtenerCantidadRegistros(3, $idRequerimientoPago); //tipo: BS, grupo: Proyectos
+            $num = RequerimientoPago::obtenerCantidadRegistros(3, $idRequerimientoPago, $idPeriodo); //tipo: BS, grupo: Proyectos
         }
         if ($idGrupo == 4) {
             $documento .= 'G';
-            $num = RequerimientoPago::obtenerCantidadRegistros(4, $idRequerimientoPago); //tipo: BS, grupo: Gerencia
+            $num = RequerimientoPago::obtenerCantidadRegistros(4, $idRequerimientoPago, $idPeriodo); //tipo: BS, grupo: Gerencia
         }
         if ($idGrupo == 5) {
             $documento .= 'CI';
-            $num = RequerimientoPago::obtenerCantidadRegistros(5, $idRequerimientoPago); //tipo: BS, grupo: Control Interno
+            $num = RequerimientoPago::obtenerCantidadRegistros(5, $idRequerimientoPago, $idPeriodo); //tipo: BS, grupo: Control Interno
         }
         if ($idGrupo == 6) {
             $documento .= 'MK';
-            $num = RequerimientoPago::obtenerCantidadRegistros(6, $idRequerimientoPago); //tipo: BS, grupo: Marketing
+            $num = RequerimientoPago::obtenerCantidadRegistros(6, $idRequerimientoPago, $idPeriodo); //tipo: BS, grupo: Marketing
         }
-        $yy = date('y', strtotime("now"));
+        // $yy = date('y', strtotime("now"));
         $correlativo = sprintf('%04d', $num);
 
         return "{$documento}-{$yy}{$correlativo}";

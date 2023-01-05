@@ -665,7 +665,7 @@ $(document).on('click','.selecionar',function () {
 });
 $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
     const id_requerimiento = $(this).attr('data-id');
-    var data_form =$(this).data('form');
+    var data_form =$(this).attr('data-form');
     console.log(id_requerimiento);
     $.ajax({
         type: 'get',
@@ -677,8 +677,9 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
 
             if (response.status===200) {
                 $('#lista-procesadas').modal('hide');
+
                 if ('guardar-formulario'===data_form) {
-                    $('[data-form="guardar-formulario"] .modal-body select[name="moneda"]').removeAttr('selected');
+                        $('[data-form="guardar-formulario"] .modal-body select[name="moneda"]').removeAttr('selected');
                         $('[data-form="guardar-formulario"] .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
                         $('[data-form="guardar-formulario"] .modal-body input[name="importe"]').val(response.data.total_a_pagar)
                         $('[data-form="guardar-formulario"] .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
@@ -693,7 +694,9 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
                         if (response.factura && response.factura) {
                             $('[data-form="guardar-formulario"] .modal-body input[name="fact"]').val(response.factura.serie+'-'+response.factura.numero);
                         }
-                        console.log(response);
+
+                        $('[data-form="guardar-formulario"] .modal-body select[name="empresa"]').removeAttr('selected');
+                        $('[data-form="guardar-formulario"] .modal-body select[name="empresa"] option[value="'+response.data.id_contribuyente_empresa+'"]').attr('selected','true');
                 }else{
                     $('[data-form="editar-formulario"] .modal-body select[name="moneda"]').removeAttr('selected');
                     $('[data-form="editar-formulario"] .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
@@ -712,7 +715,9 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
                     if (response.factura && response.factura) {
                         $('[data-form="editar-formulario"] .modal-body input[name="fact"]').val(response.factura.serie+'-'+response.factura.numero);
                     };
-                    console.log(response);
+
+                    $('[data-form="editar-formulario"] .modal-body select[name="empresa"]').removeAttr('selected');
+                    $('[data-form="editar-formulario"] .modal-body select[name="empresa"] option[value="'+response.data.id_contribuyente_empresa+'"]').attr('selected','true');
                 }
 
 
@@ -829,11 +834,16 @@ $(document).on('click','.editar-registro',function () {
 
             $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
             $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
+            console.log();
             if (data.vendedor) {
                 $('.search-vendedor').val(null).trigger('change');
                 var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, false, false);
                 $('.search-vendedor').append(newOption).trigger('change');
 
+            }else{
+                // $('.search-vendedor').val(null).trigger('change');
+                // var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, false, false);
+                // $('.search-vendedor').append(newOption).trigger('change');
             }
 
 

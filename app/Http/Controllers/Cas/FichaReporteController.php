@@ -387,6 +387,9 @@ class FichaReporteController extends Controller
                 'adm_ctb_contac.email',
                 'oportunidades.codigo_oportunidad',
                 'oc_propias_view.id_entidad',
+                'ubi_dpto.descripcion as departamento_text',
+                'ubi_prov.descripcion as provincia_text',
+                'ubi_dis.descripcion as distrito_text',
                 DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
             )
             // ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
@@ -415,5 +418,99 @@ class FichaReporteController extends Controller
             ->where('incidencia.id_incidencia', $id_incidencia)
             ->first();
         return $incidencia;
+    }
+    public function clonarIncidencia(Request $request)
+    {
+        $incidencia = DB::table('cas.incidencia')
+        ->select(
+            'incidencia.*',
+            'adm_contri.razon_social',
+            'adm_contri.id_contribuyente',
+            'adm_empresa.id_empresa',
+            'alm_req.codigo as codigo_requerimiento',
+            'alm_req.concepto',
+            // 'adm_ctb_contac.nombre',
+            // 'adm_ctb_contac.telefono',
+            // 'adm_ctb_contac.cargo',
+            // 'adm_ctb_contac.direccion',
+            'adm_ctb_contac.horario',
+            'adm_ctb_contac.email',
+            'oportunidades.codigo_oportunidad',
+            'oc_propias_view.id_entidad',
+            DB::raw("(ubi_dpto.descripcion)||' '||(ubi_prov.descripcion)||' '||(ubi_dis.descripcion) as ubigeo_descripcion")
+        )
+        // ->leftjoin('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'incidencia.id_salida')
+        // ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
+        // ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
+        ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'incidencia.id_requerimiento')
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+        ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
+        ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'incidencia.id_empresa')
+        ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'incidencia.id_contribuyente')
+        ->leftjoin('contabilidad.adm_ctb_contac', 'adm_ctb_contac.id_datos_contacto', '=', 'incidencia.id_contacto')
+        ->leftjoin('configuracion.ubi_dis', 'ubi_dis.id_dis', '=', 'incidencia.id_ubigeo_contacto')
+        ->leftjoin('configuracion.ubi_prov', 'ubi_prov.id_prov', '=', 'ubi_dis.id_prov')
+        ->leftjoin('configuracion.ubi_dpto', 'ubi_dpto.id_dpto', '=', 'ubi_prov.id_dpto')
+        ->where('incidencia.id_incidencia', $request->id)
+        ->first();
+
+
+        // $mensaje = '';
+        // $tipo = '';
+        $yyyy = date('Y', strtotime("now"));
+        $codigo = Incidencia::nuevoCodigoIncidencia($incidencia->id_empresa, $yyyy);
+
+        $incidencia_new = new Incidencia();
+        $incidencia_new->codigo = $codigo;
+        $incidencia_new->fecha_reporte = $incidencia->fecha_reporte;
+        $incidencia_new->id_requerimiento = $incidencia->id_requerimiento;
+        $incidencia_new->id_responsable = $incidencia->id_responsable;
+        $incidencia_new->id_salida = $incidencia->id_salida;
+        $incidencia_new->id_empresa = $incidencia->id_empresa;
+        $incidencia_new->sede_cliente = $incidencia->sede_cliente;
+        $incidencia_new->factura = $incidencia->factura;
+        $incidencia_new->id_contribuyente = $incidencia->id_contribuyente;
+        $incidencia_new->id_contacto = $incidencia->id_contacto;
+        $incidencia_new->usuario_final = $incidencia->usuario_final;
+        $incidencia_new->id_tipo_falla = $incidencia->id_tipo_falla;
+        $incidencia_new->id_tipo_servicio = $incidencia->id_tipo_servicio;
+        $incidencia_new->id_medio = $incidencia->id_medio;
+        $incidencia_new->conformidad = $incidencia->conformidad;
+        $incidencia_new->equipo_operativo = ((isset($incidencia->equipo_operativo) && $incidencia->equipo_operativo == 'on') ? true : false);
+        $incidencia_new->falla_reportada = $incidencia->falla_reportada;
+        $incidencia_new->id_modo = $incidencia->id_modo;
+        $incidencia_new->id_tipo_garantia = $incidencia->id_tipo_garantia;
+        $incidencia_new->id_atiende = $incidencia->id_atiende;
+        $incidencia_new->numero_caso = $incidencia->numero_caso;
+        $incidencia_new->importe_gastado = $incidencia->importe_gastado;
+        $incidencia_new->comentarios_cierre = $incidencia->comentarios_cierre;
+        $incidencia_new->parte_reemplazada = $incidencia->parte_reemplazada;
+        $incidencia_new->cliente = $incidencia->cliente;
+        $incidencia_new->nro_orden = $incidencia->nro_orden;
+        $incidencia_new->nombre_contacto = $incidencia->nombre_contacto;
+        $incidencia_new->cargo_contacto = $incidencia->cargo_contacto;
+        $incidencia_new->id_ubigeo_contacto = $incidencia->id_ubigeo_contacto;
+        $incidencia_new->telefono_contacto = $incidencia->telefono_contacto;
+        $incidencia_new->direccion_contacto = $incidencia->direccion_contacto;
+        $incidencia_new->anio = $yyyy;
+        $incidencia_new->estado = 1;
+        $incidencia_new->fecha_registro = new Carbon();
+
+        $incidencia_new->serie = $incidencia->serie;
+        $incidencia_new->producto = $incidencia->producto;
+        $incidencia_new->marca = $incidencia->marca;
+        $incidencia_new->modelo = $incidencia->modelo;
+        $incidencia_new->id_tipo = $incidencia->id_tipo;
+
+        $incidencia_new->horario_contacto = $incidencia->horario_contacto;
+        $incidencia_new->email_contacto = $incidencia->email_contacto;
+        $incidencia_new->save();
+
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$incidencia
+        ]);
     }
 }

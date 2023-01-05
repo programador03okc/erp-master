@@ -91,6 +91,11 @@ function listarIncidencias() {
                         if (row['estado'] == 1 || row['estado'] == 2) {
                             return `
                             <div class="btn-group" role="group">
+                                <button type="button" class="btn-clonar btn btn-dark boton"
+                                    data-id="${row['id_incidencia']}" title="Clonar registro." >
+                                    <i class="fas fa-clone"></i>
+                                </button>
+
                                 <button type="button" class="agregar btn btn-success boton" data-toggle="tooltip"
                                 data-placement="bottom" data-id="${row['id_incidencia']}" title="Agregar ficha de atención" >
                                 <i class="fas fa-plus"></i></button>
@@ -196,3 +201,57 @@ $("#listaIncidencias tbody").on("click", "a.contacto", function (e) {
 function exportarIncidencias() {
     $('#formFiltrosIncidencias').trigger('submit');
 }
+
+$(document).on('click','.btn-clonar',function () {
+    var id = $(this).attr('data-id');
+    Swal.fire({
+        title: 'Clonar',
+        text: "¿Está seguro de clonar este registro?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'no',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                url: 'clonarIncidencia',
+                data: {id:id},
+                // processData: false,
+                // contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                    // console.log(data);
+                }
+            }).done(function(response) {
+                return response
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value.status===200) {
+                $('#listaIncidencias').DataTable().ajax.reload();
+                Swal.fire({
+                    title: 'Éxito',
+                    text: "Se clono con éxito",
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((resultado) => {
+                    if (resultado.isConfirmed) {
+                        // refrescar pagina o tabla
+
+                    }
+                })
+            }
+        }
+    });
+});

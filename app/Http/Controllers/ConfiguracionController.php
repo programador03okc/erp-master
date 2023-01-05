@@ -666,7 +666,7 @@ class ConfiguracionController extends Controller{
         $rrhh_perso->email                  = $request->email;
         $rrhh_perso->save();
 
-        UsuarioGrupo::where('estado', 1)
+        UsuarioGrupo::where('estado', 1)->where('id_usuario',$request->id_usuario)
           ->update(['estado' => 7]);
         foreach ($request->id_grupo as $key => $value) {
             $usuario_grupo              = new UsuarioGrupo;
@@ -675,7 +675,7 @@ class ConfiguracionController extends Controller{
             $usuario_grupo->estado      = 1;
             $usuario_grupo->save();
         }
-        UsuarioRol::where('estado', 1)
+        UsuarioRol::where('estado', 1)->where('id_usuario',$request->id_usuario)
         ->update(['estado' => 7]);
         foreach ($request->id_rol as $key => $value) {
             $usuario_rol                = new UsuarioRol;
