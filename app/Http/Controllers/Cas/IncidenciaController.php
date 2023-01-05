@@ -8,6 +8,9 @@ use App\Models\Administracion\Division;
 use App\Models\Administracion\Empresa;
 use App\Models\Almacen\Movimiento;
 use App\Models\Cas\AtiendeIncidencia;
+use App\Models\Cas\CasMarca;
+use App\Models\Cas\CasModelo;
+use App\Models\Cas\CasProducto;
 use App\Models\Cas\Incidencia;
 use App\Models\Cas\IncidenciaProducto;
 use App\Models\Cas\IncidenciaProductoTipo;
@@ -33,7 +36,7 @@ class IncidenciaController extends Controller
         $tipoServicios = TipoServicio::where('estado', 1)->get();
         $divisiones = DB::table('administracion.division')->where([['estado', '=', 1], ['grupo_id', '=', 2]])->get();
         $usuarios = Usuario::join('configuracion.usuario_rol', 'usuario_rol.id_usuario', '=', 'sis_usua.id_usuario')
-            ->where([['sis_usua.estado', '=', 1], ['usuario_rol.id_rol', '=', 20]])->get(); //20 CAS
+            ->where([['sis_usua.estado', '=', 1], ['usuario_rol.id_rol', '=', 20], ['usuario_rol.estado', '=', 1]])->get(); //20 CAS
 
         $medios = MedioReporte::where('estado', 1)->get();
         $modos = ModoIncidencia::where('estado', 1)->get();
@@ -41,6 +44,10 @@ class IncidenciaController extends Controller
         $tiposGarantia = TipoGarantia::where('estado', 1)->get();
         $tiposProducto = IncidenciaProductoTipo::where('estado', 1)->get();
         $empresas = Empresa::mostrar();
+
+        $cas_marca = CasMarca::where('estado',1)->get();
+        $cas_modelo = CasModelo::where('estado',1)->get();
+        $cas_producto = CasProducto::where('estado',1)->get();
 
         return view('cas/incidencias/incidencia', compact(
             'tipoFallas',
@@ -52,7 +59,10 @@ class IncidenciaController extends Controller
             'atiende',
             'tiposGarantia',
             'tiposProducto',
-            'empresas'
+            'empresas',
+            'cas_marca',
+            'cas_modelo',
+            'cas_producto',
         ));
     }
 
@@ -234,6 +244,9 @@ class IncidenciaController extends Controller
             $incidencia->marca = $request->marca;
             $incidencia->modelo = $request->modelo;
             $incidencia->id_tipo = $request->id_tipo;
+
+            $incidencia->horario_contacto = $request->horario_contacto;
+            $incidencia->email_contacto = $request->email_contacto;
             $incidencia->save();
 
             // $detalle = json_decode($request->detalle);
@@ -311,6 +324,9 @@ class IncidenciaController extends Controller
                 $incidencia->marca = $request->marca;
                 $incidencia->modelo = $request->modelo;
                 $incidencia->id_tipo = $request->id_tipo;
+
+                $incidencia->horario_contacto = $request->horario_contacto;
+                $incidencia->email_contacto = $request->email_contacto;
                 $incidencia->save();
 
                 // $detalle = json_decode($request->detalle);

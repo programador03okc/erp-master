@@ -616,6 +616,7 @@ class RegistroController extends Controller
 
                     curl_setopt_array($curl, array(
                     CURLOPT_URL => 'https://api.apis.net.pe/v1/ruc?numero='.$value->ruc,
+                    // CURLOPT_URL => 'https://api.apis.net.pe/v1/ruc?numero=74250891',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -634,6 +635,10 @@ class RegistroController extends Controller
                 curl_close($curl);
 
                 $response = json_decode($response);
+                // return response()->json([$response,empty($response->numeroDocumento)]);exit;
+                // if ($value->ruc==='20341946531') {
+                //     return response()->json([$response,empty($response->numeroDocumento)]);exit;
+                // }
 
                 // return response()->json([$response,$value]);exit;
                 if (!empty($response->numeroDocumento)) {
