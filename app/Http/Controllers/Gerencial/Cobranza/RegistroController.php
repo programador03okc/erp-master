@@ -391,7 +391,7 @@ class RegistroController extends Controller
         $cobranza->importe          = $request->importe;
         $cobranza->id_estado_doc    = $request->estado_doc;
         $cobranza->id_tipo_tramite  = $request->tramite;
-        $cobranza->vendedor         = $request->nom_vendedor;
+        $cobranza->vendedor         = ($request->nom_vendedor?$request->nom_vendedor:null);
         $cobranza->estado           = 1;
         $cobranza->fecha_registro   = date('Y-m-d H:i:s');
         $cobranza->id_area          = $request->area;
@@ -868,7 +868,7 @@ class RegistroController extends Controller
         $cobranza->importe          = $request->importe;
         $cobranza->id_estado_doc    = $request->estado_doc;
         $cobranza->id_tipo_tramite  = $request->tramite;
-        $cobranza->vendedor         = $request->nom_vendedor;
+        $cobranza->vendedor         = ($request->nom_vendedor?$request->nom_vendedor:null);
         $cobranza->estado           = 1;
         // $cobranza->fecha_registro   = date('Y-m-d H:i:s');
         $cobranza->id_area          = $request->area;

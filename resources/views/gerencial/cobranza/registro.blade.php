@@ -285,7 +285,7 @@ Cobranzas
                             <div class="form-group">
                                 <label for="nom_vendedor">Nombre del Vendedor</label>
                                 {{-- <input type="text" class="form-control input-sm" name="nom_vendedor" id="nom_vendedor" placeholder="Nombre y Apellido"> --}}
-                                <select class="select2 search-vendedor-guardar" name="nom_vendedor" required>
+                                <select class="select2 search-vendedor-guardar" name="nom_vendedor">
                                 </select>
                             </div>
                         </div>
@@ -594,7 +594,7 @@ Cobranzas
                             <div class="form-group">
                                 <label for="nom_vendedor">Nombre del Vendedor</label>
                                 {{-- <input type="text" class="form-control input-sm" name="nom_vendedor" placeholder="Nombre y Apellido"> --}}
-                                <select class="select2 search-vendedor" name="nom_vendedor" required>
+                                <select class="select2 search-vendedor" name="nom_vendedor">
                                 </select>
                             </div>
                         </div>
