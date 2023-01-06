@@ -134,7 +134,8 @@ Registro de incidencia
                             <div class="form-group" style="margin-bottom:5px">
                                 <label class="col-sm-3 control-label">Cód. CDP</label>
                                 <div class="col-sm-9">
-                                    <div class="form-control-static limpiarTexto codigo_oportunidad"></div>
+                                    <input type="text" class="form-control edition limpiarIncidencia" id="codigo_oportunidad_vista" name="cdp" />
+                                    <div class="form-control-static limpiarTexto codigo_oportunidad d-none"></div>
                                 </div>
                             </div>
                         </div>

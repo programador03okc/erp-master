@@ -19,6 +19,7 @@ $(function () {
         $("[name=id_entidad]").val(data.id_entidad);
         $("[name=id_contacto]").val(data.id_contacto);
         $("[name=codigo_oportunidad]").val(data.codigo_oportunidad);
+        $("[name=cdp]").val(data.codigo_oportunidad);
 
         $("[name=cliente_razon_social]").val(data.razon_social);
         $("[name=nro_orden]").val(data.nro_orden);

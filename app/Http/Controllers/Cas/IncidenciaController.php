@@ -247,6 +247,7 @@ class IncidenciaController extends Controller
 
             $incidencia->horario_contacto = $request->horario_contacto;
             $incidencia->email_contacto = $request->email_contacto;
+            $incidencia->cdp = $request->cdp;
             $incidencia->save();
 
             // $detalle = json_decode($request->detalle);
@@ -327,6 +328,7 @@ class IncidenciaController extends Controller
 
                 $incidencia->horario_contacto = $request->horario_contacto;
                 $incidencia->email_contacto = $request->email_contacto;
+                $incidencia->cdp = $request->cdp;
                 $incidencia->save();
 
                 // $detalle = json_decode($request->detalle);
