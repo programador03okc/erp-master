@@ -521,10 +521,21 @@ class RequerimientoPendienteView {
 
                 },
                 className: 'btn-default btn-sm'
+            }:[]),
+            button_descargar_excel = (array_accesos.find(element => element === 229)?{
+                text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar',
+                attr: {
+                    id: 'btnDescargarExcelRequerimientosPendientes'
+                },
+                action: () => {
+                    this.exportarListaRequerimientosPendientesExcel();
+
+                },
+                className: 'btn-default btn-sm'
             }:[]);
         $tablaListaRequerimientosPendientes = $('#listaRequerimientosPendientes').DataTable({
             'dom': vardataTables[1],
-            'buttons': [button_nueva_orden,button_filtro],
+            'buttons': [button_nueva_orden,button_filtro,button_descargar_excel],
             'language': vardataTables[0],
             'order': [[3, 'desc']],
             'bLengthChange': false,
@@ -1505,6 +1516,11 @@ class RequerimientoPendienteView {
             show: true,
             backdrop: 'static'
         });
+    }
+
+    exportarListaRequerimientosPendientesExcel() {
+        window.open(`exportar-lista-requerimientos-pendientes-excel`);
+
     }
 
     abrirModalFiltrosRequerimientosAtendidos() {
