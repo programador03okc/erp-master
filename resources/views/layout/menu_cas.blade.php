@@ -30,6 +30,10 @@
             <li><a href="{{route('cas.garantias.devolucionCas.index')}}"> Devolución </a></li>
             {{-- @endif --}}
             <li><a href="{{route('cas.garantias.fichas.index')}}"> Gestión de incidencias </a></li>
+
+            <li><a href="{{route('cas.garantias.marca.inicio')}}"> Marca </a></li>
+            <li><a href="{{route('cas.garantias.modelo.inicio')}}"> Model </a></li>
+            <li><a href="{{route('cas.garantias.producto.inicio')}}"> Producto </a></li>
         </ul>
     </li>
 </ul>

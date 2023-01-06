@@ -27,11 +27,14 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h5>Concepto</h5>
                             <input type="text" class="form-control" name="concepto_nuevo" required>
                         </div>
-                        
+                        <div class="col-md-2">
+                            <h5>Fecha de Emisión</h5>
+                            <input type="date" class="form-control" name="fecha_emision_nuevo" value="<?= date('Y-m-d'); ?>" required>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
