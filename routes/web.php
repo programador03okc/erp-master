@@ -2283,6 +2283,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('script-match-cobranza-vendedor', 'Gerencial\Cobranza\RegistroController@scriptMatchCobranzaVendedor');
 			#scrip 9
 			Route::get('script-empresa-actualizacion', 'Gerencial\Cobranza\RegistroController@scriptEmpresaActualizacion');
+            #scrip 10
+			Route::get('script-vendedor', 'Gerencial\Cobranza\RegistroController@scriptVendedor');
 
 			Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
 			Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');

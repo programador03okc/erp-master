@@ -791,11 +791,11 @@ class RegistroController extends Controller
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
 
         $vendedor=[];
-        if (intval($registro_cobranza->vendedor)>0) {
+        if (intval($registro_cobranza->vendedor)>0 && $registro_cobranza->vendedor!==null) {
             $vendedor = Vendedor::where('id_vendedor',$registro_cobranza->vendedor)->first();
         }
 
-        if (!$vendedor) {
+        if (!$vendedor && $registro_cobranza->vendedor!==null) {
             $vendedor = Vendedor::where('nombre','like','%'.$registro_cobranza->vendedor.'%')->first();
         }
         // return $vendedor;exit;
@@ -1720,6 +1720,166 @@ class RegistroController extends Controller
             "count_vacios"=>$contador,
             "faltantes"=>$array_faltantes,
             "encontrados"=>$array_encontrados
+        ]);
+    }
+    public function scriptVendedor()
+    {
+        $vendedores_array = array(
+            "J ALFARO"=>"JORGE ALFARO",
+            "H MEDINA"=>"HEBER MEDINA",
+            "HEBERT MEDINA"=>"HEBER MEDINA",
+            "J ALFARO"=>"JORGE ALFARO",
+            "J MEDINA"=>"JONATHAN MEDINA",
+            "ALE V"=>"ALEJANDRA VALENCIA",
+            "JHUACO"=>"JOHAN HUACCO",
+            "PROYECTOS"=>"REMY BARREDA",
+            "J HUACO"=>"JOHAN HUACCO",
+            "H AYMA"=>"HELEN AYMA",
+            "JMEDINA"=>"JONATHAN MEDINA",
+            "M RIVERA"=>"MANUEL RIVERA",
+            "ANGEL MORÓN"=>"ANGEL MORON",
+            "C MAMANI"=>"CELIA MAMANI",
+            "J BEGAZO"=>"JUAN BEGAZO",
+            "ALEXANDER M"=>"ALEXANDER MENDEZ",
+            "ALEJANDRO"=>"ALE VALENCIA",
+            // "---"=>"falta",
+            "J DEZA"=>"JONATHAN DEZA",
+            "A ROJAS"=>"ALFONSO ROJAS",
+            "M SANCHEZ"=>"MAYKOL SANCHEZ",
+            "MKPLACE"=>"ERICK ENCINAS",
+            "JOHAN HUACO"=>"JOHAN HUACCO",
+            "SALENKA CARPIO"=>"SALENKA ",
+            "HEBERT M"=>"HEBER MEDINA",
+            "R BARREDA"=>"REMY BARREDA",
+            "J MARIN"=>"JORGE MARIN",
+            "H CONDORI"=>"HEBERT CONDORI",
+            // "----"=>"falta",
+            "MAYKOL S"=>"MAYKOL SANCHEZ",
+            "M HINOSTROZA"=>"MARICIELO HINOSTROZA",
+            "R VISVAL"=>"RICARDO VISBAL",
+            "R VISBAL"=>"RICARDO VISBAL",
+            "A LAMAS"=>"ALEXANDER LAMAS",
+
+
+            "LUCIO R"=>"LUCIO REYNOSO",
+            "ANGEL M"=>"ANGEL MORON",
+            "BORIS C"=>"BORIS CORRREA",
+            "MANUEL R"=>"MANUEL RIVERA",
+            "JUAN B"=>"JUAN BEGAZO",
+            "JONATHAN MEDINA"=>"JONATHAN MEDINA",
+            "ALEJANDRA V"=>"ALEJANDRA VALENCIA",
+            "HEBER M"=>"HEBER MEDINA",
+            // "A ROJAS"=>"ALFONSO ROJAS",
+
+            "ERICK E"=>"ERICK ENCINAS",
+            "HELEN A"=>"HELEN AYMA",
+            "RVISBAL"=>"RICARDO VISBAL",
+            "E AQUINO"=>"ELMER AQUINO",
+
+            "M Hinostroza"=>"MARICIELO HINOSTROZA",
+            "JORGE ALFARO"=>"JORGE ALFARO",
+            "B CORREA"=>"BORIS CORRREA",
+            "REMY B"=>"REMY BARREDA",
+            "ALEJANDRA"=>"ALEJANDRA VALENCIA",
+            "ALFONSO R"=>"ALFONSO ROJAS",
+            "KARINA MUÑOZ"=>"KARINA MUÑOZ",
+            "ALFONSO ROJAS"=>"ALFONSO ROJAS",
+            "RIVERA"=>"MANUEL RIVERA",
+            "MANUEL RIVERA"=>"MANUEL RIVERA",
+
+            "RICARDO V"=>"RICARDO VISBAL",
+            "ELMER A"=>"ELMER AQUINO",
+            "LUCIO REYNOSO"=>"LUCIO REYNOSO",
+
+            "CANDY R"=>"CANDY RODRIGUEZ",
+            "JORGE MARIN"=>"JORGE MARIN",
+            // "CANDY R"=>"CANDY RODRIGUEZ",
+            // "CANDY R"=>"CANDY RODRIGUEZ",
+            // "CANDY R"=>"CANDY RODRIGUEZ",
+
+        );
+        $vendedores_cobranzas=array();
+        $registro_cobranza = RegistroCobranza::get();
+        $registro_cobranza = $registro_cobranza->groupBy('vendedor');
+
+        foreach ($registro_cobranza as $key => $value) {
+            // return $key;exit;
+            if ($key!=='--' && $key!=='-' && $key!=='') {
+                $vendedor = str_replace('.', '', $key);
+                array_push($vendedores_cobranzas,(object)array(
+                    "vendedor_cobranza"=>strtoupper($key),
+                    "vendedor_str"=>strtoupper($vendedor)
+                ));
+            }
+
+        }
+        foreach ($vendedores_cobranzas as $key_cobranza => $value_cobranza) {
+            $encontrado = false;
+            foreach ($vendedores_array as $key_array => $value_array) {
+
+                if ($key_array === $value_cobranza->vendedor_str) {
+
+                    $value_cobranza->nombre_completo = strtoupper($value_array);
+                    $vendedor_first = Vendedor::where('nombre','like','%'.strtoupper($value_array).'%')->first();
+                    if ('KARINA MUÑOZ'===$value_cobranza->vendedor_str) {
+                        // return $value_cobranza->vendedor_str;exit;
+                    }
+                    if ($vendedor_first) {
+                        $value_cobranza->id_vendedor = $vendedor_first->id_vendedor;
+                    }else{
+                        $value_cobranza->id_vendedor = 0;
+                    }
+                    $encontrado=true;
+                }else{
+                    // $vendedor_first = Vendedor::where('nombre','like','%'.strtoupper($value_array).'%')->first();
+                    // if ($vendedor_first) {
+                    //     $value_cobranza->id_vendedor = $vendedor_first->id_vendedor;
+                    // }else{
+                    //     $value_cobranza->id_vendedor = 0;
+                    // }
+                    // $encontrado=true;
+                }
+            }
+        }
+        $array_id_vendedor = array();
+        foreach ($vendedores_cobranzas as $key => $value) {
+            if (isset($value->id_vendedor)) {
+                array_push($array_id_vendedor,(object) array(
+                    "vendedor_cobranza"=>strtoupper($value->vendedor_cobranza),
+                    "vendedor_str"=>strtoupper($value->vendedor_str),
+                    "nombre_completo" => strtoupper($value->nombre_completo),
+                    "id_vendedor" => $value->id_vendedor,
+                ));
+            }
+
+            // if (!($value->id_vendedor)) {
+            //     return [$value->id_vendedor];exit;
+            // }else{
+            //     return [$value];exit;
+            // }
+            // RegistroCobranza::where('vendedor', $value->vendedor_cobranza)
+            // ->update(['vendedor' => $value->id_vendedor]);
+        }
+        foreach ($array_id_vendedor as $key => $value) {
+            if ($value->id_vendedor==0) {
+
+                $nuevo_vendedor = new Vendedor();
+                $nuevo_vendedor->nombre = $value->nombre_completo;
+                $nuevo_vendedor->estado = 1;
+                $nuevo_vendedor->save();
+
+                $value->id_vendedor = $nuevo_vendedor->id_vendedor;
+            }
+            if($value->id_vendedor!==0){
+
+                RegistroCobranza::where('vendedor', $value->vendedor_cobranza)
+                ->update(['vendedor' => $value->id_vendedor]);
+            }
+
+        }
+        return response()->json([
+            "success"=>true,
+            "data"=>$array_id_vendedor
         ]);
     }
 }

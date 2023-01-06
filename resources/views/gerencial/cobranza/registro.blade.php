@@ -1171,12 +1171,6 @@ Cobranzas
             return repo.nombre || repo.text;
         }
     });
-    $(document).on('change','.search-vendedor-guardar',function () {
-        console.log($(this).val());
-    });
-    $(document).on('change','.search-vendedor',function () {
-        console.log($(this).val());
-    });
 
 
 
