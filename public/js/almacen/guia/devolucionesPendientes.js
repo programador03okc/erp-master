@@ -107,7 +107,7 @@ function open_devolucion_guia_create(data) {
 
     $(".orden_transformacion").html(`<h5></h5>
     <div style="display:flex;">
-    <label class="lbl-codigo" title="Abrir Devolución" onClick="abrir_devolucion(${data.id_devolucion})">
+    <label class="lbl-codigo" title="Abrir Devolución" onClick="abrirDevolucion(${data.id_devolucion})">
     ${data.codigo}</label>
     </div>`);
 

@@ -76,7 +76,7 @@ function listarDevoluciones() {
                             data-placement="bottom" data-id="${row['id_devolucion']}" title="Agregar ficha técnica" >
                             <i class="fas fa-plus"></i></button>
 
-                            ${row['id_tipo'] == 1 ? (row['estado'] == 1 ?
+                            ${(row['id_tipo'] == 1 || row['id_tipo'] == 3) ? (row['estado'] == 1 ?
                                 `<button type="button" class="conformidad btn btn-primary boton" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row['id_devolucion']}" title="Conformidad" >
                             <i class="fas fa-check"></i></button>`

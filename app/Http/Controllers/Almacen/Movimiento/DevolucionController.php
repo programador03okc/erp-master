@@ -886,7 +886,8 @@ class DevolucionController extends Controller
             ->where('mov_alm.id_almacen', $id_almacen)
             ->where('mov_alm.id_tp_mov', 2)
             ->where('mov_alm.estado', 1)
-            ->where('mov_alm.id_operacion', 1)->get();
+            // ->where('mov_alm.id_operacion', 1)
+            ->get();
 
         return datatables($lista)->toJson();
         // return response()->json($lista);
@@ -918,7 +919,8 @@ class DevolucionController extends Controller
             ->where('mov_alm.id_almacen', $id_almacen)
             ->where('mov_alm.id_tp_mov', 1)
             ->where('mov_alm.estado', 1)
-            ->where('mov_alm.id_operacion', 2)->get();
+            // ->where('mov_alm.id_operacion', 2)
+            ->get();
 
         return datatables($lista)->toJson();
         // return response()->json($lista);
