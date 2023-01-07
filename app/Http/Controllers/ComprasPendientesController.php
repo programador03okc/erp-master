@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ListRequerimientosPendientesExport;
 use App\Exports\reporteRequerimientosAtendidosExcel;
 use App\Exports\solicitudCotizacionExcel;
 use App\Helpers\Almacen\ReservaHelper;
@@ -185,6 +186,51 @@ class ComprasPendientesController extends Controller
         return $data;
     }
 
+    public function obtenerListarRequerimientosPendientes()
+    {
+        $data = DB::table('almacen.alm_req')->join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+            ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')
+            ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('administracion.division', 'alm_req.division_id', '=', 'division.id_division')
+            ->leftJoin('configuracion.sis_usua', 'alm_req.id_usuario', '=', 'sis_usua.id_usuario')
+            ->leftJoin('rrhh.rrhh_trab', 'sis_usua.id_trabajador', '=', 'rrhh_trab.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
+            ->leftJoin('rrhh.rrhh_rol', 'alm_req.id_rol', '=', 'rrhh_rol.id_rol')
+            ->leftJoin('rrhh.rrhh_rol_concepto', 'rrhh_rol_concepto.id_rol_concepto', '=', 'rrhh_rol.id_rol_concepto')
+            ->leftJoin('administracion.adm_area', 'alm_req.id_area', '=', 'adm_area.id_area')
+            ->leftJoin('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'alm_req.id_grupo')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+            ->leftJoin('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+            ->leftJoin('comercial.com_cliente', 'alm_req.id_cliente', '=', 'com_cliente.id_cliente')
+            ->leftJoin('contabilidad.adm_contri as contri_cliente', 'com_cliente.id_contribuyente', '=', 'contri_cliente.id_contribuyente')
+            ->leftJoin('rrhh.rrhh_perso as perso_natural', 'alm_req.id_persona', '=', 'perso_natural.id_persona')
+            ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
+            ->leftJoin('rrhh.rrhh_trab as trab_solicitado_por', 'alm_req.trabajador_id', '=', 'trab_solicitado_por.id_trabajador')
+            ->leftJoin('rrhh.rrhh_postu as postu_solicitado_por', 'postu_solicitado_por.id_postulante', '=', 'trab_solicitado_por.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as perso_solicitado_por', 'perso_solicitado_por.id_persona', '=', 'postu_solicitado_por.id_persona')
+            ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id', '=', 'alm_req.id_cc')
+            ->select(
+                'adm_empresa.codigo as codigo_empresa',
+                'sis_sede.codigo as codigo_sede',
+                'adm_grupo.descripcion AS descripcion_grupo',
+                'alm_req.codigo',
+                'alm_req.concepto',
+                'alm_req.fecha_registro',
+                'alm_req.fecha_entrega',
+                'alm_tp_req.descripcion AS tipo_req_desc',
+                'division.descripcion as descripcion_division',
+                DB::raw("UPPER(CONCAT(perso_solicitado_por.nombres,' ', perso_solicitado_por.apellido_paterno,' ', perso_solicitado_por.apellido_materno))  AS solicitado_por"),
+                DB::raw("UPPER(CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno)) as nombre_usuario"),
+                'alm_req.observacion',
+                'adm_estado_doc.estado_doc'
+            )
+            ->whereIn('alm_req.estado', [1, 3, 4, 12, 2, 15, 27, 38, 39])
+            ->where('alm_req.flg_compras', '=', 0)->get();
+
+            return $data;
+    }
 
     public function listarRequerimientosPendientes(Request $request)
     {
@@ -1723,4 +1769,11 @@ class ComprasPendientesController extends Controller
             return response()->json(['estado'=>$tipoEstado, 'mensaje' => 'Hubo un problema al guardar la respuesta. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
+
+    public function exportListaRequerimientosPendientesExcel()
+    {
+
+        return Excel::download(new ListRequerimientosPendientesExport(), 'lista de requerimientos pendientes.xlsx');
+    }
+
 }

@@ -116,7 +116,7 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 25%" class="text-right">Cliente:</th>
+                <th style="width: 25%;" class="text-right">Cliente:</th>
                 <td style="width: 35%">{{$incidencia->cliente}}</td>
                 <th style="width: 25%" class="text-right">Cod. Incidencia:</th>
                 <td style="width: 35%">{{$incidencia->codigo}}</td>
@@ -171,7 +171,7 @@
     <div class="seccion-hoja">
         <h4 style="font-size: 14px;">Descripción del producto</h4>
     </div>
-    
+
     <table>
         <thead>
             {{-- @foreach ($productos as $prod) --}}
@@ -187,7 +187,7 @@
                 <th style="width: 25%" class="text-right">Modelo:</th>
                 <td style="width: 35%">{{$incidencia->modelo}}</td>
                 <th style="width: 25%" class="text-right">Tipo Producto:</th>
-                <td style="width: 35%">{{$incidencia->tipo_descripcion}}</td>
+                <td style="width: 35%">{{($incidencia->tipo_descripcion==='TRANS'?'T.':$incidencia->tipo_descripcion)}}</td>
             </tr>
             {{-- @endforeach --}}
         </thead>

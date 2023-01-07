@@ -848,6 +848,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('reporte-requerimientos-atendidos-excel/{Empresa}/{Sede}/{FechaDesde}/{FechaHasta}/{Reserva}/{Orden}', 'ComprasPendientesController@reporteRequerimientosAtendidosExcel');
 					Route::get('solicitud-cotizacion-excel/{id}', 'ComprasPendientesController@solicitudCotizacionExcel');
 
+					Route::get('exportar-lista-requerimientos-pendientes-excel', 'ComprasPendientesController@exportListaRequerimientosPendientesExcel');
+
 					// Route::post('lista_items-cuadro-costos-por-requerimiento-pendiente-compra', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento_pendiente_compra')->name('lista_items-cuadro-costos-por-requerimiento-pendiente-compra');
 					// Route::post('tiene-items-para-compra', 'ComprasPendientesController@tieneItemsParaCompra')->name('tiene-items-para-compra');
 					Route::post('lista_items-cuadro-costos-por-requerimiento', 'ComprasPendientesController@get_lista_items_cuadro_costos_por_id_requerimiento')->name('lista_items-cuadro-costos-por-requerimiento');
@@ -1929,6 +1931,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('imprimirIncidencia/{id}', 'Cas\IncidenciaController@imprimirIncidencia');
 				Route::get('imprimirFichaAtencionBlanco/{id}', 'Cas\IncidenciaController@imprimirFichaAtencionBlanco');
+
 			});
 
 			Route::group(['as' => 'devolucionCas.', 'prefix' => 'devolucionCas'], function () {
@@ -1972,6 +1975,36 @@ Route::group(['middleware' => ['auth']], function () {
 
                 Route::post('clonarIncidencia', 'Cas\FichaReporteController@clonarIncidencia');
 			});
+            Route::group(['as' => 'marca.', 'prefix' => 'marca'], function () {
+
+                Route::get('inicio', 'Cas\CasMarcaController@inicio')->name('inicio');
+                Route::post('listar', 'Cas\CasMarcaController@listar')->name('listar');
+                Route::post('guardar', 'Cas\CasMarcaController@guardar')->name('guardar');
+                Route::get('editar', 'Cas\CasMarcaController@editar')->name('editar');
+                Route::post('actualizar', 'Cas\CasMarcaController@actualizar')->name('actualizar');
+                Route::post('eliminar', 'Cas\CasMarcaController@eliminar')->name('eliminar');
+			});
+
+            Route::group(['as' => 'modelo.', 'prefix' => 'modelo'], function () {
+
+                Route::get('inicio', 'Cas\CasModeloController@inicio')->name('inicio');
+                Route::post('listar', 'Cas\CasModeloController@listar')->name('listar');
+                Route::post('guardar', 'Cas\CasModeloController@guardar')->name('guardar');
+                Route::get('editar', 'Cas\CasModeloController@editar')->name('editar');
+                Route::post('actualizar', 'Cas\CasModeloController@actualizar')->name('actualizar');
+                Route::post('eliminar', 'Cas\CasModeloController@eliminar')->name('eliminar');
+			});
+
+            Route::group(['as' => 'producto.', 'prefix' => 'producto'], function () {
+
+                Route::get('inicio', 'Cas\CasProductoController@inicio')->name('inicio');
+                Route::post('listar', 'Cas\CasProductoController@listar')->name('listar');
+                Route::post('guardar', 'Cas\CasProductoController@guardar')->name('guardar');
+                Route::get('editar', 'Cas\CasProductoController@editar')->name('editar');
+                Route::post('actualizar', 'Cas\CasProductoController@actualizar')->name('actualizar');
+                Route::post('eliminar', 'Cas\CasProductoController@eliminar')->name('eliminar');
+			});
+
 		});
 	});
 

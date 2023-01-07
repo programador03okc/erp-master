@@ -55,7 +55,7 @@ function mostrarIncidencia(id) {
             $('[name=equipo_operativo]').prop('checked', (response.incidencia.equipo_operativo ? true : false));
             // $(".guia_venta").text(response.incidencia.serie + '-' + response.incidencia.numero);
             $("[name=cliente_razon_social]").val(response.incidencia.cliente);
-            $(".codigo_oportunidad").text(response.incidencia.codigo_oportunidad);
+            // $(".codigo_oportunidad").text(response.incidencia.codigo_oportunidad);
             $("[name=nro_orden]").val(response.incidencia.nro_orden);
             $(".fecha_registro").text(response.incidencia.fecha_registro);
 
@@ -94,6 +94,13 @@ function mostrarIncidencia(id) {
             $('select[name="marca"] option[value="'+response.incidencia.marca+'"]').prop("selected", true);
             $('select[name="modelo"] option[value="'+response.incidencia.modelo+'"]').prop("selected", true);
             $('select[name="producto"] option[value="'+response.incidencia.producto+'"]').prop("selected", true);
+
+            if (response.incidencia.cdp) {
+                $("[name=cdp]").val(response.incidencia.cdp);
+            }else{
+                $("[name=cdp]").val(response.incidencia.codigo_oportunidad);
+                $(".codigo_oportunidad").text(response.incidencia.codigo_oportunidad);
+            }
             console.log(response);
             // response.productos.forEach(function (element) {
 
