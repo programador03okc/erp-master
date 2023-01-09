@@ -2038,6 +2038,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::get('mostrarGastosPorPresupuesto/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarGastosPorPresupuesto')->name('mostrar-gastos-presupuesto');
 			Route::post('cuadroGastosExcel', 'Finanzas\Presupuesto\PresupuestoController@cuadroGastosExcel')->name('cuadroGastosExcel');
+
+            Route::group(['as' => 'prsupuesto-interno.', 'prefix' => 'prsupuesto-interno'], function () {
+                //Presupuesto interno
+                Route::get('inicio', 'Finanzas\Presupuesto\PresupuestoInternoController@inicio')->name('inicio');
+
+            });
 		});
 
 		Route::group(['as' => 'centro-costos.', 'prefix' => 'centro-costos'], function () {
@@ -2285,6 +2291,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('script-match-cobranza-vendedor', 'Gerencial\Cobranza\RegistroController@scriptMatchCobranzaVendedor');
 			#scrip 9
 			Route::get('script-empresa-actualizacion', 'Gerencial\Cobranza\RegistroController@scriptEmpresaActualizacion');
+            #scrip 10
+			Route::get('script-vendedor', 'Gerencial\Cobranza\RegistroController@scriptVendedor');
 
 			Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
 			Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');

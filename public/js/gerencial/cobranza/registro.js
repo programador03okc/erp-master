@@ -32,7 +32,6 @@ function list() {
         data: {},
         dataType: 'JSON',
         success: function(response){
-            console.log(response);
         }
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -121,6 +120,14 @@ function listarRegistros(filtros) {
             },
             {
                 render: function (data, type, row) {
+                    var fecha_inicio = row['inicio_entrega'] ? row['inicio_entrega']:'-';
+                    var fecha_entrega = row['fecha_entrega'] ? row['fecha_entrega']:'-';
+                    return (`${fecha_inicio} / ${fecha_entrega}`);
+                },
+                className: "text-center"
+            },
+            {
+                render: function (data, type, row) {
                     html='';
                         html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
                         html+='<button type="button" class="btn btn-primary btn-flat botonList modal-fase" data-id="'+row['id_registro_cobranza']+'" title="Fases"><i class="fas fa-comments"></i></button>';
@@ -201,7 +208,7 @@ $('#tabla-clientes tbody').on('click', 'tr', function(){
         $(this).removeClass('selected');
         document.querySelector("button[id='edit_customer']").setAttribute('disabled',true)
         document.querySelector("button[id='btnAgregarCliente']").setAttribute('disabled',true)
-        console.log('seleccion if');
+
     } else {
         $('#tablaClientes').dataTable().$('tr.selected').removeClass('selected');
         $(this).addClass('selected');
@@ -266,7 +273,6 @@ $(document).on('click','.modal-editar',function () {
                 $('#modal-editar-cliente .modal-body input[name="id_cliente"]').val(response.data_old.id_cliente)
                 $('#modal-editar-cliente .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente)
             }
-            console.log(response);
         }
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -277,7 +283,6 @@ $(document).on('click','.modal-editar',function () {
 function agregarCliente(tipo){
     $('#modal-buscar-cliente').modal('hide');
     let data_form = $(this).attr('data-form');
-    console.log(tipo);
     if (tipo == 'ventas') {
         document.querySelector("form[form='ventas'] input[id='cliente']").value= tempClienteSelected.nombre;
         document.querySelector("form[form='ventas'] input[id='id_cliente']").value= tempClienteSelected.id;
@@ -313,7 +318,6 @@ $(document).on('click','[data-action="agregar-cliente"]',function () {
         dataType: 'JSON',
         success: function(response){
             if (response.status===200) {
-                console.log(response);
                 switch (data_form) {
                     case 'guardar-formulario':
                         document.querySelector("form[form='cobranza'] input[id='cliente']").value= response.data.razon_social;
@@ -359,7 +363,6 @@ $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
                     dataType: 'JSON',
                     success: function(response){
                         $('#tabla-clientes').DataTable().ajax.reload();
-                        console.log(response);
                     }
                 }).fail( function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
@@ -401,7 +404,6 @@ $(document).on('change','[data-select="departamento-select"]',function () {
             data: {},
             dataType: 'JSON',
             success: function(response){
-                console.log(response);
                 if (response.status===200) {
                     html='<option value=""> Seleccione...</option>';
                     $.each(response.data, function (index, element) {
@@ -666,7 +668,6 @@ $(document).on('click','.selecionar',function () {
 $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
     const id_requerimiento = $(this).attr('data-id');
     var data_form =$(this).attr('data-form');
-    console.log(id_requerimiento);
     $.ajax({
         type: 'get',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -697,6 +698,9 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
 
                         $('[data-form="guardar-formulario"] .modal-body select[name="empresa"]').removeAttr('selected');
                         $('[data-form="guardar-formulario"] .modal-body select[name="empresa"] option[value="'+response.data.id_contribuyente_empresa+'"]').attr('selected','true');
+
+                        $('[data-form="guardar-formulario"] .modal-body input[name="fecha_inicio"]').val(response.oc.inicio_entrega)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="fecha_entrega"]').val(response.oc.fecha_entrega)
                 }else{
                     $('[data-form="editar-formulario"] .modal-body select[name="moneda"]').removeAttr('selected');
                     $('[data-form="editar-formulario"] .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
@@ -718,6 +722,9 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
 
                     $('[data-form="editar-formulario"] .modal-body select[name="empresa"]').removeAttr('selected');
                     $('[data-form="editar-formulario"] .modal-body select[name="empresa"] option[value="'+response.data.id_contribuyente_empresa+'"]').attr('selected','true');
+
+                    $('[data-form="editar-formulario"] .modal-body input[name="fecha_inicio"]').val(response.oc.inicio_entrega)
+                    $('[data-form="editar-formulario"] .modal-body input[name="fecha_entrega"]').val(response.oc.fecha_entrega)
                 }
 
 
@@ -763,7 +770,6 @@ $(document).on('submit','[data-form="editar"]',function (e) {
 
       }).then((result) => {
         if (result.isConfirmed && result.value.status ===200) {
-            console.log(result);
             Swal.fire(
                 'Éxito!',
                 'Se guardo con éxito',
@@ -789,7 +795,6 @@ $(document).on('click','.editar-registro',function () {
         dataType: 'JSON'
     }).done(function( data ) {
         if (data.status===200) {
-            console.log(data);
 
             $('#modal-editar-cobranza').modal('show');
 
@@ -813,6 +818,7 @@ $(document).on('click','.editar-registro',function () {
 
             $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(data.data.cdp);
             $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(data.data.oc);
+            $('[data-form="editar-formulario"] .modal-body input[name="orden_compra"]').val(data.data.orden_compra);
             $('[data-form="editar-formulario"] .modal-body input[name="fact"]').val(data.data.factura);
             $('[data-form="editar-formulario"] .modal-body input[name="siaf"]').val(data.data.siaf);
             $('[data-form="editar-formulario"] .modal-body input[name="ue"]').val(data.data.uu_ee);
@@ -834,13 +840,17 @@ $(document).on('click','.editar-registro',function () {
 
             $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
             $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
-            console.log();
-            if (data.vendedor) {
+
+            $('[data-form="editar-formulario"] .modal-body input[name="fecha_inicio"]').val(data.data.inicio_entrega);
+            $('[data-form="editar-formulario"] .modal-body input[name="fecha_entrega"]').val(data.data.fecha_entrega);
+            if (!$.isEmptyObject(data.vendedor)) {
                 $('.search-vendedor').val(null).trigger('change');
-                var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, false, false);
+                var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, true, true);
                 $('.search-vendedor').append(newOption).trigger('change');
 
             }else{
+                $('.search-vendedor').val(null).trigger('change');
+                var newOption = new Option(null, null, true, true);
                 // $('.search-vendedor').val(null).trigger('change');
                 // var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, false, false);
                 // $('.search-vendedor').append(newOption).trigger('change');
@@ -851,15 +861,7 @@ $(document).on('click','.editar-registro',function () {
             $('[data-form="editar-formulario"] .modal-body input[name="id_registro_cobranza"]').val(data.data.id_registro_cobranza);
 
             fecha_emision = new Date($('[data-form="editar-formulario"] input[name="fecha_rec"]').val().split('/').reverse().join('-')).getTime();
-            // fecha_vencimiento= new Date($('[data-form="editar-formulario"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime();
 
-            // numero_dias = fecha_vencimiento - fecha_emision;
-            // numero_dias = numero_dias/(1000*60*60*24)
-            // numero_dias = numero_dias*-1;
-            // if (numero_dias<=0) {
-            //     numero_dias = 0;
-            // }
-            // $('[data-form="editar-formulario"] input[name="atraso"]').val(numero_dias);
 
             var fecha_actual = new Date().getTime();
             var atraso = fecha_actual - fecha_emision;
@@ -943,7 +945,6 @@ $(document).on('submit','[data-form="editar-formulario"]',function (e) {
         allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
         if (result.isConfirmed) {
-            console.log(result);
             if (result.value.status === 200) {
                 location.reload();
             }
@@ -1014,7 +1015,6 @@ $(document).on('submit','[data-form="guardar-fase"]',function (e) {
         allowOutsideClick: () => !Swal.isLoading()
     }).then((result) => {
         if (result.isConfirmed) {
-            console.log(result);
             if (result.value.status === 200) {
                 $('#modal-agregar-fase').modal('hide');
                 $('#listar-registros').DataTable().ajax.reload();
@@ -1166,7 +1166,6 @@ $(document).on('click','.modal-penalidad',function () {
             });
             $('[data-table="penalidades"]').html(html);
         }
-        console.log(data);
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);
@@ -1256,6 +1255,5 @@ $(document).on('click','.eliminar',function (e) {
 
 });
 function exportarExcel() {
-    console.log(JSON.stringify(data_filtros));
     window.open('exportar-excel/'+JSON.stringify(data_filtros));
 }
