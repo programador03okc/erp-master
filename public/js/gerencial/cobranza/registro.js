@@ -120,6 +120,14 @@ function listarRegistros(filtros) {
             },
             {
                 render: function (data, type, row) {
+                    var fecha_inicio = row['inicio_entrega'] ? row['inicio_entrega']:'-';
+                    var fecha_entrega = row['fecha_entrega'] ? row['fecha_entrega']:'-';
+                    return (`${fecha_inicio} / ${fecha_entrega}`);
+                },
+                className: "text-center"
+            },
+            {
+                render: function (data, type, row) {
                     html='';
                         html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
                         html+='<button type="button" class="btn btn-primary btn-flat botonList modal-fase" data-id="'+row['id_registro_cobranza']+'" title="Fases"><i class="fas fa-comments"></i></button>';
@@ -690,6 +698,9 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
 
                         $('[data-form="guardar-formulario"] .modal-body select[name="empresa"]').removeAttr('selected');
                         $('[data-form="guardar-formulario"] .modal-body select[name="empresa"] option[value="'+response.data.id_contribuyente_empresa+'"]').attr('selected','true');
+
+                        $('[data-form="guardar-formulario"] .modal-body input[name="fecha_inicio"]').val(response.oc.inicio_entrega)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="fecha_entrega"]').val(response.oc.fecha_entrega)
                 }else{
                     $('[data-form="editar-formulario"] .modal-body select[name="moneda"]').removeAttr('selected');
                     $('[data-form="editar-formulario"] .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
@@ -711,6 +722,9 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
 
                     $('[data-form="editar-formulario"] .modal-body select[name="empresa"]').removeAttr('selected');
                     $('[data-form="editar-formulario"] .modal-body select[name="empresa"] option[value="'+response.data.id_contribuyente_empresa+'"]').attr('selected','true');
+
+                    $('[data-form="editar-formulario"] .modal-body input[name="fecha_inicio"]').val(response.oc.inicio_entrega)
+                    $('[data-form="editar-formulario"] .modal-body input[name="fecha_entrega"]').val(response.oc.fecha_entrega)
                 }
 
 
@@ -804,6 +818,7 @@ $(document).on('click','.editar-registro',function () {
 
             $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(data.data.cdp);
             $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(data.data.oc);
+            $('[data-form="editar-formulario"] .modal-body input[name="orden_compra"]').val(data.data.orden_compra);
             $('[data-form="editar-formulario"] .modal-body input[name="fact"]').val(data.data.factura);
             $('[data-form="editar-formulario"] .modal-body input[name="siaf"]').val(data.data.siaf);
             $('[data-form="editar-formulario"] .modal-body input[name="ue"]').val(data.data.uu_ee);
@@ -826,6 +841,8 @@ $(document).on('click','.editar-registro',function () {
             $('[data-form="editar-formulario"] .modal-body select[name="area"] option').removeAttr('selected');
             $('[data-form="editar-formulario"] .modal-body select[name="area"] option[value="'+data.data.id_area+'"]').attr('selected','true');
 
+            $('[data-form="editar-formulario"] .modal-body input[name="fecha_inicio"]').val(data.data.inicio_entrega);
+            $('[data-form="editar-formulario"] .modal-body input[name="fecha_entrega"]').val(data.data.fecha_entrega);
             if (!$.isEmptyObject(data.vendedor)) {
                 $('.search-vendedor').val(null).trigger('change');
                 var newOption = new Option(data.vendedor.nombre, data.vendedor.id_vendedor, true, true);

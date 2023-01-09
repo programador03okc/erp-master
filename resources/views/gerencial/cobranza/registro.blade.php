@@ -40,8 +40,8 @@ Cobranzas
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-12 ">
-                    <table class="mytable table table-striped table-condensed table-bordered table-responsive" id="listar-registros">
+                <div class="col-md-12 table-responsive">
+                    <table class="mytable table table-striped table-condensed table-bordered" id="listar-registros">
                         <thead>
                             <tr>
                                 <th></th>
@@ -62,6 +62,9 @@ Cobranzas
 								<th id="tdResp">A. Respo.</th>
 								<th width="10">Fase</th>
 								<th class="hidden">Tipo</th>
+
+                                <th width="10">Fecha inicio / entrega </th>
+								{{-- <th width="10">Fecha entrega</th> --}}
 								<th id="tdAct">-</th>
                             </tr>
                         </thead>
@@ -130,7 +133,7 @@ Cobranzas
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="cliente">Cliente</label>
                                 <input type="hidden" name="id_cliente" id="id_cliente" value="0">
@@ -145,7 +148,13 @@ Cobranzas
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="orden_compra_nuevo">Orden de Compra</label>
+                                <input type="number" class="form-control" name="orden_compra" id="orden_compra_nuevo" value="" placeholder="N° OC">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="cdp">Cuadro de Presup.</label>
                                 <div class="input-group input-group-sm">
@@ -156,20 +165,13 @@ Cobranzas
                                         </button>
                                     </span>
                                 </div>
-                                {{-- <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp"> --}}
                             </div>
                         </div>
-                        {{-- <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="ocam">OCAM</label>
-                                <input type="text" class="form-control input-sm text-center" name="ocam" id="ocam" placeholder="N° OCAM">
-                            </div>
-                        </div> --}}
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="oc">Orden de Compra / OCAM</label>
+                                <label for="oc">OCAM</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="N° OC / OCAM" data-action="oc">
+                                    <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="OCAM" data-action="oc">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="guardar-formulario">
                                             <span class="fa fa-search"></span>
@@ -301,6 +303,20 @@ Cobranzas
                             </div>
                         </div>
 					</div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="fecha_inicio_nuevo">Fecha inicio :</label>
+                                <input id="fecha_inicio_nuevo" class="form-control text-center" type="date" name="fecha_inicio">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="fecha_entrega_nuevo">Fecha entrega :</label>
+                                <input id="fecha_entrega_nuevo" class="form-control text-center" type="date" name="fecha_entrega">
+                            </div>
+                        </div>
+                    </div>
 				</div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal"><span class="fa fa-time"></span> Cerrar</button>
@@ -446,7 +462,7 @@ Cobranzas
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="cliente">Cliente</label>
                                 <input type="hidden" name="id_cliente" value="0">
@@ -461,7 +477,13 @@ Cobranzas
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="orden_compra_editar">Orden de Compra</label>
+                                <input type="number" class="form-control" name="orden_compra" id="orden_compra_editar" value="" placeholder="N° OC">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="cdp">Cuadro de Presup.</label>
                                 <div class="input-group input-group-sm">
@@ -610,6 +632,20 @@ Cobranzas
                             </div>
                         </div>
 					</div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="fecha_inicio_editar">Fecha inicio :</label>
+                                <input id="fecha_inicio_editar" class="form-control" type="date" name="fecha_inicio">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="fecha_entrega_editar">Fecha entrega :</label>
+                                <input id="fecha_entrega_editar" class="form-control" type="date" name="fecha_entrega">
+                            </div>
+                        </div>
+                    </div>
 				</div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal"><span class="fa fa-time"></span> Cerrar</button>

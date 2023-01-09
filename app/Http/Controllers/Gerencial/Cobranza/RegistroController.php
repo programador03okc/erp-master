@@ -402,6 +402,9 @@ class RegistroController extends Controller
         $cobranza->cdp              = $request->cdp;
         $cobranza->plazo_credito    = $request->plazo_credito;
         $cobranza->id_doc_ven       = $request->id_doc_ven;
+        $cobranza->orden_compra       = $request->orden_compra;
+        $cobranza->inicio_entrega       = $request->fecha_inicio;
+        $cobranza->fecha_entrega       = $request->fecha_entrega;
         // $cobranza->id_vent          = ;
 
         $cobranza->save();
@@ -530,7 +533,9 @@ class RegistroController extends Controller
             'requerimiento_logistico_view.id_contribuyente_empresa',
 
             'doc_vent_req.id_documento_venta_requerimiento',
+            // 'doc_vent_req.id_doc_venta',
             'doc_ven.id_doc_ven',
+            // 'doc_ven.*',
 
             'doc_ven.serie',
             'doc_ven.numero',
@@ -553,14 +558,18 @@ class RegistroController extends Controller
 
         $doc_ven=[];
 
+        $oc_propias_view = DB::table('mgcp_ordenes_compra.oc_propias_view')->where('nro_orden',$cliente_gerencial->nro_orden)->first();
+        // return [$cliente_gerencial];exit;
         if ($cliente_gerencial) {
 
             $doc_ven = DocumentoVenta::where('id_doc_ven',$cliente_gerencial->id_doc_ven)->first();
+            // return [$cliente_gerencial];exit;
             return response()->json([
                 "status"=>200,
                 "success"=>true,
                 "data"=>$cliente_gerencial,
                 "factura"=>$doc_ven,
+                "oc"=>$oc_propias_view ? $oc_propias_view:[]
             ]);
         }else{
             return response()->json([
@@ -568,6 +577,7 @@ class RegistroController extends Controller
                 "success"=>false,
                 "data"=>$cliente_gerencial,
                 "factura"=>$doc_ven,
+                "oc"=>$oc_propias_view? $oc_propias_view:[]
             ]);
         }
 
@@ -880,7 +890,9 @@ class RegistroController extends Controller
         $cobranza->plazo_credito    = $request->plazo_credito;
         $cobranza->id_doc_ven       = $request->id_doc_ven;
         // $cobranza->id_vent          = ;
-
+        $cobranza->orden_compra       = $request->orden_compra;
+        $cobranza->inicio_entrega       = $request->fecha_inicio;
+        $cobranza->fecha_entrega       = $request->fecha_entrega;
         $cobranza->save();
         // return $request->fecha_ppago;exit;
         if ($cobranza) {

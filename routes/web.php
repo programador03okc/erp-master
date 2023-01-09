@@ -2038,6 +2038,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::get('mostrarGastosPorPresupuesto/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarGastosPorPresupuesto')->name('mostrar-gastos-presupuesto');
 			Route::post('cuadroGastosExcel', 'Finanzas\Presupuesto\PresupuestoController@cuadroGastosExcel')->name('cuadroGastosExcel');
+
+            Route::group(['as' => 'prsupuesto-interno.', 'prefix' => 'prsupuesto-interno'], function () {
+                //Presupuesto interno
+                Route::get('inicio', 'Finanzas\Presupuesto\PresupuestoInternoController@inicio')->name('inicio');
+
+            });
 		});
 
 		Route::group(['as' => 'centro-costos.', 'prefix' => 'centro-costos'], function () {
