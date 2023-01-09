@@ -4284,6 +4284,8 @@ class RequerimientoController extends Controller
             $adjuntoOrdenesLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar2) : 0;
             $adjuntoComprobanteContableLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar3 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar3) : 0;
             $adjuntoComprobanteBancarioLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar4) : 0;
+            $adjuntoCotizacionLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar5 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar5) : 0;
+            // Debugbar::info($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4, $requerimiento->codigo, 5);
 
             $idAdjunto = [];
             if ($adjuntoOtrosAdjuntosLength > 0) {
@@ -4297,6 +4299,9 @@ class RequerimientoController extends Controller
             }
             if ($adjuntoComprobanteBancarioLength > 0) {
                 $idAdjunto[] = $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4, $requerimiento->codigo, 4);
+            }
+            if ($adjuntoCotizacionLength > 0) {
+                $idAdjunto[] = $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar5, $requerimiento->codigo, 5);
             }
             $estado_accion = 'error';
             if (count($idAdjunto) > 0) {

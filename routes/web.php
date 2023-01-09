@@ -886,6 +886,8 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::get('items-orden-items-reserva-por-detalle-requerimiento/{idDetalleRequerimiento}', 'ComprasPendientesController@itemsOrdenItemsReservaPorDetalleRequerimiento');
 					Route::get('finalizar-cuadro/{id}', 'OrdenController@finalizarCuadroPresupuesto');
 					Route::get('mostrar-archivos-adjuntos-detalle-requerimiento/{id_detalle_requerimiento}', 'Logistica\RequerimientoController@mostrarArchivosAdjuntos');
+					Route::get('listar-otros-adjuntos-tesoreria-orden-requerimiento/{id}', 'Logistica\RequerimientoController@listarOtrsAdjuntosTesoreriaOrdenRequerimiento');
+					Route::get('listar-adjuntos-logisticos/{id}', 'Logistica\RequerimientoController@listarAdjuntosLogisticos');
 					// Route::get('mostrar-todo-adjuntos-requerimiento/{id_requerimiento}', 'Logistica\RequerimientoController@mostrarTodoAdjuntos');
 					Route::get('listar-todo-archivos-adjuntos-requerimiento-logistico/{id}', 'Logistica\RequerimientoController@listarTodoArchivoAdjuntoRequerimientoLogistico');
 					Route::get('listar-archivos-adjuntos-pago/{id}', 'Logistica\RequerimientoController@listarArchivoAdjuntoPago');
@@ -899,6 +901,7 @@ Route::group(['middleware' => ['auth']], function () {
 					Route::post('guardar-observacion-logistica', 'ComprasPendientesController@guardarObservacionLogistica');
 
 					Route::get('retornar-requerimiento-atendido-a-lista-pedientes/{id}', 'ComprasPendientesController@retornarRequerimientoAtendidoAListaPendientes')->name('retornar-requerimiento-atendido-a-lista-pedientes');
+
 				});
 
 				Route::group(['as' => 'ordenes.', 'prefix' => 'ordenes'], function () {
