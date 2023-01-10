@@ -21,6 +21,8 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 	<link rel="stylesheet" href="{{ asset('datatables/Datatables/css/dataTables.bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('datatables/Buttons/css/buttons.dataTables.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/animate.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('template/fontawesome/css/fontawesome.min.css') }}">
 	@yield('estilos')
     <style>
         .modal-style{
