@@ -207,6 +207,7 @@ class RequerimientoHelper
             $requerimiento->estado = $requerimiento->estado_anterior ?? $requerimiento->estado;
         }
 
+        $requerimiento->id_tipo_detalle = $this->obtenerTipoDetalle($cuadro->id); // retorna: 1= producto, 2= servicio, 3= mixto
         $requerimiento->save();
         return $estado;
     }
@@ -272,6 +273,7 @@ class RequerimientoHelper
         $requerimiento->id_sede = $ordenCompra == null ? 4 : $this->obtenerIdSede($ordenCompra->id_empresa); //sede de la empresa de donde viene el requerimiento
 
         $requerimiento->id_cliente = $this->obtenerCliente($oportunidad->id_entidad)->id_cliente;
+        $requerimiento->id_tipo_detalle = $this->obtenerTipoDetalle($cuadro->id); // retorna: 1= producto, 2= servicio, 3= mixto
         //die("OKA");
 
         $requerimiento->tipo_cliente = 2; //Cliente persona jurídica
@@ -594,6 +596,47 @@ class RequerimientoHelper
         }
 
         return $periodo;
+    }
+
+    private function obtenerTipoDetalle($idCuadro)
+    {
+        $idTipoDetalle=null;
+        $cantidad_productos=0;
+        $cantidad_licencias=0;
+        $cantidad_servicios=0;
+        $cantidad_fondos_microsft=0;
+
+        if($idCuadro>0){
+            $filaCuadro = CcAmFila::where('id_cc_am',$idCuadro)->get();
+            foreach ($filaCuadro as $key => $fila) {
+                switch ($fila->id_tipo_fila) {
+                    case 1:
+                        $cantidad_productos++;
+                        break;
+                    case 2:
+                        $cantidad_licencias++;
+                        break;
+                    case 3:
+                        $cantidad_servicios++;
+                        break;
+                    case 4:
+                        $cantidad_fondos_microsft++;
+                        break;  
+                    default:
+                        break;
+                }
+            }
+            //obtener tipo detalle para Agil
+            if($cantidad_productos >0 && $cantidad_licencias==0 && $cantidad_servicios==0 && $cantidad_fondos_microsft==0 ){
+                $idTipoDetalle=1;
+            } else if($cantidad_productos ==0 &&  $cantidad_servicios > 0 &&  $cantidad_licencias ==0 && $cantidad_fondos_microsft==0 ){
+                $idTipoDetalle=2;
+            }else{
+                $idTipoDetalle=3;
+            }
+        } 
+
+        return $idTipoDetalle;
     }
 }
 
