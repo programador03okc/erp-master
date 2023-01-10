@@ -67,7 +67,7 @@ class Requerimiento extends Model
     //             return $query->whereNull('almacen.alm_det_req.stock_comprometido');
     //         }elseif($name=='CON_RESERVA'){
     //             $query->leftJoin('almacen.alm_det_req', 'almacen.alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-    //             return $query->whereRaw('almacen.alm_det_req.stock_comprometido > 0'); 
+    //             return $query->whereRaw('almacen.alm_det_req.stock_comprometido > 0');
     //         }
 
     //     return $query;
@@ -76,8 +76,8 @@ class Requerimiento extends Model
     // {
     //     if($name=='CON_ORDEN'){
     //         $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
-    //         $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');            
-    //         return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0'); 
+    //         $query->Join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+    //         return $query->whereRaw('log_det_ord_compra.id_detalle_requerimiento > 0');
 
     //     }elseif($name=='SIN_ORDEN'){
     //         $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');

@@ -2039,10 +2039,12 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('mostrarGastosPorPresupuesto/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarGastosPorPresupuesto')->name('mostrar-gastos-presupuesto');
 			Route::post('cuadroGastosExcel', 'Finanzas\Presupuesto\PresupuestoController@cuadroGastosExcel')->name('cuadroGastosExcel');
 
-            Route::group(['as' => 'prsupuesto-interno.', 'prefix' => 'prsupuesto-interno'], function () {
+            Route::group(['as' => 'presupuesto-interno.', 'prefix' => 'presupuesto-interno'], function () {
                 //Presupuesto interno
-                Route::get('inicio', 'Finanzas\Presupuesto\PresupuestoInternoController@inicio')->name('inicio');
-
+                Route::get('lista', 'Finanzas\Presupuesto\PresupuestoInternoController@lista')->name('lista');
+                Route::post('lista-presupuesto-interno', 'Finanzas\Presupuesto\PresupuestoInternoController@listaPresupuestoInterno')->name('lista-presupuesto-interno');
+                Route::get('crear', 'Finanzas\Presupuesto\PresupuestoInternoController@crear')->name('crear');
+                Route::get('presupuesto-interno-detalle', 'Finanzas\Presupuesto\PresupuestoInternoController@presupuestoInternoDetalle')->name('presupuesto-interno-detalle');
             });
 		});
 

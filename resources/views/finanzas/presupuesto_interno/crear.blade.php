@@ -18,59 +18,87 @@ Presupuesto Interno
 @section('breadcrumb')
     <ol class="breadcrumb">
         <li><i class="fa fa-usd"></i> Finanzas </li>
-        <li><i class="fa fa-usd"></i> Presupuestos </li>
         <li class="active"> @yield('cabecera')</li>
     </ol>
 @endsection
 
 @section('content')
-<div class="box box-solid">
+<div class="box box-danger">
     <div class="box-header with-border">
-        <h3 class="box-title">Datos Generales</h3>
+        <h3 class="box-title">NUEVO PRESUPUESTO INTERNO</h3>
         <div class="box-tools pull-right">
-            <button type="button" title="Nuevo Presupuesto" class="btn btn-sm btn-success">
-                <i class="fa fa-plus"></i>
-            </button>
-            <button type="button" title="Editar Datos Generales" class="btn btn-sm btn-warning">
-                <i class="fa fa-edit"></i>
-            </button>
-            <button type="button" title="Buscar Presupuesto" class="btn btn-sm btn-info">
-                <i class="fa fa-search"></i>
-            </button>
+            {{-- <div class="btn-group" role="group"> --}}
+                <button title="Volver a la lista de presupuesto interno"
+                    class="btn btn-sm btn-danger">
+                    <i class="fa fa-arrow-left"></i>
+                    Volver
+                </button>
+                <button title="Guardar"
+                    class="btn btn-sm btn-success">
+                    <i class="fa fa-save"></i>
+                    Guardar
+                </button>
+                <!-- <a target="_blank" href="#" title="Imprimir" class="btn">
+                    <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
+                </a> -->
+            {{-- </div> --}}
         </div>
     </div>
     <div class="box-body">
         <div class="row">
-            <div class="col-md-12">
-
-                <input style="display: none" name="id_presup"/>
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-md-2 control-label">Código:</label>
-                            <div class="col-md-2">
-                                <div class="form-control-static" name="codigo"></div>
-                            </div>
-                        <label class="col-md-1 control-label">Grupo:</label>
-                            <div class="col-md-1">
-                                <div class="form-control-static" name="name_grupo"></div>
-                            </div>
-                        <label class="col-md-2 control-label">Fecha Emisión:</label>
-                            <div class="col-md-2">
-                                <div class="form-control-static" name="fecha_emision"></div>
-                            </div>
-                        <label class="col-md-1 control-label">Moneda:</label>
-                            <div class="col-md-1">
-                                <div class="form-control-static" name="name_moneda"></div>
-                            </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-2 control-label">Descripción:</label>
-                            <div class="col-md-10">
-                                <div class="form-control-static" name="descripcion"></div>
-                            </div>
-                    </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="id_grupo">Grupo :</label>
+                    <select class="form-control" name="id_grupo" id="id_grupo">
+                        <option value="">Seleccione...</option>
+                        @foreach ($grupos as $item)
+                        <option value="{{ $item->id_grupo }}">{{ $item->descripcion }}</option>
+                        @endforeach
+                    </select>
                 </div>
-
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="id_grupo">Area :</label>
+                    <select class="form-control" name="id_grupo" id="id_grupo">
+                        <option value="">Seleccione...</option>
+                        @foreach ($area as $item)
+                        <option value="{{ $item->id_area }}">{{ $item->descripcion }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="id_grupo">Moneda :</label>
+                    <select class="form-control" name="id_grupo" id="id_grupo">
+                        <option value="">Seleccione...</option>
+                        @foreach ($moneda as $item)
+                        <option value="{{ $item->id_moneda }}">{{ $item->descripcion }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="descripcion">Descripcion : </label>
+                    <textarea id="descripcion" class="form-control" name="descripcion" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <table class="table table-sm table-hover table-bordered dt-responsive nowrap" id="listaPartidas">
+                    <thead>
+                        <tr>
+                            <th>PARTIDA</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody data-table="presupuesto-detalle"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -177,7 +205,6 @@ Presupuesto Interno
     </div>
 </div>
 
-
 @endsection
 
 @section('scripts')
@@ -194,11 +221,12 @@ Presupuesto Interno
     <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
-
-    {{-- <script src="{{ asset('template/plugins/moment.min.js') }}"></script> --}}
     <script>
-        let csrf_token = "{{ csrf_token() }}";
-        $(document).ready(function () {
-
-        });
+        // let csrf_token = "{{ csrf_token() }}";
+        // $(document).ready(function () {
+        //     seleccionarMenu(window.location);
+        // });
     </script>
+
+    <script src="{{asset('js/finanzas/presupuesto_interno/crear.js') }}""></script>
+@endsection
