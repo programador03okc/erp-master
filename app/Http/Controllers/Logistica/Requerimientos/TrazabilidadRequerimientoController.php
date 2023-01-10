@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Logistica\Requerimientos;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Tesoreria\RegistroPago;
 use Illuminate\Support\Facades\DB;
 
 class TrazabilidadRequerimientoController extends Controller
@@ -29,6 +30,13 @@ class TrazabilidadRequerimientoController extends Controller
             ])
             ->distinct()
             ->get();
+
+            $registoPago=[];
+            foreach ($ordenes as $key => $orden) {
+                if($orden->estado !=7){
+                    $registoPago = RegistroPago::with('adjunto')->where([['id_oc',$orden->id_orden_compra],['estado',1]])->get();
+                }
+            }
 
         $reservas = DB::table('almacen.alm_reserva')
             ->select('alm_reserva.*')
@@ -197,6 +205,7 @@ class TrazabilidadRequerimientoController extends Controller
         return response()->json([
             'requerimiento' => $requerimiento,
             'ordenes' => $ordenes,
+            'pagos' => $registoPago,
             'reservado' => (count($reservas) > 0 ? true : false),
             // 'reservas' => $reservas,
             'ingresos' => $guias,

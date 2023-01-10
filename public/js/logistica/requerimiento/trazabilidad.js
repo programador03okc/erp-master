@@ -74,6 +74,34 @@ function construirModalTrazabilidad(data) {
             document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlGestionLogistica);
 
         }
+
+        let htmlTesoreriaPago = '';
+        let adjuntoPagoList = [];
+        if (data.pagos.length > 0) {
+
+            htmlTesoreriaPago = `<li class="timeline-item">
+            <div class="timeline-badge success"><i class="glyphicon glyphicon-check"></i></div>
+            <div class="timeline-panel border-success">
+                <div class="timeline-heading">
+                    <h5 class="timeline-title">Atención Tesorería</h5>
+                </div>`;
+            (data.pagos).forEach(element => {
+                if((element.adjunto).hasOwnProperty('adjunto')){
+                    adjuntoPagoList.push(`<a href="/tesoreria/pagos/${element.adjunto.adjunto}" target="_blank" title="Abrir Orden">${element.adjunto.adjunto}</a> <span>(${element.observacion})</span>`)
+                }
+            });
+
+            htmlTesoreriaPago += `
+                <div class="timeline-body">
+                <strong>Pagos:</strong>
+                <p>${adjuntoPagoList.join('<br>')}</p>
+
+                </div>
+            </div>
+        </li>`;
+            document.querySelector("ul[id='stepperTrazabilidad']").insertAdjacentHTML('beforeend', htmlTesoreriaPago);
+
+        }
     }
 
     let htmlIngresosAlmacen = '';
