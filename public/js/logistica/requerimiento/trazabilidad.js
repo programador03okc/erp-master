@@ -87,7 +87,7 @@ function construirModalTrazabilidad(data) {
                 </div>`;
             (data.pagos).forEach(element => {
                 if((element.adjunto).hasOwnProperty('adjunto')){
-                    adjuntoPagoList.push(`<a href="/tesoreria/pagos/${element.adjunto.adjunto}" target="_blank" title="Abrir Orden">${element.adjunto.adjunto}</a> <span>(${element.observacion})</span>`)
+                    adjuntoPagoList.push(`<a href="/files/tesoreria/pagos/${element.adjunto.adjunto}" target="_blank" title="Abrir Orden">${element.adjunto.adjunto}</a> <span>(${element.observacion})</span>`)
                 }
             });
 
