@@ -1871,6 +1871,12 @@ class RequerimientoController extends Controller
                 } catch (\Throwable $th) {
                 }
             })
+            ->filterColumn('alm_req.monto_total', function ($query, $keyword) {
+                try {
+                    $query->where('alm_req.monto_total', trim($keyword));
+                } catch (\Throwable $th) {
+                }
+            })
             ->filterColumn('alm_req.fecha_registro', function ($query, $keyword) {
                 try {
                     $desde = Carbon::createFromFormat('d-m-Y', trim($keyword))->hour(0)->minute(0)->second(0);
