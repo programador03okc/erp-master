@@ -1873,7 +1873,7 @@ class RequerimientoController extends Controller
             })
             ->filterColumn('alm_req.monto_total', function ($query, $keyword) {
                 try {
-                    $query->where('alm_req.monto_total', number_format(trim($keyword),2,'.'));
+                    $query->where('alm_req.monto_total', number_format(trim($keyword),4));
                 } catch (\Throwable $th) {
                 }
             })
