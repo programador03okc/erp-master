@@ -51,16 +51,19 @@ class PresupuestoInternoController extends Controller
         $presupuesto = [];
         $tipo='';
         $tipo_next='';
+        $ordenamiento = [];
         switch ($request->tipo) {
             case '1':
                 $tipo='INGRESOS';
                 $presupuesto   = PresupuestoInternoModelo::where('id_tipo_presupuesto',1)->orderBy('partida')->get();
                 $tipo_next=2;
+                $ordenamiento = $this->ordenarPresupuesto($presupuesto);
                 break;
             case '2':
                 $tipo='COSTOS';
                 $presupuesto     = PresupuestoInternoModelo::where('id_tipo_presupuesto',2)->orderBy('partida')->get();
                 $tipo_next=3;
+                $ordenamiento = $this->ordenarPresupuesto($presupuesto);
                 break;
 
             case '3':
@@ -69,13 +72,38 @@ class PresupuestoInternoController extends Controller
                 break;
         }
 
-
+        // return $ordenamiento;exit;
         return response()->json([
             "success"=>true,
             "presupuesto"=>$presupuesto,
             "tipo"=>$tipo,
             "id_tipo"=>$request->tipo,
-            "tipo_next"=>$tipo_next
+            "tipo_next"=>$tipo_next,
+            "ordemaniento"=>$ordenamiento
+        ]);
+    }
+    public function ordenarPresupuesto($data)
+    {
+        $array_data=[];
+        $cantidad=0;
+        $nivel_maximo=0;
+        foreach ($data as $key => $value) {
+            $array_data = explode('.',$value->partida);
+            $cantidad = sizeof($array_data);
+            $value->nivel=$cantidad;
+            if ($cantidad>$nivel_maximo) {
+                $nivel_maximo=$cantidad;
+            }
+            // return $cantidad;
+        }
+        return ["data_ordenada"=>$data,"nivel_maximo"=>$nivel_maximo];
+    }
+    public function guardar(Request $request)
+    {
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$request->ingresos
         ]);
     }
 }

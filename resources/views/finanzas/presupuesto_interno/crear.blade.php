@@ -26,114 +26,134 @@ Presupuesto Interno
 @endsection
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div class="box box-danger">
-            <div class="box-header with-border">
-                <h3 class="box-title">NUEVO PRESUPUESTO INTERNO</h3>
-                <div class="box-tools pull-right">
-                    {{-- <div class="btn-group" role="group"> --}}
-                        <button title="Volver a la lista de presupuesto interno"
-                            class="btn btn-sm btn-danger">
-                            <i class="fa fa-arrow-left"></i>
-                            Volver
-                        </button>
-                        <button title="Guardar"
-                            class="btn btn-sm btn-success">
-                            <i class="fa fa-save"></i>
-                            Guardar
-                        </button>
-                        <button title="Guardar"
-                            class="btn btn-sm btn-success" data-action="generar" data-tipo="1">
-                            <i class="fa fa-retweet"></i>
-                            Ingresos
-                        </button>
-                        <button title="Guardar"
-                            class="btn btn-sm btn-success" data-action="generar" data-tipo="3">
-                            <i class="fa fa-retweet"></i>
-                            Gasto
-                        </button>
-                        <!-- <a target="_blank" href="#" title="Imprimir" class="btn">
-                            <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
-                        </a> -->
-                    {{-- </div> --}}
+<form action="{{ route('finanzas.presupuesto.presupuesto-interno.guardar') }}" method="post" data-form="guardar-partida" enctype="multipart/formdata">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">NUEVO PRESUPUESTO INTERNO</h3>
+                    <div class="box-tools pull-right">
+                        {{-- <div class="btn-group" role="group"> --}}
+                            <button title="Volver a la lista de presupuesto interno"
+                                class="btn btn-sm btn-danger">
+                                <i class="fa fa-arrow-left"></i>
+                                Volver
+                            </button>
+                            <button title="Guardar" type="submit"
+                                class="btn btn-sm btn-success">
+                                <i class="fa fa-save"></i>
+                                Guardar
+                            </button>
+                            <button title="" type="button"
+                                class="btn btn-sm btn-success" data-action="generar" data-tipo="1">
+                                <i class="fa fa-retweet"></i>
+                                Ingresos
+                            </button>
+                            <button title="" type="button"
+                                class="btn btn-sm btn-success" data-action="generar" data-tipo="3">
+                                <i class="fa fa-retweet"></i>
+                                Gasto
+                            </button>
+                            <!-- <a target="_blank" href="#" title="Imprimir" class="btn">
+                                <i class="glyphicon glyphicon-search" aria-hidden="true"></i>
+                            </a> -->
+                        {{-- </div> --}}
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="id_grupo">Grupo :</label>
+                                <select class="form-control" name="id_grupo" id="id_grupo">
+                                    <option value="">Seleccione...</option>
+                                    @foreach ($grupos as $item)
+                                    <option value="{{ $item->id_grupo }}">{{ $item->descripcion }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="id_grupo">Area :</label>
+                                <select class="form-control" name="id_grupo" id="id_grupo">
+                                    <option value="">Seleccione...</option>
+                                    @foreach ($area as $item)
+                                    <option value="{{ $item->id_area }}">{{ $item->descripcion }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="id_grupo">Moneda :</label>
+                                <select class="form-control" name="id_grupo" id="id_grupo">
+                                    <option value="">Seleccione...</option>
+                                    @foreach ($moneda as $item)
+                                    <option value="{{ $item->id_moneda }}">{{ $item->descripcion }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="descripcion">Descripcion : </label>
+                                <textarea id="descripcion" class="form-control" name="descripcion" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="id_grupo">Grupo :</label>
-                            <select class="form-control" name="id_grupo" id="id_grupo">
-                                <option value="">Seleccione...</option>
-                                @foreach ($grupos as $item)
-                                <option value="{{ $item->id_grupo }}">{{ $item->descripcion }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="id_grupo">Area :</label>
-                            <select class="form-control" name="id_grupo" id="id_grupo">
-                                <option value="">Seleccione...</option>
-                                @foreach ($area as $item)
-                                <option value="{{ $item->id_area }}">{{ $item->descripcion }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="id_grupo">Moneda :</label>
-                            <select class="form-control" name="id_grupo" id="id_grupo">
-                                <option value="">Seleccione...</option>
-                                @foreach ($moneda as $item)
-                                <option value="{{ $item->id_moneda }}">{{ $item->descripcion }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="descripcion">Descripcion : </label>
-                            <textarea id="descripcion" class="form-control" name="descripcion" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
+        </div>
+    </div>
 
-
+    <div class="row">
+        <div class="col-md-6 animate__animated d-none">
+            <div class="box box-success">
+                <div class="box-body" data-presupuesto="interno-modelo">
+                    <div class="row" data-select="presupuesto-1"></div>
+                </div>
             </div>
+        </div>
+        <div class="col-md-6 animate__animated d-none">
+            <div class="box box-success">
+                <div class="box-body" data-presupuesto="interno-modelo">
+                    <div class="row" data-select="presupuesto-2"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-md-offset-3 animate__animated d-none">
+            <div class="box box-success">
+                <div class="box-body" data-presupuesto="interno-modelo">
+                    <div class="row" data-select="presupuesto-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="modal-partida" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="" method="post" data-form="agregar-partida">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="my-modal-title">Agregar</h5>
+                    <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="key" value="">
+                    <p>Content</p>
+                </div>
+                <div class="modal-footer">
+                    Footer
+                </div>
+            </form>
         </div>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-md-4 animate__animated d-none">
-        <div class="box box-success">
-            <div class="box-body" data-presupuesto="interno-modelo">
-                <div class="row" data-select="presupuesto-1"></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 animate__animated d-none">
-        <div class="box box-success">
-            <div class="box-body" data-presupuesto="interno-modelo">
-                <div class="row" data-select="presupuesto-2"></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 animate__animated d-none">
-        <div class="box box-success">
-            <div class="box-body" data-presupuesto="interno-modelo">
-                <div class="row" data-select="presupuesto-3"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 @endsection
 
