@@ -43,12 +43,25 @@ function lista() {
             }
         },
         columns: [
-            {data: 'id_presupuesto_interno', name:"id_presupuesto_interno"},
-            {data: 'codigo', name:"codigo"},
-            {data: 'descripcion', name:"descripcion"},
-            {data: 'fecha_registro', name:"fecha_registro"},
-            {data: 'id_grupo', name:"id_grupo"},
-            {data: 'estado', name:"estado"},
+            {data: 'id_presupuesto_interno', name:"id_presupuesto_interno" },
+            {data: 'codigo', name:"codigo" , class:"text-center"},
+            {data: 'descripcion', name:"descripcion" , class:"text-center"},
+            {data: 'fecha_registro', name:"fecha_registro" , class:"text-center"},
+            {data: 'descripcion', name:"descripcion" , class:"text-center"},
+            // {data: 'estado', name:"estado" , class:"text-center"},
+            {
+                render: function (data, type, row) {
+                    var estado = row['estado'],
+                        descripcion_estado='';
+                    switch (estado) {
+                        case 1:
+                            descripcion_estado='Elaborado'
+                        break;
+                    }
+                    return descripcion_estado
+                },
+                className: "text-center"
+            },
             {
                 render: function (data, type, row) {
                     html='';
@@ -79,4 +92,57 @@ $(document).on('click','.editar-registro',function () {
         '</form>');
         $('body').append(form);
         form.submit();
+});
+
+$(document).on('click','.eliminar',function () {
+    var id = $(this).attr('data-id');
+    Swal.fire({
+        title: 'Anular',
+        text: "¿Está seguro de anular?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'no',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                url: 'eliminar',
+                data: {id:id},
+                // processData: false,
+                // contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+
+                }
+            }).done(function(response) {
+                return response
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value.status===200) {
+                $('#lista-presupuesto-interno').DataTable().ajax.reload();
+                Swal.fire({
+                    title: 'Éxito',
+                    text: "Se guardo con éxito",
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((resultado) => {
+                    if (resultado.isConfirmed) {
+
+                    }
+                })
+            }
+        }
+    });
 });

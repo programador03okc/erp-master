@@ -333,8 +333,15 @@ $(document).on('submit','[data-form="guardar-partida"]',function (e) {
                 }).then((resultado) => {
                     if (resultado.isConfirmed) {
                         // $('#nuevo-cliente').modal('hide');
+                        window.location.href = "lista";
                     }
                 })
+            }else{
+                Swal.fire(
+                    result.value.title,
+                    result.value.msg,
+                    result.value.type
+                )
             }
         }
     });
@@ -511,6 +518,7 @@ $(document).on('submit','[data-form="editar-partida"]',function (e) {
                 }).then((resultado) => {
                     if (resultado.isConfirmed) {
                         // $('#nuevo-cliente').modal('hide');
+                        window.location.href = "lista";
                     }
                 })
             }

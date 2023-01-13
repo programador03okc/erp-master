@@ -35,11 +35,11 @@ Presupuesto Interno
                     <h3 class="box-title">EDITAR PRESUPUESTO INTERNO</h3>
                     <div class="box-tools pull-right">
                         {{-- <div class="btn-group" role="group"> --}}
-                            <button type="button" title="Volver a la lista de presupuesto interno"
+                            <a href="{{ route('finanzas.presupuesto.presupuesto-interno.lista') }}" title="Volver a la lista de presupuesto interno"
                                 class="btn btn-sm btn-danger">
                                 <i class="fa fa-arrow-left"></i>
                                 Volver
-                            </button>
+                            </a>
                             <button title="Guardar" type="submit"
                                 class="btn btn-sm btn-success">
                                 <i class="fa fa-save"></i>

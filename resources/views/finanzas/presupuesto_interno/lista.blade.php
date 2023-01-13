@@ -35,7 +35,7 @@ Lista de Presupuestos Interno
                                 <th scope="col">Descripción</th>
                                 <th scope="col">Fecha Emisión</th>
                                 <th scope="col">Grupo</th>
-                                <th scope="col">estado</th>
+                                <th scope="col">Estado</th>
                                 <th scope="col">-</th>
                             </tr>
                         </thead>

@@ -2053,6 +2053,7 @@ Route::group(['middleware' => ['auth']], function () {
 
                 Route::post('editar', 'Finanzas\Presupuesto\PresupuestoInternoController@editar')->name('editar');
                 Route::post('actualizar', 'Finanzas\Presupuesto\PresupuestoInternoController@actualizar')->name('actualizar');
+                Route::post('eliminar', 'Finanzas\Presupuesto\PresupuestoInternoController@eliminar')->name('eliminar');
             });
 		});
 
