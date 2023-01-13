@@ -70,3 +70,13 @@ function lista() {
         }
     });
 }
+$(document).on('click','.editar-registro',function () {
+    var id = $(this).attr('data-id'),
+        token = $('meta[name="csrf-token"]').attr('content'),
+        form = $('<form action="'+route_editar+'" method="POST" target="_blank">'+
+            '<input type="hidden" name="_token" value="'+token+'">'+
+            '<input type="hidden" name="id" value="'+id+'">'+
+        '</form>');
+        $('body').append(form);
+        form.submit();
+});

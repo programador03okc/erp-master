@@ -4,7 +4,7 @@ $(document).ready(function () {
 var array_tipo=[];
 $(document).on('click','[data-action="generar"]',function () {
     var tipo = $(this).attr('data-tipo');
-    $('[data-form="guardar-partida"] [name="id_tipo_presupuesto"]').val(tipo);
+    $('[name="id_tipo_presupuesto"]').val(tipo);
     if (tipo !== '0') {
         getModelo(tipo);
     }
@@ -68,15 +68,11 @@ function generarModelo(data) {
                 html+='<input type="hidden" value="'+element.id_padre+'" name="'+data.tipo.toLowerCase()+'['+input_key+'][id_padre]" class="form-control input-sm">'
                 html+='<span>'+element.partida+'</span></td>'
 
-            // html+='<td colspan="2" data-td="descripcion">'+descripcion+'</td>'
-            if ((array.length==3) || (array.length==4)) {
+            // if ((array.length==3) || (array.length==4)) {
                 html+='<td data-td="descripcion"><input type="hidden" value="'+element.descripcion+'" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][descripcion]" placeholder="'+element.descripcion+'"><span>'+element.descripcion+'</span></td>'
 
                 html+='<td data-td="monto"><input type="hidden" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][monto]" placeholder="Ingrese monto" step="0.01"><span>'+0+'</span></td>'
-            }else{
-                html+='<td colspan="2" data-td="descripcion"><input type="hidden" value="'+element.descripcion+'" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][descripcion]"><span>'+element.descripcion+'</span></td>'
-            }
-            // if (data.id_tipo==='3') {
+            // }else{
             //     html+='<td colspan="2" data-td="descripcion"><input type="hidden" value="'+element.descripcion+'" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][descripcion]"><span>'+element.descripcion+'</span></td>'
             // }
             html+='<td data-td="accion">'
@@ -93,7 +89,10 @@ function generarModelo(data) {
                 if (array.length==4) {
                     html+='<button type="button" class="btn btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>'
                 }
-                html+='<button type="button" class="btn btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-eliminar" data-nivel="'+array.length+'" title="Eliminar" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'"><i class="fa fa-trash"></i></button>'
+                if (array.length!==1) {
+                    html+='<button type="button" class="btn btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-eliminar" data-nivel="'+array.length+'" title="Eliminar" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'"><i class="fa fa-trash"></i></button>'
+                }
+
 
             html+='</td>'
         html+='</tr>';
@@ -205,13 +204,16 @@ $(document).on('submit','[data-form="guardar-formulario"]',function (e) {
 
                     <span>`+partida_nueva+`</span>
                 </td>
-                <td data-td="descripcion" colspan="2">
+                <td data-td="descripcion">
                     <input type="hidden" value="`+descripcion_titulo+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][descripcion]" placeholder="Nuevo Titulo">
-
-
-
                     <span>`+descripcion_titulo+`</span>
                 </td>
+
+                <td data-td="monto" style="padding-right: 0px;">
+                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][monto]" placeholder="Ingrese monto" step="0.01">
+                    <span>0</span>
+                </td>
+
                 <td data-td="accion">
                     <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-nuevo" data-select="titulo" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
 
@@ -219,7 +221,7 @@ $(document).on('submit','[data-form="guardar-formulario"]',function (e) {
 
                     <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-nuevo" data-select="titulo" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
 
-                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
         `;
@@ -256,10 +258,13 @@ $(document).on('submit','[data-form="guardar-formulario"]',function (e) {
 });
 $(document).on('click','[data-action="click-eliminar"]',function () {
     var key = $(this).attr('key'),
-        data_id = $(this).attr('data-id');
+        data_id = $(this).attr('data-id'),
+        data_id_padre = $(this).attr('data-id-padre'),
+        data_text_presupuesto = $(this).attr('data-tipo-text');
     $(this).closest('tr').remove();
     $('tr[data-id-padre="'+data_id+'"]').remove();
 
+    sumarPartidas(data_id,data_id_padre,data_text_presupuesto);
 });
 function zfill(number, width) {
     var numberOutput = Math.abs(number); /* Valor absoluto del número */
@@ -361,8 +366,6 @@ $(document).on('click','[data-action="click-partida"]',function () {
     if (data_tipo==='editar') {
         descripcion_editar = $(this).closest('tr[key="'+key+'"]').find('td[data-td="descripcion"] [name="'+data_text_presupuesto+'['+key+'][descripcion]"]').val();
         monto_editar = $(this).closest('tr[key="'+key+'"]').find('td[data-td="monto"] [name="'+data_text_presupuesto+'['+key+'][monto]"]').val();
-        console.log(descripcion_editar);
-        console.log(monto_editar);
         $('#modal-partida [data-form="guardar-partida-modal"] [name="descripcion"]').val(descripcion_editar);
         $('#modal-partida [data-form="guardar-partida-modal"] [name="monto"]').val(monto_editar);
     }
@@ -417,7 +420,7 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
 
                     <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-partida" data-select="partida" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
 
-                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
         `;
@@ -445,17 +448,109 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
             $('tr[key="'+key+'"]').closest('tbody').append(html);
             // $(this).closest('tr').closest('tbody').append(html);
         }
+        // data_id;
+        // data_id_padre;
+        sumarPartidas(data_id_random,data_id,data_text_presupuesto);
     }else{
         $('tr[key="'+key+'"] td[data-td="descripcion"] [name="'+data_text_presupuesto+'['+key+'][descripcion]"]').val(descripcion_partida);
         $('tr[key="'+key+'"] td[data-td="descripcion"] span').text(descripcion_partida);
 
         $('tr[key="'+key+'"] td[data-td="monto"] [name="'+data_text_presupuesto+'['+key+'][monto]"]').val(monto_partida);
         $('tr[key="'+key+'"] td[data-td="monto"] span').text(monto_partida);
+        sumarPartidas(data_id,data_id_padre,data_text_presupuesto);
     }
 
     $('#modal-partida').modal('hide');
-});
-$(document).on('click','[data-action="click-editar"]',function () {
+
 
 });
+$(document).on('submit','[data-form="editar-partida"]',function (e) {
+    e.preventDefault();
+    var data = new FormData($(this)[0]);
+    Swal.fire({
+        title: 'Guardar',
+        text: "¿Está seguro de guardar?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'no',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: $(this).attr('method'),
+                url: $(this).attr('action'),
+                data: data,
+                processData: false,
+                contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+                    // console.log(data);
+                }
+            }).done(function(response) {
+                return response
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
 
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value.status===200) {
+                console.log(result.value);
+                Swal.fire({
+                    title: 'Éxito',
+                    text: "Se guardo con éxito",
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((resultado) => {
+                    if (resultado.isConfirmed) {
+                        // $('#nuevo-cliente').modal('hide');
+                    }
+                })
+            }
+        }
+    });
+});
+function sumarPartidas(data_id,data_id_padre,data_text_presupuesto) {
+    var suma_partida = 0;
+    switch (data_text_presupuesto) {
+        case 'ingresos':
+            // $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (indexInArray, valueOfElement) {
+            //     suma_partida = suma_partida + parseFloat(valueOfElement.children[2].children[0].value);
+            // });
+        break;
+
+        case 'costos':
+
+        break;
+        case 'gastos':
+
+        break;
+    }
+    $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (indexInArray, valueOfElement) {
+        suma_partida = suma_partida + parseFloat(valueOfElement.children[2].children[0].value);
+        // console.log(parseFloat(valueOfElement.children[2].children[0].value));
+        console.log(valueOfElement.children[2]);
+    });
+
+    data_td_key = $('tr[data-id="'+data_id_padre+'"]').attr('key');
+
+    $('tr[data-id="'+data_id_padre+'"] td[data-td="monto"] [name="'+data_text_presupuesto+'['+data_td_key+'][monto]"]').val(suma_partida);
+    $('tr[data-id="'+data_id_padre+'"] td[data-td="monto"] span').text(suma_partida);
+
+
+    data_id = $('tr[data-id="'+data_id_padre+'"]').attr('data-id')
+    data_id_padre = $('tr[data-id="'+data_id_padre+'"]').attr('data-id-padre')
+
+    if (data_id_padre!=='0') {
+
+        sumarPartidas(data_id,data_id_padre,data_text_presupuesto);
+    }
+    // return suma_partida
+}

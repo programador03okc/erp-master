@@ -2044,8 +2044,12 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::get('lista', 'Finanzas\Presupuesto\PresupuestoInternoController@lista')->name('lista');
                 Route::post('lista-presupuesto-interno', 'Finanzas\Presupuesto\PresupuestoInternoController@listaPresupuestoInterno')->name('lista-presupuesto-interno');
                 Route::get('crear', 'Finanzas\Presupuesto\PresupuestoInternoController@crear')->name('crear');
+
                 Route::get('presupuesto-interno-detalle', 'Finanzas\Presupuesto\PresupuestoInternoController@presupuestoInternoDetalle')->name('presupuesto-interno-detalle');
                 Route::post('guardar', 'Finanzas\Presupuesto\PresupuestoInternoController@guardar')->name('guardar');
+
+                Route::post('editar', 'Finanzas\Presupuesto\PresupuestoInternoController@editar')->name('editar');
+                Route::post('actualizar', 'Finanzas\Presupuesto\PresupuestoInternoController@actualizar')->name('actualizar');
             });
 		});
 

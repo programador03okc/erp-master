@@ -27,6 +27,7 @@ Presupuesto Interno
 
 @section('content')
 <form action="{{ route('finanzas.presupuesto.presupuesto-interno.guardar') }}" method="post" data-form="guardar-partida" enctype="multipart/formdata">
+
     <div class="row">
         <div class="col-md-12">
             <div class="box box-danger">

@@ -66,6 +66,7 @@ Lista de Presupuestos Interno
     <script src="{{ asset('js/finanzas/presupuesto_interno/lista.js') }}"></script>
 
     <script>
+        const route_editar = "{{route('finanzas.presupuesto.presupuesto-interno.editar')}}";
         $(document).ready(function () {
 
         });
