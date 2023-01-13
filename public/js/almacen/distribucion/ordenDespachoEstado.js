@@ -77,8 +77,8 @@ function formatTimeLine(table_id, id, row) {
                 <div class="col-md-12">
                 
                   <div style="display:inline-block;width:100%;">
-                    <ul class="timeline timeline-horizontal" style="padding: 100px !important;">
-                    <input type="button" id="btn_cerrar_transportista" class="btn btn-success" 
+                    <ul class="timeline timeline-horizontal" style="padding: 20vh !important">
+                    <input type="button" id="btn_cerrar_transportista" class="btn btn-success" style="position: absolute;left: 0px;top: 0px;"
                         onClick="agregarEstadoEnvio(${id});" value="Agregar"/>`;
 
                 response.forEach(element => {
