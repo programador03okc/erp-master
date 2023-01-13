@@ -34,7 +34,7 @@ Presupuesto Interno
                     <h3 class="box-title">NUEVO PRESUPUESTO INTERNO</h3>
                     <div class="box-tools pull-right">
                         {{-- <div class="btn-group" role="group"> --}}
-                            <button title="Volver a la lista de presupuesto interno"
+                            <button type="button" title="Volver a la lista de presupuesto interno"
                                 class="btn btn-sm btn-danger">
                                 <i class="fa fa-arrow-left"></i>
                                 Volver
@@ -62,36 +62,57 @@ Presupuesto Interno
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
+                                <input type="hidden" name="id_tipo_presupuesto"value="">
                                 <label for="id_grupo">Grupo :</label>
-                                <select class="form-control" name="id_grupo" id="id_grupo">
+                                <select class="form-control" name="id_grupo" id="id_grupo" required>
                                     <option value="">Seleccione...</option>
                                     @foreach ($grupos as $item)
-                                    <option value="{{ $item->id_grupo }}">{{ $item->descripcion }}</option>
+                                        <option value="{{ $item->id_grupo }}">{{ $item->descripcion }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="id_grupo">Area :</label>
-                                <select class="form-control" name="id_grupo" id="id_grupo">
+                                <label for="id_area">Area :</label>
+                                <select class="form-control" name="id_area" id="id_area" required>
                                     <option value="">Seleccione...</option>
                                     @foreach ($area as $item)
-                                    <option value="{{ $item->id_area }}">{{ $item->descripcion }}</option>
+                                        <option value="{{ $item->id_area }}">{{ $item->descripcion }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
-                                <label for="id_grupo">Moneda :</label>
-                                <select class="form-control" name="id_grupo" id="id_grupo">
+                                <label for="id_moneda">Moneda :</label>
+                                <select class="form-control" name="id_moneda" id="id_moneda" required>
                                     <option value="">Seleccione...</option>
                                     @foreach ($moneda as $item)
                                     <option value="{{ $item->id_moneda }}">{{ $item->descripcion }}</option>
                                     @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="mes">Meses :</label>
+                                <select id="mes" name="mes" class="form-control" required>
+                                    <option selected hidden>Mes</option>
+                                    <option value="Enero">Enero</option>
+                                    <option value="Febrero">Febrero</option>
+                                    <option value="Marzo">Marzo</option>
+                                    <option value="Abril">Abril</option>
+                                    <option value="Mayo">Mayo</option>
+                                    <option value="Junio">Junio</option>
+                                    <option value="Julio">Julio</option>
+                                    <option value="Agosto">Agosto</option>
+                                    <option value="Septiembre">Septiembre</option>
+                                    <option value="Octubre">Octubre</option>
+                                    <option value="Noviembre">Noviembre</option>
+                                    <option value="Diciembre">Diciembre</option>
                                 </select>
                             </div>
                         </div>
@@ -100,7 +121,7 @@ Presupuesto Interno
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="descripcion">Descripcion : </label>
-                                <textarea id="descripcion" class="form-control" name="descripcion" rows="3"></textarea>
+                                <textarea id="descripcion" class="form-control" name="descripcion" rows="3" ></textarea>
                             </div>
                         </div>
                     </div>
@@ -133,28 +154,60 @@ Presupuesto Interno
         </div>
     </div>
 </form>
-<div id="modal-partida" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div id="modal-titulo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
-            <form action="" method="post" data-form="agregar-partida">
+            <form action="" method="post" data-form="guardar-formulario">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="my-modal-title">Agregar</h5>
                     <button class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
+                    <h5 class="modal-title" id="my-modal-title">Titulo</h5>
+
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="key" value="">
-                    <p>Content</p>
+                    <div class="form-group">
+                        <label for="id_descripcion_titulo">Descripcion</label>
+                        <input id="id_descripcion_titulo" class="form-control" type="text" name="descripcion" required>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    Footer
+                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> Cerra</button>
+                    <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+<div id="modal-partida" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form action="" method="post" data-form="guardar-partida-modal">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title" id="my-modal-title">Partida</h5>
 
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="id_descripcion_partida">Descripcion :</label>
+                        <input id="id_descripcion_partida" class="form-control" type="text" name="descripcion" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_monto_partida">Monto :</label>
+                        <input id="id_monto_partida" class="form-control" type="number" name="monto" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> Cerra</button>
+                    <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
