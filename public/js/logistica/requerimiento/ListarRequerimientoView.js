@@ -402,12 +402,12 @@ class ListarRequerimientoView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return (row['simbolo_moneda']) + (Util.formatoNumero(row.monto_subtotal, 2));
+                        return (row['simbolo_moneda']) + ($.number(row.monto_subtotal, 2));
                     }, targets: 11
                 },
                 {
                     'render': function (data, type, row) {
-                        return (row['simbolo_moneda']) + (Util.formatoNumero(row.monto_total, 2));
+                        return (row['simbolo_moneda']) + ($.number(row.monto_total, 2,'.',','));
                     }, targets: 12
                 },
                 // {

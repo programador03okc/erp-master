@@ -89,6 +89,7 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
                     detalle.push({
                         'id_od_detalle': element.id_od_detalle,
                         'id_detalle_requerimiento': element.id_detalle_requerimiento,
+                        'id_detalle_devolucion': null,
                         'id_producto': element.id_producto,
                         'id_unidad_medida': element.id_unidad_medida,
                         'codigo': element.codigo,
@@ -104,7 +105,6 @@ function listarDetalleOrdenDespacho(id_requerimiento, id_od, aplica_cambios, tie
                         'almacen_reserva': element.almacen_reserva,
                         'series': []
                     });
-                    console.log(element.codigo + ': ' + element.stock_comprometido + '!== ' + element.cantidad);
 
                     if (parseFloat(element.stock_comprometido) > 0) {
                         items_para_despachar++;
@@ -195,11 +195,13 @@ function listarDetalleDevolucion(id_devolucion) {
 }
 
 function mostrar_detalle() {
+    console.log('mostrar detalle');
     var html = '';
     var html_series = '';
     var id_almacen = parseInt($('[name=id_almacen]').val());
 
     detalle.forEach(element => {
+        console.log(element);
         html_series = '';
         element.series.forEach(ser => {
             if (ser.estado == 1) {
@@ -226,7 +228,9 @@ function mostrar_detalle() {
         <td>
         ${element.control_series ?
                 `<i class="fas fa-bars icon-tabla boton" data-toggle="tooltip" data-placement="bottom" title="Agregar Series"
-        onClick="open_series_devolucion(${element.id_producto},${element.id_od_detalle !== null ? element.id_od_detalle : element.id_detalle_devolucion},${element.cantidad},${id_almacen});"></i>` : ''}
+                onClick="${element.id_od_detalle !== null ?
+                    `open_series(${element.id_producto},${element.id_od_detalle},${element.cantidad},${id_almacen})`
+                    : `open_series_devolucion(${element.id_producto},${element.id_detalle_devolucion},${element.cantidad},${id_almacen})`}"></i>` : ''}
         </td>
         </tr>`;
     });

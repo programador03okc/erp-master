@@ -1871,6 +1871,12 @@ class RequerimientoController extends Controller
                 } catch (\Throwable $th) {
                 }
             })
+            ->filterColumn('alm_req.monto_total', function ($query, $keyword) {
+                try {
+                    $query->where('alm_req.monto_total', number_format(trim($keyword),4));
+                } catch (\Throwable $th) {
+                }
+            })
             ->filterColumn('alm_req.fecha_registro', function ($query, $keyword) {
                 try {
                     $desde = Carbon::createFromFormat('d-m-Y', trim($keyword))->hour(0)->minute(0)->second(0);
@@ -4284,6 +4290,8 @@ class RequerimientoController extends Controller
             $adjuntoOrdenesLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar2) : 0;
             $adjuntoComprobanteContableLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar3 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar3) : 0;
             $adjuntoComprobanteBancarioLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar4) : 0;
+            $adjuntoCotizacionLength = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar5 != null ? count($request->archivoAdjuntoRequerimientoCabeceraFileGuardar5) : 0;
+            // Debugbar::info($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4, $requerimiento->codigo, 5);
 
             $idAdjunto = [];
             if ($adjuntoOtrosAdjuntosLength > 0) {
@@ -4297,6 +4305,9 @@ class RequerimientoController extends Controller
             }
             if ($adjuntoComprobanteBancarioLength > 0) {
                 $idAdjunto[] = $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar4, $requerimiento->codigo, 4);
+            }
+            if ($adjuntoCotizacionLength > 0) {
+                $idAdjunto[] = $this->subirYRegistrarArchivoCabeceraRequerimiento($requerimiento->id_requerimiento, $request->archivoAdjuntoRequerimientoCabeceraFileGuardar5, $requerimiento->codigo, 5);
             }
             $estado_accion = 'error';
             if (count($idAdjunto) > 0) {

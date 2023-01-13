@@ -13,4 +13,9 @@ class RegistroPago extends Model
     protected $primaryKey = 'id_pago';
     public $timestamps = false;
 
+    public function adjunto()
+    {
+        return $this->hasOne('App\Models\Tesoreria\RegistroPagoAdjuntos', 'id_pago', 'id_pago');
+    }
+
 }
