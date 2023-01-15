@@ -117,7 +117,7 @@ Customización
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="col-sm-5 control-label">Fecha proceso: </label>
+                        <label class="col-sm-5 control-label">Fecha del documento: </label>
                         <div class="col-sm-7">
                             <input type="date" class="form-control edition limpiarCustomizacion" name="fecha_proceso"/>
                         </div>

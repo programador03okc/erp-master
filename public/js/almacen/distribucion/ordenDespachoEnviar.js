@@ -9,6 +9,7 @@ function openOrdenDespachoEnviar(data) {
         $modal.find('div.bootstrap-filestyle').find('input[type=text]').val('');
 
         $('[name=id_requerimiento]').val(data.id_requerimiento ?? '');
+        $('[name=fecha_documento_ode]').val(fecha_actual());
         $('[name=id_oportunidad]').val(data.id_oportunidad ?? '');
         $('#codigo_cdp').text((data.codigo_oportunidad ?? '') + ' - ' + (data.codigo ?? ''));
         $('[name="codigo"]').val((data.codigo_oportunidad ?? '') + '-' + (data.codigo ?? ''));
@@ -25,67 +26,62 @@ function openOrdenDespachoEnviar(data) {
         $('[name=mensaje]').val(msj);
 
     } else {
-        Swal.fire({
-            title: "¿Está seguro que desea emitir la Orden de Despacho?",
-            // text: "",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#00a65a", //"#3085d6",
-            cancelButtonColor: "#d33",
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Sí, Emitir"
 
-        }).then(result => {
+        const $modal = $('#modal-despacho_externo_fecha');
+        $modal.modal('show');
+        $('[name=fecha_documento_odex]').val(fecha_actual());
+        $('[name=req_id_requerimiento_odex]').val(data.id_requerimiento);
 
-            if (result.isConfirmed) {
-
-                var formData = 'id_requerimiento=' + data.id_requerimiento +
-                    '&id_oportunidad=' + (data.id_oportunidad !== null ? data.id_oportunidad : 0) +
-                    '&envio=no';
-                console.log(formData);
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'guardarOrdenDespachoExterno',
-                    data: formData,
-                    dataType: 'JSON',
-                }).done(function (response) {
-                    console.log(response);
-                    Lobibox.notify(response.tipo, {
-                        size: "mini",
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: response.mensaje
-                    });
-                    if (response.tipo == 'success') {
-                        // $('#modal-orden_despacho_enviar').modal('hide');
-                        $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
-                    } else {
-                        console.log('Error devuelto: ' + response.error);
-                    }
-                }).always(function () {
-                   if(typeof $submit != 'undefined') {
-                    if($submit !== null ){
-
-                        $submit.prop('disabled', false);
-                        $submit.html('Enviar');
-                    }
-                    }
-                }).fail(function (jqXHR) {
-                    Lobibox.notify('error', {
-                        size: "mini",
-                        rounded: true,
-                        sound: false,
-                        delayIndicator: false,
-                        msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
-                    });
-                    console.log('Error devuelto: ' + jqXHR.responseText);
-                });
-
-            }
-        });
     }
+}
+
+function generarDespachoExterno() {
+    var id_req = $('[name=req_id_requerimiento_odex]').val();
+    var fdoc = $('[name=fecha_documento_odex]').val();
+    var formData = 'id_requerimiento=' + id_req +
+        '&fecha_documento_ode=' + fdoc +
+        '&id_oportunidad=0'
+    '&envio=no';
+    console.log(formData);
+
+    $.ajax({
+        type: 'POST',
+        url: 'guardarOrdenDespachoExterno',
+        data: formData,
+        dataType: 'JSON',
+    }).done(function (response) {
+        console.log(response);
+        Lobibox.notify(response.tipo, {
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: response.mensaje
+        });
+        if (response.tipo == 'success') {
+            $('#modal-despacho_externo_fecha').modal('hide');
+            $("#requerimientosEnProceso").DataTable().ajax.reload(null, false);
+        } else {
+            console.log('Error devuelto: ' + response.error);
+        }
+    }).always(function () {
+        if (typeof $submit != 'undefined') {
+            if ($submit !== null) {
+
+                $submit.prop('disabled', false);
+                $submit.html('Enviar');
+            }
+        }
+    }).fail(function (jqXHR) {
+        Lobibox.notify('error', {
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
+        });
+        console.log('Error devuelto: ' + jqXHR.responseText);
+    });
 }
 
 function generarOrdenDespacho(data) {
@@ -116,10 +112,10 @@ function guardar_orden_despacho() {
     $submit.prop('disabled', 'true');
     $submit.html('Enviando...');
     let formData = new FormData(document.getElementById("form-orden_despacho_enviar"));
-    guardarOrdenDespacho(formData,$submit);
+    guardarOrdenDespacho(formData, $submit);
 }
 
-function guardarOrdenDespacho(formData,$submit) {
+function guardarOrdenDespacho(formData, $submit) {
     $.ajax({
         type: 'POST',
         url: 'guardarOrdenDespachoExterno',
@@ -147,7 +143,7 @@ function guardarOrdenDespacho(formData,$submit) {
             console.log($submit);
             $submit.prop('disabled', false);
             $submit.html('Enviar');
-        } 
+        }
     }).fail(function (jqXHR) {
         Lobibox.notify('error', {
             size: "mini",

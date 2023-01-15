@@ -19,6 +19,12 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
+                            <h5>Fecha de documento</h5>
+                            <input type="date" class="form-control" name="fecha_documento"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             <h5>Comentario</h5>
                             <textarea class="form-control" name="comentario"></textarea>
                         </div>

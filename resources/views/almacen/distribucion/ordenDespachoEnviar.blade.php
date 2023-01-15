@@ -14,6 +14,12 @@
                         <input type="hidden" name="envio">
                         <input type="hidden" name="codigo">
 
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5>Fecha de documento</h5>
+                                <input type="date" class="form-control" name="fecha_documento_ode"/>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <h5>Mensaje para la orden</h5>
                             <textarea class="form-control" rows="12" name="mensaje" style="height: 250px;"></textarea>

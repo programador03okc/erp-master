@@ -129,6 +129,7 @@ Gestión de Despachos
 @include('almacen.distribucion.ordenDespachoEstados')
 @include('almacen.distribucion.comentarios_oc_mgcp')
 @include('almacen.distribucion.ordenDespachoProgramar')
+@include('almacen.distribucion.ordenDespachoExternoFecha')
 @include('almacen.distribucion.priorizarDespachoExterno')
 @include('tesoreria.facturacion.archivos_oc_mgcp')
 @include('publico.ubigeoModal')

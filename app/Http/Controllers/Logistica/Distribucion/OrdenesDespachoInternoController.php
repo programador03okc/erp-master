@@ -184,7 +184,6 @@ class OrdenesDespachoInternoController extends Controller
 
     public function generarDespachoInterno(Request $request)
     {
-
         try {
             DB::beginTransaction();
             $idOd=0;
@@ -218,6 +217,7 @@ class OrdenesDespachoInternoController extends Controller
                         ->where('id_od', $req->id_od)
                         ->update([
                             'fecha_despacho' => $request->fecha_despacho,
+                            'fecha_documento' => $request->fecha_documento,
                             'comentario' => trim($request->comentario),
                         ]);
                     $arrayRspta = array(
@@ -225,7 +225,7 @@ class OrdenesDespachoInternoController extends Controller
                         'mensaje' => 'Se actualizó la Orden de Despacho Interno ' . $req->codigoDespachoInterno
                     );
                 } else {
-                    $codigo = OrdenDespacho::ODnextId($req->id_almacen, true, 0); //$this->ODnextId(date('Y-m-d'), $req->id_almacen, true);
+                    $codigo = OrdenDespacho::ODnextId($req->id_almacen, true, 0, $request->fecha_documento); //$this->ODnextId(date('Y-m-d'), $req->id_almacen, true);
                     $usuario = Auth::user()->id_usuario;
                     $fechaRegistro = new Carbon();
 
@@ -243,6 +243,7 @@ class OrdenesDespachoInternoController extends Controller
                                 'id_cliente' => $req->id_cliente,
                                 'codigo' => $codigo,
                                 'fecha_despacho' => $request->fecha_despacho,
+                                'fecha_documento' => $request->fecha_documento,
                                 'comentario' => trim($request->comentario),
                                 'nro_orden' => ($nro_orden + 1),
                                 'aplica_cambios' => true,
@@ -265,7 +266,7 @@ class OrdenesDespachoInternoController extends Controller
                             'fecha_registro' => $fechaRegistro
                         ]);
 
-                    $codTrans = $this->transformacion_nextId($fechaRegistro, $req->id_empresa);
+                    $codTrans = $this->transformacion_nextId($request->fecha_documento, $req->id_empresa);
 
                     $id_transformacion = DB::table('almacen.transformacion')
                         ->insertGetId(
@@ -275,6 +276,7 @@ class OrdenesDespachoInternoController extends Controller
                                 'id_od' => $id_od,
                                 'id_cc' => $req->id_cc,
                                 'id_moneda' => 1,
+                                'fecha_documento' => $request->fecha_documento,
                                 'id_almacen' => $req->id_almacen,
                                 'descripcion_sobrantes' => '', //$req->descripcion_sobrantes,
                                 'total_materias' => 0,

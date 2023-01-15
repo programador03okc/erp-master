@@ -17,12 +17,12 @@ class OrdenDespacho extends Model
     //     return $this->hasOne('App\Models\almacen\Requerimiento', 'id_requerimiento', 'id_requerimiento');
     // }
 
-    public static function ODnextId($id_almacen, $aplica_cambios, $id)
+    public static function ODnextId($id_almacen, $aplica_cambios, $id, $fecha)
     {
-        //$yyyy = date('Y', strtotime(new Carbon()));
-        //$yy = date('y', strtotime(new Carbon()));
+        $yyyy = date('Y', strtotime($fecha));
+        $yy = date('y', strtotime($fecha));
 
-        $cantidad = OrdenDespacho::whereYear('fecha_despacho', '=', Carbon::now()->format('Y'))
+        $cantidad = OrdenDespacho::whereYear('fecha_despacho', '=', $yyyy)
             ->where([
                 ['id_almacen', '=', $id_almacen],
                 ['aplica_cambios', '=', $aplica_cambios],
@@ -37,7 +37,7 @@ class OrdenDespacho extends Model
             ->first();
 
         $val = sprintf('%04d', $cantidad + 1);
-        $nextId = "OD" . ($aplica_cambios ? "I-" : "E-") . $almacen->codigo . '-' . Carbon::now()->format('y') . $val;
+        $nextId = "OD" . ($aplica_cambios ? "I-" : "E-") . $almacen->codigo . '-' . $yy . $val;
         return $nextId;
     }
 }

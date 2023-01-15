@@ -1,14 +1,16 @@
 function openFechaProgramada(id, od) {
     $('#modal-despacho_fecha_programada').modal('show');
     $('[name=fecha_despacho]').val(fecha_actual());
+    $('[name=fecha_documento]').val(fecha_actual());
     $('[name=req_id_requerimiento]').val(id);
     $('[name=req_id_od]').val(od);
 }
 
 function generarDespachoInterno() {
-    document.querySelectorAll("div[id='modal-despacho_fecha_programada'] button[id='btnDespachoObs']")[1].setAttribute("disabled",true);
+    document.querySelectorAll("div[id='modal-despacho_fecha_programada'] button[id='btnDespachoObs']")[1].setAttribute("disabled", true);
     var id = $('[name=req_id_requerimiento]').val();
     var fec = $('[name=fecha_despacho]').val();
+    var fdoc = $('[name=fecha_documento]').val();
     var com = $('[name=comentario]').val();
     console.log(com);
     $.ajax({
@@ -17,6 +19,7 @@ function generarDespachoInterno() {
         data: {
             'id_requerimiento': id,
             'fecha_despacho': fec,
+            'fecha_documento': fdoc,
             'comentario': com,
         },
         dataType: 'JSON',
@@ -48,7 +51,7 @@ function generarDespachoInterno() {
 function anularDespachoInterno() {
     var id = $('[name=req_id_od]').val();
     var req = $('[name=req_id_requerimiento]').val();
-    document.querySelectorAll("div[id='modal-despacho_fecha_programada'] button[id='btnDespachoObs']")[0].setAttribute("disabled",true);
+    document.querySelectorAll("div[id='modal-despacho_fecha_programada'] button[id='btnDespachoObs']")[0].setAttribute("disabled", true);
 
     $.ajax({
         type: 'POST',
