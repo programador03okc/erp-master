@@ -360,7 +360,7 @@ class DevolucionController extends Controller
             $tipo = '';
             $fecha = new Carbon();
 
-            $codigo = $this->devolucionNextId($fecha, $request->id_almacen, $request->id_tipo);
+            $codigo = $this->devolucionNextId($request->fecha_documento, $request->id_almacen, $request->id_tipo);
             $usuario = Auth::user();
             $id_cliente = null;
             $id_proveedor = null;
@@ -407,7 +407,7 @@ class DevolucionController extends Controller
                     'id_tipo' => $request->id_tipo,
                     'tipo' => (($request->id_tipo == 1 or $request->id_tipo == 2) ? 'cliente' : 'proveedor'),
                     'id_almacen' => $request->id_almacen,
-                    // 'id_moneda' => $request->id_moneda,
+                    'fecha_documento' => $request->fecha_documento,
                     'id_cliente' => $id_cliente,
                     'id_proveedor' => $id_proveedor,
                     'observacion' => $request->observacion,

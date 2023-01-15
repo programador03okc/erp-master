@@ -91,18 +91,29 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="col-sm-4 control-label">Fecha documento: </label>
+                                <div class="col-sm-8">
+                                    <input type="date" class="form-control edition limpiardevolucion" name="fecha_documento"/>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
+                                    <div class="col-md-4">
+                                        <label>Registrado por:</label>
+                                        <span id="nombre_registrado_por" class="limpiarTexto"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Fecha registro:</label>
+                                        <span id="fecha_registro" class="limpiarTexto"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
-                    <div class="col-md-4">
-                        <label>Registrado por:</label>
-                        <span id="nombre_registrado_por" class="limpiarTexto"></span>
-                    </div>
-                    <div class="col-md-4">
-                        <label>Fecha registro:</label>
-                        <span id="fecha_registro" class="limpiarTexto"></span>
-                    </div>
-                </div>
+                
                 <div class="row" style="padding-left: 10px;padding-right: 10px;margin-top: 0px;">
                     <div class="col-md-4">
                         <label>Revisado por:</label>

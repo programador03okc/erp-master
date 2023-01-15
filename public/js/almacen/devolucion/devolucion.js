@@ -50,6 +50,7 @@ $(".nueva-devolucion").on('click', function () {
     $("[name=modo]").val("edicion");
     $("[name=id_devolucion]").val("");
     $("[name=id_tipo]").val(1);
+    $("[name=fecha_documento]").val(fecha_actual());
     $('.salidas').show();
     $('.ingresos').hide();
 
@@ -111,6 +112,7 @@ $(".edit-devolucion").on('click', function () {
                     $(".edit-devolucion").hide();
                     $(".procesar-devolucion").hide();
                     $(".buscar-devolucion").hide();
+                    $("[name=fecha_documento]").attr('disabled', 'true');
 
                     $("[name=modo]").val("edicion");
                 } else {
@@ -290,7 +292,7 @@ function mostrarDevolucion(id) {
             $('[name=id_proveedor]').val(response.devolucion.id_proveedor);
             $('[name=id_cliente]').val(response.devolucion.id_cliente);
             $('[name=id_contribuyente]').val(response.devolucion.id_contribuyente);
-            // $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social);
+            $('[name=fecha_documento]').val(response.devolucion.fecha_documento);
             $('[name=contribuyente]').val(response.devolucion.proveedor_razon_social !== null ?
                 response.devolucion.proveedor_razon_social : response.devolucion.cliente_razon_social);
             $('[name=id_tipo]').val(response.devolucion.id_tipo);
