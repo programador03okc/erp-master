@@ -115,7 +115,7 @@ function generarModelo(data) {
                     <tr>
                         <th class="text-left" width="20%">PARTIDA</th>
                         <th class="text-left" width=""colspan="2">DESCRIPCION</th>
-                        <th class="text-right" width="90px"></th>
+                        <th class="text-center" width="110"></th>
                     </tr>
                 </thead>
                 <tbody data-table-presupuesto="ingreso">`+html+`</tbody>
