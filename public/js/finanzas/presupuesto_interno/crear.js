@@ -60,10 +60,10 @@ function generarModelo(data) {
 
 
 
-        html+='<tr key="'+input_key+'" data-nivel="'+array.length+'" data-partida="'+element.partida+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" >'
-            html+='<td data-td="partida">'
+        html+='<tr key="'+input_key+'" data-nivel="'+array.length+'" data-partida="'+element.partida+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" '+(array.length==2?'class="text-primary"':'')+' '+(array.length==4?'class="bg-danger"':'')+'>'
+            html+='<td data-td="partida" >'
                 html+='<input type="hidden" value="'+element.partida+'" name="'+data.tipo.toLowerCase()+'['+input_key+'][partida]" class="form-control input-sm">'
-
+                // text-primary
                 html+='<input type="hidden" value="'+element.id_modelo_presupuesto_interno+'" name="'+data.tipo.toLowerCase()+'['+input_key+'][id_hijo]" class="form-control input-sm">'
                 html+='<input type="hidden" value="'+element.id_padre+'" name="'+data.tipo.toLowerCase()+'['+input_key+'][id_padre]" class="form-control input-sm">'
                 html+='<span>'+element.partida+'</span></td>'
@@ -110,12 +110,12 @@ function generarModelo(data) {
             </div>
         </div>
         <div class="col-md-12 panel-collapse collapse in" id="collapse_`+data.tipo+`">
-            <table class="table table-hover" id="partida-`+data.tipo+`">
+            <table class="table small" id="partida-`+data.tipo+`">
                 <thead>
                     <tr>
                         <th class="text-left" width="20%">PARTIDA</th>
                         <th class="text-left" width=""colspan="2">DESCRIPCION</th>
-                        <th class="text-center"></th>
+                        <th class="text-right" width="90px"></th>
                     </tr>
                 </thead>
                 <tbody data-table-presupuesto="ingreso">`+html+`</tbody>
@@ -509,7 +509,7 @@ $(document).on('submit','[data-form="editar-partida"]',function (e) {
     }).then((result) => {
         if (result.isConfirmed) {
             if (result.value.status===200) {
-                console.log(result.value);
+
                 Swal.fire({
                     title: 'Éxito',
                     text: "Se guardo con éxito",
@@ -532,9 +532,9 @@ function sumarPartidas(data_id,data_id_padre,data_text_presupuesto) {
 
     $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (indexInArray, valueOfElement) {
         suma_partida = suma_partida + parseFloat(valueOfElement.children[2].children[0].value);
-        console.log(suma_partida);
+
     });
-    console.log(data_id_padre);
+
     data_td_key = $('tr[data-id="'+data_id_padre+'"]').attr('key');
 
     $('tr[data-id="'+data_id_padre+'"] td[data-td="monto"] [name="'+data_text_presupuesto+'['+data_td_key+'][monto]"]').val(suma_partida);

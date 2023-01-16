@@ -152,12 +152,12 @@ Presupuesto Interno
                             </div>
                         </div>
                         <div class="col-md-12 panel-collapse collapse in" id="collapse_ingresos">
-                            <table class="table table-hover" id="partida-ingresos">
+                            <table class="table small" id="partida-ingresos">
                                 <thead>
                                     <tr>
                                         <th class="text-left" width="20%">PARTIDA</th>
                                         <th class="text-left" width=""colspan="2">DESCRIPCION</th>
-                                        <th class="text-center"></th>
+                                        <th class="text-right" width="90px"></th>
                                     </tr>
                                 </thead>
                                 <tbody data-table-presupuesto="ingreso">
@@ -168,7 +168,11 @@ Presupuesto Interno
                                             $id_padre=rand();
                                             $input_key=rand();
                                         @endphp
-                                    <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" >
+                                    <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"
+
+                                        {{ (sizeof($array)===2?'class=text-primary':'') }}
+                                        {{ (sizeof($array)===4?'class=bg-danger':'') }}
+                                        >
                                         <td data-td="partida">
                                             <input type="hidden" value="{{$item->partida}}" name="ingresos[{{$input_key}}][partida]" class="form-control input-sm">
 
@@ -234,12 +238,12 @@ Presupuesto Interno
                                 </div>
                             </div>
                             <div class="col-md-12 panel-collapse collapse in" id="collapse_costos">
-                                <table class="table table-hover" id="partida-costos">
+                                <table class="table small" id="partida-costos">
                                     <thead>
                                         <tr>
                                             <th class="text-left" width="20%">PARTIDA</th>
                                             <th class="text-left" width=""colspan="2">DESCRIPCION</th>
-                                            <th class="text-center"></th>
+                                            <th class="text-right" width="90px"></th>
                                         </tr>
                                     </thead>
                                     <tbody data-table-presupuesto="ingreso">
@@ -250,7 +254,9 @@ Presupuesto Interno
                                             $id_padre=rand();
                                             $input_key=rand();
                                         @endphp
-                                    <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" >
+                                    <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"
+                                        {{ (sizeof($array)===2?'class=text-primary':'') }}
+                                        {{ (sizeof($array)===4?'class=bg-danger':'') }}>
                                         <td data-td="partida">
                                             <input type="hidden" value="{{$item->partida}}" name="costos[{{$input_key}}][partida]" class="form-control input-sm">
 
@@ -315,12 +321,12 @@ Presupuesto Interno
                             </div>
                         </div>
                         <div class="col-md-12 panel-collapse collapse in" id="collapse_gastos">
-                            <table class="table table-hover" id="partida-gastos">
+                            <table class="table small" id="partida-gastos">
                                 <thead>
                                     <tr>
                                         <th class="text-left" width="20%">PARTIDA</th>
                                         <th class="text-left" width=""colspan="2">DESCRIPCION</th>
-                                        <th class="text-center"></th>
+                                        <th class="text-right" width="90px"></th>
                                     </tr>
                                 </thead>
                                 <tbody data-table-presupuesto="ingreso">
@@ -331,7 +337,9 @@ Presupuesto Interno
                                         $id_padre=rand();
                                         $input_key=rand();
                                     @endphp
-                                <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" >
+                                <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"
+                                    {{ sizeof($array)===2?'class=text-primary':'' }}
+                                    {{ (sizeof($array)===4?'class=bg-danger':'') }}>
                                     <td data-td="partida">
                                         <input type="hidden" value="{{$item->partida}}" name="gastos[{{$input_key}}][partida]" class="form-control input-sm">
 
