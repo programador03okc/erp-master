@@ -2158,6 +2158,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('editar', 'Tesoreria\TipoCambioController@editar')->name('editar');
 			Route::post('guardar', 'Tesoreria\TipoCambioController@guardar')->name('guardar');
 		});
+
+		Route::group(['as' => 'cierre-apertura.', 'prefix' => 'cierre-apertura'], function () {
+			Route::get('index', 'Tesoreria\CierreAperturaController@index')->name('index');
+			Route::post('listar', 'Tesoreria\CierreAperturaController@listar')->name('listar');
+			// Route::post('editar', 'Tesoreria\TipoCambioController@editar')->name('editar');
+			// Route::post('guardar', 'Tesoreria\TipoCambioController@guardar')->name('guardar');
+		});
 	});
 
 	Route::group(['as' => 'migracion.', 'prefix' => 'migracion'], function () {
