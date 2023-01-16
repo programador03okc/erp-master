@@ -25,6 +25,7 @@ function mostrarIncidencia(id) {
             $("[name=id_incidencia]").val(response.incidencia.id_incidencia);
             $("#codigo_ficha").text(response.incidencia.codigo);
             $("[name=factura]").val(response.incidencia.factura);
+            $("[name=fecha_documento]").val(response.incidencia.fecha_documento);
             $("[name=id_responsable]").val(response.incidencia.id_responsable);
             $("[name=id_tipo_falla]").val(response.incidencia.id_tipo_falla);
             $("[name=id_tipo_servicio]").val(response.incidencia.id_tipo_servicio);
@@ -69,14 +70,14 @@ function mostrarIncidencia(id) {
             if (response.incidencia.horario_contacto) {
                 $(".horario_contacto").text(response.incidencia.horario_contacto);
                 $('[name="horario_contacto"]').val(response.incidencia.horario_contacto);
-            }else{
+            } else {
                 $(".horario_contacto").text(response.incidencia.horario);
                 $('[name="horario_contacto"]').val(response.incidencia.horario);
             }
             if (response.incidencia.email_contacto) {
                 $(".email_contacto").text(response.incidencia.email_contacto);
                 $('[name="email_contacto"]').val(response.incidencia.email_contacto);
-            }else{
+            } else {
                 $(".email_contacto").text(response.incidencia.email);
                 $('[name="email_contacto"]').val(response.incidencia.email);
             }
@@ -91,13 +92,13 @@ function mostrarIncidencia(id) {
             $('select[name="modelo"] option').prop("selected", false);
             $('select[name="producto"] option').prop("selected", false);
 
-            $('select[name="marca"] option[value="'+response.incidencia.marca+'"]').prop("selected", true);
-            $('select[name="modelo"] option[value="'+response.incidencia.modelo+'"]').prop("selected", true);
-            $('select[name="producto"] option[value="'+response.incidencia.producto+'"]').prop("selected", true);
+            $('select[name="marca"] option[value="' + response.incidencia.marca + '"]').prop("selected", true);
+            $('select[name="modelo"] option[value="' + response.incidencia.modelo + '"]').prop("selected", true);
+            $('select[name="producto"] option[value="' + response.incidencia.producto + '"]').prop("selected", true);
 
             if (response.incidencia.cdp) {
                 $("[name=cdp]").val(response.incidencia.cdp);
-            }else{
+            } else {
                 $("[name=cdp]").val(response.incidencia.codigo_oportunidad);
                 $(".codigo_oportunidad").text(response.incidencia.codigo_oportunidad);
             }
@@ -164,7 +165,7 @@ $(".nueva-incidencia").on('click', function () {
     $("[name=modo]").val("edicion");
     $("[name=id_incidencia]").val("");
     $("[name=fecha_reporte]").val(fecha_actual());
-
+    $("[name=fecha_documento]").val(fecha_actual());
 
 });
 
@@ -203,6 +204,8 @@ $(".edit-incidencia").on('click', function () {
         $(".buscar-incidencia").hide();
 
         $("[name=modo]").val("edicion");
+
+        $("[name=fecha_documento]").attr('disabled', 'true');
 
     } else {
         Lobibox.notify('warning', {
@@ -382,7 +385,7 @@ function abrirUbigeoModal(origen) {
     console.log(ubigeoOrigen);
     ubigeoModal();
 }
-$(document).on('change','select[name="marca"]',function () {
+$(document).on('change', 'select[name="marca"]', function () {
     console.log($(this).val());
     // $.ajax({
     //     type: 'POST',

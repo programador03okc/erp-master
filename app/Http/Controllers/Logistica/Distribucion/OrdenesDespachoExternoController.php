@@ -589,38 +589,38 @@ class OrdenesDespachoExternoController extends Controller
                     }
                 }
             }
-            // if ($request->envio == 'envio') {
+            if ($request->envio == 'envio') {
 
-            //     if ($request->id_oportunidad !== null) {
-            //         $cuadro = CuadroCosto::where('id_oportunidad', $request->id_oportunidad)->first();
-            //         $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
-            //     }
+                if ($request->id_oportunidad !== null) {
+                    $cuadro = CuadroCosto::where('id_oportunidad', $request->id_oportunidad)->first();
+                    $oportunidad = Oportunidad::find($cuadro->id_oportunidad);
+                }
 
-            //     $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento, $ordenDespacho);
+                $this->enviarOrdenDespacho($request, $oportunidad, $requerimiento, $ordenDespacho);
 
-            //     if ($request->archivos) {
-            //         foreach ($request->archivos as $key => $value) {
-            //             if ($value != null) {
-            //                 $fechaHoy = new Carbon();
-            //                 $sufijo = $fechaHoy->format('YmdHis');
-            //                 $file = $value->getClientOriginalName();
-            //                 $codigo = $request->codigo;
-            //                 $extension = pathinfo($file, PATHINFO_EXTENSION);
-            //                 $id_requerimiento = $request->id_requerimiento;
-            //                 $newNameFile = $codigo . '_' . $key . $id_requerimiento . $sufijo . '.' . $extension;
-            //                 Storage::disk('archivos')->put("logistica/despacho/" . $newNameFile, File::get($value));
+                if ($request->archivos) {
+                    foreach ($request->archivos as $key => $value) {
+                        if ($value != null) {
+                            $fechaHoy = new Carbon();
+                            $sufijo = $fechaHoy->format('YmdHis');
+                            $file = $value->getClientOriginalName();
+                            $codigo = $request->codigo;
+                            $extension = pathinfo($file, PATHINFO_EXTENSION);
+                            $id_requerimiento = $request->id_requerimiento;
+                            $newNameFile = $codigo . '_' . $key . $id_requerimiento . $sufijo . '.' . $extension;
+                            Storage::disk('archivos')->put("logistica/despacho/" . $newNameFile, File::get($value));
 
-            //                 $adjuntos_notificaciones = new AdjuntosDespacho();
-            //                 $adjuntos_notificaciones->archivo = $newNameFile;
-            //                 $adjuntos_notificaciones->estado = 1;
-            //                 $adjuntos_notificaciones->fecha_registro = date('Y-m-d H:i:s');
-            //                 $adjuntos_notificaciones->id_requerimiento = $request->id_requerimiento;
-            //                 $adjuntos_notificaciones->id_oportunidad = $request->id_oportunidad;
-            //                 $adjuntos_notificaciones->save();
-            //             }
-            //         }
-            //     }
-            // }
+                            $adjuntos_notificaciones = new AdjuntosDespacho();
+                            $adjuntos_notificaciones->archivo = $newNameFile;
+                            $adjuntos_notificaciones->estado = 1;
+                            $adjuntos_notificaciones->fecha_registro = date('Y-m-d H:i:s');
+                            $adjuntos_notificaciones->id_requerimiento = $request->id_requerimiento;
+                            $adjuntos_notificaciones->id_oportunidad = $request->id_oportunidad;
+                            $adjuntos_notificaciones->save();
+                        }
+                    }
+                }
+            }
 
             DB::commit();
             return response()->json(

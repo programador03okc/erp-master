@@ -201,10 +201,10 @@ class IncidenciaController extends Controller
             DB::beginTransaction();
             $mensaje = '';
             $tipo = '';
-            $yyyy = date('Y', strtotime("now"));
+            $yyyy = date('Y',  strtotime($request->fecha_documento));
 
             $incidencia = new Incidencia();
-            $incidencia->codigo = Incidencia::nuevoCodigoIncidencia($request->id_empresa, $yyyy);
+            $incidencia->codigo = Incidencia::nuevoCodigoIncidencia($request->id_empresa, $request->fecha_documento);
             $incidencia->fecha_reporte = $request->fecha_reporte;
             $incidencia->id_requerimiento = $request->id_requerimiento;
             $incidencia->id_responsable = $request->id_responsable;
@@ -212,6 +212,7 @@ class IncidenciaController extends Controller
             $incidencia->id_empresa = $request->id_empresa;
             $incidencia->sede_cliente = $request->sede_cliente;
             $incidencia->factura = $request->factura;
+            $incidencia->fecha_documento = $request->fecha_documento;
             $incidencia->id_contribuyente = $request->id_contribuyente;
             $incidencia->id_contacto = $request->id_contacto;
             $incidencia->usuario_final = $request->usuario_final;

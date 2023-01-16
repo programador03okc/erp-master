@@ -103,16 +103,22 @@ Registro de incidencia
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group" style="margin-top:5px">
+                                <label class="col-sm-4 control-label">Fecha documento</label>
+                                <div class="col-sm-8">
+                                    <input type="date" class="form-control edition limpiarIncidencia" name="fecha_documento"/>
+                                </div>
+                            </div>
                             <div class="form-group" style="margin-bottom:15px;">
                                 <label class="col-sm-4 control-label">Factura venta</label>
                                 <div class="col-sm-8">
                                     <input type="text" class="form-control edition limpiarIncidencia" name="factura" placeholder="000-0000"/>
                                 </div>
                             </div>
-                            <div class="form-group" style="margin-top:5px">
-                                <label class="col-sm-4 control-label">Fecha reporte</label>
+                            <div class="form-group" style="margin-bottom:0px;">
+                                <label class="col-sm-4 control-label">Fecha registro</label>
                                 <div class="col-sm-8">
-                                    <input type="date" class="form-control edition limpiarIncidencia" name="fecha_reporte"/>
+                                    <div class="form-control-static limpiarTexto fecha_registro"></div>
                                 </div>
                             </div>
                         </div>
@@ -148,13 +154,7 @@ Registro de incidencia
                                     <input type="text" class="form-control edition limpiarIncidencia" name="sede_cliente"/>
                                 </div>
                             </div>
-                            <div class="form-group" style="margin-bottom:0px;">
-                                <label class="col-sm-4 control-label">Fecha registro</label>
-                                <div class="col-sm-8">
-                                    <div class="form-control-static limpiarTexto fecha_registro"></div>
-                                </div>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0px;">
+                            <div class="form-group" style="margin-top:10px;">
                                 <label class="col-sm-4 control-label">Responsable</label>
                                 <div class="col-sm-8">
                                     <select class="form-control js-example-basic-single edition limpiarIncidencia"
@@ -164,6 +164,12 @@ Registro de incidencia
                                         <option value="{{$usuario->id_usuario}}">{{$usuario->nombre_corto}}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top:5px">
+                                <label class="col-sm-4 control-label">Fecha reporte</label>
+                                <div class="col-sm-8">
+                                    <input type="date" class="form-control edition limpiarIncidencia" name="fecha_reporte"/>
                                 </div>
                             </div>
                         </div>
