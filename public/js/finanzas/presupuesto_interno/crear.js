@@ -527,24 +527,9 @@ $(document).on('submit','[data-form="editar-partida"]',function (e) {
 });
 function sumarPartidas(data_id,data_id_padre,data_text_presupuesto) {
     var suma_partida = 0;
-    switch (data_text_presupuesto) {
-        case 'ingresos':
-            // $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (indexInArray, valueOfElement) {
-            //     suma_partida = suma_partida + parseFloat(valueOfElement.children[2].children[0].value);
-            // });
-        break;
 
-        case 'costos':
-
-        break;
-        case 'gastos':
-
-        break;
-    }
     $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (indexInArray, valueOfElement) {
         suma_partida = suma_partida + parseFloat(valueOfElement.children[2].children[0].value);
-        // console.log(parseFloat(valueOfElement.children[2].children[0].value));
-        console.log(valueOfElement.children[2]);
     });
 
     data_td_key = $('tr[data-id="'+data_id_padre+'"]').attr('key');
@@ -556,9 +541,23 @@ function sumarPartidas(data_id,data_id_padre,data_text_presupuesto) {
     data_id = $('tr[data-id="'+data_id_padre+'"]').attr('data-id')
     data_id_padre = $('tr[data-id="'+data_id_padre+'"]').attr('data-id-padre')
 
-    if (data_id_padre!=='0') {
+    while (data_id_padre!=='0') {
 
-        sumarPartidas(data_id,data_id_padre,data_text_presupuesto);
+        $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (indexInArray, valueOfElement) {
+            suma_partida = suma_partida + parseFloat(valueOfElement.children[2].children[0].value);
+        });
+
+        data_td_key = $('tr[data-id="'+data_id_padre+'"]').attr('key');
+
+        $('tr[data-id="'+data_id_padre+'"] td[data-td="monto"] [name="'+data_text_presupuesto+'['+data_td_key+'][monto]"]').val(suma_partida);
+        $('tr[data-id="'+data_id_padre+'"] td[data-td="monto"] span').text(suma_partida);
+
+
+        data_id = $('tr[data-id="'+data_id_padre+'"]').attr('data-id')
+        data_id_padre = $('tr[data-id="'+data_id_padre+'"]').attr('data-id-padre')
     }
-    // return suma_partida
+    // if (data_id_padre!=='0') {
+
+    //     sumarPartidas(data_id,data_id_padre,data_text_presupuesto);
+    // }
 }

@@ -152,65 +152,65 @@ Presupuesto Interno
                             </div>
                         </div>
                         <div class="col-md-12 panel-collapse collapse in" id="collapse_ingresos">
-        <table class="table table-hover" id="partida-ingresos">
-            <thead>
-                <tr>
-                    <th class="text-left" width="20%">PARTIDA</th>
-                    <th class="text-left" width=""colspan="2">DESCRIPCION</th>
-                    <th class="text-center"></th>
-                </tr>
-            </thead>
-            <tbody data-table-presupuesto="ingreso">
-                @foreach ($ingresos as $item)
-                    @php
-                        $array = explode(".", $item->partida);
-                        $id=rand();
-                        $id_padre=rand();
-                        $input_key=rand();
-                    @endphp
-                <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" >
-                    <td data-td="partida">
-                        <input type="hidden" value="{{$item->partida}}" name="ingresos[{{$input_key}}][partida]" class="form-control input-sm">
+                            <table class="table table-hover" id="partida-ingresos">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left" width="20%">PARTIDA</th>
+                                        <th class="text-left" width=""colspan="2">DESCRIPCION</th>
+                                        <th class="text-center"></th>
+                                    </tr>
+                                </thead>
+                                <tbody data-table-presupuesto="ingreso">
+                                    @foreach ($ingresos as $item)
+                                        @php
+                                            $array = explode(".", $item->partida);
+                                            $id=rand();
+                                            $id_padre=rand();
+                                            $input_key=rand();
+                                        @endphp
+                                    <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" >
+                                        <td data-td="partida">
+                                            <input type="hidden" value="{{$item->partida}}" name="ingresos[{{$input_key}}][partida]" class="form-control input-sm">
 
-                        <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="ingresos[{{$input_key}}][id_hijo]" class="form-control input-sm">
-                        <input type="hidden" value="{{$item->id_padre}}" name="ingresos[{{$input_key}}][id_padre]" class="form-control input-sm">
-                        <span>{{$item->partida}}</span></td>
+                                            <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="ingresos[{{$input_key}}][id_hijo]" class="form-control input-sm">
+                                            <input type="hidden" value="{{$item->id_padre}}" name="ingresos[{{$input_key}}][id_padre]" class="form-control input-sm">
+                                            <span>{{$item->partida}}</span></td>
 
-                        {{-- @if (sizeof($array)===3 || sizeof($array)===4) --}}
-                            <td data-td="descripcion">
-                                <input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="ingresos[{{$input_key}}][descripcion]" placeholder="{{$item->descripcion}}"><span>{{$item->descripcion}}</span>
-                            </td>
+                                            {{-- @if (sizeof($array)===3 || sizeof($array)===4) --}}
+                                                <td data-td="descripcion">
+                                                    <input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="ingresos[{{$input_key}}][descripcion]" placeholder="{{$item->descripcion}}"><span>{{$item->descripcion}}</span>
+                                                </td>
 
-                            <td data-td="monto">
-                                <input type="hidden" value="{{$item->monto}}" class="form-control input-sm" name="ingresos[{{$input_key}}][monto]" placeholder="Ingrese monto" step="0.01">
-                                <span> {{$item->monto}} </span>
-                            </td>
+                                                <td data-td="monto">
+                                                    <input type="hidden" value="{{$item->monto}}" class="form-control input-sm" name="ingresos[{{$input_key}}][monto]" placeholder="Ingrese monto" step="0.01">
+                                                    <span> {{$item->monto}} </span>
+                                                </td>
 
-                        {{-- @else
-                            <td colspan="2" data-td="descripcion"><input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="ingresos[{{$input_key}}][descripcion]"><span>{{$item->descripcion}}</span></td>
-                        @endif --}}
+                                            {{-- @else
+                                                <td colspan="2" data-td="descripcion"><input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="ingresos[{{$input_key}}][descripcion]"><span>{{$item->descripcion}}</span></td>
+                                            @endif --}}
 
-                    <td data-td="accion">
+                                        <td data-td="accion">
 
-                        @if (sizeof($array)!=4)
-                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
+                                            @if (sizeof($array)!=4)
+                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
 
-                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
-                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
-                        @endif
+                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
+                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                                            @endif
 
-                        @if (sizeof($array)==4)
-                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
-                        @endif
-                        @if (sizeof($array)!==1)
-                        <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" data-tipo-text="ingresos" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"><i class="fa fa-trash"></i></button>
-                        @endif
+                                            @if (sizeof($array)==4)
+                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                                            @endif
+                                            @if (sizeof($array)!==1)
+                                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" data-tipo-text="ingresos" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"><i class="fa fa-trash"></i></button>
+                                            @endif
 
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                         @endif
 

@@ -202,15 +202,15 @@ class PresupuestoInternoController extends Controller
         switch ($presupuesto_interno->id_tipo_presupuesto) {
             case '1':
 
-                $ingresos = PresupuestoInternoDetalle::where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
-                $costos   = PresupuestoInternoDetalle::where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
+                $ingresos = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
+                $costos   = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
                 $tipo_next=2;
 
                 break;
 
             case '3':
 
-                $gastos     = PresupuestoInternoDetalle::where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
+                $gastos     = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
 
                 break;
         }
