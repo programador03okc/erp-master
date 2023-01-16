@@ -172,7 +172,7 @@ Presupuesto Interno
                                         <td data-td="partida">
                                             <input type="hidden" value="{{$item->partida}}" name="ingresos[{{$input_key}}][partida]" class="form-control input-sm">
 
-                                            <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="ingresos[{{$input_key}}][id_hijo]" class="form-control input-sm">
+                                            <input type="hidden" value="{{$item->id_hijo}}" name="ingresos[{{$input_key}}][id_hijo]" class="form-control input-sm">
                                             <input type="hidden" value="{{$item->id_padre}}" name="ingresos[{{$input_key}}][id_padre]" class="form-control input-sm">
                                             <span>{{$item->partida}}</span></td>
 
@@ -254,7 +254,7 @@ Presupuesto Interno
                                         <td data-td="partida">
                                             <input type="hidden" value="{{$item->partida}}" name="costos[{{$input_key}}][partida]" class="form-control input-sm">
 
-                                            <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="costos[{{$input_key}}][id_hijo]" class="form-control input-sm">
+                                            <input type="hidden" value="{{$item->id_hijo}}" name="costos[{{$input_key}}][id_hijo]" class="form-control input-sm">
                                             <input type="hidden" value="{{$item->id_padre}}" name="costos[{{$input_key}}][id_padre]" class="form-control input-sm">
                                             <span>{{$item->partida}}</span></td>
 
@@ -335,7 +335,7 @@ Presupuesto Interno
                                     <td data-td="partida">
                                         <input type="hidden" value="{{$item->partida}}" name="gastos[{{$input_key}}][partida]" class="form-control input-sm">
 
-                                        <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="gastos[{{$input_key}}][id_hijo]" class="form-control input-sm">
+                                        <input type="hidden" value="{{$item->id_hijo}}" name="gastos[{{$input_key}}][id_hijo]" class="form-control input-sm">
                                         <input type="hidden" value="{{$item->id_padre}}" name="gastos[{{$input_key}}][id_padre]" class="form-control input-sm">
                                         <span>{{$item->partida}}</span></td>
 
