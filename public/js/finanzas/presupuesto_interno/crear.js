@@ -80,17 +80,18 @@ function generarModelo(data) {
 
                 }
                 if (array.length!=4) {
-                    html+='<button type="button" class="btn btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>'
+                    html+='<button type="button" class="btn btn-success btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>'
 
-                    html+='<button type="button" class="btn btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>'
-                    html+='<button type="button" class="btn btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>'
+                    html+='<button type="button" class="btn btn-primary btn-primary btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>'
+
+                    html+='<button type="button" class="btn btn-info btn-info btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>'
                 }
 
                 if (array.length==4) {
-                    html+='<button type="button" class="btn btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>'
+                    html+='<button type="button" class="btn btn-info btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>'
                 }
                 if (array.length!==1) {
-                    html+='<button type="button" class="btn btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-eliminar" data-nivel="'+array.length+'" title="Eliminar" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'"><i class="fa fa-trash"></i></button>'
+                    html+='<button type="button" class="btn btn-danger btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-eliminar" data-nivel="'+array.length+'" title="Eliminar" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'"><i class="fa fa-trash"></i></button>'
                 }
 
 
@@ -105,7 +106,7 @@ function generarModelo(data) {
                 <a class="btn btn-box-tool" data-toggle="collapse" data-parent="#accordion" href="#collapse_`+data.tipo+`">
                 <i class="fa fa-minus"></i></a>
 
-                <button type="button" class="btn btn-box-tool d-none" ><i class="fa fa-plus" title="Agregar presupuesto de costos" data-tipo="`+data.tipo_next+`" data-action="generar"></i></button>
+                <button type="button" class="btn btn-primary btn-box-tool d-none" ><i class="fa fa-plus" title="Agregar presupuesto de costos" data-tipo="`+data.tipo_next+`" data-action="generar"></i></button>
 
             </div>
         </div>
@@ -191,7 +192,7 @@ $(document).on('submit','[data-form="guardar-formulario"]',function (e) {
             partida_nueva = partida+'.'+zfill(next_partida,2);
 
         html= `
-            <tr key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-partida="`+partida_nueva+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`">
+            <tr key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-partida="`+partida_nueva+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" `+(nivel_hijo===2?'class="text-primary"':'')+`>
                 <td data-td="partida">
                     <input
                         type="hidden"
@@ -215,13 +216,13 @@ $(document).on('submit','[data-form="guardar-formulario"]',function (e) {
                 </td>
 
                 <td data-td="accion">
-                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-nuevo" data-select="titulo" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
+                    <button type="button" class="btn btn-success btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-nuevo" data-select="titulo" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
 
-                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-partida" data-select="partida" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-primary btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-partida" data-select="partida" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
 
-                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-nuevo" data-select="titulo" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                    <button type="button" class="btn btn-info btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-nuevo" data-select="titulo" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
 
-                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="btn btn-danger btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
         `;
@@ -403,7 +404,7 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
             partida_nueva = partida+'.'+zfill(next_partida,2);
 
         html= `
-            <tr key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-partida="`+partida_nueva+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`">
+            <tr key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-partida="`+partida_nueva+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" class="bg-danger">
                 <td data-td="partida">
                     <input
                         type="hidden"
@@ -425,9 +426,9 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
                 </td>
                 <td data-td="accion">
 
-                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-partida" data-select="partida" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                    <button type="button" class="btn btn-info btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-partida" data-select="partida" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
 
-                    <button type="button" class="btn btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="btn btn-danger btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
         `;

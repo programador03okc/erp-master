@@ -197,17 +197,17 @@ Presupuesto Interno
                                         <td data-td="accion">
 
                                             @if (sizeof($array)!=4)
-                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
+                                                <button type="button" class="btn btn-success btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
 
                                                 <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
-                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                                                <button type="button" class="btn btn-info btn-info btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
                                             @endif
 
                                             @if (sizeof($array)==4)
-                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                                                <button type="button" class="btn btn-info btn-info btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
                                             @endif
                                             @if (sizeof($array)!==1)
-                                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" data-tipo-text="ingresos" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"><i class="fa fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" data-tipo-text="ingresos" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"><i class="fa fa-trash"></i></button>
                                             @endif
 
                                         </td>
@@ -281,17 +281,17 @@ Presupuesto Interno
                                         <td data-td="accion">
 
                                             @if (sizeof($array)!=4)
-                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
+                                                <button type="button" class="btn btn-success btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
 
                                                 <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
-                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                                                <button type="button" class="btn btn-info btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
                                             @endif
 
                                             @if (sizeof($array)==4)
-                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                                                <button type="button" class="btn btn-info btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
                                             @endif
                                             @if (sizeof($array)!==1)
-                                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" data-tipo-text="costos" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"><i class="fa fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" data-tipo-text="costos" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"><i class="fa fa-trash"></i></button>
                                             @endif
 
                                         </td>
@@ -364,17 +364,17 @@ Presupuesto Interno
                                     <td data-td="accion">
 
                                         @if (sizeof($array)!=4)
-                                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
+                                            <button type="button" class="btn btn-success btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
 
                                             <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
-                                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                                            <button type="button" class="btn btn-info btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
                                         @endif
 
                                         @if (sizeof($array)==4)
-                                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
+                                            <button type="button" class="btn btn-info btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
                                         @endif
                                         @if (sizeof($array)!==1)
-                                        <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" data-tipo-text="gastos" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"><i class="fa fa-trash"></i></button>
+                                        <button type="button" class="btn btn-danger btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" data-tipo-text="gastos" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"><i class="fa fa-trash"></i></button>
                                         @endif
 
                                     </td>
@@ -404,11 +404,11 @@ Presupuesto Interno
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="id_descripcion_titulo">Descripcion</label>
-                        <input id="id_descripcion_titulo" class="form-control" type="text" name="descripcion" required>
+                        <input id="id_descripcion_titulo" class="form-control" type="text" name="descripcion" onkeyup="javascript:this.value=this.value.toUpperCase();"style="text-transform:uppercase;" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> Cerra</button>
+                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button>
                     <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
                 </div>
             </form>
@@ -429,15 +429,15 @@ Presupuesto Interno
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="id_descripcion_partida">Descripcion :</label>
-                        <input id="id_descripcion_partida" class="form-control" type="text" name="descripcion" required>
+                        <input id="id_descripcion_partida" class="form-control" type="text" name="descripcion" onkeyup="javascript:this.value=this.value.toUpperCase();"style="text-transform:uppercase;" required>
                     </div>
                     <div class="form-group">
                         <label for="id_monto_partida">Monto :</label>
-                        <input id="id_monto_partida" class="form-control" type="number" name="monto" step="0.01" required>
+                        <input id="id_monto_partida" class="form-control" type="text" name="monto" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> Cerra</button>
+                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button>
                     <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
                 </div>
             </form>
