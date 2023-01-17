@@ -199,7 +199,7 @@ Presupuesto Interno
                                             @if (sizeof($array)!=4)
                                                 <button type="button" class="btn btn-success btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
 
-                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
+                                                <button type="button" class="btn btn-primary btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
                                                 <button type="button" class="btn btn-info btn-info btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
                                             @endif
 
@@ -283,7 +283,7 @@ Presupuesto Interno
                                             @if (sizeof($array)!=4)
                                                 <button type="button" class="btn btn-success btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
 
-                                                <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
+                                                <button type="button" class="btn btn-primary btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
                                                 <button type="button" class="btn btn-info btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
                                             @endif
 
@@ -366,7 +366,7 @@ Presupuesto Interno
                                         @if (sizeof($array)!=4)
                                             <button type="button" class="btn btn-success btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>
 
-                                            <button type="button" class="btn btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
+                                            <button type="button" class="btn btn-primary btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>
                                             <button type="button" class="btn btn-info btn-xs" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>
                                         @endif
 
