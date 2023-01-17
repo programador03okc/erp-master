@@ -80,9 +80,9 @@ Presupuesto Interno
                                 <label for="id_area">Area :</label>
                                 <select class="form-control" name="id_area" id="id_area" required>
                                     <option value="">Seleccione...</option>
-                                    @foreach ($area as $item)
+                                    {{-- @foreach ($area as $item)
                                         <option value="{{ $item->id_area }}">{{ $item->descripcion }}</option>
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
                             </div>
                         </div>

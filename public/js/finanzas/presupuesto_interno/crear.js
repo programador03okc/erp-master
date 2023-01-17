@@ -483,6 +483,7 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
 
 
 });
+// editas la vista
 $(document).on('submit','[data-form="editar-partida"]',function (e) {
     e.preventDefault();
     var data = new FormData($(this)[0]);
@@ -571,4 +572,30 @@ function separator(numb) {
     str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return str.join(".");
 }
+$('[name="id_grupo"]').change(function (e) {
+    e.preventDefault();
+    var id_grupo = $(this).val(),
+        html='';
+    $.ajax({
+        type: 'GET',
+        url: 'get-area',
+        data: {id_grupo:id_grupo},
+        // processData: false,
+        // contentType: false,
+        dataType: 'JSON',
+        beforeSend: (data) => {
+            // console.log(data);
+        }
+    }).done(function(response) {
+        html ='<option value="" hidden>Seleccione...</option>';
+        $.each(response.data, function (index, element) {
+            html+='<option value="'+element.id_area+'" >'+element.descripcion+'</option>';
+        });
+        $('[name="id_area"]').html(html);
 
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});

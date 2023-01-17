@@ -32,7 +32,7 @@ Presupuesto Interno
         <div class="col-md-12">
             <div class="box box-danger">
                 <div class="box-header with-border">
-                    <h3 class="box-title">EDITAR PRESUPUESTO INTERNO</h3>
+                    <h3 class="box-title">EDITAR PRESUPUESTO INTERNO <span class="text-primary">{{$presupuesto_interno->codigo}}</span></h3>
                     <div class="box-tools pull-right">
                         {{-- <div class="btn-group" role="group"> --}}
                             <a href="{{ route('finanzas.presupuesto.presupuesto-interno.lista') }}" title="Volver a la lista de presupuesto interno"
@@ -136,11 +136,11 @@ Presupuesto Interno
     </div>
 
     <div class="row">
-        <div class="col-md-6 animate__animated {{($presupuesto_interno->id_tipo_presupuesto===1?'':'d-none')}}">
+        <div class="col-md-6 animate__animated {{($presupuesto_interno->id_tipo_presupuesto===1?'':'')}}">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-1">
-                        @if ($presupuesto_interno->id_tipo_presupuesto==1)
+                        {{-- @if ($presupuesto_interno->id_tipo_presupuesto==1) --}}
                         <div class="col-md-12">
                             <label>INGRESOS</label>
                             <div class="pull-right">
@@ -216,17 +216,17 @@ Presupuesto Interno
                                 </tbody>
                             </table>
                         </div>
-                        @endif
+                        {{-- @endif --}}
 
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 animate__animated {{($presupuesto_interno->id_tipo_presupuesto===1?'':'d-none')}}">
+        <div class="col-md-6 animate__animated {{($presupuesto_interno->id_tipo_presupuesto===1?'':'')}}">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-2">
-                        @if ($presupuesto_interno->id_tipo_presupuesto===1)
+                        {{-- @if ($presupuesto_interno->id_tipo_presupuesto===1) --}}
                             <div class="col-md-12">
                                 <label>COSTOS</label>
                                 <div class="pull-right">
@@ -300,16 +300,16 @@ Presupuesto Interno
                                     </tbody>
                                 </table>
                             </div>
-                        @endif
+                        {{-- @endif --}}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-md-offset-3 animate__animated {{($presupuesto_interno->id_tipo_presupuesto===3?'':'d-none')}}">
+        <div class="col-md-6 animate__animated {{($presupuesto_interno->id_tipo_presupuesto===3?'':'')}}">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-3">
-                        @if ($presupuesto_interno->id_tipo_presupuesto===3)
+                        {{-- @if ($presupuesto_interno->id_tipo_presupuesto===3) --}}
                         <div class="col-md-12">
                             <label>GASTOS</label>
                             <div class="pull-right">
@@ -383,7 +383,7 @@ Presupuesto Interno
                                 </tbody>
                             </table>
                         </div>
-                        @endif
+                        {{-- @endif --}}
                     </div>
                 </div>
             </div>

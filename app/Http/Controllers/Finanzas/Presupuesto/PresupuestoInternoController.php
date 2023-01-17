@@ -23,7 +23,7 @@ class PresupuestoInternoController extends Controller
     }
     public function listaPresupuestoInterno()
     {
-        $data = PresupuestoInterno::where('presupuesto_interno.estado',1)
+        $data = PresupuestoInterno::where('presupuesto_interno.estado','!=',7)
         ->select('presupuesto_interno.*', 'sis_grupo.descripcion')
         ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
             ;
@@ -190,32 +190,16 @@ class PresupuestoInternoController extends Controller
     public function editar(Request $request)
     {
         $grupos = Grupo::get();
-        $area = FinanzasArea::where('estado',1)->get();
+        $area = Area::where('estado',1)->get();
         $moneda = Moneda::where('estado',1)->get();
 
 
         $id = $request->id;
         $presupuesto_interno = PresupuestoInterno::where('id_presupuesto_interno',$id)->first();
-        $ingresos= array();
-        $costos= array();
-        $gastos = array();
-        switch ($presupuesto_interno->id_tipo_presupuesto) {
-            case '1':
+        $ingresos= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
+        $costos= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
+        $gastos = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
 
-                $ingresos = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
-                $costos   = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
-                $tipo_next=2;
-
-                break;
-
-            case '3':
-
-                $gastos     = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
-
-                break;
-        }
-
-        // $presupuesto_interno_detalle = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->orderBy('partida')->get();
         return view('finanzas.presupuesto_interno.editar', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos'));
     }
     public function actualizar(Request $request)
@@ -234,11 +218,15 @@ class PresupuestoInternoController extends Controller
         $presupuesto_interno->id_tipo_presupuesto   = $request->id_tipo_presupuesto;
         $presupuesto_interno->save();
         // return $request->id_tipo_presupuesto;exit;
-        PresupuestoInternoDetalle::where('estado', 1)
-        ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
-        ->update(['estado' => 7]);
+        // PresupuestoInternoDetalle::where('estado', 1)
+        // ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
+        // ->update(['estado' => 7]);
         switch ($request->id_tipo_presupuesto) {
             case '1':
+                PresupuestoInternoDetalle::where('estado', 1)
+                ->where('id_tipo_presupuesto', 1)
+                ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
+                ->update(['estado' => 7]);
                 foreach ($request->ingresos as $key => $value) {
                     $ingresos = new PresupuestoInternoDetalle();
                     $ingresos->partida                  = $value['partida'];
@@ -255,7 +243,10 @@ class PresupuestoInternoController extends Controller
                     $ingresos->estado                   = 1;
                     $ingresos->save();
                 }
-
+                PresupuestoInternoDetalle::where('estado', 1)
+                ->where('id_tipo_presupuesto', 2)
+                ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
+                ->update(['estado' => 7]);
                 foreach ($request->costos as $key => $value) {
                     $costos = new PresupuestoInternoDetalle();
                     $costos->partida                  = $value['partida'];
@@ -275,6 +266,10 @@ class PresupuestoInternoController extends Controller
                 break;
 
             case '3':
+                PresupuestoInternoDetalle::where('estado', 1)
+                ->where('id_tipo_presupuesto', 3)
+                ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
+                ->update(['estado' => 7]);
                 foreach ($request->gastos as $key => $value) {
                     $gastos = new PresupuestoInternoDetalle();
                     $gastos->partida                  = $value['partida'];
@@ -308,6 +303,48 @@ class PresupuestoInternoController extends Controller
             "success"=>true,
             "status"=>200,
             "data"=>''
+        ]);
+    }
+    public function getArea(Request $request)
+    {
+        $area = Area::where('estado',1)->where('id_grupo',$request->id_grupo)->get();
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$area
+        ]);
+    }
+    public function getPresupuestoInterno(Request $request)
+    {
+        $data = PresupuestoInterno::find($request->id);
+        $array_presupuesto = [];
+        $array_presupuesto['ingresos']=[];
+        $array_presupuesto['costos']=[];
+        $array_presupuesto['gastos']=[];
+        $ingresos = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
+        $costos   = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
+
+        $array_presupuesto['ingresos']=$ingresos;
+        $array_presupuesto['costos']=$costos;
+
+        $gastos     = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
+        $array_presupuesto['gastos']=$gastos;
+
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "data"=>$data,
+            "presupuesto"=>$array_presupuesto
+        ]);
+    }
+    public function aprobar(Request $request)
+    {
+        $presupuesto_interno = PresupuestoInterno::find($request->id);
+        $presupuesto_interno->estado = 2;
+        $presupuesto_interno->save();
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
         ]);
     }
 }

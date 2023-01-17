@@ -47,6 +47,27 @@ Lista de Presupuestos Interno
             </div>
         </div>
     </div>
+    {{-- // ver el presupuesto  --}}
+    <div id="modal-presupuesto" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="modal-title" id="my-modal-title">Presupuesto Interno <span class="codigo text-primary"></span> </h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row" data-presupuesto="table">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
