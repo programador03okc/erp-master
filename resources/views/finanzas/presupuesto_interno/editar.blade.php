@@ -433,7 +433,7 @@ Presupuesto Interno
                     </div>
                     <div class="form-group">
                         <label for="id_monto_partida">Monto :</label>
-                        <input id="id_monto_partida" class="form-control" type="text" name="monto" required>
+                        <input id="id_monto_partida" class="form-control" type="number" name="monto" step="0.01" required>
                     </div>
                 </div>
                 <div class="modal-footer">

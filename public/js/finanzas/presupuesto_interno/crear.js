@@ -323,7 +323,7 @@ $(document).on('submit','[data-form="guardar-partida"]',function (e) {
     }).then((result) => {
         if (result.isConfirmed) {
             if (result.value.status===200) {
-                console.log(result.value);
+
                 Swal.fire({
                     title: 'Éxito',
                     text: "Se guardo con éxito",
@@ -374,6 +374,13 @@ $(document).on('click','[data-action="click-partida"]',function () {
     if (data_tipo==='editar') {
         descripcion_editar = $(this).closest('tr[key="'+key+'"]').find('td[data-td="descripcion"] [name="'+data_text_presupuesto+'['+key+'][descripcion]"]').val();
         monto_editar = $(this).closest('tr[key="'+key+'"]').find('td[data-td="monto"] [name="'+data_text_presupuesto+'['+key+'][monto]"]').val();
+        // monto_editar = parseFloat(monto_editar).toFixed(2);
+        var array_aplit = monto_editar.split(',');
+        monto_editar='';
+
+        for (let index = 0; index < array_aplit.length; index++) {
+            monto_editar = monto_editar + array_aplit[index];
+        }
         $('#modal-partida [data-form="guardar-partida-modal"] [name="descripcion"]').val(descripcion_editar);
         $('#modal-partida [data-form="guardar-partida-modal"] [name="monto"]').val(monto_editar);
     }
@@ -396,6 +403,8 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
         data_tipo = $(this).find('div.modal-footer').find('button[type="submit"]').attr('data-tipo'),
         descripcion_partida = $(this).find('[name="descripcion"]').val(),
         monto_partida = $(this).find('[name="monto"]').val();
+        monto_partida = parseFloat(monto_partida).toFixed(2);
+        monto_partida = separator(monto_partida);
 
     if (data_tipo==='nuevo') {
         var optener_partida_hijos = $('tr[data-id-padre="'+data_id+'"]:last').attr('data-partida'),
@@ -532,10 +541,17 @@ function sumarPartidas(data_id,data_id_padre,data_text_presupuesto) {
     var suma_partida = 0;
 
     $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (indexInArray, valueOfElement) {
-        suma_partida = suma_partida + parseFloat(valueOfElement.children[2].children[0].value);
+        var array_aplit = valueOfElement.children[2].children[0].value.split(','),
+            monto_editar='';
+
+        for (let index = 0; index < array_aplit.length; index++) {
+            monto_editar = monto_editar + array_aplit[index];
+        }
+        suma_partida = parseFloat(suma_partida) + parseFloat(monto_editar);
 
     });
-
+    suma_partida = suma_partida.toFixed(2);
+    suma_partida = separator(suma_partida);
     data_td_key = $('tr[data-id="'+data_id_padre+'"]').attr('key');
 
     $('tr[data-id="'+data_id_padre+'"] td[data-td="monto"] [name="'+data_text_presupuesto+'['+data_td_key+'][monto]"]').val(suma_partida);
@@ -550,3 +566,9 @@ function sumarPartidas(data_id,data_id_padre,data_text_presupuesto) {
         sumarPartidas(data_id,data_id_padre,data_text_presupuesto);
     }
 }
+function separator(numb) {
+    var str = numb.toString().split(".");
+    str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return str.join(".");
+}
+
