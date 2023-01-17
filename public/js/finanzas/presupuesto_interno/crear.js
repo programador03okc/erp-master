@@ -46,6 +46,8 @@ function generarModelo(data) {
 
         $('[data-select="presupuesto-1"]').find('div').remove();
         $('[data-select="presupuesto-2"]').find('div').remove();
+
+        $('[data-select="presupuesto-3"]').closest('div.col-md-6').addClass('col-md-offset-3');
     }else{
         $('[data-select="presupuesto-3"]').closest('div.col-md-6').addClass('d-none');
         $('[data-select="presupuesto-3"]').find('div').remove();
