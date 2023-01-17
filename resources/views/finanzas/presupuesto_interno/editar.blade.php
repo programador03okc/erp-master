@@ -136,7 +136,7 @@ Presupuesto Interno
     </div>
 
     <div class="row">
-        <div class="col-md-6 animate__animated {{($presupuesto_interno->id_tipo_presupuesto===1?'':'')}}">
+        <div class="col-md-6 animate__animated {{(sizeof($ingresos)>0?'':'d-none')}}">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-1">
@@ -222,7 +222,7 @@ Presupuesto Interno
                 </div>
             </div>
         </div>
-        <div class="col-md-6 animate__animated {{($presupuesto_interno->id_tipo_presupuesto===1?'':'')}}">
+        <div class="col-md-6 animate__animated {{(sizeof($costos)>0?'':'d-none')}}">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-2">
@@ -305,7 +305,7 @@ Presupuesto Interno
                 </div>
             </div>
         </div>
-        <div class="col-md-6 animate__animated {{($presupuesto_interno->id_tipo_presupuesto===3?'':'')}}">
+        <div class="col-md-6 animate__animated {{(sizeof($gastos)>0?'':'d-none')}}">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-3">
