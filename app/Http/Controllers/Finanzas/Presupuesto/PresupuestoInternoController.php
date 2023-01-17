@@ -129,6 +129,7 @@ class PresupuestoInternoController extends Controller
                         $ingresos->id_area                  = $request->id_area;
                         $ingresos->fecha_registro           = date('Y-m-d H:i:s');
                         $ingresos->estado                   = 1;
+                        $ingresos->mes                      = $request->mes;
                         $ingresos->save();
                     }
 
@@ -145,6 +146,7 @@ class PresupuestoInternoController extends Controller
                         $costos->id_grupo                 = $request->id_grupo;
                         $costos->id_area                  = $request->id_area;
                         $costos->fecha_registro           = date('Y-m-d H:i:s');
+                        $costos->mes                      = $request->mes;
                         $costos->estado                   = 1;
                         $costos->save();
                     }
@@ -165,6 +167,7 @@ class PresupuestoInternoController extends Controller
                         $gastos->id_area                  = $request->id_area;
                         $gastos->fecha_registro           = date('Y-m-d H:i:s');
                         $gastos->estado                   = 1;
+                        $gastos->mes                      = $request->mes;
                         $gastos->save();
                     }
                     break;
@@ -221,6 +224,7 @@ class PresupuestoInternoController extends Controller
         // PresupuestoInternoDetalle::where('estado', 1)
         // ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
         // ->update(['estado' => 7]);
+        // $presupuesto_interno = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id_presupuesto_interno)->where('mes',$request->mes)->where('id_tipo_presupuesto',1)->first();
         switch ($request->id_tipo_presupuesto) {
             case '1':
                 PresupuestoInternoDetalle::where('estado', 1)

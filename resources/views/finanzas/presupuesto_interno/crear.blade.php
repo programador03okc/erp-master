@@ -132,21 +132,21 @@ Presupuesto Interno
     </div>
 
     <div class="row">
-        <div class="col-md-6 animate__animated d-none">
+        <div class="col-md-12 animate__animated d-none">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-1"></div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 animate__animated d-none">
+        <div class="col-md-12 animate__animated d-none">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-2"></div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-md-offset-3 animate__animated d-none">
+        <div class="col-md-12 col-md-offset-3 animate__animated d-none">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-3"></div>
@@ -196,10 +196,10 @@ Presupuesto Interno
                         <label for="id_descripcion_partida">Descripcion :</label>
                         <input id="id_descripcion_partida" class="form-control" type="text" name="descripcion" onkeyup="javascript:this.value=this.value.toUpperCase();"style="text-transform:uppercase;" required>
                     </div>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label for="id_monto_partida">Monto :</label>
                         <input id="id_monto_partida" class="form-control" type="number" name="monto" step="0.01" required>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button>
