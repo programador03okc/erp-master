@@ -133,7 +133,7 @@ class VentasInternasController extends Controller
                         'observacion' => 'Creado de forma automática por venta interna',
                         'id_moneda' => 1,
                         'id_empresa' => $doc_ven->id_empresa,
-                        'id_periodo' => 3,
+                        'id_periodo' => 5, // ! actualizar
                         'id_sede' => $detalle->first()->id_sede,
                         'id_cliente' => $doc_ven->id_cliente,
                         'tipo_cliente' => 2,
@@ -149,7 +149,7 @@ class VentasInternasController extends Controller
                     'id_requerimiento'
                 );
 
-                $codigo = Requerimiento::crearCodigo(7, 1, $id_requerimiento);
+                $codigo = Requerimiento::crearCodigo(7, 1, $id_requerimiento,5); // ! actualiar periodo 
 
                 DB::table('almacen.alm_req')
                     ->where('id_requerimiento', $id_requerimiento)
