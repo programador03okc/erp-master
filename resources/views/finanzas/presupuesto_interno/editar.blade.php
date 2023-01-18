@@ -449,36 +449,31 @@ Presupuesto Interno
                                                     <span>{{$item->diciembre}}</span>
                                                     @endif
                                                 </td>
-
-
-
-
-
                                         <td data-td="accion">
-                                            <div class="btn-group">
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            <div class="btn-group ">
+                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                                     <span class="caret"></span>
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                    @if ($item->registro==='1')
-                                                        <input type="hidden" name="ingresos[{{$input_key}}][registro]" value="1">
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                @if ($item->registro==='1')
+                                                    <input type="hidden" name="ingresos[{{$input_key}}][registro]" value="1">
+                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>
 
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>
+                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>
 
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar" data-tipo="editar">Editar</a></li>
-                                                    @endif
-                                                    @if ($item->registro==='2')
-                                                        <input type="hidden" name="ingresos[{{$input_key}}][registro]" value="2">
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar partida" data-tipo="editar">Editar partida</a></li>
-                                                    @endif
+                                                    <li>
+                                                        <a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar" data-tipo="editar">Editar</a>
+                                                    </li>
+                                                @endif
+                                                @if ($item->registro==='2')
+                                                    <input type="hidden" name="ingresos[{{$input_key}}][registro]" value="2">
+                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar partida" data-tipo="editar">Editar partida</a></li>
+                                                @endif
 
-                                                    @if (sizeof($array)!==1) {
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos">Eliminar</a></li>
-                                                    @endif
-                                                    </ul>
-                                                </div>
+                                                @if (sizeof($array)!==1)
+                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos">Eliminar</a></li>
+                                                @endif
+                                                </ul>
                                             </div>
                                         </td>
                                     </tr>
@@ -802,29 +797,27 @@ Presupuesto Interno
 
                                         <td data-td="accion">
                                             <div class="btn-group">
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                    <span class="caret"></span>
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                    @if ($item->registro==='1')
-                                                        <input type="hidden" name="costos[{{$input_key}}][registro]" value="1">
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>
+                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu ">
+                                                @if ($item->registro==='1')
+                                                    <input type="hidden" name="costos[{{$input_key}}][registro]" value="1">
+                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>
 
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>
+                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>
 
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Editar" data-tipo="editar">Editar</a></li>
-                                                    @endif
-                                                    @if ($item->registro==='2')
-                                                        <input type="hidden" name="costos[{{$input_key}}][registro]" value="2">
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Editar partida" data-tipo="editar">Editar partida</a></li>
-                                                    @endif
+                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Editar" data-tipo="editar">Editar</a></li>
+                                                @endif
+                                                @if ($item->registro==='2')
+                                                    <input type="hidden" name="costos[{{$input_key}}][registro]" value="2">
+                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos" title="Editar partida" data-tipo="editar">Editar partida</a></li>
+                                                @endif
 
-                                                    @if (sizeof($array)!==1) {
-                                                        <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos">Eliminar</a></li>
-                                                    @endif
-                                                    </ul>
-                                                </div>
+                                                @if (sizeof($array)!==1) {
+                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="costos">Eliminar</a></li>
+                                                @endif
+                                                </ul>
                                             </div>
 
 
@@ -1149,29 +1142,27 @@ Presupuesto Interno
 
                                     <td data-td="accion">
                                         <div class="btn-group">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                <span class="caret"></span>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                @if ($item->registro==='1')
-                                                    <input type="hidden" name="gastos[{{$input_key}}][registro]" value="1">
-                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>
+                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu ">
+                                            @if ($item->registro==='1')
+                                                <input type="hidden" name="gastos[{{$input_key}}][registro]" value="1">
+                                                <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>
 
-                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>
+                                                <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>
 
-                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Editar" data-tipo="editar">Editar</a></li>
-                                                @endif
-                                                @if ($item->registro==='2')
-                                                    <input type="hidden" name="gastos[{{$input_key}}][registro]" value="2">
-                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Editar partida" data-tipo="editar">Editar partida</a></li>
-                                                @endif
+                                                <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Editar" data-tipo="editar">Editar</a></li>
+                                            @endif
+                                            @if ($item->registro==='2')
+                                                <input type="hidden" name="gastos[{{$input_key}}][registro]" value="2">
+                                                <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Editar partida" data-tipo="editar">Editar partida</a></li>
+                                            @endif
 
-                                                @if (sizeof($array)!==1) {
-                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos">Eliminar</a></li>
-                                                @endif
-                                                </ul>
-                                            </div>
+                                            @if (sizeof($array)!==1) {
+                                                <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos">Eliminar</a></li>
+                                            @endif
+                                            </ul>
                                         </div>
 
                                     </td>
