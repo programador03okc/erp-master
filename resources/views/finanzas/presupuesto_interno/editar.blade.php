@@ -129,7 +129,7 @@ Presupuesto Interno
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="descripcion">Descripcion : </label>
-                                <textarea id="descripcion" class="form-control" name="descripcion" rows="3" >{{$presupuesto_interno->descripcion}}</textarea>
+                                <textarea id="descripcion" class="form-control" name="descripcion" rows="3" required>{{$presupuesto_interno->descripcion}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -137,6 +137,7 @@ Presupuesto Interno
             </div>
         </div>
     </div>
+
 
     <div class="row">
         <div class="col-md-12 animate__animated {{(sizeof($ingresos)>0?'':'d-none')}}">
@@ -195,6 +196,7 @@ Presupuesto Interno
                                         {{ ($item->registro==='2'?'class=bg-danger':'') }}
                                         >
                                         <td data-td="partida">
+
                                             <input type="hidden" value="{{$item->partida}}" name="ingresos[{{$input_key}}][partida]" class="form-control input-sm">
 
                                             <input type="hidden" value="{{$item->id_hijo}}" name="ingresos[{{$input_key}}][id_hijo]" class="form-control input-sm">
@@ -451,6 +453,9 @@ Presupuesto Interno
                                                 </td>
                                         <td data-td="accion">
                                             <div class="btn-group ">
+                                                {{-- <button type="button" class="btn btn-box-tool" data-action="colapse-table" key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}">
+                                                    <i class="fa fa-minus"></i>
+                                                </button> --}}
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                                     <span class="caret"></span>
                                                 </button>

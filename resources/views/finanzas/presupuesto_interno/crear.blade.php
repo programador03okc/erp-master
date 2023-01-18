@@ -124,7 +124,7 @@ Presupuesto Interno
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="descripcion">Descripcion : </label>
-                                <textarea id="descripcion" class="form-control" name="descripcion" rows="3" ></textarea>
+                                <textarea id="descripcion" class="form-control" name="descripcion" rows="3" required></textarea>
                             </div>
                         </div>
                     </div>
