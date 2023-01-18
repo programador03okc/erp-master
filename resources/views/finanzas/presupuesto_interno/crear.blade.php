@@ -41,7 +41,7 @@ Presupuesto Interno
                                 Volver
                             </a>
                             <button title="Guardar" type="submit"
-                                class="btn btn-sm btn-success">
+                                class="btn btn-sm btn-success" disabled>
                                 <i class="fa fa-save"></i>
                                 Guardar
                             </button>
@@ -65,7 +65,9 @@ Presupuesto Interno
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <input type="hidden" name="id_tipo_presupuesto"value="">
+                                {{-- <input type="hidden" name="id_tipo_presupuesto"value=""> --}}
+                                <input type="hidden" name="tipo_ingresos"value="">
+                                <input type="hidden" name="tipo_gastos"value="">
                                 <label for="id_grupo">Grupo :</label>
                                 <select class="form-control" name="id_grupo" id="id_grupo" required>
                                     <option value="">Seleccione...</option>
@@ -97,7 +99,7 @@ Presupuesto Interno
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        {{-- <div class="col-md-3">
                             <div class="form-group">
                                 <label for="mes">Meses :</label>
                                 <select id="mes" name="mes" class="form-control" required>
@@ -116,7 +118,7 @@ Presupuesto Interno
                                     <option value="Diciembre">Diciembre</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -146,7 +148,7 @@ Presupuesto Interno
                 </div>
             </div>
         </div>
-        <div class="col-md-12 col-md-offset-3 animate__animated d-none">
+        <div class="col-md-12 animate__animated d-none">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-3"></div>

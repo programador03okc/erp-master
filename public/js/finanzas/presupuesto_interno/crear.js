@@ -1,10 +1,18 @@
+var meses_anual = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','setiembre','octubre','noviembre','diciembre'];
 $(document).ready(function () {
 
 });
 var array_tipo=[];
 $(document).on('click','[data-action="generar"]',function () {
     var tipo = $(this).attr('data-tipo');
-    $('[name="id_tipo_presupuesto"]').val(tipo);
+    // $('[name="id_tipo_presupuesto"]').val(tipo);
+    if (tipo === '1') {
+        $('[name="tipo_ingresos"]').val(tipo);
+    }
+    if (tipo === '3') {
+        $('[name="tipo_gastos"]').val(tipo);
+    }
+    $(this).closest('.box-tools.pull-right').find('button[type="submit"]').removeAttr('disabled');
     if (tipo !== '0') {
         getModelo(tipo);
     }
@@ -40,19 +48,6 @@ function generarModelo(data) {
 
     $('[data-select="presupuesto-'+data.id_tipo+'"]').closest('.box.box-success').closest('div.col-md-12').removeClass('animate__animated animate__fadeIn');
 
-    if (data.id_tipo == '3') {
-        $('[data-select="presupuesto-1"]').closest('div.col-md-12').addClass('d-none');
-        $('[data-select="presupuesto-2"]').closest('div.col-md-12').addClass('d-none');
-
-        $('[data-select="presupuesto-1"]').find('div').remove();
-        $('[data-select="presupuesto-2"]').find('div').remove();
-
-        $('[data-select="presupuesto-3"]').closest('div.col-md-12').addClass('col-md-offset-3');
-    }else{
-        $('[data-select="presupuesto-3"]').closest('div.col-md-12').addClass('d-none');
-        $('[data-select="presupuesto-3"]').find('div').remove();
-    }
-
     $.each(data.presupuesto, function (index, element) {
         var array = element.partida.split('.'),
             descripcion ='',
@@ -74,7 +69,7 @@ function generarModelo(data) {
                 html+='<td data-td="descripcion"><input type="hidden" value="'+element.descripcion+'" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][descripcion]" placeholder="'+element.descripcion+'"><span>'+element.descripcion+'</span></td>'
 
             // inputs del mes
-                html+='<td data-td="enero"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][enero]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="enero" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="enero"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][enero]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="enero" '+(array.length===4?'data-input="partida"':'')+' >'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
 
                 html+='<td data-td="febrero"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][febrero]" placeholder="Ingrese monto"  key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="febrero" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
 
@@ -108,14 +103,16 @@ function generarModelo(data) {
                     html+='</button>'
                     html+='<ul class="dropdown-menu">'
                     if (array.length!=4) {
+                        html+='<input type="hidden" name="'+data.tipo.toLowerCase()+'['+input_key+'][registro]" value="1">'
                         html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>'
 
                         html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>'
 
-                        html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar" data-tipo="editar">Editark</a></li>'
+                        html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar" data-tipo="editar">Editar</a></li>'
                     }
 
                     if (array.length==4) {
+                        html+='<input type="hidden" name="'+data.tipo.toLowerCase()+'['+input_key+'][registro]" value="2">'
                         html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar partida" data-tipo="editar">Editar partida</a></li>'
                     }
                     if (array.length!==1) {
@@ -124,25 +121,6 @@ function generarModelo(data) {
                     html+='</ul>'
                 html+='</div>'
             html+='</div>'
-                if (array.length==3) {
-
-                }
-                if (array.length!=4) {
-                    // html+='<button type="button" class="btn btn-success btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar titulo" data-tipo="nuevo"><i class="fa fa-level-down-alt"></i></button>'
-
-                    // html+='<button type="button" class="btn btn-primary btn-primary btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar partida" data-tipo="nuevo"><i class="fa fa-plus"></i></button>'
-
-                    // html+='<button type="button" class="btn btn-info btn-info btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar" data-tipo="editar"><i class="fa fa-edit"></i></button>'
-                }
-
-                if (array.length==4) {
-                    // html+='<button type="button" class="btn btn-info btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>'
-                }
-                if (array.length!==1) {
-                    // html+='<button type="button" class="btn btn-danger btn-xs" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-eliminar" data-nivel="'+array.length+'" title="Eliminar" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'"><i class="fa fa-trash"></i></button>'
-                }
-
-
             html+='</td>'
         html+='</tr>';
     });
@@ -153,6 +131,9 @@ function generarModelo(data) {
             <div class="pull-right">
                 <a class="btn btn-box-tool" data-toggle="collapse" data-parent="#accordion" href="#collapse_`+data.tipo+`">
                 <i class="fa fa-minus"></i></a>
+
+                <button type="button" class="btn btn-box-tool"  title="" data-tipo="`+data.id_tipo+`" data-action="remove">
+                <i class="fa fa-times"></i></button>
 
                 <button type="button" class="btn btn-primary btn-box-tool d-none" ><i class="fa fa-plus" title="Agregar presupuesto de costos" data-tipo="`+data.tipo_next+`" data-action="generar"></i></button>
 
@@ -176,7 +157,7 @@ function generarModelo(data) {
                         <th class="text-left" width=""colspan="">OCT</th>
                         <th class="text-left" width=""colspan="">NOV</th>
                         <th class="text-left" width=""colspan="">DIC</th>
-                        <th class="text-center" width="110"></th>
+                        <th class="text-center" width="10"></th>
                     </tr>
                 </thead>
                 <tbody data-table-presupuesto="ingreso">`+html+`</tbody>
@@ -328,6 +309,7 @@ $(document).on('submit','[data-form="guardar-formulario"]',function (e) {
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
+                                <input type="hidden" name="`+data_text_presupuesto+`[`+data_id_random+`][registro]" value="1">
                                 <li><a href="#" class="" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-nuevo" data-select="titulo" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>
 
                                 <li><a href="#" class="" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-partida" data-select="partida" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>
@@ -378,11 +360,24 @@ $(document).on('click','[data-action="click-eliminar"]',function (e) {
     var key = $(this).attr('key'),
         data_id = $(this).attr('data-id'),
         data_id_padre = $(this).attr('data-id-padre'),
-        data_text_presupuesto = $(this).attr('data-tipo-text');
+        data_text_presupuesto = $(this).attr('data-tipo-text'),
+        numero_mes=0;
     $(this).closest('tr').remove();
     $('tr[data-id-padre="'+data_id+'"]').remove();
 
-    // sumarPartidas(data_id,data_id_padre,data_text_presupuesto);
+    // console.log(meses_anual);
+    for (let index = 0; index < meses_anual.length; index++) {
+        mes = meses_anual[index];
+        numero_mes = numeroMes(mes);
+        sumarPartidas(
+            data_id,
+            data_id_padre,
+            data_text_presupuesto,
+            mes,
+            numero_mes
+        );
+    }
+
 });
 function zfill(number, width) {
     var numberOutput = Math.abs(number); /* Valor absoluto del número */
@@ -519,10 +514,11 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
         data_id_padre = $(this).find('div.modal-footer').find('button[type="submit"]').attr('data-id-padre'),
         data_text_presupuesto = $(this).find('div.modal-footer').find('button[type="submit"]').attr('data-tipo-text'),
         data_tipo = $(this).find('div.modal-footer').find('button[type="submit"]').attr('data-tipo'),
-        descripcion_partida = $(this).find('[name="descripcion"]').val(),
-        monto_partida = $(this).find('[name="monto"]').val();
-        monto_partida = parseFloat(monto_partida).toFixed(2);
-        monto_partida = separator(monto_partida);
+        descripcion_partida = $(this).find('[name="descripcion"]').val();
+
+        // monto_partida = $(this).find('[name="monto"]').val();
+        // monto_partida = parseFloat(monto_partida).toFixed(2);
+        // monto_partida = separator(monto_partida);
 
     if (data_tipo==='nuevo') {
         var optener_partida_hijos = $('tr[data-id-padre="'+data_id+'"]:last').attr('data-partida'),
@@ -550,52 +546,52 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
 
 
                 <td data-td="enero" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][enero]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="enero">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][enero]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="enero" data-input="partida">
 
                 </td>
                 <td data-td="febrero" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][febrero]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="febrero">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][febrero]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="febrero" data-input="partida">
 
                 </td>
                 <td data-td="marzo" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][marzo]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="marzo">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][marzo]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="marzo" data-input="partida">
 
                 </td>
                 <td data-td="abril" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][abril]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="abril">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][abril]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="abril" data-input="partida">
 
                 </td>
                 <td data-td="mayo" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][mayo]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="mayo">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][mayo]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="mayo" data-input="partida">
 
                 </td>
                 <td data-td="junio" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][junio]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="junio">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][junio]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="junio" data-input="partida">
 
                 </td>
                 <td data-td="julio" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][julio]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="julio">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][julio]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="julio" data-input="partida">
 
                 </td>
                 <td data-td="agosto" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][agosto]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="agosto">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][agosto]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="agosto" data-input="partida">
 
                 </td>
                 <td data-td="setiembre" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][setiembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="setiembre">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][setiembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="setiembre" data-input="partida">
 
                 </td>
                 <td data-td="octubre" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][octubre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="octubre">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][octubre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="octubre" data-input="partida">
 
                 </td>
                 <td data-td="noviembre" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][noviembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="noviembre">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][noviembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="noviembre" data-input="partida">
 
                 </td>
 
                 <td data-td="diciembre" style="padding-right: 0px;">
-                    <input type="text" value="`+monto_partida+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][diciembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="diciembre">
+                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][diciembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="diciembre" data-input="partida">
 
                 </td>
 
@@ -607,6 +603,7 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
+                            <input type="hidden" name="`+data_text_presupuesto+`[`+data_id_random+`][registro]" value="2">
                                 <li><a href="#" class="" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-partida" data-select="partida" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Editar partida" data-tipo="editar">Editar partida</a></li>
 
                                 <li><a href="#" class="" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`">Eliminar</a></li>
@@ -614,11 +611,7 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
                         </div>
                     </div>
 
-                    `+
-                    // <button type="button" class="btn btn-info btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-partida" data-select="partida" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" title="Editar partida" data-tipo="editar"><i class="fa fa-edit"></i></button>
-                    +``+
-                    // <button type="button" class="btn btn-danger btn-xs" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-action="click-eliminar" data-nivel="`+nivel_hijo+`" title="Eliminar" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`"><i class="fa fa-trash"></i></button>
-                    +`
+
                 </td>
             </tr>
         `;
@@ -648,7 +641,6 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
         }
         // data_id;
         // data_id_padre;
-        // sumarPartidas(data_id_random,data_id,data_text_presupuesto);
     }else{
         $('tr[key="'+key+'"] td[data-td="descripcion"] [name="'+data_text_presupuesto+'['+key+'][descripcion]"]').val(descripcion_partida);
         $('tr[key="'+key+'"] td[data-td="descripcion"] span').text(descripcion_partida);
@@ -657,7 +649,6 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
         $('tr[key="'+key+'"] td[data-td="monto"] span').text(monto_partida);
 
 
-        // sumarPartidas(data_id, data_id_padre, data_text_presupuesto);
     }
 
     $('#modal-partida').modal('hide');
@@ -719,37 +710,35 @@ $(document).on('submit','[data-form="editar-partida"]',function (e) {
         }
     });
 });
-$(document).on('change','[data-input="partida"]',function (e) {
-    // e.preventDefault();
-    console.log($(this).val());
-});
-function sumarPartidas(data_id,data_id_padre,data_text_presupuesto,mes) {
+
+function sumarPartidas(data_id,data_id_padre,data_text_presupuesto,mes,numero_mes) {
     var suma_partida = 0;
+    while (data_id_padre!=='0' && data_id_padre!==undefined) {
+        suma_partida = 0;
+        $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (index, element) {
+            // console.log(element.children[numero_mes].children[0].value);
+            // console.log(element.children[numero_mes].children[0].value);
+            var array_aplit = element.children[numero_mes].children[0].value,
+                array_aplit = array_aplit.split(','),
+                monto_editar='';
 
-    $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (indexInArray, valueOfElement) {
-        var array_aplit = valueOfElement.children[2].children[0].value.split(','),
-            monto_editar='';
+            for (let index = 0; index < array_aplit.length; index++) {
+                monto_editar = monto_editar + array_aplit[index];
+            }
+            suma_partida = parseFloat(suma_partida) + parseFloat(monto_editar);
 
-        for (let index = 0; index < array_aplit.length; index++) {
-            monto_editar = monto_editar + array_aplit[index];
-        }
-        suma_partida = parseFloat(suma_partida) + parseFloat(monto_editar);
+        });
 
-    });
-    suma_partida = suma_partida.toFixed(2);
-    suma_partida = separator(suma_partida);
-    data_td_key = $('tr[data-id="'+data_id_padre+'"]').attr('key');
+        suma_partida = suma_partida.toFixed(2);
+        suma_partida = separator(suma_partida);
 
-    $('tr[data-id="'+data_id_padre+'"] td[data-td="monto"] [name="'+data_text_presupuesto+'['+data_td_key+'][monto]"]').val(suma_partida);
-    $('tr[data-id="'+data_id_padre+'"] td[data-td="monto"] span').text(suma_partida);
+        data_td_key = $('tr[data-id="'+data_id_padre+'"]').attr('key');
 
-    data_id = $('tr[data-id="'+data_id_padre+'"]').attr('data-id')
-    data_id_padre = $('tr[data-id="'+data_id_padre+'"]').attr('data-id-padre')
+        $('tr[data-id="'+data_id_padre+'"] td[data-td="'+mes+'"] [name="'+data_text_presupuesto+'['+data_td_key+']['+mes+']"]').val(suma_partida);
+        $('tr[data-id="'+data_id_padre+'"] td[data-td="'+mes+'"] span').text(suma_partida);
 
-
-    if (data_id_padre!=='0' && data_id_padre!==undefined) {
-
-        // sumarPartidas(data_id,data_id_padre,data_text_presupuesto);
+        data_id = $('tr[data-id="'+data_id_padre+'"]').attr('data-id')
+        data_id_padre = $('tr[data-id="'+data_id_padre+'"]').attr('data-id-padre')
     }
 }
 function separator(numb) {
@@ -784,3 +773,87 @@ $('[name="id_grupo"]').change(function (e) {
         console.log(errorThrown);
     });
 });
+$(document).on('change','[data-input="partida"]',function (e) {
+    e.preventDefault();
+    var value = $(this).val(),
+        array_value = value.split(','),
+        monto='',
+        data_id = $(this).attr('data-id'),
+        data_id_padre = $(this).attr('data-id-padre'),
+        data_text_presupuesto = $(this).attr('data-tipo-text'),
+        mes = $(this).attr('data-mes'),
+        numero_mes=0;
+    for (let index = 0; index < array_value.length; index++) {
+        monto = monto + array_value[index];
+    }
+    // de string a valor numerico y redondearlo a 2 digitos
+    monto  = parseFloat(monto).toFixed(2);
+    monto  = parseFloat(monto);
+
+    // agregarle las comas
+    monto  = separator(monto);
+    $(this).val(monto);
+    numero_mes = numeroMes(mes);
+    sumarPartidas(
+        data_id,
+        data_id_padre,
+        data_text_presupuesto,
+        mes,
+        numero_mes
+    );
+});
+
+$(document).on('click','[data-action="remove"]',function () {
+    var tipo = $(this).attr('data-tipo');
+
+    // $('[data-select="presupuesto-'+tipo+'"]').closest('.box.box-success').closest('div.col-md-12').addClass('animate__animated animate__fadeOut');
+    $('[data-select="presupuesto-'+tipo+'"]').closest('.box.box-success').closest('div.col-md-12').addClass('d-none');
+
+    $('[data-select="presupuesto-'+tipo+'"] div').remove();
+    // $('[data-select="presupuesto-'+tipo+'"]').;
+
+    console.log(tipo);
+});
+function numeroMes(mes) {
+    var numero_mes=0;
+    switch (mes) {
+        case 'enero':
+            numero_mes=2;
+        break;
+
+        case 'febrero':
+            numero_mes=3;
+        break;
+        case 'marzo':
+            numero_mes=4;
+        break;
+        case 'abril':
+            numero_mes=5;
+        break;
+        case 'mayo':
+            numero_mes=6;
+        break;
+        case 'junio':
+            numero_mes=7;
+        break;
+        case 'julio':
+            numero_mes=8;
+        break;
+        case 'agosto':
+            numero_mes=9;
+        break;
+        case 'setiembre':
+            numero_mes=10;
+        break;
+        case 'octubre':
+            numero_mes=11;
+        break;
+        case 'noviembre':
+            numero_mes=12;
+        break;
+        case 'diciembre':
+            numero_mes=13;
+        break;
+    }
+    return numero_mes;
+}

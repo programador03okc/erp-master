@@ -191,13 +191,13 @@ $(document).on('click','.ver-presupuesto-interno',function () {
         }
 
         if (response.presupuesto.ingresos.length!==0) {
-            html += presupuesto(response.presupuesto.ingresos, cantidad_presupuestos);
+            html += presupuesto(response.presupuesto.ingresos, cantidad_presupuestos, 'INGRESOS');
         }
         if (response.presupuesto.costos.length!==0) {
-            html += presupuesto(response.presupuesto.costos, cantidad_presupuestos);
+            html += presupuesto(response.presupuesto.costos, cantidad_presupuestos, 'COSTOS');
         }
         if (response.presupuesto.gastos.length!==0) {
-            html += presupuesto(response.presupuesto.gastos, cantidad_presupuestos);
+            html += presupuesto(response.presupuesto.gastos, cantidad_presupuestos, 'GASTOS');
         }
         $('#modal-presupuesto [data-presupuesto="table"]').html(html);
 
@@ -207,7 +207,7 @@ $(document).on('click','.ver-presupuesto-interno',function () {
         console.log(errorThrown);
     });
 });
-function presupuesto(data,cantidad_presupuestos) {
+function presupuesto(data,cantidad_presupuestos, texto) {
     var html = '',
         html_option='';
     console.log(cantidad_presupuestos);
