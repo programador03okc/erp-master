@@ -1243,10 +1243,10 @@ class RequerimientoPendienteView {
     retornarAListaPendientes(obj) {
         let tr = obj.closest('tr');
         var idRequerimiento = obj.dataset.idRequerimiento;
-        var codigRequerimiento = obj.dataset.codigRequerimiento;
+        var codigoRequerimiento = obj.dataset.codigoRequerimiento;
 
         Swal.fire({
-            title: 'Esta seguro de retornar el requerimiento '+codigRequerimiento+' a la lista de pendientes?',
+            title: 'Esta seguro de retornar el requerimiento '+codigoRequerimiento+' a la lista de pendientes?',
             text: "El nuevo estado de requerimiento sera: atención parcial",
             icon: 'warning',
             showCancelButton: true,
