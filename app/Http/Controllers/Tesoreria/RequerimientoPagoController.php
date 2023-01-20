@@ -1470,8 +1470,10 @@ class RequerimientoPagoController extends Controller
             ->select(
                 'requerimiento_pago_detalle.*',
                 'presup_par.codigo as partida',
+                'presup_par.descripcion as descripcion_partida',
                 'presup_par.id_partida',
                 'centro_costo.codigo as c_costo',
+                'centro_costo.descripcion as descripcion_c_costo',
                 'centro_costo.id_centro_costo'
             )
             ->where('requerimiento_pago_detalle.id_requerimiento_pago', $id_requerimiento_pago)
@@ -1577,8 +1579,10 @@ class RequerimientoPagoController extends Controller
                 'division.descripcion as division',
                 'requerimiento_pago.monto_total',
                 'presup_par.codigo as partida',
+                'presup_par.descripcion as descripcion_partida',
                 'presup_par.id_partida',
                 'centro_costo.codigo as centro_costo',
+                'centro_costo.descripcion as descripcion_centro_costo',
                 'centro_costo.id_centro_costo',
                 'requerimiento_pago_estado.descripcion as estado_requerimiento'
             )
