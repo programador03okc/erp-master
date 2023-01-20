@@ -215,17 +215,41 @@ function presupuesto(data,cantidad_presupuestos, texto) {
         html_option+=`<tr>
             <td>`+element.partida+`</td>
             <td>`+element.descripcion+`</td>
-            <td>`+element.monto+`</td>
+            <td>`+element.enero+`</td>
+            <td>`+element.febrero+`</td>
+            <td>`+element.marzo+`</td>
+            <td>`+element.abril+`</td>
+            <td>`+element.mayo+`</td>
+            <td>`+element.junio+`</td>
+            <td>`+element.julio+`</td>
+            <td>`+element.agosto+`</td>
+            <td>`+element.setiembre+`</td>
+            <td>`+element.octubre+`</td>
+            <td>`+element.noviembre+`</td>
+            <td>`+element.diciembre+`</td>
         </tr>`
     });
 
     html = `
-        <div class="col-md-`+(cantidad_presupuestos==2?'6':(cantidad_presupuestos==1?'6 col-md-offset-3':(cantidad_presupuestos==3?'4':'')))+`">
+        <div class="col-md-12">
+            <h3>`+texto+`</h3s>
             <table class="table small">
                 <thead>
                     <tr>
-                        <th class="text-left" width="20%">PARTIDA</th>
-                        <th class="text-left" width=""colspan="2">DESCRIPCION</th>
+                        <th class="text-left" width="30">PARTIDA</th>
+                        <th class="text-left" width="">DESCRIPCION</th>
+                        <th class="text-left" width=""colspan="">ENE </th>
+                        <th class="text-left" width=""colspan="">FEB</th>
+                        <th class="text-left" width=""colspan="">MAR</th>
+                        <th class="text-left" width=""colspan="">ABR</th>
+                        <th class="text-left" width=""colspan="">MAY</th>
+                        <th class="text-left" width=""colspan="">JUN</th>
+                        <th class="text-left" width=""colspan="">JUL</th>
+                        <th class="text-left" width=""colspan="">AGO</th>
+                        <th class="text-left" width=""colspan="">SET</th>
+                        <th class="text-left" width=""colspan="">OCT</th>
+                        <th class="text-left" width=""colspan="">NOV</th>
+                        <th class="text-left" width=""colspan="">DIC</th>
                     </tr>
                 </thead>
                 <tbody data-table-presupuesto="ingreso">

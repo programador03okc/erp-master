@@ -410,7 +410,9 @@ class PresupuestoInternoController extends Controller
         $array_presupuesto['ingresos']=[];
         $array_presupuesto['costos']=[];
         $array_presupuesto['gastos']=[];
+
         $ingresos = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
+
         $costos   = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
 
         $array_presupuesto['ingresos']=$ingresos;

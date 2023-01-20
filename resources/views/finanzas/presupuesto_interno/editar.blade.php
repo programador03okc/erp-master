@@ -32,7 +32,7 @@ Presupuesto Interno
         <div class="col-md-12">
             <div class="box box-danger">
                 <div class="box-header with-border">
-                    <h3 class="box-title">EDITAR PRESUPUESTO INTERNO <span class="text-primary">{{$presupuesto_interno->codigo}}</span></h3>
+                    <h3 class="box-title" style="display: inline-block;">EDITAR PRESUPUESTO INTERNO <span class="text-primary">{{$presupuesto_interno->codigo}}</span></h3>
                     <div class="box-tools pull-right">
                         {{-- <div class="btn-group" role="group"> --}}
                             <a href="{{ route('finanzas.presupuesto.presupuesto-interno.lista') }}" title="Volver a la lista de presupuesto interno"
