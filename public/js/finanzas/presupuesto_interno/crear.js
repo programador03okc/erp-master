@@ -1,6 +1,16 @@
 var meses_anual = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','setiembre','octubre','noviembre','diciembre'];
 $(document).ready(function () {
     vista_extendida();
+    $('[data-form="guardar-partida"]').keypress(function(e) {
+        if (e.which == 13) {
+            return false;
+        }
+    });
+    $('[data-form="editar-partida"]').keypress(function(e) {
+        if (e.which == 13) {
+            return false;
+        }
+    });
 });
 var array_tipo=[];
 $(document).on('click','[data-action="generar"]',function () {
@@ -69,29 +79,29 @@ function generarModelo(data) {
                 html+='<td data-td="descripcion"><input type="hidden" value="'+element.descripcion+'" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][descripcion]" placeholder="'+element.descripcion+'"><span>'+element.descripcion+'</span></td>'
 
             // inputs del mes
-                html+='<td data-td="enero"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][enero]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="enero" '+(array.length===4?'data-input="partida"':'')+' >'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="enero"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][enero]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="enero" '+(array.length===4?'data-input="partida" title="ENERO"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="febrero"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][febrero]" placeholder="Ingrese monto"  key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="febrero" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="febrero"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][febrero]" placeholder="Ingrese monto"  key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="febrero" '+(array.length===4?'data-input="partida" title="FEBRERO"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="marzo"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][marzo]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="marzo" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="marzo"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][marzo]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="marzo" '+(array.length===4?'data-input="partida" title="MARZO"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="abril"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][abril]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="abril" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="abril"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][abril]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="abril" '+(array.length===4?'data-input="partida" title="ABRIL"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="mayo"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][mayo]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="mayo" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="mayo"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][mayo]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="mayo" '+(array.length===4?'data-input="partida" title="MAYO"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="junio"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][junio]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="junio" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="junio"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][junio]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="junio" '+(array.length===4?'data-input="partida" title="JUNIO"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="julio"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][julio]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="julio" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="julio"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][julio]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="julio" '+(array.length===4?'data-input="partida" title="JULIO"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="agosto"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][agosto]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="agosto" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="agosto"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][agosto]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="agosto" '+(array.length===4?'data-input="partida" title="AGOSTO"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="setiembre"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][setiembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="setiembre" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="setiembre"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][setiembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="setiembre" '+(array.length===4?'data-input="partida" title="SETIEMBRE"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="octubre"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][octubre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="octubre" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="octubre"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][octubre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="octubre" '+(array.length===4?'data-input="partida" title="OCTUBRE"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="noviembre"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][noviembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="noviembre" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="noviembre"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][noviembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="noviembre" '+(array.length===4?'data-input="partida" title="NOVIEMBRE"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="diciembre"><input type="'+(array.length===4?'text':'hidden')+'" value="0" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][diciembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="diciembre" '+(array.length===4?'data-input="partida"':'')+'>'+(array.length===4?'':'<span>'+0+'</span>')+'</td>'
+                html+='<td data-td="diciembre"><input type="'+(array.length===4?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][diciembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="diciembre" '+(array.length===4?'data-input="partida" title="DICIEMBRE"':'')+'>'+(array.length===4?'':'<span>'+0+'.00</span>')+'</td>'
             // }else{
             //     html+='<td colspan="2" data-td="descripcion"><input type="hidden" value="'+element.descripcion+'" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][descripcion]"><span>'+element.descripcion+'</span></td>'
             // }
@@ -253,52 +263,52 @@ $(document).on('submit','[data-form="guardar-formulario"]',function (e) {
                 </td>
 
                 <td data-td="enero" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][enero]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="enero">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][enero]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="enero">
+                    <span>0.00</span>
                 </td>
                 <td data-td="febrero" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][febrero]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="febrero">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][febrero]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="febrero">
+                    <span>0.00</span>
                 </td>
                 <td data-td="marzo" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][marzo]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="marzo">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][marzo]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="marzo">
+                    <span>0.00</span>
                 </td>
                 <td data-td="abril" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][abril]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="abril">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][abril]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="abril">
+                    <span>0.00</span>
                 </td>
                 <td data-td="mayo" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][mayo]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="mayo">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][mayo]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="mayo">
+                    <span>0.00</span>
                 </td>
                 <td data-td="junio" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][junio]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="junio">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][junio]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="junio">
+                    <span>0.00</span>
                 </td>
                 <td data-td="julio" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][julio]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="julio">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][julio]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="julio">
+                    <span>0.00</span>
                 </td>
                 <td data-td="agosto" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][agosto]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="agosto">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][agosto]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="agosto">
+                    <span>0.00</span>
                 </td>
                 <td data-td="setiembre" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][setiembre]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="setiembre">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][setiembre]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="setiembre">
+                    <span>0.00</span>
                 </td>
                 <td data-td="octubre" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][octubre]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="octubre">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][octubre]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="octubre">
+                    <span>0.00</span>
                 </td>
                 <td data-td="noviembre" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][noviembre]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="noviembre">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][noviembre]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="noviembre">
+                    <span>0.00</span>
                 </td>
                 <td data-td="diciembre" style="padding-right: 0px;">
-                    <input type="hidden" value="0" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][diciembre]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="diciembre">
-                    <span>0</span>
+                    <input type="hidden" value="0.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][diciembre]" placeholder="Ingrese monto" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="diciembre">
+                    <span>0.00</span>
                 </td>
 
 
@@ -546,52 +556,52 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
 
 
                 <td data-td="enero" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][enero]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="enero" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][enero]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="enero" data-input="partida" title="ENERO">
 
                 </td>
                 <td data-td="febrero" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][febrero]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="febrero" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][febrero]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="febrero" data-input="partida" title="FEBRERO">
 
                 </td>
                 <td data-td="marzo" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][marzo]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="marzo" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][marzo]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="marzo" data-input="partida" title="MARZO">
 
                 </td>
                 <td data-td="abril" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][abril]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="abril" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][abril]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="abril" data-input="partida" title="ABRIL">
 
                 </td>
                 <td data-td="mayo" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][mayo]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="mayo" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][mayo]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="mayo" data-input="partida" title="MAYO" >
 
                 </td>
                 <td data-td="junio" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][junio]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="junio" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][junio]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="junio" data-input="partida" title="JUNIO">
 
                 </td>
                 <td data-td="julio" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][julio]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="julio" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][julio]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="julio" data-input="partida" title="JULIO">
 
                 </td>
                 <td data-td="agosto" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][agosto]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="agosto" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][agosto]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="agosto" data-input="partida" title="AGOSTO">
 
                 </td>
                 <td data-td="setiembre" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][setiembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="setiembre" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][setiembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="setiembre" data-input="partida" title="SETIEMBRE">
 
                 </td>
                 <td data-td="octubre" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][octubre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="octubre" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][octubre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="octubre" data-input="partida" title="OCTUBRE">
 
                 </td>
                 <td data-td="noviembre" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][noviembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="noviembre" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][noviembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="noviembre" data-input="partida" title="NOVIEMBRE">
 
                 </td>
 
                 <td data-td="diciembre" style="padding-right: 0px;">
-                    <input type="text" value="`+0+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][diciembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="diciembre" data-input="partida">
+                    <input type="text" value="`+0+`.00" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][diciembre]" placeholder="Ingrese monto" data-partida="`+partida_nueva+`" key="`+data_id_random+`" data-nivel="`+nivel_hijo+`" data-id="`+data_id_random+`" data-id-padre="`+data_id+`" data-tipo-text="`+data_text_presupuesto+`" data-mes="diciembre" data-input="partida" title="DICIEMBRE">
 
                 </td>
 
@@ -775,8 +785,12 @@ $('[name="id_grupo"]').change(function (e) {
 });
 $(document).on('change','[data-input="partida"]',function (e) {
     e.preventDefault();
-    var value = $(this).val(),
-        array_value = value.split(','),
+    var value = $(this).val();
+
+    value=(value?value:'0');
+    console.log(value);
+
+    var array_value = value.split(','),
         monto='',
         data_id = $(this).attr('data-id'),
         data_id_padre = $(this).attr('data-id-padre'),
