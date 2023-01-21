@@ -198,13 +198,32 @@ Presupuesto Interno
                         <label for="id_descripcion_partida">Descripcion :</label>
                         <input id="id_descripcion_partida" class="form-control" type="text" name="descripcion" onkeyup="javascript:this.value=this.value.toUpperCase();"style="text-transform:uppercase;" required>
                     </div>
-                    {{-- <div class="form-group">
-                        <label for="id_monto_partida">Monto :</label>
-                        <input id="id_monto_partida" class="form-control" type="number" name="monto" step="0.01" required>
-                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button>
+                    <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="modal-costos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form action="" method="post" data-form="guardar-costos-modal">
+                <div class="modal-header">
+                    {{-- <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> --}}
+                    <h5 class="modal-title" id="my-modal-title">Ingrese porcentajes</h5>
+
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    {{-- <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button> --}}
                     <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
                 </div>
             </form>
