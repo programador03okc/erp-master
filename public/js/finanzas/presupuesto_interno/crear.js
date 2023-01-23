@@ -74,6 +74,12 @@ function generarModelo(data) {
                 // text-primary
                 html+='<input type="hidden" value="'+element.id_modelo_presupuesto_interno+'" name="'+data.tipo.toLowerCase()+'['+input_key+'][id_hijo]" class="form-control input-sm">'
                 html+='<input type="hidden" value="'+element.id_padre+'" name="'+data.tipo.toLowerCase()+'['+input_key+'][id_padre]" class="form-control input-sm">'
+
+                html+='<input type="hidden" value="0" name="'+data.tipo.toLowerCase()+'['+input_key+'][porcentaje_gobierno]" class="form-control input-sm">'
+                html+='<input type="hidden" value="0" name="'+data.tipo.toLowerCase()+'['+input_key+'][porcentaje_privado]" class="form-control input-sm">'
+                html+='<input type="hidden" value="0" name="'+data.tipo.toLowerCase()+'['+input_key+'][porcentaje_comicion]" class="form-control input-sm">'
+                html+='<input type="hidden" value="0" name="'+data.tipo.toLowerCase()+'['+input_key+'][porcentaje_penalidad]" class="form-control input-sm">'
+
                 html+='<span>'+element.partida+'</span></td>'
 
             // if ((array.length==3) || (array.length==4)) {
@@ -258,6 +264,14 @@ $(document).on('submit','[data-form="guardar-formulario"]',function (e) {
                     >
                     <input type="hidden" value="`+data_id_random+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][id_hijo]" placeholder="Nuevo Titulo">
                     <input type="hidden" value="`+data_id+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][id_padre]" placeholder="Nuevo Titulo">
+
+                    <input type="hidden" value="0" name="`+data_text_presupuesto+`[`+data_id_random+`][porcentaje_gobierno]" class="form-control input-sm">
+
+                    <input type="hidden" value="0" name="`+data_text_presupuesto+`[`+data_id_random+`][porcentaje_privado]" class="form-control input-sm">
+
+                    <input type="hidden" value="0" name="`+data_text_presupuesto+`[`+data_id_random+`][porcentaje_comicion]" class="form-control input-sm">
+
+                    <input type="hidden" value="0" name="`+data_text_presupuesto+`[`+data_id_random+`][porcentaje_penalidad]" class="form-control input-sm">
 
                     <span>`+partida_nueva+`</span>
                 </td>
@@ -551,6 +565,16 @@ $(document).on('submit','[data-form="guardar-partida-modal"]',function (e) {
                     >
                     <input type="hidden" value="`+data_id_random+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][id_hijo]" placeholder="Nueva partida">
                     <input type="hidden" value="`+data_id+`" class="form-control input-sm" name="`+data_text_presupuesto+`[`+data_id_random+`][id_padre]" placeholder="Nueva partida">
+
+                    <input type="hidden" value="0" name="`+data_text_presupuesto+`[`+data_id_random+`][porcentaje_gobierno]" class="form-control input-sm">
+
+                    <input type="hidden" value="0" name="`+data_text_presupuesto+`[`+data_id_random+`][porcentaje_privado]" class="form-control input-sm">
+
+                    <input type="hidden" value="0" name="`+data_text_presupuesto+`[`+data_id_random+`][porcentaje_comicion]" class="form-control input-sm">
+
+                    <input type="hidden" value="0" name="`+data_text_presupuesto+`[`+data_id_random+`][porcentaje_penalidad]" class="form-control input-sm">
+
+
                     <span>`+partida_nueva+`</span>
                 </td>
                 <td data-td="descripcion" style="padding-right: 0px;" >
@@ -755,6 +779,12 @@ function sumarPartidas(data_id,data_id_padre,data_text_presupuesto,mes,numero_me
         data_id_padre = $('tr[data-id="'+data_id_padre+'"]').attr('data-id-padre')
     }
 }
+// let promesa_partida = function sumarPartidas(data_id,data_id_padre,data_text_presupuesto,mes,numero_mes) {
+//     return new Promise((resolve ,reject)=>{
+
+//     });
+
+// }
 function separator(numb) {
     var str = numb.toString().split(".");
     str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -792,7 +822,6 @@ $(document).on('change','[data-input="partida"]',function (e) {
     var value = $(this).val();
 
     value=(value?value:'0');
-    console.log(value);
 
     var array_value = value.split(','),
         monto='',
@@ -800,6 +829,7 @@ $(document).on('change','[data-input="partida"]',function (e) {
         data_id_padre = $(this).attr('data-id-padre'),
         data_text_presupuesto = $(this).attr('data-tipo-text'),
         mes = $(this).attr('data-mes'),
+        key = $(this).attr('key'),
         numero_mes=0;
     for (let index = 0; index < array_value.length; index++) {
         monto = monto + array_value[index];
@@ -807,11 +837,17 @@ $(document).on('change','[data-input="partida"]',function (e) {
     // de string a valor numerico y redondearlo a 2 digitos
     monto  = parseFloat(monto).toFixed(2);
     monto  = parseFloat(monto);
+    // formato numerico
+    monto_calculable  = parseFloat(monto);
 
     // agregarle las comas
     monto  = separator(monto);
+
     $(this).val(monto);
     numero_mes = numeroMes(mes);
+
+    // suma todas las partidas
+
     sumarPartidas(
         data_id,
         data_id_padre,
@@ -819,6 +855,75 @@ $(document).on('change','[data-input="partida"]',function (e) {
         mes,
         numero_mes
     );
+    // promesa_partida(data_id, data_id_padre, data_text_presupuesto, mes, numero_mes).then((res)=>{
+
+
+
+    // }).catch((error)=>{
+    //     console.log(error);
+    // });
+    // calcular las celdas de costos
+        if ($porcentajes.length>0 && data_text_presupuesto=="ingresos") {
+            var porcentaje_gobierno = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_gobierno]"]').val(),
+                porcentaje_privado = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_privado]"]').val(),
+                porcentaje_comicion = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_comicion]"]').val(),
+                porcentaje_penalidad = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_penalidad]"]').val(),
+                valor_padre = $('tr[data-id="'+data_id_padre+'"] td[data-td="'+mes+'"]').find('input').val(),
+                partida_ingreso = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('[name="ingresos['+key+'][partida]"]').val(),
+                partida_costo = '02',
+                numero_partida='',
+                partida_comision='',
+                partida_penalidad='';
+
+            var costo_gobierno,
+                costo_privado,
+                costo_comisiones,
+                costo_penalidades;
+
+            costo_gobierno      = monto_calculable * (parseFloat(porcentaje_gobierno)/100);
+            costo_privado       = monto_calculable * (parseFloat(porcentaje_privado)/100);
+            costo_comisiones    = valor_padre * (parseFloat(porcentaje_comicion)/100);
+            costo_penalidades   = valor_padre * (parseFloat(porcentaje_penalidad)/100);
+
+            console.log(costo_comisiones);
+            console.log(costo_penalidades);
+            console.log(valor_padre);
+
+            partida_ingreso = partida_ingreso.split('.');
+            $.each(partida_ingreso, function (index, element) {
+                if ((index+1)==partida_ingreso.length) {
+                    numero_partida = element;
+
+                    partida_comision = partida_costo + '.03';
+                    partida_penalidad = partida_costo + '.04';
+                }
+                if (index!==0) {
+                    partida_costo = partida_costo+'.'+element;
+                }
+
+            });
+
+            if (numero_partida == '01') {
+                $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_gobierno.toFixed(2))
+                $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_gobierno.toFixed(2))
+
+                $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_comisiones.toFixed(2))
+                $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_comisiones.toFixed(2))
+
+                $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_penalidades.toFixed(2))
+                $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_penalidades.toFixed(2))
+
+                $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+
+            }
+            if (numero_partida == '02') {
+                $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_privado.toFixed(2))
+                $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_privado.toFixed(2))
+
+                $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+            }
+
+    }
 });
 
 $(document).on('click','[data-action="remove"]',function () {
@@ -878,13 +983,16 @@ $(document).on('click','[data-input="partida"]',function (e) {
     e.preventDefault();
     var text = $(this).attr('data-tipo-text'),
         key = $(this).attr('key'),
+        data_id = $(this).attr('data-id'),
+        data_id_padre = $(this).attr('data-id-padre'),
         array_split=[],
         numero_partida = 0,
         html='',
         partida = '',
         partida_gobierno = '',
         partida_privada = '';
-    var elemento;
+    var elemento, elemento_find;
+
     if (text === 'ingresos') {
 
 
@@ -901,8 +1009,6 @@ $(document).on('click','[data-input="partida"]',function (e) {
                 concatener_partida = (index===0?element:concatener_partida+'.'+element);
             }
         });
-
-        console.log(numero_partida);
 
         if (numero_partida==='01') {
             partida_gobierno=partida;
@@ -921,27 +1027,33 @@ $(document).on('click','[data-input="partida"]',function (e) {
                 <label for="porcentaje_penalidades">Ingrese Porcentaje de penalidad :</label>
                 <input id="porcentaje_penalidades" class="form-control" type="number" name="porcentaje_penalidades" required>
             </div>
+            <input type="hidden" name="key" value="`+key+`">
+            <input type="hidden" name="data_id" value="`+data_id+`">
+            <input type="hidden" name="data_id_padre" value="`+data_id_padre+`">
             `;
             elemento = $porcentajes.find(e => e.partida == concatener_partida);
+            elemento_find = $porcentajes.find(e => e.partida_gobierno==partida_gobierno);
             if (elemento) {
                 partida_privada = elemento.partida_privada;
             }
 
-            // if (elemento) {
-            //     partida_privada = elemento.partida_privada;
-            // }
         }
         if (numero_partida==='02') {
             partida_privada=partida;
             html=`
                 <input type="hidden" name="partida" value="`+concatener_partida+`">
-                <input type="hidden" name="partida_gobierno" value="`+partida_privada+`">
+                <input type="hidden" name="partida_privada" value="`+partida_privada+`">
                 <div class="form-group">
                     <label for="porcentaje_privado">Ingrese Porcentaje de costo :</label>
                     <input id="porcentaje_privado" class="form-control" type="number" name="procentaje_privado" required>
                 </div>
+                <input type="hidden" name="key" value="`+key+`">
+                <input type="hidden" name="data_id" value="`+data_id+`">
+                <input type="hidden" name="data_id_padre" value="`+data_id_padre+`">
             `;
             elemento = $porcentajes.find(e => e.partida == concatener_partida );
+
+            elemento_find = $porcentajes.find(e => e.partida_privada==partida_privada);
             if (elemento) {
                 partida_gobierno = elemento.partida_gobierno;
             }
@@ -949,22 +1061,24 @@ $(document).on('click','[data-input="partida"]',function (e) {
         }
         $('#modal-costos .modal-body').html(html);
 
-        if (!elemento) {
+        if (!elemento_find) {
             $('#modal-costos').modal('show');
-                $porcentajes.push({
-                    partida:concatener_partida,
-                    partida_gobierno:partida_gobierno,
-                    partida_privada:partida_privada,
-                    procentaje_gobierno:0,
-                    porcentaje_privado:0,
-                    porcentaje_comisiones:0,
-                    porcentaje_penalidades:0
-                });
+        }
+        if (!elemento) {
+
+            $porcentajes.push({
+                partida:concatener_partida,
+                partida_gobierno:partida_gobierno,
+                partida_privada:partida_privada,
+                procentaje_gobierno:0,
+                porcentaje_privado:0,
+                porcentaje_comisiones:0,
+                porcentaje_penalidades:0
+            });
         }else{
             elemento.partida_gobierno = partida_gobierno;
             elemento.partida_privada = partida_privada;
         }
-        console.log($porcentajes);
     }
 });
 $(document).on('submit','[data-form="guardar-costos-modal"]',function (e) {
@@ -972,8 +1086,10 @@ $(document).on('submit','[data-form="guardar-costos-modal"]',function (e) {
     var data = $(this).serializeArray()
         partida = data[0].value,
         partida_hijo = data[1].value,
+        key = $(this).find('input[name="key"]').val(),
+        data_id = $(this).find('input[name="data_id"]').val(),
+        data_id_padre = $(this).find('input[name="data_id_padre"]').val(),
         numero_partida = partida_hijo.split('.')
-
         ;
 
     numero_partida = numero_partida[numero_partida.length-1];
@@ -981,16 +1097,6 @@ $(document).on('submit','[data-form="guardar-costos-modal"]',function (e) {
     if (numero_partida=='01') {
         $porcentajes.forEach(element => {
             if (element.partida==partida) {
-                // $porcentajes.push({
-                //     partida:concatener_partida,
-                //     partida_gobierno:partida_gobierno,
-                //     partida_privada:partida_privada,
-                //     procentaje_gobierno:0,
-                //     porcentaje_privado:0,
-                //     porcentaje_comisiones:0,
-                //     porcentaje_penalidades:0
-                // });
-
                 element.partida=partida;
                 element.partida_gobierno=partida_hijo;
                 element.procentaje_gobierno=data[2].value;
@@ -998,6 +1104,11 @@ $(document).on('submit','[data-form="guardar-costos-modal"]',function (e) {
                 element.porcentaje_penalidades=data[4].value;
             }
         });
+
+        $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"] td[data-td="partida"] input[name="ingresos['+key+'][porcentaje_gobierno]"]').val(data[2].value);
+        $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"] td[data-td="partida"] input[name="ingresos['+key+'][porcentaje_comicion]"]').val(data[3].value);
+        $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"] td[data-td="partida"] input[name="ingresos['+key+'][porcentaje_penalidad]"]').val(data[4].value);
+        // $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"] td[data-td="partida"] input[name="ingresos['+key+'][porcentaje_gobierno]"]').val(data[2].value)
     }
     if (numero_partida=='02') {
         elemento = $porcentajes.find(e => e.partida_gobierno == partida);
@@ -1008,7 +1119,46 @@ $(document).on('submit','[data-form="guardar-costos-modal"]',function (e) {
                 element.porcentaje_privado=data[2].value;
             }
         });
+        $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"] td[data-td="partida"] input[name="ingresos['+key+'][porcentaje_privado]"]').val(data[2].value);
     }
-    console.log($porcentajes);
+    // console.log($porcentajes);
+    $('#modal-costos').modal('hide');
+});
 
+// const handleResponse = (response) => {
+//     console.log(response)
+// }
+
+// handleResponse('niels')
+// .then(res => {
+//     console.log(res)
+// }).catch(err => {
+//     console.log(err)
+// })
+
+
+var resolvedFlag = true;
+
+let mypromise = function functionOne(testInput, variable){
+    console.log("Entered function");
+    return new Promise((resolve ,reject)=>{
+        setTimeout(
+           ()=>{
+                console.log("Inside the promise");
+                console.log(testInput);
+                console.log(variable);
+                if(resolvedFlag==true){
+                    resolve("Resolved");
+                }else{
+                    reject("Rejected")
+                }
+            } , 2000
+        );
+    });
+};
+
+mypromise('niels').then((res)=>{
+    console.log(`The function recieved with value ${res}`)
+}).catch((error)=>{
+    console.log(`Handling error as we received ${error}`);
 });
