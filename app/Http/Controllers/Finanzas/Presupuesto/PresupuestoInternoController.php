@@ -144,6 +144,12 @@ class PresupuestoInternoController extends Controller
                     $ingresos->octubre                  = $value['octubre'];
                     $ingresos->noviembre                = $value['noviembre'];
                     $ingresos->diciembre                = $value['diciembre'];
+
+                    $ingresos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                    $ingresos->porcentaje_privado       = $value['porcentaje_privado'];
+                    $ingresos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                    $ingresos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                    $ingresos->porcentaje_costo         = $value['porcentaje_costo'];
                     $ingresos->save();
                 }
 
@@ -175,6 +181,12 @@ class PresupuestoInternoController extends Controller
                     $costos->octubre                  = $value['octubre'];
                     $costos->noviembre                = $value['noviembre'];
                     $costos->diciembre                = $value['diciembre'];
+
+                    $costos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                    $costos->porcentaje_privado       = $value['porcentaje_privado'];
+                    $costos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                    $costos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                    $costos->porcentaje_costo         = $value['porcentaje_costo'];
 
                     $costos->save();
                 }
@@ -209,6 +221,12 @@ class PresupuestoInternoController extends Controller
                     $gastos->octubre                  = $value['octubre'];
                     $gastos->noviembre                = $value['noviembre'];
                     $gastos->diciembre                = $value['diciembre'];
+
+                    $gastos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                    $gastos->porcentaje_privado       = $value['porcentaje_privado'];
+                    $gastos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                    $gastos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                    $gastos->porcentaje_costo         = $value['porcentaje_costo'];
 
                     $gastos->save();
                 }
@@ -303,6 +321,12 @@ class PresupuestoInternoController extends Controller
                 $ingresos->noviembre                = $value['noviembre'];
                 $ingresos->diciembre                = $value['diciembre'];
 
+                $ingresos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                $ingresos->porcentaje_privado       = $value['porcentaje_privado'];
+                $ingresos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                $ingresos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                $ingresos->porcentaje_costo         = $value['porcentaje_costo'];
+
                 $ingresos->save();
             }
             PresupuestoInternoDetalle::where('estado', 1)
@@ -337,6 +361,13 @@ class PresupuestoInternoController extends Controller
                 $costos->octubre                  = $value['octubre'];
                 $costos->noviembre                = $value['noviembre'];
                 $costos->diciembre                = $value['diciembre'];
+
+                $costos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                $costos->porcentaje_privado       = $value['porcentaje_privado'];
+                $costos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                $costos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                $costos->porcentaje_costo         = $value['porcentaje_costo'];
+
                 $costos->save();
             }
         }
@@ -373,6 +404,12 @@ class PresupuestoInternoController extends Controller
                 $gastos->noviembre                = $value['noviembre'];
                 $gastos->diciembre                = $value['diciembre'];
                 $gastos->estado                   = 1;
+
+                $gastos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                $gastos->porcentaje_privado       = $value['porcentaje_privado'];
+                $gastos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                $gastos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                $gastos->porcentaje_costo         = $value['porcentaje_costo'];
                 $gastos->save();
             }
         }
