@@ -41,7 +41,7 @@ Presupuesto Interno
                                 Volver
                             </a>
                             <button title="Guardar" type="submit"
-                                class="btn btn-sm btn-success">
+                                class="btn btn-sm btn-success" disabled>
                                 <i class="fa fa-save"></i>
                                 Guardar
                             </button>
@@ -65,7 +65,9 @@ Presupuesto Interno
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <input type="hidden" name="id_tipo_presupuesto"value="">
+                                {{-- <input type="hidden" name="id_tipo_presupuesto"value=""> --}}
+                                <input type="hidden" name="tipo_ingresos"value="">
+                                <input type="hidden" name="tipo_gastos"value="">
                                 <label for="id_grupo">Grupo :</label>
                                 <select class="form-control" name="id_grupo" id="id_grupo" required>
                                     <option value="">Seleccione...</option>
@@ -80,9 +82,9 @@ Presupuesto Interno
                                 <label for="id_area">Area :</label>
                                 <select class="form-control" name="id_area" id="id_area" required>
                                     <option value="">Seleccione...</option>
-                                    @foreach ($area as $item)
+                                    {{-- @foreach ($area as $item)
                                         <option value="{{ $item->id_area }}">{{ $item->descripcion }}</option>
-                                    @endforeach
+                                    @endforeach --}}
                                 </select>
                             </div>
                         </div>
@@ -97,7 +99,7 @@ Presupuesto Interno
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        {{-- <div class="col-md-3">
                             <div class="form-group">
                                 <label for="mes">Meses :</label>
                                 <select id="mes" name="mes" class="form-control" required>
@@ -116,13 +118,13 @@ Presupuesto Interno
                                     <option value="Diciembre">Diciembre</option>
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="descripcion">Descripcion : </label>
-                                <textarea id="descripcion" class="form-control" name="descripcion" rows="3" ></textarea>
+                                <textarea id="descripcion" class="form-control" name="descripcion" rows="3" required></textarea>
                             </div>
                         </div>
                     </div>
@@ -132,21 +134,21 @@ Presupuesto Interno
     </div>
 
     <div class="row">
-        <div class="col-md-6 animate__animated d-none">
+        <div class="col-md-12 animate__animated d-none">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-1"></div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 animate__animated d-none">
+        <div class="col-md-12 animate__animated d-none">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-2"></div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 col-md-offset-3 animate__animated d-none">
+        <div class="col-md-12 animate__animated d-none">
             <div class="box box-success">
                 <div class="box-body" data-presupuesto="interno-modelo">
                     <div class="row" data-select="presupuesto-3"></div>
@@ -169,11 +171,11 @@ Presupuesto Interno
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="id_descripcion_titulo">Descripcion</label>
-                        <input id="id_descripcion_titulo" class="form-control" type="text" name="descripcion" required>
+                        <input id="id_descripcion_titulo" class="form-control" type="text" name="descripcion" onkeyup="javascript:this.value=this.value.toUpperCase();"style="text-transform:uppercase;" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> Cerra</button>
+                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button>
                     <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
                 </div>
             </form>
@@ -194,15 +196,34 @@ Presupuesto Interno
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="id_descripcion_partida">Descripcion :</label>
-                        <input id="id_descripcion_partida" class="form-control" type="text" name="descripcion" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="id_monto_partida">Monto :</label>
-                        <input id="id_monto_partida" class="form-control" type="number" name="monto" step="0.01" required>
+                        <input id="id_descripcion_partida" class="form-control" type="text" name="descripcion" onkeyup="javascript:this.value=this.value.toUpperCase();"style="text-transform:uppercase;" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> Cerra</button>
+                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button>
+                    <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="modal-costos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form action="" method="post" data-form="guardar-costos-modal">
+                <div class="modal-header">
+                    {{-- <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> --}}
+                    <h5 class="modal-title" id="my-modal-title">Ingrese porcentajes</h5>
+
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    {{-- <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button> --}}
                     <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
                 </div>
             </form>

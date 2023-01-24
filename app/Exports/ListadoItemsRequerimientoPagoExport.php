@@ -45,7 +45,9 @@ class ListadoItemsRequerimientoPagoExport implements FromView
                 $data[]=[
                     'prioridad'=>$value->prioridad,
                     'codigo'=> $value->codigo,
+                    'descripcion_centro_costo'=> $value->descripcion_centro_costo,
                     'partida'=> $value->partida,
+                    'descripcion_partida'=> $value->descripcion_partida,
                     'centro_costo'=> $value->centro_costo,
                     'codigo_oportunidad'=> str_replace("'", "", str_replace("", "" ,$value->codigo_oportunidad)),
                     'motivo'=> str_replace("'", "", str_replace("", "" ,$value->motivo)),

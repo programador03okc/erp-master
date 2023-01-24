@@ -1,3 +1,5 @@
+
+
 $(document).ready(function () {
     lista();
 });
@@ -57,6 +59,9 @@ function lista() {
                         case 1:
                             descripcion_estado='Elaborado'
                         break;
+                        case 2:
+                            descripcion_estado='Aprobado'
+                        break;
                     }
                     return descripcion_estado
                 },
@@ -65,7 +70,16 @@ function lista() {
             {
                 render: function (data, type, row) {
                     html='';
-                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
+                        html+='<button type="button" class="btn btn-info btn-flat botonList ver-presupuesto-interno" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Ver" data-original-title="Ver"><i class="fas fa-eye"></i></button>';
+
+
+
+                        if (row['estado']==1) {
+                            html+='<button type="button" class="btn btn-success btn-flat botonList aprobar-presupuesto" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Aprobar" data-original-title="Aprobar"><i class="fas fa-thumbs-up"></i></button>';
+
+                            html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
+                        }
+
 
                         html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar" data-id="'+row['id_presupuesto_interno']+'" title="Eliminar"><i class="fas fa-trash"></i></button>';
 
@@ -133,6 +147,158 @@ $(document).on('click','.eliminar',function () {
                 Swal.fire({
                     title: 'Éxito',
                     text: "Se guardo con éxito",
+                    icon: 'success',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((resultado) => {
+                    if (resultado.isConfirmed) {
+
+                    }
+                })
+            }
+        }
+    });
+});
+$(document).on('click','.ver-presupuesto-interno',function () {
+    var id = $(this).attr('data-id');
+
+    $('#modal-presupuesto').modal('show');
+    $.ajax({
+        type: 'POST',
+        url: 'get-presupuesto-interno',
+        data: {id:id},
+        // processData: false,
+        // contentType: false,
+        dataType: 'JSON',
+        beforeSend: (data) => {
+
+        }
+    }).done(function(response) {
+        var cantidad_presupuestos =0 ,
+            numero_columnas = 0,
+            numero_columnas_offset = ' col-md-offset-3',
+            html = '';
+        $('#modal-presupuesto .codigo').text(response.data.codigo)
+        if (response.presupuesto.ingresos.length!==0) {
+            cantidad_presupuestos++;
+        }
+        if (response.presupuesto.costos.length!==0) {
+            cantidad_presupuestos++;
+        }
+        if (response.presupuesto.gastos.length!==0) {
+            cantidad_presupuestos++;
+        }
+
+        if (response.presupuesto.ingresos.length!==0) {
+            html += presupuesto(response.presupuesto.ingresos, cantidad_presupuestos, 'INGRESOS');
+        }
+        if (response.presupuesto.costos.length!==0) {
+            html += presupuesto(response.presupuesto.costos, cantidad_presupuestos, 'COSTOS');
+        }
+        if (response.presupuesto.gastos.length!==0) {
+            html += presupuesto(response.presupuesto.gastos, cantidad_presupuestos, 'GASTOS');
+        }
+        $('#modal-presupuesto [data-presupuesto="table"]').html(html);
+
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});
+function presupuesto(data,cantidad_presupuestos, texto) {
+    var html = '',
+        html_option='';
+    console.log(cantidad_presupuestos);
+    $.each(data, function (index, element) {
+        html_option+=`<tr>
+            <td>`+element.partida+`</td>
+            <td>`+element.descripcion+`</td>
+            <td>`+element.enero+`</td>
+            <td>`+element.febrero+`</td>
+            <td>`+element.marzo+`</td>
+            <td>`+element.abril+`</td>
+            <td>`+element.mayo+`</td>
+            <td>`+element.junio+`</td>
+            <td>`+element.julio+`</td>
+            <td>`+element.agosto+`</td>
+            <td>`+element.setiembre+`</td>
+            <td>`+element.octubre+`</td>
+            <td>`+element.noviembre+`</td>
+            <td>`+element.diciembre+`</td>
+        </tr>`
+    });
+
+    html = `
+        <div class="col-md-12">
+            <h3>`+texto+`</h3s>
+            <table class="table small">
+                <thead>
+                    <tr>
+                        <th class="text-left" width="30">PARTIDA</th>
+                        <th class="text-left" width="">DESCRIPCION</th>
+                        <th class="text-left" width=""colspan="">ENE </th>
+                        <th class="text-left" width=""colspan="">FEB</th>
+                        <th class="text-left" width=""colspan="">MAR</th>
+                        <th class="text-left" width=""colspan="">ABR</th>
+                        <th class="text-left" width=""colspan="">MAY</th>
+                        <th class="text-left" width=""colspan="">JUN</th>
+                        <th class="text-left" width=""colspan="">JUL</th>
+                        <th class="text-left" width=""colspan="">AGO</th>
+                        <th class="text-left" width=""colspan="">SET</th>
+                        <th class="text-left" width=""colspan="">OCT</th>
+                        <th class="text-left" width=""colspan="">NOV</th>
+                        <th class="text-left" width=""colspan="">DIC</th>
+                    </tr>
+                </thead>
+                <tbody data-table-presupuesto="ingreso">
+                    `+html_option+`
+                </tbody>
+            </table>
+        </div>
+        `;
+    return html;
+}
+$(document).on('click','.aprobar-presupuesto',function () {
+    var id = $(this).attr('data-id');
+    Swal.fire({
+        title: 'Aprobar',
+        text: "¿Está seguro de aprobar?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'POST',
+                url: 'aprobar',
+                data: {id:id},
+                // processData: false,
+                // contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
+
+                }
+            }).done(function(response) {
+                return response
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value.status===200) {
+                $('#lista-presupuesto-interno').DataTable().ajax.reload();
+                Swal.fire({
+                    title: 'Éxito',
+                    text: "Se aprobar con éxito",
                     icon: 'success',
                     showCancelButton: false,
                     confirmButtonColor: '#3085d6',
