@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class CierreAperturaController extends Controller
 {
@@ -16,20 +18,95 @@ class CierreAperturaController extends Controller
 	
 	public function index()
 	{
-		return view('tesoreria.cierre_apertura.lista');
+        $empresas = DB::table('administracion.adm_empresa')
+        ->select('adm_empresa.id_empresa','adm_contri.razon_social')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','adm_empresa.id_contribuyente')
+        ->where('adm_empresa.estado',1)
+        ->get();
+        $almacenes = DB::table('almacen.alm_almacen')
+        ->select('alm_almacen.id_almacen','alm_almacen.descripcion')
+        ->where('alm_almacen.estado',1)
+        ->get();
+		return view('tesoreria/cierre_apertura/lista',compact('empresas','almacenes'));
 	}
 
 	public function listar()
     {
-        $data = DB::table('administracion.adm_periodo');
+        $data = DB::table('contabilidad.periodo')
+        ->select('periodo.*','alm_almacen.descripcion as almacen','sis_sede.codigo as sede',
+        'adm_contri.razon_social as empresa','periodo_estado.nombre as estado_nombre')
+        ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','periodo.id_almacen')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+        ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
+        ->join('contabilidad.periodo_estado','periodo_estado.id_estado','=','periodo.estado')
+        ;
 
         return DataTables::of($data)
         ->addColumn('accion', function ($data) { 
 			return 
-            '<div class="btn-group" role="group">
-                <button type="button" class="btn btn-xs btn-primary" onclick="editar('.$data->id_periodo.');"><span class="fas fa-edit"></span></button>
+            '<div class="btn-group" role="group">'.
+            ($data->estado == 2 
+            ? '<button type="button" class="btn btn-xs btn-danger abrir" data-id="'.$data->id_periodo.'" data-toggle="tooltip" data-placement="bottom" title="Abrir Periodo"><span class="fas fa-lock-open"></span></button>'
+            :'<button type="button" class="btn btn-xs btn-success cerrar" data-id="'.$data->id_periodo.'" data-toggle="tooltip" data-placement="bottom" title="Cerrar Periodo"><span class="fas fa-lock"></span></button>').'
+                <button type="button" class="btn btn-xs btn-warning" data-id="'.$data->id_periodo.'" data-toggle="tooltip" data-placement="bottom" title="Ver el Historial"><span class="fas fa-list"></span></button>
             </div>';
         })->rawColumns(['accion'])->make(true);
     }
 
+    public function mostrarSedesPorEmpresa($id_empresa)
+    {
+        $sedes = DB::table('administracion.sis_sede')
+        ->select('sis_sede.id_sede','sis_sede.descripcion')
+        ->where('sis_sede.id_empresa',$id_empresa)
+        ->where('sis_sede.estado',1)
+        ->get();
+        return response()->json($sedes);
+    }
+
+    public function mostrarAlmacenesPorSede($id_sede)
+    {
+        $almacenes = DB::table('almacen.alm_almacen')
+        ->select('alm_almacen.id_almacen','alm_almacen.descripcion')
+        ->where('alm_almacen.id_sede',$id_sede)
+        ->where('alm_almacen.estado',1)
+        ->get();
+        return response()->json($almacenes);
+    }
+
+    public function guardarAccion(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $id_usuario = Auth::user()->id_usuario;
+            $id_historial = DB::table('contabilidad.periodo_historial')->insertGetId(
+                [
+                    'id_periodo' => $request->ca_id_periodo,
+                    'accion' => $request->ca_estado,
+                    'id_estado' => $request->ca_id_estado,
+                    // 'f_inicio' => $codigo,
+                    // 'f_fin' => $request->fecha_almacen,
+                    'comentario' => $request->ca_comentario,
+                    'id_usuario' => $id_usuario,
+                    'estado' => 1,
+                    'fecha_registro' => new Carbon(),
+                ],
+                'id_historial'
+            );
+
+            DB::table('contabilidad.periodo')
+            ->where('id_periodo',$request->ca_id_periodo)
+            ->update(['estado'=>$request->ca_id_estado]);
+
+            DB::commit();
+            return response()->json([
+                'tipo' => 'success',
+                'mensaje' => 'Se proceso correctamente.', 200
+            ]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar la acción. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
 }
