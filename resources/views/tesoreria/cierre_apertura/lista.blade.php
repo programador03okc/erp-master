@@ -1,7 +1,21 @@
 @extends('layout.main')
 @include('layout.menu_tesoreria')
 
-@section('cabecera') Cierre/Apertura @endsection
+@section('cabecera') Cierre / Apertura de Periodo @endsection
+
+@section('estilos')
+<link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+<style>
+    .color-abrir{
+        background-color: lightpink !important;
+        font-weight: bold;
+    }
+    .color-cerrar{
+        background-color: #7fffd4 !important;
+        font-weight: bold;
+    }
+</style>
+@endsection
 
 @section('breadcrumb')
 <ol class="breadcrumb">
@@ -11,68 +25,43 @@
 @endsection
 
 @section('content')
-<div class="page-main" type="cierre_apertura">
-    <div class="box box-solid">
-        <div class="box-header with-border">
-            <h3 class="box-title">Lista de Periodos</h3>
-        </div>
-        <div class="box-body">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped table-bordered table-condensed" style="font-size: smaller;" id="tabla">
-                                <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Descripción</th>
-                                        <th>Estado</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
+<div class="box box-solid">
+    <div class="box-body">
+        <div class="page-main" type="periodo">
+            
+            <div class="row" style="padding-top:10px;">
+                <div class="col-md-12">
+                    <button id="btn_nuevo" class="btn btn-success" onClick="openCierreApertura();">Nuevo cierre / apertura</button>
+                
+                    {{-- <form id="formFiltrosIncidencias" method="POST" target="_blank"
+                    action="{{route('cas.garantias.fichas.incidenciasExcel')}}">
+                        @csrf()
+                    </form> --}}
+                    <table class="mytable table table-condensed table-bordered table-okc-view"
+                        id="listaPeriodos" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Año</th>
+                                <th>Mes</th>
+                                <th>Empresa</th>
+                                <th>Sede</th>
+                                <th>Almacén</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                        <tfoot></tfoot>
+                    </table>
                 </div>
             </div>
+                    
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modal-data" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="modal-data">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form id="formulario" method="POST">
-                <input type="hidden" name="_method" value="POST">
-                <input type="hidden" name="id" value="0">
-                @csrf
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h5 class="modal-title" id="title"></h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <h5>Compra</h5>
-                            <input type="number" name="compra" class="form-control input-sm text-center" step="any" min="0" value="0.00">
-                        </div>
-                        <div class="col-md-4">
-                            <h5>Venta</h5>
-                            <input type="number" name="venta" class="form-control input-sm text-center" step="any" min="0" value="0.00">
-                        </div>
-                        <div class="col-md-4">
-                            <h5>Promedio</h5>
-                            <input type="number" name="promedio" class="form-control input-sm text-center" step="any" min="0" value="0.00">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success shadow-none">Guardar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+@include('tesoreria.cierre_apertura.nuevo')
+@include('tesoreria.cierre_apertura.cierreApertura')
 @endsection
 
 @section('scripts')
@@ -89,39 +78,54 @@
         $(document).ready(function() {
             listar();
 
-            // $("#formulario").on("submit", function() {
-            //     var data = $(this).serializeArray();
-            //     data.push({_token: csrf_token});
+            $("#cierre-apertura").on("submit", function() {
+                var data = $(this).serializeArray();
+                console.log(data);
+                // data.push({_token: csrf_token});
 
-            //     $.ajax({
-            //         type: "POST",
-            //         url : $(this).attr('action'),
-            //         data: data,
-            //         dataType: "JSON",
-            //         success: function (response) {
-            //             if (response.response == 'ok') {
-            //                 $('#modal-data').modal('hide');
-            //                 $('#tabla').DataTable().ajax.reload(null, false);
-            //             }
-            //             Util.notify(response.alert, response.message);
-            //         }
-            //     }).fail( function(jqXHR, textStatus, errorThrown) {
-            //         console.log(jqXHR);
-            //         console.log(textStatus);
-            //         console.log(errorThrown);
-            //     });
-            //     return false;
-            // });
+                $.ajax({
+                    type: "POST",
+                    url : $(this).attr('action'),
+                    data: data,
+                    dataType: "JSON",
+                    success: function (response) {
+                        if (response.tipo == 'success') {
+                            $('#modal-cierre-apertura').modal('hide');
+                            $('#listaPeriodos').DataTable().ajax.reload(null, false);
+                        }
+                        Util.notify(response.tipo, response.mensaje);
+                    }
+                }).fail( function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+                return false;
+            });
         });
 
         function listar() {
-            var $tabla = $('#tabla').DataTable({
-                dom: 'frtip',
-                pageLength: 20,
+            let botones = [];
+            botones.push({
+                text: ' Nuevo',
+                action: function () {
+                    // exportarIncidencias();
+                }, className: 'btn-success btnNuevo'
+            });
+            var $tabla = $('#listaPeriodos').DataTable({
+                // dom: vardataTables[1],
+                dom: 'Bfrtip',
+                buttons: {
+                text: ' Nuevo',
+                action: function () {
+                    // exportarIncidencias();
+                }, className: 'btn-success btnNuevo'
+            },
                 language: vardataTables[0],
+                pageLength: 20,
                 serverSide: true,
                 initComplete: function (settings, json) {
-                    const $filter = $('#tabla_filter');
+                    const $filter = $('#listaPeriodos_filter');
                     const $input = $filter.find('input');
                     $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><i class="fas fa-search"></i></button>');
                     $input.off();
@@ -135,9 +139,9 @@
                     });
                 },
                 drawCallback: function (settings) {
-                    $('#tabla_filter input').prop('disabled', false);
+                    $('#listaPeriodos_filter input').prop('disabled', false);
                     $('#btnBuscar').html('<i class="fas fa-search"></i>').prop('disabled', false);
-                    $('#tabla_filter input').trigger('focus');
+                    $('#listaPeriodos_filter input').trigger('focus');
                 },
                 order: [[0, 'desc']],
                 ajax: {
@@ -146,14 +150,18 @@
                     headers: {'X-CSRF-TOKEN': csrf_token}
                 },
                 columns: [
-                    {data: 'id_periodo', className: 'text-center'},
-                    {data: 'descripcion', className: 'text-right'},
-                    {data: 'estado', className: 'text-right'},
+                    // {data: 'id_periodo', className: 'text-center'},
+                    {data: 'anio', className: 'text-center'},
+                    {data: 'mes', className: 'text-center'},
+                    {data: 'empresa', name:'adm_contri.razon_social', className: 'text-lefth'},
+                    {data: 'sede', name:'sis_sede.codigo', className: 'text-lefth'},
+                    {data: 'almacen', name:'alm_almacen.descripcion', className: 'text-lefth'},
+                    {data: 'estado_nombre', name:'periodo_estado.nombre', className: 'text-center'},
                     {data: 'accion', orderable: false, searchable: false, className: 'text-center'}
-                ]
+                ],
             });
             $tabla.on('search.dt', function() {
-                $('#tabla_filter input').attr('disabled', true);
+                $('#listaPeriodos_filter input').attr('disabled', true);
                 $('#btnBuscar').html('<i class="fas fa-clock" aria-hidden="true"></i>').prop('disabled', true);
             });
             $tabla.on('init.dt', function(e, settings, processing) {
@@ -168,30 +176,144 @@
             });
         }
 
-        function editar(id) {
-            $.ajax({
-                type: 'POST',
-                url: "{{ route('tesoreria.tipo-cambio.editar') }}",
-                data: {
-                    _token: csrf_token,
-                    id: id,
-                },
-                dataType: 'JSON',
-                success: function (response) {
-                    var datax = response[0];
-                    $('[name=id]').val(datax.id_tp_cambio);
-                    $('[name=compra]').val(datax.compra);
-                    $('[name=venta]').val(datax.venta);
-                    $('[name=promedio]').val(datax.promedio);
-                    $('#title').text('Editar Tipo de Cambio');
-                    $('#formulario').attr('action', "{{ route('tesoreria.tipo-cambio.guardar') }}");
-                    $('#modal-data').modal('show');
-                }
-            }).fail( function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                console.log(errorThrown);
-            });
+        function openCierreApertura() {
+            $('#title').text('Nuevo Cierre / Apertura');
+            // $('#formulario').attr('action', "{{ route('tesoreria.tipo-cambio.guardar') }}");
+            $('#modal-nuevo-cierre-apertura').modal('show');
         }
+
+        $("#listaPeriodos tbody").on("click", "button.abrir", function () {
+            $('#titleCierreApertura').text('Abrir Periodo');
+            $('[name=ca_anio]').removeClass('color-cerrar');
+            $('[name=ca_anio]').addClass('color-abrir');
+            $('[name=ca_mes]').removeClass('color-cerrar');
+            $('[name=ca_mes]').addClass('color-abrir');
+            $('[name=ca_almacen]').removeClass('color-cerrar');
+            $('[name=ca_almacen]').addClass('color-abrir');
+            $('[name=ca_estado]').removeClass('color-cerrar');
+            $('[name=ca_estado]').addClass('color-abrir');
+
+            var data = $("#listaPeriodos").DataTable().row($(this).parents("tr")).data();
+            console.log(data);
+
+            $('#modal-cierre-apertura').modal('show');
+            $('#cierre-apertura').attr('action', "{{ route('tesoreria.cierre-apertura.guardar') }}");
+
+            $('[name=ca_anio]').val(data.anio);
+            $('[name=ca_mes]').val(data.mes);
+            $('[name=ca_id_estado]').val(1);
+            $('[name=ca_estado]').val('Abrir');
+            $('[name=ca_almacen]').val(data.almacen);
+            $('[name=ca_id_periodo]').val(data.id_periodo);
+            $('[name=ca_comentario]').val('');
+        });
+
+        $("#listaPeriodos tbody").on("click", "button.cerrar", function () {
+            $('#titleCierreApertura').text('Cerrar Periodo');
+            
+            $('[name=ca_anio]').removeClass('color-abrir');
+            $('[name=ca_anio]').addClass('color-cerrar');
+            $('[name=ca_mes]').removeClass('color-abrir');
+            $('[name=ca_mes]').addClass('color-cerrar');
+            $('[name=ca_almacen]').removeClass('color-abrir');
+            $('[name=ca_almacen]').addClass('color-cerrar');
+            $('[name=ca_estado]').removeClass('color-abrir');
+            $('[name=ca_estado]').addClass('color-cerrar');
+
+            var data = $("#listaPeriodos").DataTable().row($(this).parents("tr")).data();
+            console.log(data);
+            
+            $('#modal-cierre-apertura').modal('show');
+            $('#cierre-apertura').attr('action', "{{ route('tesoreria.cierre-apertura.guardar') }}");
+
+            $('[name=ca_anio]').val(data.anio);
+            $('[name=ca_mes]').val(data.mes);
+            $('[name=ca_id_estado]').val(2);
+            $('[name=ca_estado]').val('Cerrar');
+            $('[name=ca_almacen]').val(data.almacen);
+            $('[name=ca_id_periodo]').val(data.id_periodo);
+            $('[name=ca_comentario]').val('');
+        });
+
+        $("[name=id_empresa]").on('change', function () {
+            var id_empresa = $(this).val();
+            console.log(id_empresa);
+
+            if (id_empresa==0){
+                $('[name=id_sede]').val(0);
+                $('[name=id_almacen]').val(0);
+            } else {
+
+                $('[name=id_sede]').html('');
+                $('[name=id_almacen]').html('');
+                $.ajax({
+                    type: 'GET',
+                    // headers: { 'X-CSRF-TOKEN': token },
+                    url: 'mostrarSedesPorEmpresa/' + id_empresa,
+                    dataType: 'JSON',
+                    success: function (response) {
+                        console.log(response);
+    
+                        if (response.length > 0) {
+                            $('[name=id_sede]').html('');
+                            html = '<option value="0" >Todos las sedes</option>';
+                            response.forEach(element => {
+                                html += `<option value="${element.id_sede}" >${element.descripcion}</option>`;
+                            });
+                            $('[name=id_sede]').html(html);
+                        }
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            }
+        });
+
+               
+        $("[name=id_sede]").on('change', function () {
+            var id_sede = $(this).val();
+            console.log(id_sede);
+            
+            if (id_sede==0){
+                $('[name=id_almacen]').val(0);
+            } else {
+
+                $('[name=id_almacen]').html('');
+                $.ajax({
+                    type: 'GET',
+                    url: 'mostrarAlmacenesPorSede/' + id_sede,
+                    dataType: 'JSON',
+                    success: function (response) {
+                        console.log(response);
+
+                        if (response.length > 0) {
+                            $('[name=id_almacen]').html('');
+                            html = '<option value="0">Todos los almacenes</option>';
+                            response.forEach(element => {
+                                html += `<option value="${element.id_almacen}" >${element.descripcion}</option>`;
+                            });
+                            $('[name=id_almacen]').html(html);
+                        }
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            }
+        });
+
+        $("[name=id_almacen]").on('change', function () {
+            var id_almacen = $(this).val();
+            console.log(id_almacen);
+            
+            if (id_almacen==0){
+                $('[name=id_empresa]').val(0);
+                $('[name=id_sede]').val(0);
+            }
+
+        });
     </script>
 @endsection
