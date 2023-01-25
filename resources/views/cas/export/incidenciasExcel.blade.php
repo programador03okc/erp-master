@@ -27,10 +27,7 @@
                 <th style="background-color: #cccccc;" width="18"><b>Falla reportada</b></th>
 
                 <th style="background-color: #cccccc;" width="18"><b>Código</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Fecha Reporte	</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Responsable</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Acciones realizadas</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Fecha registro</b></th>
+
 
                 <th style="background-color: #cccccc;" width="18"><b>Serie</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Marca	</b></th>
@@ -76,10 +73,6 @@
                 <td>{{$d->nombre_corto}}</td>
                 <td>{{$d->falla_reportada}}</td>
                 <td>{{$d->id_incidencia_reporte}}</td>
-                <td>{{ date('d-m-Y', strtotime($d->fecha_reporte_detalle))}}</td>
-                <td>{{$d->nombre_corto_detalle}}</td>
-                <td>{{$d->acciones_realizadas}}</td>
-                <td>{{ date('d-m-Y h:i', strtotime($d->fecha_registro_detalle)) }}</td>
 
 
                 <td>{{ $d->serie }}</td>
