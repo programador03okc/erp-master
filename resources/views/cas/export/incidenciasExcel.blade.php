@@ -76,10 +76,10 @@
                 <td>{{$d->nombre_corto}}</td>
                 <td>{{$d->falla_reportada}}</td>
                 <td>{{$d->id_incidencia_reporte}}</td>
-                <td>{{ date('d-m-Y', strtotime($d->fecha_reporte_detalle))}}</td>
+                <td>{{$d->fecha_reporte_detalle}}</td>
                 <td>{{$d->nombre_corto_detalle}}</td>
                 <td>{{$d->acciones_realizadas}}</td>
-                <td>{{ date('d-m-Y h:i', strtotime($d->fecha_registro_detalle)) }}</td>
+                <td>{{$d->fecha_registro_detalle}}</td>
 
 
                 <td>{{ $d->serie }}</td>
