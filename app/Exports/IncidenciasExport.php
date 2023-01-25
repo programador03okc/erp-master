@@ -27,9 +27,10 @@ class IncidenciasExport implements FromView
         $data_json = [];
         $data_export_excel=[];
         $data_export = $this->data->get();
+        // dd($data_export);exit;
         foreach ($data_export as $key => $value) {
             $requerimientos = (new FichaReporteController)->obtenerListadoGestionincidenciasDetalleExport($value->id_incidencia);
-
+            // dd($requerimientos);exit;
             $incidencias = (new FichaReporteController)->obtenerListadoIncidencias($value->id_incidencia);
             // var_dump($incidencias);exit;
             foreach ($requerimientos as $key => $item) {
