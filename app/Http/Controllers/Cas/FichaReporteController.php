@@ -80,7 +80,7 @@ class FichaReporteController extends Controller
 
     public function incidenciasExcel(Request $request)
     {
-        $data = $this->incidencias();
+        $data = $this->incidencias()->orderBy('id_incidencia','desc');
         $fecha = new Carbon();
         return Excel::download(new IncidenciasExport(
             $data,
