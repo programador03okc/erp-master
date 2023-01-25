@@ -105,6 +105,13 @@ function listarIncidencias() {
                     return (row['fecha_reporte'] !== undefined ? formatDate(row['fecha_reporte']) : '');
                 }
             },
+            {
+                data: 'fecha_documento',
+                'render': function (data, type, row) {
+                    return (row['fecha_documento'] != null ? formatDate(row['fecha_documento']) : '');
+                    
+                }
+            },
             { 'data': 'nombre_corto', name: 'sis_usua.nombre_corto' },
             { 'data': 'falla_reportada' },
 

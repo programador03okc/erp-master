@@ -50,6 +50,7 @@ class IncidenciasConHistorialExport implements FromView
                         'telefono_contacto'=>$value->telefono_contacto,
                         'direccion_contacto'=>$value->direccion_contacto,
                         'fecha_reporte'=>$value->fecha_reporte,
+                        'fecha_documento'=>$value->fecha_documento,
                         'nombre_corto'=>$value->nombre_corto,
                         'falla_reportada'=>$value->falla_reportada,
 
