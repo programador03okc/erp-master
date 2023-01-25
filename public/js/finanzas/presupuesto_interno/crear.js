@@ -65,9 +65,11 @@ function generarModelo(data) {
             descripcion ='',
             id=Math.random(),
             id_padre=Math.random(),
-            input_key=Math.random();
+            input_key=Math.random(),
+            array_excluidos = ['03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03'],
+            partida_hidden = array_excluidos.includes(element.partida);
 
-
+        // console.log(partida_hidden);
 
         html+='<tr key="'+input_key+'" data-nivel="'+array.length+'" data-partida="'+element.partida+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" '+(array.length==2?'class="text-primary"':'')+' '+(array.length==4?'class="bg-danger"':'')+'>'
             html+='<td data-td="partida" >'
@@ -89,34 +91,48 @@ function generarModelo(data) {
                 html+='<td data-td="porcentaje" '+(data.id_tipo==='2'?'':'hidden')+'>'+(array.length===4?'<span>0</span>%':'')+'<input type="hidden" value="0" name="'+data.tipo.toLowerCase()+'['+input_key+'][porcentaje_costo]" class="form-control input-sm"></td>'
 
             // inputs del mes
-                html+='<td data-td="enero"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][enero]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="enero" '+(array.length===4?'data-input="partida" title="ENERO"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="enero">'+
+                    '<input '+
+                        'type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" '+
+                        'value="0.00" '+
+                        'class="form-control input-sm" '+
+                        'name="'+data.tipo.toLowerCase()+'['+input_key+'][enero]" '+
+                        'placeholder="Ingrese monto" '+
+                        'key="'+input_key+'"  '+
+                        'data-nivel="'+array.length+'" '+
+                        'data-id="'+element.id_modelo_presupuesto_interno+'" '+
+                        'data-id-padre="'+element.id_padre+'" '+
+                        'data-tipo-text="'+data.tipo.toLowerCase()+'" '+
+                        'data-mes="enero" '+(array.length===4?'data-input="partida" title="ENERO"':'')+''+
+                    '>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+''+
+                '</td>'
 
-                html+='<td data-td="febrero"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][febrero]" placeholder="Ingrese monto"  key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="febrero" '+(array.length===4?'data-input="partida" title="FEBRERO"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="febrero"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][febrero]" placeholder="Ingrese monto"  key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="febrero" '+(array.length===4?'data-input="partida" title="FEBRERO"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="marzo"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][marzo]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="marzo" '+(array.length===4?'data-input="partida" title="MARZO"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="marzo"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][marzo]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="marzo" '+(array.length===4?'data-input="partida" title="MARZO"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="abril"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][abril]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="abril" '+(array.length===4?'data-input="partida" title="ABRIL"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="abril"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][abril]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="abril" '+(array.length===4?'data-input="partida" title="ABRIL"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="mayo"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][mayo]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="mayo" '+(array.length===4?'data-input="partida" title="MAYO"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="mayo"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][mayo]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="mayo" '+(array.length===4?'data-input="partida" title="MAYO"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="junio"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][junio]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="junio" '+(array.length===4?'data-input="partida" title="JUNIO"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="junio"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][junio]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="junio" '+(array.length===4?'data-input="partida" title="JUNIO"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="julio"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][julio]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="julio" '+(array.length===4?'data-input="partida" title="JULIO"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="julio"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][julio]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="julio" '+(array.length===4?'data-input="partida" title="JULIO"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="agosto"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][agosto]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="agosto" '+(array.length===4?'data-input="partida" title="AGOSTO"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="agosto"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][agosto]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="agosto" '+(array.length===4?'data-input="partida" title="AGOSTO"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="setiembre"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][setiembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="setiembre" '+(array.length===4?'data-input="partida" title="SETIEMBRE"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="setiembre"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][setiembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="setiembre" '+(array.length===4?'data-input="partida" title="SETIEMBRE"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="octubre"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][octubre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="octubre" '+(array.length===4?'data-input="partida" title="OCTUBRE"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="octubre"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][octubre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="octubre" '+(array.length===4?'data-input="partida" title="OCTUBRE"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="noviembre"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][noviembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="noviembre" '+(array.length===4?'data-input="partida" title="NOVIEMBRE"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="noviembre"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][noviembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="noviembre" '+(array.length===4?'data-input="partida" title="NOVIEMBRE"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
 
-                html+='<td data-td="diciembre"><input type="'+(array.length===4 && data.id_tipo!=='2'?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][diciembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="diciembre" '+(array.length===4?'data-input="partida" title="DICIEMBRE"':'')+'>'+(array.length===4 && data.id_tipo!=='2'?'':'<span>'+0+'.00</span>')+'</td>'
+                html+='<td data-td="diciembre"><input type="'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'text':'hidden')+'" value="0.00" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][diciembre]" placeholder="Ingrese monto" key="'+input_key+'"  data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" data-mes="diciembre" '+(array.length===4?'data-input="partida" title="DICIEMBRE"':'')+'>'+(array.length===4 && data.id_tipo!=='2' && partida_hidden===false?'':'<span>'+0+'.00</span>')+'</td>'
             // }else{
             //     html+='<td colspan="2" data-td="descripcion"><input type="hidden" value="'+element.descripcion+'" class="form-control input-sm" name="'+data.tipo.toLowerCase()+'['+input_key+'][descripcion]"><span>'+element.descripcion+'</span></td>'
             // }
             // if (data.id_tipo!=='2') {
-            html+='<td data-td="accion" '+(data.id_tipo==='2'?'hidden':'')+'>'
+            html+='<td data-td="accion" '+(data.id_tipo==='1' && array.length==4 ?'':'hidden')+'>'
                 html+='<div class="btn-group">'
                     html+='<div class="btn-group">'
                         html+='<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
@@ -125,21 +141,21 @@ function generarModelo(data) {
                         html+='<ul class="dropdown-menu dropdown-menu-right">'
                         if (array.length!=4) {
                             html+='<input type="hidden" name="'+data.tipo.toLowerCase()+'['+input_key+'][registro]" value="1">'
-                            html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>'
+                            // html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>'
 
-                            html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>'
+                            // html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>'
 
-                            html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar" data-tipo="editar">Editar</a></li>'
+                            // html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-nuevo" data-select="titulo" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar" data-tipo="editar">Editar</a></li>'
                         }
 
                         if (array.length==4) {
                             html+='<input type="hidden" name="'+data.tipo.toLowerCase()+'['+input_key+'][registro]" value="2">'
-                            html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar partida" data-tipo="editar">Editar partida</a></li>'
+                            // html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-partida" data-select="partida" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar partida" data-tipo="editar">Editar partida</a></li>'
 
                             html+='<li><a href="#" class="" key="'+input_key+'" data-action="click-porcentaje" data-nivel="'+array.length+'" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'" title="Editar porcentaje" data-tipo="editar" data-text-partida="'+element.partida+'" >Editar porcentaje</a></li>'
                         }
                         if (array.length!==1) {
-                            html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-eliminar" data-nivel="'+array.length+'" title="Eliminar" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'">Eliminar</a></li>'
+                            // html+='<li><a href="#" class="" data-partida="'+element.partida+'" key="'+input_key+'" data-action="click-eliminar" data-nivel="'+array.length+'" title="Eliminar" data-id="'+element.id_modelo_presupuesto_interno+'" data-id-padre="'+element.id_padre+'" data-tipo-text="'+data.tipo.toLowerCase()+'">Eliminar</a></li>'
                         }
                         html+='</ul>'
                     html+='</div>'
@@ -824,6 +840,14 @@ $('[name="id_grupo"]').change(function (e) {
 });
 $(document).on('change','[data-input="partida"]',function (e) {
     e.preventDefault();
+    const PORCENTAJE_ESSALUD        = 0.09;
+    const PORCENTAJE_SCTR           = 0.0158;
+    const PORCENTAJE_ESSALUD_VIDA   = 0.0127;
+
+    const PORCENTAJE_SERVICIOS  = 0.0833;
+    const GRATIFICACIONES       = 6;
+    const VACACIONES            = 12;
+
     var value = $(this).val();
 
     value=(value?value:'0.00');
@@ -861,72 +885,167 @@ $(document).on('change','[data-input="partida"]',function (e) {
         numero_mes
     );
     // calcular las celdas de costos
+    switch (data_text_presupuesto) {
+        case "ingresos":
+            if ($porcentajes.length>0) {
+                var porcentaje_gobierno = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_gobierno]"]').val(),
+                    porcentaje_privado = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_privado]"]').val(),
+                    porcentaje_comicion = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_comicion]"]').val(),
+                    porcentaje_penalidad = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_penalidad]"]').val(),
+                    valor_padre = $('tr[data-id="'+data_id_padre+'"] td[data-td="'+mes+'"]').find('input').val(),
+                    partida_ingreso = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('[name="ingresos['+key+'][partida]"]').val(),
+                    partida_costo = '02',
+                    numero_partida='',
+                    partida_comision='',
+                    partida_penalidad='';
+
+                var costo_gobierno,
+                    costo_privado,
+                    costo_comisiones,
+                    costo_penalidades,
+                    valor_cabecera='';
+
+                valor_padre = valor_padre.split(',');
+                valor_padre.forEach(element => {
+                    valor_cabecera = valor_cabecera + element;
+                });
+                valor_cabecera = parseFloat(valor_cabecera);
+                costo_gobierno      = monto_calculable * (parseFloat(porcentaje_gobierno)/100);
+                costo_privado       = monto_calculable * (parseFloat(porcentaje_privado)/100);
+                costo_comisiones    = parseFloat(valor_cabecera) * (parseFloat(porcentaje_comicion)/100);
+                costo_penalidades   = parseFloat(valor_cabecera) * (parseFloat(porcentaje_penalidad)/100);
+
+
+                partida_ingreso = partida_ingreso.split('.');
+                $.each(partida_ingreso, function (index, element) {
+                    if ((index+1)==partida_ingreso.length) {
+                        numero_partida = element;
+
+                        partida_comision = partida_costo + '.03';
+                        partida_penalidad = partida_costo + '.04';
+                    }
+                    if (index!==0) {
+                        partida_costo = partida_costo+'.'+element;
+                    }
+
+                });
+
+                if (numero_partida == '01') {
+                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_gobierno.toFixed(2))
+                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_gobierno.toFixed(2))
+
+                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+
+                }
+                if (numero_partida == '02') {
+                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_privado.toFixed(2))
+                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_privado.toFixed(2))
+
+                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+                }
+
+                $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_comisiones.toFixed(2))
+                $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_comisiones.toFixed(2))
+
+                $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+
+                $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_penalidades.toFixed(2))
+                $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_penalidades.toFixed(2))
+
+                $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+            }
+        break;
+
+        case "gastos":
+            var partida_padre = $('tr[data-id="'+data_id_padre+'"] td[data-td="partida"]').find('input[name="gastos['+$('tr[data-id="'+data_id_padre+'"]').attr('key')+'][partida]"]').val(),
+                partida_hijo = $(this).closest('tr').find('td[data-td="partida"]').find('input[name="gastos['+key+'][partida]"]').val(),
+                total=0,
+                essalud     =0,
+                sctr        =0,
+                essalud_vida=0,
+                servicios       =0,
+                gratificaciones =0,
+                vacacione       =0;
+
+            if (partida_hijo === '03.01.01.01' || partida_hijo === '03.01.01.02' || partida_hijo === '03.01.01.03') {
+                $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (index, element) {
+                    if (index<3) {
+                        var this_valor = element.children[numero_mes].children[0].value,
+                            array_valor = this_valor.split(','),
+                            valor_string = '';
+
+                        $.each(array_valor, function (index_valor, element_valor) {
+                            valor_string = valor_string + element_valor;
+                        });
+
+                        total = total + parseFloat(valor_string);
+
+                    }
+
+                });
+                total = total.toFixed(2);
+                essalud         = (total * PORCENTAJE_ESSALUD).toFixed(0);
+                sctr            = (total * PORCENTAJE_SCTR).toFixed(0);
+                essalud_vida    = (total * PORCENTAJE_ESSALUD_VIDA).toFixed(0);
+
+                servicios       = (total * PORCENTAJE_SERVICIOS).toFixed(2);
+                gratificaciones = (total / GRATIFICACIONES).toFixed(2);
+                vacacione       = (total / VACACIONES).toFixed(2);
+
+                var array_partida_padre = partida_padre.split('.'),
+                    partida_ESSALUD = '.01',
+                    partida_SCTR = '.02',
+                    partida_ESSALUD_VIDA = '.03',
+                    partida_SERVICIOS = '.01',
+                    partida_GRATIFICACIONES = '.02',
+                    partida_VACACIONES = '.03',
+
+                    partida_PATRONALES = '.02',
+                    partida_PROVISIONES = '.03',
+                    partida_abuelo;
+                $.each(array_partida_padre, function (index, element) {
+                    if (index < array_partida_padre.length-1) {
+                        partida_abuelo = (index===0 ?element: partida_abuelo + '.'+element);
+                    }
+
+                });
+                partida_PATRONALES = partida_abuelo+ partida_PATRONALES
+                partida_PROVISIONES = partida_abuelo + partida_PROVISIONES
+
+                partida_ESSALUD         = partida_PATRONALES + partida_ESSALUD,
+                partida_SCTR            = partida_PATRONALES + partida_SCTR,
+                partida_ESSALUD_VIDA    = partida_PATRONALES + partida_ESSALUD_VIDA,
+
+                partida_SERVICIOS       = partida_PROVISIONES + partida_SERVICIOS,
+                partida_GRATIFICACIONES = partida_PROVISIONES + partida_GRATIFICACIONES,
+                partida_VACACIONES      = partida_PROVISIONES + partida_VACACIONES,
+
+                // 03.01.02.01	ESSALUD
+                $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud)
+                $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                // 03.01.02.02	SCTR
+                $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(sctr)
+                $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                // 03.01.02.03	ESSALUD VIDA
+                $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud_vida)
+                $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+
+                // 03.01.03.01	COMPENSACION POR TIEMPO DE SERVICIOS
+                $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(servicios)
+                $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                // 03.01.03.02	GRATIFICACIONES
+                $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(gratificaciones)
+                $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                // 03.01.03.03	VACACIONES
+                $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(vacacione)
+                $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+
+            }
+
+        break;
+    }
     if ($porcentajes.length>0 && data_text_presupuesto=="ingresos") {
-        var porcentaje_gobierno = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_gobierno]"]').val(),
-            porcentaje_privado = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_privado]"]').val(),
-            porcentaje_comicion = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_comicion]"]').val(),
-            porcentaje_penalidad = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_penalidad]"]').val(),
-            valor_padre = $('tr[data-id="'+data_id_padre+'"] td[data-td="'+mes+'"]').find('input').val(),
-            partida_ingreso = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('[name="ingresos['+key+'][partida]"]').val(),
-            partida_costo = '02',
-            numero_partida='',
-            partida_comision='',
-            partida_penalidad='';
 
-        var costo_gobierno,
-            costo_privado,
-            costo_comisiones,
-            costo_penalidades,
-            valor_cabecera='';
-
-        valor_padre = valor_padre.split(',');
-        valor_padre.forEach(element => {
-            valor_cabecera = valor_cabecera + element;
-        });
-        valor_cabecera = parseFloat(valor_cabecera);
-        costo_gobierno      = monto_calculable * (parseFloat(porcentaje_gobierno)/100);
-        costo_privado       = monto_calculable * (parseFloat(porcentaje_privado)/100);
-        costo_comisiones    = parseFloat(valor_cabecera) * (parseFloat(porcentaje_comicion)/100);
-        costo_penalidades   = parseFloat(valor_cabecera) * (parseFloat(porcentaje_penalidad)/100);
-
-
-        partida_ingreso = partida_ingreso.split('.');
-        $.each(partida_ingreso, function (index, element) {
-            if ((index+1)==partida_ingreso.length) {
-                numero_partida = element;
-
-                partida_comision = partida_costo + '.03';
-                partida_penalidad = partida_costo + '.04';
-            }
-            if (index!==0) {
-                partida_costo = partida_costo+'.'+element;
-            }
-
-        });
-
-        if (numero_partida == '01') {
-            $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_gobierno.toFixed(2))
-            $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_gobierno.toFixed(2))
-
-            $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
-
-        }
-        if (numero_partida == '02') {
-            $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_privado.toFixed(2))
-            $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_privado.toFixed(2))
-
-            $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
-        }
-
-        $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_comisiones.toFixed(2))
-        $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_comisiones.toFixed(2))
-
-        $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
-
-        $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_penalidades.toFixed(2))
-        $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_penalidades.toFixed(2))
-
-        $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
 
     }
 });
