@@ -175,7 +175,7 @@ class VentasInternasController extends Controller
                     'id_od'
                 );
                 // $codigo = OrdenesDespachoExternoController::ODnextId($fecha, $detalle->first()->id_almacen, false, $id_od);
-                $codigo = OrdenDespacho::ODnextId($detalle->first()->id_almacen, false, $id_od);
+                $codigo = OrdenDespacho::ODnextId($detalle->first()->id_almacen, false, $id_od, $fecha);
 
                 if ($codigo !== null) {
                     DB::table('almacen.orden_despacho')
