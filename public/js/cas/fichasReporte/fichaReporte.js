@@ -1,16 +1,39 @@
 function listarIncidencias() {
     var vardataTables = funcDatatables();
-    let botones = [];
-    botones.push({
-        text: ' Exportar Excel',
-        action: function () {
-            exportarIncidencias();
-        }, className: 'btn-success btnExportarIncidencias'
+    // let botones = [];
+    // botones.push({
+    //     text: ' Exportar Excel',
+    //     action: function () {
+    //         exportarIncidencias();
+    //     }, className: 'btn-success btnExportarIncidencias'
+    // });
+
+    const buttonDescargarExcelIncidencias = ({
+        text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar Incidencias',
+        attr: {
+            id: 'btnDescargarListaIncidenciasCabeceraExcel'
+        },
+        action: () => {
+            descargarExcelIncidencias();
+
+        },
+        className: 'btn-success btn-sm'
+    }),
+    buttonDescargarExcelIncidenciasConHistorial = ({
+        text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a Incidencia con historial',
+        attr: {
+            id: 'buttonDescargarExcelIncidenciasConHistorial'
+        },
+        action: () => {
+            descargarExcelIncidenciasConHistorial();
+
+        },
+        className: 'btn-success btn-sm'
     });
 
     tableIncidenciasx = $('#listaIncidencias').DataTable({
         dom: vardataTables[1],
-        buttons: botones,
+        buttons: [buttonDescargarExcelIncidencias,buttonDescargarExcelIncidenciasConHistorial],
         language: vardataTables[0],
         serverSide: true,
         ajax: {
@@ -115,9 +138,21 @@ function listarIncidencias() {
             }
         ],
         'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
-        order: [[0, "desc"]],
+        order: [[8, "desc"]],
     });
 }
+
+function descargarExcelIncidencias(){
+    window.open(`incidenciasExcel`);
+
+}
+
+function descargarExcelIncidenciasConHistorial(){
+    window.open(`incidenciasExcelConHistorial`);
+ 
+}
+
+
 
 $('#listaIncidencias tbody').on("click", "button.agregar", function (e) {
     $(e.preventDefault());
@@ -198,9 +233,9 @@ $("#listaIncidencias tbody").on("click", "a.contacto", function (e) {
     $(".usuario_final").text(usuario);
 });
 
-function exportarIncidencias() {
-    $('#formFiltrosIncidencias').trigger('submit');
-}
+// function exportarIncidencias() {
+//     $('#formFiltrosIncidencias').trigger('submit');
+// }
 
 $(document).on('click','.btn-clonar',function () {
     var id = $(this).attr('data-id');

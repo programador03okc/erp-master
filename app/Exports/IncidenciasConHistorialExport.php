@@ -7,7 +7,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromView;
 
-class IncidenciasExport implements FromView
+class IncidenciasConHistorialExport implements FromView
 {
     public $data;
     public $finicio;
@@ -27,11 +27,14 @@ class IncidenciasExport implements FromView
         $data_json = [];
         $data_export_excel=[];
         $data_export = $this->data->get();
-        // dd($data_export);
         foreach ($data_export as $key => $value) {
+            $requerimientos = (new FichaReporteController)->obtenerListadoGestionincidenciasDetalleExport($value->id_incidencia);
 
             $incidencias = (new FichaReporteController)->obtenerListadoIncidencias($value->id_incidencia);
             // var_dump($incidencias);exit;
+            foreach ($requerimientos as $key => $item) {
+
+                array_push($data_json,$item);
 
                 array_push( $data_export_excel,(object)
                     array(
@@ -49,6 +52,12 @@ class IncidenciasExport implements FromView
                         'fecha_reporte'=>$value->fecha_reporte,
                         'nombre_corto'=>$value->nombre_corto,
                         'falla_reportada'=>$value->falla_reportada,
+
+                        'id_incidencia_reporte'=>$item->id_incidencia_reporte,
+                        'fecha_reporte_detalle'=>$item->fecha_reporte,
+                        'nombre_corto_detalle'=>$item->nombre_corto,
+                        'acciones_realizadas'=>$item->acciones_realizadas,
+                        'fecha_registro_detalle'=>$item->fecha_registro,
 
                         'serie'=>$incidencias->serie,
                         'marca'=>$incidencias->marca,
@@ -76,9 +85,11 @@ class IncidenciasExport implements FromView
                     )
                 );
 
+            }
+
         }
         return view(
-            'cas/export/incidenciasExcel',
+            'cas/export/incidenciasConHistorialExcel',
             [
                 'data' => $data_export_excel,
                 // 'data_detalle' => $data_json

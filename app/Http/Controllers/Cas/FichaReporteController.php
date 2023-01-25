@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cas;
 
+use App\Exports\IncidenciasConHistorialExport;
 use App\Exports\IncidenciasExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -73,17 +74,26 @@ class FichaReporteController extends Controller
     }
     public function listarIncidencias(Request $request)
     {
-        $query = $this->incidencias();
+        $query = $this->incidencias()->orderBy('fecha_reporte','desc')->orderBy('id_incidencia','desc');
         return datatables($query)->toJson();
     }
 
     public function incidenciasExcel(Request $request)
     {
-        $data = $this->incidencias();
+        $data = $this->incidencias()->orderBy('fecha_reporte','desc')->orderBy('id_incidencia','desc');
         $fecha = new Carbon();
         return Excel::download(new IncidenciasExport(
             $data,
         ), 'Reporte de incidencias al ' . $fecha . '.xlsx');
+    }
+
+    public function incidenciasExcelConHistorial(Request $request)
+    {
+        $data = $this->incidencias();
+        $fecha = new Carbon();
+        return Excel::download(new IncidenciasConHistorialExport(
+            $data,
+        ), 'Reporte de incidencias con historial al ' . $fecha . '.xlsx');
     }
 
     function listarFichasReporte($id_incidencia)
