@@ -50,12 +50,6 @@ class IncidenciasExport implements FromView
                         'nombre_corto'=>$value->nombre_corto,
                         'falla_reportada'=>$value->falla_reportada,
 
-                        'id_incidencia_reporte'=>'',
-                        'fecha_reporte_detalle'=>'',
-                        'nombre_corto_detalle'=>'',
-                        'acciones_realizadas'=>'',
-                        'fecha_registro_detalle'=>'',
-
                         'serie'=>$incidencias->serie,
                         'marca'=>$incidencias->marca,
                         'producto'=>$incidencias->producto,
