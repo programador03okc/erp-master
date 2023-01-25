@@ -458,6 +458,7 @@ class FichaReporteController extends Controller
 
         // $mensaje = '';
         // $tipo = '';
+        // return [$incidencia];exit;
         $yyyy = date('Y', strtotime("now"));
         $codigo = Incidencia::nuevoCodigoIncidencia($incidencia->id_empresa, $yyyy);
 
@@ -505,6 +506,9 @@ class FichaReporteController extends Controller
 
         $incidencia_new->horario_contacto = $incidencia->horario_contacto;
         $incidencia_new->email_contacto = $incidencia->email_contacto;
+
+        $incidencia_new->cdp = $incidencia->codigo_oportunidad;
+        $incidencia_new->fecha_documento = $incidencia->fecha_documento;
         $incidencia_new->save();
 
         return response()->json([
