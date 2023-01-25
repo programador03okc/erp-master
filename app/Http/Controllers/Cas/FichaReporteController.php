@@ -74,13 +74,13 @@ class FichaReporteController extends Controller
     }
     public function listarIncidencias(Request $request)
     {
-        $query = $this->incidencias()->orderBy('fecha_reporte','desc');
+        $query = $this->incidencias()->orderBy('fecha_reporte','desc')->orderBy('id_incidencia','desc');
         return datatables($query)->toJson();
     }
 
     public function incidenciasExcel(Request $request)
     {
-        $data = $this->incidencias()->orderBy('fecha_reporte','desc');
+        $data = $this->incidencias()->orderBy('fecha_reporte','desc')->orderBy('id_incidencia','desc');
         $fecha = new Carbon();
         return Excel::download(new IncidenciasExport(
             $data,
