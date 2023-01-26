@@ -28,6 +28,7 @@ Presupuesto Interno
 @section('content')
 <form action="{{ route('finanzas.presupuesto.presupuesto-interno.actualizar') }}" method="post" data-form="editar-partida" enctype="multipart/formdata">
     <input type="hidden" name="id_presupuesto_interno" value="{{ $id }}">
+    <input type="hidden" name="estado" value="{{ $presupuesto_interno->estado }}">
     <div class="row">
         <div class="col-md-12">
             <div class="box box-danger">
@@ -104,26 +105,6 @@ Presupuesto Interno
                                 </select>
                             </div>
                         </div>
-                        {{-- <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="mes">Meses :</label>
-                                <select id="mes" name="mes" class="form-control" required>
-                                    <option selected hidden>Mes</option>
-                                    <option value="Enero">Enero</option>
-                                    <option value="Febrero">Febrero</option>
-                                    <option value="Marzo">Marzo</option>
-                                    <option value="Abril">Abril</option>
-                                    <option value="Mayo">Mayo</option>
-                                    <option value="Junio">Junio</option>
-                                    <option value="Julio">Julio</option>
-                                    <option value="Agosto">Agosto</option>
-                                    <option value="Septiembre">Septiembre</option>
-                                    <option value="Octubre">Octubre</option>
-                                    <option value="Noviembre">Noviembre</option>
-                                    <option value="Diciembre">Diciembre</option>
-                                </select>
-                            </div>
-                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -164,6 +145,7 @@ Presupuesto Interno
                                     <tr>
                                         <th class="text-left" width="30">PARTIDA</th>
                                         <th class="text-left" width="">DESCRIPCION</th>
+                                        <th class="text-left" width="" hidden>%</th>
 
                                         <th class="text-left" width=""colspan="">ENE </th>
                                         <th class="text-left" width=""colspan="">FEB</th>
@@ -183,13 +165,83 @@ Presupuesto Interno
                                     </tr>
                                 </thead>
                                 <tbody data-table-presupuesto="ingreso">
+                                    @php
+                                        $array_porcentajes=[];
+                                        $numero_partida ;
+                                        $elemento_array ;
+                                    @endphp
                                     @foreach ($ingresos as $item)
                                         @php
                                             $array = explode(".", $item->partida);
                                             $id=rand();
                                             $id_padre=rand();
                                             $input_key=rand();
+
+                                            $partida_padre  = '';
+                                            $partida_hijo   = $item->partida;
+                                            $numero_partida ='';
+
+                                            if ($item->registro==='2') {
+
+                                                foreach ($array as $key => $value) {
+                                                    if ($key < sizeof($array)-1) {
+                                                        $partida_padre = ($key===0 ?$value :$partida_padre.'.'.$value );
+                                                    }
+                                                    if ($key === sizeof($array)-1) {
+                                                        $numero_partida = $value;
+                                                    }
+                                                }
+
+                                            if ($item->porcentaje_gobierno || $item->porcentaje_privado) {
+                                                if (sizeof($array_porcentajes)>0) {
+                                                    $partida_encontrada=false;
+                                                    foreach ($array_porcentajes as $key_array => $value_array) {
+
+                                                        if ($value_array->partida===$partida_padre) {
+                                                            $elemento_array = $value_array;
+                                                            $value_array->partida_gobierno= ($numero_partida==='01' ? $item->partida : $value_array->partida_gobierno);
+
+                                                            $value_array->partida_privada=($numero_partida==='02' ? $item->partida : $value_array->partida_privada);
+
+                                                            $value_array->procentaje_gobierno   =($numero_partida==='01'?$item->porcentaje_gobierno:$value_array->procentaje_gobierno);
+                                                            $value_array->porcentaje_privado    =($numero_partida==='02'?$item->porcentaje_privado:$value_array->porcentaje_privado);
+                                                            $value_array->porcentaje_comisiones =$item->porcentaje_comicion;
+                                                            $value_array->porcentaje_penalidades =$item->porcentaje_penalidad;
+                                                            $partida_encontrada=true;
+                                                        }
+                                                    }
+                                                    if ($partida_encontrada===false) {
+                                                        array_push($array_porcentajes,(object)array(
+                                                            "partida"=>$partida_padre,
+                                                            "partida_gobierno"=>($numero_partida=='01' ? $partida_hijo : ''),
+                                                            "partida_privada"=>($numero_partida=='02' ? $partida_hijo : ''),
+                                                            "procentaje_gobierno"=>$item->porcentaje_gobierno,
+                                                            "porcentaje_privado"=>$item->porcentaje_privado,
+                                                            "porcentaje_comisiones"=>$item->porcentaje_comicion,
+                                                            "porcentaje_penalidades"=>$item->porcentaje_penalidad
+                                                        ));
+                                                    }
+
+                                                } else {
+
+                                                    array_push($array_porcentajes,(object)array(
+                                                        "partida"=>$partida_padre,
+                                                        "partida_gobierno"=>($numero_partida=='01' ? $partida_hijo : ''),
+                                                        "partida_privada"=>($numero_partida=='02' ? $partida_hijo : ''),
+                                                        "procentaje_gobierno"=>$item->porcentaje_gobierno,
+                                                        "porcentaje_privado"=>$item->porcentaje_privado,
+                                                        "porcentaje_comisiones"=>$item->porcentaje_comicion,
+                                                        "porcentaje_penalidades"=>$item->porcentaje_penalidad
+                                                    ));
+                                                }
+                                            }
+
+
+                                            }
                                         @endphp
+                                        <input class="form-control" type="hidden" name="" value="{{$numero_partida}}">
+                                        {{-- <input class="form-control" type="hidden" name="" value="{{$partida_hijo}}"> --}}
+
                                     <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"
 
                                         {{ (sizeof($array)===2?'class=text-primary':'') }}
@@ -201,295 +253,336 @@ Presupuesto Interno
 
                                             <input type="hidden" value="{{$item->id_hijo}}" name="ingresos[{{$input_key}}][id_hijo]" class="form-control input-sm">
                                             <input type="hidden" value="{{$item->id_padre}}" name="ingresos[{{$input_key}}][id_padre]" class="form-control input-sm">
-                                            <span>{{$item->partida}}</span></td>
 
-                                            {{-- @if (sizeof($array)===3 || sizeof($array)===4) --}}
-                                                <td data-td="descripcion">
-                                                    <input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="ingresos[{{$input_key}}][descripcion]" placeholder="{{$item->descripcion}}"><span>{{$item->descripcion}}</span>
-                                                </td>
+                                            <input type="hidden" value="{{$item->porcentaje_gobierno}}" name="ingresos[{{$input_key}}][porcentaje_gobierno]" class="form-control input-sm">
+                                            <input type="hidden" value="{{$item->porcentaje_privado}}" name="ingresos[{{$input_key}}][porcentaje_privado]" class="form-control input-sm">
+                                            <input type="hidden" value="{{$item->porcentaje_comicion}}" name="ingresos[{{$input_key}}][porcentaje_comicion]" class="form-control input-sm">
+                                            <input type="hidden" value="{{$item->porcentaje_penalidad}}" name="ingresos[{{$input_key}}][porcentaje_penalidad]" class="form-control input-sm">
 
-                                                {{-- <td data-td="monto">
-                                                    <input type="hidden" value="{{$item->monto}}" class="form-control input-sm" name="ingresos[{{$input_key}}][monto]" placeholder="Ingrese monto" step="0.01">
-                                                    <span> {{$item->monto}} </span>
-                                                </td> --}}
+                                            <span>{{$item->partida}}</span>
+                                        </td>
 
-                                                <td data-td="enero">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->enero}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][enero]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="enero"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="ENERO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->enero}}</span>
-                                                    @endif
-                                                </td>
-                                                <td data-td="febrero">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->febrero}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][febrero]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="febrero"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="FEBRERO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->febrero}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="descripcion">
+                                            <input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="ingresos[{{$input_key}}][descripcion]" placeholder="{{$item->descripcion}}"><span>{{$item->descripcion}}</span>
+                                        </td>
 
-                                                <td data-td="marzo">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->marzo}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][marzo]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="marzo"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="MARZO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->marzo}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="porcentaje" hidden>
+                                            <input type="hidden" value="{{$item->porcentaje_costo}}" name="ingresos[{{$input_key}}][porcentaje_costo]" class="form-control input-sm">
+                                        </td>
 
-                                                <td data-td="abril">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->abril}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][abril]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="abril"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="ABRIL"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->abril}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="enero">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->enero}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][enero]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="enero"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="ENERO"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->enero}}</span>
+                                            @endif
 
-                                                <td data-td="mayo">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->mayo}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][mayo]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="mayo"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="MAYO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->mayo}}</span>
-                                                    @endif
-                                                </td>
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
+                                        <td data-td="febrero">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->febrero}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][febrero]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="febrero"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="FEBRERO"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->febrero}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="junio">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->junio}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][junio]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="junio"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="JUNIO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->junio}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="marzo">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->marzo}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][marzo]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="marzo"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="MARZO"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->marzo}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="julio">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->julio}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][julio]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="julio"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="JULIO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->julio}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="abril">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->abril}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][abril]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="abril"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="ABRIL"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->abril}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="agosto">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->agosto}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][agosto]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="agosto"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="AGOSTO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->agosto}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="mayo">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->mayo}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][mayo]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="mayo"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="MAYO"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->mayo}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="setiembre">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->setiembre}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][setiembre]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="setiembre"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="SETIEMBRE"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->setiembre}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="junio">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->junio}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][junio]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="junio"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="JUNIO"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->junio}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="octubre">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->octubre}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][octubre]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="octubre"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="OCTUBRE"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->octubre}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="julio">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->julio}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][julio]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="julio"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="JULIO"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->julio}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="noviembre">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->noviembre}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][noviembre]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="noviembre"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="NOVIEMBRE"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->noviembre}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="agosto">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->agosto}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][agosto]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="agosto"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="AGOSTO"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->agosto}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="diciembre">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->diciembre}}"
-                                                    class="form-control input-sm"
-                                                    name="ingresos[{{$input_key}}][diciembre]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="ingresos"
-                                                    data-mes="diciembre"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="DICIEMBRE"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->diciembre}}</span>
-                                                    @endif
-                                                </td>
-                                        <td data-td="accion">
-                                            <div class="btn-group ">
-                                                {{-- <button type="button" class="btn btn-box-tool" data-action="colapse-table" key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}">
-                                                    <i class="fa fa-minus"></i>
-                                                </button> --}}
+                                        <td data-td="setiembre">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->setiembre}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][setiembre]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="setiembre"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="SETIEMBRE"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->setiembre}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
+
+                                        <td data-td="octubre">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->octubre}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][octubre]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="octubre"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="OCTUBRE"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->octubre}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
+
+                                        <td data-td="noviembre">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->noviembre}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][noviembre]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="noviembre"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="NOVIEMBRE"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->noviembre}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
+
+                                        <td data-td="diciembre">
+                                            <input
+                                            type="{{($item->registro==='1'? 'hidden':'text')}}"
+                                            value="{{$item->diciembre}}"
+                                            class="form-control input-sm"
+                                            name="ingresos[{{$input_key}}][diciembre]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="ingresos"
+                                            data-mes="diciembre"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="DICIEMBRE"
+                                            >
+                                            @if ($item->registro==='1')
+                                            <span>{{$item->diciembre}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
+                                        <td data-td="accion" {{ ($item->registro==='2') ? '' : 'hidden'  }}>
+                                            <div class="btn-group">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                                     <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-right">
                                                 @if ($item->registro==='1')
                                                     <input type="hidden" name="ingresos[{{$input_key}}][registro]" value="1">
-                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>
+                                                    {{-- <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li> --}}
 
-                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li>
+                                                    {{-- <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Agregar partida" data-tipo="nuevo">Agregar partida</a></li> --}}
 
-                                                    <li>
+                                                    {{-- <li>
                                                         <a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar" data-tipo="editar">Editar</a>
-                                                    </li>
+                                                    </li> --}}
                                                 @endif
                                                 @if ($item->registro==='2')
                                                     <input type="hidden" name="ingresos[{{$input_key}}][registro]" value="2">
-                                                    <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar partida" data-tipo="editar">Editar partida</a></li>
+                                                    {{-- <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-partida" data-select="partida" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar partida" data-tipo="editar">Editar partida</a></li> --}}
+
+                                                    <li><a href="#" class="" key="{{$input_key}}" data-action="click-porcentaje" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos" title="Editar porcentaje" data-tipo="editar" data-text-partida="{{$item->partida}}" >Editar porcentaje</a></li>
                                                 @endif
 
-                                                @if (sizeof($array)!==1)
+                                                {{-- @if (sizeof($array)!==1)
                                                     <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-eliminar" data-nivel="{{sizeof($array)}}" title="Eliminar" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="ingresos">Eliminar</a></li>
-                                                @endif
+                                                @endif --}}
                                                 </ul>
                                             </div>
                                         </td>
@@ -526,7 +619,7 @@ Presupuesto Interno
                                         <tr>
                                             <th class="text-left" width="30">PARTIDA</th>
                                             <th class="text-left" width="">DESCRIPCION</th>
-
+                                            <th class="text-left" width="" >%</th>
                                             <th class="text-left" width=""colspan="">ENE </th>
                                             <th class="text-left" width=""colspan="">FEB</th>
                                             <th class="text-left" width=""colspan="">MAR</th>
@@ -539,7 +632,7 @@ Presupuesto Interno
                                             <th class="text-left" width=""colspan="">OCT</th>
                                             <th class="text-left" width=""colspan="">NOV</th>
                                             <th class="text-left" width=""colspan="">DIC</th>
-                                            <th class="text-center" width="10"></th>
+                                            <th class="text-center" width="10" hidden></th>
                                         </tr>
                                     </thead>
                                     <tbody data-table-presupuesto="ingreso">
@@ -558,273 +651,315 @@ Presupuesto Interno
 
                                             <input type="hidden" value="{{$item->id_hijo}}" name="costos[{{$input_key}}][id_hijo]" class="form-control input-sm">
                                             <input type="hidden" value="{{$item->id_padre}}" name="costos[{{$input_key}}][id_padre]" class="form-control input-sm">
-                                            <span>{{$item->partida}}</span></td>
+
+                                            <input type="hidden" value="{{$item->porcentaje_gobierno}}" name="costos[{{$input_key}}][porcentaje_gobierno]" class="form-control input-sm">
+                                            <input type="hidden" value="{{$item->porcentaje_privado}}" name="costos[{{$input_key}}][porcentaje_privado]" class="form-control input-sm">
+                                            <input type="hidden" value="{{$item->porcentaje_comicion}}" name="costos[{{$input_key}}][porcentaje_comicion]" class="form-control input-sm">
+                                            <input type="hidden" value="{{$item->porcentaje_penalidad}}" name="costos[{{$input_key}}][porcentaje_penalidad]" class="form-control input-sm">
+
+                                            <span>{{$item->partida}}</span>
+                                        </td>
 
                                             {{-- @if (sizeof($array)===3 || sizeof($array)===4) --}}
-                                                <td data-td="descripcion">
-                                                    <input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="costos[{{$input_key}}][descripcion]" placeholder="{{$item->descripcion}}"><span>{{$item->descripcion}}</span>
-                                                </td>
+                                        <td data-td="descripcion">
+                                            <input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="costos[{{$input_key}}][descripcion]" placeholder="{{$item->descripcion}}"><span>{{$item->descripcion}}</span>
+                                        </td>
+                                        <td data-td="porcentaje">
+                                            <input type="hidden" value="{{$item->porcentaje_costo}}" name="costos[{{$input_key}}][porcentaje_costo]" class="form-control input-sm">
+                                            @if ($item->registro==='2')
+                                                <span>{{$item->porcentaje_costo}}</span>%
+                                            @endif
 
-                                                {{-- <td data-td="monto">
-                                                    <input type="hidden" value="{{$item->monto}}" class="form-control input-sm" name="costos[{{$input_key}}][monto]" placeholder="Ingrese monto" step="0.01">
-                                                    <span> {{$item->monto}} </span>
-                                                </td> --}}
-                                                <td data-td="enero">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->enero}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][enero]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="enero"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="ENERO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->enero}}</span>
-                                                    @endif
-                                                </td>
-                                                <td data-td="febrero">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->febrero}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][febrero]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="febrero"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="FEBRERO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->febrero}}</span>
-                                                    @endif
-                                                </td>
+                                        </td>
 
-                                                <td data-td="marzo">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->marzo}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][marzo]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="marzo"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="MARZO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->marzo}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="enero">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->enero}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][enero]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="enero"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="ENERO"
+                                            >
+                                            <span>{{$item->enero}}</span>
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
+                                        <td data-td="febrero">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->febrero}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][febrero]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="febrero"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="FEBRERO"
+                                            >
+                                            <span>{{$item->febrero}}</span>
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="abril">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->abril}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][abril]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="abril"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="ABRIL"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->abril}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="marzo">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->marzo}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][marzo]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="marzo"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="MARZO"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->marzo}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="mayo">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->mayo}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][mayo]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="mayo"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="MAYO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->mayo}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="abril">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->abril}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][abril]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="abril"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="ABRIL"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->abril}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="junio">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->junio}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][junio]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="junio"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="JUNIO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->junio}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="mayo">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->mayo}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][mayo]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="mayo"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="MAYO"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->mayo}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="julio">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->julio}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][julio]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="julio"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="JULIO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->julio}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="junio">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->junio}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][junio]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="junio"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="JUNIO"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->junio}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="agosto">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->agosto}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][agosto]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="agosto"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="AGOSTO"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->agosto}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="julio">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->julio}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][julio]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="julio"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="JULIO"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->julio}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="setiembre">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->setiembre}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][setiembre]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="setiembre"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="SETIEMBRE"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->setiembre}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="agosto">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->agosto}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][agosto]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="agosto"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="AGOSTO"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->agosto}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="octubre">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->octubre}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][octubre]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="octubre"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="OCTUBRE"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->octubre}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="setiembre">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->setiembre}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][setiembre]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="setiembre"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="SETIEMBRE"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->setiembre}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="noviembre">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->noviembre}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][noviembre]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="noviembre"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="NOVIEMBRE"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->noviembre}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="octubre">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->octubre}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][octubre]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="octubre"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="OCTUBRE"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->octubre}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
-                                                <td data-td="diciembre">
-                                                    <input
-                                                    type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                    value="{{$item->diciembre}}"
-                                                    class="form-control input-sm"
-                                                    name="costos[{{$input_key}}][diciembre]"
-                                                    placeholder="Ingrese monto"
-                                                    key="{{$input_key}}"
-                                                    data-nivel="{{sizeof($array)}}"
-                                                    data-id="{{$item->id_hijo}}"
-                                                    data-id-padre="{{$item->id_padre}}"
-                                                    data-tipo-text="costos"
-                                                    data-mes="diciembre"
-                                                    {{($item->registro==='2'?'data-input=partida':'')}}
-                                                    title="DICIEMBRE"
-                                                    >
-                                                    @if ($item->registro==='1')
-                                                    <span>{{$item->diciembre}}</span>
-                                                    @endif
-                                                </td>
+                                        <td data-td="noviembre">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->noviembre}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][noviembre]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="noviembre"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="NOVIEMBRE"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->noviembre}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
+
+                                        <td data-td="diciembre">
+                                            <input
+                                            type="hidden"
+                                            value="{{$item->diciembre}}"
+                                            class="form-control input-sm"
+                                            name="costos[{{$input_key}}][diciembre]"
+                                            placeholder="Ingrese monto"
+                                            key="{{$input_key}}"
+                                            data-nivel="{{sizeof($array)}}"
+                                            data-id="{{$item->id_hijo}}"
+                                            data-id-padre="{{$item->id_padre}}"
+                                            data-tipo-text="costos"
+                                            data-mes="diciembre"
+                                            {{($item->registro==='2'?'data-input=partida':'')}}
+                                            title="DICIEMBRE"
+                                            >
+                                            {{-- @if ($item->registro==='1') --}}
+                                            <span>{{$item->diciembre}}</span>
+                                            {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
+                                        </td>
 
                                             {{-- @else
                                                 <td colspan="2" data-td="descripcion"><input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="costos[{{$input_key}}][descripcion]"><span>{{$item->descripcion}}</span></td>
                                             @endif --}}
 
-                                        <td data-td="accion">
+                                        <td data-td="accion" hidden>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                                 <span class="caret"></span>
@@ -883,18 +1018,19 @@ Presupuesto Interno
                                     <tr>
                                         <th class="text-left" width="30">PARTIDA</th>
                                         <th class="text-left" width="">DESCRIPCION</th>
+                                        <th class="text-left" width="" hidden>%</th>
                                         <th class="text-left" width=""colspan="">ENE </th>
-                                            <th class="text-left" width=""colspan="">FEB</th>
-                                            <th class="text-left" width=""colspan="">MAR</th>
-                                            <th class="text-left" width=""colspan="">ABR</th>
-                                            <th class="text-left" width=""colspan="">MAY</th>
-                                            <th class="text-left" width=""colspan="">JUN</th>
-                                            <th class="text-left" width=""colspan="">JUL</th>
-                                            <th class="text-left" width=""colspan="">AGO</th>
-                                            <th class="text-left" width=""colspan="">SET</th>
-                                            <th class="text-left" width=""colspan="">OCT</th>
-                                            <th class="text-left" width=""colspan="">NOV</th>
-                                            <th class="text-left" width=""colspan="">DIC</th>
+                                        <th class="text-left" width=""colspan="">FEB</th>
+                                        <th class="text-left" width=""colspan="">MAR</th>
+                                        <th class="text-left" width=""colspan="">ABR</th>
+                                        <th class="text-left" width=""colspan="">MAY</th>
+                                        <th class="text-left" width=""colspan="">JUN</th>
+                                        <th class="text-left" width=""colspan="">JUL</th>
+                                        <th class="text-left" width=""colspan="">AGO</th>
+                                        <th class="text-left" width=""colspan="">SET</th>
+                                        <th class="text-left" width=""colspan="">OCT</th>
+                                        <th class="text-left" width=""colspan="">NOV</th>
+                                        <th class="text-left" width=""colspan="">DIC</th>
                                         <th class="text-center" width="10"></th>
                                     </tr>
                                 </thead>
@@ -905,7 +1041,10 @@ Presupuesto Interno
                                         $id=rand();
                                         $id_padre=rand();
                                         $input_key=rand();
+                                        $array_excluidos = array('03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03');
+                                        $partida_hidden = in_array($item->partida, $array_excluidos);
                                     @endphp
+                                <input type="hidden" name="" value="{{$partida_hidden}}">
                                 <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"
                                     {{ sizeof($array)===2?'class=text-primary':'' }}
                                     {{ ($item->registro==='2'?'class=bg-danger':'') }}>
@@ -914,279 +1053,316 @@ Presupuesto Interno
 
                                         <input type="hidden" value="{{$item->id_hijo}}" name="gastos[{{$input_key}}][id_hijo]" class="form-control input-sm">
                                         <input type="hidden" value="{{$item->id_padre}}" name="gastos[{{$input_key}}][id_padre]" class="form-control input-sm">
-                                        <span>{{$item->partida}}</span></td>
 
-                                        {{-- @if (sizeof($array)===3 || sizeof($array)===4) --}}
-                                            <td data-td="descripcion">
-                                                <input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="gastos[{{$input_key}}][descripcion]" placeholder="{{$item->descripcion}}"><span>{{$item->descripcion}}</span>
-                                            </td>
+                                        <input type="hidden" value="{{$item->porcentaje_gobierno}}" name="gastos[{{$input_key}}][porcentaje_gobierno]" class="form-control input-sm">
+                                        <input type="hidden" value="{{$item->porcentaje_privado}}" name="gastos[{{$input_key}}][porcentaje_privado]" class="form-control input-sm">
+                                        <input type="hidden" value="{{$item->porcentaje_comicion}}" name="gastos[{{$input_key}}][porcentaje_comicion]" class="form-control input-sm">
+                                        <input type="hidden" value="{{$item->porcentaje_penalidad}}" name="gastos[{{$input_key}}][porcentaje_penalidad]" class="form-control input-sm">
 
-                                            {{-- <td data-td="monto">
-                                                <input type="hidden" value="{{$item->monto}}" class="form-control input-sm" name="gastos[{{$input_key}}][monto]" placeholder="Ingrese monto" step="0.01">
-                                                <span> {{$item->monto}} </span>
-                                            </td> --}}
+                                        <span>{{$item->partida}}</span>
+                                    </td>
 
-                                            <td data-td="enero">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->enero}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][enero]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="enero"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="ENERO"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->enero}}</span>
-                                                @endif
-                                            </td>
-                                            <td data-td="febrero">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->febrero}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][febrero]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="febrero"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="FEBRERO"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->febrero}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="descripcion">
+                                        <input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="gastos[{{$input_key}}][descripcion]" placeholder="{{$item->descripcion}}"><span>{{$item->descripcion}}</span>
+                                    </td>
 
-                                            <td data-td="marzo">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->marzo}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][marzo]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="marzo"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="MARZO"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->marzo}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="porcentaje" hidden>
+                                        <input type="hidden" value="{{$item->porcentaje_costo}}" name="ingresos[{{$input_key}}][porcentaje_costo]" class="form-control input-sm">
+                                    </td>
 
-                                            <td data-td="abril">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->abril}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][abril]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="abril"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="ABRIL"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->abril}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="enero">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->enero}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][enero]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="enero"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="ENERO"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->enero}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
+                                    <td data-td="febrero">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->febrero}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][febrero]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="febrero"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="FEBRERO"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->febrero}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                            <td data-td="mayo">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->mayo}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][mayo]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="mayo"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="MAYO"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->mayo}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="marzo">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->marzo}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][marzo]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="marzo"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="MARZO"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->marzo}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                            <td data-td="junio">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->junio}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][junio]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="junio"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="JUNIO"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->junio}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="abril">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->abril}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][abril]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="abril"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="ABRIL"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->abril}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                            <td data-td="julio">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->julio}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][julio]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="julio"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="JULIO"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->julio}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="mayo">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->mayo}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][mayo]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="mayo"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="MAYO"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->mayo}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                            <td data-td="agosto">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->agosto}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][agosto]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="agosto"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="AGOSTO"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->agosto}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="junio">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->junio}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][junio]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="junio"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="JUNIO"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->junio}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                            <td data-td="setiembre">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->setiembre}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][setiembre]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="setiembre"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="SETIEMBRE"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->setiembre}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="julio">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->julio}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][julio]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="julio"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="JULIO"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->julio}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                            <td data-td="octubre">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->octubre}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][octubre]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="octubre"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="OCTUBRE"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->octubre}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="agosto">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->agosto}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][agosto]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="agosto"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="AGOSTO"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->agosto}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                            <td data-td="noviembre">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->noviembre}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][noviembre]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="noviembre"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="NOVIEMBRE"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->noviembre}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="setiembre">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->setiembre}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][setiembre]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="setiembre"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="SETIEMBRE"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->setiembre}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                            <td data-td="diciembre">
-                                                <input
-                                                type="{{($item->registro==='1'? 'hidden':'text')}}"
-                                                value="{{$item->diciembre}}"
-                                                class="form-control input-sm"
-                                                name="gastos[{{$input_key}}][diciembre]"
-                                                placeholder="Ingrese monto"
-                                                key="{{$input_key}}"
-                                                data-nivel="{{sizeof($array)}}"
-                                                data-id="{{$item->id_hijo}}"
-                                                data-id-padre="{{$item->id_padre}}"
-                                                data-tipo-text="gastos"
-                                                data-mes="diciembre"
-                                                {{($item->registro==='2'?'data-input=partida':'')}}
-                                                title="DICIEMBRE"
-                                                >
-                                                @if ($item->registro==='1')
-                                                <span>{{$item->diciembre}}</span>
-                                                @endif
-                                            </td>
+                                    <td data-td="octubre">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->octubre}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][octubre]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="octubre"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="OCTUBRE"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->octubre}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                        {{-- @else
-                                            <td colspan="2" data-td="descripcion"><input type="hidden" value="{{$item->descripcion}}" class="form-control input-sm" name="gastos[{{$input_key}}][descripcion]"><span>{{$item->descripcion}}</span></td>
-                                        @endif --}}
+                                    <td data-td="noviembre">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->noviembre}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][noviembre]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="noviembre"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="NOVIEMBRE"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->noviembre}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
 
-                                    <td data-td="accion">
+                                    <td data-td="diciembre">
+                                        <input
+                                        type="{{($item->registro==='1' || $partida_hidden==1? 'hidden':'text')}}"
+                                        value="{{$item->diciembre}}"
+                                        class="form-control input-sm"
+                                        name="gastos[{{$input_key}}][diciembre]"
+                                        placeholder="Ingrese monto"
+                                        key="{{$input_key}}"
+                                        data-nivel="{{sizeof($array)}}"
+                                        data-id="{{$item->id_hijo}}"
+                                        data-id-padre="{{$item->id_padre}}"
+                                        data-tipo-text="gastos"
+                                        data-mes="diciembre"
+                                        {{($item->registro==='2'?'data-input=partida':'')}}
+                                        title="DICIEMBRE"
+                                        >
+                                        @if ($item->registro==='1' || $partida_hidden==1)
+                                        <span>{{$item->diciembre}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
+                                    </td>
+
+                                    <td data-td="accion" hidden>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                            <span class="caret"></span>
+                                                <span class="caret"></span>
                                             </button>
-                                            <ul class="dropdown-menu ">
+                                            <ul class="dropdown-menu dropdown-menu-right">
                                             @if ($item->registro==='1')
                                                 <input type="hidden" name="gastos[{{$input_key}}][registro]" value="1">
                                                 <li><a href="#" class="" data-partida="{{$item->partida}}" key="{{$input_key}}" data-action="click-nuevo" data-select="titulo" data-nivel="{{sizeof($array)}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}" data-tipo-text="gastos" title="Agregar titulo" data-tipo="nuevo">Agregar titulo</a></li>
@@ -1273,6 +1449,28 @@ Presupuesto Interno
         </div>
     </div>
 </div>
+<div id="modal-costos" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form action="" method="post" data-form="guardar-costos-modal">
+                <div class="modal-header">
+                    {{-- <button class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> --}}
+                    <h5 class="modal-title" id="my-modal-title">Ingrese porcentajes</h5>
+
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    {{-- <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button> --}}
+                    <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -1290,7 +1488,8 @@ Presupuesto Interno
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script>
-        // let csrf_token = "{{ csrf_token() }}";
+        let array = {!! json_encode($array_porcentajes) !!};
+        // $elemento_array
         $(document).ready(function () {
             $('select[name="mes"] option[value="'+"{{$presupuesto_interno->mes}}"+'"]').attr('selected',true);
         });

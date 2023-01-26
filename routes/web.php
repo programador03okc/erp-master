@@ -2057,7 +2057,9 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('eliminar', 'Finanzas\Presupuesto\PresupuestoInternoController@eliminar')->name('eliminar');
 
                 Route::get('get-area', 'Finanzas\Presupuesto\PresupuestoInternoController@getArea');
+                // exportable de presupiesto interno
                 Route::post('get-presupuesto-interno', 'Finanzas\Presupuesto\PresupuestoInternoController@getPresupuestoInterno');
+
                 Route::post('aprobar', 'Finanzas\Presupuesto\PresupuestoInternoController@aprobar');
             });
 		});
@@ -2167,8 +2169,9 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'cierre-apertura.', 'prefix' => 'cierre-apertura'], function () {
 			Route::get('index', 'Tesoreria\CierreAperturaController@index')->name('index');
 			Route::post('listar', 'Tesoreria\CierreAperturaController@listar')->name('listar');
-			// Route::post('editar', 'Tesoreria\TipoCambioController@editar')->name('editar');
-			// Route::post('guardar', 'Tesoreria\TipoCambioController@guardar')->name('guardar');
+			Route::get('mostrarSedesPorEmpresa/{id}', 'Tesoreria\CierreAperturaController@mostrarSedesPorEmpresa')->name('mostrar-sedes-empresa');
+			Route::get('mostrarAlmacenesPorSede/{id}', 'Tesoreria\CierreAperturaController@mostrarAlmacenesPorSede')->name('mostrar-sedes-empresa');
+			Route::post('guardar', 'Tesoreria\CierreAperturaController@guardarAccion')->name('guardar');
 		});
 	});
 

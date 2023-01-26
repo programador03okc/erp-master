@@ -133,6 +133,7 @@ class IncidenciaController extends Controller
                 'incidencia.id_incidencia',
                 'incidencia.codigo',
                 'incidencia.fecha_reporte',
+                'incidencia.fecha_documento',
                 'adm_contri.razon_social',
                 'adm_contri.id_contribuyente',
                 'sis_usua.nombre_corto',
