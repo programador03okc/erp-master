@@ -1082,6 +1082,7 @@ $(document).on('change','[data-input="partida"]',function (e) {
     }else{
         $(this).val($(this).closest('tr').find('td[data-td="'+mes+'"]').find('label.total-limite').text());
         $(this).closest('td').find('span').text($(this).closest('tr').find('td[data-td="'+mes+'"]').find('label.total-limite').text());
+        $(this).trigger('change');
         Swal.fire(
             'Información',
             'Solo puede ingresar montos que no exedan los '+limite_string,
