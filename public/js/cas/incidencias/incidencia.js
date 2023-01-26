@@ -204,8 +204,7 @@ $(".edit-incidencia").on('click', function () {
         $(".buscar-incidencia").hide();
 
         $("[name=modo]").val("edicion");
-
-        $("[name=fecha_documento]").attr('disabled', 'true');
+        // $("[name=fecha_documento]").attr('disabled', 'true');
 
     } else {
         Lobibox.notify('warning', {
