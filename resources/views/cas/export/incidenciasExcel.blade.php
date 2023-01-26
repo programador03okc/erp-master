@@ -23,6 +23,7 @@
                 <th style="background-color: #cccccc;" width="18"><b>Teléfono</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Dirección</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha reporte</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Fecha documento</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Responsable</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Falla reportada</b></th>
 
@@ -67,9 +68,10 @@
                 <td>{{$d->telefono_contacto}}</td>
                 <td>{{$d->direccion_contacto}}</td>
                 <td>{{date('d-m-Y', strtotime($d->fecha_reporte))}}</td>
+                <td>{{ $d->fecha_documento !=null ? date('d-m-Y', strtotime($d->fecha_documento)):"" }}</td>
                 <td>{{$d->nombre_corto}}</td>
                 <td>{{$d->falla_reportada}}</td>
-                
+
                 <td>{{ $d->serie }}</td>
                 <td>{{ $d->marca }}</td>
                 <td>{{ $d->producto }}</td>
