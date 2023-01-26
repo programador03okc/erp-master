@@ -28,6 +28,7 @@ Presupuesto Interno
 @section('content')
 <form action="{{ route('finanzas.presupuesto.presupuesto-interno.actualizar') }}" method="post" data-form="editar-partida" enctype="multipart/formdata">
     <input type="hidden" name="id_presupuesto_interno" value="{{ $id }}">
+    <input type="hidden" name="estado" value="{{ $presupuesto_interno->estado }}">
     <div class="row">
         <div class="col-md-12">
             <div class="box box-danger">
@@ -288,6 +289,10 @@ Presupuesto Interno
                                             @if ($item->registro==='1')
                                             <span>{{$item->enero}}</span>
                                             @endif
+
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
                                         <td data-td="febrero">
                                             <input
@@ -307,6 +312,9 @@ Presupuesto Interno
                                             >
                                             @if ($item->registro==='1')
                                             <span>{{$item->febrero}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
                                             @endif
                                         </td>
 
@@ -329,6 +337,9 @@ Presupuesto Interno
                                             @if ($item->registro==='1')
                                             <span>{{$item->marzo}}</span>
                                             @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="abril">
@@ -349,6 +360,9 @@ Presupuesto Interno
                                             >
                                             @if ($item->registro==='1')
                                             <span>{{$item->abril}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
                                             @endif
                                         </td>
 
@@ -371,6 +385,9 @@ Presupuesto Interno
                                             @if ($item->registro==='1')
                                             <span>{{$item->mayo}}</span>
                                             @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="junio">
@@ -391,6 +408,9 @@ Presupuesto Interno
                                             >
                                             @if ($item->registro==='1')
                                             <span>{{$item->junio}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
                                             @endif
                                         </td>
 
@@ -413,6 +433,9 @@ Presupuesto Interno
                                             @if ($item->registro==='1')
                                             <span>{{$item->julio}}</span>
                                             @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="agosto">
@@ -433,6 +456,9 @@ Presupuesto Interno
                                             >
                                             @if ($item->registro==='1')
                                             <span>{{$item->agosto}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
                                             @endif
                                         </td>
 
@@ -455,6 +481,9 @@ Presupuesto Interno
                                             @if ($item->registro==='1')
                                             <span>{{$item->setiembre}}</span>
                                             @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="octubre">
@@ -475,6 +504,9 @@ Presupuesto Interno
                                             >
                                             @if ($item->registro==='1')
                                             <span>{{$item->octubre}}</span>
+                                            @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
                                             @endif
                                         </td>
 
@@ -497,6 +529,9 @@ Presupuesto Interno
                                             @if ($item->registro==='1')
                                             <span>{{$item->noviembre}}</span>
                                             @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="diciembre">
@@ -518,9 +553,12 @@ Presupuesto Interno
                                             @if ($item->registro==='1')
                                             <span>{{$item->diciembre}}</span>
                                             @endif
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
                                         <td data-td="accion" {{ ($item->registro==='2') ? '' : 'hidden'  }}>
-                                            <div class="btn-group ">
+                                            <div class="btn-group">
                                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                                     <span class="caret"></span>
                                                 </button>
@@ -651,6 +689,9 @@ Presupuesto Interno
                                             title="ENERO"
                                             >
                                             <span>{{$item->enero}}</span>
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
                                         <td data-td="febrero">
                                             <input
@@ -669,6 +710,9 @@ Presupuesto Interno
                                             title="FEBRERO"
                                             >
                                             <span>{{$item->febrero}}</span>
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="marzo">
@@ -690,6 +734,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->marzo}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="abril">
@@ -711,6 +758,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->abril}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="mayo">
@@ -732,6 +782,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->mayo}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="junio">
@@ -753,6 +806,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->junio}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="julio">
@@ -774,6 +830,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->julio}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="agosto">
@@ -795,6 +854,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->agosto}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="setiembre">
@@ -816,6 +878,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->setiembre}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="octubre">
@@ -837,6 +902,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->octubre}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="noviembre">
@@ -858,6 +926,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->noviembre}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                         <td data-td="diciembre">
@@ -879,6 +950,9 @@ Presupuesto Interno
                                             {{-- @if ($item->registro==='1') --}}
                                             <span>{{$item->diciembre}}</span>
                                             {{-- @endif --}}
+                                            @if ($presupuesto_interno->estado =='2')
+                                                <label hidden class="total-limite">{{$item->enero}}</label>
+                                            @endif
                                         </td>
 
                                             {{-- @else
@@ -1015,6 +1089,9 @@ Presupuesto Interno
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->enero}}</span>
                                         @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
                                     </td>
                                     <td data-td="febrero">
                                         <input
@@ -1034,6 +1111,9 @@ Presupuesto Interno
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->febrero}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
                                         @endif
                                     </td>
 
@@ -1056,6 +1136,9 @@ Presupuesto Interno
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->marzo}}</span>
                                         @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
                                     </td>
 
                                     <td data-td="abril">
@@ -1076,6 +1159,9 @@ Presupuesto Interno
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->abril}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
                                         @endif
                                     </td>
 
@@ -1098,6 +1184,9 @@ Presupuesto Interno
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->mayo}}</span>
                                         @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
                                     </td>
 
                                     <td data-td="junio">
@@ -1118,6 +1207,9 @@ Presupuesto Interno
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->junio}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
                                         @endif
                                     </td>
 
@@ -1140,6 +1232,9 @@ Presupuesto Interno
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->julio}}</span>
                                         @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
                                     </td>
 
                                     <td data-td="agosto">
@@ -1160,6 +1255,9 @@ Presupuesto Interno
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->agosto}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
                                         @endif
                                     </td>
 
@@ -1182,6 +1280,9 @@ Presupuesto Interno
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->setiembre}}</span>
                                         @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
                                     </td>
 
                                     <td data-td="octubre">
@@ -1202,6 +1303,9 @@ Presupuesto Interno
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->octubre}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
                                         @endif
                                     </td>
 
@@ -1224,6 +1328,9 @@ Presupuesto Interno
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->noviembre}}</span>
                                         @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
+                                        @endif
                                     </td>
 
                                     <td data-td="diciembre">
@@ -1244,6 +1351,9 @@ Presupuesto Interno
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->diciembre}}</span>
+                                        @endif
+                                        @if ($presupuesto_interno->estado =='2')
+                                            <label hidden class="total-limite">{{$item->enero}}</label>
                                         @endif
                                     </td>
 
@@ -1380,7 +1490,6 @@ Presupuesto Interno
     <script>
         let array = {!! json_encode($array_porcentajes) !!};
         // $elemento_array
-        console.log(array);
         $(document).ready(function () {
             $('select[name="mes"] option[value="'+"{{$presupuesto_interno->mes}}"+'"]').attr('selected',true);
         });

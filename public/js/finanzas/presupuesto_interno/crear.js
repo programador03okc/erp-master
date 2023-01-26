@@ -850,8 +850,7 @@ $(document).on('change','[data-input="partida"]',function (e) {
 
     var value = $(this).val();
 
-    value=(value?value:'0.00');
-
+    value=(!isNaN(parseFloat(value))?value:'0.00');
     var array_value = value.split(','),
         monto='',
         data_id = $(this).attr('data-id'),
@@ -875,179 +874,221 @@ $(document).on('change','[data-input="partida"]',function (e) {
     $(this).closest('td').find('span').text(monto);
     numero_mes = numeroMes(mes);
 
-    // suma todas las partidas
+    var total_partidas_modificar = 0,
+        estado = $('[name="estado"]').val(),
+        exedio = false,
+        limite_total = '',
+        limite_string = $('tr[data-id="'+data_id_padre+'"]').find('td[data-td="'+mes+'"]').find('label.total-limite').text();
+    if (estado==='2') {
 
-    sumarPartidas(
-        data_id,
-        data_id_padre,
-        data_text_presupuesto,
-        mes,
-        numero_mes
-    );
-    // calcular las celdas de costos
-    switch (data_text_presupuesto) {
-        case "ingresos":
-            if ($porcentajes.length>0) {
-                var porcentaje_gobierno = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_gobierno]"]').val(),
-                    porcentaje_privado = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_privado]"]').val(),
-                    porcentaje_comicion = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_comicion]"]').val(),
-                    porcentaje_penalidad = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_penalidad]"]').val(),
-                    valor_padre = $('tr[data-id="'+data_id_padre+'"] td[data-td="'+mes+'"]').find('input').val(),
-                    partida_ingreso = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('[name="ingresos['+key+'][partida]"]').val(),
-                    partida_costo = '02',
-                    numero_partida='',
-                    partida_comision='',
-                    partida_penalidad='';
+        $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (index, element) {
+            var this_valor = element.children[numero_mes].children[0].value,
+                array_valor = this_valor.split(','),
+                valor_string = '';
 
-                var costo_gobierno,
-                    costo_privado,
-                    costo_comisiones,
-                    costo_penalidades,
-                    valor_cabecera='';
+            $.each(array_valor, function (index_valor, element_valor) {
+                valor_string = valor_string + element_valor;
+            });
 
-                valor_padre = valor_padre.split(',');
-                valor_padre.forEach(element => {
-                    valor_cabecera = valor_cabecera + element;
-                });
-                valor_cabecera = parseFloat(valor_cabecera);
-                costo_gobierno      = monto_calculable * (parseFloat(porcentaje_gobierno)/100);
-                costo_privado       = monto_calculable * (parseFloat(porcentaje_privado)/100);
-                costo_comisiones    = parseFloat(valor_cabecera) * (parseFloat(porcentaje_comicion)/100);
-                costo_penalidades   = parseFloat(valor_cabecera) * (parseFloat(porcentaje_penalidad)/100);
+            total_partidas_modificar = total_partidas_modificar + parseFloat(valor_string);
 
+        });
 
-                partida_ingreso = partida_ingreso.split('.');
-                $.each(partida_ingreso, function (index, element) {
-                    if ((index+1)==partida_ingreso.length) {
-                        numero_partida = element;
-
-                        partida_comision = partida_costo + '.03';
-                        partida_penalidad = partida_costo + '.04';
-                    }
-                    if (index!==0) {
-                        partida_costo = partida_costo+'.'+element;
-                    }
-
-                });
-
-                if (numero_partida == '01') {
-                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_gobierno.toFixed(2))
-                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_gobierno.toFixed(2))
-
-                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
-
-                }
-                if (numero_partida == '02') {
-                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_privado.toFixed(2))
-                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_privado.toFixed(2))
-
-                    $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
-                }
-
-                $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_comisiones.toFixed(2))
-                $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_comisiones.toFixed(2))
-
-                $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
-
-                $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_penalidades.toFixed(2))
-                $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_penalidades.toFixed(2))
-
-                $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
-            }
-        break;
-
-        case "gastos":
-            var partida_padre = $('tr[data-id="'+data_id_padre+'"] td[data-td="partida"]').find('input[name="gastos['+$('tr[data-id="'+data_id_padre+'"]').attr('key')+'][partida]"]').val(),
-                partida_hijo = $(this).closest('tr').find('td[data-td="partida"]').find('input[name="gastos['+key+'][partida]"]').val(),
-                total=0,
-                essalud     =0,
-                sctr        =0,
-                essalud_vida=0,
-                servicios       =0,
-                gratificaciones =0,
-                vacacione       =0;
-
-            if (partida_hijo === '03.01.01.01' || partida_hijo === '03.01.01.02' || partida_hijo === '03.01.01.03') {
-                $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (index, element) {
-                    if (index<3) {
-                        var this_valor = element.children[numero_mes].children[0].value,
-                            array_valor = this_valor.split(','),
-                            valor_string = '';
-
-                        $.each(array_valor, function (index_valor, element_valor) {
-                            valor_string = valor_string + element_valor;
-                        });
-
-                        total = total + parseFloat(valor_string);
-
-                    }
-
-                });
-                total = total.toFixed(2);
-                essalud         = (total * PORCENTAJE_ESSALUD).toFixed(0);
-                sctr            = (total * PORCENTAJE_SCTR).toFixed(0);
-                essalud_vida    = (total * PORCENTAJE_ESSALUD_VIDA).toFixed(0);
-
-                servicios       = (total * PORCENTAJE_SERVICIOS).toFixed(2);
-                gratificaciones = (total / GRATIFICACIONES).toFixed(2);
-                vacacione       = (total / VACACIONES).toFixed(2);
-
-                var array_partida_padre = partida_padre.split('.'),
-                    partida_ESSALUD = '.01',
-                    partida_SCTR = '.02',
-                    partida_ESSALUD_VIDA = '.03',
-                    partida_SERVICIOS = '.01',
-                    partida_GRATIFICACIONES = '.02',
-                    partida_VACACIONES = '.03',
-
-                    partida_PATRONALES = '.02',
-                    partida_PROVISIONES = '.03',
-                    partida_abuelo;
-                $.each(array_partida_padre, function (index, element) {
-                    if (index < array_partida_padre.length-1) {
-                        partida_abuelo = (index===0 ?element: partida_abuelo + '.'+element);
-                    }
-
-                });
-                partida_PATRONALES = partida_abuelo+ partida_PATRONALES
-                partida_PROVISIONES = partida_abuelo + partida_PROVISIONES
-
-                partida_ESSALUD         = partida_PATRONALES + partida_ESSALUD,
-                partida_SCTR            = partida_PATRONALES + partida_SCTR,
-                partida_ESSALUD_VIDA    = partida_PATRONALES + partida_ESSALUD_VIDA,
-
-                partida_SERVICIOS       = partida_PROVISIONES + partida_SERVICIOS,
-                partida_GRATIFICACIONES = partida_PROVISIONES + partida_GRATIFICACIONES,
-                partida_VACACIONES      = partida_PROVISIONES + partida_VACACIONES,
-
-                // 03.01.02.01	ESSALUD
-                $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud)
-                $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
-                // 03.01.02.02	SCTR
-                $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(sctr)
-                $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
-                // 03.01.02.03	ESSALUD VIDA
-                $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud_vida)
-                $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
-
-                // 03.01.03.01	COMPENSACION POR TIEMPO DE SERVICIOS
-                $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(servicios)
-                $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
-                // 03.01.03.02	GRATIFICACIONES
-                $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(gratificaciones)
-                $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
-                // 03.01.03.03	VACACIONES
-                $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(vacacione)
-                $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
-
-            }
-
-        break;
-    }
-    if ($porcentajes.length>0 && data_text_presupuesto=="ingresos") {
-
+        $.each(limite_string.split(','), function (index_valor, element_valor) {
+            limite_total = limite_total + element_valor;
+        });
+        limite_total = parseFloat(limite_total);
+        if (total_partidas_modificar > limite_total) {
+            exedio = true;
+        }else{
+            exedio = false;
+        }
+        // $('[name="id_presupuesto_interno"]').val()
 
     }
+    if (exedio===false) {
+        // suma todas las partidas
+        sumarPartidas(
+            data_id,
+            data_id_padre,
+            data_text_presupuesto,
+            mes,
+            numero_mes
+        );
+        // calcular las celdas de costos
+        switch (data_text_presupuesto) {
+            case "ingresos":
+                if ($porcentajes.length>0) {
+                    var porcentaje_gobierno = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_gobierno]"]').val(),
+                        porcentaje_privado = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_privado]"]').val(),
+                        porcentaje_comicion = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_comicion]"]').val(),
+                        porcentaje_penalidad = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('input[name="ingresos['+key+'][porcentaje_penalidad]"]').val(),
+                        valor_padre = $('tr[data-id="'+data_id_padre+'"] td[data-td="'+mes+'"]').find('input').val(),
+                        partida_ingreso = $(this).closest('tr[key="'+key+'"]').find('td[data-td="partida"]').find('[name="ingresos['+key+'][partida]"]').val(),
+                        partida_costo = '02',
+                        numero_partida='',
+                        partida_comision='',
+                        partida_penalidad='';
+
+                    var costo_gobierno,
+                        costo_privado,
+                        costo_comisiones,
+                        costo_penalidades,
+                        valor_cabecera='';
+
+                    valor_padre = valor_padre.split(',');
+                    valor_padre.forEach(element => {
+                        valor_cabecera = valor_cabecera + element;
+                    });
+                    valor_cabecera = parseFloat(valor_cabecera);
+                    costo_gobierno      = monto_calculable * (parseFloat(porcentaje_gobierno)/100);
+                    costo_privado       = monto_calculable * (parseFloat(porcentaje_privado)/100);
+                    costo_comisiones    = parseFloat(valor_cabecera) * (parseFloat(porcentaje_comicion)/100);
+                    costo_penalidades   = parseFloat(valor_cabecera) * (parseFloat(porcentaje_penalidad)/100);
+
+
+                    partida_ingreso = partida_ingreso.split('.');
+                    $.each(partida_ingreso, function (index, element) {
+                        if ((index+1)==partida_ingreso.length) {
+                            numero_partida = element;
+
+                            partida_comision = partida_costo + '.03';
+                            partida_penalidad = partida_costo + '.04';
+                        }
+                        if (index!==0) {
+                            partida_costo = partida_costo+'.'+element;
+                        }
+
+                    });
+
+                    if (numero_partida == '01') {
+                        $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_gobierno.toFixed(2))
+                        $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_gobierno.toFixed(2))
+
+                        $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+
+                    }
+                    if (numero_partida == '02') {
+                        $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_privado.toFixed(2))
+                        $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_privado.toFixed(2))
+
+                        $('input[value="'+partida_costo+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+                    }
+
+                    $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_comisiones.toFixed(2))
+                    $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_comisiones.toFixed(2))
+
+                    $('input[value="'+partida_comision+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+
+                    $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(costo_penalidades.toFixed(2))
+                    $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('span').text(costo_penalidades.toFixed(2))
+
+                    $('input[value="'+partida_penalidad+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input[data-input="partida"]').trigger('change')
+                }
+            break;
+
+            case "gastos":
+                var partida_padre = $('tr[data-id="'+data_id_padre+'"] td[data-td="partida"]').find('input[name="gastos['+$('tr[data-id="'+data_id_padre+'"]').attr('key')+'][partida]"]').val(),
+                    partida_hijo = $(this).closest('tr').find('td[data-td="partida"]').find('input[name="gastos['+key+'][partida]"]').val(),
+                    total=0,
+                    essalud     =0,
+                    sctr        =0,
+                    essalud_vida=0,
+                    servicios       =0,
+                    gratificaciones =0,
+                    vacacione       =0;
+
+                if (partida_hijo === '03.01.01.01' || partida_hijo === '03.01.01.02' || partida_hijo === '03.01.01.03') {
+                    $.each($('tr[data-id-padre="'+data_id_padre+'"]'), function (index, element) {
+                        if (index<3) {
+                            var this_valor = element.children[numero_mes].children[0].value,
+                                array_valor = this_valor.split(','),
+                                valor_string = '';
+
+                            $.each(array_valor, function (index_valor, element_valor) {
+                                valor_string = valor_string + element_valor;
+                            });
+
+                            total = total + parseFloat(valor_string);
+
+                        }
+
+                    });
+                    total = total.toFixed(2);
+                    essalud         = (total * PORCENTAJE_ESSALUD).toFixed(0);
+                    sctr            = (total * PORCENTAJE_SCTR).toFixed(0);
+                    essalud_vida    = (total * PORCENTAJE_ESSALUD_VIDA).toFixed(0);
+
+                    servicios       = (total * PORCENTAJE_SERVICIOS).toFixed(2);
+                    gratificaciones = (total / GRATIFICACIONES).toFixed(2);
+                    vacacione       = (total / VACACIONES).toFixed(2);
+
+                    var array_partida_padre = partida_padre.split('.'),
+                        partida_ESSALUD = '.01',
+                        partida_SCTR = '.02',
+                        partida_ESSALUD_VIDA = '.03',
+                        partida_SERVICIOS = '.01',
+                        partida_GRATIFICACIONES = '.02',
+                        partida_VACACIONES = '.03',
+
+                        partida_PATRONALES = '.02',
+                        partida_PROVISIONES = '.03',
+                        partida_abuelo;
+                    $.each(array_partida_padre, function (index, element) {
+                        if (index < array_partida_padre.length-1) {
+                            partida_abuelo = (index===0 ?element: partida_abuelo + '.'+element);
+                        }
+
+                    });
+                    partida_PATRONALES = partida_abuelo+ partida_PATRONALES
+                    partida_PROVISIONES = partida_abuelo + partida_PROVISIONES
+
+                    partida_ESSALUD         = partida_PATRONALES + partida_ESSALUD,
+                    partida_SCTR            = partida_PATRONALES + partida_SCTR,
+                    partida_ESSALUD_VIDA    = partida_PATRONALES + partida_ESSALUD_VIDA,
+
+                    partida_SERVICIOS       = partida_PROVISIONES + partida_SERVICIOS,
+                    partida_GRATIFICACIONES = partida_PROVISIONES + partida_GRATIFICACIONES,
+                    partida_VACACIONES      = partida_PROVISIONES + partida_VACACIONES,
+
+                    // 03.01.02.01	ESSALUD
+                    $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud)
+                    $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                    // 03.01.02.02	SCTR
+                    $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(sctr)
+                    $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                    // 03.01.02.03	ESSALUD VIDA
+                    $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud_vida)
+                    $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+
+                    // 03.01.03.01	COMPENSACION POR TIEMPO DE SERVICIOS
+                    $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(servicios)
+                    $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                    // 03.01.03.02	GRATIFICACIONES
+                    $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(gratificaciones)
+                    $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                    // 03.01.03.03	VACACIONES
+                    $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(vacacione)
+                    $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+
+                }
+
+            break;
+        }
+        if ($porcentajes.length>0 && data_text_presupuesto=="ingresos") {
+
+
+        }
+    }else{
+        $(this).val($(this).closest('tr').find('td[data-td="'+mes+'"]').find('label.total-limite').text());
+        $(this).closest('td').find('span').text($(this).closest('tr').find('td[data-td="'+mes+'"]').find('label.total-limite').text());
+        Swal.fire(
+            'Información',
+            'Solo puede ingresar montos que no exedan los '+limite_string,
+            'warning'
+          )
+    }
+
 });
 
 $(document).on('click','[data-action="remove"]',function () {

@@ -2057,7 +2057,9 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('eliminar', 'Finanzas\Presupuesto\PresupuestoInternoController@eliminar')->name('eliminar');
 
                 Route::get('get-area', 'Finanzas\Presupuesto\PresupuestoInternoController@getArea');
+                // exportable de presupiesto interno
                 Route::post('get-presupuesto-interno', 'Finanzas\Presupuesto\PresupuestoInternoController@getPresupuestoInterno');
+
                 Route::post('aprobar', 'Finanzas\Presupuesto\PresupuestoInternoController@aprobar');
             });
 		});
