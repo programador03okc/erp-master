@@ -215,23 +215,9 @@ class MigracionAlmacenSoftLinkController extends Controller
                 if ($value[1]) {
                     $producto_softlink = DB::connection('soft')->table('sopprod')->where('cod_prod',$value[1])->first();
 
-                    $clasificacion_softlink = DB::connection('soft')->table('soplinea')->where('nom_line',$value[4])->first();
-                    // return [$clasificacion_softlink];exit;
-                    $categoria_softlink=array();
 
-                    if ($clasificacion_softlink) {
-                        $categoria_softlink = DB::connection('soft')->table('sopsub1')->where('nom_sub1',$value[5])->first();
-                    }
-                    // return response()->json([
-                    //     $clasificacion_softlink,$categoria_softlink
-                    // ]);exit;
-                    $clasificacion_agil = Clasificacion::where('descripcion',$value[4])->first();
-                    $categoria_agil = Categoria::where('id_clasificacion',$clasificacion_agil->id_clasificacion)->first();
-                    $subcategoria_agil = SubCategoria::where('descripcion',$value[5])->where('id_tipo_producto',$categoria_agil->id_tipo_producto)->first();
-                    // return response()->json([
-                    //     $clasificacion_agil,
-                    //     $subcategoria_agil
-                    // ]);exit;
+
+
 
                     if ($producto_softlink) {
                         array_push($array_productos_soflink,$producto_softlink);
@@ -244,29 +230,56 @@ class MigracionAlmacenSoftLinkController extends Controller
                             // ['cod_cate' =>$value[3]]
 
                         );
+                        DB::table('almacen.alm_prod')
+                        ->where('codigo',$value[0])
+                        ->update(
+                            ['descripcion' =>$value[3]]
+                            // ['cod_clasi' =>$value[3]],
+                            // ['cod_cate' =>$value[3]]
 
-                        if ($clasificacion_softlink && $categoria_softlink) {
-                            DB::connection('soft')
-                            ->table('sopprod')
-                            ->where('cod_prod',$value[1])
-                            ->update(
-                                ['cod_clasi' =>$clasificacion_softlink->cod_line,
-                                'cod_cate' =>$categoria_softlink->cod_sub1]
-                                // ['cod_cate' =>$categoria_softlink->cod_sub1]
-                            );
+                        );
+
+                        if ($value[4] && $value[5]) {
+                            $clasificacion_softlink = DB::connection('soft')->table('soplinea')->where('nom_line',$value[4])->first();
+
+                            $categoria_softlink=array();
+
+                            if ($clasificacion_softlink) {
+                                $categoria_softlink = DB::connection('soft')->table('sopsub1')->where('nom_sub1',$value[5])->first();
+                            }
+                            $clasificacion_agil = Clasificacion::where('descripcion',$value[4])->first();
+                            $categoria_agil = Categoria::where('id_clasificacion',$clasificacion_agil->id_clasificacion)->first();
+                            $subcategoria_agil = SubCategoria::where('descripcion',$value[5])->where('id_tipo_producto',$categoria_agil->id_tipo_producto)->first();
+
+                            if ($clasificacion_softlink && $categoria_softlink) {
+                                DB::connection('soft')
+                                ->table('sopprod')
+                                ->where('cod_prod',$value[1])
+                                ->update(
+                                    ['cod_clasi' =>$clasificacion_softlink->cod_line,
+                                    'cod_cate' =>$categoria_softlink->cod_sub1]
+                                    // ['cod_cate' =>$categoria_softlink->cod_sub1]
+                                );
+                            }
+
+                            if ($clasificacion_agil && $subcategoria_agil) {
+
+                                $producto = Producto::find($value[0]);
+                                if ($producto) {
+                                    $producto->id_clasif = $clasificacion_agil->id_clasificacion;
+                                    $producto->id_subcategoria = $categoria_agil->id_tipo_producto;
+                                    $producto->id_categoria = $subcategoria_agil->id_categoria;
+                                    // $producto->id_categoria = $subcategoria_agil->id_categoria;
+
+                                    $producto->save();
+                                }
+
+                                // return $producto;exit;
+                            }
+
                         }
 
-                        if ($clasificacion_agil && $subcategoria_agil) {
 
-                            $producto = Producto::find($value[0]);
-                            $producto->id_clasif = $clasificacion_agil->id_clasificacion;
-                            $producto->id_subcategoria = $categoria_agil->id_tipo_producto;
-                            $producto->id_categoria = $subcategoria_agil->id_categoria;
-                            // $producto->id_categoria = $subcategoria_agil->id_categoria;
-
-                            $producto->save();
-                            // return $producto;exit;
-                        }
                         array_push($array_productos_soflink_modificados,$value);
                     }else{
 

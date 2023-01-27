@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Finanzas\Presupuesto;
 
+use App\Exports\PresupuestoInternoExport;
 use App\Helpers\StringHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,6 +13,7 @@ use App\Models\Finanzas\FinanzasArea;
 use App\Models\Finanzas\PresupuestoInterno;
 use App\Models\Finanzas\PresupuestoInternoDetalle;
 use App\Models\Finanzas\PresupuestoInternoModelo;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class PresupuestoInternoController extends Controller
@@ -144,6 +146,12 @@ class PresupuestoInternoController extends Controller
                     $ingresos->octubre                  = $value['octubre'];
                     $ingresos->noviembre                = $value['noviembre'];
                     $ingresos->diciembre                = $value['diciembre'];
+
+                    $ingresos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                    $ingresos->porcentaje_privado       = $value['porcentaje_privado'];
+                    $ingresos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                    $ingresos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                    $ingresos->porcentaje_costo         = $value['porcentaje_costo'];
                     $ingresos->save();
                 }
 
@@ -175,6 +183,12 @@ class PresupuestoInternoController extends Controller
                     $costos->octubre                  = $value['octubre'];
                     $costos->noviembre                = $value['noviembre'];
                     $costos->diciembre                = $value['diciembre'];
+
+                    $costos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                    $costos->porcentaje_privado       = $value['porcentaje_privado'];
+                    $costos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                    $costos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                    $costos->porcentaje_costo         = $value['porcentaje_costo'];
 
                     $costos->save();
                 }
@@ -209,6 +223,12 @@ class PresupuestoInternoController extends Controller
                     $gastos->octubre                  = $value['octubre'];
                     $gastos->noviembre                = $value['noviembre'];
                     $gastos->diciembre                = $value['diciembre'];
+
+                    $gastos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                    $gastos->porcentaje_privado       = $value['porcentaje_privado'];
+                    $gastos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                    $gastos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                    $gastos->porcentaje_costo         = $value['porcentaje_costo'];
 
                     $gastos->save();
                 }
@@ -303,6 +323,12 @@ class PresupuestoInternoController extends Controller
                 $ingresos->noviembre                = $value['noviembre'];
                 $ingresos->diciembre                = $value['diciembre'];
 
+                $ingresos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                $ingresos->porcentaje_privado       = $value['porcentaje_privado'];
+                $ingresos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                $ingresos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                $ingresos->porcentaje_costo         = $value['porcentaje_costo'];
+
                 $ingresos->save();
             }
             PresupuestoInternoDetalle::where('estado', 1)
@@ -337,6 +363,13 @@ class PresupuestoInternoController extends Controller
                 $costos->octubre                  = $value['octubre'];
                 $costos->noviembre                = $value['noviembre'];
                 $costos->diciembre                = $value['diciembre'];
+
+                $costos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                $costos->porcentaje_privado       = $value['porcentaje_privado'];
+                $costos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                $costos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                $costos->porcentaje_costo         = $value['porcentaje_costo'];
+
                 $costos->save();
             }
         }
@@ -373,6 +406,12 @@ class PresupuestoInternoController extends Controller
                 $gastos->noviembre                = $value['noviembre'];
                 $gastos->diciembre                = $value['diciembre'];
                 $gastos->estado                   = 1;
+
+                $gastos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
+                $gastos->porcentaje_privado       = $value['porcentaje_privado'];
+                $gastos->porcentaje_comicion      = $value['porcentaje_comicion'];
+                $gastos->porcentaje_penalidad     = $value['porcentaje_penalidad'];
+                $gastos->porcentaje_costo         = $value['porcentaje_costo'];
                 $gastos->save();
             }
         }
@@ -405,7 +444,13 @@ class PresupuestoInternoController extends Controller
     }
     public function getPresupuestoInterno(Request $request)
     {
-        $data = PresupuestoInterno::find($request->id);
+
+        $data = PresupuestoInterno::select('presupuesto_interno.*', 'sis_grupo.descripcion as grupo', 'area.descripcion as area','sis_moneda.descripcion as moneda','sis_moneda.simbolo')
+        ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
+        ->join('finanzas.area', 'area.id_area', '=', 'presupuesto_interno.id_area')
+        ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'presupuesto_interno.id_moneda')
+        ->where('id_presupuesto_interno',$request->id)
+        ->first();
         $array_presupuesto = [];
         $array_presupuesto['ingresos']=[];
         $array_presupuesto['costos']=[];
@@ -421,12 +466,13 @@ class PresupuestoInternoController extends Controller
         $gastos     = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
         $array_presupuesto['gastos']=$gastos;
 
-        return response()->json([
-            "success"=>true,
-            "status"=>200,
-            "data"=>$data,
-            "presupuesto"=>$array_presupuesto
-        ]);
+        return Excel::download(new PresupuestoInternoExport($data, $array_presupuesto), 'presupuesto_interno.xlsx');
+        // return response()->json([
+        //     "success"=>true,
+        //     "status"=>200,
+        //     "data"=>$data,
+        //     "presupuesto"=>$array_presupuesto
+        // ]);
     }
     public function aprobar(Request $request)
     {

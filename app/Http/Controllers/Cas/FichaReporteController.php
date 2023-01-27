@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Cas;
 
+use App\Exports\IncidenciasConHistorialExport;
 use App\Exports\IncidenciasExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -73,17 +74,26 @@ class FichaReporteController extends Controller
     }
     public function listarIncidencias(Request $request)
     {
-        $query = $this->incidencias();
+        $query = $this->incidencias()->orderBy('fecha_reporte','desc')->orderBy('id_incidencia','desc');
         return datatables($query)->toJson();
     }
 
     public function incidenciasExcel(Request $request)
     {
-        $data = $this->incidencias();
+        $data = $this->incidencias()->orderBy('fecha_reporte','desc')->orderBy('id_incidencia','desc');
         $fecha = new Carbon();
         return Excel::download(new IncidenciasExport(
             $data,
         ), 'Reporte de incidencias al ' . $fecha . '.xlsx');
+    }
+
+    public function incidenciasExcelConHistorial(Request $request)
+    {
+        $data = $this->incidencias()->orderBy('fecha_reporte','desc')->orderBy('id_incidencia','desc');
+        $fecha = new Carbon();
+        return Excel::download(new IncidenciasConHistorialExport(
+            $data,
+        ), 'Reporte de incidencias con historial al ' . $fecha . '.xlsx');
     }
 
     function listarFichasReporte($id_incidencia)
@@ -458,6 +468,7 @@ class FichaReporteController extends Controller
 
         // $mensaje = '';
         // $tipo = '';
+        // return [$incidencia];exit;
         $yyyy = date('Y', strtotime("now"));
         $codigo = Incidencia::nuevoCodigoIncidencia($incidencia->id_empresa, $yyyy);
 
@@ -505,6 +516,9 @@ class FichaReporteController extends Controller
 
         $incidencia_new->horario_contacto = $incidencia->horario_contacto;
         $incidencia_new->email_contacto = $incidencia->email_contacto;
+
+        $incidencia_new->cdp = $incidencia->codigo_oportunidad;
+        $incidencia_new->fecha_documento = $incidencia->fecha_documento;
         $incidencia_new->save();
 
         return response()->json([

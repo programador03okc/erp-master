@@ -27,7 +27,7 @@ Presupuesto Interno
 
 @section('content')
 <form action="{{ route('finanzas.presupuesto.presupuesto-interno.guardar') }}" method="post" data-form="guardar-partida" enctype="multipart/formdata">
-
+    <input type="hidden" name="estado" value="1">
     <div class="row">
         <div class="col-md-12">
             <div class="box box-danger">
@@ -99,26 +99,7 @@ Presupuesto Interno
                                 </select>
                             </div>
                         </div>
-                        {{-- <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="mes">Meses :</label>
-                                <select id="mes" name="mes" class="form-control" required>
-                                    <option selected hidden>Mes</option>
-                                    <option value="Enero">Enero</option>
-                                    <option value="Febrero">Febrero</option>
-                                    <option value="Marzo">Marzo</option>
-                                    <option value="Abril">Abril</option>
-                                    <option value="Mayo">Mayo</option>
-                                    <option value="Junio">Junio</option>
-                                    <option value="Julio">Julio</option>
-                                    <option value="Agosto">Agosto</option>
-                                    <option value="Septiembre">Septiembre</option>
-                                    <option value="Octubre">Octubre</option>
-                                    <option value="Noviembre">Noviembre</option>
-                                    <option value="Diciembre">Diciembre</option>
-                                </select>
-                            </div>
-                        </div> --}}
+
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -247,6 +228,7 @@ Presupuesto Interno
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script>
+        let array = [];
         // let csrf_token = "{{ csrf_token() }}";
         // $(document).ready(function () {
         //     seleccionarMenu(window.location);

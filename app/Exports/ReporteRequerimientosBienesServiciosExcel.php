@@ -42,7 +42,7 @@ class reporteRequerimientosBienesServiciosExcel implements FromView,ShouldAutoSi
                 'priori'=> $element->priori,
                 'codigo'=> $element->codigo,
                 'codigo_oportunidad'=> $element->codigo_oportunidad,
-                'concepto'=> $element->concepto,
+                'concepto'=> str_replace("'", "", str_replace("", "", $element->concepto)),
                 'fecha_registro'=> $element->fecha_registro,
                 'fecha_entrega'=> $element->fecha_entrega,
                 'tipo_requerimiento'=> $element->tipo_requerimiento,

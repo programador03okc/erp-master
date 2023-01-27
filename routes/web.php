@@ -1968,7 +1968,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('verAdjuntosFicha/{id}', 'Cas\FichaReporteController@verAdjuntosFicha')->name('ver-adjuntos-ficha');
 
 				Route::get('imprimirFichaReporte/{id}', 'Cas\FichaReporteController@imprimirFichaReporte');
-				Route::post('incidenciasExcel', 'Cas\FichaReporteController@incidenciasExcel')->name('incidenciasExcel');
+				Route::get('incidenciasExcel', 'Cas\FichaReporteController@incidenciasExcel')->name('incidenciasExcel');
+				Route::get('incidenciasExcelConHistorial', 'Cas\FichaReporteController@incidenciasExcelConHistorial')->name('incidenciasExcelConHistorial');
 
 				Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
 				Route::post('guardarFichaTecnica', 'Almacen\Movimiento\DevolucionController@guardarFichaTecnica');
@@ -2056,7 +2057,9 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('eliminar', 'Finanzas\Presupuesto\PresupuestoInternoController@eliminar')->name('eliminar');
 
                 Route::get('get-area', 'Finanzas\Presupuesto\PresupuestoInternoController@getArea');
+                // exportable de presupiesto interno
                 Route::post('get-presupuesto-interno', 'Finanzas\Presupuesto\PresupuestoInternoController@getPresupuestoInterno');
+
                 Route::post('aprobar', 'Finanzas\Presupuesto\PresupuestoInternoController@aprobar');
             });
 		});
