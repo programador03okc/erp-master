@@ -5335,13 +5335,26 @@ class AlmacenController extends Controller
                     'alm_prod.codigo',
                     'alm_prod.descripcion',
                     'tp_ope.descripcion as ope_descripcion',
-                    'adm_estado_doc.estado_doc'
+                    'adm_estado_doc.estado_doc',
+                    'alm_req.codigo as codigo_requerimiento',
+                    'oportunidades.codigo_oportunidad',
+
+                    // DB::raw("(SELECT 
+                    // FROM almacen.guia_com
+                    // WHERE   guia_com.id_guia = mov_alm_det.id_guia_com_det AND
+                    // mov_alm_det.estado != 7) AS gg")
                 )
                 ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
                 // ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
                 ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
+                ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
+                ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+                ->join('almacen.alm_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
+                ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+
                 ->leftjoin('almacen.guia_com', 'guia_com.id_guia', '=', 'mov_alm_det.id_guia_com')
                 ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com.id_proveedor')
                 ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
@@ -5369,7 +5382,11 @@ class AlmacenController extends Controller
                     'alm_prod.codigo',
                     'alm_prod.descripcion',
                     'tp_ope.descripcion as ope_descripcion',
-                    'adm_estado_doc.estado_doc'
+                    'adm_estado_doc.estado_doc',
+                    'alm_req.codigo as codigo_requerimiento',
+                    'oportunidades.codigo_oportunidad',
+
+
                 )
                 ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
                 ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
@@ -5377,6 +5394,12 @@ class AlmacenController extends Controller
                 // ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
                 ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
                 ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
+                ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
+                ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+                ->join('almacen.alm_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
+                ->join('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+                ->join('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+
                 ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'guia_com.id_proveedor')
                 ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
                 ->leftjoin('almacen.tp_doc_almacen', 'tp_doc_almacen.id_tp_doc_almacen', '=', 'guia_com.id_tp_doc_almacen')

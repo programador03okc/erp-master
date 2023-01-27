@@ -39,6 +39,8 @@ function actualizarLista() {
         'columns': [
             { 'data': 'id_mov_alm_det' },
             // {'data': 'tp_doc'},
+            { 'data': 'codigo_requerimiento' },
+            { 'data': 'codigo_oportunidad' },
             { 'data': 'guia' },
             { 'data': 'fecha_guia' },
             { 'data': 'nro_documento' },

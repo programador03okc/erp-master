@@ -45,6 +45,8 @@ Detalle de Ingresos
                                 <tr>
                                     <th hidden></th>
                                     <!-- <th>Tp</th> -->
+                                    <th>Req.</th>
+                                    <th>CDP</th>
                                     <th>Guía</th>
                                     <th>Fecha Emisión</th>
                                     <th>RUC</th>
