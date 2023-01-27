@@ -2167,8 +2167,10 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('index', 'Tesoreria\CierreAperturaController@index')->name('index');
 			Route::post('listar', 'Tesoreria\CierreAperturaController@listar')->name('listar');
 			Route::get('mostrarSedesPorEmpresa/{id}', 'Tesoreria\CierreAperturaController@mostrarSedesPorEmpresa')->name('mostrar-sedes-empresa');
-			Route::get('mostrarAlmacenesPorSede/{id}', 'Tesoreria\CierreAperturaController@mostrarAlmacenesPorSede')->name('mostrar-sedes-empresa');
+			Route::get('mostrarAlmacenesPorSede/{id}', 'Tesoreria\CierreAperturaController@mostrarAlmacenesPorSede')->name('mostrar-almacenes-sede');
 			Route::post('guardar', 'Tesoreria\CierreAperturaController@guardarAccion')->name('guardar');
+			Route::post('guardarVarios', 'Tesoreria\CierreAperturaController@guardarVarios')->name('guardarVarios');
+			Route::get('cargarMeses/{id}', 'Tesoreria\CierreAperturaController@cargarMeses');
 		});
 	});
 

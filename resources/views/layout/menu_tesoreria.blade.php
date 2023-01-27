@@ -36,6 +36,6 @@
     </li>
     @endif
     <li><a href="{{ route('tesoreria.tipo-cambio.index') }}"><i class="fas fa-money-bill-alt"></i> <span>Tipo de Cambio</span></a></li>
-    <li><a href="{{ route('tesoreria.cierre-apertura.index') }}"><i class="fas fa-money-bill-alt"></i> <span>Cierre/Apertura</span></a></li>
+    <li><a href="{{ route('tesoreria.cierre-apertura.index') }}"><i class="fas fa-money-bill-alt"></i> <span>Cierre / Apertura</span></a></li>
 </ul>
 @endsection

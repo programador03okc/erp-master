@@ -2,9 +2,10 @@
 <div class="modal fade" id="modal-nuevo-cierre-apertura" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="modal-data">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form id="nuevo-cierre-apertura" method="POST">
-                <input type="hidden" name="_method" value="POST">
-                <input type="hidden" name="id" value="0">
+            <form id="form-nuevo-cierre-apertura">
+                {{-- <input type="hidden" name="_method" value="POST"> --}}
+                {{-- <input type="hidden" name="id_periodo"> --}}
+                {{-- <input type="hidden" name="id_estado"> --}}
                 @csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -15,17 +16,16 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <h5>Año *</h5>
-                                {{-- <input type="number" name="compra" class="form-control input-sm text-center" step="any" min="0" value="0.00"> --}}
-                                <select class="form-control" name="anio" style="background: khaki;">
-                                    <option value="2022" >2022</option>
-                                    <option value="2023" selected>2023</option>
-                                    <option value="2024" >2024</option>
+                                <select class="form-control" name="anio" style="background: khaki;font-weight: bold;">
+                                    @foreach ($anios as $a)
+                                        <option value="{{$a->anio}}">{{$a->anio}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4">
                                 <h5>Mes *</h5>
                                 {{-- <input type="number" name="venta" class="form-control input-sm text-center" step="any" min="0" value="0.00"> --}}
-                                <select class="form-control" name="mes"  style="background: khaki;">
+                                <select class="form-control" name="mes"  style="background: khaki;font-weight: bold;">
                                     <option value="Enero" selected>Enero</option>
                                     <option value="Febrero" >Febrero</option>
                                     <option value="Marzo" >Marzo</option>
@@ -42,10 +42,10 @@
                             </div>
                             <div class="col-md-4">
                                 <h5>Acción *</h5>
-                                <select class="form-control" name="accion" style="background: khaki;font-weight: bold;">
-                                    <option value="0" selected>Cierre</option>
-                                    <option value="1" >Apertura</option>
-                                    
+                                <select class="form-control" name="id_estado" style="background: khaki;font-weight: bold;">
+                                    @foreach ($acciones as $a)
+                                        <option value="{{$a->id_estado}}">{{$a->nombre}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -74,12 +74,12 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <h5>Almacén (usar la tecla ctrl para elegir mas de uno)</h5>
+                                <h5>Almacén (pulse la tecla ctrl para elegir mas de uno)</h5>
                                 <select class="form-control" name="id_almacen" multiple="multiple">
                                     {{-- <select name="id_almacen[]" class="selectpicker" data-live-search="true" data-width="100%" data-actions-box="true" multiple data-size="10"> --}}
                                     <option value="0" selected>Todos los almacenes</option>
                                     @foreach ($almacenes as $alm)
-                                    <option value="{{$alm->id_almacen}}">{{$alm->descripcion}}</option>
+                                    <option value="{{$alm->id_almacen}}">{{$alm->codigo}} - {{$alm->descripcion}}</option>
                                     @endforeach
                                 </select>
                             </div>

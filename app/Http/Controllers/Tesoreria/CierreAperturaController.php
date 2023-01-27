@@ -23,12 +23,32 @@ class CierreAperturaController extends Controller
         ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','adm_empresa.id_contribuyente')
         ->where('adm_empresa.estado',1)
         ->get();
+
         $almacenes = DB::table('almacen.alm_almacen')
-        ->select('alm_almacen.id_almacen','alm_almacen.descripcion')
+        ->select('alm_almacen.id_almacen','alm_almacen.descripcion','alm_almacen.codigo')
         ->where('alm_almacen.estado',1)
+        ->orderBy('alm_almacen.codigo')
         ->get();
-		return view('tesoreria/cierre_apertura/lista',compact('empresas','almacenes'));
+
+        $anios = DB::table('contabilidad.periodo')
+        ->select('periodo.anio')
+        ->distinct()->get();
+
+        $acciones = DB::table('contabilidad.periodo_estado')
+        ->where('estado',1)
+        ->get();
+
+		return view('tesoreria/cierre_apertura/lista', compact('empresas','almacenes','anios','acciones'));
 	}
+
+    public function cargarMeses($anio)
+    {
+        $meses = DB::table('contabilidad.periodo')
+        ->select('periodo.mes')
+        ->where('periodo.anio',$anio)
+        ->distinct()->get();
+        return response()->json($meses);
+    }
 
 	public function listar()
     {
@@ -61,15 +81,25 @@ class CierreAperturaController extends Controller
         ->where('sis_sede.id_empresa',$id_empresa)
         ->where('sis_sede.estado',1)
         ->get();
-        return response()->json($sedes);
+
+        $almacenes = DB::table('almacen.alm_almacen')
+        ->select('alm_almacen.id_almacen','alm_almacen.descripcion','alm_almacen.codigo')
+        ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+        ->where('sis_sede.id_empresa',$id_empresa)
+        ->where('alm_almacen.estado',1)
+        ->orderBy('alm_almacen.codigo')
+        ->get();
+
+        return response()->json(['sedes'=>$sedes,'almacenes'=>$almacenes]);
     }
 
     public function mostrarAlmacenesPorSede($id_sede)
     {
         $almacenes = DB::table('almacen.alm_almacen')
-        ->select('alm_almacen.id_almacen','alm_almacen.descripcion')
+        ->select('alm_almacen.id_almacen','alm_almacen.descripcion','alm_almacen.codigo')
         ->where('alm_almacen.id_sede',$id_sede)
         ->where('alm_almacen.estado',1)
+        ->orderBy('alm_almacen.codigo')
         ->get();
         return response()->json($almacenes);
     }
@@ -102,6 +132,52 @@ class CierreAperturaController extends Controller
             DB::commit();
             return response()->json([
                 'tipo' => 'success',
+                'mensaje' => 'Se proceso correctamente.', 200
+            ]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar la acción. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    
+    public function guardarVarios(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $id_usuario = Auth::user()->id_usuario;
+            $id_almacen = json_decode($request->id_almacen);
+
+            $periodos = DB::table('contabilidad.periodo')
+            ->where('anio',$request->anio)
+            ->where('mes',$request->mes)
+            ->whereIn('id_almacen',$id_almacen)
+            ->get();
+
+            foreach($periodos as $p){
+
+                $id_historial = DB::table('contabilidad.periodo_historial')->insertGetId(
+                    [
+                        'id_periodo' => $p->id_periodo,
+                        'accion' => ($request->id_estado==1?'Abierto':'Cerrado'),
+                        'id_estado' => $request->id_estado,
+                        'comentario' => $request->comentario,
+                        'id_usuario' => $id_usuario,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ],
+                    'id_historial'
+                );
+                DB::table('contabilidad.periodo')
+                ->where('id_periodo',$p->id_periodo)
+                ->update(['estado'=>$request->id_estado]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'tipo' => 'success',
+                'id_almacen' => $request->id_almacen,
                 'mensaje' => 'Se proceso correctamente.', 200
             ]);
         } catch (\PDOException $e) {
