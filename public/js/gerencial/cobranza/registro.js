@@ -701,6 +701,7 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
 
                         $('[data-form="guardar-formulario"] .modal-body input[name="fecha_inicio"]').val(response.oc.inicio_entrega)
                         $('[data-form="guardar-formulario"] .modal-body input[name="fecha_entrega"]').val(response.oc.fecha_entrega)
+                        $('[data-form="guardar-formulario"] .modal-body input[name="id_oc"]').val(response.oc.id)
                 }else{
                     $('[data-form="editar-formulario"] .modal-body select[name="moneda"]').removeAttr('selected');
                     $('[data-form="editar-formulario"] .modal-body select[name="moneda"] option[value="'+response.data.id_moneda+'"]').attr('selected','true');
@@ -725,10 +726,10 @@ $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
 
                     $('[data-form="editar-formulario"] .modal-body input[name="fecha_inicio"]').val(response.oc.inicio_entrega)
                     $('[data-form="editar-formulario"] .modal-body input[name="fecha_entrega"]').val(response.oc.fecha_entrega)
+
+                    $('[data-form="editar-formulario"] .modal-body input[name="id_oc"]').val(response.oc.id)
                 }
-
-
-
+                // $('.dias-atraso').trigger('change');
 
             }
         }
@@ -882,7 +883,7 @@ $(document).on('click','.editar-registro',function () {
     })
 });
 
-$(document).on('change click','.dias-atraso',function () {
+$(document).on('change','.dias-atraso',function () {
     var data_form = $(this).attr('data-form');
     var fecha_emision = new Date($('[data-form="'+data_form+'"] input[name="fecha_rec"]').val().split('/').reverse().join('-')).getTime() ,
         fecha_vencimiento= new Date($('[data-form="'+data_form+'"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime(),
@@ -906,12 +907,11 @@ $(document).on('change click','.dias-atraso',function () {
         atraso = 0;
     }
 
-
     $('[data-form="'+data_form+'"] input[name="atraso"]').val(atraso);
-
-
-
+    $('[data-form="'+data_form+'"] input[name="dias_atraso"]').val(atraso);
     $('[data-form="editar-formulario"] input[name="atraso"]').val(atraso);
+    $('[data-form="editar-formulario"] input[name="dias_atraso"]').val(atraso);
+
 });
 
 $(document).on('submit','[data-form="editar-formulario"]',function (e) {
@@ -1162,6 +1162,11 @@ $(document).on('click','.modal-penalidad',function () {
                     html+='<td>'+element.documento+'</td>'
                     html+='<td>'+element.monto+'</td>'
                     html+='<td>'+element.fecha+'</td>'
+                    html+='<td>'+
+                        '<button class="btn btn-xs" title="Editar"><i class="fa fa-edit"></i></button>'+
+                        '<button class="btn btn-xs" title="Anular"><i class="fa fa-trash-alt"></i></button>'+
+                        '<button class="btn btn-xs" title="Eliminar"><i class="fa fa-times"></i></button>'+
+                    '</td>'
                 html+='</tr>'
             });
             $('[data-table="penalidades"]').html(html);

@@ -366,6 +366,8 @@ class RegistroController extends Controller
     }
     public function guardarRegistroCobranza(Request $request)
     {
+
+
         $data = $request;
         $empresa = DB::table('administracion.adm_empresa')->where('id_contribuyente',$request->empresa)->first();
         $cobranza = new RegistroCobranza();
@@ -406,7 +408,7 @@ class RegistroController extends Controller
         $cobranza->inicio_entrega       = $request->fecha_inicio;
         $cobranza->fecha_entrega       = $request->fecha_entrega;
         // $cobranza->id_vent          = ;
-
+        $cobranza->id_oc       = $request->id_oc;
         $cobranza->save();
 
         if ($cobranza) {
@@ -417,6 +419,29 @@ class RegistroController extends Controller
             $programacion_pago->fecha_registro = date('Y-m-d H:i:s');
             $programacion_pago->save();
         }
+        // uso de la formula de la penalidad
+        if ($request->importe) {
+            // return $request->atraso;exit;
+            if (intval($request->dias_atraso)>0) {
+                $formula_penalidad = (0.10*floatval($request->importe))/(0.4*intval($request->dias_atraso));
+
+                $penalidad = new Penalidad();
+
+                $penalidad->tipo                    = 'PENALIDAD';
+                $penalidad->monto                   = $formula_penalidad;
+                $penalidad->documento               = '--';
+                $penalidad->fecha                   = date('Y-m-d');
+                $penalidad->observacion             = 'PENALIDAD CALCULADA';
+                $penalidad->estado                  = 1;
+                $penalidad->fecha_registro          = date('Y-m-d H:i:s');
+                $penalidad->id_registro_cobranza    = $cobranza->id_registro_cobranza;
+                $penalidad->save();
+
+
+            }
+
+        }
+
         return response()->json([
             "success"=>true,
             "status"=>200,
@@ -893,6 +918,7 @@ class RegistroController extends Controller
         $cobranza->orden_compra       = $request->orden_compra;
         $cobranza->inicio_entrega       = $request->fecha_inicio;
         $cobranza->fecha_entrega       = $request->fecha_entrega;
+        $cobranza->id_oc       = $request->id_oc;
         $cobranza->save();
         // return $request->fecha_ppago;exit;
         if ($cobranza) {
@@ -1135,21 +1161,48 @@ class RegistroController extends Controller
     public function obtenerPenalidades($id_registro_cobranza)
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id_registro_cobranza)->first();
+        $array_penalidades = array();
         // return $registro_cobranza;exit;
-        $penalidad_gerencial = Penalidad::where('estado',1);
-        $penalidad_gerencial = $penalidad_gerencial->where('id_cobranza',$registro_cobranza->id_cobranza_old)->orWhere('id_registro_cobranza',$id_registro_cobranza);
-        // if (!empty($registro_cobranza->id_cobranza_old)) {
-        //     $penalidad_gerencial = $penalidad_gerencial->where('id_cobranza',$registro_cobranza->id_cobranza_old);
-        // }else{
-        //     $penalidad_gerencial = $penalidad_gerencial->where('id_registro_cobranza',$id_registro_cobranza);
-        // }
+        $penalidad_cobranza = Penalidad::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->get();
+        $penalidad_registro = Penalidad::where('id_registro_cobranza',$id_registro_cobranza)->where('estado',1)->get();
 
-        $penalidad_gerencial = $penalidad_gerencial->get();
+        if (sizeof($penalidad_cobranza)>0) {
+            foreach ($penalidad_cobranza as $key => $value) {
+                array_push($array_penalidades,array(
+                    "id_penalidad"=>$value->id_penalidad,
+                    "id_cobranza"=>$value->id_cobranza,
+                    "tipo"=>$value->tipo,
+                    "monto"=>$value->monto,
+                    "documento"=>$value->documento,
+                    "fecha"=>$value->fecha,
+                    "observacion"=>$value->observacion,
+                    "estado"=>$value->estado,
+                    "fecha_registro"=>$value->fecha_registro,
+                    "id_registro_cobranza"=>$value->id_registro_cobranza,
+                ));
+            }
+        }
+        if (sizeof($penalidad_registro)>0) {
+            foreach ($penalidad_registro as $key => $value) {
+                array_push($array_penalidades,array(
+                    "id_penalidad"=>$value->id_penalidad,
+                    "id_cobranza"=>$value->id_cobranza,
+                    "tipo"=>$value->tipo,
+                    "monto"=>$value->monto,
+                    "documento"=>$value->documento,
+                    "fecha"=>$value->fecha,
+                    "observacion"=>$value->observacion,
+                    "estado"=>$value->estado,
+                    "fecha_registro"=>$value->fecha_registro,
+                    "id_registro_cobranza"=>$value->id_registro_cobranza,
+                ));
+            }
+        }
 
         return response()->json([
             "success"=>true,
             "status"=>200,
-            "penalidades"=>$penalidad_gerencial
+            "penalidades"=>$array_penalidades
         ]);
     }
     public function buscarVendedor( Request $request)

@@ -167,10 +167,12 @@ Cobranzas
                                 </div>
                             </div>
                         </div>
+                        <input type="hidden"name="id_oc" >
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="oc">OCAM</label>
                                 <div class="input-group input-group-sm">
+
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="OCAM" data-action="oc">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="guardar-formulario">
@@ -273,7 +275,8 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="atraso">Días Atras</label>
+                                <label for="atraso">Días Atraso</label>
+                                <input type="hidden" name="dias_atraso" value="0">
                                 <input type="text" class="form-control input-sm text-center dias-atraso" name="atraso" id="atraso" value="0" data-form="guardar-formulario" disabled>
                             </div>
                         </div>
@@ -497,6 +500,7 @@ Cobranzas
                             </div>
                         </div>
                         <div class="col-md-3">
+                            <input type="hidden"name="id_oc">
                             <div class="form-group">
                                 <label for="oc">Orden de Compra / OCAM</label>
                                 <div class="input-group input-group-sm">
@@ -602,7 +606,8 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="atraso">Días Atras</label>
+                                <label for="atraso">Días Atraso</label>
+                                <input type="hidden" name="dias_atraso" value="0">
                                 <input type="text" class="form-control input-sm text-center dias-atraso" name="atraso" value="0" data-form="editar-formulario" disabled>
                             </div>
                         </div>
