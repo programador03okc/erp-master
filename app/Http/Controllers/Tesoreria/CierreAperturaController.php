@@ -206,4 +206,21 @@ class CierreAperturaController extends Controller
 
         return response()->json($historial);
     }
+
+    static function consultarPeriodo($fecha)
+    {
+        $yyyy = date('Y', strtotime($fecha));
+        $m = date('n', strtotime($fecha));
+
+        $periodo=DB::table('contabilidad.periodo')
+        ->select('periodo.estado','periodo_estado.nombre')
+        ->join('contabilidad.periodo_estado','periodo_estado.id_estado','=','periodo.estado')
+        ->where('periodo.anio',$yyyy)
+        ->where('periodo.nro_mes',$m)
+        ->first();
+
+        $rspta = ($periodo == null ? 2 : $periodo->estado);
+
+        return $rspta;
+    }
 }
