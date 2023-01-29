@@ -130,3 +130,34 @@ $("#listaPeriodos tbody").on("click", "button.cerrar", function () {
     $('[name=ca_comentario]').val('');
 });
 
+$("#listaPeriodos tbody").on("click", "button.historial", function () {
+    $('#modal-historial-acciones').modal('show');
+    var id_periodo = $(this).data("id");
+
+    $.ajax({
+        type: "GET",
+        url: 'listaHistorialAcciones/' + id_periodo,
+        dataType: "JSON",
+        success: function (response) {
+            console.log(response);
+            html = '';
+            response.forEach(element => {
+                html += `<tr>
+                <td>${element.anio}</td>
+                <td>${element.mes}</td>
+                <td>${element.empresa}</td>
+                <td>${element.almacen}</td>
+                <td>${element.estado_nombre}</td>
+                <td>${element.comentario}</td>
+                <td>${element.nombre_corto}</td>
+                <td>${formatDateHour(element.fecha_registro)}</td>
+                </tr>`;
+            });
+            $('#listaHistorialAcciones tbody').html(html);
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});

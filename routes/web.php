@@ -2174,6 +2174,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('guardar', 'Tesoreria\CierreAperturaController@guardarAccion')->name('guardar');
 			Route::post('guardarVarios', 'Tesoreria\CierreAperturaController@guardarVarios')->name('guardarVarios');
 			Route::get('cargarMeses/{id}', 'Tesoreria\CierreAperturaController@cargarMeses');
+			Route::get('listaHistorialAcciones/{id}', 'Tesoreria\CierreAperturaController@listaHistorialAcciones');
 		});
 	});
 

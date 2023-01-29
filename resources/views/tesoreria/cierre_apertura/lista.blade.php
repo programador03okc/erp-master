@@ -58,6 +58,7 @@
 
 @include('tesoreria.cierre_apertura.nuevo')
 @include('tesoreria.cierre_apertura.cierreApertura')
+@include('tesoreria.cierre_apertura.historialAcciones')
 @endsection
 
 @section('scripts')
