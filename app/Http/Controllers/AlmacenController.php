@@ -5336,9 +5336,14 @@ class AlmacenController extends Controller
                     'alm_prod.descripcion',
                     'tp_ope.descripcion as ope_descripcion',
                     'adm_estado_doc.estado_doc',
-                    'alm_req.codigo as codigo_requerimiento',
-                    'oportunidades.codigo_oportunidad',
-
+                    // 'alm_req.codigo as codigo_requerimiento',
+                    // 'oportunidades.codigo_oportunidad',
+                    DB::raw("(CASE WHEN alm_req.id_requerimiento >0  THEN alm_req.codigo 
+                    WHEN alm_req_t.id_requerimiento >0  THEN alm_req_t.codigo
+                    ELSE '' END) AS codigo_requerimiento"),
+                    DB::raw("(CASE WHEN oportunidades.id >0  THEN oportunidades.codigo_oportunidad 
+                    WHEN oportunidades_t.id > 0  THEN oportunidades_t.codigo_oportunidad
+                    ELSE '' END) AS codigo_oportunidad")
                     // DB::raw("(SELECT 
                     // FROM almacen.guia_com
                     // WHERE   guia_com.id_guia = mov_alm_det.id_guia_com_det AND
@@ -5349,6 +5354,15 @@ class AlmacenController extends Controller
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
                 // ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
                 ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
+
+                ->leftjoin('almacen.transfor_transformado', 'transfor_transformado.id_transformado', '=', 'guia_com_det.id_transformado')
+                ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_transformado.id_od_detalle')
+                ->leftjoin('almacen.alm_det_req as alm_det_req_t', 'alm_det_req_t.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+                ->leftjoin('almacen.alm_req as alm_req_t', 'alm_req_t.id_requerimiento', '=', 'alm_det_req_t.id_requerimiento')
+                ->leftjoin('mgcp_cuadro_costos.cc as cc_t', 'cc_t.id', '=', 'alm_req_t.id_cc')
+                ->leftjoin('mgcp_oportunidades.oportunidades as oportunidades_t', 'oportunidades_t.id', '=', 'cc_t.id_oportunidad')
+
+
                 ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
                 ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
                 ->leftjoin('almacen.alm_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
@@ -5383,9 +5397,14 @@ class AlmacenController extends Controller
                     'alm_prod.descripcion',
                     'tp_ope.descripcion as ope_descripcion',
                     'adm_estado_doc.estado_doc',
-                    'alm_req.codigo as codigo_requerimiento',
-                    'oportunidades.codigo_oportunidad',
-
+                    // 'alm_req.codigo as codigo_requerimiento',
+                    // 'oportunidades.codigo_oportunidad',
+                    DB::raw("(CASE WHEN alm_req.id_requerimiento > 0 THEN alm_req.codigo 
+                    WHEN alm_req_t.id_requerimiento > 0 THEN alm_req_t.codigo
+                    ELSE '' END) AS codigo_requerimiento"),
+                    DB::raw("(CASE WHEN oportunidades.id > 0  THEN oportunidades.codigo_oportunidad 
+                    WHEN oportunidades_t.id > 0 THEN oportunidades_t.codigo_oportunidad
+                    ELSE '' END) AS codigo_oportunidad")
 
                 )
                 ->join('almacen.mov_alm', 'mov_alm.id_mov_alm', '=', 'mov_alm_det.id_mov_alm')
@@ -5393,6 +5412,15 @@ class AlmacenController extends Controller
                 ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'mov_alm_det.id_producto')
                 // ->leftjoin('almacen.alm_ubi_posicion','alm_ubi_posicion.id_posicion','=','mov_alm_det.id_posicion')
                 ->join('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
+
+                ->leftjoin('almacen.transfor_transformado', 'transfor_transformado.id_transformado', '=', 'guia_com_det.id_transformado')
+                ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_transformado.id_od_detalle')
+                ->leftjoin('almacen.alm_det_req as alm_det_req_t', 'alm_det_req_t.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+                ->leftjoin('almacen.alm_req as alm_req_t', 'alm_req_t.id_requerimiento', '=', 'alm_det_req_t.id_requerimiento')
+                ->leftjoin('mgcp_cuadro_costos.cc as cc_t', 'cc_t.id', '=', 'alm_req_t.id_cc')
+                ->leftjoin('mgcp_oportunidades.oportunidades as oportunidades_t', 'oportunidades_t.id', '=', 'cc_t.id_oportunidad')
+
+
                 ->join('almacen.guia_com', 'guia_com.id_guia', '=', 'guia_com_det.id_guia_com')
                 ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
                 ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
