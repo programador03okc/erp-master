@@ -238,27 +238,29 @@ function guardarDevolucion(data) {
                 msg: response.mensaje
             });
 
-            $(".edition").attr('disabled', 'true');
-            $(".guardar-devolucion").hide();
-            $(".cancelar").hide();
-            $(".nueva-devolucion").show();
-            $(".anular-devolucion").show();
-            $(".edit-devolucion").show();
-            $(".procesar-devolucion").show();
-            $(".buscar-devolucion").show();
-            $('.imprimir-ingreso').hide();
-            $('.imprimir-salida').hide();
+            if (response.devolucion !== null) {
+                $(".edition").attr('disabled', 'true');
+                $(".guardar-devolucion").hide();
+                $(".cancelar").hide();
+                $(".nueva-devolucion").show();
+                $(".anular-devolucion").show();
+                $(".edit-devolucion").show();
+                $(".procesar-devolucion").show();
+                $(".buscar-devolucion").show();
+                $('.imprimir-ingreso').hide();
+                $('.imprimir-salida').hide();
 
-            $("[name=modo]").val("");
-            $("[name=id_devolucion]").val(response.devolucion.id_devolucion);
-            $('#codigo').text(response.devolucion.codigo);
-            $('#estado').text(response.devolucion.estado_descripcion);
-            $('#estado').removeClass();
-            $('#estado').addClass('label label-' + response.devolucion.bootstrap_color);
-            $('#nombre_registrado_por').text(response.devolucion.nombre_corto);
-            $('#fecha_registro').text(response.devolucion.fecha_registro);
+                $("[name=modo]").val("");
+                $("[name=id_devolucion]").val(response.devolucion.id_devolucion);
+                $('#codigo').text(response.devolucion.codigo);
+                $('#estado').text(response.devolucion.estado_descripcion);
+                $('#estado').removeClass();
+                $('#estado').addClass('label label-' + response.devolucion.bootstrap_color);
+                $('#nombre_registrado_por').text(response.devolucion.nombre_corto);
+                $('#fecha_registro').text(response.devolucion.fecha_registro);
 
-            mostrarDevolucion(response.devolucion.id_devolucion)
+                mostrarDevolucion(response.devolucion.id_devolucion)
+            }
 
             $("#submit_devolucion").attr('disabled', false);
         }
