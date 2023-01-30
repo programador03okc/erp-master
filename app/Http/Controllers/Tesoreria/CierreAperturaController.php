@@ -186,7 +186,7 @@ class CierreAperturaController extends Controller
         }
     }
 
-    function listaHistorialAcciones($id_periodo)
+    public function listaHistorialAcciones($id_periodo)
     {
         $historial = DB::table('contabilidad.periodo_historial')
         ->select('periodo_historial.*','sis_usua.nombre_corto','alm_almacen.descripcion as almacen',
@@ -219,8 +219,55 @@ class CierreAperturaController extends Controller
         ->where('periodo.nro_mes',$m)
         ->first();
 
-        $rspta = ($periodo == null ? 2 : $periodo->estado);
+        $rspta = ($periodo == null ? 1 : $periodo->estado);
 
         return $rspta;
     }
+
+    public function autogenerarPeriodos($anio)
+    {
+        $id_usuario=Auth::user()->id_usuario;
+        $almacenes=DB::table('almacen.alm_almacen')
+        ->where('estado',1)
+        ->get();
+
+        foreach ($almacenes as $alm) {
+            for ($i=1; $i<=12; $i++) {
+                switch ($i) {
+                    case 1: $mes='Enero';break;
+                    case 2: $mes='Febrero';break;
+                    case 3: $mes='Marzo';break;
+                    case 4: $mes='Abril';break;
+                    case 5: $mes='Mayo';break;
+                    case 6: $mes='Junio';break;
+                    case 7: $mes='Julio';break;
+                    case 8: $mes='Agosto';break;
+                    case 9: $mes='Setiembre';break;
+                    case 10: $mes='Octubre';break;
+                    case 11: $mes='Noviembre';break;
+                    case 12: $mes='Diciembre';break;
+                    default:break;
+                }
+                
+                $periodo = DB::table('contabilidad.periodo')
+                ->where('anio',$anio)
+                ->where('nro_mes',$i)
+                ->where('id_almacen',$alm->id_almacen)
+                ->first();
+
+                if ($periodo == null){
+                    DB::table('contabilidad.periodo')->insert(
+                        [
+                            'anio' => $anio,
+                            'mes' => $mes,
+                            'nro_mes' => $i,
+                            'id_usuario' => $id_usuario,
+                            'id_almacen' => $alm->id_almacen,
+                            'estado' => 1, //Abierto
+                        ]);
+                }
+            }
+        }
+        return response()->json('Se ha completado la generación de periodos para el año '.$anio);
+    } 
 }

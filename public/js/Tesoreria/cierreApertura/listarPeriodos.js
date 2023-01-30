@@ -77,6 +77,32 @@ function openCierreApertura() {
     $('#modal-nuevo-cierre-apertura').modal('show');
 }
 
+function autogenerarPeriodos() {
+    var actual = $('[name=anio]').val();
+    var aaaa = prompt("Ingrese el anio:", actual);
+
+    $.ajax({
+        type: "GET",
+        url: 'autogenerarPeriodos/' + aaaa,
+        dataType: "JSON",
+        success: function (response) {
+            console.log(response);
+            Lobibox.notify('success', {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response
+            });
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+}
+
 $("#listaPeriodos tbody").on("click", "button.abrir", function () {
     $('#titleCierreApertura').text('Abrir Periodo');
     $('[name=ca_anio]').removeClass('color-cerrar');

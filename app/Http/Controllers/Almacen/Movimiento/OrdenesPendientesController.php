@@ -2629,92 +2629,99 @@ class OrdenesPendientesController extends Controller
     {
         try {
             DB::beginTransaction();
+            $msj = '';
 
-            $ing = DB::table('almacen.guia_com')
-                ->select('guia_com.fecha_almacen', 'guia_com.id_almacen')
-                ->where('id_guia', $request->id_guia_com)
-                ->first();
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->ingreso_fecha_emision);
 
-            $fecha_anterior = $ing->fecha_almacen;
-            $id_usuario = Auth::user()->id_usuario;
+            if (intval($periodo_estado) == 2){
+                $msj = 'El periodo esta cerrado. Consulte con contabilidad.';
+            } else {
 
-            DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
-                ->update(
+                $ing = DB::table('almacen.guia_com')
+                    ->select('guia_com.fecha_almacen', 'guia_com.id_almacen')
+                    ->where('id_guia', $request->id_guia_com)
+                    ->first();
+
+                $fecha_anterior = $ing->fecha_almacen;
+                $id_usuario = Auth::user()->id_usuario;
+
+                DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
+                    ->update(
+                        [
+                            'serie' => $request->ingreso_serie,
+                            'numero' => $request->ingreso_numero,
+                            'comentario' => $request->ingreso_comentario,
+                            'fecha_emision' => $request->ingreso_fecha_emision,
+                            'fecha_almacen' => $request->ingreso_fecha_almacen,
+                        ]
+                    );
+
+                //Agrega motivo anulacion a la guia
+                DB::table('almacen.guia_com_obs')->insert(
                     [
-                        'serie' => $request->ingreso_serie,
-                        'numero' => $request->ingreso_numero,
-                        'comentario' => $request->ingreso_comentario,
-                        'fecha_emision' => $request->ingreso_fecha_emision,
-                        'fecha_almacen' => $request->ingreso_fecha_almacen,
+                        'id_guia_com' => $request->id_guia_com,
+                        'observacion' => $request->observacion,
+                        'registrado_por' => $id_usuario,
+                        'id_motivo_anu' => $request->id_motivo_cambio,
+                        'fecha_registro' => date('Y-m-d H:i:s')
                     ]
                 );
 
-            //Agrega motivo anulacion a la guia
-            DB::table('almacen.guia_com_obs')->insert(
-                [
-                    'id_guia_com' => $request->id_guia_com,
-                    'observacion' => $request->observacion,
-                    'registrado_por' => $id_usuario,
-                    'id_motivo_anu' => $request->id_motivo_cambio,
-                    'fecha_registro' => date('Y-m-d H:i:s')
-                ]
-            );
+                $productos_en_negativo = '';
 
-            $productos_en_negativo = '';
-
-            if ($ing->fecha_almacen !== $request->ingreso_fecha_almacen) {
-                DB::table('almacen.mov_alm')
-                    ->where([
-                        ['id_guia_com', '=', $request->id_guia_com],
-                        ['estado', '!=', 7]
-                    ])
-                    ->update(['fecha_emision' => $request->ingreso_fecha_almacen]);
-
-                //Validacion por cambio de fecha
-                if ($request->ingreso_fecha_almacen > $ing->fecha_almacen) {
-                    $productos = DB::table('almacen.guia_com_det')
-                        ->select('guia_com_det.id_producto', 'alm_prod.descripcion')
-                        ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
+                if ($ing->fecha_almacen !== $request->ingreso_fecha_almacen) {
+                    DB::table('almacen.mov_alm')
                         ->where([
-                            ['guia_com_det.id_guia_com', '=', $request->id_guia_com],
-                            ['guia_com_det.estado', '!=', 7]
+                            ['id_guia_com', '=', $request->id_guia_com],
+                            ['estado', '!=', 7]
                         ])
-                        ->get();
-                    $anio = (new Carbon($request->ingreso_fecha_almacen))->format('Y');
+                        ->update(['fecha_emision' => $request->ingreso_fecha_almacen]);
 
-                    foreach ($productos as $prod) {
-                        $alerta_negativo = ValidaMovimientosController::validaNegativosHistoricoKardex(
-                            $prod->id_producto,
-                            $ing->id_almacen,
-                            $anio
-                        );
+                    //Validacion por cambio de fecha
+                    if ($request->ingreso_fecha_almacen > $ing->fecha_almacen) {
+                        $productos = DB::table('almacen.guia_com_det')
+                            ->select('guia_com_det.id_producto', 'alm_prod.descripcion')
+                            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
+                            ->where([
+                                ['guia_com_det.id_guia_com', '=', $request->id_guia_com],
+                                ['guia_com_det.estado', '!=', 7]
+                            ])
+                            ->get();
+                        $anio = (new Carbon($request->ingreso_fecha_almacen))->format('Y');
 
-                        if ($alerta_negativo > 0) {
-                            $productos_en_negativo .= $prod->descripcion . ' Genera ' . $alerta_negativo . ' movimiento(s) negativo(s).<br>';
+                        foreach ($productos as $prod) {
+                            $alerta_negativo = ValidaMovimientosController::validaNegativosHistoricoKardex(
+                                $prod->id_producto,
+                                $ing->id_almacen,
+                                $anio
+                            );
+
+                            if ($alerta_negativo > 0) {
+                                $productos_en_negativo .= $prod->descripcion . ' Genera ' . $alerta_negativo . ' movimiento(s) negativo(s).<br>';
+                            }
                         }
                     }
                 }
-            }
 
-            $msj = '';
-            if ($productos_en_negativo !== '') {
-                // DB::beginTransaction();
+                if ($productos_en_negativo !== '') {
+                    // DB::beginTransaction();
 
-                DB::table('almacen.mov_alm')
-                    ->where([
-                        ['id_guia_com', '=', $request->id_guia_com],
-                        ['estado', '!=', 7]
-                    ])
-                    ->update(['fecha_emision' => $fecha_anterior]);
+                    DB::table('almacen.mov_alm')
+                        ->where([
+                            ['id_guia_com', '=', $request->id_guia_com],
+                            ['estado', '!=', 7]
+                        ])
+                        ->update(['fecha_emision' => $fecha_anterior]);
 
-                DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
-                    ->update(['fecha_almacen' => $fecha_anterior]);
+                    DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
+                        ->update(['fecha_almacen' => $fecha_anterior]);
 
-                // DB::commit();
-                $msj = 'No es posible realizar el cambio de fecha de ingreso porque genera negativos en el histórico del kardex.<br>' . $productos_en_negativo;
-            } else {
+                    // DB::commit();
+                    $msj = 'No es posible realizar el cambio de fecha de ingreso porque genera negativos en el histórico del kardex.<br>' . $productos_en_negativo;
+                } else {
 
-                $msj = 'ok';
+                    $msj = 'ok';
+                }
             }
             DB::commit();
             return response()->json($msj);
