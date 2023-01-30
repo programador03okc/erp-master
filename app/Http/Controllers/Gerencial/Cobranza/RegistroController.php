@@ -1122,15 +1122,6 @@ class RegistroController extends Controller
             $cobranza_fase = CobanzaFase::where('id_cobranza',$value)->where('estado',1)->orderBy('id_fase','DESC')->get();
             foreach ($cobranza_fase as $key => $value) {
                 if ($key!==0) {
-                    // array_push($array_cambios,array(
-                    //     "id_fase"=> $value->id_fase,
-                    //     "id_cobranza"=> $value->id_cobranza,
-                    //     "fase"=> $value->fase,
-                    //     "fecha"=> $value->fecha,
-                    //     "estado"=> 2,
-                    //     "fecha_registro"=> $value->fecha_registro,
-                    //     "id_registro_cobranza"=> $value->id_registro_cobranza
-                    // ));
                     DB::table('gerencia_cobranza.cobranza_fase')
                     ->where('id_fase', $value->id_fase)
                     ->update(['estado' => 2]);
@@ -1278,104 +1269,102 @@ class RegistroController extends Controller
     }
     public function scriptCobranza()
     {
-        $cobranzas = DB::table('gerencial.cobranza')
-        // ->limit(1)
-        ->get();
+        $cobranzas = DB::table('gerencial.cobranza')->get();
+
         $array = [];
         foreach ($cobranzas as $key => $value) {
+            $success = true ;
             $registro_cobranza = RegistroCobranza::where('id_cobranza_old',$value->id_cobranza)->first();
             if (!$registro_cobranza) {
                 $registro_cobranza = new RegistroCobranza();
-                $registro_cobranza->id_empresa        = null;
-                $registro_cobranza->id_sector         = $value->id_sector;
-                $registro_cobranza->id_cliente        = $value->id_cliente;
-                $registro_cobranza->factura           = $value->factura;
-                $registro_cobranza->uu_ee             = $value->uu_ee;
-                $registro_cobranza->fuente_financ     = $value->fuente_financ;
-                $registro_cobranza->oc                = $value->oc;
-                $registro_cobranza->siaf              = $value->siaf;
-                $registro_cobranza->fecha_emision     = $value->fecha_emision;
-                $registro_cobranza->fecha_recepcion   = $value->fecha_recepcion;
-                $registro_cobranza->moneda            = $value->moneda;
-                $registro_cobranza->importe           = $value->importe;
-                $registro_cobranza->id_estado_doc     = $value->id_estado_doc;
-                $registro_cobranza->id_tipo_tramite   = $value->id_tipo_tramite;
-                $registro_cobranza->vendedor          = $value->vendedor;
-                $registro_cobranza->estado            = $value->estado;
-                $registro_cobranza->fecha_registro    = $value->fecha_registro;
-                $registro_cobranza->id_area           = $value->id_area;
-                $registro_cobranza->id_periodo        = $value->id_periodo;
-                $registro_cobranza->codigo_empresa    = $value->codigo_empresa;
-                $registro_cobranza->categoria         = $value->categoria;
-                $registro_cobranza->cdp               = $value->cdp;
-                $registro_cobranza->plazo_credito     = $value->plazo_credito;
-                $registro_cobranza->id_doc_ven       = $value->id_venta;
-                $registro_cobranza->id_cliente_agil   = null;
-                $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
-                $registro_cobranza->id_empresa_old    = $value->id_empresa;
-                $registro_cobranza->save();
+                $success = true ;
             }else{
                 $registro_cobranza = RegistroCobranza::find($registro_cobranza->id_registro_cobranza);
-                $registro_cobranza->id_empresa        = null;
-                $registro_cobranza->id_sector         = $value->id_sector;
-                $registro_cobranza->id_cliente        = $value->id_cliente;
-                $registro_cobranza->factura           = $value->factura;
-                $registro_cobranza->uu_ee             = $value->uu_ee;
-                $registro_cobranza->fuente_financ     = $value->fuente_financ;
-                $registro_cobranza->oc                = $value->oc;
-                $registro_cobranza->siaf              = $value->siaf;
-                $registro_cobranza->fecha_emision     = $value->fecha_emision;
-                $registro_cobranza->fecha_recepcion   = $value->fecha_recepcion;
-                $registro_cobranza->moneda            = $value->moneda;
-                $registro_cobranza->importe           = $value->importe;
-                $registro_cobranza->id_estado_doc     = $value->id_estado_doc;
-                $registro_cobranza->id_tipo_tramite   = $value->id_tipo_tramite;
-                $registro_cobranza->vendedor          = $value->vendedor;
-                $registro_cobranza->estado            = $value->estado;
-                $registro_cobranza->fecha_registro    = $value->fecha_registro;
-                $registro_cobranza->id_area           = $value->id_area;
-                $registro_cobranza->id_periodo        = $value->id_periodo;
-                $registro_cobranza->codigo_empresa    = $value->codigo_empresa;
-                $registro_cobranza->categoria         = $value->categoria;
-                $registro_cobranza->cdp               = $value->cdp;
-                $registro_cobranza->plazo_credito     = $value->plazo_credito;
-                $registro_cobranza->id_doc_ven       = $value->id_venta;
-                $registro_cobranza->id_cliente_agil   = null;
-                $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
-                $registro_cobranza->id_empresa_old    = $value->id_empresa;
-                $registro_cobranza->save();
+                $success = false;
+            }
+            $registro_cobranza->id_empresa        = null;
+            $registro_cobranza->id_sector         = $value->id_sector;
+            $registro_cobranza->id_cliente        = $value->id_cliente;
+            $registro_cobranza->factura           = $value->factura;
+            $registro_cobranza->uu_ee             = $value->uu_ee;
+            $registro_cobranza->fuente_financ     = $value->fuente_financ;
+            $registro_cobranza->oc                = $value->oc;
+            $registro_cobranza->siaf              = $value->siaf;
+            $registro_cobranza->fecha_emision     = $value->fecha_emision;
+            $registro_cobranza->fecha_recepcion   = $value->fecha_recepcion;
+            $registro_cobranza->moneda            = $value->moneda;
+            $registro_cobranza->importe           = $value->importe;
+            $registro_cobranza->id_estado_doc     = $value->id_estado_doc;
+            $registro_cobranza->id_tipo_tramite   = $value->id_tipo_tramite;
+            $registro_cobranza->vendedor          = $value->vendedor;
+            $registro_cobranza->estado            = $value->estado;
+            $registro_cobranza->fecha_registro    = $value->fecha_registro;
+            $registro_cobranza->id_area           = $value->id_area;
+            $registro_cobranza->id_periodo        = $value->id_periodo;
+            $registro_cobranza->codigo_empresa    = $value->codigo_empresa;
+            $registro_cobranza->categoria         = $value->categoria;
+            $registro_cobranza->cdp               = $value->cdp;
+            $registro_cobranza->plazo_credito     = $value->plazo_credito;
+            $registro_cobranza->id_doc_ven       = $value->id_venta;
+            $registro_cobranza->id_cliente_agil   = null;
+            $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
+            $registro_cobranza->id_empresa_old    = $value->id_empresa;
+            $registro_cobranza->save();
+
+            if ($success===true) {
+                $programaciones_pagos = DB::table('gerencial.programacion_pago')->where('id_cobranza',$value->id_cobranza)->get();
+                foreach ($programaciones_pagos as $key_programaciones_pagos => $value_programaciones_pagos) {
+                    $programacion_pago = new ProgramacionPago();
+                    $programacion_pago->id_registro_cobranza    = $registro_cobranza->id_registro_cobranza;
+                    $programacion_pago->fecha                   = $value_programaciones_pagos->fecha;
+                    $programacion_pago->estado                  = $value_programaciones_pagos->estado;
+                    $programacion_pago->fecha_registro          = $value_programaciones_pagos->fecha_registro;
+                    $programacion_pago->id_cobranza             = $value_programaciones_pagos->id_cobranza;
+                    $programacion_pago->save();
+                }
+
+                $cobranzas_fases = DB::table('gerencial.cobranza_fase')->where('id_cobranza',$value->id_cobranza)->get();
+                foreach ($cobranzas_fases as $key_cobranzas_fases => $value_cobranzas_fases) {
+                    $cobranza_fase = new CobanzaFase();
+                    $cobranza_fase->id_registro_cobranza    = $registro_cobranza->id_registro_cobranza;
+                    $cobranza_fase->fase                    = $value_cobranzas_fases->fase;
+                    $cobranza_fase->fecha                   = $value_cobranzas_fases->fecha;
+                    $cobranza_fase->estado                  = $value_cobranzas_fases->estado;
+                    $cobranza_fase->fecha_registro          = $value_cobranzas_fases->fecha_registro;
+                    $cobranza_fase->id_cobranza             = $value_cobranzas_fases->id_cobranza;
+                    $cobranza_fase->save();
+                }
+
+                $penalidades = DB::table('gerencial.penalidad')->where('id_cobranza',$value->id_cobranza)->get();
+                foreach ($penalidades as $key_penalidades => $value_penalidades ) {
+                    $cobranza_fase = new Penalidad();
+                    $cobranza_fase->id_registro_cobranza    = $registro_cobranza->id_registro_cobranza;
+                    $cobranza_fase->tipo                    = $value_penalidades->tipo;
+                    $cobranza_fase->monto                   = $value_penalidades->monto;
+                    $cobranza_fase->documento               = $value_penalidades->documento;
+                    $cobranza_fase->fecha                   = $value_penalidades->fecha;
+                    $cobranza_fase->observacion             = $value_penalidades->observacion;
+                    $cobranza_fase->estado                  = $value_penalidades->estado;
+                    $cobranza_fase->fecha_registro          = $value_penalidades->fecha_registro;
+                    $cobranza_fase->id_cobranza             = $value_penalidades->id_cobranza;
+                    $cobranza_fase->save();
+                }
+
+                $observaciones = DB::table('gerencial.cobranza_obs')->where('id_cobranza',$value->id_cobranza)->get();
+                foreach ($observaciones as $key_observaciones => $value_observaciones ) {
+                    $observacion = new Observaciones();
+                    $observacion->descripcion       = $value_observaciones->observacion;
+                    $observacion->cobranza_id       = $registro_cobranza->id_registro_cobranza;
+                    // $observacion->usuario_id        = ;
+                    // $observacion->oc_id             = ;
+                    $observacion->estado            = $value_observaciones->estado;
+                    $observacion->created_at        = $value_observaciones->fecha_registro;
+                    $observacion->updated_at        = $value_observaciones->fecha_registro;
+                    // $observacion->deleted_at        = $value_penalidades->fecha_registro;
+                    $observacion->save();
+                }
             }
 
-            // array_push($array,array(
-            //     // "id_registro_cobranza" => ,
-            //     "id_empresa"        =>null,
-            //     "id_sector"         =>$value->id_sector,
-            //     "id_cliente"        =>$value->id_cliente,
-            //     "factura"           =>$value->factura,
-            //     "uu_ee"             =>$value->uu_ee,
-            //     "fuente_financ"     =>$value->fuente_financ,
-            //     "oc"                =>$value->oc,
-            //     "siaf"              =>$value->siaf,
-            //     "fecha_emision"     =>$value->fecha_emision,
-            //     "fecha_recepcion"   =>$value->fecha_recepcion,
-            //     "moneda"            =>$value->moneda,
-            //     "importe"           =>$value->importe,
-            //     "id_estado_doc"     =>$value->id_estado_doc,
-            //     "id_tipo_tramite"   =>$value->id_tipo_tramite,
-            //     "vendedor"          =>$value->vendedor,
-            //     "estado"            =>$value->estado,
-            //     "fecha_registro"    =>$value->fecha_registro,
-            //     "id_area"           =>$value->id_area,
-            //     "id_periodo"        =>$value->id_periodo,
-            //     "codigo_empresa"    =>$value->codigo_empresa,
-            //     "categoria"         =>$value->categoria,
-            //     "cdp"               =>$value->cdp,
-            //     "plazo_credito"     =>$value->plazo_credito,
-            //     "id_doc_ven"        =>$value->id_venta,
-            //     "id_cliente_agil"   =>null,
-            //     "id_cobranza_old"   =>$value->id_cobranza,
-            //     "id_empresa_old"    =>$value->id_empresa,
-            // ));
         }
 
         return response()->json([
@@ -1981,12 +1970,18 @@ class RegistroController extends Controller
     }
     public function obtenerObservaciones(Request $request)
     {
+        // return $request->all();exit;
         $registro_cobranza = RegistroCobranza::find($request->id);
-        $observaciones = Observaciones::select('descripcion','usuario_id','estado','created_at','cobranza_id','id')->where('cobranza_id',$request->id)->where('oc_id',$registro_cobranza->id_oc)->where('estado',1)->get();
+        $observaciones = Observaciones::select('descripcion','usuario_id','estado','created_at','cobranza_id','id')
+        ->where('cobranza_id',$request->id)
+        // ->where('oc_id',$registro_cobranza->id_oc)
+        ->where('estado',1)
+        ->get();
         foreach ($observaciones as $key => $value) {
             $value->created_at = date("d-m-Y", strtotime($value->created_at));
             $usuario = SisUsua::find($value->usuario_id);
-            $value->usuario = $usuario->nombre_corto;
+            $value->usuario =  ($usuario ?$usuario->nombre_corto:'--');
+            $value->estado =  ($value->estado==1 ?'ELEABORADO':'ANULADO');
         }
         return response()->json($observaciones,200);
     }
@@ -2004,11 +1999,15 @@ class RegistroController extends Controller
         $observacion->updated_at = date('Y-m-d H:i:s');
         $observacion->save();
 
-        $observaciones = Observaciones::select('descripcion','usuario_id','estado','created_at','cobranza_id','id')->where('cobranza_id',$request->id)->where('oc_id',$registro_cobranza->id_oc)->where('estado',1)->get();
+        $observaciones = Observaciones::select('descripcion','usuario_id','estado','created_at','cobranza_id','id')->where('cobranza_id',$request->id)
+        // ->where('oc_id',$registro_cobranza->id_oc)
+        ->where('estado',1)
+        ->get();
         foreach ($observaciones as $key => $value) {
             $value->created_at = date("d-m-Y", strtotime($value->created_at));
             $usuario = SisUsua::find($value->usuario_id);
-            $value->usuario = $usuario->nombre_corto;
+            $value->usuario =  ($usuario ?$usuario->nombre_corto:'--');
+            $value->estado =  ($value->estado==1 ?'ELEABORADO':'ANULADO');
         }
         return response()->json($observaciones,200);
     }
@@ -2020,13 +2019,33 @@ class RegistroController extends Controller
         $observacion->estado = 7;
         $observacion->save();
 
-        $observaciones = Observaciones::select('descripcion','usuario_id','estado','created_at','cobranza_id','id')->where('cobranza_id',$request->id_registro_cobranza)->where('oc_id',$registro_cobranza->id_oc)->where('estado',1)->get();
+        $observaciones = Observaciones::select('descripcion','usuario_id','estado','created_at','cobranza_id','id')->where('cobranza_id',$request->id_registro_cobranza)
+        // ->where('oc_id',$registro_cobranza->id_oc)
+        ->where('estado',1)
+        ->get();
         foreach ($observaciones as $key => $value) {
             $value->created_at = date("d-m-Y", strtotime($value->created_at));
             $usuario = SisUsua::find($value->usuario_id);
-            $value->usuario = $usuario->nombre_corto;
+            $value->usuario = ($usuario ?$usuario->nombre_corto:'--');
+            $value->estado =  ($value->estado==1 ?'ELEABORADO':'ANULADO');
 
         }
         return response()->json($observaciones,200);
+    }
+    public function scriptObservacionesOC()
+    {
+        $registro_cobranza = RegistroCobranza::where('estado',1)->get();
+        foreach ($registro_cobranza as $key => $value) {
+            if ($value->cdp!==null && $value->cdp!=='--'&& $value->cdp) {
+                $oc_propias_view = DB::table('mgcp_ordenes_compra.oc_propias_view')->where('codigo_oportunidad',$value->cdp)->first();
+                if ($oc_propias_view) {
+                    // $observacion = Observaciones::where('cobranza_id',$value->id_registro_cobranza)->get();
+                    Observaciones::where('cobranza_id', $value->id_registro_cobranza)
+                    ->update(['oc_id' => $oc_propias_view->id]);
+                }
+            }
+
+        }
+        return response()->json(['success'=>true],200);
     }
 }
