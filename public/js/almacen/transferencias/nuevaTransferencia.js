@@ -196,13 +196,13 @@ $("#form-nuevaTransferencia").on("submit", function (e) {
             success: function (response) {
                 console.log(response);
                 $("#modal-nuevaTransferencia").modal("hide");
-                Lobibox.notify("success", {
+                Lobibox.notify(response.tipo, {
                     title: false,
                     size: "mini",
                     rounded: true,
                     sound: false,
                     delayIndicator: false,
-                    msg: 'Se guardó correctamente la transferencia.'
+                    msg: response.mensaje
                 });
                 // $("#listaRequerimientos").DataTable().ajax.reload(null, false);
             }

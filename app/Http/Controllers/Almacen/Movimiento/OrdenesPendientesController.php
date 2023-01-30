@@ -12,6 +12,7 @@ use App\Http\Controllers\Almacen\Catalogo\SubCategoriaController;
 use App\Http\Controllers\Almacen\Ubicacion\AlmacenController;
 use App\Http\Controllers\Almacen\Movimiento\TransferenciaController;
 use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
+use App\Http\Controllers\Tesoreria\CierreAperturaController as CierreAperturaController;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\DB;
@@ -706,475 +707,400 @@ class OrdenesPendientesController extends Controller
             $id_guia = null;
             $msj_trans = '';
 
+            $tipo = '';
+            $mensaje = '';
+
             $id_tp_doc_almacen = 1;
             $id_usuario = Auth::user()->id_usuario;
             $fecha_registro = date('Y-m-d H:i:s');
 
-            //verifica si existe un ingreso ya generado
-            $valida = DB::table('almacen.guia_com')
-                ->where([
-                    ['serie', '=', $request->serie],
-                    ['numero', '=', $request->numero],
-                    ['id_proveedor', '=', $request->id_proveedor],
-                    ['estado', '=', 1]
-                ])
-                ->first();
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_emision);
 
-            if (!isset($valida)) {
-                //Genero la Guia
-                $id_guia = DB::table('almacen.guia_com')->insertGetId(
-                    [
-                        'id_tp_doc_almacen' => $id_tp_doc_almacen,
-                        'serie' => $request->serie,
-                        'numero' => $request->numero,
-                        'id_proveedor' => $request->id_proveedor,
-                        'fecha_emision' => $request->fecha_emision,
-                        'fecha_almacen' => $request->fecha_almacen,
-                        'id_almacen' => $request->id_almacen,
-                        'id_guia_clas' => $request->id_guia_clas,
-                        'id_operacion' => $request->id_operacion,
-                        'comentario' => $request->comentario,
-                        // 'id_oc' => $request->id_orden_compra,
-                        'usuario' => $id_usuario,
-                        'registrado_por' => $id_usuario,
-                        'estado' => 1,
-                        'fecha_registro' => $fecha_registro,
-                    ],
-                    'id_guia'
-                );
-                // AlmacenController::guardar_oc($id_guia, $request->id_orden_compra);
-                //Genero el ingreso
-                $codigo = GenericoAlmacenController::nextMovimiento(
-                    1, //ingreso
-                    $request->fecha_emision, // $request->fecha_almacen, se cambio a solicitud del sr juan mamani 3/01/2023
-                    $request->id_almacen
-                );
+            if (intval($periodo_estado) == 2){
+                $tipo = 'warning';
+                $mensaje = 'El periodo esta cerrado. Consulte con contabilidad.';
+            } else {
+                //verifica si existe un ingreso ya generado
+                $valida = DB::table('almacen.guia_com')
+                    ->where([
+                        ['serie', '=', $request->serie],
+                        ['numero', '=', $request->numero],
+                        ['id_proveedor', '=', $request->id_proveedor],
+                        ['estado', '=', 1]
+                    ])
+                    ->first();
 
-                $id_ingreso = DB::table('almacen.mov_alm')->insertGetId(
-                    [
-                        'id_almacen' => $request->id_almacen,
-                        'id_tp_mov' => 1, //Ingresos
-                        'codigo' => $codigo,
-                        'fecha_emision' => $request->fecha_almacen,
-                        'id_guia_com' => $id_guia,
-                        'id_operacion' => $request->id_operacion,
-                        'id_transformacion' => ($request->id_transformacion !== null ? $request->id_transformacion : null),
-                        'id_devolucion' => ($request->id_devolucion !== null ? $request->id_devolucion : null),
-                        'revisado' => 0,
-                        'usuario' => $id_usuario,
-                        'estado' => 1,
-                        'fecha_registro' => $fecha_registro,
-                    ],
-                    'id_mov_alm'
-                );
-
-                if ($request->id_transformacion !== null) {
-                    DB::table('almacen.transformacion')
-                        ->where('id_transformacion', $request->id_transformacion)
-                        ->update([
-                            'estado' => 9,
-                            'id_moneda' => $request->moneda_transformacion
-                        ]); //Procesado
-                }
-                $detalle_oc = json_decode($request->detalle);
-
-                //Ingreso por transformacion
-                if ($request->id_operacion == '26') {
-                    $id_od = $request->id_od;
-                    $id_requerimiento = $request->id_requerimiento;
-
-                    $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
-                        ->orderBy('fecha', 'DESC')->first();
-
-                    foreach ($detalle_oc as $det) {
-                        //Agrega sobrante
-                        $id_sobrante = null;
-                        if ($det->id_moneda == $request->moneda_transformacion) {
-                            $unitario = $det->unitario;
-                        } else {
-                            if ($det->id_moneda == 1) { //soles
-                                $unitario = $det->unitario * $tipo_cambio->venta; //$request->tipo_cambio_transformacion;
-                            } else { //dolares
-                                $unitario = $det->unitario / $tipo_cambio->venta; //$request->tipo_cambio_transformacion;
-                            }
-                        }
-                        // $unitario = $request->moneda_transformacion == 2 ? ($det->unitario * $request->tipo_cambio_transformacion) : $det->unitario;
-
-                        if ($det->tipo == "sobrante") {
-
-                            if ($det->id_producto == null) {
-
-                                $id_producto = DB::table('almacen.alm_prod')->insertGetId(
-                                    [
-                                        'part_number' => $det->part_number,
-                                        'id_categoria' => $det->id_categoria,
-                                        'id_subcategoria' => $det->id_subcategoria,
-                                        'id_clasif' => 2, //$det->id_clasif,
-                                        'descripcion' => strtoupper($det->descripcion),
-                                        'id_unidad_medida' => $det->id_unidad_medida,
-                                        'series' => $det->control_series,
-                                        'id_moneda' => $det->id_moneda,
-                                        'id_usuario' => $id_usuario,
-                                        'estado' => 1,
-                                        'fecha_registro' => date('Y-m-d H:i:s')
-                                    ],
-                                    'id_producto'
-                                );
-
-                                $codigo = GenericoAlmacenController::leftZero(7, $id_producto);
-
-                                DB::table('almacen.alm_prod')
-                                    ->where('id_producto', $id_producto)
-                                    ->update(['codigo' => $codigo]);
-
-                                // $id_sobrante = DB::table('almacen.transfor_sobrante')->insertGetId(
-                                //     [
-                                //         'id_transformacion' => $request->id_transformacion,
-                                //         'id_producto' => $det->id_producto,
-                                //         'cantidad' => $det->cantidad,
-                                //         'valor_unitario' => $det->unitario,
-                                //         'valor_total' => (floatval($det->unitario) * floatval($det->cantidad)),
-                                //         'estado' => 1,
-                                //         'fecha_registro' => $fecha_registro,
-                                //     ],
-                                //     'id_sobrante'
-                                // );
+                if (!isset($valida)) {
+                    //Genero la Guia
+                    $id_guia = DB::table('almacen.guia_com')->insertGetId(
+                        [
+                            'id_tp_doc_almacen' => $id_tp_doc_almacen,
+                            'serie' => $request->serie,
+                            'numero' => $request->numero,
+                            'id_proveedor' => $request->id_proveedor,
+                            'fecha_emision' => $request->fecha_emision,
+                            'fecha_almacen' => $request->fecha_almacen,
+                            'id_almacen' => $request->id_almacen,
+                            'id_guia_clas' => $request->id_guia_clas,
+                            'id_operacion' => $request->id_operacion,
+                            'comentario' => $request->comentario,
+                            // 'id_oc' => $request->id_orden_compra,
+                            'usuario' => $id_usuario,
+                            'registrado_por' => $id_usuario,
+                            'estado' => 1,
+                            'fecha_registro' => $fecha_registro,
+                        ],
+                        'id_guia'
+                    );
+                    // AlmacenController::guardar_oc($id_guia, $request->id_orden_compra);
+                    //Genero el ingreso
+                    $codigo = GenericoAlmacenController::nextMovimiento(
+                        1, //ingreso
+                        $request->fecha_emision, // $request->fecha_almacen, se cambio a solicitud del sr juan mamani 3/01/2023
+                        $request->id_almacen
+                    );
+    
+                    $id_ingreso = DB::table('almacen.mov_alm')->insertGetId(
+                        [
+                            'id_almacen' => $request->id_almacen,
+                            'id_tp_mov' => 1, //Ingresos
+                            'codigo' => $codigo,
+                            'fecha_emision' => $request->fecha_almacen,
+                            'id_guia_com' => $id_guia,
+                            'id_operacion' => $request->id_operacion,
+                            'id_transformacion' => ($request->id_transformacion !== null ? $request->id_transformacion : null),
+                            'id_devolucion' => ($request->id_devolucion !== null ? $request->id_devolucion : null),
+                            'revisado' => 0,
+                            'usuario' => $id_usuario,
+                            'estado' => 1,
+                            'fecha_registro' => $fecha_registro,
+                        ],
+                        'id_mov_alm'
+                    );
+    
+                    if ($request->id_transformacion !== null) {
+                        DB::table('almacen.transformacion')
+                            ->where('id_transformacion', $request->id_transformacion)
+                            ->update([
+                                'estado' => 9,
+                                'id_moneda' => $request->moneda_transformacion
+                            ]); //Procesado
+                    }
+                    $detalle_oc = json_decode($request->detalle);
+    
+                    //Ingreso por transformacion
+                    if ($request->id_operacion == '26') {
+                        $id_od = $request->id_od;
+                        $id_requerimiento = $request->id_requerimiento;
+    
+                        $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
+                            ->orderBy('fecha', 'DESC')->first();
+    
+                        foreach ($detalle_oc as $det) {
+                            //Agrega sobrante
+                            $id_sobrante = null;
+                            if ($det->id_moneda == $request->moneda_transformacion) {
+                                $unitario = $det->unitario;
                             } else {
+                                if ($det->id_moneda == 1) { //soles
+                                    $unitario = $det->unitario * $tipo_cambio->venta; //$request->tipo_cambio_transformacion;
+                                } else { //dolares
+                                    $unitario = $det->unitario / $tipo_cambio->venta; //$request->tipo_cambio_transformacion;
+                                }
+                            }
+                            // $unitario = $request->moneda_transformacion == 2 ? ($det->unitario * $request->tipo_cambio_transformacion) : $det->unitario;
+    
+                            if ($det->tipo == "sobrante") {
+    
+                                if ($det->id_producto == null) {
+    
+                                    $id_producto = DB::table('almacen.alm_prod')->insertGetId(
+                                        [
+                                            'part_number' => $det->part_number,
+                                            'id_categoria' => $det->id_categoria,
+                                            'id_subcategoria' => $det->id_subcategoria,
+                                            'id_clasif' => 2, //$det->id_clasif,
+                                            'descripcion' => strtoupper($det->descripcion),
+                                            'id_unidad_medida' => $det->id_unidad_medida,
+                                            'series' => $det->control_series,
+                                            'id_moneda' => $det->id_moneda,
+                                            'id_usuario' => $id_usuario,
+                                            'estado' => 1,
+                                            'fecha_registro' => date('Y-m-d H:i:s')
+                                        ],
+                                        'id_producto'
+                                    );
+    
+                                    $codigo = GenericoAlmacenController::leftZero(7, $id_producto);
+    
+                                    DB::table('almacen.alm_prod')
+                                        ->where('id_producto', $id_producto)
+                                        ->update(['codigo' => $codigo]);
+    
+                                    // $id_sobrante = DB::table('almacen.transfor_sobrante')->insertGetId(
+                                    //     [
+                                    //         'id_transformacion' => $request->id_transformacion,
+                                    //         'id_producto' => $det->id_producto,
+                                    //         'cantidad' => $det->cantidad,
+                                    //         'valor_unitario' => $det->unitario,
+                                    //         'valor_total' => (floatval($det->unitario) * floatval($det->cantidad)),
+                                    //         'estado' => 1,
+                                    //         'fecha_registro' => $fecha_registro,
+                                    //     ],
+                                    //     'id_sobrante'
+                                    // );
+                                } else {
+                                    $id_producto = $det->id_producto;
+                                }
+    
+                                DB::table('almacen.transfor_sobrante')
+                                    ->where('id_sobrante', $det->id)
+                                    ->update([
+                                        'id_producto' => $id_producto,
+                                        'cantidad' => $det->cantidad,
+                                        'valor_unitario' => $unitario,
+                                        'valor_total' => (floatval($unitario) * floatval($det->cantidad))
+                                    ]);
+                            } else if ($det->tipo == "transformado") {
+    
+                                DB::table('almacen.transfor_transformado')
+                                    ->where('id_transformado', $det->id)
+                                    ->update([
+                                        'valor_unitario' => $unitario,
+                                        'valor_total' => (floatval($unitario) * floatval($det->cantidad))
+                                    ]);
+    
+                                if ($id_requerimiento !== null) {
+                                    //Realiza la reserva en el requerimiento con item tiene transformacion
+                                    // $det_req = DB::table('almacen.alm_det_req')
+                                    //     ->where([
+                                    //         ['id_requerimiento', '=', $id_requerimiento],
+                                    //         ['tiene_transformacion', '=', true],
+                                    //         ['id_producto', '=', $det->id_producto]
+                                    //     ])
+                                    //     ->first();
+                                    $det_req = DB::table('almacen.transfor_transformado')
+                                        ->select('alm_det_req.*')
+                                        ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_transformado.id_od_detalle')
+                                        ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
+                                        ->where('transfor_transformado.id_transformado', $det->id)
+                                        ->first();
+                                    //realiza la reserva del transformado
+                                    DB::table('almacen.alm_det_req')
+                                        ->where('id_detalle_requerimiento', $det_req->id_detalle_requerimiento)
+                                        ->update([
+                                            'estado' => 10
+                                        ]);
+    
+                                    DB::table('almacen.alm_reserva')
+                                        ->insert([
+                                            'codigo' => Reserva::crearCodigo($request->id_almacen),
+                                            'id_producto' => $det->id_producto,
+                                            'stock_comprometido' => $det->cantidad,
+                                            'id_almacen_reserva' => $request->id_almacen,
+                                            'id_detalle_requerimiento' => $det_req->id_detalle_requerimiento,
+                                            'id_transformado' => $det->id,
+                                            'estado' => 1,
+                                            'usuario_registro' => $id_usuario,
+                                            'fecha_registro' => new Carbon(),
+                                        ]);
+                                }
                                 $id_producto = $det->id_producto;
                             }
-
-                            DB::table('almacen.transfor_sobrante')
-                                ->where('id_sobrante', $det->id)
-                                ->update([
-                                    'id_producto' => $id_producto,
-                                    'cantidad' => $det->cantidad,
-                                    'valor_unitario' => $unitario,
-                                    'valor_total' => (floatval($unitario) * floatval($det->cantidad))
-                                ]);
-                        } else if ($det->tipo == "transformado") {
-
-                            DB::table('almacen.transfor_transformado')
-                                ->where('id_transformado', $det->id)
-                                ->update([
-                                    'valor_unitario' => $unitario,
-                                    'valor_total' => (floatval($unitario) * floatval($det->cantidad))
-                                ]);
-
-                            if ($id_requerimiento !== null) {
-                                //Realiza la reserva en el requerimiento con item tiene transformacion
-                                // $det_req = DB::table('almacen.alm_det_req')
-                                //     ->where([
-                                //         ['id_requerimiento', '=', $id_requerimiento],
-                                //         ['tiene_transformacion', '=', true],
-                                //         ['id_producto', '=', $det->id_producto]
-                                //     ])
-                                //     ->first();
-                                $det_req = DB::table('almacen.transfor_transformado')
-                                    ->select('alm_det_req.*')
-                                    ->join('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_transformado.id_od_detalle')
-                                    ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
-                                    ->where('transfor_transformado.id_transformado', $det->id)
-                                    ->first();
-                                //realiza la reserva del transformado
-                                DB::table('almacen.alm_det_req')
-                                    ->where('id_detalle_requerimiento', $det_req->id_detalle_requerimiento)
-                                    ->update([
-                                        'estado' => 10
-                                    ]);
-
-                                DB::table('almacen.alm_reserva')
-                                    ->insert([
-                                        'codigo' => Reserva::crearCodigo($request->id_almacen),
-                                        'id_producto' => $det->id_producto,
-                                        'stock_comprometido' => $det->cantidad,
-                                        'id_almacen_reserva' => $request->id_almacen,
-                                        'id_detalle_requerimiento' => $det_req->id_detalle_requerimiento,
-                                        'id_transformado' => $det->id,
-                                        'estado' => 1,
-                                        'usuario_registro' => $id_usuario,
-                                        'fecha_registro' => new Carbon(),
-                                    ]);
-                            }
-                            $id_producto = $det->id_producto;
-                        }
-                        //Guardo los items de la guia
-                        $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
-                            [
-                                "id_guia_com" => $id_guia,
-                                "id_producto" => $id_producto,
-                                "cantidad" => $det->cantidad,
-                                // "id_unid_med" => $det->id_unidad_medida,
-                                "usuario" => $id_usuario,
-                                // "tipo_transfor" => $det->tipo,
-                                "id_transformado" => ($det->tipo == "transformado" ? $det->id : null),
-                                "id_sobrante" => ($det->tipo == "sobrante" ? $det->id : null),
-                                "id_moneda" => $det->id_moneda,
-                                "unitario" => $unitario,
-                                "total" => (floatval($unitario) * floatval($det->cantidad)),
-                                "unitario_adicional" => 0,
-                                'estado' => 1,
-                                'fecha_registro' => $fecha_registro,
-                            ],
-                            'id_guia_com_det'
-                        );
-
-                        if ($det->series !== null) {
-                            //agrega series
-                            foreach ($det->series as $serie) {
-                                DB::table('almacen.alm_prod_serie')->insert(
-                                    [
-                                        'id_prod' => $id_producto,
-                                        'id_almacen' => $request->id_almacen,
-                                        'serie' => $serie,
-                                        'estado' => 1,
-                                        'fecha_registro' => $fecha_registro,
-                                        'id_guia_com_det' => $id_guia_com_det,
-                                        'fecha_ingreso_soft' => $request->fecha_almacen,
-                                        'precio_unitario_soft' => $det->unitario,
-                                        'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
-                                        'moneda_soft' => $det->id_moneda,
-                                    ]
-                                );
-                            }
-                        }
-                        //Guardo los items del ingreso
-                        DB::table('almacen.mov_alm_det')->insertGetId(
-                            [
-                                'id_mov_alm' => $id_ingreso,
-                                'id_producto' => $id_producto,
-                                // 'id_posicion' => $det->id_posicion,
-                                'cantidad' => $det->cantidad,
-                                'costo_promedio' => floatval($unitario),
-                                'valorizacion' => (floatval($unitario) * floatval($det->cantidad)),
-                                'usuario' => $id_usuario,
-                                'id_guia_com_det' => $id_guia_com_det,
-                                'estado' => 1,
-                                'fecha_registro' => $fecha_registro,
-                            ],
-                            'id_mov_alm_det'
-                        );
-                        OrdenesPendientesController::actualiza_prod_ubi($id_producto, $request->id_almacen);
-                    }
-
-                    // $od_detalles = DB::table('almacen.orden_despacho_det')
-                    //     ->where('id_od', $id_od)
-                    //     ->get();
-
-                    // foreach ($od_detalles as $det) {
-                    //     $detreq = DB::table('almacen.alm_det_req')
-                    //         ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
-                    //         ->first();
-
-                    //     $detdes = DB::table('almacen.orden_despacho_det')
-                    //         ->select(DB::raw('SUM(cantidad) as suma_cantidad'))
-                    //         ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
-                    //         ->join('almacen.transformacion', 'transformacion.id_od', '=', 'orden_despacho.id_od')
-                    //         ->where([
-                    //             ['orden_despacho_det.id_detalle_requerimiento', '=', $det->id_detalle_requerimiento],
-                    //             ['transformacion.estado', '=', 10]
-                    //         ])
-                    //         ->first();
-                    //     //orden de despacho detalle estado   procesado
-                    //     if ($detdes->suma_cantidad >= $detreq->cantidad) {
-                    //         DB::table('almacen.alm_det_req')
-                    //             ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
-                    //             ->update(['estado' => 10]);
-                    //     }
-                    // }
-
-                    // $culminados = DB::table('almacen.alm_det_req')
-                    //     ->where([
-                    //         ['id_requerimiento', '=', $id_requerimiento],
-                    //         ['estado', '=', 10]
-                    //     ])
-                    //     ->count();
-
-                    // $todos = DB::table('almacen.alm_det_req')
-                    //     ->where([
-                    //         ['id_requerimiento', '=', $id_requerimiento],
-                    //         // ['tiene_transformacion','=',false],
-                    //         ['estado', '!=', 7]
-                    //     ])
-                    //     ->count();
-
-                    // if ($culminados == $todos) {
-                    //     DB::table('almacen.alm_req')
-                    //         ->where('id_requerimiento', $id_requerimiento)
-                    //         ->update(['estado' => 10]);
-                    // }
-
-                    DB::table('almacen.alm_req_obs')
-                        ->insert([
-                            'id_requerimiento' => $id_requerimiento,
-                            'accion' => 'INGRESADO',
-                            'descripcion' => 'Ingresado a Almacén con Guía ' . $request->serie . '-' . $request->numero . '.',
-                            'id_usuario' => $id_usuario,
-                            'fecha_registro' => $fecha_registro
-                        ]);
-                }
-                //Ingreso por compra guia compra o importacion
-                else if ($request->id_operacion == '2' || $request->id_operacion == '18') {
-                    $ids_ocd = [];
-
-                    foreach ($detalle_oc as $d) {
-                        if ($d->id_detalle_orden !== null) {
-                            array_push($ids_ocd, $d->id_detalle_orden);
-                        }
-                    }
-
-                    $detalle = DB::table('logistica.log_det_ord_compra')
-                        ->select(
-                            'log_det_ord_compra.*',
-                            'log_ord_compra.id_moneda as id_moneda_orden',
-                            'alm_prod.id_producto',
-                            'alm_prod.id_moneda as id_moneda_producto',
-                            'alm_req.id_sede',
-                            'alm_req.id_requerimiento',
-                            'alm_req.id_almacen as id_almacen_destino'
-                        )
-                        ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
-                        ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
-                        ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-                        ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-                        ->whereIn('id_detalle_orden', $ids_ocd)
-                        ->get();
-
-                    $cantidad = 0;
-                    $padres_oc = [];
-                    $padres_req = [];
-
-                    $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
-                        ->orderBy('fecha', 'DESC')->first();
-
-                    foreach ($detalle as $det) {
-
-                        if (!in_array($det->id_orden_compra, $padres_oc)) {
-                            array_push($padres_oc, $det->id_orden_compra);
-                        }
-                        if (!in_array($det->id_requerimiento, $padres_req)) {
-                            array_push($padres_req, $det->id_requerimiento);
-                        }
-                        $series = [];
-                        foreach ($detalle_oc as $d) {
-                            if ($det->id_detalle_orden == $d->id_detalle_orden) {
-                                $cantidad = $d->cantidad;
-                                $series = $d->series;
-                                break;
-                            }
-                        }
-                        //conversion de moneda
-                        if ($det->id_moneda_producto == $det->id_moneda_orden) {
-                            $unitario = floatval($det->precio);
-                        } else {
-                            if ($det->id_moneda_producto == 1) { //soles
-                                $unitario = floatval($det->precio) * $tipo_cambio->venta;
-                            } else { //dolares
-                                $unitario = floatval($det->precio) / $tipo_cambio->venta;
-                            }
-                        }
-                        //Guardo los items de la guia
-                        $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
-                            [
-                                "id_guia_com" => $id_guia,
-                                "id_producto" => $det->id_producto,
-                                "cantidad" => $cantidad,
-                                "id_unid_med" => $det->id_unidad_medida,
-                                "usuario" => $id_usuario,
-                                "id_oc_det" => $det->id_detalle_orden,
-                                "unitario" => $det->precio,
-                                "total" => (floatval($det->precio) * floatval($cantidad)),
-                                "unitario_adicional" => 0,
-                                'estado' => 1,
-                                'fecha_registro' => $fecha_registro,
-                            ],
-                            'id_guia_com_det'
-                        );
-                        //agrega series
-                        foreach ($series as $serie) {
-                            DB::table('almacen.alm_prod_serie')->insert(
+                            //Guardo los items de la guia
+                            $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
                                 [
-                                    'id_prod' => $det->id_producto,
-                                    'id_almacen' => $request->id_almacen,
-                                    'serie' => $serie,
+                                    "id_guia_com" => $id_guia,
+                                    "id_producto" => $id_producto,
+                                    "cantidad" => $det->cantidad,
+                                    // "id_unid_med" => $det->id_unidad_medida,
+                                    "usuario" => $id_usuario,
+                                    // "tipo_transfor" => $det->tipo,
+                                    "id_transformado" => ($det->tipo == "transformado" ? $det->id : null),
+                                    "id_sobrante" => ($det->tipo == "sobrante" ? $det->id : null),
+                                    "id_moneda" => $det->id_moneda,
+                                    "unitario" => $unitario,
+                                    "total" => (floatval($unitario) * floatval($det->cantidad)),
+                                    "unitario_adicional" => 0,
                                     'estado' => 1,
                                     'fecha_registro' => $fecha_registro,
-                                    'id_guia_com_det' => $id_guia_com_det,
-                                    'fecha_ingreso_soft' => $request->fecha_almacen,
-                                    'precio_unitario_soft' => $det->precio,
-                                    'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
-                                    'moneda_soft' => $det->id_moneda_orden,
-                                ]
+                                ],
+                                'id_guia_com_det'
                             );
+    
+                            if ($det->series !== null) {
+                                //agrega series
+                                foreach ($det->series as $serie) {
+                                    DB::table('almacen.alm_prod_serie')->insert(
+                                        [
+                                            'id_prod' => $id_producto,
+                                            'id_almacen' => $request->id_almacen,
+                                            'serie' => $serie,
+                                            'estado' => 1,
+                                            'fecha_registro' => $fecha_registro,
+                                            'id_guia_com_det' => $id_guia_com_det,
+                                            'fecha_ingreso_soft' => $request->fecha_almacen,
+                                            'precio_unitario_soft' => $det->unitario,
+                                            'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
+                                            'moneda_soft' => $det->id_moneda,
+                                        ]
+                                    );
+                                }
+                            }
+                            //Guardo los items del ingreso
+                            DB::table('almacen.mov_alm_det')->insertGetId(
+                                [
+                                    'id_mov_alm' => $id_ingreso,
+                                    'id_producto' => $id_producto,
+                                    // 'id_posicion' => $det->id_posicion,
+                                    'cantidad' => $det->cantidad,
+                                    'costo_promedio' => floatval($unitario),
+                                    'valorizacion' => (floatval($unitario) * floatval($det->cantidad)),
+                                    'usuario' => $id_usuario,
+                                    'id_guia_com_det' => $id_guia_com_det,
+                                    'estado' => 1,
+                                    'fecha_registro' => $fecha_registro,
+                                ],
+                                'id_mov_alm_det'
+                            );
+                            OrdenesPendientesController::actualiza_prod_ubi($id_producto, $request->id_almacen);
                         }
-                        //Guardo los items del ingreso
-                        DB::table('almacen.mov_alm_det')->insertGetId(
-                            [
-                                'id_mov_alm' => $id_ingreso,
-                                'id_producto' => $det->id_producto,
-                                'cantidad' => $cantidad,
-                                'costo_promedio' => floatval($unitario),
-                                'valorizacion' => (floatval($unitario) * floatval($cantidad)),
-                                'usuario' => $id_usuario,
-                                'id_guia_com_det' => $id_guia_com_det,
-                                'estado' => 1,
-                                'fecha_registro' => $fecha_registro,
-                            ],
-                            'id_mov_alm_det'
-                        );
-
-                        OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen);
-                        //actualiza el estado de la orden y requerimiento
-                        $this->actualizaEstadoOrden($det, $cantidad, $request->id_almacen, $id_guia_com_det);
+    
+                        // $od_detalles = DB::table('almacen.orden_despacho_det')
+                        //     ->where('id_od', $id_od)
+                        //     ->get();
+    
+                        // foreach ($od_detalles as $det) {
+                        //     $detreq = DB::table('almacen.alm_det_req')
+                        //         ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
+                        //         ->first();
+    
+                        //     $detdes = DB::table('almacen.orden_despacho_det')
+                        //         ->select(DB::raw('SUM(cantidad) as suma_cantidad'))
+                        //         ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'orden_despacho_det.id_od')
+                        //         ->join('almacen.transformacion', 'transformacion.id_od', '=', 'orden_despacho.id_od')
+                        //         ->where([
+                        //             ['orden_despacho_det.id_detalle_requerimiento', '=', $det->id_detalle_requerimiento],
+                        //             ['transformacion.estado', '=', 10]
+                        //         ])
+                        //         ->first();
+                        //     //orden de despacho detalle estado   procesado
+                        //     if ($detdes->suma_cantidad >= $detreq->cantidad) {
+                        //         DB::table('almacen.alm_det_req')
+                        //             ->where('id_detalle_requerimiento', $det->id_detalle_requerimiento)
+                        //             ->update(['estado' => 10]);
+                        //     }
+                        // }
+    
+                        // $culminados = DB::table('almacen.alm_det_req')
+                        //     ->where([
+                        //         ['id_requerimiento', '=', $id_requerimiento],
+                        //         ['estado', '=', 10]
+                        //     ])
+                        //     ->count();
+    
+                        // $todos = DB::table('almacen.alm_det_req')
+                        //     ->where([
+                        //         ['id_requerimiento', '=', $id_requerimiento],
+                        //         // ['tiene_transformacion','=',false],
+                        //         ['estado', '!=', 7]
+                        //     ])
+                        //     ->count();
+    
+                        // if ($culminados == $todos) {
+                        //     DB::table('almacen.alm_req')
+                        //         ->where('id_requerimiento', $id_requerimiento)
+                        //         ->update(['estado' => 10]);
+                        // }
+    
+                        DB::table('almacen.alm_req_obs')
+                            ->insert([
+                                'id_requerimiento' => $id_requerimiento,
+                                'accion' => 'INGRESADO',
+                                'descripcion' => 'Ingresado a Almacén con Guía ' . $request->serie . '-' . $request->numero . '.',
+                                'id_usuario' => $id_usuario,
+                                'fecha_registro' => $fecha_registro
+                            ]);
                     }
-                    //actualiza estado oc padre
-                    $this->actualizaEstadoPadres($padres_oc, $padres_req);
-                }
-                //Ingreso por devolucion de cliente o proveedor
-                else if ($request->id_operacion == '24' || $request->id_operacion == '5') {
-
-                    $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
-                        ->orderBy('fecha', 'DESC')->first();
-
-                    DB::table('cas.devolucion')
-                        ->where('id_devolucion', $request->id_devolucion)
-                        ->update([
-                            'estado' => 3,
-                            'id_moneda' => $request->moneda_devolucion,
-                            'tipo_cambio' => $tipo_cambio->venta,
-                        ]);
-
-                    foreach ($detalle_oc as $det) {
-
-                        if ($det->id_moneda == $request->moneda_devolucion) {
-                            $unitario = $det->unitario;
-                        } else {
-                            if ($det->id_moneda == 1) { //soles
-                                $unitario = $det->unitario * $tipo_cambio->venta;
-                            } else { //dolares
-                                $unitario = $det->unitario / $tipo_cambio->venta;
+                    //Ingreso por compra guia compra o importacion
+                    else if ($request->id_operacion == '2' || $request->id_operacion == '18') {
+                        $ids_ocd = [];
+    
+                        foreach ($detalle_oc as $d) {
+                            if ($d->id_detalle_orden !== null) {
+                                array_push($ids_ocd, $d->id_detalle_orden);
                             }
                         }
-                        //Guardo los items de la guia
-                        $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
-                            [
-                                "id_guia_com" => $id_guia,
-                                "id_producto" => $det->id_producto,
-                                "cantidad" => $det->cantidad,
-                                "id_unid_med" => $det->id_unidad_medida,
-                                "usuario" => $id_usuario,
-                                "id_devolucion_detalle" => $det->id,
-                                "unitario" => floatval($det->unitario),
-                                "total" => (floatval($det->unitario) * floatval($det->cantidad)),
-                                "unitario_adicional" => 0,
-                                'estado' => 1,
-                                'fecha_registro' => $fecha_registro,
-                            ],
-                            'id_guia_com_det'
-                        );
-
-                        if ($det->series !== null) {
+    
+                        $detalle = DB::table('logistica.log_det_ord_compra')
+                            ->select(
+                                'log_det_ord_compra.*',
+                                'log_ord_compra.id_moneda as id_moneda_orden',
+                                'alm_prod.id_producto',
+                                'alm_prod.id_moneda as id_moneda_producto',
+                                'alm_req.id_sede',
+                                'alm_req.id_requerimiento',
+                                'alm_req.id_almacen as id_almacen_destino'
+                            )
+                            ->leftjoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'log_det_ord_compra.id_producto')
+                            ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+                            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+                            ->leftjoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+                            ->whereIn('id_detalle_orden', $ids_ocd)
+                            ->get();
+    
+                        $cantidad = 0;
+                        $padres_oc = [];
+                        $padres_req = [];
+    
+                        $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
+                            ->orderBy('fecha', 'DESC')->first();
+    
+                        foreach ($detalle as $det) {
+    
+                            if (!in_array($det->id_orden_compra, $padres_oc)) {
+                                array_push($padres_oc, $det->id_orden_compra);
+                            }
+                            if (!in_array($det->id_requerimiento, $padres_req)) {
+                                array_push($padres_req, $det->id_requerimiento);
+                            }
+                            $series = [];
+                            foreach ($detalle_oc as $d) {
+                                if ($det->id_detalle_orden == $d->id_detalle_orden) {
+                                    $cantidad = $d->cantidad;
+                                    $series = $d->series;
+                                    break;
+                                }
+                            }
+                            //conversion de moneda
+                            if ($det->id_moneda_producto == $det->id_moneda_orden) {
+                                $unitario = floatval($det->precio);
+                            } else {
+                                if ($det->id_moneda_producto == 1) { //soles
+                                    $unitario = floatval($det->precio) * $tipo_cambio->venta;
+                                } else { //dolares
+                                    $unitario = floatval($det->precio) / $tipo_cambio->venta;
+                                }
+                            }
+                            //Guardo los items de la guia
+                            $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
+                                [
+                                    "id_guia_com" => $id_guia,
+                                    "id_producto" => $det->id_producto,
+                                    "cantidad" => $cantidad,
+                                    "id_unid_med" => $det->id_unidad_medida,
+                                    "usuario" => $id_usuario,
+                                    "id_oc_det" => $det->id_detalle_orden,
+                                    "unitario" => $det->precio,
+                                    "total" => (floatval($det->precio) * floatval($cantidad)),
+                                    "unitario_adicional" => 0,
+                                    'estado' => 1,
+                                    'fecha_registro' => $fecha_registro,
+                                ],
+                                'id_guia_com_det'
+                            );
                             //agrega series
-                            foreach ($det->series as $serie) {
+                            foreach ($series as $serie) {
                                 DB::table('almacen.alm_prod_serie')->insert(
                                     [
                                         'id_prod' => $det->id_producto,
@@ -1184,37 +1110,127 @@ class OrdenesPendientesController extends Controller
                                         'fecha_registro' => $fecha_registro,
                                         'id_guia_com_det' => $id_guia_com_det,
                                         'fecha_ingreso_soft' => $request->fecha_almacen,
-                                        'precio_unitario_soft' => $det->unitario,
+                                        'precio_unitario_soft' => $det->precio,
                                         'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
-                                        'moneda_soft' => $request->moneda_devolucion,
+                                        'moneda_soft' => $det->id_moneda_orden,
                                     ]
                                 );
                             }
+                            //Guardo los items del ingreso
+                            DB::table('almacen.mov_alm_det')->insertGetId(
+                                [
+                                    'id_mov_alm' => $id_ingreso,
+                                    'id_producto' => $det->id_producto,
+                                    'cantidad' => $cantidad,
+                                    'costo_promedio' => floatval($unitario),
+                                    'valorizacion' => (floatval($unitario) * floatval($cantidad)),
+                                    'usuario' => $id_usuario,
+                                    'id_guia_com_det' => $id_guia_com_det,
+                                    'estado' => 1,
+                                    'fecha_registro' => $fecha_registro,
+                                ],
+                                'id_mov_alm_det'
+                            );
+    
+                            OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen);
+                            //actualiza el estado de la orden y requerimiento
+                            $this->actualizaEstadoOrden($det, $cantidad, $request->id_almacen, $id_guia_com_det);
                         }
-                        //Guardo los items del ingreso
-                        DB::table('almacen.mov_alm_det')->insertGetId(
-                            [
-                                'id_mov_alm' => $id_ingreso,
-                                'id_producto' => $det->id_producto,
-                                'cantidad' => $det->cantidad,
-                                'costo_promedio' => floatval($unitario),
-                                'valorizacion' => (floatval($unitario) * floatval($det->cantidad)),
-                                'usuario' => $id_usuario,
-                                'id_guia_com_det' => $id_guia_com_det,
-                                'estado' => 1,
-                                'fecha_registro' => $fecha_registro,
-                            ],
-                            'id_mov_alm_det'
-                        );
-
-                        OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen);
+                        //actualiza estado oc padre
+                        $this->actualizaEstadoPadres($padres_oc, $padres_req);
                     }
+                    //Ingreso por devolucion de cliente o proveedor
+                    else if ($request->id_operacion == '24' || $request->id_operacion == '5') {
+    
+                        $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
+                            ->orderBy('fecha', 'DESC')->first();
+    
+                        DB::table('cas.devolucion')
+                            ->where('id_devolucion', $request->id_devolucion)
+                            ->update([
+                                'estado' => 3,
+                                'id_moneda' => $request->moneda_devolucion,
+                                'tipo_cambio' => $tipo_cambio->venta,
+                            ]);
+    
+                        foreach ($detalle_oc as $det) {
+    
+                            if ($det->id_moneda == $request->moneda_devolucion) {
+                                $unitario = $det->unitario;
+                            } else {
+                                if ($det->id_moneda == 1) { //soles
+                                    $unitario = $det->unitario * $tipo_cambio->venta;
+                                } else { //dolares
+                                    $unitario = $det->unitario / $tipo_cambio->venta;
+                                }
+                            }
+                            //Guardo los items de la guia
+                            $id_guia_com_det = DB::table('almacen.guia_com_det')->insertGetId(
+                                [
+                                    "id_guia_com" => $id_guia,
+                                    "id_producto" => $det->id_producto,
+                                    "cantidad" => $det->cantidad,
+                                    "id_unid_med" => $det->id_unidad_medida,
+                                    "usuario" => $id_usuario,
+                                    "id_devolucion_detalle" => $det->id,
+                                    "unitario" => floatval($det->unitario),
+                                    "total" => (floatval($det->unitario) * floatval($det->cantidad)),
+                                    "unitario_adicional" => 0,
+                                    'estado' => 1,
+                                    'fecha_registro' => $fecha_registro,
+                                ],
+                                'id_guia_com_det'
+                            );
+    
+                            if ($det->series !== null) {
+                                //agrega series
+                                foreach ($det->series as $serie) {
+                                    DB::table('almacen.alm_prod_serie')->insert(
+                                        [
+                                            'id_prod' => $det->id_producto,
+                                            'id_almacen' => $request->id_almacen,
+                                            'serie' => $serie,
+                                            'estado' => 1,
+                                            'fecha_registro' => $fecha_registro,
+                                            'id_guia_com_det' => $id_guia_com_det,
+                                            'fecha_ingreso_soft' => $request->fecha_almacen,
+                                            'precio_unitario_soft' => $det->unitario,
+                                            'doc_ingreso_soft' => ($request->serie . '-' . $request->numero),
+                                            'moneda_soft' => $request->moneda_devolucion,
+                                        ]
+                                    );
+                                }
+                            }
+                            //Guardo los items del ingreso
+                            DB::table('almacen.mov_alm_det')->insertGetId(
+                                [
+                                    'id_mov_alm' => $id_ingreso,
+                                    'id_producto' => $det->id_producto,
+                                    'cantidad' => $det->cantidad,
+                                    'costo_promedio' => floatval($unitario),
+                                    'valorizacion' => (floatval($unitario) * floatval($det->cantidad)),
+                                    'usuario' => $id_usuario,
+                                    'id_guia_com_det' => $id_guia_com_det,
+                                    'estado' => 1,
+                                    'fecha_registro' => $fecha_registro,
+                                ],
+                                'id_mov_alm_det'
+                            );
+    
+                            OrdenesPendientesController::actualiza_prod_ubi($det->id_producto, $request->id_almacen);
+                        }
+                    }
+                    $tipo = 'success';
+                    $mensaje = 'Se proceso el ingreso correctamente.';
+                } else {
+                    $tipo = 'warning';
+                    $mensaje = 'Ya existe la serie-número de Guía!';
                 }
-            }
+            } 
             DB::commit();
             return response()->json([
-                'tipo' => 'success',
-                'mensaje' => 'Se proceso el ingreso correctamente.',
+                'tipo' => $tipo,
+                'mensaje' => $mensaje,
                 'id_ingreso' => $id_ingreso, 'id_guia' => $id_guia,
                 'nroOrdenesPendientes' => $this->nroOrdenesPendientes(),
                 'nroTransformacionesPendientes' => $this->nroTransformacionesPendientes(),
@@ -2613,92 +2629,99 @@ class OrdenesPendientesController extends Controller
     {
         try {
             DB::beginTransaction();
+            $msj = '';
 
-            $ing = DB::table('almacen.guia_com')
-                ->select('guia_com.fecha_almacen', 'guia_com.id_almacen')
-                ->where('id_guia', $request->id_guia_com)
-                ->first();
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->ingreso_fecha_emision);
 
-            $fecha_anterior = $ing->fecha_almacen;
-            $id_usuario = Auth::user()->id_usuario;
+            if (intval($periodo_estado) == 2){
+                $msj = 'El periodo esta cerrado. Consulte con contabilidad.';
+            } else {
 
-            DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
-                ->update(
+                $ing = DB::table('almacen.guia_com')
+                    ->select('guia_com.fecha_almacen', 'guia_com.id_almacen')
+                    ->where('id_guia', $request->id_guia_com)
+                    ->first();
+
+                $fecha_anterior = $ing->fecha_almacen;
+                $id_usuario = Auth::user()->id_usuario;
+
+                DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
+                    ->update(
+                        [
+                            'serie' => $request->ingreso_serie,
+                            'numero' => $request->ingreso_numero,
+                            'comentario' => $request->ingreso_comentario,
+                            'fecha_emision' => $request->ingreso_fecha_emision,
+                            'fecha_almacen' => $request->ingreso_fecha_almacen,
+                        ]
+                    );
+
+                //Agrega motivo anulacion a la guia
+                DB::table('almacen.guia_com_obs')->insert(
                     [
-                        'serie' => $request->ingreso_serie,
-                        'numero' => $request->ingreso_numero,
-                        'comentario' => $request->ingreso_comentario,
-                        'fecha_emision' => $request->ingreso_fecha_emision,
-                        'fecha_almacen' => $request->ingreso_fecha_almacen,
+                        'id_guia_com' => $request->id_guia_com,
+                        'observacion' => $request->observacion,
+                        'registrado_por' => $id_usuario,
+                        'id_motivo_anu' => $request->id_motivo_cambio,
+                        'fecha_registro' => date('Y-m-d H:i:s')
                     ]
                 );
 
-            //Agrega motivo anulacion a la guia
-            DB::table('almacen.guia_com_obs')->insert(
-                [
-                    'id_guia_com' => $request->id_guia_com,
-                    'observacion' => $request->observacion,
-                    'registrado_por' => $id_usuario,
-                    'id_motivo_anu' => $request->id_motivo_cambio,
-                    'fecha_registro' => date('Y-m-d H:i:s')
-                ]
-            );
+                $productos_en_negativo = '';
 
-            $productos_en_negativo = '';
-
-            if ($ing->fecha_almacen !== $request->ingreso_fecha_almacen) {
-                DB::table('almacen.mov_alm')
-                    ->where([
-                        ['id_guia_com', '=', $request->id_guia_com],
-                        ['estado', '!=', 7]
-                    ])
-                    ->update(['fecha_emision' => $request->ingreso_fecha_almacen]);
-
-                //Validacion por cambio de fecha
-                if ($request->ingreso_fecha_almacen > $ing->fecha_almacen) {
-                    $productos = DB::table('almacen.guia_com_det')
-                        ->select('guia_com_det.id_producto', 'alm_prod.descripcion')
-                        ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
+                if ($ing->fecha_almacen !== $request->ingreso_fecha_almacen) {
+                    DB::table('almacen.mov_alm')
                         ->where([
-                            ['guia_com_det.id_guia_com', '=', $request->id_guia_com],
-                            ['guia_com_det.estado', '!=', 7]
+                            ['id_guia_com', '=', $request->id_guia_com],
+                            ['estado', '!=', 7]
                         ])
-                        ->get();
-                    $anio = (new Carbon($request->ingreso_fecha_almacen))->format('Y');
+                        ->update(['fecha_emision' => $request->ingreso_fecha_almacen]);
 
-                    foreach ($productos as $prod) {
-                        $alerta_negativo = ValidaMovimientosController::validaNegativosHistoricoKardex(
-                            $prod->id_producto,
-                            $ing->id_almacen,
-                            $anio
-                        );
+                    //Validacion por cambio de fecha
+                    if ($request->ingreso_fecha_almacen > $ing->fecha_almacen) {
+                        $productos = DB::table('almacen.guia_com_det')
+                            ->select('guia_com_det.id_producto', 'alm_prod.descripcion')
+                            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'guia_com_det.id_producto')
+                            ->where([
+                                ['guia_com_det.id_guia_com', '=', $request->id_guia_com],
+                                ['guia_com_det.estado', '!=', 7]
+                            ])
+                            ->get();
+                        $anio = (new Carbon($request->ingreso_fecha_almacen))->format('Y');
 
-                        if ($alerta_negativo > 0) {
-                            $productos_en_negativo .= $prod->descripcion . ' Genera ' . $alerta_negativo . ' movimiento(s) negativo(s).<br>';
+                        foreach ($productos as $prod) {
+                            $alerta_negativo = ValidaMovimientosController::validaNegativosHistoricoKardex(
+                                $prod->id_producto,
+                                $ing->id_almacen,
+                                $anio
+                            );
+
+                            if ($alerta_negativo > 0) {
+                                $productos_en_negativo .= $prod->descripcion . ' Genera ' . $alerta_negativo . ' movimiento(s) negativo(s).<br>';
+                            }
                         }
                     }
                 }
-            }
 
-            $msj = '';
-            if ($productos_en_negativo !== '') {
-                // DB::beginTransaction();
+                if ($productos_en_negativo !== '') {
+                    // DB::beginTransaction();
 
-                DB::table('almacen.mov_alm')
-                    ->where([
-                        ['id_guia_com', '=', $request->id_guia_com],
-                        ['estado', '!=', 7]
-                    ])
-                    ->update(['fecha_emision' => $fecha_anterior]);
+                    DB::table('almacen.mov_alm')
+                        ->where([
+                            ['id_guia_com', '=', $request->id_guia_com],
+                            ['estado', '!=', 7]
+                        ])
+                        ->update(['fecha_emision' => $fecha_anterior]);
 
-                DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
-                    ->update(['fecha_almacen' => $fecha_anterior]);
+                    DB::table('almacen.guia_com')->where('id_guia', $request->id_guia_com)
+                        ->update(['fecha_almacen' => $fecha_anterior]);
 
-                // DB::commit();
-                $msj = 'No es posible realizar el cambio de fecha de ingreso porque genera negativos en el histórico del kardex.<br>' . $productos_en_negativo;
-            } else {
+                    // DB::commit();
+                    $msj = 'No es posible realizar el cambio de fecha de ingreso porque genera negativos en el histórico del kardex.<br>' . $productos_en_negativo;
+                } else {
 
-                $msj = 'ok';
+                    $msj = 'ok';
+                }
             }
             DB::commit();
             return response()->json($msj);

@@ -413,32 +413,25 @@ $("#form-guia_create").on("submit", function (e) {
 });
 
 function guardar_guia_create(data) {
-
     $("#submit_guia").attr('disabled', 'true');
-
     $.ajax({
         type: 'POST',
         url: 'guardar_guia_com_oc',// para ordenes y transformaciones
         data: data,
         dataType: 'JSON',
         success: function (response) {
-            if (response['id_ingreso'] == null) {
-                Swal.fire({
-                    title: "Ya existe la serie-número de Guía!",
-                    text: "Verifique en ingresos procesados.",
-                    icon: "error",
-                }).then(result => {
-                    $("#submit_guia").removeAttr("disabled");
-                });
-            } else {
-                Lobibox.notify("success", {
-                    title: false,
-                    size: "mini",
-                    rounded: true,
-                    sound: false,
-                    delayIndicator: false,
-                    msg: 'Ingreso Almacén generado con éxito.'
-                });
+            console.log(response);
+
+            Lobibox.notify(response['tipo'], {
+                title: false,
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: response['mensaje']
+            });
+
+            if (response['tipo'] == 'success') {
                 var tra = $('[name=id_transformacion]').val();
                 var dev = $('[name=id_devolucion]').val();
                 if (tra !== '') {
@@ -464,11 +457,23 @@ function guardar_guia_create(data) {
                     // listarOrdenesPendientes();
                     $("#ordenesPendientes").DataTable().ajax.reload(null, false);
                 }
-                $('#nro_ordenes').text(response.nroOrdenesPendientes);
-                $('#nro_transformaciones').text(response.nroTransformacionesPendientes);
-                $('#nro_devoluciones').text(response.nroDevolucionesPendientes);
-                $('#modal-guia_create').modal('hide');
+            } else {
+                if (response['id_ingreso'] == null) {
+
+                    Swal.fire({
+                        title: response['mensaje'],
+                        // text: "Verifique en ingresos procesados.",
+                        icon: "error",
+                    }).then(result => {
+                        $("#submit_guia").removeAttr("disabled");
+                    });
+                }
             }
+            $('#nro_ordenes').text(response.nroOrdenesPendientes);
+            $('#nro_transformaciones').text(response.nroTransformacionesPendientes);
+            $('#nro_devoluciones').text(response.nroDevolucionesPendientes);
+            $('#modal-guia_create').modal('hide');
+
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);

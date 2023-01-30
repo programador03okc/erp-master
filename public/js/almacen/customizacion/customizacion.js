@@ -109,6 +109,7 @@ $(".edit-customizacion").on('click', function () {
                     $(".buscar-customizacion").hide();
                     $('.imprimir-ingreso').hide();
                     $('.imprimir-salida').hide();
+                    $("[name=fecha_proceso]").attr('disabled', 'true');
 
                     $("[name=modo]").val("edicion");
                 } else {
@@ -322,20 +323,22 @@ function guardarCustomizacion(data) {
                 msg: response.mensaje
             });
 
-            $(".edition").attr('disabled', 'true');
-            $(".guardar-customizacion").hide();
-            $(".cancelar").hide();
-            $(".nueva-customizacion").show();
-            $(".anular-customizacion").show();
-            $(".edit-customizacion").show();
-            $(".procesar-customizacion").show();
-            $(".buscar-customizacion").show();
-            $('.imprimir-ingreso').hide();
-            $('.imprimir-salida').hide();
+            if (response.customizacion !== null) {
+                $(".edition").attr('disabled', 'true');
+                $(".guardar-customizacion").hide();
+                $(".cancelar").hide();
+                $(".nueva-customizacion").show();
+                $(".anular-customizacion").show();
+                $(".edit-customizacion").show();
+                $(".procesar-customizacion").show();
+                $(".buscar-customizacion").show();
+                $('.imprimir-ingreso').hide();
+                $('.imprimir-salida').hide();
 
-            $("[name=modo]").val("");
-            $("[name=id_customizacion]").val(response.customizacion.id_transformacion);
-            $("#codigo").text(response.customizacion.codigo);
+                $("[name=modo]").val("");
+                $("[name=id_customizacion]").val(response.customizacion.id_transformacion);
+                $("#codigo").text(response.customizacion.codigo);
+            }
 
             $("#submit_customizacion").attr('disabled', false);
         }

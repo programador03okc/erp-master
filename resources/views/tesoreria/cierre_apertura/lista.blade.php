@@ -32,6 +32,7 @@
             <div class="row" style="padding-top:10px;">
                 <div class="col-md-12">
                     <button id="btn_nuevo" class="btn btn-success" onClick="openCierreApertura();">Nuevo cierre / apertura</button>
+                    <button id="btn_autogenerar" class="btn btn-primary" onClick="autogenerarPeriodos();">Autogenerar Periodos</button>
                 
                     <table class="mytable table table-condensed table-bordered table-okc-view"
                         id="listaPeriodos" style="width:100%;">
@@ -58,6 +59,7 @@
 
 @include('tesoreria.cierre_apertura.nuevo')
 @include('tesoreria.cierre_apertura.cierreApertura')
+@include('tesoreria.cierre_apertura.historialAcciones')
 @endsection
 
 @section('scripts')
