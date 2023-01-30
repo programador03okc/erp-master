@@ -17,6 +17,7 @@ use App\Models\Configuracion\Departamento;
 use App\Models\Configuracion\Distrito;
 use App\Models\Configuracion\Pais;
 use App\Models\Configuracion\Provincia;
+use App\Models\Configuracion\SisUsua;
 use App\Models\Contabilidad\Contribuyente;
 use App\models\Gerencial\AreaResponsable;
 use App\models\Gerencial\Cliente;
@@ -24,6 +25,7 @@ use App\models\Gerencial\CobanzaFase;
 use App\models\Gerencial\Cobranza;
 use App\models\Gerencial\Empresa;
 use App\models\Gerencial\EstadoDocumento;
+use App\Models\Gerencial\Observaciones;
 use App\Models\Gerencial\Penalidad;
 use App\Models\Gerencial\ProgramacionPago;
 use App\Models\Gerencial\RegistroCobranza;
@@ -31,6 +33,7 @@ use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
 use App\Models\Gerencial\Vendedor;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -1143,7 +1146,14 @@ class RegistroController extends Controller
     }
     public function guardarPenalidad(Request $request)
     {
-        $penalidad = new Penalidad();
+
+        $penalidad =array();
+        if (intval($request->id) === 0) {
+            $penalidad = new Penalidad();
+        }else{
+            $penalidad = Penalidad::find($request->id);
+        }
+        // return $penalidad;exit;
         $penalidad->tipo            = $request->tipo_penal;
         $penalidad->monto           = $request->importe_penal;
         $penalidad->documento       = $request->doc_penal;
@@ -1158,13 +1168,13 @@ class RegistroController extends Controller
             "success"=>true,
         ]);
     }
-    public function obtenerPenalidades($id_registro_cobranza)
+    public function obtenerPenalidades($id_registro_cobranza,Request $request)
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id_registro_cobranza)->first();
         $array_penalidades = array();
         // return $registro_cobranza;exit;
-        $penalidad_cobranza = Penalidad::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->get();
-        $penalidad_registro = Penalidad::where('id_registro_cobranza',$id_registro_cobranza)->where('estado',1)->get();
+        $penalidad_cobranza = Penalidad::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('tipo',$request->tipo)->where('id_cobranza','!=',null)->where('estado','!=',7)->get();
+        $penalidad_registro = Penalidad::where('id_registro_cobranza',$id_registro_cobranza)->where('tipo',$request->tipo)->where('estado','!=',7)->get();
 
         if (sizeof($penalidad_cobranza)>0) {
             foreach ($penalidad_cobranza as $key => $value) {
@@ -1946,5 +1956,77 @@ class RegistroController extends Controller
             "success"=>true,
             "data"=>$array_id_vendedor
         ]);
+    }
+    public function editarPenalidad($id)
+    {
+        $penalidad = Penalidad::find($id);
+        return response()->json($penalidad,200);
+    }
+    public function anularPenalidad(Request $request)
+    {
+        $penalidad = Penalidad::find($request->id);
+        $penalidad->estado = 2;
+        $penalidad->save();
+        $penalidades = Penalidad::where('estado','!=',7)->where('tipo',$request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
+
+        return response()->json($penalidades,200);
+    }
+    public function eliminarPenalidad(Request $request)
+    {
+        $penalidad = Penalidad::find($request->id);
+        $penalidad->estado = 7;
+        $penalidad->save();
+        $penalidades = Penalidad::where('estado','!=',7)->where('tipo',$request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
+        return response()->json($penalidades,200);
+    }
+    public function obtenerObservaciones(Request $request)
+    {
+        $registro_cobranza = RegistroCobranza::find($request->id);
+        $observaciones = Observaciones::select('descripcion','usuario_id','estado','created_at','cobranza_id','id')->where('cobranza_id',$request->id)->where('oc_id',$registro_cobranza->id_oc)->where('estado',1)->get();
+        foreach ($observaciones as $key => $value) {
+            $value->created_at = date("d-m-Y", strtotime($value->created_at));
+            $usuario = SisUsua::find($value->usuario_id);
+            $value->usuario = $usuario->nombre_corto;
+        }
+        return response()->json($observaciones,200);
+    }
+    public function guardarObservaciones(Request $request)
+    {
+        $registro_cobranza = RegistroCobranza::find($request->id);
+
+        $observacion = new Observaciones();
+        $observacion->descripcion = $request->descripcion;
+        $observacion->cobranza_id = $request->id;
+        $observacion->usuario_id = Auth::user()->id_usuario;
+        $observacion->oc_id = $registro_cobranza->id_oc;
+        $observacion->estado = 1;
+        $observacion->created_at = date('Y-m-d H:i:s');
+        $observacion->updated_at = date('Y-m-d H:i:s');
+        $observacion->save();
+
+        $observaciones = Observaciones::select('descripcion','usuario_id','estado','created_at','cobranza_id','id')->where('cobranza_id',$request->id)->where('oc_id',$registro_cobranza->id_oc)->where('estado',1)->get();
+        foreach ($observaciones as $key => $value) {
+            $value->created_at = date("d-m-Y", strtotime($value->created_at));
+            $usuario = SisUsua::find($value->usuario_id);
+            $value->usuario = $usuario->nombre_corto;
+        }
+        return response()->json($observaciones,200);
+    }
+    public function eliminarObservaciones(Request $request)
+    {
+        $registro_cobranza = RegistroCobranza::find($request->id_registro_cobranza);
+
+        $observacion = Observaciones::find($request->id);
+        $observacion->estado = 7;
+        $observacion->save();
+
+        $observaciones = Observaciones::select('descripcion','usuario_id','estado','created_at','cobranza_id','id')->where('cobranza_id',$request->id_registro_cobranza)->where('oc_id',$registro_cobranza->id_oc)->where('estado',1)->get();
+        foreach ($observaciones as $key => $value) {
+            $value->created_at = date("d-m-Y", strtotime($value->created_at));
+            $usuario = SisUsua::find($value->usuario_id);
+            $value->usuario = $usuario->nombre_corto;
+
+        }
+        return response()->json($observaciones,200);
     }
 }

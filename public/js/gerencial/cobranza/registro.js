@@ -129,13 +129,26 @@ function listarRegistros(filtros) {
             {
                 render: function (data, type, row) {
                     html='';
-                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_registro_cobranza']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
-                        html+='<button type="button" class="btn btn-primary btn-flat botonList modal-fase" data-id="'+row['id_registro_cobranza']+'" title="Fases"><i class="fas fa-comments"></i></button>';
-                        if (row['id_estado_doc'] ===5) {
-                            html+='<button type="button" class="btn btn btn-flat botonList modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'" title="Penalidades"><i class="fas fa-exclamation-triangle text-black"></i></button>'
-                        }
-                        html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar" data-id="'+row['id_registro_cobranza']+'" title="Eliminar"><i class="fas fa-trash"></i></button>';
+                        html+='<div class="btn-group">'+
+                            '<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  <span class="caret"></span></button>'+
+                            '<ul class="dropdown-menu dropdown-menu-right">'+
+                                '<li><a href="#" class="editar-registro" data-id="'+row['id_registro_cobranza']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar">Editar</a></li>'+
 
+                                '<li><a href="#" class="modal-fase" data-id="'+row['id_registro_cobranza']+'" title="Fases">Fases</a></li>'
+
+                                if (row['id_estado_doc'] ===5) {
+                                    html+='<li><a href="#" class="modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'" title="PENALIDAD">Penalidades</a></li>'+
+
+                                    '<li><a href="#" class="modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'" title="RETENCION">Retenciones</a></li>'+
+
+                                    '<li><a href="#" class="modal-penalidad" data-toggle="tooltip" data-id="'+row['id_registro_cobranza']+'" title="DETRACCION">Detracciones</a></li>'
+                                }
+                                html+='<li><a href="#" class="modal-observaciones" data-id="'+row['id_registro_cobranza']+'" title="OBSERVACIONES">Observaciones</a></li>'+
+                                '<li role="separator" class="divider"></li>'+
+
+                                '<li><a href="#" class="eliminar" data-id="'+row['id_registro_cobranza']+'" title="Eliminar">Eliminar</a></li>'+
+                            '</ul>'+
+                        '</div>'
                     html+='';
                     return html;
                 },
@@ -156,16 +169,6 @@ $(document).on('click','[data-action="nuevo-registro"]',function () {
     $('#formulario')[0].reset();
     $('.search-vendedor-guardar').val(null).trigger('change');
 });
-// $(document).on('submit','#formulario',function (e) {
-//     e.preventDefault();
-//     var data = $(this).serialize();
-// });
-// function ModalSearchCustomer(this) {
-//     console.log(this);
-//     $('#modal-buscar-cliente').modal('show');
-
-//     customerList();
-// }
 $(document).on('click','[data-action="modal-search-customer"]',function () {
     $('#modal-buscar-cliente').modal('show');
     let data =$(this).attr('data-form');
@@ -387,10 +390,6 @@ $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
         }
     })
 });
-function SaveNewCustomer(){
-
-
-}
 $(document).on('change','[data-select="departamento-select"]',function () {
     var id_departamento = $(this).val()
         this_select = $(this).closest('div.modal-body').find('div [name="provincia"]'),
@@ -459,31 +458,6 @@ $(document).on('change','[data-select="provincia-select"]',function () {
     }
 
 });
-// busca por factura
-// $(document).on('change','.buscar-factura',function () {
-//     const factura = $(this).val();
-//     $.ajax({
-//         type: 'get',
-//         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-//         url: 'buscar-factura/'+factura,
-//         data: {},
-//         dataType: 'JSON',
-//         success: function(response){
-//             if (response.status===200) {
-//                 $('#formulario .modal-body select[name="moneda"]').removeAttr('selected');
-//                 $('#formulario .modal-body select[name="moneda"] option[value="'+response.data.moneda+'"]').attr('selected','true');
-//                 $('#formulario .modal-body input[name="importe"]').val(response.data.total_a_pagar)
-//                 $('#formulario .modal-body input[name="plazo_credito"]').val(response.data.credito_dias)
-//                 $('#formulario .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
-//                 console.log(response);
-//             }
-//         }
-//     }).fail( function(jqXHR, textStatus, errorThrown) {
-//         console.log(jqXHR);
-//         console.log(textStatus);
-//         console.log(errorThrown);
-//     })
-// });
 function searchSource(type){
     $('#modal-fue-fin').modal({show: true, backdrop: 'static'});
     $('#modal-fue-fin').on('shown.bs.modal', function(){
@@ -508,13 +482,6 @@ function fuenteFinan(value){
     }
     $('#rubro').append(opcion);
 }
-// function selectSource(){
-//     var fuente = $('#fuente').val();
-//     var rubro = $('#rubro').val();
-//     var text = fuente.concat('-', rubro);
-//     $('#ff').val(text);
-//     $('#modal-fue-fin').modal('hide');
-// }
 $(document).on('click','.select-source',function () {
     var fuente = $('#fuente').val();
     var rubro = $('#rubro').val();
@@ -781,7 +748,8 @@ $(document).on('submit','[data-form="editar"]',function (e) {
       })
 
 });
-$(document).on('click','.editar-registro',function () {
+$(document).on('click','.editar-registro',function (e) {
+    e.preventDefault();
     let id_registro_cobranza = $(this).data('id');
     var fecha_emision ,fecha_vencimiento, numero_dias=0;
 
@@ -952,7 +920,8 @@ $(document).on('submit','[data-form="editar-formulario"]',function (e) {
     })
 
 });
-$(document).on('click','.modal-fase',function () {
+$(document).on('click','.modal-fase',function (e) {
+    e.preventDefault();
     var id = $(this).attr('data-id'),
         html = '';
     $('#modal-agregar-fase [data-form="guardar-fase"] input[name="id_registro_cobranza"]').val(id);
@@ -1143,33 +1112,29 @@ function checkFiltros(key,this_check) {
 $('#modal-filtros').on('hidden.bs.modal', () => {
     listarRegistros(data_filtros);
 });
-$(document).on('click','.modal-penalidad',function () {
+$(document).on('click','.modal-penalidad',function (e) {
+    e.preventDefault();
     var id = $(this).attr('data-id'),
+        titulo = $(this).attr('title'),
         html='';
+    $('[data-form="guardar-penalidad"]')[0].reset();
+    $('[data-form="guardar-penalidad"]').find('[name="id"]').val(0);
     $('#modal-penalidad-cobro input[name="id_cobranza_penal"]').val(id);
+    $('#modal-penalidad-cobro h3').text(titulo);
     $('#modal-penalidad-cobro').modal('show');
+
+    $('[data-form="guardar-penalidad"]').find('[name="tipo_penal"]').val(titulo);
+
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         url: 'obtener-penalidades/'+id,
-        data: {},
+        data: {tipo:titulo},
         dataType: 'JSON'
     }).done(function( data ) {
         if (data.status===200) {
-            $.each(data.penalidades, function (index, element) {
-                html+='<tr>'
-                    html+='<td>'+element.tipo+'</td>'
-                    html+='<td>'+element.documento+'</td>'
-                    html+='<td>'+element.monto+'</td>'
-                    html+='<td>'+element.fecha+'</td>'
-                    html+='<td>'+
-                        '<button class="btn btn-xs" title="Editar"><i class="fa fa-edit"></i></button>'+
-                        '<button class="btn btn-xs" title="Anular"><i class="fa fa-trash-alt"></i></button>'+
-                        '<button class="btn btn-xs" title="Eliminar"><i class="fa fa-times"></i></button>'+
-                    '</td>'
-                html+='</tr>'
-            });
-            $('[data-table="penalidades"]').html(html);
+            listarPenalidades(data.penalidades);
+
         }
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -1262,3 +1227,165 @@ $(document).on('click','.eliminar',function (e) {
 function exportarExcel() {
     window.open('exportar-excel/'+JSON.stringify(data_filtros));
 }
+
+$(document).on('click','[data-action="editar-penalidad"]',function (e) {
+    e.preventDefault();
+    var id = $(this).attr('data-id');
+    $.ajax({
+        type: 'GET',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'editar-penalidad/'+id,
+        data: {},
+        dataType: 'JSON'
+    }).done(function( data ) {
+
+        $('[data-form="guardar-penalidad"]').find('[name="fecha_penal"]').val(data.fecha);
+        $('[data-form="guardar-penalidad"]').find('[name="doc_penal"]').val(data.documento);
+        $('[data-form="guardar-penalidad"]').find('[name="importe_penal"]').val(data.monto);
+        $('[data-form="guardar-penalidad"]').find('[name="obs_penal"]').val(data.observacion);
+        $('[data-form="guardar-penalidad"]').find('[name="id"]').val(data.id_penalidad);
+        $('[data-form="guardar-penalidad"]').find('[name="id_cobranza_penal"]').val(data.id_registro_cobranza);
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+
+$(document).on('click','[data-action="anular-penalidad"]',function (e) {
+    e.preventDefault();
+    var id = $(this).attr('data-id'),
+        titulo =$(this).attr('title'),
+        id_registro_cobranza =$(this).attr('data-id-registro-cobranza');
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'anular-penalidad',
+        data: {tipo:titulo,id:id,id_registro_cobranza:id_registro_cobranza},
+        dataType: 'JSON'
+    }).done(function( data ) {
+        listarPenalidades(data);
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+
+function listarPenalidades(data) {
+    var html='';
+    $.each(data, function (index, element) {
+        html+='<tr>'
+            html+='<td>'+element.tipo+'</td>'
+            html+='<td>'+element.documento+'</td>'
+            html+='<td>'+element.monto+'</td>'
+            switch (element.estado) {
+                case 2:
+                    html+='<td>ANULADO</td>'
+                    break;
+
+                default:
+                    html+='<td>ELABORADO</td>'
+                    break;
+            }
+
+            html+='<td>'+element.fecha+'</td>'
+            html+='<td>'+
+                '<button class="btn btn-xs" data-action="editar-penalidad" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
+                '<button class="btn btn-xs" data-action="anular-penalidad" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-trash-alt"></i></button>'+
+                '<button class="btn btn-xs" data-action="eliminar-penalidad" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-times"></i></button>'+
+            '</td>'
+        html+='</tr>'
+    });
+    $('[data-table="penalidades"]').html(html);
+ }
+ $(document).on('click','[data-action="eliminar-penalidad"]',function (e) {
+    e.preventDefault();
+    var id = $(this).attr('data-id'),
+        titulo =$('[data-form="guardar-penalidad"]').find('[name="tipo_penal"]').val(),
+        id_registro_cobranza =$(this).attr('data-id-registro-cobranza');
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'eliminar-penalidad',
+        data: {tipo:titulo,id:id,id_registro_cobranza:id_registro_cobranza},
+        dataType: 'JSON'
+    }).done(function( data ) {
+        listarPenalidades(data);
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+$(document).on('click','.modal-observaciones',function (e) {
+    e.preventDefault();
+    var id = $(this).attr('data-id'),html='';
+    $('#modal-observaciones [data-form="guardar-observaciones"]').find('[name="id"]').val(id);
+    $('#modal-observaciones').modal('show');
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'obtener-observaciones',
+        data: {id:id},
+        dataType: 'JSON'
+    }).done(function( data ) {
+        listarObservaciones(data)
+
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+
+});
+$(document).on('submit','[data-form="guardar-observaciones"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize();
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'guardar-observaciones',
+        data: data,
+        dataType: 'JSON'
+    }).done(function( data ) {
+        listarObservaciones(data)
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});
+function listarObservaciones(data) {
+    var html='';
+    $.each(data, function (index, element) {
+        html+='<tr>'
+            html+='<td>'+element.descripcion+'</td>'
+            html+='<td>'+element.usuario+'</td>'
+            html+='<td>'+element.estado+'</td>'
+            html+='<td>'+element.created_at+'</td>'
+            html+='<td>'+
+                '<button class="btn btn-xs" data-action="eliminar-observacion" title="Eliminar" data-id="'+element.id+'"data-id-registro-cobranza="'+element.cobranza_id+'"><i class="fa fa-times"></i></button>'+
+            '</td>'
+        html+='</tr>'
+    });
+    $('[data-table="observaciones"]').html(html);
+}
+$(document).on('click','[data-action="eliminar-observacion"]',function (e) {
+    e.preventDefault();
+    var id = $(this).attr('data-id'),
+        id_registro_cobranza =$(this).attr('data-id-registro-cobranza');
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'eliminar-observacion',
+        data: {id:id,id_registro_cobranza:id_registro_cobranza},
+        dataType: 'JSON'
+    }).done(function( data ) {
+        listarObservaciones(data);
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+});

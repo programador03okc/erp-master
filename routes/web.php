@@ -2335,6 +2335,14 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
 			#exportar excel
 			Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
+            // editar penalidad
+			Route::get('editar-penalidad/{id}', 'Gerencial\Cobranza\RegistroController@editarPenalidad');
+			Route::post('anular-penalidad', 'Gerencial\Cobranza\RegistroController@anularPenalidad');
+			Route::post('eliminar-penalidad', 'Gerencial\Cobranza\RegistroController@eliminarPenalidad');
+            // observaciones
+			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
+			Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
+			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
 		});
 	});
 	Route::get('config', function () {
