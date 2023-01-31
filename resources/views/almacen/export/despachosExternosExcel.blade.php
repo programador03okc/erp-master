@@ -61,8 +61,8 @@
                 <td>{{$d->tiene_transformacion ? 'SI':'NO'}}</td>
                 <td>{{$d->transportista_razon_social!==null ? $d->transportista_razon_social:''}}</td>
                 <td>
-                    @if($d->serie!==null && $d->numero!==null) 
-                        {{$d->serie}}-{{$d->numero}}
+                    @if($d->serie_guia!==null && $d->numero_guia!==null) 
+                        {{$d->serie_guia}}-{{$d->numero_guia}}
                     @endif
                 </td>
                 <td>
