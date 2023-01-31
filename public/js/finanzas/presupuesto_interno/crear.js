@@ -828,7 +828,7 @@ $('[name="id_grupo"]').change(function (e) {
     }).done(function(response) {
         html ='<option value="" hidden>Seleccione...</option>';
         $.each(response.data, function (index, element) {
-            html+='<option value="'+element.id_area+'" >'+element.descripcion+'</option>';
+            html+='<option value="'+element.id_division+'" >'+element.descripcion+'</option>';
         });
         $('[name="id_area"]').html(html);
 

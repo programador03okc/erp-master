@@ -1309,6 +1309,7 @@ class RegistroController extends Controller
             $registro_cobranza->id_cliente_agil   = null;
             $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
             $registro_cobranza->id_empresa_old    = $value->id_empresa;
+            $registro_cobranza->orden_compra      = $value->oc;
             $registro_cobranza->save();
 
             if ($success===true) {
@@ -2034,36 +2035,28 @@ class RegistroController extends Controller
     }
     public function scriptObservacionesOC()
     {
-        $registro_cobranza = RegistroCobranza::where('estado',1)->get();
+        // $registro_cobranza = RegistroCobranza::where('estado',1)->get();
         $array_faltantes=[];
         $array_encontrados=[];
-        // foreach ($registro_cobranza as $key => $value) {
-        //     if ($value->oc!==null && $value->oc!=='--'&& $value->oc) {
-        //         $oc_propias_view = DB::table('mgcp_ordenes_compra.oc_propias_view')->where('nro_orden','like','%'.$value->oc.'%')->first();
-        //         if ($oc_propias_view) {
-        //             // $observacion = Observaciones::where('cobranza_id',$value->id_registro_cobranza)->get();
-        //             Observaciones::where('cobranza_id', $value->id_registro_cobranza)
-        //             ->update(['oc_id' => $oc_propias_view->id]);
-        //             array_push($array_encontrados,$oc_propias_view);
-        //         }else{
-        //             array_push($array_faltantes,$value->id_registro_cobranza);
-        //         }
-        //     }else{
-        //         array_push($array_faltantes,$value->id_registro_cobranza);
-        //     }
-
-        // }
         $select = DB::table('gerencia_cobranza.registros_cobranzas')
         ->select(
             'registros_cobranzas.id_registro_cobranza',
             'registros_cobranzas.oc',
-            'oc_propias_view.id'
+            'oc_propias_view.id',
+            'oc_propias_view.inicio_entrega',
+            'oc_propias_view.fecha_entrega'
         )
         ->join('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.nro_orden', '=', 'registros_cobranzas.oc')
         ->get();
         foreach ($select as $key => $value) {
             Observaciones::where('cobranza_id', $value->id_registro_cobranza)
             ->update(['oc_id' => $value->id]);
+
+            $registro_cobranza = RegistroCobranza::find($value->id_registro_cobranza);
+            $registro_cobranza->id_oc = $value->id;
+            $registro_cobranza->inicio_entrega = $value->inicio_entrega;
+            $registro_cobranza->fecha_entrega = $value->fecha_entrega;
+            $registro_cobranza->save();
         }
         return response()->json([$select],200);
     }

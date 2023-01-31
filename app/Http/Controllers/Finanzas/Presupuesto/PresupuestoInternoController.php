@@ -7,6 +7,7 @@ use App\Helpers\StringHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Area;
+use App\Models\Administracion\Division;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Finanzas\FinanzasArea;
@@ -255,7 +256,8 @@ class PresupuestoInternoController extends Controller
     public function editar(Request $request)
     {
         $grupos = Grupo::get();
-        $area = Area::where('estado',1)->get();
+        // $area = Area::where('estado',1)->get();
+        $area = Division::where('estado',1)->get();
         $moneda = Moneda::where('estado',1)->get();
 
 
@@ -435,7 +437,7 @@ class PresupuestoInternoController extends Controller
     }
     public function getArea(Request $request)
     {
-        $area = Area::where('estado',1)->where('id_grupo',$request->id_grupo)->get();
+        $area = Division::where('estado',1)->where('grupo_id',$request->id_grupo)->get();
         return response()->json([
             "success"=>true,
             "status"=>200,
