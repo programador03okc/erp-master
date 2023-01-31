@@ -2327,6 +2327,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('script-empresa-actualizacion', 'Gerencial\Cobranza\RegistroController@scriptEmpresaActualizacion');
             #scrip 10
 			Route::get('script-vendedor', 'Gerencial\Cobranza\RegistroController@scriptVendedor');
+            #scrip para pasar el registro de cobranzas
+            Route::get('script-observaciones-oc', 'Gerencial\Cobranza\RegistroController@scriptObservacionesOC');
 
 			Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
 			Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
