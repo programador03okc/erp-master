@@ -140,6 +140,9 @@ class RequerimientoView {
         $('#ListaDetalleRequerimiento').on("click", "button.handleClickAsignarComoProductoTransformado", (e) => {
             this.asignarComoProductoTransformado(e.currentTarget);
         });
+        $('body').on("change", "select.handleChangePresupuestoInterno", (e) => {
+            this.seleccionarPresupuestoInterno(e.currentTarget);
+        });
 
     }
 
@@ -943,7 +946,49 @@ class RequerimientoView {
         } else {
             obj.target.closest('div').classList.add("has-error");
         }
+
+        this.llenarComboPresupuestoInterno(currentIdGrupo,obj.target.value);
+        
     }
+
+
+    llenarComboPresupuestoInterno(idGrupo,idArea){
+        this.requerimientoCtrl.comboPresupuestoInterno(idGrupo, idArea).then((res) => {
+            // console.log(res);
+            let selectElement = document.querySelector("form[id='form-requerimiento'] select[name='id_presupuesto_interno']");
+            $("input[name='codigo_presupuesto_interno']").val("");
+
+
+            if (selectElement.options.length > 0) {
+                let i, L = selectElement.options.length - 1;
+                for (i = L; i >= 0; i--) {
+                    selectElement.remove(i);
+                }
+            }
+            
+            let optionDefault = document.createElement("option");
+            optionDefault.text = "selecciona un presupuesto interno";
+            optionDefault.value = "";
+            optionDefault.setAttribute('data-codigo', "");
+            optionDefault.setAttribute('data-id-grupo', "");
+            optionDefault.setAttribute('data-id-area', "");
+            selectElement.add(optionDefault);
+
+            res.forEach(element => {
+                let option = document.createElement("option");
+                option.text = element.descripcion;
+                option.value = element.id_presupuesto_interno;
+                option.setAttribute('data-codigo', element.codigo);
+                option.setAttribute('data-id-grupo', element.id_grupo);
+                option.setAttribute('data-id-area', element.id_area);
+                selectElement.add(option);
+            });
+
+        }).catch(function (err) {
+            console.log(err)
+        });
+    }
+
     updateTipoRequerimiento(obj) {
         if (obj.target.value > 0) {
             obj.target.closest('div').classList.remove("has-error");
@@ -1247,7 +1292,7 @@ class RequerimientoView {
 
     // partidas
     cargarModalPartidas(obj) {
-
+        // anterior modal
         tempObjectBtnPartida = obj.target;
         let id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
         let id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
@@ -1371,7 +1416,7 @@ class RequerimientoView {
         let descripcion = $("#par-" + idPartida + " ").find("td[name=descripcion]")[0].innerHTML;
         let presupuestoTotal = $("#par-" + idPartida + " ").find("td[name=importe_total]")[0].dataset.presupuestoTotal;
 
-        tempObjectBtnPartida.nextElementSibling.querySelector("input").value = idPartida;
+        tempObjectBtnPartida.nextElementSibling.querySelector("input[class='partida']").value = idPartida;
         tempObjectBtnPartida.textContent = 'Cambiar';
 
         let tr = tempObjectBtnPartida.closest("tr");
@@ -1380,7 +1425,7 @@ class RequerimientoView {
         tr.querySelector("p[class='descripcion-partida']").dataset.presupuestoTotal = presupuestoTotal;
         tr.querySelector("p[class='descripcion-partida']").setAttribute('title', descripcion);
 
-        this.updatePartidaItem(tempObjectBtnPartida.nextElementSibling.querySelector("input"));
+        this.updatePartidaItem(tempObjectBtnPartida.nextElementSibling.querySelector("input[class='partida']"));
         $('#modal-partidas').modal('hide');
         // tempObjectBtnPartida = null;  debe estar
 
@@ -2616,5 +2661,10 @@ class RequerimientoView {
 
         }
 
+    }
+
+    seleccionarPresupuestoInterno(obj){
+        const codigoPresupuestoInterno=  obj.options[obj.selectedIndex].dataset.codigo;
+        $("input[name='codigo_presupuesto_interno']").val(codigoPresupuestoInterno);
     }
 }

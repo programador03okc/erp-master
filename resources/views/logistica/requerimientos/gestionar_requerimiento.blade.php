@@ -345,7 +345,25 @@ Crear / editar requerimiento
 
         </div>
 
-
+        <div class="row" id="input-group-presupuesto-interno">
+            <div class="col-md-12">
+                <h4 style="display:flex;justify-content: space-between;">Presupuesto Interno</h4>
+                <fieldset class="group-table">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5>Nombre</h5>
+                            <div style="display:flex;">
+                                <input type="text" name="codigo_presupuesto_interno" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                                <div class="input-group-okc">
+                                    <select class="form-control activation handleChangePresupuestoInterno" name="id_presupuesto_interno">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
 
         <div class="row" id="input-group-proyecto">
             <div class="col-md-12">
@@ -754,10 +772,13 @@ Crear / editar requerimiento
 
 <script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoView.js'))}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=4')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js?v=3')}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modalCuadroPresupuesto.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/modalCuadroPresupuesto.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/incidenciasModal.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/incidenciasModal.js'))}}"></script>
+
+<script src="{{ asset('js/logistica/requerimiento/presupuesto-interno-view.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/presupuesto-interno-view.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/presupuesto-interno-model.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/presupuesto-interno-model.js'))}}"></script>
 
 <script>
     var grupos = JSON.parse('{!!$grupos!!}');
@@ -811,6 +832,10 @@ Crear / editar requerimiento
         const requerimientoController = new RequerimientoCtrl(requerimientoModel);
         const requerimientoView = new RequerimientoView(requerimientoController);
         requerimientoView.init();
+
+        
+        const presupuestoInternoView = new PresupuestoInternoView(new PresupuestoInternoModel('{{csrf_token()}}'));
+        presupuestoInternoView.eventos();
     };
 </script>
 @endsection

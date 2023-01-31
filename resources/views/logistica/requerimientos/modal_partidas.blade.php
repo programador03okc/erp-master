@@ -7,7 +7,8 @@
             </div>
             <div class="modal-body">
             <div class="row">
-                    <div class="col-md-12" id="listaPartidas"></div>
+                <div class="col-md-12" id="listaPartidas"></div>
+                <div class="col-md-12" id="listaPresupuesto"></div>
                 </div>
             </div>
             <div class="modal-footer">

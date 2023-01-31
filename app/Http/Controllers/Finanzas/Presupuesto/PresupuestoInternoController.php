@@ -484,4 +484,21 @@ class PresupuestoInternoController extends Controller
             "status"=>200,
         ]);
     }
+
+    public function comboPresupuestoInterno($idGrupo,$idArea){
+        $data = PresupuestoInterno::where([['presupuesto_interno.estado','!=',7],['presupuesto_interno.id_grupo','=',$idGrupo],['presupuesto_interno.id_area','=',$idArea]])
+        ->select('presupuesto_interno.*', 'sis_grupo.descripcion as descripcion_grupo', 'adm_area.descripcion as descripcion_area')
+        ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
+        ->join('administracion.adm_area', 'adm_area.id_area', '=', 'presupuesto_interno.id_area')->get();
+        return $data;
+    }
+
+    public function obtenerDetallePresupuestoInterno($idPresupuestoIterno){
+
+        $presupuestoInterno= PresupuestoInterno::with(['detalle'=>function($q) use($idPresupuestoIterno){
+            $q->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado','!=',7]])->orderBy('partida','asc');
+        }])->where('id_presupuesto_interno',$idPresupuestoIterno)->get();
+        // $presupuestoInternoDetalle = PresupuestoInternoDetalle::where()->orderBy('id_hijo','asc')->get();
+        return $presupuestoInterno;
+    }
 }

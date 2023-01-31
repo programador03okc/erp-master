@@ -10,6 +10,7 @@ use App\Http\Controllers\AlmacenController;
 use App\Http\Controllers\ConfiguracionController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\ProyectosController;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Area;
@@ -347,6 +348,7 @@ class RequerimientoController extends Controller
             ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
             ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id', '=', 'alm_req.id_cc')
             ->leftJoin('cas.incidencia', 'incidencia.id_incidencia', '=', 'alm_req.id_incidencia')
+            ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno_id', '=', 'alm_req.id_presupuesto_interno_id')
 
 
             ->select(
@@ -420,6 +422,9 @@ class RequerimientoController extends Controller
                 'division.descripcion as division',
                 'alm_req.trabajador_id',
                 'alm_req.id_incidencia',
+                'alm_req.id_presupuesto_interno',
+                'presupuesto_interno.codigo as codigo_presupuesto_interno',
+                'presupuesto_interno.descripcion as descripcion_presupuesto_interno',
                 'incidencia.codigo as codigo_incidencia',
                 'incidencia.cliente as cliente_incidencia',
                 DB::raw("concat(perso_asignado.nombres, ' ' ,perso_asignado.apellido_paterno, ' ' ,perso_asignado.apellido_materno)  AS nombre_trabajador"),
@@ -868,6 +873,7 @@ class RequerimientoController extends Controller
             $requerimiento->trabajador_id = $request->id_trabajador;
             $requerimiento->id_incidencia = isset($request->id_incidencia) && $request->id_incidencia!=null ? $request->id_incidencia : null;
             $requerimiento->id_tipo_detalle = $idTipoDetalle;
+            $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno:null;
             $requerimiento->save();
             $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimiento1;
             $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimiento2;
@@ -1318,6 +1324,7 @@ class RequerimientoController extends Controller
 
         $requerimiento->id_incidencia = $request->id_incidencia > 0 ? $request->id_incidencia : null;
         $requerimiento->id_tipo_detalle = $idTipoDetalle;
+        $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ?$request->id_presupuesto_interno:null;
         $requerimiento->save();
         $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1;
         $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2;
