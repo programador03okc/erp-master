@@ -69,6 +69,7 @@
                 <td>{{$d->direccion_contacto}}</td>
                 <td>{{date('d-m-Y', strtotime($d->fecha_reporte))}}</td>
                 <td>{{ $d->fecha_documento !=null ? date('d-m-Y', strtotime($d->fecha_documento)):"" }}</td>
+                <td>{{ $d->fecha_registro !=null ? date('d-m-Y', strtotime($d->fecha_registro)):"" }}</td>
                 <td>{{$d->nombre_corto}}</td>
                 <td>{{$d->falla_reportada}}</td>
 

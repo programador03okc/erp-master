@@ -48,6 +48,7 @@ class IncidenciasExport implements FromView
                         'direccion_contacto'=>$value->direccion_contacto,
                         'fecha_reporte'=>$value->fecha_reporte,
                         'fecha_documento'=>$value->fecha_documento,
+                        'fecha_registro'=>$value->fecha_registro,
                         'nombre_corto'=>$value->nombre_corto,
                         'falla_reportada'=>$value->falla_reportada,
 

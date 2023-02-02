@@ -112,6 +112,7 @@ function listarIncidencias() {
                     
                 }
             },
+            { 'data': 'fecha_registro' },
             { 'data': 'nombre_corto', name: 'sis_usua.nombre_corto' },
             { 'data': 'falla_reportada' },
 
