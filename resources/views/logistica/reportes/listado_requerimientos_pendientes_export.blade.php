@@ -26,7 +26,7 @@
             <td>{{ $requerimiento->codigo_sede }}</td>
             <td>{{ $requerimiento->descripcion_grupo }}</td>
             <td>{{ $requerimiento->codigo }}</td>
-            <td>{{ $requerimiento->concepto }}</td>
+            <td>{{ str_replace("'", "", str_replace("", "", $requerimiento->concepto)) }}</td>
             <td>{{ date("d-m-Y", strtotime($requerimiento->fecha_registro)) }}</td>
             <td>{{ date("d-m-Y", strtotime($requerimiento->fecha_entrega)) }}</td>
             <td>{{ $requerimiento->tipo_req_desc }}</td>
