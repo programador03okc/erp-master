@@ -270,7 +270,7 @@ class PresupuestoInternoController extends Controller
         $gastos = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
 
         // return PresupuestoInterno::calcularTotalPresupuestoFilas($id,2);exit;
-        return PresupuestoInterno::calcularTotalPresupuestoFilas($id,2);exit;
+        // return PresupuestoInterno::calcularTotalPresupuestoFilas($id,2);exit;
 
         return view('finanzas.presupuesto_interno.editar', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos'));
     }
