@@ -6,6 +6,7 @@ use App\Exports\PresupuestoInternoExport;
 use App\Helpers\StringHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\administracion\AdmGrupo;
 use App\Models\Administracion\Area;
 use App\Models\Administracion\Division;
 use App\Models\Configuracion\Grupo;
@@ -36,7 +37,8 @@ class PresupuestoInternoController extends Controller
     }
     public function crear()
     {
-        $grupos = Grupo::get();
+        // $grupos = Grupo::get();
+        $grupos = AdmGrupo::get();
         $area = FinanzasArea::where('estado',1)->get();
         $moneda = Moneda::where('estado',1)->get();
 
