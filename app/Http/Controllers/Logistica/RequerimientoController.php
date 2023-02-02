@@ -348,7 +348,7 @@ class RequerimientoController extends Controller
             ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
             ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id', '=', 'alm_req.id_cc')
             ->leftJoin('cas.incidencia', 'incidencia.id_incidencia', '=', 'alm_req.id_incidencia')
-            ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno_id', '=', 'alm_req.id_presupuesto_interno_id')
+            ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
 
 
             ->select(
