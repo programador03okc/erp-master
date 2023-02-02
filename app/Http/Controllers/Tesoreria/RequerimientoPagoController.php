@@ -77,7 +77,7 @@ class RequerimientoPagoController extends Controller
         $tipos_documentos = Identidad::mostrar();
         $idTrabajador = Auth::user()->id_trabajador;
         $idUsuario = Auth::user()->id_usuario;
-        $nombreUsuario = Auth::user()->trabajador->postulante->persona->nombre_completo;
+        $nombreUsuario = Auth::user()->nombre_corto;
 
         $estados = Estado::mostrar();
         $array_accesos = [];

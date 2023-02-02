@@ -41,56 +41,56 @@ class ReservaHelper
 
             }
 
-
-            if ($reserva->estado == 1) {
-                if ($reserva->id_guia_com_det > 0) {
-                    if(GuiaCompraDetalle::find($reserva->id_guia_com_det)){
-                        if (GuiaCompraDetalle::find($reserva->id_guia_com_det)->estado != 7) {
-                            $CantidadGuiaComDet++;
-                        }
-                    }
-                }
-                if ($reserva->id_trans_detalle > 0) {
-                    if(TransferenciaDetalle::find($reserva->id_trans_detalle)){
-                        if (TransferenciaDetalle::find($reserva->id_trans_detalle)->estado != 7) {
-                            $CantidadTransDetalle++;
-                        }
-                    }
-                }
-                if ($reserva->id_transformado > 0) {
-                    if(Transformacion::find($reserva->id_transformado)){
-                        if (Transformacion::find($reserva->id_transformado)->estado != 7) {
-                            $CantidadTransformado++;
-                        }
-                    }
-                }
-                if (($reserva->id_guia_com_det == null || $CantidadGuiaComDet == 0) && ($reserva->id_trans_detalle == null || $CantidadTransDetalle == 0) && ($reserva->id_transformado == null || $CantidadTransformado == 0)) {
-                    $actualReserva = Reserva::where('id_reserva', $reserva->id_reserva)->first();
-                    $actualReserva->estado = 7;
-                    $actualReserva->usuario_anulacion = Auth::user()->id_usuario;
-                    $actualReserva->deleted_at = new Carbon();
-                    $actualReserva->motivo_anulacion = isset($motivoDeAnulacion) ? $motivoDeAnulacion : '';
-                    $actualReserva->save();
-                    $tipo_estado = 'success';
-                    $mensaje = 'Reserva Anulada';
-                }
-            } else {
-                $cantidadEstadoNoElaborado++;
-            }
+            $detReq = DetalleRequerimiento::where('id_detalle_requerimiento',$reserva->id_detalle_requerimiento)->first();
+            $requerimiento= Requerimiento::find($detReq->id_requerimiento);
 
 
-            if ($cantidadEstadoNoElaborado > 0) {
-                $mensajeAdicional .= ' Estados de reserva no permitido para anular.';
+            if($requerimiento->id_tipo_requerimiento==4){
+                $tipo_estado = $this->efectuarAnulacionReserva($reserva->id_reserva,$motivoDeAnulacion);
+
+            }else{
+                if ($reserva->estado == 1) {
+                    if ($reserva->id_guia_com_det > 0) {
+                        if(GuiaCompraDetalle::find($reserva->id_guia_com_det)){
+                            if (GuiaCompraDetalle::find($reserva->id_guia_com_det)->estado != 7) {
+                                $CantidadGuiaComDet++;
+                            }
+                        }
+                    }
+                    if ($reserva->id_trans_detalle > 0) {
+                        if(TransferenciaDetalle::find($reserva->id_trans_detalle)){
+                            if (TransferenciaDetalle::find($reserva->id_trans_detalle)->estado != 7) {
+                                $CantidadTransDetalle++;
+                            }
+                        }
+                    }
+                    if ($reserva->id_transformado > 0) {
+                        if(Transformacion::find($reserva->id_transformado)){
+                            if (Transformacion::find($reserva->id_transformado)->estado != 7) {
+                                $CantidadTransformado++;
+                            }
+                        }
+                    }
+                    if (($reserva->id_guia_com_det == null || $CantidadGuiaComDet == 0) && ($reserva->id_trans_detalle == null || $CantidadTransDetalle == 0) && ($reserva->id_transformado == null || $CantidadTransformado == 0)) {
+                        $tipo_estado = $this->efectuarAnulacionReserva($reserva->id_reserva,$motivoDeAnulacion);
+                    }
+                } else {
+                    $cantidadEstadoNoElaborado++;
+                }
+                if ($cantidadEstadoNoElaborado > 0) {
+                    $mensajeAdicional .= ' Estados de reserva no permitido para anular.';
+                }
+                if ($CantidadGuiaComDet > 0) {
+                    $mensajeAdicional .= ' Vínculo con guía.';
+                }
+                if ($CantidadTransDetalle > 0) {
+                    $mensajeAdicional .= ' Vínculo con trasnferencia.';
+                }
+                if ($CantidadTransformado > 0) {
+                    $mensajeAdicional .= ' Vínculo con item transformado.';
+                }
             }
-            if ($CantidadGuiaComDet > 0) {
-                $mensajeAdicional .= ' Vínculo con guía.';
-            }
-            if ($CantidadTransDetalle > 0) {
-                $mensajeAdicional .= ' Vínculo con trasnferencia.';
-            }
-            if ($CantidadTransformado > 0) {
-                $mensajeAdicional .= ' Vínculo con item transformado.';
-            }
+
 
             if ($tipo_estado == 'success') {
                 $mensaje = 'Se anuló la reserva.';
@@ -126,6 +126,16 @@ class ReservaHelper
             DB::rollBack();
             return ['id_reserva' =>0, 'data' => [], 'tipo_estado' => 'warning', 'mensaje' => 'No puede anular la reserva'];
         }
+    }
+
+    public function efectuarAnulacionReserva($id_reserva,$motivoDeAnulacion){
+        $actualReserva = Reserva::where('id_reserva', $id_reserva)->first();
+        $actualReserva->estado = 7;
+        $actualReserva->usuario_anulacion = Auth::user()->id_usuario;
+        $actualReserva->deleted_at = new Carbon();
+        $actualReserva->motivo_anulacion = isset($motivoDeAnulacion) ? $motivoDeAnulacion : '';
+        $actualReserva->save();
+        return 'success';
     }
 
     public function anularTodaReservaDeProducto($idDetalleRequerimiento, $motivoDeAnulacion)
