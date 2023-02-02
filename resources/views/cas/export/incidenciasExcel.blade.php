@@ -23,7 +23,8 @@
                 <th style="background-color: #cccccc;" width="18"><b>Teléfono</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Dirección</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha reporte</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Fecha documento</b></th>
+                <th style="background-color: #cccc cc;" width="18"><b>Fecha documento</b></th>
+                <th style="background-color: #cccc cc;" width="18"><b>Fecha registro</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Responsable</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Falla reportada</b></th>
 
