@@ -491,8 +491,8 @@ class PresupuestoInternoController extends Controller
     public function comboPresupuestoInterno($idGrupo,$idArea){
         $data = PresupuestoInterno::where([['presupuesto_interno.estado','!=',7],['presupuesto_interno.id_grupo','=',$idGrupo],['presupuesto_interno.id_area','=',$idArea]])
         ->select('presupuesto_interno.*', 'sis_grupo.descripcion as descripcion_grupo', 'adm_area.descripcion as descripcion_area')
-        ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
-        ->join('administracion.adm_area', 'adm_area.id_area', '=', 'presupuesto_interno.id_area')->get();
+        ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
+        ->join('administracion.division', 'division.id_division', '=', 'presupuesto_interno.id_area')->get();
         return $data;
     }
 
