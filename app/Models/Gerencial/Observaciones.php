@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Observaciones extends Model
 {
     //
-    protected $table = 'gerencia_cobranza.cobranzas_observaciones';
+    protected $table = 'cobranza.cobranzas_observaciones';
     protected $primaryKey = 'id';
     public $timestamps = false;
 }

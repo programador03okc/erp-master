@@ -78,7 +78,7 @@ class RegistroController extends Controller
         }
         if (!empty($request->fase)) {
             $fase_text = $request->fase;
-            $data = $data->join('gerencia_cobranza.cobranza_fase', function ($join) use($fase_text){
+            $data = $data->join('cobranza.cobranza_fase', function ($join) use($fase_text){
                 $join->on('cobranza_fase.id_registro_cobranza', '=', 'registros_cobranzas.id_registro_cobranza')
                     ->orOn('cobranza_fase.id_cobranza', '=', 'registros_cobranzas.id_cobranza_old');
             });
@@ -988,10 +988,10 @@ class RegistroController extends Controller
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$request->id_registro_cobranza)->first();
         // $cobranza_fase = CobanzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->first();
-        DB::table('gerencia_cobranza.cobranza_fase')
+        DB::table('cobranza.cobranza_fase')
             ->where('id_registro_cobranza', $registro_cobranza->id_registro_cobranza)
             ->update(['estado' => 2]);
-        DB::table('gerencia_cobranza.cobranza_fase')
+        DB::table('cobranza.cobranza_fase')
             ->where('id_cobranza', $registro_cobranza->id_cobranza_old)
             ->where('id_cobranza','!=' , null)
             ->update(['estado' => 2]);
@@ -1106,7 +1106,7 @@ class RegistroController extends Controller
     }
     public function scriptFase()
     {
-        $cobranza_fase_id_cobranza = DB::table('gerencia_cobranza.cobranza_fase')
+        $cobranza_fase_id_cobranza = DB::table('cobranza.cobranza_fase')
         ->select('id_cobranza')
         ->where('id_cobranza','!=',null)
         ->where('estado',1)
@@ -1122,7 +1122,7 @@ class RegistroController extends Controller
             $cobranza_fase = CobanzaFase::where('id_cobranza',$value)->where('estado',1)->orderBy('id_fase','DESC')->get();
             foreach ($cobranza_fase as $key => $value) {
                 if ($key!==0) {
-                    DB::table('gerencia_cobranza.cobranza_fase')
+                    DB::table('cobranza.cobranza_fase')
                     ->where('id_fase', $value->id_fase)
                     ->update(['estado' => 2]);
                 }
@@ -1427,7 +1427,7 @@ class RegistroController extends Controller
             'registros_cobranzas.*',
             'sector.nombre AS nombre_sector',
         )
-        ->join('gerencia_cobranza.sector', 'sector.id_sector','=', 'registros_cobranzas.id_sector')
+        ->join('cobranza.sector', 'sector.id_sector','=', 'registros_cobranzas.id_sector')
         ->orderBy('id_registro_cobranza', 'desc');
         if (!empty($request->empresa)) {
             $empresa = DB::table('contabilidad.adm_contri')
@@ -1441,7 +1441,7 @@ class RegistroController extends Controller
         }
         if (!empty($request->fase)) {
             $fase_text = $request->fase;
-            $data = $data->join('gerencia_cobranza.cobranza_fase', function ($join) use($fase_text){
+            $data = $data->join('cobranza.cobranza_fase', function ($join) use($fase_text){
                 $join->on('cobranza_fase.id_registro_cobranza', '=', 'registros_cobranzas.id_registro_cobranza')
                     ->orOn('cobranza_fase.id_cobranza', '=', 'registros_cobranzas.id_cobranza_old');
             });
@@ -2038,7 +2038,7 @@ class RegistroController extends Controller
         // $registro_cobranza = RegistroCobranza::where('estado',1)->get();
         $array_faltantes=[];
         $array_encontrados=[];
-        $select = DB::table('gerencia_cobranza.registros_cobranzas')
+        $select = DB::table('cobranza.registros_cobranzas')
         ->select(
             'registros_cobranzas.id_registro_cobranza',
             'registros_cobranzas.oc',
