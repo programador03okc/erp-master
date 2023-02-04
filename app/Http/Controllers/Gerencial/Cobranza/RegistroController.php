@@ -2044,12 +2044,12 @@ class RegistroController extends Controller
         $select = DB::table('cobranza.registros_cobranzas')
         ->select(
             'registros_cobranzas.id_registro_cobranza',
-            'registros_cobranzas.oc',
+            'registros_cobranzas.ocam',
             'oc_propias_view.id',
             'oc_propias_view.inicio_entrega',
             'oc_propias_view.fecha_entrega'
         )
-        ->join('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.nro_orden', '=', 'registros_cobranzas.oc')
+        ->join('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.nro_orden', '=', 'registros_cobranzas.ocam')
         ->get();
         foreach ($select as $key => $value) {
             Observaciones::where('cobranza_id', $value->id_registro_cobranza)
