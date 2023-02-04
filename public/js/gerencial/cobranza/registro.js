@@ -87,12 +87,12 @@ function listarRegistros(filtros) {
         columns: [
             {data: 'id_registro_cobranza', name:"id_registro_cobranza"},
             {data: 'empresa', name:"empresa"},
-            {data: 'oc', name:"oc"},
+            {data: 'ocam', name:"ocam"},
             {data: 'cliente', name:"cliente"},
             {data: 'factura', name:"factura"},
             {data: 'uu_ee', name:"uu_ee"},
             {data: 'fuente_financ', name:"fuente_financ"},
-            {data: 'oc', name:"oc"},
+            {data: 'oc_fisica', name:"oc_fisica"},
             {data: 'siaf', name:"siaf"},
             {data: 'fecha_emision', name:"fecha_emision"},
             {data: 'fecha_recepcion', name:"fecha_recepcion"},
@@ -786,8 +786,8 @@ $(document).on('click','.editar-registro',function (e) {
             }
 
             $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(data.data.cdp);
-            $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(data.data.oc);
-            $('[data-form="editar-formulario"] .modal-body input[name="orden_compra"]').val(data.data.orden_compra);
+            $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(data.data.ocam);
+            $('[data-form="editar-formulario"] .modal-body input[name="orden_compra"]').val(data.data.oc_fisica);
             $('[data-form="editar-formulario"] .modal-body input[name="fact"]').val(data.data.factura);
             $('[data-form="editar-formulario"] .modal-body input[name="siaf"]').val(data.data.siaf);
             $('[data-form="editar-formulario"] .modal-body input[name="ue"]').val(data.data.uu_ee);
@@ -1255,7 +1255,7 @@ $(document).on('click','[data-action="editar-penalidad"]',function (e) {
 $(document).on('click','[data-action="anular-penalidad"]',function (e) {
     e.preventDefault();
     var id = $(this).attr('data-id'),
-        titulo =$(this).attr('title'),
+        titulo =$('[name="tipo_penal"]').val(),
         id_registro_cobranza =$(this).attr('data-id-registro-cobranza');
     $.ajax({
         type: 'POST',
@@ -1264,6 +1264,7 @@ $(document).on('click','[data-action="anular-penalidad"]',function (e) {
         data: {tipo:titulo,id:id,id_registro_cobranza:id_registro_cobranza},
         dataType: 'JSON'
     }).done(function( data ) {
+        console.log(data);
         listarPenalidades(data);
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -1291,9 +1292,9 @@ function listarPenalidades(data) {
 
             html+='<td>'+element.fecha+'</td>'
             html+='<td>'+
-                '<button class="btn btn-xs" data-action="editar-penalidad" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
-                '<button class="btn btn-xs" data-action="anular-penalidad" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-trash-alt"></i></button>'+
-                '<button class="btn btn-xs" data-action="eliminar-penalidad" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-times"></i></button>'+
+                '<button class="btn btn-xs" data-action="editar-penalidad" data-title="" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
+                '<button class="btn btn-xs" data-action="anular-penalidad" data-title="" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-trash-alt"></i></button>'+
+                '<button class="btn btn-xs" data-action="eliminar-penalidad" data-title="" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-times"></i></button>'+
             '</td>'
         html+='</tr>'
     });

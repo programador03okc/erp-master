@@ -383,12 +383,12 @@ class RegistroController extends Controller
         //     $cobranza->id_cliente_agil      = $request->id_contribuyente;
         // }
         $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
-        $cobranza->id_cliente_agil       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null) ;
+        $cobranza->id_cliente_agil  = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null) ;
 
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
         $cobranza->fuente_financ    = $request->ff;
-        $cobranza->oc               = $request->oc; // OCAM es igul que la oc
+        $cobranza->ocam             = $request->oc; // OCAM es igul que la oc
         $cobranza->siaf             = $request->siaf;
         $cobranza->fecha_emision    = $request->fecha_emi;
         $cobranza->fecha_recepcion  = $request->fecha_rec;
@@ -407,7 +407,7 @@ class RegistroController extends Controller
         $cobranza->cdp              = $request->cdp;
         $cobranza->plazo_credito    = $request->plazo_credito;
         $cobranza->id_doc_ven       = $request->id_doc_ven;
-        $cobranza->orden_compra       = $request->orden_compra;
+        $cobranza->oc_fisica        = $request->orden_compra;
         $cobranza->inicio_entrega       = $request->fecha_inicio;
         $cobranza->fecha_entrega       = $request->fecha_entrega;
         // $cobranza->id_vent          = ;
@@ -898,7 +898,7 @@ class RegistroController extends Controller
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
         $cobranza->fuente_financ    = $request->ff;
-        $cobranza->oc               = $request->oc; // OCAM es igul que la oc
+        $cobranza->ocam               = $request->oc; // OCAM es igul que la oc
         $cobranza->siaf             = $request->siaf;
         $cobranza->fecha_emision    = $request->fecha_emi;
         $cobranza->fecha_recepcion  = $request->fecha_rec;
@@ -918,7 +918,7 @@ class RegistroController extends Controller
         $cobranza->plazo_credito    = $request->plazo_credito;
         $cobranza->id_doc_ven       = $request->id_doc_ven;
         // $cobranza->id_vent          = ;
-        $cobranza->orden_compra       = $request->orden_compra;
+        $cobranza->oc_fisica       = $request->orden_compra;
         $cobranza->inicio_entrega       = $request->fecha_inicio;
         $cobranza->fecha_entrega       = $request->fecha_entrega;
         $cobranza->id_oc       = $request->id_oc;
@@ -990,9 +990,12 @@ class RegistroController extends Controller
         // $cobranza_fase = CobanzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->first();
         DB::table('cobranza.cobranza_fase')
             ->where('id_registro_cobranza', $registro_cobranza->id_registro_cobranza)
+            ->where('estado','!=', 0)
             ->update(['estado' => 2]);
+
         DB::table('cobranza.cobranza_fase')
             ->where('id_cobranza', $registro_cobranza->id_cobranza_old)
+            ->where('estado','!=', 0)
             ->where('id_cobranza','!=' , null)
             ->update(['estado' => 2]);
         $cobranza_fase          = new CobanzaFase();
@@ -1288,7 +1291,7 @@ class RegistroController extends Controller
             $registro_cobranza->factura           = $value->factura;
             $registro_cobranza->uu_ee             = $value->uu_ee;
             $registro_cobranza->fuente_financ     = $value->fuente_financ;
-            $registro_cobranza->oc                = $value->ocam;
+            $registro_cobranza->ocam              = $value->ocam;
             $registro_cobranza->siaf              = $value->siaf;
             $registro_cobranza->fecha_emision     = $value->fecha_emision;
             $registro_cobranza->fecha_recepcion   = $value->fecha_recepcion;
@@ -1309,7 +1312,7 @@ class RegistroController extends Controller
             $registro_cobranza->id_cliente_agil   = null;
             $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
             $registro_cobranza->id_empresa_old    = $value->id_empresa;
-            $registro_cobranza->orden_compra      = $value->oc;
+            $registro_cobranza->oc_fisica        = $value->oc;
             $registro_cobranza->save();
 
             if ($success===true) {
