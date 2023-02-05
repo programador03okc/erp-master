@@ -281,10 +281,10 @@ function salidaTransferencia(data) {
                         if (response.tipo == 'success') {
                             $("#modal-transferenciaGuia").modal("hide");
                             $("#listaTransferenciasPorEnviar").DataTable().ajax.reload(null, false);
-                            $("#nro_por_enviar").text(response.nroPorEnviar);
                             // var id = encode5t(response);
                             // window.open('imprimir_salida/'+id);
                         }
+                        $("#nro_por_enviar").text(response.nroPorEnviar);
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
