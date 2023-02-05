@@ -207,7 +207,7 @@ class CierreAperturaController extends Controller
         return response()->json($historial);
     }
 
-    static function consultarPeriodo($fecha)
+    static function consultarPeriodo($fecha, $id_almacen)
     {
         $yyyy = date('Y', strtotime($fecha));
         $m = date('n', strtotime($fecha));
@@ -217,6 +217,7 @@ class CierreAperturaController extends Controller
         ->join('contabilidad.periodo_estado','periodo_estado.id_estado','=','periodo.estado')
         ->where('periodo.anio',$yyyy)
         ->where('periodo.nro_mes',$m)
+        ->where('periodo.id_almacen',$id_almacen)
         ->first();
 
         $rspta = ($periodo == null ? 1 : $periodo->estado);
