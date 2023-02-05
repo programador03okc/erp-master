@@ -1627,8 +1627,20 @@ class TransferenciaController extends Controller
             $id_usuario = Auth::user()->id_usuario;
             $mensaje = '';
             $tipo = '';
+            $array_almacen = [];
+            
+            foreach ($request->detalle as $det) {
+                if (!in_array($det['id_almacen_reserva'], $array_almacen)) {
+                    array_push($array_almacen, $det['id_almacen_reserva']);
+                }
+            }
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha);
+            if ($array_almacen !== []) {
+                foreach ($array_almacen as $alm) {
+                    $estado = CierreAperturaController::consultarPeriodo($request->fecha, $alm);
+                    $periodo_estado = ($periodo_estado==2 ? $periodo_estado : $estado);
+                }
+            }
 
             if (intval($periodo_estado) == 2){
                 $mensaje = 'El periodo esta cerrado. Consulte con contabilidad.';
@@ -1645,16 +1657,6 @@ class TransferenciaController extends Controller
                     ->first();
 
                 if ($req !== null) {
-
-                    // if ($req->codigo == null) {
-
-                    $array_almacen = [];
-                    foreach ($request->detalle as $det) {
-
-                        if (!in_array($det['id_almacen_reserva'], $array_almacen)) {
-                            array_push($array_almacen, $det['id_almacen_reserva']);
-                        }
-                    }
 
                     if ($array_almacen !== []) {
 
@@ -1755,7 +1757,7 @@ class TransferenciaController extends Controller
             $tipo = '';
             $id_usuario = Auth::user()->id_usuario;
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha);
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha, $request->id_almacen_origen);
 
             if (intval($periodo_estado) == 2){
                 $mensaje = 'El periodo esta cerrado. Consulte con contabilidad.';
