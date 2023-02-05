@@ -205,9 +205,10 @@ function recibir() {
                             delayIndicator: false,
                             msg: response.mensaje
                         });
-                        $("#modal-transferencia_detalle").modal("hide");
-                        // listarTransferenciasPorRecibir();
-                        $("#listaTransferenciasPorRecibir").DataTable().ajax.reload(null, false);
+                        if (response.tipo == 'success') {
+                            $("#modal-transferencia_detalle").modal("hide");
+                            $("#listaTransferenciasPorRecibir").DataTable().ajax.reload(null, false);
+                        }
                         $("#nro_por_recibir").text(response.nroPorRecibir);
                     }
                 }).fail(function (jqXHR, textStatus, errorThrown) {
