@@ -150,6 +150,7 @@ Lista de Presupuestos Interno
             dropdownParent: $('#modal-editar-monto-partida'),
             placeholder: 'Seleccione una partida...',
             language: "es",
+            allowClear: true,
             ajax: {
                 url: 'buscar-partida-combo',
                 type: "post",

@@ -232,6 +232,7 @@ $(document).on('click','.editar-monto-partida',function () {
     $('[data-form="editar-monto-partida"]')[0].reset();
     $('[data-form="editar-monto-partida"]').find('input[name="id"]').val(id);
     $('#modal-editar-monto-partida').modal('show');
+    $('.search-partidas').val(null).trigger('change');
 });
 $(document).on('submit','[data-form="editar-monto-partida"]',function (e) {
     e.preventDefault();
