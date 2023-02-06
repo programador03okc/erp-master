@@ -63,6 +63,7 @@ Gestión de incidencias
                                             <th>Horario</th> --}}
                                             <th>Fecha reporte</th>
                                             <th>Fecha documento</th>
+                                            <th>Fecha registro</th>
                                             <th>Responsable</th>
                                             <th>Falla</th>
                                             <th width="70px">Acción</th>

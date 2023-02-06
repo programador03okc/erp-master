@@ -2,6 +2,10 @@
 
 namespace App\Models\Finanzas;
 
+use App\Models\Administracion\Periodo;
+use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Requerimiento;
+
 use Illuminate\Database\Eloquent\Model;
 
 class PresupuestoInterno extends Model
@@ -285,4 +289,27 @@ class PresupuestoInterno extends Model
 
         return $id_presupuesto_interno;
     }
+    public static function calcularConsumidoPresupuestoFilas($id_presupuesto_interno, $id_tipo_presupuesto)
+    {
+        $periodoActual = Periodo::where('estado', 1)->orderBy("id_periodo", "desc")->first();
+        $yyyy = $periodoActual->descripcion;
+
+        $requerimientoList = Requerimiento::where([['estado', '!=', 7], ['id_presupuesto_interno', '=', $id_presupuesto_interno]])
+            ->whereYear('fecha_registro', '=', $yyyy)->get();
+
+        $idRequerimientoList = [];
+        foreach ($requerimientoList as $key => $requerimiento) {
+            $idRequerimientoList[] = $requerimiento->id_requerimiento;
+        }
+
+        $detalleRequerimientoPartidaConsumidaList = DetalleRequerimiento::whereIn('alm_det_req.id_requerimiento', $idRequerimientoList)
+            ->where([['alm_det_req.estado', '!=', 7], ['presupuesto_interno_detalle.id_tipo_presupuesto', $id_tipo_presupuesto], ['presupuesto_interno_detalle.estado', 1]])
+            ->whereYear('presupuesto_interno_detalle.fecha_registro', '=', $yyyy)
+            ->select('alm_det_req.id_requerimiento', 'alm_det_req.id_detalle_requerimiento', 'alm_det_req.partida as id_partida', 'alm_det_req.subtotal', 'presupuesto_interno_detalle.partida')
+            ->join('finanzas.presupuesto_interno_detalle', 'presupuesto_interno_detalle.id_presupuesto_interno_detalle', '=', 'alm_det_req.partida')
+            ->get();
+
+        return $detalleRequerimientoPartidaConsumidaList;
+    }
+
 }

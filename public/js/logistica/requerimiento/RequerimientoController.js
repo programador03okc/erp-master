@@ -102,9 +102,6 @@ class RequerimientoCtrl{
         return this.requerimientoModel.getSedesPorEmpresa(idEmpresa);
     }
     
-    comboPresupuestoInterno(idGrupo,idArea){
-        return this.requerimientoModel.comboPresupuestoInterno(idGrupo,idArea);
-    }
 }
 
 // const requerimientoCtrl = new RequerimientoCtrl(requerimientoView);

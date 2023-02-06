@@ -119,6 +119,8 @@ Listado de requerimientos de pago
 <script src="{{ asset('js/tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/requerimientoPago/verTodoAdjuntosYAdicionalesRequerimientoPago.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/verTodoAdjuntosYAdicionalesRequerimientoPago.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_lista_trabajadores.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/modal_lista_trabajadores.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/presupuesto-interno-view.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/presupuesto-interno-view.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/presupuesto-interno-model.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/presupuesto-interno-model.js'))}}"></script>
 
 
 <script>
@@ -132,11 +134,18 @@ Listado de requerimientos de pago
         seleccionarMenu(window.location);
         console.log('initializeEventHandlerListaRequerimientoPago');
 
-        const listarRequerimientoPagoView = new ListarRequerimientoPagoView();
+        const presupuestoInternoView = new PresupuestoInternoView(new PresupuestoInternoModel('{{csrf_token()}}'));
+        presupuestoInternoView.eventos();
+
+
+        const listarRequerimientoPagoView = new ListarRequerimientoPagoView(presupuestoInternoView);
 
         listarRequerimientoPagoView.mostrarListaRequerimientoPago('ALL');
 
         listarRequerimientoPagoView.initializeEventHandlerListaRequerimientoPago();
+
+
+
 
     });
 

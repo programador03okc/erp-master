@@ -524,6 +524,8 @@ class RequerimientoController extends Controller
                     'trabajador_id' => $data->trabajador_id,
                     'division' => $data->division,
                     'nombre_trabajador' => $data->nombre_trabajador,
+                    'codigo_presupuesto_interno' => $data->codigo_presupuesto_interno,
+                    'descripcion_presupuesto_interno' => $data->descripcion_presupuesto_interno,
                     'adjuntos' => []
 
                 ];
@@ -3887,7 +3889,7 @@ class RequerimientoController extends Controller
                 <tr>
                     <td class="subtitle">Presupuesto</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop"></td>
+                    <td class="verticalTop">'. $requerimiento['requerimiento'][0]['codigo_presupuesto_interno'] . ' - ' . $requerimiento['requerimiento'][0]['descripcion_presupuesto_interno'] .'</td>
                 </tr>
                 <tr>
                     <td class="subtitle">Observación</td>

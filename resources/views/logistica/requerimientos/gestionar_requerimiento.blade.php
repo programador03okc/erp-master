@@ -827,15 +827,16 @@ Crear / editar requerimiento
         var id_grupo = '{{Auth::user()->getGrupo()?Auth::user()->getGrupo()->id_grupo:null}}';
         document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value = id_grupo; // no borrar al limpiar con reset el form
 
+        const presupuestoInternoView = new PresupuestoInternoView(new PresupuestoInternoModel('{{csrf_token()}}'));
+        presupuestoInternoView.eventos();
 
         const requerimientoModel = new RequerimientoModel();
         const requerimientoController = new RequerimientoCtrl(requerimientoModel);
-        const requerimientoView = new RequerimientoView(requerimientoController);
+        const requerimientoView = new RequerimientoView(requerimientoController,presupuestoInternoView);
         requerimientoView.init();
 
         
-        const presupuestoInternoView = new PresupuestoInternoView(new PresupuestoInternoModel('{{csrf_token()}}'));
-        presupuestoInternoView.eventos();
+
     };
 </script>
 @endsection

@@ -23,7 +23,8 @@
                 <th style="background-color: #cccccc;" width="18"><b>Teléfono</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Dirección</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Fecha reporte</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Fecha documento</b></th>
+                <th style="background-color: #cccc cc;" width="18"><b>Fecha documento</b></th>
+                <th style="background-color: #cccc cc;" width="18"><b>Fecha registro</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Responsable</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Falla reportada</b></th>
 
@@ -69,6 +70,7 @@
                 <td>{{$d->direccion_contacto}}</td>
                 <td>{{date('d-m-Y', strtotime($d->fecha_reporte))}}</td>
                 <td>{{ $d->fecha_documento !=null ? date('d-m-Y', strtotime($d->fecha_documento)):"" }}</td>
+                <td>{{ $d->fecha_registro !=null ? date('d-m-Y', strtotime($d->fecha_registro)):"" }}</td>
                 <td>{{$d->nombre_corto}}</td>
                 <td>{{$d->falla_reportada}}</td>
 

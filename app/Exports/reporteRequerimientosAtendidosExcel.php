@@ -34,10 +34,10 @@ class reporteRequerimientosAtendidosExcel implements FromView
 
             $data[]=[
                 'empresa_sede'=> $element->empresa_sede,
-                'codigo'=> $element->codigo,
+                'codigo'=> str_replace("'", "", str_replace("", "", $element->codigo)),
                 'fecha_registro'=> $element->fecha_registro,
                 'fecha_entrega'=> $element->fecha_entrega,
-                'concepto'=> $element->concepto,
+                'concepto'=> str_replace("'", "", str_replace("", "", $element->concepto)),
                 'tipo_req_desc'=> $element->tipo_req_desc,
                 'division'=> $element->division,
                 'cc_solicitado_por'=> $element->cc_solicitado_por,
