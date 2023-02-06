@@ -502,10 +502,52 @@ class PresupuestoInternoController extends Controller
 
     public function obtenerDetallePresupuestoInterno($idPresupuestoIterno){
 
+        
         $presupuestoInterno= PresupuestoInterno::with(['detalle'=>function($q) use($idPresupuestoIterno){
             $q->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado','!=',7]])->orderBy('partida','asc');
-        }])->where('id_presupuesto_interno',$idPresupuestoIterno)->get();
-        // $presupuestoInternoDetalle = PresupuestoInternoDetalle::where()->orderBy('id_hijo','asc')->get();
+        }])->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado',2]])->get();
+ 
+        $totalFilas = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,2);
+        $detalleRequerimiento = PresupuestoInterno::calcularConsumidoPresupuestoFilas($idPresupuestoIterno,2);
+
+        foreach ($presupuestoInterno as $key => $Presup) {
+            foreach ($Presup['detalle'] as $keyd => $detPresup) {
+
+            $detPresup['monto_inicial'] = 0;
+            $detPresup['monto_consumido'] = 0;
+            $detPresup['monto_saldo'] = 0;
+            }
+        }
+        //  completar monto inicial;
+        foreach ($presupuestoInterno as $key => $Presup) {
+            foreach ($Presup['detalle'] as $key => $detPresup) {
+                foreach ($totalFilas as $key => $totFila) {
+                    if($totFila['partida'] == $detPresup['partida'] ){
+                        $detPresup['monto_inicial'] = $totFila['total'];
+                    }
+                }
+            }
+        }
+        //  completar monto consumido;
+        foreach ($presupuestoInterno as $key => $Presup) {
+            foreach ($Presup['detalle'] as $key => $detPresup) {
+                foreach ($detalleRequerimiento as $key => $detalleReq) {
+                    if($detalleReq['partida'] == $detPresup['partida'] ){
+                        $detPresup['monto_consumido'] += $detalleReq['subtotal'];
+                    }
+                }
+            }
+        }
+
+        //  completar monto saldo;
+        foreach ($presupuestoInterno as $key => $Presup) {
+            foreach ($Presup['detalle'] as $key => $detPresup) {
+                $detPresup['monto_saldo'] = (floatval($detPresup['monto_inicial']) - floatval($detPresup['monto_consumido']));
+                }
+        }
+
+        
+
         return $presupuestoInterno;
     }
 }

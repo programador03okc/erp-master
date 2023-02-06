@@ -799,6 +799,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anular-adjunto-requerimiento-pago-cabecera', 'Tesoreria\RequerimientoPagoController@anularAdjuntoRequerimientoPagoCabecera');
 				Route::post('anular-adjunto-requerimiento-pago-detalle', 'Tesoreria\RequerimientoPagoController@anularAdjuntoRequerimientoPagoDetalle');
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
+
+				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
+				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 			// 	Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');

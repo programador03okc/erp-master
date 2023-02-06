@@ -15,7 +15,8 @@ var tempObjectBtnCentroCostos;
 var $tablaListaCuadroPresupuesto;
 class ListarRequerimientoPagoView {
 
-    constructor() {
+    constructor(presupuestoInternoView) {
+        this.presupuestoInternoView = presupuestoInternoView;
         this.ActualParametroAllOrMe = 'SIN_FILTRO';
         this.ActualParametroEmpresa = 'SIN_FILTRO';
         this.ActualParametroSede = 'SIN_FILTRO';
@@ -87,6 +88,9 @@ class ListarRequerimientoPagoView {
         $('#modal-requerimiento-pago').on("click", "button.handleClickAgregarServicio", () => {
             this.agregarServicio();
             this.checkStatusBtnGuardar();
+            if($("select[name='id_presupuesto_interno']").val()>0){
+                this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
+            }
         });
 
         $('#ListaDetalleRequerimientoPago tbody').on("click", "button.handleClickEliminarItem", (e) => {
@@ -171,6 +175,10 @@ class ListarRequerimientoPagoView {
         });
         $('#modal-requerimiento-pago').on("focusout", "input.handleFocusOutInputNombreDestinatario", (e) => {
             this.focusOutInputNombreDestinatario(e.currentTarget);
+        });
+
+        $('#modal-requerimiento-pago').on("change", "select.updateDivision", (e) => {
+            this.updateDivision(e.currentTarget);
         });
 
         $('#listaDestinatariosEncontrados').on("click", "tr.handleClickSeleccionarDestinatario", (e) => {
@@ -439,12 +447,26 @@ class ListarRequerimientoPagoView {
                 selectElement.remove(i);
             }
         }
+        let optionDefault = document.createElement("option");
+        optionDefault.text= "Seleccione una opción";
+        optionDefault.value= "";
+        selectElement.add(optionDefault);
+
         array.forEach(element => {
             let option = document.createElement("option");
             option.text = element.descripcion;
             option.value = element.id_division;
             selectElement.add(option);
         });
+    }
+
+
+    updateDivision(obj){
+        let currentIdGrupo = obj.options[obj.selectedIndex].dataset.idGrupo;
+        console.log(currentIdGrupo);
+        console.log(obj.value);
+        this.presupuestoInternoView.llenarComboPresupuestoInterno(currentIdGrupo,obj.value);
+
     }
 
 
@@ -929,6 +951,7 @@ class ListarRequerimientoPagoView {
 
     llenarSelectDivision(array, idDivision = null) {
         let selectElement = document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']");
+
         if (selectElement.options.length > 0) {
             let i, L = selectElement.options.length - 1;
             for (i = L; i >= 0; i--) {
@@ -936,7 +959,11 @@ class ListarRequerimientoPagoView {
             }
         }
 
-
+        let optionDefault = document.createElement("option");
+        optionDefault.text= "Elija una opción";
+        optionDefault.value= "";
+        selectElement.add(optionDefault);
+        
         array.forEach(element => {
             let option = document.createElement("option");
             option.text = element.descripcion;
@@ -1555,17 +1582,17 @@ class ListarRequerimientoPagoView {
         for (let index = 0; index < tbodyChildren.length; index++) {
             if (tbodyChildren[index].querySelector("input[class~='idEstado']").value != 7) {
 
-                if (!(tbodyChildren[index].querySelector("input[class~='centroCosto']").value > 0)) {
-                    continuar = false;
-                    if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
-                        let newSpanInfo = document.createElement("span");
-                        newSpanInfo.classList.add('text-danger');
-                        newSpanInfo.textContent = 'Ingrese un centro de costo';
-                        tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("h5").appendChild(newSpanInfo);
-                        tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
-                    }
+                // if (!(tbodyChildren[index].querySelector("input[class~='centroCosto']").value > 0)) {
+                //     continuar = false;
+                //     if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
+                //         let newSpanInfo = document.createElement("span");
+                //         newSpanInfo.classList.add('text-danger');
+                //         newSpanInfo.textContent = 'Ingrese un centro de costo';
+                //         tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("h5").appendChild(newSpanInfo);
+                //         tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                //     }
 
-                }
+                // }
                 if (!(tbodyChildren[index].querySelector("input[class~='cantidad']").value > 0)) {
                     continuar = false;
                     if (tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("span") == null) {

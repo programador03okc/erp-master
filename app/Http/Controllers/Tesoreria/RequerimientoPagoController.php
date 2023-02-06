@@ -283,6 +283,7 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
             $requerimientoPago->id_estado = 1;
             $requerimientoPago->id_trabajador = $request->id_trabajador > 0 ? $request->id_trabajador : null;
+            $requerimientoPago->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno:null;
 
             $requerimientoPago->save();
 
@@ -658,6 +659,7 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
             $requerimientoPago->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
             $requerimientoPago->id_trabajador = $request->id_trabajador > 0 ? $request->id_trabajador : null;
+            $requerimientoPago->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno:null;
             $requerimientoPago->save();
 
             $count = count($request->descripcion);
@@ -892,7 +894,8 @@ class RequerimientoPagoController extends Controller
                 'cuentaContribuyente.tipoCuenta',
                 'cuadroCostos',
                 'proyecto',
-                'adjunto'
+                'adjunto',
+                'presupuestoInterno'
             )
             ->first();
 
