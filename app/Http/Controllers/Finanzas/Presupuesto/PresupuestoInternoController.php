@@ -594,10 +594,13 @@ class PresupuestoInternoController extends Controller
                 $presupuesto_interno_partida_modificar->save();
 
                 PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($request->id,3,$request->partida,$request->mes);
+
                 PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,$request->partida,$request->mes);
-                if ($presupuesto_interno_partida_modificar->partida === '03.01.01.01' &&$presupuesto_interno_partida_modificar->partida === '03.01.01.02' &&$presupuesto_interno_partida_modificar->partida === '03.01.01.03'  ) {
-                    PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,'03.01.03.01',$request->mes);
+                if (
+                    $presupuesto_interno_partida_modificar->partida === '03.01.01.01' ||$presupuesto_interno_partida_modificar->partida === '03.01.01.02' ||$presupuesto_interno_partida_modificar->partida === '03.01.01.03'
+                ) {
                     PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,'03.01.02.01',$request->mes);
+                    PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,'03.01.03.01',$request->mes);
                 }
                 $success=true;
             }
