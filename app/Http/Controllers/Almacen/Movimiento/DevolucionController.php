@@ -362,7 +362,7 @@ class DevolucionController extends Controller
             $fecha = new Carbon();
             $devolucion = null;
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_documento);
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_documento, $request->id_almacen);
 
             if (intval($periodo_estado) == 2){
                 $mensaje = 'El periodo esta cerrado. Consulte con contabilidad.';
@@ -517,7 +517,7 @@ class DevolucionController extends Controller
             $mensaje = '';
             $tipo = '';
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_documento);
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_documento, $request->id_almacen);
 
             if (intval($periodo_estado) == 2){
                 $mensaje = 'El periodo esta cerrado. Consulte con contabilidad.';

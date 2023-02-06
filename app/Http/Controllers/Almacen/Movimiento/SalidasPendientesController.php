@@ -122,7 +122,7 @@ class SalidasPendientesController extends Controller
             $id_usuario = Auth::user()->id_usuario;
             $fecha_registro = date('Y-m-d H:i:s');
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_emision);
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_emision, $request->id_almacen);
 
             if (intval($periodo_estado) == 2){
                 $mensaje = 'El periodo esta cerrado. Consulte con contabilidad.';
@@ -1526,17 +1526,17 @@ class SalidasPendientesController extends Controller
         try {
             DB::beginTransaction();
             $msj = '';
+            $salida = DB::table('almacen.guia_ven')
+            ->select('guia_ven.fecha_almacen', 'guia_ven.id_almacen')
+            ->where('id_guia_ven', $request->id_guia_ven)
+            ->first();
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->salida_fecha_emision);
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->salida_fecha_emision, $salida->id_almacen);
 
             if (intval($periodo_estado) == 2){
                 $msj = 'El periodo esta cerrado. Consulte con contabilidad.';
                 
             } else {
-                $salida = DB::table('almacen.guia_ven')
-                    ->select('guia_ven.fecha_almacen', 'guia_ven.id_almacen')
-                    ->where('id_guia_ven', $request->id_guia_ven)
-                    ->first();
 
                 $fecha_anterior = $salida->fecha_almacen;
                 $id_usuario = Auth::user()->id_usuario;
