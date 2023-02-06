@@ -2065,6 +2065,8 @@ Route::group(['middleware' => ['auth']], function () {
 
                 Route::post('aprobar', 'Finanzas\Presupuesto\PresupuestoInternoController@aprobar');
                 Route::post('editar-monto-partida', 'Finanzas\Presupuesto\PresupuestoInternoController@editarMontoPartida');
+                // buscar partidas
+                Route::post('buscar-partida-combo', 'Finanzas\Presupuesto\PresupuestoInternoController@buscarPartidaCombo');
             });
 		});
 

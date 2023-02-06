@@ -251,6 +251,13 @@ $(document).on('submit','[data-form="editar-monto-partida"]',function (e) {
         if (response===true) {
             $('#modal-editar-monto-partida').modal('hide');
         }
+        if (response===false) {
+            Swal.fire(
+                'Información',
+                'El registo que ingreso no es posible modificarse',
+                'warning'
+            )
+        }
         this_button.removeAttr('disabled');
     }).fail( function( jqXHR, textStatus, errorThrown ){
         this_button.removeAttr('disabled');

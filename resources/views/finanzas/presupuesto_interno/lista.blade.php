@@ -6,7 +6,7 @@ Lista de Presupuestos Interno
 @endsection
 
 @section('estilos')
-
+<link rel="stylesheet" href="{{asset('template/plugins/select2/select2.min.css')}}">
 @endsection
 
 @section('breadcrumb')
@@ -79,11 +79,17 @@ Lista de Presupuestos Interno
                         </button>
                         <h3 class="modal-title" id="my-modal-title">Editar monto de Presupuesto Interno <span class="codigo text-primary"></span> </h3>
                     </div>
-                    <input id="partida" class="form-control" type="hidden" name="id">
+                    <input class="form-control" type="hidden" name="id">
                     <div class="modal-body">
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="partida">Partida : </label>
                             <input id="partida" class="form-control" type="text" name="partida" required>
+                        </div> --}}
+                        <div class="form-group">
+                            <label for="partida">Partida : </label>
+                            <select class="form-control search-partidas" name="partida" required>
+                                <option value="" hidden>Seleccione...</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="mes">Meses : </label>
@@ -131,6 +137,7 @@ Lista de Presupuestos Interno
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
+    <script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
 
     <script src="{{ asset('js/finanzas/presupuesto_interno/lista.js') }}"></script>
 
@@ -139,6 +146,61 @@ Lista de Presupuestos Interno
         $(document).ready(function () {
 
         });
+        $('.search-partidas').select2({
+            dropdownParent: $('#modal-editar-monto-partida'),
+            placeholder: 'Seleccione una partida...',
+            language: "es",
+            ajax: {
+                url: 'buscar-partida-combo',
+                type: "post",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        searchTerm: params.term, // search term
+                        page: params.page,
+                        id_presupuesto_interno:$('[data-form="editar-monto-partida"]').find('[name="id"]').val()
+                    };
+                    // return query;
+            },
+            processResults: function (data, params) {
+                // params.page = params.page || 1;
+                return {
+                    // results: data.items,
+                    // pagination: {
+                    //     more: (params.page * 30) < data.total_count
+                    // }
+                    results: $.map(data, function (item) {
+                        return{
+                            text:item.partida+'('+item.descripcion+')',
+                            // descripcion:item.descripcion,
+                            id:item.partida
+                        }
+                     })
 
+                };
+            },
+            cache: true,
+            },
+            minimumInputLength: 1,
+            templateResult: formatRepo,
+            templateSelection: formatRepoSelection
+        });
+        function formatRepo (repo) {
+            if (!repo.id) {
+
+                return repo.text;
+            }
+            var state = $(
+                `<span>`+repo.text+`</span>`
+            );
+            console.log(state);
+            return state;
+
+        }
+
+        function formatRepoSelection (repo) {
+            return repo.partida || repo.text;
+        }
     </script>
 @endsection
