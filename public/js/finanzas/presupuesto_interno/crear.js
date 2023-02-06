@@ -1240,6 +1240,7 @@ $(document).on('submit','[data-form="guardar-costos-modal"]',function (e) {
     var partida_hijo_coto = '02',
         partida_comicion='.03',
         partida_penalidad='.04';
+
     $.each(partida_hijo.split('.'), function (index, element) {
         if (index !==0) {
             partida_hijo_coto = partida_hijo_coto+'.'+element;
@@ -1250,7 +1251,6 @@ $(document).on('submit','[data-form="guardar-costos-modal"]',function (e) {
         }
 
     });
-
     numero_partida = numero_partida[numero_partida.length-1];
 
     if (numero_partida=='01') {
@@ -1278,7 +1278,7 @@ $(document).on('submit','[data-form="guardar-costos-modal"]',function (e) {
         $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"] td[data-td="partida"] input[name="ingresos['+key+'][porcentaje_comicion]"]').val(data[3].value);
         $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"] td[data-td="partida"] input[name="ingresos['+key+'][porcentaje_penalidad]"]').val(data[4].value);
         // $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"] td[data-td="partida"] input[name="ingresos['+key+'][porcentaje_gobierno]"]').val(data[2].value)
-
+        console.log(data);
         $('input[value="'+partida_hijo_coto+'"]').closest('tr').find('td[data-td="porcentaje"]').find('span').text(data[2].value);
         $('input[value="'+partida_hijo_coto+'"]').closest('tr').find('td[data-td="porcentaje"]').find('input').val(data[2].value);
 
@@ -1313,6 +1313,7 @@ $(document).on('submit','[data-form="guardar-costos-modal"]',function (e) {
         $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"] td[data-td="partida"] input[name="ingresos['+key+'][porcentaje_privado]"]').val(data[2].value);
 
         $('input[value="'+partida_hijo_coto+'"]').closest('tr').find('td[data-td="porcentaje"]').find('span').text(data[2].value);
+        $('input[value="'+partida_hijo_coto+'"]').closest('tr').find('td[data-td="porcentaje"]').find('input').val(data[2].value);
     }
     $('tr[key="'+key+'"][data-id="'+data_id+'"][data-id-padre="'+data_id_padre+'"]').find('[data-input="partida"]').trigger('change');
 

@@ -103,6 +103,7 @@ class PresupuestoInternoController extends Controller
     {
         if ($request->tipo_ingresos || $request->tipo_gastos) {
             // return $request->gastos;exit;
+            // return $request->costos;exit;
             $presupuesto_interno_count = PresupuestoInterno::count();
             $presupuesto_interno_count = $presupuesto_interno_count +1;
             $codigo = StringHelper::leftZero(2,$presupuesto_interno_count);
@@ -272,7 +273,7 @@ class PresupuestoInternoController extends Controller
         // return PresupuestoInterno::calcularTotalPresupuestoFilas($id,2);exit;
         // return PresupuestoInterno::calcularTotalMensualColumnas($id,2,'02.01.01.01','enero');exit;
 
-        return PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($id,1,'01.01.01.01','enero');exit;
+        // return PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($id,1,'01.01.01.01','enero');exit;
 
 
         return view('finanzas.presupuesto_interno.editar', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos'));
@@ -510,5 +511,48 @@ class PresupuestoInternoController extends Controller
         }])->where('id_presupuesto_interno',$idPresupuestoIterno)->get();
         // $presupuestoInternoDetalle = PresupuestoInternoDetalle::where()->orderBy('id_hijo','asc')->get();
         return $presupuestoInterno;
+    }
+    public function editarMontoPartida(Request $request){
+         // return PresupuestoInterno::calcularTotalPresupuestoFilas($id,2);exit;
+        // return PresupuestoInterno::calcularTotalMensualColumnas($id,2,'02.01.01.01','enero');exit;
+        $mes = $request->mes;
+
+        $ingresos   = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
+        $costos     = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
+        $gastos     = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
+        if (sizeof($ingresos)>0) {
+            $presupuesto_interno_partida_modificar= PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('estado', 1)->where('partida', $request->partida)->where('id_tipo_presupuesto', 1)->first();
+            $presupuesto_interno_partida_modificar->$mes = number_format($request->monto, 2);
+            $presupuesto_interno_partida_modificar->save();
+
+            PresupuestoInterno::calcularTotalMensualColumnas($request->id,1,$request->partida,$request->mes);
+
+            PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($request->id,1,$request->partida,$request->mes);
+            $partida_costos='02';
+            foreach (explode('.',$request->partida) as $key => $value) {
+                if ($key!==0) {
+                    $partida_costos = $partida_costos.'.'.$value;
+                }
+            }
+            PresupuestoInterno::calcularTotalMensualColumnas($request->id,2,$partida_costos,$request->mes);
+
+
+        }
+        if (sizeof($gastos)>0) {
+            $presupuesto_interno_partida_modificar= PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('estado', 1)->where('partida', $request->partida)->where('id_tipo_presupuesto', 3)->first();
+            $presupuesto_interno_partida_modificar->$mes = number_format($request->monto, 2);
+            $presupuesto_interno_partida_modificar->save();
+
+            PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($request->id,3,$request->partida,$request->mes);
+            PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,$request->partida,$request->mes);
+            if ($presupuesto_interno_partida_modificar->partida === '03.01.01.01' &&$presupuesto_interno_partida_modificar->partida === '03.01.01.02' &&$presupuesto_interno_partida_modificar->partida === '03.01.01.03'  ) {
+                PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,'03.01.03.01',$request->mes);
+                PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,'03.01.02.01',$request->mes);
+            }
+
+        }
+
+
+        return response()->json(true,200);
     }
 }

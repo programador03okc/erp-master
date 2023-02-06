@@ -68,6 +68,54 @@ Lista de Presupuestos Interno
             </div>
         </div>
     </div>
+
+    <div id="modal-editar-monto-partida" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <form action="" data-form="editar-monto-partida">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title" id="my-modal-title">Editar monto de Presupuesto Interno <span class="codigo text-primary"></span> </h3>
+                    </div>
+                    <input id="partida" class="form-control" type="hidden" name="id">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="partida">Partida : </label>
+                            <input id="partida" class="form-control" type="text" name="partida" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mes">Meses : </label>
+                            <select class="form-control" name="mes" id="mes" required>
+                                <option value="" hidden>Seleccione...</option>
+                                <option value="enero">ENERO</option>
+                                <option value="febrero">FEBRERO</option>
+                                <option value="marzo">MARZO</option>
+                                <option value="abril">ABRIL</option>
+                                <option value="mayo">MAYO</option>
+                                <option value="junio">JUNIO</option>
+                                <option value="julio">JULIO</option>
+                                <option value="agosto">AGOSTO</option>
+                                <option value="setiembre">SETIEMBRE</option>
+                                <option value="octubre">OCTUBRE</option>
+                                <option value="noviembre">NOVIEMBRE</option>
+                                <option value="diciembre">DICIEMBRE</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="monto">Monto : </label>
+                            <input id="monto" class="form-control" type="number" name="monto" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> Cerrar</button>
+                        <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
