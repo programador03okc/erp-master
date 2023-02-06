@@ -506,11 +506,11 @@ class PresupuestoInternoController extends Controller
 
     public function obtenerDetallePresupuestoInterno($idPresupuestoIterno){
 
-        
+
         $presupuestoInterno= PresupuestoInterno::with(['detalle'=>function($q) use($idPresupuestoIterno){
             $q->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado','!=',7]])->orderBy('partida','asc');
         }])->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado',2]])->get();
- 
+
         $totalFilas = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,2);
         $detalleRequerimiento = PresupuestoInterno::calcularConsumidoPresupuestoFilas($idPresupuestoIterno,2);
 
@@ -550,7 +550,7 @@ class PresupuestoInternoController extends Controller
                 }
         }
 
-        
+
 
         return $presupuestoInterno;
     }
@@ -611,10 +611,13 @@ class PresupuestoInternoController extends Controller
     public function buscarPartidaCombo(Request $request){
         $presupuesto_interno_detalle=[];
         if (!empty($request->searchTerm)) {
-            $searchTerm=strtoupper($request->searchTerm);
+            $searchTerm=$request->searchTerm;
             $presupuesto_interno_detalle = PresupuestoInternoDetalle::where('estado',1);
             if (!empty($request->searchTerm)) {
-                $presupuesto_interno_detalle = $presupuesto_interno_detalle->where('partida','like','%'.$searchTerm.'%')->where('id_presupuesto_interno',$request->id_presupuesto_interno)->where('registro','2');
+                $presupuesto_interno_detalle = $presupuesto_interno_detalle->where('partida','like','%'.$searchTerm.'%')
+                ->where('id_presupuesto_interno',$request->id_presupuesto_interno)
+                ->where('registro','2')
+                ->whereNotIn('partida', ['03.01.02.01', '03.01.02.02', '03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03']);
             }
             $presupuesto_interno_detalle = $presupuesto_interno_detalle->get();
             return response()->json($presupuesto_interno_detalle);
