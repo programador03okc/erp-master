@@ -86,7 +86,7 @@ class PresupuestoInternoView{
 
         data.forEach(presupuesto => {
             html += `
-            <div id='${presupuesto.codigo}' class="panel panel-info" style="width:100%; overflow: auto;">
+            <div id='${presupuesto.codigo}' class="panel panel-primary" style="width:100%; overflow: auto;">
                 <h5 class="panel-heading handleClickaperturaPresupuesto" data-id-presupuesto-interno="${presupuesto.id_presupuesto_interno}" style="margin: 0; cursor: pointer;">
                 <i class="fas fa-chevron-right"></i>
                     &nbsp; ${presupuesto.descripcion}
@@ -139,7 +139,7 @@ class PresupuestoInternoView{
                             data-monto-total="${montoInicial}"
                             data-monto-consumido="${montoConsumido}"
                             data-monto-saldo="${montoSaldo}"
-                            >Seleccionar</button></td>
+                            ><i class="fas fa-check"></i></button></td>
                     </tr>`;
 
                     }
