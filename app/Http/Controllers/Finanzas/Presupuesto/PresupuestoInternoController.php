@@ -511,8 +511,8 @@ class PresupuestoInternoController extends Controller
             $q->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado','!=',7]])->orderBy('partida','asc');
         }])->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado',2]])->get();
  
-        $totalFilas = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,2);
-        $detalleRequerimiento = PresupuestoInterno::calcularConsumidoPresupuestoFilas($idPresupuestoIterno,2);
+        $totalFilas = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,3);
+        $detalleRequerimiento = PresupuestoInterno::calcularConsumidoPresupuestoFilas($idPresupuestoIterno,3);
 
         foreach ($presupuestoInterno as $key => $Presup) {
             foreach ($Presup['detalle'] as $keyd => $detPresup) {
