@@ -101,6 +101,9 @@ class PresupuestoInterno extends Model
         $id_hijo = $presupuesto_interno_destalle->id_hijo;
         $id_padre = $presupuesto_interno_destalle->id_padre;
         $total = 0;
+        // if ('03.01.03.01'===$partida) {
+        //     return $presupuesto_interno_destalle;exit;
+        // }
         while ($id_padre!=='0') {
             $total = 0;
             $partidas = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',$id_tipo_presupuesto)->where('estado', 1)->where('id_padre', $id_padre)->orderBy('partida')->get();
@@ -239,7 +242,7 @@ class PresupuestoInterno extends Model
                 ->where('id_tipo_presupuesto', $id_tipo_presupuesto)
                 ->first();
 
-                if ($presupuesto_interno_destalle_gastos_padre->partida.'.01' === '03.01.01.01' &&$presupuesto_interno_destalle_gastos_padre->partida.'.02' === '03.01.01.02' &&$presupuesto_interno_destalle_gastos_padre->partida.'.03' === '03.01.01.03'  ) {
+                if ($presupuesto_interno_destalle_gastos_padre->partida.'.01' === '03.01.01.01'||$presupuesto_interno_destalle_gastos_padre->partida.'.02' === '03.01.01.02' ||$presupuesto_interno_destalle_gastos_padre->partida.'.03' === '03.01.01.03'  ) {
 
                     $presupuesto_interno_01 = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('estado', 1)->where('partida', $presupuesto_interno_destalle_gastos_padre->partida.'.01')->where('id_tipo_presupuesto', $id_tipo_presupuesto)->first();
                     $presupuesto_interno_02 = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('estado', 1)->where('partida', $presupuesto_interno_destalle_gastos_padre->partida.'.02')->where('id_tipo_presupuesto', $id_tipo_presupuesto)->first();
@@ -248,13 +251,14 @@ class PresupuestoInterno extends Model
                     $total = floatval(str_replace(",", "", $presupuesto_interno_01->$mes)) + floatval(str_replace(",", "", $presupuesto_interno_02->$mes)) + floatval(str_replace(",", "", $presupuesto_interno_03->$mes));
 
 
-                    $essalud         = number_format(($total * 0.09), 0);
-                    $sctr            = number_format(($total * 0.0158), 0);
-                    $essalud_vida    = number_format(($total * 0.0127), 0);
+                    $essalud         = round(($total * 0.09), 0);
+                    $sctr            = round(($total * 0.0158), 0);
+                    $essalud_vida    = round(($total * 0.0127), 0);
 
-                    $servicios       = number_format(($total * 0.0833), 2);
-                    $gratificaciones = number_format(($total / 6), 2);
-                    $vacacione       = number_format(($total / 12), 2);
+                    $servicios       = round(($total * 0.0833), 2);
+                    $gratificaciones = round(($total / 6), 2);
+                    $vacacione       = round(($total / 12), 2);
+                    // return number_format($essalud, 2);exit;
 
                     $essalud_partida = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('estado', 1)->where('partida', '03.01.02.01')->where('id_tipo_presupuesto', $id_tipo_presupuesto)->first();
                     $essalud_partida->$mes = number_format($essalud, 2);
