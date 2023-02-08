@@ -29,13 +29,16 @@ use App\Models\Gerencial\Observaciones;
 use App\Models\Gerencial\Penalidad;
 use App\Models\Gerencial\ProgramacionPago;
 use App\Models\Gerencial\RegistroCobranza;
+use App\Models\Gerencial\RegistroCobranzaOld;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
 use App\Models\Gerencial\Vendedor;
+use App\Models\mgcp\OrdenCompra\Propia\OrdenCompraPropiaView;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use stdClass;
 use Yajra\DataTables\Facades\DataTables;
 
 class RegistroController extends Controller
@@ -43,7 +46,6 @@ class RegistroController extends Controller
     //
     public function registro()
     {
-        # code...
         $sector             = Sector::where('estado',1)->get();
         $tipo_ramite        = TipoTramite::where('estado',1)->get();
         $empresa            = DB::table('administracion.adm_empresa')
@@ -61,6 +63,7 @@ class RegistroController extends Controller
         $departamento = Departamento::get();
         return view('gerencial/cobranza/registro',compact('sector','tipo_ramite','empresa','periodo','estado_documento', 'pais', 'departamento'));
     }
+
     public function listarRegistros(Request $request)
     {
         // $data = Cobranza::select('*')->orderBy('id_cobranza', 'desc');
@@ -184,12 +187,14 @@ class RegistroController extends Controller
         $data = Cliente::select('*')->orderBy('id_cliente', 'desc');
         return DataTables::of($data)->make(true);;
     }
+
     public function prueba()
     {
         $data = Cliente::select('*')->orderBy('id_cliente', 'desc');
         return DataTables::of($data);
         // return response()->json($cobranza, 200);
     }
+
     public function nuevoCliente(Request $request)
     {
         // $cliente = Cliente::where('ruc',$request->nuevo_ruc_dni_cliente)->orWhere('nombre','like','%'.$request->nuevo_cliente.'%')->first();
@@ -273,9 +278,9 @@ class RegistroController extends Controller
             "usuario_erp" =>$cliente
         ]);
     }
+
     public function provincia($id_departamento)
     {
-
         $provincia = Provincia::where('id_dpto',$id_departamento)->get();
         if ($provincia) {
             return response()->json([
@@ -291,6 +296,7 @@ class RegistroController extends Controller
         }
 
     }
+
     public function distrito($id_provincia)
     {
         $distrito = Distrito::where('id_prov',$id_provincia)->get();
@@ -307,6 +313,7 @@ class RegistroController extends Controller
             ]);
         }
     }
+
     public function getCliente($id_cliente)
     {
         $cliente_gerencial = DB::table('gerencial.cliente')->where('estado',1)->where('id_cliente',$id_cliente)->first();
@@ -346,6 +353,7 @@ class RegistroController extends Controller
             "id_dpto"=>$id_dpto
         ]);
     }
+
     public function getFactura($factura)
     {
         $factura = explode('-',$factura);
@@ -367,10 +375,9 @@ class RegistroController extends Controller
             "data"=>$factura
         ]);
     }
+
     public function guardarRegistroCobranza(Request $request)
     {
-
-
         $data = $request;
         $empresa = DB::table('administracion.adm_empresa')->where('id_contribuyente',$request->empresa)->first();
         $cobranza = new RegistroCobranza();
@@ -451,6 +458,7 @@ class RegistroController extends Controller
             "data"=>$cobranza
         ]);
     }
+
     public function actualizarDocVentReq()
     {
         $success=false;
@@ -507,13 +515,13 @@ class RegistroController extends Controller
             "data"=>$json_obtener_listado
         ]);
     }
+
     public function listarVentasProcesas()
     {
-        # code...
     }
+
     public function getRegistro($data, $tipo)
     {
-
         $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view');
         if ($tipo==='oc') {
             $cliente_gerencial->where('requerimiento_logistico_view.nro_orden',$data);
@@ -542,6 +550,7 @@ class RegistroController extends Controller
         // ->join('almacen.doc_ven_det', 'doc_ven_det.id_doc', '=', 'doc_ven.id_doc_ven');
         return datatables($cliente_gerencial)->toJson();
     }
+
     public function selecconarRequerimiento($id_requerimiento)
     {
         $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view')
@@ -610,6 +619,7 @@ class RegistroController extends Controller
         }
 
     }
+
     public function scriptCliente()
     {
         $clientes_faltantes =array();
@@ -717,6 +727,7 @@ class RegistroController extends Controller
         }
         return response()->json($json_faltantes);
     }
+
     public function editarCliente(Request $request)
     {
         if (isset($request->id_cliente)) {
@@ -738,6 +749,7 @@ class RegistroController extends Controller
             "success"=>true,
         ]);
     }
+
     public function scriptClienteRuc()
     {
 
@@ -823,6 +835,7 @@ class RegistroController extends Controller
             "encontrados"=>$clientes_cambiados
         ]);
     }
+
     public function editarRegistro($id)
     {
         $cliente_array=array();
@@ -880,6 +893,7 @@ class RegistroController extends Controller
             "vendedor"=>$vendedor?$vendedor:[]
         ]);
     }
+
     public function modificarRegistro(Request $request)
     {
         $data=$request;
@@ -952,6 +966,7 @@ class RegistroController extends Controller
             "data"=>$data
         ]);
     }
+
     public function obtenerFase($id)
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
@@ -984,6 +999,7 @@ class RegistroController extends Controller
 
 
     }
+    
     public function guardarFase(Request $request)
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$request->id_registro_cobranza)->first();
@@ -1011,6 +1027,7 @@ class RegistroController extends Controller
             "status"=>200,
         ]);
     }
+
     public function eliminarFase(Request $request)
     {
         $cobranza_fase = CobanzaFase::find($request->id);
@@ -1030,6 +1047,7 @@ class RegistroController extends Controller
         }
 
     }
+
     public function scriptEmpresa()
     {
         // return $empresa_agil = Contribuyente::where('nro_documento',10804138582)->first();exit;
@@ -1104,6 +1122,7 @@ class RegistroController extends Controller
             // "agil"=>$empresa_agil
         ]);
     }
+
     public function scriptFase()
     {
         $cobranza_fase_id_cobranza = DB::table('gerencia_cobranza.cobranza_fase')
@@ -1135,6 +1154,7 @@ class RegistroController extends Controller
             "id"=>$array_id_conbranza
         ]);
     }
+
     public function guardarPenalidad(Request $request)
     {
 
@@ -1159,6 +1179,7 @@ class RegistroController extends Controller
             "success"=>true,
         ]);
     }
+
     public function obtenerPenalidades($id_registro_cobranza,Request $request)
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id_registro_cobranza)->first();
@@ -1206,6 +1227,7 @@ class RegistroController extends Controller
             "penalidades"=>$array_penalidades
         ]);
     }
+
     public function buscarVendedor( Request $request)
     {
         $vendedor=[];
@@ -1224,6 +1246,7 @@ class RegistroController extends Controller
             ]);
         }
     }
+
     public function eliminarRegistroCobranza($id_registro_cobranza)
     {
         $registro_cobranza = RegistroCobranza::find($id_registro_cobranza);
@@ -1234,6 +1257,7 @@ class RegistroController extends Controller
             "status"=>200
         ]);
     }
+
     public function buscarClienteSeleccionado($id)
     {
         $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$id)->where('id_cliente_gerencial_old','!=',null)->first();
@@ -1267,6 +1291,7 @@ class RegistroController extends Controller
             "old"=>$cliente_gerencial
         ]);
     }
+
     public function scriptCobranza()
     {
         $cobranzas = DB::table('gerencial.cobranza')->get();
@@ -1373,6 +1398,7 @@ class RegistroController extends Controller
             "success"=>true
         ]);
     }
+
     public function scriptEmpresaUnicos()
     {
         $registro_cobranzas = RegistroCobranza::where('estado',1)->get();
@@ -1397,6 +1423,7 @@ class RegistroController extends Controller
             "status"=>200
         ]);
     }
+
     public function scriptMatchCobranzaPenalidad()
     {
         $penalidades = Penalidad::get();
@@ -1418,6 +1445,7 @@ class RegistroController extends Controller
             "data"=>$penalidades
         ]);
     }
+
     public function exportarExcel($request)
     {
         $request = json_decode($request);
@@ -1577,6 +1605,7 @@ class RegistroController extends Controller
         return Excel::download(new CobranzasExpor($data), 'reporte_requerimientos_bienes_servicios.xlsx');
         // return response()->json($data);
     }
+
     public function scriptMatchCobranzaVendedor()
     {
         $vendedores_gerencial   = DB::table('gerencial.vendedor')->get();
@@ -1611,6 +1640,7 @@ class RegistroController extends Controller
             "no_encontrados"=>$vendedores_excluidos
         ]);
     }
+
     public function scriptEmpresaActualizacion()
     {
         $array_razon_social=array(
@@ -1787,6 +1817,7 @@ class RegistroController extends Controller
             "encontrados"=>$array_encontrados
         ]);
     }
+
     public function scriptVendedor()
     {
         $vendedores_array = array(
@@ -1947,11 +1978,13 @@ class RegistroController extends Controller
             "data"=>$array_id_vendedor
         ]);
     }
+
     public function editarPenalidad($id)
     {
         $penalidad = Penalidad::find($id);
         return response()->json($penalidad,200);
     }
+
     public function anularPenalidad(Request $request)
     {
         $penalidad = Penalidad::find($request->id);
@@ -1961,6 +1994,7 @@ class RegistroController extends Controller
 
         return response()->json($penalidades,200);
     }
+
     public function eliminarPenalidad(Request $request)
     {
         $penalidad = Penalidad::find($request->id);
@@ -1969,6 +2003,7 @@ class RegistroController extends Controller
         $penalidades = Penalidad::where('estado','!=',7)->where('tipo',$request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
         return response()->json($penalidades,200);
     }
+
     public function obtenerObservaciones(Request $request)
     {
         // return $request->all();exit;
@@ -1986,6 +2021,7 @@ class RegistroController extends Controller
         }
         return response()->json($observaciones,200);
     }
+
     public function guardarObservaciones(Request $request)
     {
         $registro_cobranza = RegistroCobranza::find($request->id);
@@ -2012,6 +2048,7 @@ class RegistroController extends Controller
         }
         return response()->json($observaciones,200);
     }
+
     public function eliminarObservaciones(Request $request)
     {
         $registro_cobranza = RegistroCobranza::find($request->id_registro_cobranza);
@@ -2033,6 +2070,7 @@ class RegistroController extends Controller
         }
         return response()->json($observaciones,200);
     }
+
     public function scriptObservacionesOC()
     {
         // $registro_cobranza = RegistroCobranza::where('estado',1)->get();
@@ -2059,5 +2097,576 @@ class RegistroController extends Controller
             $registro_cobranza->save();
         }
         return response()->json([$select],200);
+    }
+
+    public function cargarCobranzaNuevo()
+    {
+        $cobranza = RegistroCobranzaOld::all();
+        $count = 0;
+
+        foreach ($cobranza as $key) {
+            $nuevo = new RegistroCobranza();
+                $nuevo->id_empresa = $key->id_empresa;
+                $nuevo->id_sector = $key->id_sector;
+                $nuevo->id_cliente = $key->id_cliente;
+                $nuevo->id_oc = $key->id_oc;
+                $nuevo->factura = ($key->factura == 'xxx') ? null: $key->factura;
+                $nuevo->uu_ee = ($key->uu_ee == '--') ? null : $key->uu_ee;
+                $nuevo->fuente_financ = $key->fuente_financ;
+                $nuevo->ocam = null;
+                $nuevo->siaf = ($key->siaf == '--') ? null : $key->siaf;
+                $nuevo->fecha_emision = $key->fecha_emision;
+                $nuevo->fecha_recepcion = $key->fecha_recepcion;
+                $nuevo->moneda = $key->moneda;
+                $nuevo->importe = $key->importe;
+                $nuevo->id_estado_doc  = $key->id_estado_doc;
+                $nuevo->id_tipo_tramite = $key->id_tipo_tramite;
+                $nuevo->vendedor = $key->vendedor;
+                $nuevo->estado = $key->estado;
+                $nuevo->id_area = $key->id_area;
+                $nuevo->id_periodo = $key->id_periodo;
+                $nuevo->codigo_empresa = $key->codigo_empresa;
+                $nuevo->categoria = $key->categoria;
+                $nuevo->cdp = $key->cdp;
+                $nuevo->oc_fisica = $key->oc;
+                $nuevo->plazo_credito = $key->plazo_credito;
+                $nuevo->id_doc_ven = $key->id_doc_ven;
+                $nuevo->id_cliente_agil = $key->id_cliente_agil;
+                $nuevo->id_cobranza_old = $key->id_cobranza_old;
+                $nuevo->id_empresa_old = $key->id_empresa_old;
+                $nuevo->inicio_entrega = null;
+                $nuevo->fecha_entrega = null;
+                $nuevo->fecha_registro = $key->fecha_registro;
+            $nuevo->save();
+            $count++;
+        }
+        return response()->json($count, 200);
+    }
+
+    /**
+     * Script para cobranzas
+     */
+    public function cargarOrdenNuevo()
+    {
+        $cobranza = RegistroCobranza::all();
+        $count = 0;
+        foreach ($cobranza as $key) {
+            $busqueda = Cobranza::find($key->id_cobranza_old);
+            $cobranzas = RegistroCobranza::find($key->id_registro_cobranza);
+                $cobranzas->ocam = ($busqueda->ocam != null) ? $busqueda->ocam : null;
+            $cobranzas->save();
+            $count++;
+        }
+        return response()->json(array('contador' => $count), 200);
+    }
+
+    public function cargarOrdenesFaltantes($tipo)
+    {
+        $cobranza = RegistroCobranza::all();
+        $lista = $this->arrayFaltantes($tipo);
+        $count = 0;
+
+        foreach ($cobranza as $key) {
+            foreach ($lista as $valor) {
+                if ($key->id_cobranza_old == $valor->key) {
+                    $cobranzas = RegistroCobranza::find($key->id_registro_cobranza);
+                        $cobranzas->ocam = $valor->ocam;
+                    $cobranzas->save();
+                    $count++;
+                }
+            }
+        }
+        return response()->json(array('contador' => $count), 200);
+    }
+
+    public function cargarOrdenesId()
+    {
+        set_time_limit(6000);
+        $count = 0;
+        // $cobranza = RegistroCobranza::where('ocam', 'not like', '%OCAM%')
+        //                             ->where('ocam', 'not like', '%DIRECTA%')
+        //                             ->where('ocam', 'not like', '%VENTA%')
+        //                             ->where('ocam', 'not like', '%DEUDA%')->get();
+
+        // foreach ($cobranza as $key) {
+        //     $cobranzas = RegistroCobranza::find($key->id_registro_cobranza);
+        //         $cobranzas->ocam = 'OCAM-'.$key->ocam;
+        //     $cobranzas->save();
+        //     $count++;
+        // }
+
+        $cobranza = RegistroCobranza::all();
+
+        foreach ($cobranza as $key) {
+            $oc = OrdenCompraPropiaView::where('nro_orden', $key->ocam)->first();
+
+            if ($oc) {
+                $registro_cobranza = RegistroCobranza::find($key->id_registro_cobranza);
+                    $registro_cobranza->id_oc = $oc->id;
+                    $registro_cobranza->inicio_entrega = $oc->inicio_entrega;
+                    $registro_cobranza->fecha_entrega = $oc->fecha_entrega;
+                $registro_cobranza->save();
+                $count++;
+            }
+        }
+        return response()->json(array('contador' => $count), 200);
+    }
+
+    public function arrayFaltantes($tipo)
+    {
+        $matriz = [];
+        
+        if ($tipo == 'ocam') {
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3991;
+            $objetoOcam->ocam = 'OCAM-2021-1662-8-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3895;
+            $objetoOcam->ocam = 'OCAM-2021-98-131-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4052;
+            $objetoOcam->ocam = 'OCAM-2021-1376-25-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3424;
+            $objetoOcam->ocam = 'OCAM-2021-300308-97';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3378;
+            $objetoOcam->ocam = 'OCAM-2021-301537-10-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3433;
+            $objetoOcam->ocam = 'OCAM-2021-300699-16';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3504;
+            $objetoOcam->ocam = 'OCAM-2021-301694-15';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3454;
+            $objetoOcam->ocam = 'OCAM-2020-1253-587-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3400;
+            $objetoOcam->ocam = 'OCAM-2021-300682-61';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3817;
+            $objetoOcam->ocam = 'OCAM-2021-833-23-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 1119;
+            $objetoOcam->ocam = 'OCAM-2020-875-1211-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 1145;
+            $objetoOcam->ocam = 'OCAM-2020-788-451-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 1996;
+            $objetoOcam->ocam = 'OCAM-2020-1239-247-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 2687;
+            $objetoOcam->ocam = 'OCAM-2020-300423-278-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3975;
+            $objetoOcam->ocam = 'OCAM-2021-1078-15-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3442;
+            $objetoOcam->ocam = 'OCAM-2021-500256-29';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3992;
+            $objetoOcam->ocam = 'OCAM-2021-1662-8-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4053;
+            $objetoOcam->ocam = 'OCAM-2021-98-165';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3949;
+            $objetoOcam->ocam = 'OCAM-2021-300712-38-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3401;
+            $objetoOcam->ocam = 'OCAM-2021-300934-13';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3379;
+            $objetoOcam->ocam = 'OCAM-2021-1372-2';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3443;
+            $objetoOcam->ocam = 'OCAM-2021-61-1';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 2480;
+            $objetoOcam->ocam = 'OCAM-2020-201-388-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3760;
+            $objetoOcam->ocam = 'OCAM-2021-1045-45-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3976;
+            $objetoOcam->ocam = 'OCAM-2021-996-45-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3993;
+            $objetoOcam->ocam = 'OCAM-2021-1662-8-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4014;
+            $objetoOcam->ocam = 'OCAM-2021-99-35-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3380;
+            $objetoOcam->ocam = 'OCAM-2021-1345-16-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3402;
+            $objetoOcam->ocam = 'OCAM-2021-1230-36-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3456;
+            $objetoOcam->ocam = 'OCAM-2021-301270-40';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3416;
+            $objetoOcam->ocam = 'OCAM-2021-301873-4';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3425;
+            $objetoOcam->ocam = 'OCAM-2021-300308-97';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3616;
+            $objetoOcam->ocam = 'OCAM-2021-1137-17';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 2059;
+            $objetoOcam->ocam = 'OCAM-2020-301250-1658-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3897;
+            $objetoOcam->ocam = 'OCAM-2021-1406-32-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3819;
+            $objetoOcam->ocam = 'OCAM-2021-301294-63-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3876;
+            $objetoOcam->ocam = 'OCAM-2021-117-74-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3381;
+            $objetoOcam->ocam = 'OCAM-2021-1437-10-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4055;
+            $objetoOcam->ocam = 'OCAM-2021-721-138-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3440;
+            $objetoOcam->ocam = 'OCAM-2020-880-1552';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3951;
+            $objetoOcam->ocam = 'OCAM-2021-301291-21-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4123;
+            $objetoOcam->ocam = 'OCAM-2021-1190-51-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 2914;
+            $objetoOcam->ocam = 'OCAM-2020-902-2090-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4329;
+            $objetoOcam->ocam = 'OCAM-2021-830-118-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3417;
+            $objetoOcam->ocam = 'OCAM-2021-789-39';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4375;
+            $objetoOcam->ocam = 'OCAM-2021-300792-173-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3457;
+            $objetoOcam->ocam = 'OCAM-2021-301884-16';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3426;
+            $objetoOcam->ocam = 'OCAM-2021-300578-21';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3820;
+            $objetoOcam->ocam = 'OCAM-2021-300251-164-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3898;
+            $objetoOcam->ocam = 'OCAM-2021-1712-89-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3952;
+            $objetoOcam->ocam = 'OCAM-2021-301291-21-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3248;
+            $objetoOcam->ocam = 'OCAM-2020-804-1501-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3427;
+            $objetoOcam->ocam = 'OCAM-2021-300809-22';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3995;
+            $objetoOcam->ocam = 'OCAM-2021-300927-246-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3382;
+            $objetoOcam->ocam = 'OCAM-2021-300934-11-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3441;
+            $objetoOcam->ocam = 'OCAM-2021-300422-5';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4124;
+            $objetoOcam->ocam = 'OCAM-2021-301315-135-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3463;
+            $objetoOcam->ocam = 'OCAM-2021-300635-7';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4018;
+            $objetoOcam->ocam = 'OCAM-2021-23-157-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3726;
+            $objetoOcam->ocam = 'OCAM-2021-301838-238-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 2713;
+            $objetoOcam->ocam = 'OCAM-2020-300357-149-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 2764;
+            $objetoOcam->ocam = 'OCAM-2020-300423-285-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3899;
+            $objetoOcam->ocam = 'OCAM-2021-1285-24-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3763;
+            $objetoOcam->ocam = 'OCAM-2021-855-185';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3953;
+            $objetoOcam->ocam = 'OCAM-2021-300752-22-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3900;
+            $objetoOcam->ocam = 'OCAM-2021-301095-48-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3996;
+            $objetoOcam->ocam = 'OCAM-2021-804-154-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3383;
+            $objetoOcam->ocam = 'OCAM-2021-500133-17';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3822;
+            $objetoOcam->ocam = 'OCAM-2021-500256-95-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4331;
+            $objetoOcam->ocam = 'OCAM-2021-1683-96-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3464;
+            $objetoOcam->ocam = 'OCAM-2021-300741-14';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3619;
+            $objetoOcam->ocam = 'OCAM-2021-160-13';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3561;
+            $objetoOcam->ocam = 'OCAM-2021-1230-84';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4125;
+            $objetoOcam->ocam = 'OCAM-2021-301315-135-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4165;
+            $objetoOcam->ocam = 'OCAM-2021-1549-58-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 4153;
+            $objetoOcam->ocam = 'OCAM-2021-91-224-0';
+            $matriz[] = $objetoOcam;
+
+            $objetoOcam = new stdClass();
+            $objetoOcam->key = 3764;
+            $objetoOcam->ocam = 'OCAM-2021-855-187-0';
+            $matriz[] = $objetoOcam;
+        } else {
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 4122;
+            $objetoDirecta->ocam = 'DIRECTA-2021-07-014';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 1126;
+            $objetoDirecta->ocam = 'DIRECTA-2021-03-014';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 1122;
+            $objetoDirecta->ocam = 'DIRECTA-2021-05-005';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 1124;
+            $objetoDirecta->ocam = 'DIRECTA-2021-02-006';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 3435;
+            $objetoDirecta->ocam = 'DIRECTA-2021-05-001';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 3461;
+            $objetoDirecta->ocam = 'DIRECTA-2021-05-002';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 3761;
+            $objetoDirecta->ocam = 'DIRECTA-2021-03-013';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 3481;
+            $objetoDirecta->ocam = 'DIRECTA-2021-03-014';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 3672;
+            $objetoDirecta->ocam = 'DIRECTA-2021-05-005';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 3506;
+            $objetoDirecta->ocam = 'DIRECTA-2021-02-006';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 3673;
+            $objetoDirecta->ocam = 'DIRECTA-2021-05-001';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 3674;
+            $objetoDirecta->ocam = 'DIRECTA-2021-05-002';
+            $matriz[] = $objetoDirecta;
+
+            $objetoDirecta = new stdClass();
+            $objetoDirecta->key = 3483;
+            $objetoDirecta->ocam = 'DIRECTA-2021-03-013';
+            $matriz[] = $objetoDirecta;
+        }
+        return $matriz;
     }
 }

@@ -19,11 +19,11 @@ class OportunidadNotificarHelper
             $correos = OportunidadNotificarHelper::obtenerCorreos();
             foreach ($correos as $correo) {
                 // Mail::send('mgcp.oportunidad.email.nueva', ['oportunidad' => $oportunidad,
-                    'autor' => Auth::user()], function ($message) use ($correo, $oportunidad) {
-                    $message->from(config('mgcp.sistema.correo'), config('mgcp.sistema.nombre'));
-                    $message->subject('Reg. de oportunidad - ' . $oportunidad->entidad->razon_social . ' - ' . $oportunidad->oportunidad);
-                    $message->to($correo);
-                });
+                //     'autor' => Auth::user()], function ($message) use ($correo, $oportunidad) {
+                //     $message->from(config('mgcp.sistema.correo'), config('mgcp.sistema.nombre'));
+                //     $message->subject('Reg. de oportunidad - ' . $oportunidad->entidad->razon_social . ' - ' . $oportunidad->oportunidad);
+                //     $message->to($correo);
+                // });
             }
         }
         catch (\Exception $ex)
@@ -37,11 +37,11 @@ class OportunidadNotificarHelper
         $correos = OportunidadNotificarHelper::obtenerCorreos($oportunidad->id);
         foreach ($correos as $correo) {
             // Mail::send('mgcp.oportunidad.email.eliminada', ['oportunidad' => $oportunidad,
-                'autor' => Auth::user()], function ($message) use ($correo, $oportunidad) {
-                $message->from(config('mgcp.sistema.correo'), config('mgcp.sistema.nombre'));
-                $message->subject('Eliminación de oportunidad - ' . $oportunidad->entidad->razon_social . ' - ' . $oportunidad->oportunidad);
-                $message->to($correo);
-            });
+            //     'autor' => Auth::user()], function ($message) use ($correo, $oportunidad) {
+            //     $message->from(config('mgcp.sistema.correo'), config('mgcp.sistema.nombre'));
+            //     $message->subject('Eliminación de oportunidad - ' . $oportunidad->entidad->razon_social . ' - ' . $oportunidad->oportunidad);
+            //     $message->to($correo);
+            // });
         }
     }
 
@@ -51,11 +51,11 @@ class OportunidadNotificarHelper
         foreach ($correos as $correo) {
 
             // Mail::send('mgcp.oportunidad.email.otro', ['oportunidad' => $oportunidad,
-                'tipo' => $tipo, 'autor' => Auth::user(), 'data' => $data], function ($message) use ($correo, $oportunidad, $tipo) {
-                $message->from(config('mgcp.sistema.correo'), config('mgcp.sistema.nombre'));
-                $message->subject(ucwords($tipo) . ' en oportunidad ' . $oportunidad->codigo_oportunidad . ', cliente ' . $oportunidad->entidad->razon_social);
-                $message->to($correo);
-            });
+            //     'tipo' => $tipo, 'autor' => Auth::user(), 'data' => $data], function ($message) use ($correo, $oportunidad, $tipo) {
+            //     $message->from(config('mgcp.sistema.correo'), config('mgcp.sistema.nombre'));
+            //     $message->subject(ucwords($tipo) . ' en oportunidad ' . $oportunidad->codigo_oportunidad . ', cliente ' . $oportunidad->entidad->razon_social);
+            //     $message->to($correo);
+            // });
         }
     }
 

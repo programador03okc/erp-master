@@ -2352,6 +2352,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
 			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
 		});
+
+		Route::group(['as' => 'test.', 'prefix' => 'test'], function () {
+			Route::get('carga-cobranza', 'Gerencial\Cobranza\RegistroController@cargarCobranzaNuevo')->name('carga-cobranza');
+			Route::get('carga-orden', 'Gerencial\Cobranza\RegistroController@cargarOrdenNuevo')->name('carga-cobranza');
+			Route::get('carga-id-oc', 'Gerencial\Cobranza\RegistroController@cargarOrdenesId')->name('carga-id-oc');
+			Route::get('carga-ordenes-faltantes/{tipo}', 'Gerencial\Cobranza\RegistroController@cargarOrdenesFaltantes')->name('carga-ordenes-faltantes');
+		});
 	});
 	Route::get('config', function () {
 		return view('configuracion/main');
