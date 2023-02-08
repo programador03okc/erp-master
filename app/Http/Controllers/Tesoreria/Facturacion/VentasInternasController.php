@@ -8,6 +8,9 @@ use App\Http\Controllers\Almacen\Movimiento\OrdenesPendientesController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Logistica\Distribucion\OrdenesDespachoExternoController;
+use App\Models\Administracion\Documento;
+use App\Models\Administracion\Periodo;
+use App\Models\almacen\DocumentoCompra;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Distribucion\OrdenDespacho;
 use App\Models\Logistica\Orden;
@@ -94,70 +97,127 @@ class VentasInternasController extends Controller
                 $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $doc_ven->fecha_emision]])
                     ->orderBy('fecha', 'DESC')->first();
 
-                $id_doc = DB::table('almacen.doc_com')->insertGetId(
-                    [
-                        'serie' => strtoupper($doc_ven->serie),
-                        'numero' => $doc_ven->numero,
-                        'id_sede' => $detalle->first()->id_sede,
-                        'id_tp_doc' => $doc_ven->id_tp_doc,
-                        'id_proveedor' => $doc_ven->id_proveedor,
-                        'fecha_emision' => $doc_ven->fecha_emision,
-                        'fecha_vcmto' => $doc_ven->fecha_vcmto,
-                        'id_condicion' => $doc_ven->id_condicion,
-                        'credito_dias' => $doc_ven->credito_dias,
-                        'moneda' => $doc_ven->moneda,
-                        'id_condicion_softlink' => $id_condicion_softlink,
-                        'sub_total' => $doc_ven->sub_total,
-                        'total_igv' => $doc_ven->total_igv,
-                        'total_icbper' => 0,
-                        'tipo_cambio' => $tipo_cambio->venta,
-                        'porcen_igv' => $doc_ven->porcen_igv,
-                        'total_a_pagar' => $doc_ven->total_a_pagar,
-                        'usuario' => $doc_ven->usuario,
-                        'registrado_por' => $id_usuario,
-                        'estado' => 1,
-                        'fecha_registro' => $fecha,
-                    ],
-                    'id_doc_com'
-                );
+                $periodo = Periodo::where('estado', 1)->orderBy('descripcion', 'desc')->first();
 
-                $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
-                    [
-                        'codigo' => '-',
-                        'id_tipo_requerimiento' => 7,
-                        'id_usuario' => $id_usuario,
-                        'fecha_requerimiento' => $fecha,
-                        'concepto' => ('Compra segun doc ' . $doc_ven->serie . '-' . $doc_ven->numero),
-                        'id_grupo' => 1,
-                        'id_prioridad' => 1,
-                        'observacion' => 'Creado de forma automática por venta interna',
-                        'id_moneda' => 1,
-                        'id_empresa' => $doc_ven->id_empresa,
-                        'id_periodo' => 5, // ! actualizar
-                        'id_sede' => $detalle->first()->id_sede,
-                        'id_cliente' => $doc_ven->id_cliente,
-                        'tipo_cliente' => 2,
-                        'id_almacen' => $detalle->first()->id_almacen,
-                        'confirmacion_pago' => true,
-                        'fecha_entrega' => $doc_ven->fecha_emision,
-                        'tiene_transformacion' => false,
-                        'para_stock_almacen' => false,
-                        'enviar_facturacion' => false,
-                        'estado' => 9,
-                        'fecha_registro' => $fecha,
-                    ],
-                    'id_requerimiento'
-                );
+                $docCompra = new DocumentoCompra();
+                    $docCompra->serie = strtoupper($doc_ven->serie);
+                    $docCompra->numero = $doc_ven->numero;
+                    $docCompra->id_sede = $detalle->first()->id_sede;
+                    $docCompra->id_tp_doc = $doc_ven->id_tp_doc;
+                    $docCompra->id_proveedor = $doc_ven->id_proveedor;
+                    $docCompra->fecha_emision = $doc_ven->fecha_emision;
+                    $docCompra->fecha_vcmto = $doc_ven->fecha_vcmto;
+                    $docCompra->id_condicion = $doc_ven->id_condicion;
+                    $docCompra->credito_dias = $doc_ven->credito_dias;
+                    $docCompra->moneda = $doc_ven->moneda;
+                    $docCompra->id_condicion_softlink = $id_condicion_softlink;
+                    $docCompra->sub_total = $doc_ven->sub_total;
+                    $docCompra->total_igv = $doc_ven->total_igv;
+                    $docCompra->total_icbper = 0;
+                    $docCompra->tipo_cambio = $tipo_cambio->venta;
+                    $docCompra->porcen_igv = $doc_ven->porcen_igv;
+                    $docCompra->total_a_pagar = $doc_ven->total_a_pagar;
+                    $docCompra->usuario = $doc_ven->usuario;
+                    $docCompra->registrado_por = $id_usuario;
+                    $docCompra->estado = 1;
+                    $docCompra->fecha_registro = $fecha;
+                $docCompra->save();
 
-                $codigo = Requerimiento::crearCodigo(7, 1, $id_requerimiento,5); // ! actualiar periodo 
+                // $id_doc = DB::table('almacen.doc_com')->insertGetId(
+                //     [
+                //         'serie' => strtoupper($doc_ven->serie),
+                //         'numero' => $doc_ven->numero,
+                //         'id_sede' => $detalle->first()->id_sede,
+                //         'id_tp_doc' => $doc_ven->id_tp_doc,
+                //         'id_proveedor' => $doc_ven->id_proveedor,
+                //         'fecha_emision' => $doc_ven->fecha_emision,
+                //         'fecha_vcmto' => $doc_ven->fecha_vcmto,
+                //         'id_condicion' => $doc_ven->id_condicion,
+                //         'credito_dias' => $doc_ven->credito_dias,
+                //         'moneda' => $doc_ven->moneda,
+                //         'id_condicion_softlink' => $id_condicion_softlink,
+                //         'sub_total' => $doc_ven->sub_total,
+                //         'total_igv' => $doc_ven->total_igv,
+                //         'total_icbper' => 0,
+                //         'tipo_cambio' => $tipo_cambio->venta,
+                //         'porcen_igv' => $doc_ven->porcen_igv,
+                //         'total_a_pagar' => $doc_ven->total_a_pagar,
+                //         'usuario' => $doc_ven->usuario,
+                //         'registrado_por' => $id_usuario,
+                //         'estado' => 1,
+                //         'fecha_registro' => $fecha,
+                //     ],
+                //     'id_doc_com'
+                // );
+
+                $requerimiento = new Requerimiento();
+                    $requerimiento->codigo = '-';
+                    $requerimiento->id_tipo_requerimiento = 7;
+                    $requerimiento->id_usuario = $id_usuario;
+                    $requerimiento->fecha_requerimiento = $fecha;
+                    $requerimiento->concepto = ('Compra segun doc ' . $doc_ven->serie . '-' . $doc_ven->numero).' - V.Int.';
+                    $requerimiento->id_grupo = 1;
+                    $requerimiento->id_prioridad = 1;
+                    $requerimiento->observacion = 'Creado de forma automática por venta interna';
+                    $requerimiento->id_moneda = 1;
+                    $requerimiento->id_empresa = $doc_ven->id_empresa;
+                    $requerimiento->id_periodo = $periodo->id_periodo; // ! actualiza;
+                    $requerimiento->id_sede = $detalle->first()->id_sede;
+                    $requerimiento->id_cliente = $doc_ven->id_cliente;
+                    $requerimiento->tipo_cliente = 2;
+                    $requerimiento->id_almacen = $detalle->first()->id_almacen;
+                    $requerimiento->confirmacion_pago = true;
+                    $requerimiento->fecha_entrega = $doc_ven->fecha_emision;
+                    $requerimiento->tiene_transformacion = false;
+                    $requerimiento->para_stock_almacen = false;
+                    $requerimiento->enviar_facturacion = false;
+                    $requerimiento->estado = 9;
+                    $requerimiento->fecha_registro = $fecha;
+                $requerimiento->save();
+                // $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
+                //     [
+                //         'codigo' => '-',
+                //         'id_tipo_requerimiento' => 7,
+                //         'id_usuario' => $id_usuario,
+                //         'fecha_requerimiento' => $fecha,
+                //         'concepto' => ('Compra segun doc ' . $doc_ven->serie . '-' . $doc_ven->numero).' - V.Int.',
+                //         'id_grupo' => 1,
+                //         'id_prioridad' => 1,
+                //         'observacion' => 'Creado de forma automática por venta interna',
+                //         'id_moneda' => 1,
+                //         'id_empresa' => $doc_ven->id_empresa,
+                //         'id_periodo' => 5, // ! actualizar
+                //         'id_sede' => $detalle->first()->id_sede,
+                //         'id_cliente' => $doc_ven->id_cliente,
+                //         'tipo_cliente' => 2,
+                //         'id_almacen' => $detalle->first()->id_almacen,
+                //         'confirmacion_pago' => true,
+                //         'fecha_entrega' => $doc_ven->fecha_emision,
+                //         'tiene_transformacion' => false,
+                //         'para_stock_almacen' => false,
+                //         'enviar_facturacion' => false,
+                //         'estado' => 9,
+                //         'fecha_registro' => $fecha,
+                //     ],
+                //     'id_requerimiento'
+                // );
+                
+                $codigo = Requerimiento::crearCodigo(7, 1, $requerimiento->id_requerimiento, $periodo->id_periodo); // ! actualiar periodo 
+
+                $documento = new Documento();
+                    $documento->id_tp_documento = 1;
+                    $documento->codigo_doc = $requerimiento->codigo;
+                    $documento->id_doc = $requerimiento->id_requerimiento;
+                $documento->save();
+
 
                 DB::table('almacen.alm_req')
-                    ->where('id_requerimiento', $id_requerimiento)
+                    ->where('id_requerimiento', $requerimiento->id_requerimiento)
                     ->update(['codigo' => $codigo]);
 
                 $id_od = DB::table('almacen.orden_despacho')->insertGetId(
                     [
-                        "id_requerimiento" => $id_requerimiento,
+                        "id_requerimiento" => $requerimiento->id_requerimiento,
                         "id_cliente" => $doc_ven->id_cliente,
                         "codigo" => '-',
                         "direccion_destino" => 'Entrega por venta interna',
@@ -202,14 +262,15 @@ class VentasInternasController extends Controller
                         'id_tp_doc' => 2,
                         'observacion' => 'Autogenerado por venta interna',
                         'incluye_igv' => true,
-                        'estado' => 28
+                        'estado' => 28,
+                        'compra_local' => ($doc_ven->id_proveedor == 4) ? true : false,
                     ],
                     'id_orden_compra'
                 );
 
                 foreach ($detalle as $item) {
                     DB::table('almacen.doc_com_det')->insert([
-                        'id_doc' => $id_doc,
+                        'id_doc' => $docCompra->id_doc_com,
                         'id_guia_com_det' => $item->id_guia_com_det,
                         'id_item' => $item->id_item,
                         'cantidad' => $item->cantidad,
@@ -225,7 +286,7 @@ class VentasInternasController extends Controller
 
                     $id_det_req = DB::table('almacen.alm_det_req')->insertGetId(
                         [
-                            'id_requerimiento' => $id_requerimiento,
+                            'id_requerimiento' => $requerimiento->id_requerimiento,
                             'cantidad' => $item->cantidad,
                             'id_tipo_item' => 1,
                             'id_unidad_medida' => $item->id_unidad_medida,
