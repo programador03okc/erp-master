@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AreaResponsable extends Model
 {
     //
-    protected $table = 'gerencia_cobranza.area_responsable';
+    protected $table = 'cobranza.area_responsable';
     protected $primaryKey = 'id_area';
     public $timestamps = false;
     public function cobranza()

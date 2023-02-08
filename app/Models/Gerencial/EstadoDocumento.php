@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EstadoDocumento extends Model
 {
     //
-    protected $table = 'gerencia_cobranza.estado_doc';
+    protected $table = 'cobranza.estado_doc';
     protected $primaryKey = 'id_estado_doc';
     public $timestamps = false;
 

@@ -714,7 +714,7 @@ class OrdenesPendientesController extends Controller
             $id_usuario = Auth::user()->id_usuario;
             $fecha_registro = date('Y-m-d H:i:s');
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_emision);
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_emision, $request->id_almacen);
 
             if (intval($periodo_estado) == 2){
                 $tipo = 'warning';
@@ -2631,16 +2631,16 @@ class OrdenesPendientesController extends Controller
             DB::beginTransaction();
             $msj = '';
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->ingreso_fecha_emision);
+            $ing = DB::table('almacen.guia_com')
+            ->select('guia_com.fecha_almacen', 'guia_com.id_almacen')
+            ->where('id_guia', $request->id_guia_com)
+            ->first();
+
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->ingreso_fecha_emision, $ing->id_almacen);
 
             if (intval($periodo_estado) == 2){
                 $msj = 'El periodo esta cerrado. Consulte con contabilidad.';
             } else {
-
-                $ing = DB::table('almacen.guia_com')
-                    ->select('guia_com.fecha_almacen', 'guia_com.id_almacen')
-                    ->where('id_guia', $request->id_guia_com)
-                    ->first();
 
                 $fecha_anterior = $ing->fecha_almacen;
                 $id_usuario = Auth::user()->id_usuario;

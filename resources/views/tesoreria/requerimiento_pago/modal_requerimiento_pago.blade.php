@@ -35,22 +35,11 @@
                                             <h5>Tipo requerimiento</h5>
                                             <select class="form-control activation handleCheckStatusValue" name="tipo_requerimiento_pago">
                                                 @foreach ($tiposRequerimientoPago as $tipo)
-                                                    @if((in_array(Auth::user()->id_usuario,[
-                                                    4,
-                                                    24,
-                                                    99,
-                                                    54,
-                                                    22,
-                                                    32,
-                                                    77,
-                                                    3,
-                                                    17,
-                                                    27
-                                                    ])))
-                                                        <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
-                                                    @elseif(($tipo->id_requerimiento_pago_tipo != 4))
-                                                        <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
-                                                    @endif
+                                                @if((in_array(Auth::user()->id_usuario,[4,24,99,54,22,32,77,3,17,27])))
+                                                <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
+                                                @elseif(($tipo->id_requerimiento_pago_tipo != 4))
+                                                <option value="{{$tipo->id_requerimiento_pago_tipo}}">{{$tipo->descripcion}}</option>
+                                                @endif
                                                 @endforeach
                                             </select>
                                         </div>
@@ -109,7 +98,7 @@
                                         <div class="form-group">
 
                                             <h5>División*</h5>
-                                            <select class="form-control activation handleCheckStatusValue" name="division" disabled>
+                                            <select class="form-control activation handleCheckStatusValue updateDivision" name="division" disabled>
                                             </select>
                                         </div>
                                     </div>
@@ -169,6 +158,26 @@
                                         </div>
                                     </div>
 
+                                </div>
+
+                                <div class="row" id="input-group-presupuesto-interno">
+                                    <div class="col-md-12">
+                                        <h5 style="display:flex;justify-content: space-between;">Presupuesto Interno</h5>
+                                        <fieldset class="group-table">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h5>Nombre</h5>
+                                                    <div style="display:flex;">
+                                                        <input type="text" name="codigo_presupuesto_interno" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                                                        <div class="input-group-okc">
+                                                            <select class="form-control activation handleChangePresupuestoInterno" name="id_presupuesto_interno">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
                                 </div>
                             </fieldset>
                         </div>

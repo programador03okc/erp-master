@@ -7,16 +7,21 @@ class PresupuestoInternoView{
     }
 
     eventos = ()=>{
-        $('#ListaDetalleRequerimiento tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
-            let id_presupuesto_interno = document.querySelector("form[id='form-requerimiento'] select[name='id_presupuesto_interno']").value;
+
+        $('body').on("change", "select.handleChangePresupuestoInterno", (e) => {
+            this.seleccionarPresupuestoInterno(e.currentTarget);
+        });
+
+        $('tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
+            let id_presupuesto_interno = document.querySelector("select[name='id_presupuesto_interno']").value;
             if(id_presupuesto_interno>0){
                 this.cargarPresupuestoDetalle(id_presupuesto_interno);
             }else{
-                Swal.fire(
-                    '',
-                    'No se puedo seleccionar el id de presupuesto para obtener su detalle, vuelva a intentar seleccionar un presupuesto interno.',
-                    'warning'
-                );
+                // Swal.fire(
+                //     '',
+                //     'No se puedo seleccionar el id de presupuesto para obtener su detalle, vuelva a intentar seleccionar un presupuesto interno.',
+                //     'warning'
+                // );
             }
         });
 
@@ -77,11 +82,11 @@ class PresupuestoInternoView{
     construirListaDetallePrespuestoInterno(data){
         console.log(data);
 
-        let html = '';
+        let html='';
 
         data.forEach(presupuesto => {
             html += `
-            <div id='${presupuesto.codigo}' class="panel panel-info" style="width:100%; overflow: auto;">
+            <div id='${presupuesto.codigo}' class="panel panel-primary" style="width:100%; overflow: auto;">
                 <h5 class="panel-heading handleClickaperturaPresupuesto" data-id-presupuesto-interno="${presupuesto.id_presupuesto_interno}" style="margin: 0; cursor: pointer;">
                 <i class="fas fa-chevron-right"></i>
                     &nbsp; ${presupuesto.descripcion}
@@ -91,43 +96,50 @@ class PresupuestoInternoView{
                         <tbody>
             `;
 
-            let sumaMonto = 0; 
+            
+            html += `
+            <tr>
+            <td><strong>PARTIDA</strong></td>
+            <td><strong>DESCRIPCIÓN</strong></td>
+            <td style="background-color: #ddeafb;"><strong>INICIAL</strong></td>
+            <td style="background-color: #fbdddd;"><strong>CONSUMIDO</strong></td>
+            <td style="background-color: #e5fbdd;"><strong>SALDO</strong></td>
+            </tr> `;
+            let montoInicial = 0; 
+            let montoConsumido = 0; 
+            let montoSaldo = 0; 
             presupuesto['detalle'].forEach(detalle => {
                 // if (detalle.id_presupuesto_interno == presupuesto.id_presupuesto_interno) {
+                    montoInicial=$.number((parseFloat(detalle.monto_inicial)),2,".",",");
+                    montoConsumido=$.number((parseFloat(detalle.monto_consumido)),2,".",",");
+                    montoSaldo=$.number((parseFloat(detalle.monto_saldo)),2,".",",");
 
                     if(detalle.registro==1){
 
-                        sumaMonto=$.number((parseFloat(detalle.enero.replace(",",""))
-                        +parseFloat(detalle.febrero.replace(",",""))
-                        +parseFloat(detalle.marzo.replace(",",""))
-                        +parseFloat(detalle.abril.replace(",",""))
-                        +parseFloat(detalle.mayo.replace(",",""))
-                        +parseFloat(detalle.junio.replace(",",""))
-                        +parseFloat(detalle.julio.replace(",",""))
-                        +parseFloat(detalle.agosto.replace(",",""))
-                        +parseFloat(detalle.setiembre.replace(",",""))
-                        +parseFloat(detalle.octubre.replace(",",""))
-                        +parseFloat(detalle.noviembre.replace(",",""))
-                        +parseFloat(detalle.diciembre.replace(",","")))
-                        ,2,".",",");
 
                         html += `
                         <tr id="com-${detalle.id_presupuesto_interno_detalle}">
                         <td><strong>${detalle.partida}</strong></td>
                         <td><strong>${detalle.descripcion}</strong></td>
-                        <td class="right" style="text-align:right;" ><strong>S/${sumaMonto}</strong></td>
+                        <td class="right" style="text-align:right; background-color: #ddeafb;" ><strong>S/${montoInicial}</strong></td>
+                        <td class="right" style="text-align:right; background-color: #fbdddd;" ><strong>S/${montoConsumido}</strong></td>
+                        <td class="right" style="text-align:right; background-color: #e5fbdd;" ><strong>S/${montoSaldo}</strong></td>
                         </tr> `;
                     }else{
                         html += `<tr id="par-${detalle.id_presupuesto_interno_detalle}">
                         <td style="width:15%; text-align:left;" name="partida">${detalle.partida}</td>
                         <td style="width:75%; text-align:left;" name="descripcion">${detalle.descripcion}</td>
-                        <td style="width:15%; text-align:right;" name="importe_total" class="right" >S/${sumaMonto}</td>
+                        <td style="width:15%; text-align:right; background-color: #ddeafb;" name="monto_total" class="right" >S/${montoInicial}</td>
+                        <td style="width:15%; text-align:right; background-color: #fbdddd;" name="monto_consumido" class="right" >S/${montoConsumido}</td>
+                        <td style="width:15%; text-align:right; background-color: #e5fbdd;" name="monto_saldo" class="right" >S/${montoSaldo}</td>
                         <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs handleClickSelectDetallePresupuesto" 
                             data-id-presupuesto-interno-detalle="${detalle.id_presupuesto_interno_detalle}"
                             data-partida="${detalle.partida}"
                             data-descripcion="${detalle.descripcion}"
-                            data-monto-total="${sumaMonto}"
-                            >Seleccionar</button></td>
+                            data-monto-total="${montoInicial}"
+                            data-monto-consumido="${montoConsumido}"
+                            data-monto-saldo="${montoSaldo}"
+                            ><i class="fas fa-check"></i></button></td>
                     </tr>`;
 
                     }
@@ -168,5 +180,55 @@ class PresupuestoInternoView{
         } else {
             obj.currentTarget.children[0].classList.replace('fa-chevron-down', 'fa-chevron-right')
         }
+    }
+
+
+
+    llenarComboPresupuestoInterno(idGrupo,idArea){
+        this.model.comboPresupuestoInterno(idGrupo, idArea).then((res) => {
+            // console.log(res);
+            let selectElement = document.querySelector("select[name='id_presupuesto_interno']");
+            $("input[name='codigo_presupuesto_interno']").val("");
+
+
+            if (selectElement.options.length > 0) {
+                let i, L = selectElement.options.length - 1;
+                for (i = L; i >= 0; i--) {
+                    selectElement.remove(i);
+                }
+            }
+            
+            let optionDefault = document.createElement("option");
+            optionDefault.text = "selecciona un presupuesto interno";
+            optionDefault.value = "";
+            optionDefault.setAttribute('data-codigo', "");
+            optionDefault.setAttribute('data-id-grupo', "");
+            optionDefault.setAttribute('data-id-area', "");
+            selectElement.add(optionDefault);
+
+            res.forEach(element => {
+                let option = document.createElement("option");
+                option.text = element.descripcion;
+                option.value = element.id_presupuesto_interno;
+                option.setAttribute('data-codigo', element.codigo);
+                option.setAttribute('data-id-grupo', element.id_grupo);
+                option.setAttribute('data-id-area', element.id_area);
+                selectElement.add(option);
+            });
+
+        }).catch(function (err) {
+            console.log(err)
+        });
+    }
+
+    seleccionarPresupuestoInterno(obj){
+        const codigoPresupuestoInterno=  obj.options[obj.selectedIndex].dataset.codigo;
+        $("input[name='codigo_presupuesto_interno']").val(codigoPresupuestoInterno);
+        this.ocultarOpcionCentroDeCosto();
+    }
+
+    ocultarOpcionCentroDeCosto(){
+        $("button[name=centroCostos]").addClass("oculto");
+        $("p[class=descripcion-centro-costo]").attr("hidden",true);
     }
 }

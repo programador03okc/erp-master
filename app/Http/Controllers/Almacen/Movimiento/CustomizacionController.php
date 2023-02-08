@@ -278,7 +278,7 @@ class CustomizacionController extends Controller
             $tipo = '';
             $customizacion = null;
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_proceso);
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_proceso, $request->id_almacen);
 
             if (intval($periodo_estado) == 2){
                 $mensaje = 'El periodo esta cerrado. Consulte con contabilidad.';
@@ -424,7 +424,7 @@ class CustomizacionController extends Controller
             $tipo = '';
             $customizacion = null;
 
-            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_proceso);
+            $periodo_estado = CierreAperturaController::consultarPeriodo($request->fecha_proceso, $request->id_almacen);
 
             if (intval($periodo_estado) == 2){
                 $mensaje = 'El periodo esta cerrado. Consulte con contabilidad.';

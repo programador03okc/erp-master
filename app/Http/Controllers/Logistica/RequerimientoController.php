@@ -348,7 +348,7 @@ class RequerimientoController extends Controller
             ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
             ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id', '=', 'alm_req.id_cc')
             ->leftJoin('cas.incidencia', 'incidencia.id_incidencia', '=', 'alm_req.id_incidencia')
-            ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno_id', '=', 'alm_req.id_presupuesto_interno_id')
+            ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
 
 
             ->select(
@@ -524,6 +524,8 @@ class RequerimientoController extends Controller
                     'trabajador_id' => $data->trabajador_id,
                     'division' => $data->division,
                     'nombre_trabajador' => $data->nombre_trabajador,
+                    'codigo_presupuesto_interno' => $data->codigo_presupuesto_interno,
+                    'descripcion_presupuesto_interno' => $data->descripcion_presupuesto_interno,
                     'adjuntos' => []
 
                 ];
@@ -3887,7 +3889,7 @@ class RequerimientoController extends Controller
                 <tr>
                     <td class="subtitle">Presupuesto</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop"></td>
+                    <td class="verticalTop">'. $requerimiento['requerimiento'][0]['codigo_presupuesto_interno'] . ' - ' . $requerimiento['requerimiento'][0]['descripcion_presupuesto_interno'] .'</td>
                 </tr>
                 <tr>
                     <td class="subtitle">Observación</td>
