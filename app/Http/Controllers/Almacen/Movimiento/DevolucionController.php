@@ -32,6 +32,7 @@ class DevolucionController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos, $value->id_acceso);
         }
+        // return $array_accesos;exit;
         return view('almacen/devoluciones/devolucion', compact(
             'almacenes',
             'empresas',
@@ -219,7 +220,7 @@ class DevolucionController extends Controller
                 'mov_alm.estado',
                 DB::raw("(concat(guia_ven.serie,'-',guia_ven.numero) ) as serie_numero_guia"),
                 'adm_contri.razon_social',
-                DB::raw("(select concat(dv.serie,'-', dv.numero) from almacen.doc_ven as dv 
+                DB::raw("(select concat(dv.serie,'-', dv.numero) from almacen.doc_ven as dv
                 inner join almacen.doc_ven_det as d on(
                     d.id_doc=dv.id_doc_ven)
                 inner join almacen.guia_ven_det as g on(
@@ -246,7 +247,7 @@ class DevolucionController extends Controller
                 'mov_alm.estado',
                 DB::raw("(concat(guia_com.serie,'-',guia_com.numero) ) as serie_numero_guia"),
                 'adm_contri.razon_social',
-                DB::raw("(select concat(dc.serie,'-', dc.numero) from almacen.doc_com as dc 
+                DB::raw("(select concat(dc.serie,'-', dc.numero) from almacen.doc_com as dc
                 inner join almacen.doc_com_det as d on(
                     d.id_doc=dc.id_doc_com)
                 inner join almacen.guia_com_det as g on(
@@ -869,7 +870,7 @@ class DevolucionController extends Controller
                 'adm_contri.id_contribuyente',
                 'adm_contri.razon_social',
                 'alm_almacen.descripcion as almacen_descripcion',
-                DB::raw("(select concat(dv.serie,'-', dv.numero) from almacen.doc_ven as dv 
+                DB::raw("(select concat(dv.serie,'-', dv.numero) from almacen.doc_ven as dv
                 inner join almacen.doc_ven_det as d on(
                 d.id_doc=dv.id_doc_ven)
                 inner join almacen.guia_ven_det as g on(
@@ -902,7 +903,7 @@ class DevolucionController extends Controller
                 'adm_contri.id_contribuyente',
                 'adm_contri.razon_social',
                 'alm_almacen.descripcion as almacen_descripcion',
-                DB::raw("(select concat(dc.serie,'-', dc.numero) from almacen.doc_com as dc 
+                DB::raw("(select concat(dc.serie,'-', dc.numero) from almacen.doc_com as dc
                 inner join almacen.doc_com_det as d on(
                 d.id_doc=dc.id_doc_com)
                 inner join almacen.guia_com_det as g on(
