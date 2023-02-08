@@ -262,7 +262,8 @@ class VentasInternasController extends Controller
                         'id_tp_doc' => 2,
                         'observacion' => 'Autogenerado por venta interna',
                         'incluye_igv' => true,
-                        'estado' => 28
+                        'estado' => 28,
+                        'compra_local' => ($doc_ven->id_proveedor == 4) ? true : false,
                     ],
                     'id_orden_compra'
                 );
