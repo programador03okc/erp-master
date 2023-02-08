@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Logistica\Distribucion\OrdenesDespachoExternoController;
 use App\Models\Administracion\Documento;
+use App\Models\Administracion\Periodo;
 use App\Models\almacen\DocumentoCompra;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Distribucion\OrdenDespacho;
@@ -96,6 +97,8 @@ class VentasInternasController extends Controller
                 $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $doc_ven->fecha_emision]])
                     ->orderBy('fecha', 'DESC')->first();
 
+                $periodo = Periodo::where('estado', 1)->orderBy('descripcion', 'desc')->first();
+
                 $docCompra = new DocumentoCompra();
                     $docCompra->serie = strtoupper($doc_ven->serie);
                     $docCompra->numero = $doc_ven->numero;
@@ -158,7 +161,7 @@ class VentasInternasController extends Controller
                     $requerimiento->observacion = 'Creado de forma automática por venta interna';
                     $requerimiento->id_moneda = 1;
                     $requerimiento->id_empresa = $doc_ven->id_empresa;
-                    $requerimiento->id_periodo = 5; // ! actualiza;
+                    $requerimiento->id_periodo = $periodo->id_periodo; // ! actualiza;
                     $requerimiento->id_sede = $detalle->first()->id_sede;
                     $requerimiento->id_cliente = $doc_ven->id_cliente;
                     $requerimiento->tipo_cliente = 2;
@@ -198,6 +201,8 @@ class VentasInternasController extends Controller
                 //     ],
                 //     'id_requerimiento'
                 // );
+                
+                $codigo = Requerimiento::crearCodigo(7, 1, $requerimiento->id_requerimiento, $periodo->id_periodo); // ! actualiar periodo 
 
                 $documento = new Documento();
                     $documento->id_tp_documento = 1;
@@ -205,7 +210,6 @@ class VentasInternasController extends Controller
                     $documento->id_doc = $requerimiento->id_requerimiento;
                 $documento->save();
 
-                $codigo = Requerimiento::crearCodigo(7, 1, $requerimiento->id_requerimiento, 5); // ! actualiar periodo 
 
                 DB::table('almacen.alm_req')
                     ->where('id_requerimiento', $requerimiento->id_requerimiento)
