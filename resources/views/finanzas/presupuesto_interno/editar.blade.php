@@ -171,6 +171,7 @@ Presupuesto Interno
                                         $elemento_array ;
                                     @endphp
                                     @foreach ($ingresos as $item)
+
                                         @php
                                             $array = explode(".", $item->partida);
                                             $id=rand();
@@ -239,14 +240,16 @@ Presupuesto Interno
 
                                             }
                                         @endphp
+
                                         <input class="form-control" type="hidden" name="" value="{{$numero_partida}}">
                                         {{-- <input class="form-control" type="hidden" name="" value="{{$partida_hijo}}"> --}}
-
+                                    <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="ingresos[{{$input_key}}][id_presupuesto_interno_detalle]" class="form-control input-sm">
                                     <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"
 
                                         {{ (sizeof($array)===2?'class=text-primary':'') }}
                                         {{ ($item->registro==='2'?'class=bg-danger':'') }}
                                         >
+
                                         <td data-td="partida">
 
                                             <input type="hidden" value="{{$item->partida}}" name="ingresos[{{$input_key}}][partida]" class="form-control input-sm">
@@ -637,15 +640,18 @@ Presupuesto Interno
                                     </thead>
                                     <tbody data-table-presupuesto="ingreso">
                                         @foreach ($costos as $item)
+
                                         @php
                                             $array = explode(".", $item->partida);
                                             $id=rand();
                                             $id_padre=rand();
                                             $input_key=rand();
                                         @endphp
+                                    <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="costos[{{$input_key}}][id_presupuesto_interno_detalle]" class="form-control input-sm">
                                     <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"
                                         {{ (sizeof($array)===2?'class=text-primary':'') }}
                                         {{ ($item->registro==='2'?'class=bg-danger':'') }}>
+
                                         <td data-td="partida">
                                             <input type="hidden" value="{{$item->partida}}" name="costos[{{$input_key}}][partida]" class="form-control input-sm">
 
@@ -1044,10 +1050,12 @@ Presupuesto Interno
                                         $array_excluidos = array('03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03');
                                         $partida_hidden = in_array($item->partida, $array_excluidos);
                                     @endphp
+                                <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="gastos[{{$input_key}}][id_presupuesto_interno_detalle]" class="form-control input-sm">
                                 <input type="hidden" name="" value="{{$partida_hidden}}">
                                 <tr key="{{$input_key}}" data-nivel="{{sizeof($array)}}" data-partida="{{$item->partida}}" data-id="{{$item->id_hijo}}" data-id-padre="{{$item->id_padre}}"
                                     {{ sizeof($array)===2?'class=text-primary':'' }}
                                     {{ ($item->registro==='2'?'class=bg-danger':'') }}>
+
                                     <td data-td="partida">
                                         <input type="hidden" value="{{$item->partida}}" name="gastos[{{$input_key}}][partida]" class="form-control input-sm">
 

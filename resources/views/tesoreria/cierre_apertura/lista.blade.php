@@ -31,8 +31,24 @@
             
             <div class="row" style="padding-top:10px;">
                 <div class="col-md-12">
-                    <button id="btn_nuevo" class="btn btn-success" onClick="openCierreApertura();">Nuevo cierre / apertura</button>
-                    <button id="btn_autogenerar" class="btn btn-primary" onClick="autogenerarPeriodos();">Autogenerar Periodos</button>
+                    <div style="display: flex;width: 70%;" class="btn-group " data-toggle="buttons">
+                        <button id="btn_nuevo" class="btn btn-success" onClick="openCierreApertura();">Nuevo cierre / apertura</button>
+                        <button id="btn_autogenerar" class="btn btn-primary" onClick="autogenerarPeriodos();">Autogenerar Periodos</button>
+                        {{-- <form id="form-cierre-anual" style="display: flex"> --}}
+                            <select class="form-control" name="anio_lista" style="width: 350px;">
+                                @foreach ($anios as $a)
+                                <option value="{{$a->anio}}">{{$a->anio}}</option>
+                                @endforeach
+                            </select>
+                            <select class="form-control" name="id_empresa_lista">
+                                <option value="0" selected>Todas las empresas</option>
+                                @foreach ($empresas as $emp)
+                                <option value="{{$emp->id_empresa}}">{{$emp->razon_social}}</option>
+                                @endforeach
+                            </select>
+                            <button id="btn_cierre_anual" class="btn btn-info shadow-none" onClick="guardarCierreAnual();">Cierre Anual</button>
+                        {{-- </form> --}}
+                    </div>
                 
                     <table class="mytable table table-condensed table-bordered table-okc-view"
                         id="listaPeriodos" style="width:100%;">
@@ -133,7 +149,33 @@
                 });
                 return false;
             });
+            
         });
+        function guardarCierreAnual(){
+                var data = 'anio='+$('[name=anio_lista]').val()+
+                '&id_empresa='+$('[name=id_empresa_lista]').val();
+                console.log(data);
+                $('#btn_cierre_anual').prop('disabled', 'true');
 
+                $.ajax({
+                    type: "POST",
+                    url: "guardarCierreAnual",
+                    data: data,
+                    dataType: "JSON",
+                    success: function (response) {
+                        console.log(response);
+                        if (response.tipo == 'success') {
+                            $('#listaPeriodos').DataTable().ajax.reload(null, false);
+                            $('#btn_cierre_anual').removeAttr("disabled");
+                        }
+                        Util.notify(response.tipo, response.mensaje);
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+                
+            }
     </script>
 @endsection

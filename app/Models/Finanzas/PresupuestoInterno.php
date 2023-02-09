@@ -316,4 +316,78 @@ class PresupuestoInterno extends Model
         return $detalleRequerimientoPartidaConsumidaList;
     }
 
+    public static function saldoPartida($id_presupuesto_interno,$numero_mes='01',$nombre_mes,$monto,$partida)
+    {
+        $monto = floatval(str_replace(",", "", $monto));
+        $respuesta=true;
+
+
+        $presupuesto_interno_destalle_gastos_hijo = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)
+        ->where('estado', 1)
+        ->where('id_tipo_presupuesto', 3)
+        ->where('partida', $partida)
+        ->first();
+        $monto_detalle = floatval(str_replace(",", "", $presupuesto_interno_destalle_gastos_hijo->$nombre_mes));
+        if ($monto > $monto_detalle) {
+            $respuesta=false;
+        }
+
+        return $respuesta;
+    }
+    public static function cierreMensual($id_tipo_presupuesto_interno,$numero_mes='01',$nombre_mes)
+    {
+        $array_requerimiento_detalle = array();
+        $array_id_presupuesto_interno = array();
+        $requerimiento = Requerimiento::where('estado','!=',7)
+        ->where('id_presupuesto_interno','!=',null)
+        ->whereMonth('fecha_registro',$numero_mes)
+        ->get();
+        foreach ($requerimiento as $key => $value) {
+            $value->detalle_requerimiento = DetalleRequerimiento::where('id_requerimiento',$value->id_requerimiento)
+            ->where('estado','!=',7)
+            ->get();
+            foreach (DetalleRequerimiento::where('id_requerimiento',$value->id_requerimiento)->where('estado','!=',7)->get() as $key_detalle => $value_detalle) {
+                $value_detalle->id_presupuesto_interno = $value->id_presupuesto_interno;
+                array_push($array_requerimiento_detalle,$value_detalle);
+            }
+
+            if (!in_array($value->id_presupuesto_interno, $array_id_presupuesto_interno)) {
+                array_push($array_id_presupuesto_interno,$value->id_presupuesto_interno);
+            }
+
+        }
+        $total_requerimiento = 0;
+        $array_saldos = array();
+        foreach ($array_id_presupuesto_interno as $key => $value) {
+            $total_requerimiento = 0;
+            foreach ($array_requerimiento_detalle as $key_req_det => $value_req_det) {
+                if ($value_req_det->id_presupuesto_interno === $value) {
+                    $total_requerimiento = $total_requerimiento + $value_req_det->subtotal;
+                }
+            }
+            $presupuesto_interno_detalle = PresupuestoInternoDetalle::where('estado',1)
+            ->where('id_presupuesto_interno',$value)
+            ->where('id_padre','0')
+            ->where('id_tipo_presupuesto',$id_tipo_presupuesto_interno)
+            ->first();
+            $monto_mensual = floatval(str_replace(",", "", $presupuesto_interno_detalle->$nombre_mes));
+
+            $saldo_mensual = $monto_mensual - $total_requerimiento;
+            array_push($array_saldos,$total_requerimiento);
+        }
+        $total_requerimientos  = 0;
+        $array_partidas_detalle = array();
+
+        // foreach ($array_requerimiento_detalle as $key => $value){
+        //     $total_requerimientos = $total_requerimientos + $value->subtotal;
+        //     array_push($array_partidas_detalle,$value->partida);
+        // }
+
+        // $partida_mensual = PresupuestoInternoDetalle::where('estado',1)
+        // ->where('id_presupuesto_interno',$id_presupuesto_interno)
+        // ->where('id_padre',0)
+        // ->first();
+
+        return $array_saldos;exit;
+    }
 }

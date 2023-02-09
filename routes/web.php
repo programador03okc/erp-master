@@ -604,6 +604,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'requerimiento.', 'prefix' => 'requerimiento'], function () {
 
 			Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function () {
+                // prueba de presupuestos
+				Route::get('cierre-mes', 'Logistica\RequerimientoController@cierreMes');
+				// Route::get('calcular-saldo', 'Logistica\RequerimientoController@calcularSaldo');
+                // -----
 				Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
 				Route::get('mostrar/{idRequerimiento?}', 'Logistica\RequerimientoController@mostrar')->name('mostrar');
 				// Route::get('index/{idRequerimiento?}', 'Logistica\RequerimientoController@index')->name('index');
@@ -2182,6 +2186,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('mostrarAlmacenesPorSede/{id}', 'Tesoreria\CierreAperturaController@mostrarAlmacenesPorSede')->name('mostrar-almacenes-sede');
 			Route::post('guardar', 'Tesoreria\CierreAperturaController@guardarAccion')->name('guardar');
 			Route::post('guardarVarios', 'Tesoreria\CierreAperturaController@guardarVarios')->name('guardarVarios');
+			Route::post('guardarCierreAnual', 'Tesoreria\CierreAperturaController@guardarCierreAnual')->name('guardarCierreAnual');
 			Route::get('cargarMeses/{id}', 'Tesoreria\CierreAperturaController@cargarMeses');
 			Route::get('listaHistorialAcciones/{id}', 'Tesoreria\CierreAperturaController@listaHistorialAcciones');
 			Route::get('consultarPeriodo/{fec}/{id}', 'Tesoreria\CierreAperturaController@consultarPeriodo');

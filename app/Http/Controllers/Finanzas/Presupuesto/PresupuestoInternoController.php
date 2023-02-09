@@ -288,7 +288,7 @@ class PresupuestoInternoController extends Controller
         $presupuesto_interno->id_grupo              = $request->id_grupo;
         $presupuesto_interno->id_area               = $request->id_area;
         // $presupuesto_interno->fecha_registro        = date('Y-m-d H:i:s');
-        $presupuesto_interno->estado                = 1;
+        // $presupuesto_interno->estado                = 1;
         $presupuesto_interno->id_moneda             = $request->id_moneda;
         $presupuesto_interno->gastos                = $request->tipo_gastos;
         $presupuesto_interno->ingresos              = $request->tipo_ingresos;
@@ -300,12 +300,12 @@ class PresupuestoInternoController extends Controller
         // $presupuesto_interno = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id_presupuesto_interno)->where('mes',$request->mes)->where('id_tipo_presupuesto',1)->first();
         if ($request->tipo_ingresos==='1') {
 
-            PresupuestoInternoDetalle::where('estado', 1)
-            ->where('id_tipo_presupuesto', 1)
-            ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
-            ->update(['estado' => 7]);
+            // PresupuestoInternoDetalle::where('estado', 1)
+            // ->where('id_tipo_presupuesto', 1)
+            // ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
+            // ->update(['estado' => 7]);
             foreach ($request->ingresos as $key => $value) {
-                $ingresos = new PresupuestoInternoDetalle();
+                $ingresos = PresupuestoInternoDetalle::find($value['id_presupuesto_interno_detalle']);
                 $ingresos->partida                  = $value['partida'];
                 $ingresos->descripcion              = $value['descripcion'];
                 $ingresos->id_padre                 = $value['id_padre'];
@@ -317,7 +317,7 @@ class PresupuestoInternoController extends Controller
                 $ingresos->id_grupo                 = $request->id_grupo;
                 $ingresos->id_area                  = $request->id_area;
                 $ingresos->fecha_registro           = date('Y-m-d H:i:s');
-                $ingresos->estado                   = 1;
+                // $ingresos->estado                   = 1;
 
                 $ingresos->registro                 = $value['registro'];
 
@@ -342,12 +342,12 @@ class PresupuestoInternoController extends Controller
 
                 $ingresos->save();
             }
-            PresupuestoInternoDetalle::where('estado', 1)
-            ->where('id_tipo_presupuesto', 2)
-            ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
-            ->update(['estado' => 7]);
+            // PresupuestoInternoDetalle::where('estado', 1)
+            // ->where('id_tipo_presupuesto', 2)
+            // ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
+            // ->update(['estado' => 7]);
             foreach ($request->costos as $key => $value) {
-                $costos = new PresupuestoInternoDetalle();
+                $costos = PresupuestoInternoDetalle::find($value['id_presupuesto_interno_detalle']);
                 $costos->partida                  = $value['partida'];
                 $costos->descripcion              = $value['descripcion'];
                 $costos->id_padre                 = $value['id_padre'];
@@ -359,7 +359,7 @@ class PresupuestoInternoController extends Controller
                 $costos->id_grupo                 = $request->id_grupo;
                 $costos->id_area                  = $request->id_area;
                 $costos->fecha_registro           = date('Y-m-d H:i:s');
-                $costos->estado                   = 1;
+                // $costos->estado                   = 1;
                 $costos->registro                 = $value['registro'];
 
                 $costos->enero                    = $value['enero'];
@@ -385,12 +385,12 @@ class PresupuestoInternoController extends Controller
             }
         }
         if ($request->tipo_gastos==='3') {
-            PresupuestoInternoDetalle::where('estado', 1)
-            ->where('id_tipo_presupuesto', 3)
-            ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
-            ->update(['estado' => 7]);
+            // PresupuestoInternoDetalle::where('estado', 1)
+            // ->where('id_tipo_presupuesto', 3)
+            // ->where('id_presupuesto_interno', $presupuesto_interno->id_presupuesto_interno)
+            // ->update(['estado' => 7]);
             foreach ($request->gastos as $key => $value) {
-                $gastos = new PresupuestoInternoDetalle();
+                $gastos = PresupuestoInternoDetalle::find($value['id_presupuesto_interno_detalle']);
                 $gastos->partida                  = $value['partida'];
                 $gastos->descripcion              = $value['descripcion'];
                 $gastos->id_padre                 = $value['id_padre'];
@@ -416,7 +416,7 @@ class PresupuestoInternoController extends Controller
                 $gastos->octubre                  = $value['octubre'];
                 $gastos->noviembre                = $value['noviembre'];
                 $gastos->diciembre                = $value['diciembre'];
-                $gastos->estado                   = 1;
+                // $gastos->estado                   = 1;
 
                 $gastos->porcentaje_gobierno      = $value['porcentaje_gobierno'];
                 $gastos->porcentaje_privado       = $value['porcentaje_privado'];
@@ -510,7 +510,7 @@ class PresupuestoInternoController extends Controller
         $presupuestoInterno= PresupuestoInterno::with(['detalle'=>function($q) use($idPresupuestoIterno){
             $q->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado','!=',7]])->orderBy('partida','asc');
         }])->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado',2]])->get();
- 
+
         $totalFilas = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,3); // para requerimiento enviar 3= gastos
         $detalleRequerimiento = PresupuestoInterno::calcularConsumidoPresupuestoFilas($idPresupuestoIterno,3); // para requerimiento enviar 3= gastos
 
