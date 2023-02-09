@@ -2173,6 +2173,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('mostrarAlmacenesPorSede/{id}', 'Tesoreria\CierreAperturaController@mostrarAlmacenesPorSede')->name('mostrar-almacenes-sede');
 			Route::post('guardar', 'Tesoreria\CierreAperturaController@guardarAccion')->name('guardar');
 			Route::post('guardarVarios', 'Tesoreria\CierreAperturaController@guardarVarios')->name('guardarVarios');
+			Route::post('guardarCierreAnual', 'Tesoreria\CierreAperturaController@guardarCierreAnual')->name('guardarCierreAnual');
 			Route::get('cargarMeses/{id}', 'Tesoreria\CierreAperturaController@cargarMeses');
 			Route::get('listaHistorialAcciones/{id}', 'Tesoreria\CierreAperturaController@listaHistorialAcciones');
 			Route::get('consultarPeriodo/{fec}/{id}', 'Tesoreria\CierreAperturaController@consultarPeriodo');

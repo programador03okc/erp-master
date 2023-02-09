@@ -186,6 +186,53 @@ class CierreAperturaController extends Controller
         }
     }
 
+    
+    public function guardarCierreAnual(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $id_usuario = Auth::user()->id_usuario;
+
+            $periodos = DB::table('contabilidad.periodo')
+            ->join('almacen.alm_almacen','alm_almacen.id_almacen','=','periodo.id_almacen')
+            ->join('administracion.sis_sede','sis_sede.id_sede','=','alm_almacen.id_sede')
+            ->join('administracion.adm_empresa','adm_empresa.id_empresa','=','sis_sede.id_empresa')
+            ->where('periodo.estado',1)
+            ->where('periodo.anio',$request->anio)
+            ->where('adm_empresa.id_empresa',$request->id_empresa)
+            ->get();
+
+            foreach($periodos as $p){
+
+                $id_historial = DB::table('contabilidad.periodo_historial')->insertGetId(
+                    [
+                        'id_periodo' => $p->id_periodo,
+                        'accion' => 'Cerrado',
+                        'id_estado' => 2,
+                        'comentario' => 'Cierre Anual periodo '.$request->anio,
+                        'id_usuario' => $id_usuario,
+                        'estado' => 1,
+                        'fecha_registro' => new Carbon(),
+                    ],
+                    'id_historial'
+                );
+                DB::table('contabilidad.periodo')
+                ->where('id_periodo',$p->id_periodo)
+                ->update(['estado'=>2]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'tipo' => 'success',
+                'mensaje' => 'Se proceso correctamente.', 200
+            ]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar la acción. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
     public function listaHistorialAcciones($id_periodo)
     {
         $historial = DB::table('contabilidad.periodo_historial')
