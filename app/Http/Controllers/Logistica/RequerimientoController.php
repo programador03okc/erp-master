@@ -44,6 +44,7 @@ use App\Models\Almacen\RequerimientoLogisticoView;
 use App\Models\Almacen\Transferencia;
 use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
+use App\Models\Finanzas\PresupuestoInterno;
 use App\Models\Logistica\AdjuntosLogisticos;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
@@ -56,6 +57,7 @@ use App\Models\Tesoreria\RegistroPagoAdjuntos;
 use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
+use DateTime;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +67,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use Debugbar;
 use Mockery\Undefined;
+use PhpOffice\PhpSpreadsheet\Calculation\Financial\TreasuryBill;
 use PhpParser\Node\Stmt\TryCatch;
 
 class RequerimientoController extends Controller
@@ -4392,4 +4395,58 @@ class RequerimientoController extends Controller
 
     }
 
+    public function cierreMes()
+    {
+        $numero_mes = date("m");
+        $nombre_mes = $this->mes($numero_mes);
+        $monto=500;
+        $partida='03.01.01.01';
+        $saldo = PresupuestoInterno::cierreMensual(3,$numero_mes,$nombre_mes);
+
+        return response()->json($saldo,200);
+    }
+    public function mes($mes)
+    {
+        $nombre_mes='enero';
+        switch ($mes) {
+            case '1':
+                $nombre_mes='enero';
+            break;
+
+            case '2':
+                $nombre_mes='febrero';
+            break;
+            case '3':
+                $nombre_mes='marzo';
+            break;
+            case '4':
+                $nombre_mes='abril';
+            break;
+            case '5':
+                $nombre_mes='mayo';
+            break;
+            case '6':
+                $nombre_mes='junio';
+            break;
+            case '7':
+                $nombre_mes='julio';
+            break;
+            case '8':
+                $nombre_mes='agosto';
+            break;
+            case '9':
+                $nombre_mes='setiembre';
+            break;
+            case '10':
+                $nombre_mes='octubre';
+            break;
+            case '11':
+                $nombre_mes='noviembre';
+            break;
+            case '12':
+                $nombre_mes='diciembre';
+            break;
+        }
+        return $nombre_mes;
+    }
 }

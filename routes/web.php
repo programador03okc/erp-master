@@ -604,6 +604,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'requerimiento.', 'prefix' => 'requerimiento'], function () {
 
 			Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function () {
+                // prueba de presupuestos
+				Route::get('cierre-mes', 'Logistica\RequerimientoController@cierreMes');
+				// Route::get('calcular-saldo', 'Logistica\RequerimientoController@calcularSaldo');
+                // -----
 				Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
 				Route::get('mostrar/{idRequerimiento?}', 'Logistica\RequerimientoController@mostrar')->name('mostrar');
 				// Route::get('index/{idRequerimiento?}', 'Logistica\RequerimientoController@index')->name('index');
