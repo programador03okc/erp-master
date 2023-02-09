@@ -103,6 +103,7 @@ class PresupuestoInternoController extends Controller
     {
         if ($request->tipo_ingresos || $request->tipo_gastos) {
             // return $request->gastos;exit;
+            // return $request->costos;exit;
             $presupuesto_interno_count = PresupuestoInterno::count();
             $presupuesto_interno_count = $presupuesto_interno_count +1;
             $codigo = StringHelper::leftZero(2,$presupuesto_interno_count);
@@ -272,7 +273,7 @@ class PresupuestoInternoController extends Controller
         // return PresupuestoInterno::calcularTotalPresupuestoFilas($id,2);exit;
         // return PresupuestoInterno::calcularTotalMensualColumnas($id,2,'02.01.01.01','enero');exit;
 
-        return PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($id,1,'01.01.01.01','enero');exit;
+        // return PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($id,1,'01.01.01.01','enero');exit;
 
 
         return view('finanzas.presupuesto_interno.editar', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos'));
@@ -505,10 +506,129 @@ class PresupuestoInternoController extends Controller
 
     public function obtenerDetallePresupuestoInterno($idPresupuestoIterno){
 
+
         $presupuestoInterno= PresupuestoInterno::with(['detalle'=>function($q) use($idPresupuestoIterno){
             $q->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado','!=',7]])->orderBy('partida','asc');
-        }])->where('id_presupuesto_interno',$idPresupuestoIterno)->get();
-        // $presupuestoInternoDetalle = PresupuestoInternoDetalle::where()->orderBy('id_hijo','asc')->get();
+        }])->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado',2]])->get();
+ 
+        $totalFilas = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,3); // para requerimiento enviar 3= gastos
+        $detalleRequerimiento = PresupuestoInterno::calcularConsumidoPresupuestoFilas($idPresupuestoIterno,3); // para requerimiento enviar 3= gastos
+
+        foreach ($presupuestoInterno as $key => $Presup) {
+            foreach ($Presup['detalle'] as $keyd => $detPresup) {
+
+            $detPresup['monto_inicial'] = 0;
+            $detPresup['monto_consumido'] = 0;
+            $detPresup['monto_saldo'] = 0;
+            }
+        }
+        //  completar monto inicial;
+        foreach ($presupuestoInterno as $key => $Presup) {
+            foreach ($Presup['detalle'] as $key => $detPresup) {
+                foreach ($totalFilas as $key => $totFila) {
+                    if($totFila['partida'] == $detPresup['partida'] ){
+                        $detPresup['monto_inicial'] = $totFila['total'];
+                    }
+                }
+            }
+        }
+        //  completar monto consumido;
+        foreach ($presupuestoInterno as $key => $Presup) {
+            foreach ($Presup['detalle'] as $key => $detPresup) {
+                foreach ($detalleRequerimiento as $key => $detalleReq) {
+                    if($detalleReq['partida'] == $detPresup['partida'] ){
+                        $detPresup['monto_consumido'] += $detalleReq['subtotal'];
+                    }
+                }
+            }
+        }
+
+        //  completar monto saldo;
+        foreach ($presupuestoInterno as $key => $Presup) {
+            foreach ($Presup['detalle'] as $key => $detPresup) {
+                $detPresup['monto_saldo'] = (floatval($detPresup['monto_inicial']) - floatval($detPresup['monto_consumido']));
+                }
+        }
+
+
+
         return $presupuestoInterno;
+    }
+    public function editarMontoPartida(Request $request){
+         // return PresupuestoInterno::calcularTotalPresupuestoFilas($id,2);exit;
+        // return PresupuestoInterno::calcularTotalMensualColumnas($id,2,'02.01.01.01','enero');exit;
+        // return $request->all();exit;
+        $mes = $request->mes;
+
+        $ingresos   = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
+        $costos     = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
+        $gastos     = PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
+        $success=false;
+        if (sizeof($ingresos)>0) {
+            $presupuesto_interno_partida_modificar= PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('estado', 1)->where('partida', $request->partida)->where('id_tipo_presupuesto', 1)->where('registro', 2)->first();
+            if ($presupuesto_interno_partida_modificar) {
+                $presupuesto_interno_partida_modificar->$mes = number_format($request->monto, 2);
+                $presupuesto_interno_partida_modificar->save();
+                PresupuestoInterno::calcularTotalMensualColumnas($request->id,1,$request->partida,$request->mes);
+
+                PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($request->id,1,$request->partida,$request->mes);
+                $partida_costos='02';
+                foreach (explode('.',$request->partida) as $key => $value) {
+                    if ($key!==0) {
+                        $partida_costos = $partida_costos.'.'.$value;
+                    }
+                }
+                PresupuestoInterno::calcularTotalMensualColumnas($request->id,2,$partida_costos,$request->mes);
+                $success=true;
+            }
+
+
+
+
+
+        }
+        if (sizeof($gastos)>0) {
+            $presupuesto_interno_partida_modificar= PresupuestoInternoDetalle::where('id_presupuesto_interno',$request->id)->where('estado', 1)->where('partida', $request->partida)->where('id_tipo_presupuesto', 3)->where('registro', 2)->first();
+            if ($presupuesto_interno_partida_modificar) {
+                $presupuesto_interno_partida_modificar->$mes = number_format($request->monto, 2);
+                $presupuesto_interno_partida_modificar->save();
+
+                PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($request->id,3,$request->partida,$request->mes);
+
+                PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,$request->partida,$request->mes);
+                if (
+                    $presupuesto_interno_partida_modificar->partida === '03.01.01.01' ||$presupuesto_interno_partida_modificar->partida === '03.01.01.02' ||$presupuesto_interno_partida_modificar->partida === '03.01.01.03'
+                ) {
+                    PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,'03.01.02.01',$request->mes);
+                    PresupuestoInterno::calcularTotalMensualColumnas($request->id,3,'03.01.03.01',$request->mes);
+                }
+                $success=true;
+            }
+
+
+        }
+
+
+        return response()->json($success,200);
+    }
+    public function buscarPartidaCombo(Request $request){
+        $presupuesto_interno_detalle=[];
+        if (!empty($request->searchTerm)) {
+            $searchTerm=$request->searchTerm;
+            $presupuesto_interno_detalle = PresupuestoInternoDetalle::where('estado',1);
+            if (!empty($request->searchTerm)) {
+                $presupuesto_interno_detalle = $presupuesto_interno_detalle->where('partida','like','%'.$searchTerm.'%')
+                ->where('id_presupuesto_interno',$request->id_presupuesto_interno)
+                ->where('registro','2')
+                ->whereNotIn('partida', ['03.01.02.01', '03.01.02.02', '03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03']);
+            }
+            $presupuesto_interno_detalle = $presupuesto_interno_detalle->get();
+            return response()->json($presupuesto_interno_detalle);
+        }else{
+            return response()->json([
+                "status"=>404,
+                "success"=>false
+            ]);
+        }
     }
 }

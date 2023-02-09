@@ -1470,6 +1470,20 @@ class ComprasPendientesController extends Controller
                 $mensaje = 'Se actualizó el tipo de item a servicio';
             }
 
+            $productos=0;
+            $servicios=0;
+            $actualDetalleReq= DetalleRequerimiento::where([['id_requerimiento',$nuevoDetalleRequerimiento->id_requerimiento],['estado','!=',7]])->get();
+            foreach ($actualDetalleReq as $key => $value) {
+                if($value->id_tipo_item==1){
+                    $productos+=1;
+                } 
+                if($value->id_tipo_item==2){
+                    $servicios+=1;
+                } 
+            }
+            $requerimiento= Requerimiento::find($nuevoDetalleRequerimiento->id_requerimiento);
+            $requerimiento->id_tipo_detalle= ($productos >0 && $servicios ==0)?'1':($productos ==0 && $servicios >0?'2':($productos >0 && $servicios >0?'3':'3'));
+            $requerimiento->save();
 
             return response()->json(['tipo_estado' => $tipoEstado, 'mensaje' => $mensaje]);
         } catch (Exception $e) {

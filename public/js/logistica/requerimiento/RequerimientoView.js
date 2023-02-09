@@ -8,8 +8,9 @@ var tempArchivoAdjuntoRequerimientoCabeceraList = [];
 var tempArchivoAdjuntoRequerimientoDetalleList = [];
 var objBotonAdjuntoRequerimientoDetalleSeleccionado = '';
 class RequerimientoView {
-    constructor(requerimientoCtrl) {
+    constructor(requerimientoCtrl,presupuestoInternoView) {
         this.requerimientoCtrl = requerimientoCtrl;
+        this.presupuestoInternoView = presupuestoInternoView;
     }
     init() {
         // this.agregarFilaEvent();
@@ -57,9 +58,15 @@ class RequerimientoView {
 
         $('#form-requerimiento').on("click", "button.handleClickAgregarProducto", () => {
             this.agregarFilaProducto();
+            if($("select[name='id_presupuesto_interno']").val()>0){
+                this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
+            }
         });
         $('#form-requerimiento').on("click", "button.handleClickAgregarServicio", () => {
             this.agregarFilaServicio();
+            if($("select[name='id_presupuesto_interno']").val()>0){
+                this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
+            }
         });
         // $('#form-requerimiento').on("change","select.handleChangeProyecto", (e)=>{
         //     this.changeProyecto(e);
@@ -140,9 +147,7 @@ class RequerimientoView {
         $('#ListaDetalleRequerimiento').on("click", "button.handleClickAsignarComoProductoTransformado", (e) => {
             this.asignarComoProductoTransformado(e.currentTarget);
         });
-        $('body').on("change", "select.handleChangePresupuestoInterno", (e) => {
-            this.seleccionarPresupuestoInterno(e.currentTarget);
-        });
+
 
     }
 
@@ -947,47 +952,10 @@ class RequerimientoView {
             obj.target.closest('div').classList.add("has-error");
         }
 
-        this.llenarComboPresupuestoInterno(currentIdGrupo,obj.target.value);
+        this.presupuestoInternoView.llenarComboPresupuestoInterno(currentIdGrupo,obj.target.value);
         
     }
 
-
-    llenarComboPresupuestoInterno(idGrupo,idArea){
-        this.requerimientoCtrl.comboPresupuestoInterno(idGrupo, idArea).then((res) => {
-            // console.log(res);
-            let selectElement = document.querySelector("form[id='form-requerimiento'] select[name='id_presupuesto_interno']");
-            $("input[name='codigo_presupuesto_interno']").val("");
-
-
-            if (selectElement.options.length > 0) {
-                let i, L = selectElement.options.length - 1;
-                for (i = L; i >= 0; i--) {
-                    selectElement.remove(i);
-                }
-            }
-            
-            let optionDefault = document.createElement("option");
-            optionDefault.text = "selecciona un presupuesto interno";
-            optionDefault.value = "";
-            optionDefault.setAttribute('data-codigo', "");
-            optionDefault.setAttribute('data-id-grupo', "");
-            optionDefault.setAttribute('data-id-area', "");
-            selectElement.add(optionDefault);
-
-            res.forEach(element => {
-                let option = document.createElement("option");
-                option.text = element.descripcion;
-                option.value = element.id_presupuesto_interno;
-                option.setAttribute('data-codigo', element.codigo);
-                option.setAttribute('data-id-grupo', element.id_grupo);
-                option.setAttribute('data-id-area', element.id_area);
-                selectElement.add(option);
-            });
-
-        }).catch(function (err) {
-            console.log(err)
-        });
-    }
 
     updateTipoRequerimiento(obj) {
         if (obj.target.value > 0) {
@@ -2258,17 +2226,17 @@ class RequerimientoView {
             //     }
 
             // }
-            if (tbodyChildren[index].querySelector("input[class~='centroCosto']").value == '') {
-                continuar = false;
-                if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
-                    let newSpanInfo = document.createElement("span");
-                    newSpanInfo.classList.add('text-danger');
-                    newSpanInfo.textContent = 'Ingrese un centro de costo';
-                    tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').appendChild(newSpanInfo);
-                    tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
-                }
+            // if (tbodyChildren[index].querySelector("input[class~='centroCosto']").value == '') {
+            //     continuar = false;
+            //     if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
+            //         let newSpanInfo = document.createElement("span");
+            //         newSpanInfo.classList.add('text-danger');
+            //         newSpanInfo.textContent = 'Ingrese un centro de costo';
+            //         tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').appendChild(newSpanInfo);
+            //         tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+            //     }
 
-            }
+            // }
 
             if (tbodyChildren[index].querySelector("input[class~='cantidad']").value == '') {
                 continuar = false;
@@ -2663,8 +2631,5 @@ class RequerimientoView {
 
     }
 
-    seleccionarPresupuestoInterno(obj){
-        const codigoPresupuestoInterno=  obj.options[obj.selectedIndex].dataset.codigo;
-        $("input[name='codigo_presupuesto_interno']").val(codigoPresupuestoInterno);
-    }
+
 }

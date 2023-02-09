@@ -75,6 +75,8 @@ function lista() {
 
                         html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
 
+                        html+='<button type="button" class="btn btn-info btn-flat botonList editar-monto-partida" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar monto por partida" data-original-title="Editar"><i class="fas fa-pencil-alt"></i></button>';
+
                         if (row['estado']==1) {
                             html+='<button type="button" class="btn btn-success btn-flat botonList aprobar-presupuesto" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Aprobar" data-original-title="Aprobar"><i class="fas fa-thumbs-up"></i></button>';
 
@@ -223,5 +225,45 @@ $(document).on('click','.aprobar-presupuesto',function () {
                 })
             }
         }
+    });
+});
+$(document).on('click','.editar-monto-partida',function () {
+    var id = $(this).attr('data-id');
+    $('[data-form="editar-monto-partida"]')[0].reset();
+    $('[data-form="editar-monto-partida"]').find('input[name="id"]').val(id);
+    $('#modal-editar-monto-partida').modal('show');
+    $('.search-partidas').val(null).trigger('change');
+});
+$(document).on('submit','[data-form="editar-monto-partida"]',function (e) {
+    e.preventDefault();
+    var data = $(this).serialize(),
+        this_button = $(this).find('[type="submit"]');
+
+        this_button.attr('disabled','true');
+    $.ajax({
+        type: 'POST',
+        url: 'editar-monto-partida',
+        data: data,
+        dataType: 'JSON',
+        beforeSend: (data) => {
+
+        }
+    }).done(function(response) {
+        if (response===true) {
+            $('#modal-editar-monto-partida').modal('hide');
+        }
+        if (response===false) {
+            Swal.fire(
+                'Información',
+                'El registo que ingreso no es posible modificarse',
+                'warning'
+            )
+        }
+        this_button.removeAttr('disabled');
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        this_button.removeAttr('disabled');
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
     });
 });

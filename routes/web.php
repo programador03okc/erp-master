@@ -681,7 +681,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 				Route::post('lista-cuadro-presupuesto', 'Tesoreria\RequerimientoPagoController@listaCuadroPresupuesto');
 				Route::post('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
-				
+
 				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
 				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
 			});
@@ -799,6 +799,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('anular-adjunto-requerimiento-pago-cabecera', 'Tesoreria\RequerimientoPagoController@anularAdjuntoRequerimientoPagoCabecera');
 				Route::post('anular-adjunto-requerimiento-pago-detalle', 'Tesoreria\RequerimientoPagoController@anularAdjuntoRequerimientoPagoDetalle');
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
+
+				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
+				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 			// 	Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
@@ -2064,6 +2067,9 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('get-presupuesto-interno', 'Finanzas\Presupuesto\PresupuestoInternoController@getPresupuestoInterno');
 
                 Route::post('aprobar', 'Finanzas\Presupuesto\PresupuestoInternoController@aprobar');
+                Route::post('editar-monto-partida', 'Finanzas\Presupuesto\PresupuestoInternoController@editarMontoPartida');
+                // buscar partidas
+                Route::post('buscar-partida-combo', 'Finanzas\Presupuesto\PresupuestoInternoController@buscarPartidaCombo');
             });
 		});
 
@@ -2352,6 +2358,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
 			Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
 			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
+		});
+
+		Route::group(['as' => 'test.', 'prefix' => 'test'], function () {
+			Route::get('carga-cobranza', 'Gerencial\Cobranza\RegistroController@cargarCobranzaNuevo')->name('carga-cobranza');
+			Route::get('carga-orden', 'Gerencial\Cobranza\RegistroController@cargarOrdenNuevo')->name('carga-cobranza');
+			Route::get('carga-id-oc', 'Gerencial\Cobranza\RegistroController@cargarOrdenesId')->name('carga-id-oc');
+			Route::get('carga-ordenes-faltantes/{tipo}', 'Gerencial\Cobranza\RegistroController@cargarOrdenesFaltantes')->name('carga-ordenes-faltantes');
 		});
 	});
 	Route::get('config', function () {

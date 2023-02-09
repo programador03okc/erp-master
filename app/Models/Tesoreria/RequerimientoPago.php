@@ -228,4 +228,8 @@ class RequerimientoPago extends Model
     {
         return $this->hasOne('App\Models\Proyectos\Proyecto', 'id_proyecto', 'id_proyecto');
     }
+    public function presupuestoInterno()
+    {
+        return $this->hasOne('App\Models\Finanzas\PresupuestoInterno', 'id_presupuesto_interno', 'id_presupuesto_interno');
+    }
 }
