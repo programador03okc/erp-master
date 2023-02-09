@@ -272,6 +272,24 @@ class CierreAperturaController extends Controller
         return $rspta;
     }
 
+    static function consultarPeriodoOperativo($fecha, $id_almacen)
+    {
+        $yyyy = date('Y', strtotime($fecha));
+        $m = date('n', strtotime($fecha));
+
+        $periodo=DB::table('contabilidad.periodo')
+        ->select('periodo.estado_operativo','periodo_estado.nombre')
+        ->join('contabilidad.periodo_estado','periodo_estado.id_estado','=','periodo.estado')
+        ->where('periodo.anio',$yyyy)
+        ->where('periodo.nro_mes',$m)
+        ->where('periodo.id_almacen',$id_almacen)
+        ->first();
+
+        $rspta = ($periodo == null ? 1 : $periodo->estado_operativo);
+
+        return $rspta;
+    }
+
     public function autogenerarPeriodos($anio)
     {
         $id_usuario=Auth::user()->id_usuario;
@@ -312,6 +330,7 @@ class CierreAperturaController extends Controller
                             'id_usuario' => $id_usuario,
                             'id_almacen' => $alm->id_almacen,
                             'estado' => 1, //Abierto
+                            'estado_operativo' => 1, //Abierto
                         ]);
                 }
             }
