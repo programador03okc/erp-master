@@ -123,33 +123,6 @@ class VentasInternasController extends Controller
                     $docCompra->fecha_registro = $fecha;
                 $docCompra->save();
 
-                // $id_doc = DB::table('almacen.doc_com')->insertGetId(
-                //     [
-                //         'serie' => strtoupper($doc_ven->serie),
-                //         'numero' => $doc_ven->numero,
-                //         'id_sede' => $detalle->first()->id_sede,
-                //         'id_tp_doc' => $doc_ven->id_tp_doc,
-                //         'id_proveedor' => $doc_ven->id_proveedor,
-                //         'fecha_emision' => $doc_ven->fecha_emision,
-                //         'fecha_vcmto' => $doc_ven->fecha_vcmto,
-                //         'id_condicion' => $doc_ven->id_condicion,
-                //         'credito_dias' => $doc_ven->credito_dias,
-                //         'moneda' => $doc_ven->moneda,
-                //         'id_condicion_softlink' => $id_condicion_softlink,
-                //         'sub_total' => $doc_ven->sub_total,
-                //         'total_igv' => $doc_ven->total_igv,
-                //         'total_icbper' => 0,
-                //         'tipo_cambio' => $tipo_cambio->venta,
-                //         'porcen_igv' => $doc_ven->porcen_igv,
-                //         'total_a_pagar' => $doc_ven->total_a_pagar,
-                //         'usuario' => $doc_ven->usuario,
-                //         'registrado_por' => $id_usuario,
-                //         'estado' => 1,
-                //         'fecha_registro' => $fecha,
-                //     ],
-                //     'id_doc_com'
-                // );
-
                 $requerimiento = new Requerimiento();
                     $requerimiento->codigo = '-';
                     $requerimiento->id_tipo_requerimiento = 7;
@@ -174,33 +147,6 @@ class VentasInternasController extends Controller
                     $requerimiento->estado = 9;
                     $requerimiento->fecha_registro = $fecha;
                 $requerimiento->save();
-                // $id_requerimiento = DB::table('almacen.alm_req')->insertGetId(
-                //     [
-                //         'codigo' => '-',
-                //         'id_tipo_requerimiento' => 7,
-                //         'id_usuario' => $id_usuario,
-                //         'fecha_requerimiento' => $fecha,
-                //         'concepto' => ('Compra segun doc ' . $doc_ven->serie . '-' . $doc_ven->numero).' - V.Int.',
-                //         'id_grupo' => 1,
-                //         'id_prioridad' => 1,
-                //         'observacion' => 'Creado de forma automática por venta interna',
-                //         'id_moneda' => 1,
-                //         'id_empresa' => $doc_ven->id_empresa,
-                //         'id_periodo' => 5, // ! actualizar
-                //         'id_sede' => $detalle->first()->id_sede,
-                //         'id_cliente' => $doc_ven->id_cliente,
-                //         'tipo_cliente' => 2,
-                //         'id_almacen' => $detalle->first()->id_almacen,
-                //         'confirmacion_pago' => true,
-                //         'fecha_entrega' => $doc_ven->fecha_emision,
-                //         'tiene_transformacion' => false,
-                //         'para_stock_almacen' => false,
-                //         'enviar_facturacion' => false,
-                //         'estado' => 9,
-                //         'fecha_registro' => $fecha,
-                //     ],
-                //     'id_requerimiento'
-                // );
                 
                 $codigo = Requerimiento::crearCodigo(7, 1, $requerimiento->id_requerimiento, $periodo->id_periodo); // ! actualiar periodo 
 
