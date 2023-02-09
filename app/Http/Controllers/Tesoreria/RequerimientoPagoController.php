@@ -866,7 +866,7 @@ class RequerimientoPagoController extends Controller
     function mostrarRequerimientoPago($idRequerimientoPago)
     {
 
-        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'centroCosto', 'adjunto', 'estado')
+        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto','presupuestoInternoDetalle', 'centroCosto', 'adjunto', 'estado')
             ->where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])
             ->get();
 

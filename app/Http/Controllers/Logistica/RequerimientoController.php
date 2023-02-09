@@ -524,6 +524,7 @@ class RequerimientoController extends Controller
                     'trabajador_id' => $data->trabajador_id,
                     'division' => $data->division,
                     'nombre_trabajador' => $data->nombre_trabajador,
+                    'id_presupuesto_interno' => $data->id_presupuesto_interno,
                     'codigo_presupuesto_interno' => $data->codigo_presupuesto_interno,
                     'descripcion_presupuesto_interno' => $data->descripcion_presupuesto_interno,
                     'adjuntos' => []
@@ -636,6 +637,16 @@ class RequerimientoController extends Controller
                     DB::raw("(SELECT (presup_par.descripcion)
                     FROM finanzas.presup_par
                     WHERE  presup_par.id_partida = alm_det_req.partida ) AS descripcion_partida"),
+                    
+                    // partida presupuesto interno 
+                    DB::raw("(SELECT (presupuesto_interno_detalle.partida)
+                    FROM finanzas.presupuesto_interno_detalle
+                    WHERE  presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.partida ) AS codigo_partida_presupuesto_interno"),
+                    DB::raw("(SELECT (presupuesto_interno_detalle.descripcion)
+                    FROM finanzas.presupuesto_interno_detalle
+                    WHERE  presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.partida ) AS descripcion_partida_presupuesto_interno"),
+                    // 
+                    
                     DB::raw("(SELECT (presup_par.importe_total)
                     FROM finanzas.presup_par
                     WHERE  presup_par.id_partida = alm_det_req.partida ) AS presupuesto_total_partida")
@@ -699,6 +710,7 @@ class RequerimientoController extends Controller
                         'descripcion'                   => $data->descripcion,
                         'id_partida'                    => $data->partida,
                         'codigo_partida'                => $data->codigo_partida,
+                        'codigo_partida_presupuesto_interno' => $data->codigo_partida_presupuesto_interno,
                         'presupuesto_total_partida'     => $data->presupuesto_total_partida,
                         'id_centro_costo'                => $data->id_centro_costo,
                         'codigo_centro_costo'            => $data->codigo_centro_costo,
@@ -3910,6 +3922,7 @@ class RequerimientoController extends Controller
                 <table class="tablePDF" border=0 style="font-size:10px">
                 <thead>
                     <tr class="subtitle">
+                        <td width="12%" style="text-align:center;">Partida</td>
                         <td width="12%" style="text-align:center;">Centro costo</td>
                         <td width="12%" style="text-align:center;">Part.No</td>
                         <td width="30%" style="text-align:center;">Descripcion</td>
@@ -3927,6 +3940,7 @@ class RequerimientoController extends Controller
 
 
             $html .= '<tr>';
+            $html .= '<td width="10%">' . ($requerimiento['requerimiento'][0]['id_presupuesto_interno']>0?$data['codigo_partida_presupuesto_interno']:$data['codigo_partida']) . '</td>';
             $html .= '<td width="10%">' . $data['codigo_centro_costo'] . '</td>';
             $html .= '<td width="12%" style="word-wrap: break-word">' . ($data['id_tipo_item'] == 1 ? ($data['producto_part_number'] ? $data['producto_part_number'] : $data['part_number']) : '(Servicio)') . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
             $html .= '<td width="30%">' . ($data['producto_descripcion'] ? $data['producto_descripcion'] : ($data['descripcion'] ? $data['descripcion'] : '')) . '</td>';
@@ -3940,15 +3954,15 @@ class RequerimientoController extends Controller
         }
         $html .= '
             <tr>
-                <td  class="right" style="font-weight:bold;" colspan="6">Monto Neto</td>
+                <td  class="right" style="font-weight:bold;" colspan="7">Monto Neto</td>
                 <td class="right">' . $simbolMonedaRequerimiento . number_format($requerimiento['requerimiento'][0]['monto_subtotal'], 2) . '</td>
             </tr>
             <tr>
-                <td  class="right" style="font-weight:bold;" colspan="6">IGV</td>
+                <td  class="right" style="font-weight:bold;" colspan="7">IGV</td>
                 <td class="right">' . $simbolMonedaRequerimiento . number_format($requerimiento['requerimiento'][0]['monto_igv'], 2) . '</td>
             </tr>
             <tr>
-                <td  class="right" style="font-weight:bold;" colspan="6">Monto Total</td>
+                <td  class="right" style="font-weight:bold;" colspan="7">Monto Total</td>
                 <td class="right">' . $simbolMonedaRequerimiento . number_format($requerimiento['requerimiento'][0]['monto_total'], 2) . '</td>
             </tr>
             </table>

@@ -200,7 +200,7 @@ if($requerimientoPago->id_tipo_destinatario ==1){
             @foreach(($requerimientoPago->detalle) as $item)
 
             <tr>
-                <td class="text-center">{{ $item->partida != null ? $item->partida['codigo'] : '' }}</td>
+                <td class="text-center">{{ $requerimientoPago->id_presupuesto_interno > 0? $item->presupuestoInternoDetalle->partida :($item->partida != null ? $item->partida['codigo'] : '') }}</td>
                 <td class="text-center">{{ $item->centroCosto != null ? $item->centroCosto['codigo'] : '' }}</td>
                 <td class="text-left">{{ $item->descripcion != null ? $item->descripcion : '' }}</td>
                 <td class="text-center" style="width: 10%">{{ $item->cantidad != null ? $item->cantidad : '' }} {{($item->unidadMedida != null ? $item->unidadMedida['abreviatura'] : '') }}</td>
