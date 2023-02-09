@@ -279,7 +279,7 @@ class CierreAperturaController extends Controller
 
         $periodo=DB::table('contabilidad.periodo')
         ->select('periodo.estado_operativo','periodo_estado.nombre')
-        ->join('contabilidad.periodo_estado','periodo_estado.id_estado','=','periodo.estado')
+        ->join('contabilidad.periodo_estado','periodo_estado.id_estado','=','periodo.estado_operativo')
         ->where('periodo.anio',$yyyy)
         ->where('periodo.nro_mes',$m)
         ->where('periodo.id_almacen',$id_almacen)
