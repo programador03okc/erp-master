@@ -44,7 +44,7 @@ class OrdenesPendientesController extends Controller
         // }
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $tp_doc = GenericoAlmacenController::mostrar_tp_doc_cbo();
-        $tp_operacion = GenericoAlmacenController::tp_operacion_ids([5, 24]);
+        $tp_operacion = GenericoAlmacenController::tp_operacion_ids([5, 24, 12,28]);
         $clasificaciones_guia = GenericoAlmacenController::mostrar_guia_clas_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
         $motivos_anu = GenericoAlmacenController::select_motivo_anu();

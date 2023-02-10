@@ -623,7 +623,7 @@ class ListarRequerimientoView {
                 $('#modal-requerimiento .modal-content').LoadingOverlay("hide", true);
 
                 that.construirSeccionDatosGenerales(res['requerimiento'][0]);
-                that.construirSeccionItemsDeRequerimiento(res['det_req'], res['requerimiento'][0]['simbolo_moneda']);
+                that.construirSeccionItemsDeRequerimiento(res['det_req'], res['requerimiento'][0]['simbolo_moneda'],res['requerimiento'][0]['id_presupuesto_interno']);
                 that.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
                 $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
 
@@ -777,8 +777,8 @@ class ListarRequerimientoView {
         }
     }
 
-    construirSeccionItemsDeRequerimiento(data, simboloMoneda) {
-        // console.log(data);
+    construirSeccionItemsDeRequerimiento(data, simboloMoneda,idPresupuestoInterno) {
+        // console.log(idPresupuestoInterno);
         this.limpiarTabla('listaDetalleRequerimientoModal');
         tempArchivoAdjuntoItemList = [];
         let html = '';
@@ -805,7 +805,7 @@ class ListarRequerimientoView {
                     }
                     document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
                 <td>${i + 1}</td>
-                <td>${data[i].codigo_partida ? data[i].codigo_partida : ''}</td>
+                <td>${idPresupuestoInterno>0 ?data[i].codigo_partida_presupuesto_interno :(data[i].codigo_partida!=null?data[i].codigo_partida : '')}</td>
                 <td>${data[i].codigo_centro_costo ? data[i].codigo_centro_costo : ''}</td>
                 <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''} </td>
                 <td>${data[i].producto_descripcion != null ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>

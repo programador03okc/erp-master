@@ -2165,6 +2165,7 @@ class ListarRequerimientoPagoView {
 
         this.limpiarTabla('listaDetalleRequerimientoPago');
         if (data.detalle.length > 0) {
+            console.log(data.detalle);
             for (let i = 0; i < data.detalle.length; i++) {
                 let cantidadAdjuntosItem = 0;
                 cantidadAdjuntosItem = (data.detalle[i].adjunto).filter((element, i) => element.id_estado != 7).length;
@@ -2173,7 +2174,7 @@ class ListarRequerimientoPagoView {
 
                 document.querySelector("tbody[id='body_requerimiento_pago_detalle']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data.detalle[i].id_estado == '7' ? '#f1d7d7' : ''}">
                 <td>${i + 1}</td>
-                <td>${data.detalle[i].partida ? data.detalle[i].partida.codigo : ''}</td>
+                <td>${data.id_presupuesto_interno > 0 ?data.detalle[i].presupuesto_interno_detalle.partida : (data.detalle[i].partida ? data.detalle[i].partida.codigo : '')}</td>
                 <td>${data.detalle[i].centro_costo ? data.detalle[i].centro_costo.codigo : ''}</td>
                 <td name="descripcion_servicio">${data.detalle[i].descripcion != null ? data.detalle[i].descripcion : ''} </td>
                 <td>${data.detalle[i].unidad_medida != null ? data.detalle[i].unidad_medida.descripcion : ''}</td>
