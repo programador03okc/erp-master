@@ -1093,6 +1093,8 @@ Presupuesto Interno
                                         data-mes="enero"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="ENERO"
+                                        data-auxiliar-valor="{{$item->enero_aux}}"
+                                        data-valor="{{$item->enero}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->enero}}</span>
@@ -1116,6 +1118,8 @@ Presupuesto Interno
                                         data-mes="febrero"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="FEBRERO"
+                                        data-auxiliar-valor="{{$item->febrero_aux}}"
+                                        data-valor="{{$item->febrero}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->febrero}}</span>
@@ -1140,6 +1144,8 @@ Presupuesto Interno
                                         data-mes="marzo"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="MARZO"
+                                        data-auxiliar-valor="{{$item->marzo_aux}}"
+                                        data-valor="{{$item->marzo}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->marzo}}</span>
@@ -1164,6 +1170,8 @@ Presupuesto Interno
                                         data-mes="abril"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="ABRIL"
+                                        data-auxiliar-valor="{{$item->abril_aux}}"
+                                        data-valor="{{$item->abril}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->abril}}</span>
@@ -1188,6 +1196,8 @@ Presupuesto Interno
                                         data-mes="mayo"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="MAYO"
+                                        data-auxiliar-valor="{{$item->mayo_aux}}"
+                                        data-valor="{{$item->mayo}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->mayo}}</span>
@@ -1195,6 +1205,7 @@ Presupuesto Interno
                                         @if ($presupuesto_interno->estado =='2')
                                             <label hidden class="total-limite">{{$item->mayo}}</label>
                                         @endif
+                                        <label hidden class="total-aux">{{$item->mayo_aux}}</label>
                                     </td>
 
                                     <td data-td="junio">
@@ -1212,6 +1223,8 @@ Presupuesto Interno
                                         data-mes="junio"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="JUNIO"
+                                        data-auxiliar-valor="{{$item->junio_aux}}"
+                                        data-valor="{{$item->junio}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->junio}}</span>
@@ -1236,6 +1249,8 @@ Presupuesto Interno
                                         data-mes="julio"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="JULIO"
+                                        data-auxiliar-valor="{{$item->julio_aux}}"
+                                        data-valor="{{$item->julio}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->julio}}</span>
@@ -1260,6 +1275,8 @@ Presupuesto Interno
                                         data-mes="agosto"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="AGOSTO"
+                                        data-auxiliar-valor="{{$item->agosto_aux}}"
+                                        data-valor="{{$item->agosto}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->agosto}}</span>
@@ -1284,6 +1301,8 @@ Presupuesto Interno
                                         data-mes="setiembre"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="SETIEMBRE"
+                                        data-auxiliar-valor="{{$item->setiembre_aux}}"
+                                        data-valor="{{$item->setiembre}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->setiembre}}</span>
@@ -1308,6 +1327,8 @@ Presupuesto Interno
                                         data-mes="octubre"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="OCTUBRE"
+                                        data-auxiliar-valor="{{$item->octubre_aux}}"
+                                        data-valor="{{$item->octubre}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->octubre}}</span>
@@ -1332,6 +1353,8 @@ Presupuesto Interno
                                         data-mes="noviembre"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="NOVIEMBRE"
+                                        data-auxiliar-valor="{{$item->noviembre_aux}}"
+                                        data-valor="{{$item->noviembre}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->noviembre}}</span>
@@ -1356,6 +1379,8 @@ Presupuesto Interno
                                         data-mes="diciembre"
                                         {{($item->registro==='2'?'data-input=partida':'')}}
                                         title="DICIEMBRE"
+                                        data-auxiliar-valor="{{$item->diciembre_aux}}"
+                                        data-valor="{{$item->diciembre}}"
                                         >
                                         @if ($item->registro==='1' || $partida_hidden==1)
                                         <span>{{$item->diciembre}}</span>

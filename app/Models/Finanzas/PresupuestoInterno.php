@@ -334,14 +334,16 @@ class PresupuestoInterno extends Model
 
         return $respuesta;
     }
-    public static function cierreMensual($id_tipo_presupuesto_interno,$numero_mes='01',$nombre_mes)
+    public static function cierreMensual($id_tipo_presupuesto_interno,$numero_mes='01',$nombre_mes,$numero_mes_siguiente='02',$nombre_mes_siguiente)
     {
         $array_requerimiento_detalle = array();
         $array_id_presupuesto_interno = array();
+        $array_id_presupuesto_interno_detalle = array();
         $requerimiento = Requerimiento::where('estado','!=',7)
         ->where('id_presupuesto_interno','!=',null)
         ->whereMonth('fecha_registro',$numero_mes)
         ->get();
+        $mes_siguiente =  $nombre_mes_siguiente.'_aux';
         foreach ($requerimiento as $key => $value) {
             $value->detalle_requerimiento = DetalleRequerimiento::where('id_requerimiento',$value->id_requerimiento)
             ->where('estado','!=',7)
@@ -356,38 +358,83 @@ class PresupuestoInterno extends Model
             }
 
         }
-        $total_requerimiento = 0;
-        $array_saldos = array();
-        foreach ($array_id_presupuesto_interno as $key => $value) {
-            $total_requerimiento = 0;
-            foreach ($array_requerimiento_detalle as $key_req_det => $value_req_det) {
-                if ($value_req_det->id_presupuesto_interno === $value) {
-                    $total_requerimiento = $total_requerimiento + $value_req_det->subtotal;
-                }
+        foreach ($array_requerimiento_detalle as $key => $value) {
+            if (!in_array($value->partida, $array_id_presupuesto_interno_detalle)) {
+                array_push($array_id_presupuesto_interno_detalle,$value->partida);
             }
-            $presupuesto_interno_detalle = PresupuestoInternoDetalle::where('estado',1)
-            ->where('id_presupuesto_interno',$value)
-            ->where('id_padre','0')
-            ->where('id_tipo_presupuesto',$id_tipo_presupuesto_interno)
-            ->first();
-            $monto_mensual = floatval(str_replace(",", "", $presupuesto_interno_detalle->$nombre_mes));
-
-            $saldo_mensual = $monto_mensual - $total_requerimiento;
-            array_push($array_saldos,$total_requerimiento);
         }
-        $total_requerimientos  = 0;
-        $array_partidas_detalle = array();
+        $array_historial=array();
+        $mes_aux = $nombre_mes.'_aux';
+        foreach ($array_id_presupuesto_interno_detalle as $key => $value) {
+            $historial = HistorialPresupuestoInternoSaldo::where('id_partida',$value)
+            ->whereMonth('fecha_registro',$numero_mes)
+            ->where('mes',(int)$numero_mes)
+            ->orderBy('fecha_registro', 'asc')
+            ->get();
+            if (sizeof($historial)>0) {
+                $saldo_partida = 0;
+                foreach ($historial as $key_partida => $value_partida) {
+                    if ($key_partida===0) {
+                        $saldo_partida = floatval(str_replace(",", "", $value_partida->importe)) ;
+                    }else{
+                        if ($value_partida->operacion === 'R') {
+                            $saldo_partida = $saldo_partida - floatval(str_replace(",", "", $value_partida->importe));
+                        }else{
+                            $saldo_partida = $saldo_partida + floatval(str_replace(",", "", $value_partida->importe));
+                        }
+                    }
+                    // $value_partida->saldo = $saldo_partida;
+                }
+                array_push($array_historial,$historial);
+                array_push($array_historial,$saldo_partida);
+                $partida_detalle = PresupuestoInternoDetalle::find($value);
 
-        // foreach ($array_requerimiento_detalle as $key => $value){
-        //     $total_requerimientos = $total_requerimientos + $value->subtotal;
-        //     array_push($array_partidas_detalle,$value->partida);
+                // $saldo_mensual = 0;
+                $saldo_siguiente_mes = 0;
+                if ($saldo_partida === floatval(str_replace(",", "", $partida_detalle->$mes_aux))) {
+                    $saldo_siguiente_mes = floatval(str_replace(",", "", $partida_detalle->$mes_siguiente))+$saldo_partida;
+                    $partida_detalle->$mes_siguiente = $saldo_siguiente_mes;
+                    $partida_detalle->save();
+                }else{
+
+                }
+                array_push($array_historial,$saldo_siguiente_mes);
+                // array_push($array_historial,$partida_detalle);
+                // array_push($array_historial,$saldo_partida);
+                // array_push($array_historial,$partida_detalle_cabecera);
+            }
+        }
+
+        return $array_historial;exit;
+    }
+
+    public static function calcularColumnaAuxMensual($id_presupuesto_interno, $id_tipo_presupuesto, $id_partida,$mes='enero')
+    {
+        $mes= $mes.'_aux';
+        $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',$id_tipo_presupuesto)->where('estado', 1)->where('id_presupuesto_interno_detalle', $id_partida)->orderBy('partida')->first();
+
+        $id_hijo = $presupuesto_interno_destalle->id_hijo;
+        $id_padre = $presupuesto_interno_destalle->id_padre;
+        $total = 0;
+        // if ('03.01.03.01'===$partida) {
+        //     return $presupuesto_interno_destalle;exit;
         // }
+        while ($id_padre!=='0') {
+            $total = 0;
+            $partidas = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',$id_tipo_presupuesto)->where('estado', 1)->where('id_padre', $id_padre)->orderBy('partida')->get();
 
-        // $partida_mensual = PresupuestoInternoDetalle::where('estado',1)
-        // ->where('id_presupuesto_interno',$id_presupuesto_interno)
-        // ->where('id_padre',0)
-        // ->first();
+            foreach ($partidas as $key => $value) {
+                $columna_mes      = floatval(str_replace(",", "", $value->$mes));
+                $total      = $total + $columna_mes;
+            }
 
-        return $array_saldos;exit;
+            $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',$id_tipo_presupuesto)->where('estado', 1)->where('id_hijo', $id_padre)->orderBy('partida')->first();
+            $presupuesto_interno_destalle->$mes = $total;
+            $presupuesto_interno_destalle->save();
+
+            $id_hijo = $presupuesto_interno_destalle->id_hijo;
+            $id_padre = $presupuesto_interno_destalle->id_padre;
+        }
+        return $partidas;
     }
 }

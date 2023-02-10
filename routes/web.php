@@ -604,8 +604,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::group(['as' => 'requerimiento.', 'prefix' => 'requerimiento'], function () {
 
 			Route::group(['as' => 'elaboracion.', 'prefix' => 'elaboracion'], function () {
-                // prueba de presupuestos
-				Route::get('cierre-mes', 'Logistica\RequerimientoController@cierreMes');
+
 				// Route::get('calcular-saldo', 'Logistica\RequerimientoController@calcularSaldo');
                 // -----
 				Route::get('index', 'Logistica\RequerimientoController@index')->name('index');
@@ -2074,6 +2073,8 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('editar-monto-partida', 'Finanzas\Presupuesto\PresupuestoInternoController@editarMontoPartida');
                 // buscar partidas
                 Route::post('buscar-partida-combo', 'Finanzas\Presupuesto\PresupuestoInternoController@buscarPartidaCombo');
+                // prueba de presupuestos
+				Route::get('cierre-mes', 'Finanzas\Presupuesto\PresupuestoInternoController@cierreMes');
             });
 		});
 

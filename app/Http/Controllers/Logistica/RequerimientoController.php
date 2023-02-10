@@ -4395,16 +4395,7 @@ class RequerimientoController extends Controller
 
     }
 
-    public function cierreMes()
-    {
-        $numero_mes = date("m");
-        $nombre_mes = $this->mes($numero_mes);
-        $monto=500;
-        $partida='03.01.01.01';
-        $saldo = PresupuestoInterno::cierreMensual(3,$numero_mes,$nombre_mes);
 
-        return response()->json($saldo,200);
-    }
     public function mes($mes)
     {
         $nombre_mes='enero';
