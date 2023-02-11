@@ -167,10 +167,12 @@ Cobranzas
                                 </div>
                             </div>
                         </div>
+                        <input type="hidden"name="id_oc" >
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="oc">OCAM</label>
                                 <div class="input-group input-group-sm">
+
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="OCAM" data-action="oc">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="guardar-formulario">
@@ -273,7 +275,8 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="atraso">Días Atras</label>
+                                <label for="atraso">Días Atraso</label>
+                                <input type="hidden" name="dias_atraso" value="0">
                                 <input type="text" class="form-control input-sm text-center dias-atraso" name="atraso" id="atraso" value="0" data-form="guardar-formulario" disabled>
                             </div>
                         </div>
@@ -497,6 +500,7 @@ Cobranzas
                             </div>
                         </div>
                         <div class="col-md-3">
+                            <input type="hidden"name="id_oc">
                             <div class="form-group">
                                 <label for="oc">Orden de Compra / OCAM</label>
                                 <div class="input-group input-group-sm">
@@ -602,7 +606,8 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="atraso">Días Atras</label>
+                                <label for="atraso">Días Atraso</label>
+                                <input type="hidden" name="dias_atraso" value="0">
                                 <input type="text" class="form-control input-sm text-center dias-atraso" name="atraso" value="0" data-form="editar-formulario" disabled>
                             </div>
                         </div>
@@ -1021,23 +1026,14 @@ Cobranzas
 		<div class="modal-content">
 			<div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
-				<h3 class="modal-title">Penalidad / Retención / Detracción</h3>
+				<h3 class="modal-title"> </h3>
 			</div>
 			<div class="modal-body">
                 <form action="" data-form="guardar-penalidad">
+                    <input type="hidden" name="id" value="0">
+                    <input type="hidden" name="tipo_penal" value="">
                     <input type="hidden" name="id_cobranza_penal">
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="">Tipo : </label>
-                                <select class="form-control input-sm" name="tipo_penal" id="tipo_penal" required>
-                                    <option value="">Elija una opción</option>
-                                    <option value="PENALIDAD">PENALIDAD</option>
-                                    <option value="RETENCION">RETENCION</option>
-                                    <option value="DETRACCION">DETRACCION</option>
-                                </select>
-                            </div>
-                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Fecha :</label>
@@ -1081,10 +1077,60 @@ Cobranzas
                                         <th>Tipo</th>
                                         <th>Comprobante</th>
                                         <th>Importe</th>
+                                        <th>Estado</th>
                                         <th>Fecha</th>
                                     </tr>
                                 </thead>
 								<tbody data-table="penalidades"></tbody>
+							</table>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{{-- modal observaciones  --}}
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-observaciones">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+				<h3 class="modal-title">OBSERVACIONES </h3>
+			</div>
+			<div class="modal-body">
+                <form action="" data-form="guardar-observaciones">
+                    <input type="hidden" name="id" value="0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Descripcion</label>
+                                <textarea class="form-control input-sm" name="descripcion" id="descripcion_observacion" rows="3" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-block btn-sm btn-success"><span class="fa fa-save"></span> Grabar Observación</button>
+                        </div>
+                    </div>
+                </form>
+				<div class="row">
+					<div class="col-md-12">
+						<fieldset>
+                            <legend><h4>1° Historial de Observaciones</h4></legend>
+							<table class="table table-bordered table-hover table-aux text-center" >
+								<thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th>Usuario</th>
+                                        <th>Estado</th>
+                                        <th>Fecha</th>
+                                        <th>-</th>
+                                    </tr>
+                                </thead>
+								<tbody data-table="observaciones"></tbody>
 							</table>
 						</fieldset>
 					</div>
@@ -1117,6 +1163,7 @@ Cobranzas
 <script>
 
     $(document).ready(function() {
+        $('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click()
         $('.select2').select2();
         $('.search-vendedor-guardar').select2({
             dropdownParent: $('#modal-cobranza'),

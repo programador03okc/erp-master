@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cobranza extends Model
 {
     //
-    protected $table = 'gerencia_cobranza.cobranza';
+    protected $table = 'gerencial.cobranza';
     protected $primaryKey = 'id_cobranza';
     protected $fillable = [
         'id_empresa', 'id_sector', 'id_cliente', 'factura', 'uu_ee', 'fuente_financ', 'oc', 'siaf', 'fecha_emision', 'fecha_recepcion', 'moneda',

@@ -2321,6 +2321,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('script-empresa-actualizacion', 'Gerencial\Cobranza\RegistroController@scriptEmpresaActualizacion');
             #scrip 10
 			Route::get('script-vendedor', 'Gerencial\Cobranza\RegistroController@scriptVendedor');
+            #scrip para pasar el registro de cobranzas
+            Route::get('script-observaciones-oc', 'Gerencial\Cobranza\RegistroController@scriptObservacionesOC');
 
 			Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
 			Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
@@ -2335,6 +2337,21 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
 			#exportar excel
 			Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
+            // editar penalidad
+			Route::get('editar-penalidad/{id}', 'Gerencial\Cobranza\RegistroController@editarPenalidad');
+			Route::post('anular-penalidad', 'Gerencial\Cobranza\RegistroController@anularPenalidad');
+			Route::post('eliminar-penalidad', 'Gerencial\Cobranza\RegistroController@eliminarPenalidad');
+            // observaciones
+			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
+			Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
+			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
+		});
+
+		Route::group(['as' => 'test.', 'prefix' => 'test'], function () {
+			Route::get('carga-cobranza', 'Gerencial\Cobranza\RegistroController@cargarCobranzaNuevo')->name('carga-cobranza');
+			Route::get('carga-orden', 'Gerencial\Cobranza\RegistroController@cargarOrdenNuevo')->name('carga-cobranza');
+			Route::get('carga-id-oc', 'Gerencial\Cobranza\RegistroController@cargarOrdenesId')->name('carga-id-oc');
+			Route::get('carga-ordenes-faltantes/{tipo}', 'Gerencial\Cobranza\RegistroController@cargarOrdenesFaltantes')->name('carga-ordenes-faltantes');
 		});
 	});
 	Route::get('config', function () {
