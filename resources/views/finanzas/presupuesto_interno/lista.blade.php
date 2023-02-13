@@ -143,6 +143,7 @@ Lista de Presupuestos Interno
 
     <script>
         const route_editar = "{{route('finanzas.presupuesto.presupuesto-interno.editar')}}";
+        const route_editar_presupuesto_aprobado = "{{route('finanzas.presupuesto.presupuesto-interno.editar-presupuesto-aprobado')}}";
         $(document).ready(function () {
 
         });
