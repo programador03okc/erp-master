@@ -2062,6 +2062,7 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('guardar', 'Finanzas\Presupuesto\PresupuestoInternoController@guardar')->name('guardar');
 
                 Route::post('editar', 'Finanzas\Presupuesto\PresupuestoInternoController@editar')->name('editar');
+                Route::post('editar-presupuesto-aprobado', 'Finanzas\Presupuesto\PresupuestoInternoController@editarPresupuestoAprobado')->name('editar-presupuesto-aprobado');
                 Route::post('actualizar', 'Finanzas\Presupuesto\PresupuestoInternoController@actualizar')->name('actualizar');
                 Route::post('eliminar', 'Finanzas\Presupuesto\PresupuestoInternoController@eliminar')->name('eliminar');
 
