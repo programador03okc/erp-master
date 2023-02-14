@@ -1119,7 +1119,7 @@ $(document).on('change','[data-input="partida"]',function (e) {
             $(this).trigger('change');
             Swal.fire(
                 'Información',
-                'Solo puede ingresar montos que no exedan los '+limite_string,
+                'Solo puede ingresar montos que al ser sumados no exedan los '+limite_string,
                 'warning'
             )
         }
