@@ -999,7 +999,7 @@ class RegistroController extends Controller
 
 
     }
-    
+
     public function guardarFase(Request $request)
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$request->id_registro_cobranza)->first();
@@ -1603,9 +1603,12 @@ class RegistroController extends Controller
                     $value->vendedor = $vendedor->nombre;
                 }
             }
+            #observacion
+            $observacion = Observaciones::where('cobranza_id',$value->id_registro_cobranza)->where('estado',1)->orderBy('id', 'desc')->first();
+            $value->observacion = ($observacion?$observacion->descripcion:'---');
 
         }
-        return Excel::download(new CobranzasExpor($data), 'reporte_requerimientos_bienes_servicios.xlsx');
+        return Excel::download(new CobranzasExpor($data), 'cobranza.xlsx');
         // return response()->json($data);
     }
 
@@ -2218,7 +2221,7 @@ class RegistroController extends Controller
     public function arrayFaltantes($tipo)
     {
         $matriz = [];
-        
+
         if ($tipo == 'ocam') {
             $objetoOcam = new stdClass();
             $objetoOcam->key = 3991;
