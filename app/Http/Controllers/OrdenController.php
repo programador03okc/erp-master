@@ -27,6 +27,7 @@ use App\Exports\ReporteTransitoOrdenesCompraExcel;
 use App\Helpers\CuadroPresupuestoHelper;
 use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Helpers\NotificacionHelper;
+use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\Migraciones\MigrateOrdenSoftLinkController;
 use App\Mail\EmailFinalizacionCuadroPresupuesto;
 use App\Mail\EmailOrdenAnulada;
@@ -2610,6 +2611,7 @@ class OrdenController extends Controller
             $idTipoDocumento = '';
             $codigoOrden = '';
             $actualizarEstados = [];
+            $detalleOrden=[];
 
             $idDetalleRequerimientoList = [];
             $count = count($request->idDetalleRequerimiento);
@@ -2684,7 +2686,7 @@ class OrdenController extends Controller
                     $detalle->estado = 1;
                     $detalle->fecha_registro = new Carbon();
 
-                    // $detalle->fecha_registro = new Carbon();
+                    $detalleOrden[]= $detalle;
                     $detalle->save();
                 }
 
@@ -2697,7 +2699,7 @@ class OrdenController extends Controller
                 if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento('CREAR', $orden->id_orden_compra, $orden->codigo);
                 }
-
+                $historialPresupuestoInterno = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra,$detalleOrden);
                 // if ($request->migrar_oc_softlink == true) {
                 //     $statusMigracionSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
                 // }
@@ -2708,9 +2710,10 @@ class OrdenController extends Controller
                     'codigo' => $codigoOrden,
                     'mensaje' =>  'OK',
                     'tipo_estado' => 'success',
-                    'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento'],
-                    'lista_finalizados' => $actualizarEstados['lista_finalizados'],
-                    'error' => $actualizarEstados['error']
+                    'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento']??[],
+                    'lista_finalizados' => $actualizarEstados['lista_finalizados']??[],
+                    'error' => $actualizarEstados['error'],
+                    'historial_presupuesto_interno' => $historialPresupuestoInterno??[]
 
                 ]);
             } else { // si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
@@ -2722,12 +2725,13 @@ class OrdenController extends Controller
                     'mensaje' => 'No puede guardar la orden, existe un requerimiento vinculado con estado "En pausa" o "Por regularizar"',
                     'tipo_estado' => 'warning',
                     'lista_estado_requerimiento' => null,
-                    'lista_finalizados' => null
+                    'lista_finalizados' => null,
+                    'historial_presupuesto_interno' => []
                 ]);
             }
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => $idOrden, 'id_tp_documento' => $idTipoDocumento, 'codigo' => $codigoOrden, 'tipo_estado' => 'error', 'lista_finalizados' => ($actualizarEstados != null ? $actualizarEstados['lista_finalizados'] : []), 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => $idOrden, 'id_tp_documento' => $idTipoDocumento, 'codigo' => $codigoOrden, 'tipo_estado' => 'error', 'lista_finalizados' => ($actualizarEstados != null ? $actualizarEstados['lista_finalizados'] : []), 'historial_presupuesto_interno'=>[], 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
