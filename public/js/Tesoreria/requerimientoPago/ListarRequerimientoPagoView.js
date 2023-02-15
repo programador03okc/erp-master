@@ -2378,6 +2378,8 @@ class ListarRequerimientoPagoView {
 
         }
 
+        $("select[name='id_presupuesto_interno']").val(data.id_presupuesto_interno);
+
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_trabajador']").value = data.id_trabajador;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_trabajador']").value = data.nombre_trabajador;
 
@@ -2419,7 +2421,7 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='empresa']").value = data.id_empresa;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='sede']").value = data.id_sede;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='grupo']").value = data.id_grupo;
-        console.log(data.id_division);
+        // console.log(data.id_division);
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").value = data.id_division;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total']").value = data.monto_total;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total_read_only']").value = $.number(data.monto_total, 2);

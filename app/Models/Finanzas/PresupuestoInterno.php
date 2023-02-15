@@ -50,6 +50,35 @@ class PresupuestoInterno extends Model
         $total      = $enero + $febrero + $marzo + $abril + $mayo + $junio + $julio + $agosto + $setiembre + $octubre + $noviembre + $diciembre;
         return $total;
     }
+    // obtener el total en filas de un mes
+    public static function obtenerPresupuestoFilasMes($id_presupuesto_interno, $id_tipo_presupuesto ,$mes=0){
+        $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)
+        ->where('id_tipo_presupuesto',$id_tipo_presupuesto)
+        ->where('estado', 1)
+        ->orderBy('partida')->get();
+
+        $array_nivel_partida = array();
+        $mesLista = ['1'=>'enero','2'=>'febrero','3'=>'marzo','4'=>'abril','5'=>'mayo','6'=>'junio','7'=>'julio','8'=>'agosto','9'=>'setiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
+
+        if($mes > 0){
+            $nombreMes= $mesLista[$mes];
+        }else{
+            $fechaHoy = date("Y-m-d");
+            $mes = intval(date('m', strtotime($fechaHoy)));
+            $nombreMes= $mesLista[$mes];
+
+        }
+        foreach ($presupuesto_interno_destalle as $key => $value) {
+            array_push($array_nivel_partida,array(
+                "partida"=>$value->partida,
+                "descripcion"=>$value->descripcion,
+                "total"=>floatval(str_replace(",", "", $value[$nombreMes])),
+            ));
+        }
+        
+        return $array_nivel_partida;
+
+    }
     // es el total en filas a la altura de la partida de todo el año
     public static function calcularTotalPresupuestoFilas($id_presupuesto_interno, $id_tipo_presupuesto)
     {
@@ -307,10 +336,18 @@ class PresupuestoInterno extends Model
         }
 
         $detalleRequerimientoPartidaConsumidaList = DetalleRequerimiento::whereIn('alm_det_req.id_requerimiento', $idRequerimientoList)
-            ->where([['alm_det_req.estado', '!=', 7], ['presupuesto_interno_detalle.id_tipo_presupuesto', $id_tipo_presupuesto], ['presupuesto_interno_detalle.estado', 1]])
+            ->where([['alm_det_req.estado', '!=', 7], ['presupuesto_interno_detalle.id_tipo_presupuesto', $id_tipo_presupuesto]
+            , ['presupuesto_interno_detalle.estado', 1], ['log_det_ord_compra.estado', '!=',7], ['log_ord_compra.estado', '!=',7]
+            ])
             ->whereYear('presupuesto_interno_detalle.fecha_registro', '=', $yyyy)
-            ->select('alm_det_req.id_requerimiento', 'alm_det_req.id_detalle_requerimiento', 'alm_det_req.partida as id_partida', 'alm_det_req.subtotal', 'presupuesto_interno_detalle.partida')
+            ->select('alm_det_req.id_requerimiento', 'alm_det_req.id_detalle_requerimiento', 
+                    'alm_det_req.partida as id_partida', 'alm_det_req.subtotal', 
+                    'presupuesto_interno_detalle.partida',
+                    'log_det_ord_compra.subtotal as subtotal_orden'
+                    )
             ->join('finanzas.presupuesto_interno_detalle', 'presupuesto_interno_detalle.id_presupuesto_interno_detalle', '=', 'alm_det_req.partida')
+            ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+            ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->get();
 
         return $detalleRequerimientoPartidaConsumidaList;

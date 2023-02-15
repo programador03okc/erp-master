@@ -15,7 +15,7 @@ class PresupuestoInternoView{
         $('tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
             let id_presupuesto_interno = document.querySelector("select[name='id_presupuesto_interno']").value;
             if(id_presupuesto_interno>0){
-                this.cargarPresupuestoDetalle(id_presupuesto_interno);
+                this.cargarPresupuestoDetalle(id_presupuesto_interno,'MENSUAL');
             }else{
                 // Swal.fire(
                 //     '',
@@ -69,9 +69,9 @@ class PresupuestoInternoView{
         }
     }
 
-    cargarPresupuestoDetalle(idPresupuestoIterno){
+    cargarPresupuestoDetalle(idPresupuestoIterno,anualMensual){
 
-        this.model.obtenerListaDetallePrespuestoInterno(idPresupuestoIterno).then((res) => {
+        this.model.obtenerListaDetallePrespuestoInterno(idPresupuestoIterno,anualMensual).then((res) => {
             this.construirListaDetallePrespuestoInterno(res);
 
         }).catch(function (err) {

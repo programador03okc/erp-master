@@ -685,8 +685,9 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('lista-cuadro-presupuesto', 'Tesoreria\RequerimientoPagoController@listaCuadroPresupuesto');
 				Route::post('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
 
-				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
-				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
+				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno'); 
+				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}/{mensualOAnual?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
+
 			});
 
 			Route::group(['as' => 'listado.', 'prefix' => 'listado'], function () {
@@ -804,7 +805,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 
 				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
-				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
+				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}/{mensualOAnual?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 			// 	Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');

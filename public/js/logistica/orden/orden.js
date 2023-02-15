@@ -638,6 +638,7 @@ function mostrarOrden(id) {
 }
 
 function construirFormularioOrden(data) {
+    console.log(data);
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_orden']").value = data.id_orden_compra ? data.id_orden_compra : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_documento']").value = data.id_tp_documento ? data.id_tp_documento : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_moneda']").value = data.id_moneda ? data.id_moneda : '';
@@ -693,7 +694,7 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_condicion']").value = data.id_condicion ? data.id_condicion : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_dias']").value = parseInt(data.plazo_dias) >= 0 ? parseInt(data.plazo_dias) : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='plazo_entrega']").value = parseInt(data.plazo_entrega) >= 0 ? parseInt(data.plazo_entrega) : '';
-    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='cdc_req']").value = data.oportunidad.length > 0 ? ((data.oportunidad).map(x => x.codigo_oportunidad).toString()) : ((data.requerimientos).map(x => x.codigo).toString());
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='cdc_req']").value = ((data.oportunidad)!=null && data.oportunidad.length > 0) ? ((data.oportunidad).map(x => x.codigo_oportunidad).toString()) : ((data.requerimientos).map(x => x.codigo).toString());
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='ejecutivo_responsable']").value = data.oportunidad.length > 0 ? ((data.oportunidad).map(x => x.responsable).toString()) : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_tp_doc']").value = data.id_tp_doc ? data.id_tp_doc : '';
 
@@ -1545,8 +1546,9 @@ function guardar_orden_requerimiento(action) {
                     console.log(response);
                     if (response.id_orden_compra > 0) {
                         $("#wrapper-okc").LoadingOverlay("hide", true);
-
-                        mostrarOrden(response.id_orden_compra);
+                        if(response.id_orden_compra>0){
+                            mostrarOrden(response.id_orden_compra);
+                        }
                         actionPage = 'historial';
 
                         Lobibox.notify('success', {
@@ -1634,8 +1636,9 @@ function guardar_orden_requerimiento(action) {
                     if (response.id_orden_compra > 0) {
 
                         $("#wrapper-okc").LoadingOverlay("hide", true);
-
-                        that.mostrarOrden(response.id_orden_compra);
+                        if(response.id_orden_compra >0){
+                            that.mostrarOrden(response.id_orden_compra);
+                        }
                         actionPage = 'historial';
 
                         Lobibox.notify('success', {

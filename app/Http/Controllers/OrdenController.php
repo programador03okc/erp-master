@@ -27,6 +27,7 @@ use App\Exports\ReporteTransitoOrdenesCompraExcel;
 use App\Helpers\CuadroPresupuestoHelper;
 use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Helpers\NotificacionHelper;
+use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\Migraciones\MigrateOrdenSoftLinkController;
 use App\Mail\EmailFinalizacionCuadroPresupuesto;
 use App\Mail\EmailOrdenAnulada;
@@ -2610,6 +2611,7 @@ class OrdenController extends Controller
             $idTipoDocumento = '';
             $codigoOrden = '';
             $actualizarEstados = [];
+            $detalleOrden=[];
 
             $idDetalleRequerimientoList = [];
             $count = count($request->idDetalleRequerimiento);
@@ -2679,13 +2681,15 @@ class OrdenController extends Controller
                     // $detalle->descripcion_adicional = (isset($request->descripcion[$i]) && $request->descripcion[$i] != null) ? trim(strtoupper($request->descripcion[$i])) : null;
                     $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
                     $detalle->descripcion_complementaria = ($request->descripcionComplementaria[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcionComplementaria[$i]))) : null;
-                    $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                    $subtotalItem= floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
+                    $detalle->subtotal =$subtotalItem;
                     $detalle->tipo_item_id = $request->idTipoItem[$i];
                     $detalle->estado = 1;
                     $detalle->fecha_registro = new Carbon();
 
-                    // $detalle->fecha_registro = new Carbon();
                     $detalle->save();
+                    $detalle->importe_item_para_presupuesto= $subtotalItem;
+                    $detalleOrden[]= $detalle;
                 }
 
                 $idOrden = $orden->id_orden_compra;
@@ -2697,7 +2701,7 @@ class OrdenController extends Controller
                 if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento('CREAR', $orden->id_orden_compra, $orden->codigo);
                 }
-
+                $historialPresupuestoInterno = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra,$detalleOrden);
                 // if ($request->migrar_oc_softlink == true) {
                 //     $statusMigracionSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
                 // }
@@ -2708,9 +2712,10 @@ class OrdenController extends Controller
                     'codigo' => $codigoOrden,
                     'mensaje' =>  'OK',
                     'tipo_estado' => 'success',
-                    'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento'],
-                    'lista_finalizados' => $actualizarEstados['lista_finalizados'],
-                    'error' => $actualizarEstados['error']
+                    'lista_estado_requerimiento' => $actualizarEstados['lista_estado_requerimiento']??[],
+                    'lista_finalizados' => $actualizarEstados['lista_finalizados']??[],
+                    'error' => $actualizarEstados['error'],
+                    'historial_presupuesto_interno' => $historialPresupuestoInterno??[]
 
                 ]);
             } else { // si el estado de algun requerimiento viculado no esta habilitado, esta con estado 38 o 39
@@ -2722,12 +2727,13 @@ class OrdenController extends Controller
                     'mensaje' => 'No puede guardar la orden, existe un requerimiento vinculado con estado "En pausa" o "Por regularizar"',
                     'tipo_estado' => 'warning',
                     'lista_estado_requerimiento' => null,
-                    'lista_finalizados' => null
+                    'lista_finalizados' => null,
+                    'historial_presupuesto_interno' => []
                 ]);
             }
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['id_orden_compra' => $idOrden, 'id_tp_documento' => $idTipoDocumento, 'codigo' => $codigoOrden, 'tipo_estado' => 'error', 'lista_finalizados' => ($actualizarEstados != null ? $actualizarEstados['lista_finalizados'] : []), 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
+            return response()->json(['id_orden_compra' => $idOrden, 'id_tp_documento' => $idTipoDocumento, 'codigo' => $codigoOrden, 'tipo_estado' => 'error', 'lista_finalizados' => ($actualizarEstados != null ? $actualizarEstados['lista_finalizados'] : []), 'historial_presupuesto_interno'=>[], 'mensaje' => 'Mensaje de error: ' . $e->getMessage()]);
         }
     }
 
@@ -3143,6 +3149,7 @@ class OrdenController extends Controller
                 }
 
                 $idDetalleProcesado = [];
+                $detalleArray=[];
 
                 if (isset($request->cantidadAComprarRequerida)) {
 
@@ -3170,6 +3177,8 @@ class OrdenController extends Controller
                                     $detalle = OrdenCompraDetalle::where("id_detalle_orden", $id)->first();
                                     $detalle->estado = 7;
                                     $detalle->save();
+                                    $detalle->importe_item_para_presupuesto= (floatval($detalle->precio) * floatval($detalle->cantidad));
+                                    $detalle->operacion_item_para_presupuesto= 'suma';
                                 }
                             } else {
 
@@ -3177,6 +3186,21 @@ class OrdenController extends Controller
                                 $detalle->id_producto = $request->idProducto[$i];
                                 $detalle->id_detalle_requerimiento = $request->idDetalleRequerimiento[$i];
                                 $detalle->cantidad = $request->cantidadAComprarRequerida[$i];
+
+                                $subtotalOrigen=floatval($detalle->precio) * floatval($detalle->cantidad);
+                                $subtotalNuevo=  floatval($request->precioUnitario[$i]) * floatval($request->cantidadAComprarRequerida[$i]);
+                                if($subtotalOrigen != $subtotalNuevo){
+                                    if($subtotalOrigen < $subtotalNuevo){
+                                        $importeItemParaPresupuesto=$subtotalNuevo - $subtotalOrigen;
+                                        $tipoOperacionItemParaPresupuesto= 'resta';
+                                        
+                                    }elseif($subtotalOrigen > $subtotalNuevo){
+                                        $importeItemParaPresupuesto=$subtotalOrigen - $subtotalNuevo;
+                                        $tipoOperacionItemParaPresupuesto= 'suma';
+                                        // Debugbar::info($importeItemParaPresupuesto);
+                                    }
+                                }
+
                                 $detalle->id_unidad_medida = $request->unidad[$i];
                                 $detalle->precio = $request->precioUnitario[$i];
                                 $detalle->descripcion_adicional = ($request->descripcion[$i] != null) ? trim(strtoupper(utf8_encode($request->descripcion[$i]))) : null;
@@ -3184,12 +3208,38 @@ class OrdenController extends Controller
                                 $detalle->subtotal = floatval($request->cantidadAComprarRequerida[$i] * $request->precioUnitario[$i]);
                                 $detalle->tipo_item_id = $request->idTipoItem[$i];
                                 $detalle->save();
+                                $detalle->importe_item_para_presupuesto= $importeItemParaPresupuesto??0;
+                                $detalle->operacion_item_para_presupuesto= $tipoOperacionItemParaPresupuesto??'';
+                                $detalleArray[] = $detalle;
 
+                                $tipoOperacionItemParaPresupuesto='';
+                                $importeItemParaPresupuesto=0;
+                                
                                 $idDetalleProcesado[] = $detalle->id_detalle_orden;
                             }
                         }
                     }
+                    
                 }
+
+
+                $detalleParaPresupuestoSumaArray=[];
+                $detalleParaPresupuestoRestaArray=[];
+                Debugbar::info($detalleArray);
+                foreach ($detalleArray as $key => $det) {
+                    if(isset($det->operacion_item_para_presupuesto) && $det->operacion_item_para_presupuesto =='suma'){
+                        $detalleParaPresupuestoSumaArray[]=$det;
+                    }
+                    if(isset($det->operacion_item_para_presupuesto) && $det->operacion_item_para_presupuesto =='resta'){
+                        $detalleParaPresupuestoRestaArray[]=$det;
+                    }
+                }
+                Debugbar::info($detalleParaPresupuestoSumaArray);
+                Debugbar::info($detalleParaPresupuestoRestaArray);
+
+                $afectaPresupuestoInternoSuma = (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','orden',$orden->id_orden_compra, $detalleParaPresupuestoSumaArray);
+                $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra, $detalleParaPresupuestoRestaArray);
+
 
 
                 $data = [
@@ -3197,7 +3247,9 @@ class OrdenController extends Controller
                     'codigo' => $orden->codigo,
                     'id_tp_documento' => $orden->id_tp_documento,
                     'tipo_estado' => 'success',
-                    'mensaje' => 'Orden actualizada'
+                    'mensaje' => 'Orden actualizada',
+                    'afecta_presupuesto_interno_suma'=>$afectaPresupuestoInternoSuma??[],
+                    'afecta_presupuesto_interno_resta'=>$afectaPresupuestoInternoResta??[],
                     // 'mensaje' => $ValidarOrdenSoftlink['mensaje']
                     // 'status_migracion_softlink' => $ValidarOrdenSoftlink,
                 ];
@@ -3619,6 +3671,8 @@ class OrdenController extends Controller
         $tipo_estado = '';
         $idUsuariosAlAnularOrden = [];
         $notificacion = [];
+        $detalleArray=[];
+        
         $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
             ->where([
                 ['id_orden_compra', $id_orden]
@@ -3632,13 +3686,22 @@ class OrdenController extends Controller
                 ]
             );
 
-        $revertirDetalleOrden = DB::table('logistica.log_det_ord_compra') // revertir detalle orden
-            ->where([['id_orden_compra', $id_orden]])
-            ->update(
-                [
-                    'estado' => 7
-                ]
-            );
+
+        $detalleOrden = OrdenCompraDetalle::where('id_orden_compra', $id_orden)->get();
+        foreach ($detalleOrden as $key => $item) {
+            $detalle= OrdenCompraDetalle::find($item->id_detalle_orden);
+            $detalle->estado=7;
+            $detalle->save();
+            $detalle->importe_item_para_presupuesto=$detalle->subtotal;
+            $detalleArray[] = $detalle;
+        }
+        // $revertirDetalleOrden = DB::table('logistica.log_det_ord_compra') // revertir detalle orden
+        //     ->where([['id_orden_compra', $id_orden]])
+        //     ->update(
+        //         [
+        //             'estado' => 7
+        //         ]
+        //     );
         if ($revertirOrden > 0) {
             $status = 200;
             $tipo_estado = 'success';
@@ -3648,7 +3711,7 @@ class OrdenController extends Controller
             $tipo_estado = 'warning';
             $msj[] = 'hubo un problema al tratar de anular la orden';
         }
-        if ($revertirDetalleOrden > 0) {
+        if (count($detalleArray) > 0) {
             $status = 200;
             $tipo_estado = 'success';
             // $msj[]='Detalle Orden Revertida';
@@ -3765,6 +3828,10 @@ class OrdenController extends Controller
                 // $status = 200;
                 $msj[] = 'no se encontro requerimientos';
             }
+
+            // retornar presupuesto si existe de orden 
+            (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','orden',$orden->id_orden_compra,$detalleArray);
+
         } // -> si no tiene detalle la orden
         else {
             $status = 204;

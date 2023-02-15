@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Exports\ListadoRequerimientoPagoExport;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\ProyectosController;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Division;
@@ -85,6 +86,9 @@ class RequerimientoPagoController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos, $value->id_acceso);
         }
+
+        $presupuestoInternoList=(new PresupuestoInternoController)->comboPresupuestoInterno(0,0);
+
         return view(
             'tesoreria/requerimiento_pago/lista',
             compact(
@@ -106,7 +110,8 @@ class RequerimientoPagoController extends Controller
                 'idTrabajador',
                 'nombreUsuario',
                 'estados',
-                'array_accesos'
+                'array_accesos',
+                'presupuestoInternoList'
             )
         );
     }
@@ -309,12 +314,14 @@ class RequerimientoPagoController extends Controller
                 $detalle->id_unidad_medida = $request->unidad[$i];
                 $detalle->cantidad = $request->cantidad[$i];
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
-                $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
+                $subtotalItem = floatval($request->cantidad[$i]) * floatval($request->precioUnitario[$i]);
+                $detalle->subtotal =$subtotalItem;
                 $detalle->fecha_registro = new Carbon();
                 $detalle->id_estado = 1;
                 $detalle->motivo = $request->motivo[$i];
                 $detalle->save();
                 $detalle->idRegister = $request->idRegister[$i];
+                $detalle->importe_item_para_presupuesto=$subtotalItem;
                 $detalleArray[] = $detalle;
                 $montoTotal += $detalle->cantidad * $detalle->precioUnitario;
             }
@@ -335,6 +342,7 @@ class RequerimientoPagoController extends Controller
             $documento->id_doc = $requerimientoPago->id_requerimiento_pago;
             $documento->save();
 
+            (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleArray);
 
             // Adjuntos Cabecera
             if (isset($request->archivo_adjunto_list)) {
@@ -664,6 +672,11 @@ class RequerimientoPagoController extends Controller
 
             $count = count($request->descripcion);
 
+            $detalleArray=[];
+
+            $afectaPresupuestoInternoSuma =[];
+            $afectaPresupuestoInternoResta =[];
+
             for ($i = 0; $i < $count; $i++) {
                 $id = $request->idRegister[$i];
 
@@ -694,6 +707,10 @@ class RequerimientoPagoController extends Controller
                             $detalle->save();
                             $detalle->idRegister = $request->idRegister[$i];
                             $detalleArray[] = $detalle;
+                            // $detalleAnuladoArray[]= $detalle;
+                            $detalle->importe_item_para_presupuesto= (floatval($detalle->precio_unitario) * floatval($detalle->cantidad));
+                            $detalle->operacion_item_para_presupuesto= 'suma';
+
                         }
                     } else {
 
@@ -704,15 +721,52 @@ class RequerimientoPagoController extends Controller
                         $detalle->descripcion = $request->descripcion[$i] != null ? trim(strtoupper($request->descripcion[$i])) : null;
                         $detalle->id_unidad_medida = $request->unidad[$i];
                         $detalle->cantidad = $request->cantidad[$i];
+
+                        $subtotalOrigen=floatval($detalle->precio_unitario) * floatval($detalle->cantidad);
+                        $subtotalNuevo=  floatval($request->precioUnitario[$i]) * floatval($request->cantidad[$i]);
+
+                        if($subtotalOrigen != $subtotalNuevo){
+                            if($subtotalOrigen < $subtotalNuevo){
+                                $importeItemParaPresupuesto=$subtotalNuevo - $subtotalOrigen;
+                                $tipoOperacionItemParaPresupuesto= 'resta';
+                                
+                            }elseif($subtotalOrigen > $subtotalNuevo){
+                                $importeItemParaPresupuesto=$subtotalOrigen - $subtotalNuevo;
+                                $tipoOperacionItemParaPresupuesto= 'suma';
+                                // Debugbar::info($importeItemParaPresupuesto);
+                            }
+                        }
                         $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
-                        $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
+                        $detalle->subtotal = $subtotalNuevo;
                         $detalle->motivo = $request->motivo[$i];
                         $detalle->save();
+                        $detalle->importe_item_para_presupuesto= $importeItemParaPresupuesto??0;
+                        $detalle->operacion_item_para_presupuesto= $tipoOperacionItemParaPresupuesto??'';
                         $detalle->idRegister = $request->idRegister[$i];
                         $detalleArray[] = $detalle;
+
+                        $tipoOperacionItemParaPresupuesto='';
+                        $importeItemParaPresupuesto=0;
                     }
                 }
             }
+
+            $detalleParaPresupuestoSumaArray=[];
+            $detalleParaPresupuestoRestaArray=[];
+            // Debugbar::info($detalleArray);
+            foreach ($detalleArray as $key => $det) {
+                if(isset($det->operacion_item_para_presupuesto) && $det->operacion_item_para_presupuesto =='suma'){
+                    $detalleParaPresupuestoSumaArray[]=$det;
+                }
+                if(isset($det->operacion_item_para_presupuesto) && $det->operacion_item_para_presupuesto =='resta'){
+                    $detalleParaPresupuestoRestaArray[]=$det;
+                }
+            }
+            // Debugbar::info($detalleParaPresupuestoSumaArray);
+            // Debugbar::info($detalleParaPresupuestoRestaArray);
+            // Debugbar::info('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoSumaArray);
+            $afectaPresupuestoInternoSuma = (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoSumaArray);
+            $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoRestaArray);
 
 
             //adjuntos cabecera
@@ -774,7 +828,11 @@ class RequerimientoPagoController extends Controller
                 }
             }
             DB::commit();
-            return response()->json(['id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago, 'mensaje' => 'Se actualizó el requerimiento de pago ' . $requerimientoPago->codigo]);
+            return response()->json(['id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago, 
+            'mensaje' => 'Se actualizó el requerimiento de pago ' . $requerimientoPago->codigo,
+            'afecta_presupuesto_interno_suma'=>$afectaPresupuestoInternoSuma??[],
+            'afecta_presupuesto_interno_resta'=>$afectaPresupuestoInternoResta??[]
+            ]);
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['id_requerimiento_pago' => 0, 'mensaje' => 'Hubo un problema al actualizar el requerimiento de pago. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
@@ -798,11 +856,20 @@ class RequerimientoPagoController extends Controller
                     $requerimientoPago->save();
 
                     // anular detalle requerimiento pago
+                    $detalleArray=[];
+
                     foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
                         $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $detalleRequerimientoPago->id_requerimiento_pago_detalle)->first();
                         $detalle->id_estado = 7;
                         $detalle->save();
+                        $detalle->importe_item_para_presupuesto=$detalle->subtotal;
+                        $detalleArray[] = $detalle;
+
                     }
+
+                    (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleArray);
+
+
                     // anular adjunto cabecera
                     RequerimientoPagoAdjunto::where('id_requerimiento_pago', '=', $idRequerimientoPago)
                         ->update(['id_estado' => 7]);
