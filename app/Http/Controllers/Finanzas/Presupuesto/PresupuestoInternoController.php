@@ -1529,13 +1529,13 @@ class PresupuestoInternoController extends Controller
                             ])->first();
                             if ($presupuestoInternoDetalle) {
                                 if ($sumaResta == 'resta') {
-                                    $importe = floatval($presupuestoInternoDetalle->$nombreMesAux) - floatval($item->subtotal);
+                                    $importe = floatval($presupuestoInternoDetalle->$nombreMesAux) - (isset($item->importe_item_para_presupuesto)?floatval($item->importe_item_para_presupuesto):0);
                                     $presupuestoInternoDetalle->$nombreMesAux = $importe;
                                     $presupuestoInternoDetalle->save();
                                     $TipoHistorial = 'SALIDA';
                                     $operacion = 'R';
                                 } elseif ($sumaResta == 'suma') {
-                                    $importe = floatval($presupuestoInternoDetalle->$nombreMesAux) + floatval($item->subtotal);
+                                    $importe = floatval($presupuestoInternoDetalle->$nombreMesAux) + (isset($item->importe_item_para_presupuesto)?floatval($item->importe_item_para_presupuesto):0);
                                     $presupuestoInternoDetalle->$nombreMesAux = $importe;
                                     $presupuestoInternoDetalle->save();
                                     $TipoHistorial = 'RETORNO';
@@ -1546,7 +1546,7 @@ class PresupuestoInternoController extends Controller
                                 $historialPresupuestoInternoSaldo->id_presupuesto_interno = $requerimiento->id_presupuesto_interno;
                                 $historialPresupuestoInternoSaldo->id_partida = $detalleRequerimiento->partida;
                                 $historialPresupuestoInternoSaldo->tipo = $TipoHistorial;
-                                $historialPresupuestoInternoSaldo->importe = $item->subtotal;
+                                $historialPresupuestoInternoSaldo->importe = $item->importe_item_para_presupuesto??0;
                                 $historialPresupuestoInternoSaldo->mes = $nombreMes;
                                 $historialPresupuestoInternoSaldo->id_requerimiento = $requerimiento->id_requerimiento;
                                 $historialPresupuestoInternoSaldo->id_requerimiento_detalle = $detalleRequerimiento->id_detalle_requerimiento;

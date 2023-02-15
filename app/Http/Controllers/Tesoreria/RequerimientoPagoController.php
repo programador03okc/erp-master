@@ -762,8 +762,8 @@ class RequerimientoPagoController extends Controller
                     $detalleParaPresupuestoRestaArray[]=$det;
                 }
             }
-            Debugbar::info($detalleParaPresupuestoSumaArray);
-            Debugbar::info($detalleParaPresupuestoRestaArray);
+            // Debugbar::info($detalleParaPresupuestoSumaArray);
+            // Debugbar::info($detalleParaPresupuestoRestaArray);
             // Debugbar::info('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoSumaArray);
             $afectaPresupuestoInternoSuma = (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoSumaArray);
             $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoRestaArray);
