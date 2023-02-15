@@ -11,6 +11,7 @@ class CobranzasExpor implements FromView
     /**
     * @return \Illuminate\Support\Collection
     */
+    public $data;
     public function __construct(string $data)
     {
         $this->data = $data;

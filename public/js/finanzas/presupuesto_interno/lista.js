@@ -75,7 +75,9 @@ function lista() {
 
                         html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
 
-                        html+='<button type="button" class="btn btn-info btn-flat botonList editar-monto-partida" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar monto por partida" data-original-title="Editar"><i class="fas fa-pencil-alt"></i></button>';
+                        // html+='<button type="button" class="btn btn-danger btn-flat botonList editar-registro-aprobado" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar Presupuest Interno Aprobado" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
+
+                        // html+='<button type="button" class="btn btn-info btn-flat botonList editar-monto-partida" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar monto por partida" data-original-title="Editar"><i class="fas fa-pencil-alt"></i></button>';
 
                         if (row['estado']==1) {
                             html+='<button type="button" class="btn btn-success btn-flat botonList aprobar-presupuesto" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Aprobar" data-original-title="Aprobar"><i class="fas fa-thumbs-up"></i></button>';
@@ -104,6 +106,16 @@ $(document).on('click','.editar-registro',function () {
     var id = $(this).attr('data-id'),
         token = $('meta[name="csrf-token"]').attr('content'),
         form = $('<form action="'+route_editar+'" method="POST">'+
+            '<input type="hidden" name="_token" value="'+token+'">'+
+            '<input type="hidden" name="id" value="'+id+'">'+
+        '</form>');
+        $('body').append(form);
+        form.submit();
+});
+$(document).on('click','.editar-registro-aprobado',function () {
+    var id = $(this).attr('data-id'),
+        token = $('meta[name="csrf-token"]').attr('content'),
+        form = $('<form action="'+route_editar_presupuesto_aprobado+'" method="POST">'+
             '<input type="hidden" name="_token" value="'+token+'">'+
             '<input type="hidden" name="id" value="'+id+'">'+
         '</form>');
