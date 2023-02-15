@@ -8,6 +8,19 @@ function vistaCrear() {
 }
 function lista() {
     var vardataTables = funcDatatables();
+    const button = (array_accesos.find(element => element === 297)?{
+        text: '<i class="fas fa-plus"></i> Nuevo presupuesto',
+        attr: {
+            id: 'btn-nuevo',
+            href:'crear',
+        },
+        action: () => {
+            // vistaCrear();
+            window.location.href='crear';
+            // window.open('crear');
+        },
+        className: 'btn-default btn-sm'
+    }:[])
     var tableRequerimientos = $("#lista-presupuesto-interno").DataTable({
         language: vardataTables[0],
         destroy: true,
@@ -16,19 +29,7 @@ function lista() {
         lengthChange: false,
         dom: vardataTables[1],
         buttons:[
-            {
-                text: '<i class="fas fa-plus"></i> Nuevo presupuesto',
-                attr: {
-                    id: 'btn-nuevo',
-                    href:'crear',
-                },
-                action: () => {
-                    // vistaCrear();
-                    window.location.href='crear';
-                    // window.open('crear');
-                },
-                className: 'btn-default btn-sm'
-            }
+            button
 
         ],
         ajax: {
@@ -71,20 +72,27 @@ function lista() {
             {
                 render: function (data, type, row) {
                     html='';
-                        html+='<button type="button" class="btn text-black btn-flat botonList ver-presupuesto-interno" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Exportar Excel" data-original-title="Ver"><i class="fas fa-file-excel"></i></button>';
-
-                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
-
-                        // html+='<button type="button" class="btn btn-danger btn-flat botonList editar-registro-aprobado" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar Presupuest Interno Aprobado" data-original-title="Editar"><i class="fas fa-edit"></i></button>';
-
+                        (array_accesos.find(element => element === 300)?
+                        html+='<button type="button" class="btn text-black btn-flat botonList ver-presupuesto-interno" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Exportar Excel" data-original-title="Ver"><i class="fas fa-file-excel"></i></button>'
+                        :'');
+                        (array_accesos.find(element => element === 298)?
+                        html+='<button type="button" class="btn btn-warning btn-flat botonList editar-registro" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar" data-original-title="Editar"><i class="fas fa-edit"></i></button>'
+                        :'');
+                        if (row['estado']==2) {
+                            (array_accesos.find(element => element === 302)?
+                            html+='<button type="button" class="btn btn-danger btn-flat botonList editar-registro-aprobado" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar Presupuest Interno Aprobado" data-original-title="Editar"><i class="fas fa-edit"></i></button>'
+                            :'');
+                        }
                         // html+='<button type="button" class="btn btn-info btn-flat botonList editar-monto-partida" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar monto por partida" data-original-title="Editar"><i class="fas fa-pencil-alt"></i></button>';
 
                         if (row['estado']==1) {
-                            html+='<button type="button" class="btn btn-success btn-flat botonList aprobar-presupuesto" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Aprobar" data-original-title="Aprobar"><i class="fas fa-thumbs-up"></i></button>';
+                            (array_accesos.find(element => element === 301)?
+                            html+='<button type="button" class="btn btn-success btn-flat botonList aprobar-presupuesto" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Aprobar" data-original-title="Aprobar"><i class="fas fa-thumbs-up"></i></button>'
+                            :'');
 
-
-
-                            html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar" data-id="'+row['id_presupuesto_interno']+'" title="Eliminar"><i class="fas fa-trash"></i></button>';
+                            (array_accesos.find(element => element === 299)?
+                            html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar" data-id="'+row['id_presupuesto_interno']+'" title="Eliminar"><i class="fas fa-trash"></i></button>'
+                            :'');
                         }
 
 

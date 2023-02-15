@@ -129,7 +129,7 @@ Revisar/aprobar
             </div>
         </div>
     </div>
-    @endif
+@endif
 </div>
 
 @include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')

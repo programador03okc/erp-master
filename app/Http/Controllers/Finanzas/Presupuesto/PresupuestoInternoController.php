@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\administracion\AdmGrupo;
 use App\Models\Administracion\Area;
 use App\Models\Administracion\Division;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
 use App\Models\Configuracion\Moneda;
 use App\Models\Finanzas\FinanzasArea;
@@ -17,6 +18,7 @@ use App\Models\Finanzas\PresupuestoInterno;
 use App\Models\Finanzas\PresupuestoInternoDetalle;
 use App\Models\Finanzas\PresupuestoInternoModelo;
 use App\Models\mgcp\CuadroCosto\HistorialPrecio;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -25,7 +27,12 @@ class PresupuestoInternoController extends Controller
     //
     public function lista()
     {
-        return view('finanzas.presupuesto_interno.lista');
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('finanzas.presupuesto_interno.lista', compact('array_accesos'));
     }
     public function listaPresupuestoInterno()
     {
@@ -45,8 +52,12 @@ class PresupuestoInternoController extends Controller
         $moneda = Moneda::where('estado',1)->get();
 
         $presupuesto_interno = PresupuestoInterno::count();
-
-        return view('finanzas.presupuesto_interno.crear', compact('grupos','area','moneda'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('finanzas.presupuesto_interno.crear', compact('grupos','area','moneda','array_accesos'));
     }
     public function presupuestoInternoDetalle(Request $request)
     {
@@ -645,8 +656,13 @@ class PresupuestoInternoController extends Controller
 
         // return PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($id,1,'01.01.01.01','enero');exit;
 
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
 
-        return view('finanzas.presupuesto_interno.editar', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos'));
+        return view('finanzas.presupuesto_interno.editar', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos'));
     }
     public function editarPresupuestoAprobado(Request $request)
     {
@@ -667,8 +683,12 @@ class PresupuestoInternoController extends Controller
 
         // return PresupuestoInterno::calcularTotalMensualColumnasPorcentajes($id,1,'01.01.01.01','enero');exit;
 
-
-        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos'));
     }
     public function actualizar(Request $request)
     {

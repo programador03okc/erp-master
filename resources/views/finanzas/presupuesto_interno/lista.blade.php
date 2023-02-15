@@ -7,6 +7,7 @@ Lista de Presupuestos Interno
 
 @section('estilos')
 <link rel="stylesheet" href="{{asset('template/plugins/select2/select2.min.css')}}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -17,111 +18,120 @@ Lista de Presupuestos Interno
 @endsection
 
 @section('content')
-    <div class="box box-solid">
-        <div class="box-header with-border">
-            <h3 class="box-title">Datos Generales</h3>
-            <div class="box-tools pull-right">
-            </div>
-        </div>
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="mytable table table-condensed table-bordered table-okc-view"
-                        id="lista-presupuesto-interno">
-                        <thead>
-                            <tr>
-                                <th hidden></th>
-                                <th scope="col">Código</th>
-                                <th scope="col">Descripción</th>
-                                <th scope="col">Fecha Emisión</th>
-                                <th scope="col">Grupo</th>
-                                <th scope="col">Estado</th>
-                                <th scope="col">-</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
+    @if (in_array(303,$array_accesos))
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Datos Generales</h3>
+                <div class="box-tools pull-right">
                 </div>
             </div>
-        </div>
-    </div>
-    {{-- // ver el presupuesto  --}}
-    <div id="modal-presupuesto" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h3 class="modal-title" id="my-modal-title">Presupuesto Interno <span class="codigo text-primary"></span> </h3>
-                </div>
-                <div class="modal-body">
-                    <div class="row" data-presupuesto="table">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="mytable table table-condensed table-bordered table-okc-view"
+                            id="lista-presupuesto-interno">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <th scope="col">Código</th>
+                                    <th scope="col">Descripción</th>
+                                    <th scope="col">Fecha Emisión</th>
+                                    <th scope="col">Grupo</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col">-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button>
-                </div>
             </div>
         </div>
-    </div>
-
-    <div id="modal-editar-monto-partida" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
-        <div class="modal-dialog modal-sm" role="document">
-            <form action="" data-form="editar-monto-partida">
+        {{-- // ver el presupuesto  --}}
+        <div id="modal-presupuesto" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
-                        <h3 class="modal-title" id="my-modal-title">Editar monto de Presupuesto Interno <span class="codigo text-primary"></span> </h3>
+                        <h3 class="modal-title" id="my-modal-title">Presupuesto Interno <span class="codigo text-primary"></span> </h3>
                     </div>
-                    <input class="form-control" type="hidden" name="id">
                     <div class="modal-body">
-                        {{-- <div class="form-group">
-                            <label for="partida">Partida : </label>
-                            <input id="partida" class="form-control" type="text" name="partida" required>
-                        </div> --}}
-                        <div class="form-group">
-                            <label for="partida">Partida : </label>
-                            <select class="form-control search-partidas" name="partida" required>
-                                <option value="" hidden>Seleccione...</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="mes">Meses : </label>
-                            <select class="form-control" name="mes" id="mes" required>
-                                <option value="" hidden>Seleccione...</option>
-                                <option value="enero">ENERO</option>
-                                <option value="febrero">FEBRERO</option>
-                                <option value="marzo">MARZO</option>
-                                <option value="abril">ABRIL</option>
-                                <option value="mayo">MAYO</option>
-                                <option value="junio">JUNIO</option>
-                                <option value="julio">JULIO</option>
-                                <option value="agosto">AGOSTO</option>
-                                <option value="setiembre">SETIEMBRE</option>
-                                <option value="octubre">OCTUBRE</option>
-                                <option value="noviembre">NOVIEMBRE</option>
-                                <option value="diciembre">DICIEMBRE</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="monto">Monto : </label>
-                            <input id="monto" class="form-control" type="number" name="monto" required>
+                        <div class="row" data-presupuesto="table">
+
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> Cerrar</button>
-                        <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                        <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> CERRAR</button>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
+
+        <div id="modal-editar-monto-partida" class="modal fade " tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <form action="" data-form="editar-monto-partida">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h3 class="modal-title" id="my-modal-title">Editar monto de Presupuesto Interno <span class="codigo text-primary"></span> </h3>
+                        </div>
+                        <input class="form-control" type="hidden" name="id">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="partida">Partida : </label>
+                                <select class="form-control search-partidas" name="partida" required>
+                                    <option value="" hidden>Seleccione...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="mes">Meses : </label>
+                                <select class="form-control" name="mes" id="mes" required>
+                                    <option value="" hidden>Seleccione...</option>
+                                    <option value="enero">ENERO</option>
+                                    <option value="febrero">FEBRERO</option>
+                                    <option value="marzo">MARZO</option>
+                                    <option value="abril">ABRIL</option>
+                                    <option value="mayo">MAYO</option>
+                                    <option value="junio">JUNIO</option>
+                                    <option value="julio">JULIO</option>
+                                    <option value="agosto">AGOSTO</option>
+                                    <option value="setiembre">SETIEMBRE</option>
+                                    <option value="octubre">OCTUBRE</option>
+                                    <option value="noviembre">NOVIEMBRE</option>
+                                    <option value="diciembre">DICIEMBRE</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="monto">Monto : </label>
+                                <input id="monto" class="form-control" type="number" name="monto" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-light" data-dismiss="modal" type="button"><i class="fa fa-times"></i> Cerrar</button>
+                            <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Guardar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @else
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger pulse" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error de Accesos:</span>
+                    Solicite los accesos
+                </div>
+            </div>
+        </div>
+    @endif
+
 @endsection
 
 @section('scripts')
@@ -144,6 +154,7 @@ Lista de Presupuestos Interno
     <script>
         const route_editar = "{{route('finanzas.presupuesto.presupuesto-interno.editar')}}";
         const route_editar_presupuesto_aprobado = "{{route('finanzas.presupuesto.presupuesto-interno.editar-presupuesto-aprobado')}}";
+        const array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
         $(document).ready(function () {
 
         });
