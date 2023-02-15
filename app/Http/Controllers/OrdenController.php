@@ -3769,6 +3769,10 @@ class OrdenController extends Controller
                 // $status = 200;
                 $msj[] = 'no se encontro requerimientos';
             }
+
+            // retornar presupuesto si existe de orden 
+            (new PresupuestoInternoController)->afectarPresupuestoInterno('sumar','orden',$orden->id_orden_compra,$log_det_ord_compra);
+
         } // -> si no tiene detalle la orden
         else {
             $status = 204;

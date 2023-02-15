@@ -20,6 +20,7 @@ use App\Models\Finanzas\PresupuestoInternoDetalle;
 use App\Models\Finanzas\PresupuestoInternoModelo;
 use App\Models\Logistica\Orden;
 use App\Models\mgcp\CuadroCosto\HistorialPrecio;
+use App\Models\Tesoreria\RequerimientoPago;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
@@ -1569,7 +1570,49 @@ class PresupuestoInternoController extends Controller
                 break;
 
             case 'requerimiento de pago':
+                
+                $requerimientoPago=RequerimientoPago::find($id);
+                if($requerimientoPago->id_presupuesto_interno >0){
+                    foreach ($detalle as $item) {
+                        if ($item->id_partida > 0) {
 
+                            $presupuestoInternoDetalle = PresupuestoInternoDetalle::where([
+                                ['id_presupuesto_interno', $requerimientoPago->id_presupuesto_interno],
+                                ['estado', 1], ['id_presupuesto_interno_detalle', $item->id_partida]
+                            ])->first();
+
+                            if ($presupuestoInternoDetalle) {
+                                if ($sumaResta == 'resta') {
+                                    $importe = floatval($presupuestoInternoDetalle->$nombreMesAux) -  (isset($item->importe_item_para_presupuesto) && ($item->importe_item_para_presupuesto>0)?floatval($item->importe_item_para_presupuesto):0) ;
+                                    $presupuestoInternoDetalle->$nombreMesAux = $importe;
+                                    $presupuestoInternoDetalle->save();
+                                    $TipoHistorial = 'SALIDA';
+                                    $operacion = 'R';
+                                } elseif ($sumaResta == 'suma') {
+                                    $importe = floatval($presupuestoInternoDetalle->$nombreMesAux) +  (isset($item->importe_item_para_presupuesto) && ($item->importe_item_para_presupuesto>0)?floatval($item->importe_item_para_presupuesto):0);
+                                    $presupuestoInternoDetalle->$nombreMesAux = $importe;
+                                    $presupuestoInternoDetalle->save();
+                                    $TipoHistorial = 'RETORNO';
+                                    $operacion = 'S';
+                                }
+                                PresupuestoInterno::calcularColumnaAuxMensual($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida, $nombreMes);
+                                $historialPresupuestoInternoSaldo = new HistorialPresupuestoInternoSaldo();
+                                $historialPresupuestoInternoSaldo->id_presupuesto_interno = $requerimientoPago->id_presupuesto_interno;
+                                $historialPresupuestoInternoSaldo->id_partida = $item->id_partida;
+                                $historialPresupuestoInternoSaldo->tipo = $TipoHistorial;
+                                $historialPresupuestoInternoSaldo->importe = $item->importe_item_para_presupuesto??0;
+                                $historialPresupuestoInternoSaldo->mes = $nombreMes;
+                                $historialPresupuestoInternoSaldo->id_requerimiento = $requerimientoPago->id_requerimiento_pago;
+                                $historialPresupuestoInternoSaldo->id_requerimiento_detalle = $item->id_requerimiento_pago_detalle;
+                                $historialPresupuestoInternoSaldo->operacion = $operacion;
+                                $historialPresupuestoInternoSaldo->estado = 1;
+                                $historialPresupuestoInternoSaldo->fecha_registro = new Carbon();
+                                $historial = $historialPresupuestoInternoSaldo;
+                                $historialPresupuestoInternoSaldo->save();
+                            }
+                        }
+                    }
+                }
                 break;
 
             default:

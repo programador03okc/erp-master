@@ -337,7 +337,7 @@ class PresupuestoInterno extends Model
 
         $detalleRequerimientoPartidaConsumidaList = DetalleRequerimiento::whereIn('alm_det_req.id_requerimiento', $idRequerimientoList)
             ->where([['alm_det_req.estado', '!=', 7], ['presupuesto_interno_detalle.id_tipo_presupuesto', $id_tipo_presupuesto]
-            , ['presupuesto_interno_detalle.estado', 1], ['log_det_ord_compra.estado', '!=',7]
+            , ['presupuesto_interno_detalle.estado', 1], ['log_det_ord_compra.estado', '!=',7], ['log_ord_compra.estado', '!=',7]
             ])
             ->whereYear('presupuesto_interno_detalle.fecha_registro', '=', $yyyy)
             ->select('alm_det_req.id_requerimiento', 'alm_det_req.id_detalle_requerimiento', 
@@ -347,6 +347,7 @@ class PresupuestoInterno extends Model
                     )
             ->join('finanzas.presupuesto_interno_detalle', 'presupuesto_interno_detalle.id_presupuesto_interno_detalle', '=', 'alm_det_req.partida')
             ->join('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
+            ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->get();
 
         return $detalleRequerimientoPartidaConsumidaList;

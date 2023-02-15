@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\NotificacionHelper;
+use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Mail\EmailNotificarUsuarioPropietarioDeDocumento;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Division;
@@ -497,6 +498,9 @@ class RevisarAprobarController extends Controller{
                     $detalle->id_estado = 7;
                     $detalle->save();
                 }
+                
+                (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleRequerimientoPago);
+
                 break;
             case '3':
                 $requerimientoPago->id_estado = 3;
@@ -843,7 +847,7 @@ class RevisarAprobarController extends Controller{
 
                 }
 
-                Debugbar::info($codigoRequerimiento);
+                // Debugbar::info($codigoRequerimiento);
 
                 $mensajeNotificacion = $codigoRequerimiento.' '.$nombreAccion.' por '.$nombreCompletoUsuarioRevisaAprueba.($request->sustento !=null?(', observación: '.$request->sustento):'');
                 NotificacionHelper::notificacionRequerimiento($idUsuarioDestinatario,$mensajeNotificacion);
