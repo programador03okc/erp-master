@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tesoreria;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class CierreAperturaController extends Controller
     {
         $this->middleware('auth');
     }
-	
+
 	public function index()
 	{
         $empresas = DB::table('administracion.adm_empresa')
@@ -38,7 +39,12 @@ class CierreAperturaController extends Controller
         ->where('estado',1)
         ->get();
 
-		return view('tesoreria/cierre_apertura/lista', compact('empresas','almacenes','anios','acciones'));
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+		return view('tesoreria/cierre_apertura/lista', compact('empresas','almacenes','anios','acciones','array_accesos'));
 	}
 
     public function cargarMeses($anio)
@@ -63,10 +69,10 @@ class CierreAperturaController extends Controller
         ;
 
         return DataTables::of($data)
-        ->addColumn('accion', function ($data) { 
-			return 
+        ->addColumn('accion', function ($data) {
+			return
             '<div class="btn-group" role="group">'.
-            ($data->estado == 2 
+            ($data->estado == 2
             ? '<button type="button" class="btn btn-xs btn-danger abrir" data-id="'.$data->id_periodo.'" data-toggle="tooltip" data-placement="bottom" title="Abrir Periodo"><span class="fas fa-lock-open"></span></button>'
             :'<button type="button" class="btn btn-xs btn-success cerrar" data-id="'.$data->id_periodo.'" data-toggle="tooltip" data-placement="bottom" title="Cerrar Periodo"><span class="fas fa-lock"></span></button>').'
                 <button type="button" class="btn btn-xs btn-warning historial" data-id="'.$data->id_periodo.'" data-toggle="tooltip" data-placement="bottom" title="Ver el Historial"><span class="fas fa-list"></span></button>
@@ -140,7 +146,7 @@ class CierreAperturaController extends Controller
         }
     }
 
-    
+
     public function guardarVarios(Request $request)
     {
         try {
@@ -186,7 +192,7 @@ class CierreAperturaController extends Controller
         }
     }
 
-    
+
     public function guardarCierreAnual(Request $request)
     {
         try {
@@ -314,7 +320,7 @@ class CierreAperturaController extends Controller
                     case 12: $mes='Diciembre';break;
                     default:break;
                 }
-                
+
                 $periodo = DB::table('contabilidad.periodo')
                 ->where('anio',$anio)
                 ->where('nro_mes',$i)
@@ -336,5 +342,5 @@ class CierreAperturaController extends Controller
             }
         }
         return response()->json('Se ha completado la generación de periodos para el año '.$anio);
-    } 
+    }
 }

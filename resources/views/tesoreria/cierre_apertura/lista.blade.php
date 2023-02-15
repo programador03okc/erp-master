@@ -5,6 +5,7 @@
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('template/plugins/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
+<link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 <style>
     .color-abrir{
         background-color: lightpink !important;
@@ -25,10 +26,11 @@
 @endsection
 
 @section('content')
+@if (in_array(304,$array_accesos))
 <div class="box box-solid">
     <div class="box-body">
         <div class="page-main" type="periodo">
-            
+
             <div class="row" style="padding-top:10px;">
                 <div class="col-md-12">
                     <div style="display: flex;width: 70%;" class="btn-group " data-toggle="buttons">
@@ -49,7 +51,7 @@
                             <button id="btn_cierre_anual" class="btn btn-info shadow-none" onClick="guardarCierreAnual();">Cierre Anual</button>
                         {{-- </form> --}}
                     </div>
-                
+
                     <table class="mytable table table-condensed table-bordered table-okc-view"
                         id="listaPeriodos" style="width:100%;">
                         <thead>
@@ -68,10 +70,21 @@
                     </table>
                 </div>
             </div>
-                    
+
         </div>
     </div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
+
 
 @include('tesoreria.cierre_apertura.nuevo')
 @include('tesoreria.cierre_apertura.cierreApertura')
@@ -149,7 +162,7 @@
                 });
                 return false;
             });
-            
+
         });
         function guardarCierreAnual(){
                 var data = 'anio='+$('[name=anio_lista]').val()+
@@ -175,7 +188,7 @@
                     console.log(textStatus);
                     console.log(errorThrown);
                 });
-                
+
             }
     </script>
 @endsection
