@@ -70,10 +70,12 @@ class RegistroController extends Controller
 
         $data = RegistroCobranza::where('registros_cobranzas.estado',1)->select('registros_cobranzas.*')->orderBy('id_registro_cobranza', 'desc');
         if (!empty($request->empresa)) {
+
             $empresa = DB::table('contabilidad.adm_contri')
             ->where('id_contribuyente',$request->empresa)
             ->first();
-            $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente)->orWhere('registros_cobranzas.id_empresa_old',$empresa->id_empresa_gerencial_old);
+            // $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente)->orWhere('registros_cobranzas.id_empresa_old',$empresa->id_empresa_gerencial_old);
+            $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente);
             // $data = $data->where('id_empresa_old',$empresa->id_empresa_gerencial_old);
         }
         if (!empty($request->estado)) {
@@ -104,17 +106,26 @@ class RegistroController extends Controller
         }
         return DataTables::of($data)
         ->addColumn('empresa', function($data){
-            $id_cliente =$data->id_empresa;
+            // $id_cliente =$data->id_empresa;
 
-            if ($data->id_empresa!==null && $data->id_empresa !=='') {
-                $id_cliente =$data->id_empresa;
+            // if ($data->id_empresa!==null && $data->id_empresa !=='') {
+            //     $id_cliente =$data->id_empresa;
 
-            }else{
-                $id_cliente =$data->id_empresa_old;
-                $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$id_cliente)->first();
-                $id_cliente= $adm_contri->id_contribuyente;
-            }
+            // }else{
+            //     $id_cliente =$data->id_empresa_old;
+            //     $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$id_cliente)->first();
+            //     $id_cliente= $adm_contri->id_contribuyente;
+            // }
 
+            // $empresa = DB::table('administracion.adm_empresa')
+            // ->select(
+            //     'adm_empresa.id_contribuyente',
+            //     'adm_empresa.codigo',
+            //     'adm_contri.razon_social'
+            // )
+            // ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            // ->where('adm_empresa.id_contribuyente',$id_cliente)
+            // ->first();
             $empresa = DB::table('administracion.adm_empresa')
             ->select(
                 'adm_empresa.id_contribuyente',
@@ -122,7 +133,7 @@ class RegistroController extends Controller
                 'adm_contri.razon_social'
             )
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-            ->where('adm_empresa.id_contribuyente',$id_cliente)
+            ->where('adm_empresa.id_contribuyente',$data->id_empresa)
             ->first();
             return $empresa?$empresa->razon_social:'--';
             // return $data->empresa->nombre;
@@ -1080,6 +1091,9 @@ class RegistroController extends Controller
                 $editar_empresa->id_empresa_gerencial_old = $value->id_empresa;
                 $editar_empresa->save();
 
+                RegistroCobranza::where('id_empresa_old', $value->id_empresa)
+                ->update(['id_empresa' => $empresa_agil->id_contribuyente]);
+
                 $administracion_empresa = DB::table('administracion.adm_empresa')->where('id_contribuyente',$empresa_agil->id_contribuyente)->first();
 
                 if (!$administracion_empresa) {
@@ -1111,6 +1125,9 @@ class RegistroController extends Controller
                 $guardar_adm_empresa->fecha_registro    = date('Y-m-d H:i:s');
                 $guardar_adm_empresa->logo_empresa      = ' ';
                 $guardar_adm_empresa->save();
+
+                RegistroCobranza::where('id_empresa_old', $value->id_empresa)
+                ->update(['id_empresa' => $guardar_contribuyente->id_contribuyente]);
             }
 
         }
@@ -1162,6 +1179,7 @@ class RegistroController extends Controller
     {
 
         $penalidad =array();
+        $registro_cobranza = RegistroCobranza::find($request->id_cobranza_penal);
         if (intval($request->id) === 0) {
             $penalidad = new Penalidad();
         }else{
@@ -1176,6 +1194,7 @@ class RegistroController extends Controller
         $penalidad->estado          = 1;
         $penalidad->fecha_registro  = date('Y-m-d H:i:s');
         $penalidad->id_registro_cobranza  = $request->id_cobranza_penal;
+        $penalidad->id_oc  = $registro_cobranza->id_oc;
         $penalidad->save();
         return response()->json([
             "status"=>200,
@@ -1204,6 +1223,7 @@ class RegistroController extends Controller
                     "estado"=>$value->estado,
                     "fecha_registro"=>$value->fecha_registro,
                     "id_registro_cobranza"=>$value->id_registro_cobranza,
+                    "id_oc"=>$value->id_oc,
                 ));
             }
         }
@@ -1220,6 +1240,7 @@ class RegistroController extends Controller
                     "estado"=>$value->estado,
                     "fecha_registro"=>$value->fecha_registro,
                     "id_registro_cobranza"=>$value->id_registro_cobranza,
+                    "id_oc"=>$value->id_oc,
                 ));
             }
         }
@@ -2101,7 +2122,13 @@ class RegistroController extends Controller
             $registro_cobranza->inicio_entrega = $value->inicio_entrega;
             $registro_cobranza->fecha_entrega = $value->fecha_entrega;
             $registro_cobranza->save();
+
+
+            Penalidad::where('id_registro_cobranza', $value->id_registro_cobranza)
+            ->update(['id_oc' => $value->id]);
         }
+
+
         return response()->json([$select],200);
     }
 
