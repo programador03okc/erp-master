@@ -2185,22 +2185,28 @@ class RegistroController extends Controller
         return response()->json(array('contador' => $count), 200);
     }
 
+    public function limpiarCodigoOrden()
+    {
+        set_time_limit(6000);
+        $count = 0;
+        $cobranza = RegistroCobranza::where('ocam', 'not like', '%OCAM%')
+                                    ->where('ocam', 'not like', '%DIRECTA%')
+                                    ->where('ocam', 'not like', '%VENTA%')
+                                    ->where('ocam', 'not like', '%DEUDA%')->get();
+
+        foreach ($cobranza as $key) {
+            $cobranzas = RegistroCobranza::find($key->id_registro_cobranza);
+                $cobranzas->ocam = 'OCAM-'.$key->ocam;
+            $cobranzas->save();
+            $count++;
+        }
+        return response()->json(array('contador' => $count), 200);
+    }
+
     public function cargarOrdenesId()
     {
         set_time_limit(6000);
         $count = 0;
-        // $cobranza = RegistroCobranza::where('ocam', 'not like', '%OCAM%')
-        //                             ->where('ocam', 'not like', '%DIRECTA%')
-        //                             ->where('ocam', 'not like', '%VENTA%')
-        //                             ->where('ocam', 'not like', '%DEUDA%')->get();
-
-        // foreach ($cobranza as $key) {
-        //     $cobranzas = RegistroCobranza::find($key->id_registro_cobranza);
-        //         $cobranzas->ocam = 'OCAM-'.$key->ocam;
-        //     $cobranzas->save();
-        //     $count++;
-        // }
-
         $cobranza = RegistroCobranza::all();
 
         foreach ($cobranza as $key) {
