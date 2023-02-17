@@ -49,7 +49,7 @@ class PresupuestoInternoController extends Controller
         // return $grupos;exit;
         $data = PresupuestoInterno::where('presupuesto_interno.estado','!=',7)
         ->whereIn('presupuesto_interno.id_grupo', $array_grupos_id)
-        ->select('presupuesto_interno.*', 'adm_grupo.descripcion')
+        ->select('presupuesto_interno.*', 'adm_grupo.descripcion as grupo')
         ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
             ;
         return DataTables::of($data)

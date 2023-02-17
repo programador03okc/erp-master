@@ -51,7 +51,7 @@ function lista() {
             {data: 'codigo', name:"codigo" , class:"text-center"},
             {data: 'descripcion', name:"descripcion" , class:"text-center"},
             {data: 'fecha_registro', name:"fecha_registro" , class:"text-center"},
-            {data: 'descripcion', name:"descripcion" , class:"text-center"},
+            {data: 'grupo', name:"grupo" , class:"text-center"},
             // {data: 'estado', name:"estado" , class:"text-center"},
             {
                 render: function (data, type, row) {
