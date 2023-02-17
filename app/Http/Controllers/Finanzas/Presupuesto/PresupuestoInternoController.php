@@ -39,9 +39,9 @@ class PresupuestoInternoController extends Controller
     }
     public function listaPresupuestoInterno()
     {
-        $data = PresupuestoInterno::where('presupuesto_interno.estado','!=',7)
-        ->select('presupuesto_interno.*', 'sis_grupo.descripcion')
-        ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
+        $data = PresupuestoInterno::where('presupuesto_interno.estado','!=',7)->where('presupuesto_interno.id_grupo',)
+        ->select('presupuesto_interno.*', 'adm_grupo.descripcion')
+        ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
             ;
         return DataTables::of($data)
         // ->toJson();

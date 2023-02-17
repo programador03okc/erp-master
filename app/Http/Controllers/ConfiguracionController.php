@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\StringHelper;
+use App\Models\administracion\AdmGrupo;
 use App\Models\Configuracion\Acceso;
 use App\models\Configuracion\Accesos;
 use App\models\Configuracion\AccesosUsuarios;
@@ -60,7 +61,7 @@ class ConfiguracionController extends Controller{
         $categoria_ocupacional = rrhh_categoria_ocupacional::where("estado",1)->get();
         $tipo_planilla = rrhh_tipo_planilla::where("estado",1)->get();
         $pension = rrhh_pension::where("estado",1)->get();
-        $grupo = Grupo::get();
+        $grupo = AdmGrupo::get();
         $rol = Rol::where("estado",1)->get();
 
         $modulos_padre =DB::table('configuracion.sis_modulo')->where('sis_modulo.estado',1)->where('sis_modulo.id_padre',0)->get();
