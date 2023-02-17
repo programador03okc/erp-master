@@ -67,7 +67,7 @@ class ConfiguracionController extends Controller{
         $modulos_padre =DB::table('configuracion.sis_modulo')->where('sis_modulo.estado',1)->where('sis_modulo.id_padre',0)->get();
 
         // return $rol[0]->id_rol;
-        return view('configuracion/usuarios', compact('modulos','roles','estado_civil','pais','tipo_trabajador','categoria_ocupacional','tipo_planilla','pension','grupo','rol','modulos_padre'));
+        return view('configuracion.usuarios', compact('modulos','roles','estado_civil','pais','tipo_trabajador','categoria_ocupacional','tipo_planilla','pension','grupo','rol','modulos_padre'));
     }
 
     function view_notas_lanzamiento(){

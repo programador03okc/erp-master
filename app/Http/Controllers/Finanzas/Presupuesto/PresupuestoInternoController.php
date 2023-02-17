@@ -24,6 +24,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 use App\models\Configuracion\AccesosUsuarios;
+use App\models\Configuracion\UsuarioGrupo;
 use Illuminate\Support\Facades\Auth;
 class PresupuestoInternoController extends Controller
 {
@@ -35,11 +36,19 @@ class PresupuestoInternoController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
+
         return view('finanzas.presupuesto_interno.lista', compact('array_accesos'));
     }
     public function listaPresupuestoInterno()
     {
-        $data = PresupuestoInterno::where('presupuesto_interno.estado','!=',7)->where('presupuesto_interno.id_grupo',)
+        $array_grupos_id=[];
+        $grupos = UsuarioGrupo::where('id_usuario',Auth::user()->id_usuario)->where('estado',1)->get();
+        foreach ($grupos as $key => $value) {
+            array_push($array_grupos_id,$value->id_grupo);
+        }
+        // return $grupos;exit;
+        $data = PresupuestoInterno::where('presupuesto_interno.estado','!=',7)
+        ->whereIn('presupuesto_interno.id_grupo', $array_grupos_id)
         ->select('presupuesto_interno.*', 'adm_grupo.descripcion')
         ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
             ;
