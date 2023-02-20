@@ -229,7 +229,7 @@ function calcularMontosTotales() {
     let incluyeICBPER = document.querySelector("input[name='incluye_icbper']").checked;
     let montoICBPER=0;
     if(incluyeICBPER == true){
-        montoICBPER=0.50;
+        montoICBPER=0.5;
         document.querySelector("label[name='icbper']").textContent="0.50";
     }else{
         document.querySelector("label[name='icbper']").textContent="0.00";
@@ -239,7 +239,7 @@ function calcularMontosTotales() {
     if (incluyeIGV == true) {
 
         let igv = (Math.round((totalNeto * 0.18) * 100) / 100).toFixed(2);
-        let MontoTotal = (Math.round((parseFloat(totalNeto+montoICBPER) + parseFloat(igv)) * 100) / 100).toFixed(2);
+        let MontoTotal = (Math.round((parseFloat(totalNeto) + parseFloat(igv) + parseFloat(montoICBPER)) * 100) / 100).toFixed(2);
         document.querySelector("label[name='igv']").textContent = $.number(igv, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
         document.querySelector("input[name='monto_igv']").value = igv;
