@@ -384,6 +384,13 @@ Orden de compra / servicio
                                     <td></td>
                                 </tr>
                                 <tr>
+                                    <td colspan="11" class="text-right">
+                                        <input class="activation handleClickIncluyeICBPER" type="checkbox" name="incluye_icbper"> <strong>Incluye ICBPER</strong>
+                                    </td>
+                                    <td class="text-right"><span name="simboloMoneda">S/</span><label name="icbper"> 0.00</label></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
                                     <td colspan="11" class="text-right"><strong>Monto total:</strong></td>
                                     <td class="text-right"><span name="simboloMoneda">S/</span><label name="montoTotal"> 0.00</label></td>
                                     <td></td>
