@@ -239,14 +239,14 @@ function calcularMontosTotales() {
     if (incluyeIGV == true) {
 
         let igv = (Math.round((totalNeto * 0.18) * 100) / 100).toFixed(2);
-        let MontoTotal = (Math.round((parseFloat(totalNeto) + (parseFloat(igv)) * 100) / 100)+parseFloat(montoICBPER)).toFixed(2)
+        let MontoTotal = (Math.round((parseFloat(totalNeto+montoICBPER) + parseFloat(igv)) * 100) / 100).toFixed(2);
         document.querySelector("label[name='igv']").textContent = $.number(igv, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
         document.querySelector("input[name='monto_igv']").value = igv;
         document.querySelector("input[name='monto_total']").value = MontoTotal;
 
     } else {
-        let MontoTotal = parseFloat(totalNeto)+parseFloat(montoICBPER);
+        let MontoTotal = parseFloat(totalNeto+montoICBPER);
         document.querySelector("label[name='igv']").textContent = $.number(0, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
         document.querySelector("input[name='monto_igv']").value = 0;
