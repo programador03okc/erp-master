@@ -2105,7 +2105,7 @@ class OrdenController extends Controller
         $monto_total = 0;
 
         if ($ordenArray['head']['incluye_icbper'] == true) {
-            $icbper = 0.50;
+            $icbper = 0.5;
         }  
 
         foreach ($ordenArray['detalle'] as $key => $data) {
