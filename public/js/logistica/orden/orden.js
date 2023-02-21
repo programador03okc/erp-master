@@ -69,6 +69,9 @@ $(function () {
     $('#form-crear-orden-requerimiento').on("click", "input.handleClickIncluyeIGV", (e) => {
         actualizarValorIncluyeIGV(e.currentTarget);
     });
+    $('#form-crear-orden-requerimiento').on("click", "input.handleClickIncluyeICBPER", (e) => {
+        actualizarValorIncluyeICBPER(e.currentTarget);
+    });
 
     $('#form-crear-orden-requerimiento').on("click", "button.handleClickCatalogoProductosModal", () => {
         catalogoProductosModal();
@@ -223,16 +226,27 @@ function calcularMontosTotales() {
     document.querySelector("input[name='monto_subtotal']").value = totalNeto;
 
     let incluyeIGV = document.querySelector("input[name='incluye_igv']").checked;
+    let incluyeICBPER = document.querySelector("input[name='incluye_icbper']").checked;
+    let montoICBPER=0;
+    if(incluyeICBPER == true){
+        montoICBPER=0.5;
+        document.querySelector("label[name='icbper']").textContent="0.50";
+    }else{
+        document.querySelector("label[name='icbper']").textContent="0.00";
+
+    }
+
     if (incluyeIGV == true) {
+
         let igv = (Math.round((totalNeto * 0.18) * 100) / 100).toFixed(2);
-        let MontoTotal = (Math.round((parseFloat(totalNeto) + parseFloat(igv)) * 100) / 100).toFixed(2)
+        let MontoTotal = (Math.round((parseFloat(totalNeto) + parseFloat(igv) + parseFloat(montoICBPER)) * 100) / 100).toFixed(2);
         document.querySelector("label[name='igv']").textContent = $.number(igv, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
         document.querySelector("input[name='monto_igv']").value = igv;
         document.querySelector("input[name='monto_total']").value = MontoTotal;
 
     } else {
-        let MontoTotal = parseFloat(totalNeto);
+        let MontoTotal = parseFloat(totalNeto+montoICBPER);
         document.querySelector("label[name='igv']").textContent = $.number(0, 2);
         document.querySelector("label[name='montoTotal']").textContent = $.number(MontoTotal, 2);
         document.querySelector("input[name='monto_igv']").value = 0;
@@ -241,6 +255,16 @@ function calcularMontosTotales() {
 }
 
 function actualizarValorIncluyeIGV(obj) {
+    calcularMontosTotales();
+
+}
+function actualizarValorIncluyeICBPER(obj) {
+    
+    if( obj.checked==true){
+        document.querySelector("label[name='icbper']").textContent="0.50";
+    }else{
+        document.querySelector("label[name='icbper']").textContent="0.00";
+    }
     calcularMontosTotales();
 
 }
@@ -677,6 +701,7 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] img[id='logo_empresa']").setAttribute("src", data.logo_empresa);
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked = data.incluye_igv;
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_icbper']").checked = data.incluye_icbper;
 
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_proveedor']").value = data.id_proveedor ? data.id_proveedor : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contrib']").value = data.id_contribuyente ? data.id_contribuyente : '';

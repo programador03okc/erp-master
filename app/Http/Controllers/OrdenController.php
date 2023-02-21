@@ -1422,6 +1422,7 @@ class OrdenController extends Controller
             'log_ord_compra.codigo as codigo_orden',
             'log_ord_compra.id_moneda',
             'log_ord_compra.incluye_igv',
+            'log_ord_compra.incluye_icbper',
             'log_ord_compra.monto_subtotal',
             'log_ord_compra.monto_igv',
             'log_ord_compra.monto_total',
@@ -1577,6 +1578,7 @@ class OrdenController extends Controller
             'log_ord_compra.id_moneda',
             'sis_moneda.simbolo as moneda_simbolo',
             'log_ord_compra.incluye_igv',
+            'log_ord_compra.incluye_icbper',
             'log_ord_compra.igv_porcentaje',
             'log_ord_compra.monto_subtotal',
             'log_ord_compra.monto_igv',
@@ -1754,6 +1756,7 @@ class OrdenController extends Controller
                     'fecha_registro' => $data->fecha,
                     'moneda_simbolo' => $data->moneda_simbolo,
                     'incluye_igv' => $data->incluye_igv,
+                    'incluye_icbper' => $data->incluye_icbper,
                     'observacion' => $data->observacion,
                     'compra_local' => $data->compra_local,
                     'sustento_anulacion' => $data->sustento_anulacion,
@@ -2098,7 +2101,13 @@ class OrdenController extends Controller
             $monto_neto += $data['subtotal'];
         }
         $igv = 0;
+        $icbper = 0;
         $monto_total = 0;
+
+        if ($ordenArray['head']['incluye_icbper'] == true) {
+            $icbper = 0.5;
+        }  
+
         foreach ($ordenArray['detalle'] as $key => $data) {
 
             if ($ordenArray['head']['incluye_igv'] == true) {
@@ -2107,7 +2116,7 @@ class OrdenController extends Controller
                 $igv = 0;
             }
 
-            $monto_total = ($monto_neto + $igv);
+            $monto_total = ($monto_neto + $igv+ $icbper);
             // $subtotal = $data['subtotal']>0?$data['subtotal']:number_format($data['cantidad'] * $data['precio'],2,'.','');
 
             $html .= '<tr style="text-align:left">';
@@ -2140,6 +2149,10 @@ class OrdenController extends Controller
                 <tr>
                     <td class="right noBorder textBold"  colspan="7"> ' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Taxes ' : 'IGV ') . $ordenArray['head']['moneda_simbolo'] . '</td>
                     <td class="right noBorder textBold">' . number_format($igv, 2) . '</td>
+                </tr>
+                <tr>
+                    <td class="right noBorder textBold"  colspan="7"> ' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Taxes ' : 'ICBPER ') . $ordenArray['head']['moneda_simbolo'] . '</td>
+                    <td class="right noBorder textBold">' . number_format($icbper, 2) . '</td>
                 </tr>
                 <tr>
                     <td class="right noBorder textBold"  colspan="7"> ' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Total price after taxes ' : 'Monto total ') . $ordenArray['head']['moneda_simbolo'] . '</td>
@@ -2633,7 +2646,8 @@ class OrdenController extends Controller
                 $orden->fecha_registro = new Carbon();
                 $orden->id_usuario = Auth::user()->id_usuario;
                 $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
-                $orden->incluye_igv = isset($request->incluye_igv) ? $request->incluye_igv : true;
+                $orden->incluye_igv = isset($request->incluye_igv) ? true : false;
+                $orden->incluye_icbper = isset($request->incluye_icbper) ? true : false;
                 $orden->monto_subtotal = isset($request->monto_subtotal) ? $request->monto_subtotal : null;
                 $orden->monto_igv = isset($request->monto_igv) ? $request->monto_igv : null;
                 $orden->monto_total = isset($request->monto_total) ? $request->monto_total : null;
@@ -3114,7 +3128,8 @@ class OrdenController extends Controller
                 $orden->id_usuario = Auth::user()->id_usuario;
                 $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
                 $orden->fecha = $request->fecha_emision ? $request->fecha_emision : new Carbon();
-                $orden->incluye_igv = isset($request->incluye_igv) ? filter_var($request->incluye_igv, FILTER_VALIDATE_BOOLEAN) : true;
+                $orden->incluye_igv = isset($request->incluye_igv) ? filter_var($request->incluye_igv, FILTER_VALIDATE_BOOLEAN) : false;
+                $orden->incluye_icbper = isset($request->incluye_icbper) ? filter_var($request->incluye_icbper, FILTER_VALIDATE_BOOLEAN) : false;
                 $orden->monto_subtotal = isset($request->monto_subtotal) ? $request->monto_subtotal : null;
                 $orden->monto_igv = isset($request->monto_igv) ? $request->monto_igv : null;
                 $orden->monto_total = isset($request->monto_total) ? $request->monto_total : null;
