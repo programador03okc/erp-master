@@ -70,6 +70,17 @@ function listarRegistros(filtros) {
 
                 },
                 className: 'btn-default btn-sm'
+            },
+            {
+                text: '<i class="fas fa-file-excel"></i> Descargar Power BI',
+                attr: {
+                    id: 'btnExcelPowerBI'
+                },
+                action: () => {
+                    exportarExcelPowerBi();
+
+                },
+                className: 'btn-default btn-sm'
             }
         ],
         ajax: {
@@ -1390,3 +1401,6 @@ $(document).on('click','[data-action="eliminar-observacion"]',function (e) {
         console.log(errorThrown);
     })
 });
+function exportarExcelPowerBi() {
+    window.open('exportar-excel-power-bi/'+JSON.stringify(data_filtros));
+}

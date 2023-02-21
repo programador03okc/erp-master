@@ -685,7 +685,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('lista-cuadro-presupuesto', 'Tesoreria\RequerimientoPagoController@listaCuadroPresupuesto');
 				Route::post('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
 
-				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno'); 
+				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
 				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}/{mensualOAnual?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
 
 			});
@@ -2365,6 +2365,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
 			Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
 			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
+
+            Route::get('exportar-excel-power-bi/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcelPowerBI');
 		});
 
 		Route::group(['as' => 'test.', 'prefix' => 'test'], function () {
