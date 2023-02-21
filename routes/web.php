@@ -685,7 +685,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('lista-cuadro-presupuesto', 'Tesoreria\RequerimientoPagoController@listaCuadroPresupuesto');
 				Route::post('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
 
-				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno'); 
+				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
 				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}/{mensualOAnual?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
 
 			});

@@ -70,6 +70,17 @@ function listarRegistros(filtros) {
 
                 },
                 className: 'btn-default btn-sm'
+            },
+            {
+                text: '<i class="fas fa-file-excel"></i> Descargar Power BI',
+                attr: {
+                    id: 'btnExcelPowerBI'
+                },
+                action: () => {
+                    exportarExcelPowerBi();
+
+                },
+                className: 'btn-default btn-sm'
             }
         ],
         ajax: {
