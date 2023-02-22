@@ -2365,6 +2365,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
 			Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
 			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
+
+            Route::get('exportar-excel-power-bi/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcelPowerBI');
 		});
 
 		Route::group(['as' => 'test.', 'prefix' => 'test'], function () {

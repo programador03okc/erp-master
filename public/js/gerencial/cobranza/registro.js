@@ -1401,3 +1401,6 @@ $(document).on('click','[data-action="eliminar-observacion"]',function (e) {
         console.log(errorThrown);
     })
 });
+function exportarExcelPowerBi() {
+    window.open('exportar-excel-power-bi/'+JSON.stringify(data_filtros));
+}
