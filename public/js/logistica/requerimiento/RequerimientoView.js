@@ -2459,7 +2459,7 @@ class RequerimientoView {
                         rounded: true,
                         sound: false,
                         delayIndicator: false,
-                        msg: `Requerimiento actualizado`
+                        msg: response.mensaje
                     });
                     this.cargarRequerimiento(response.id_requerimiento);
                 } else {
@@ -2467,7 +2467,7 @@ class RequerimientoView {
                     console.log(response.mensaje);
                     Swal.fire(
                         '',
-                        'Lo sentimos hubo un error en el servidor al intentar guardar el requerimiento, por favor vuelva a intentarlo',
+                        response.mensaje,
                         'error'
                     );
 

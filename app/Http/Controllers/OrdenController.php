@@ -29,11 +29,13 @@ use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Helpers\NotificacionHelper;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\Migraciones\MigrateOrdenSoftLinkController;
+use App\Http\Controllers\Tesoreria\CierreAperturaController;
 use App\Mail\EmailFinalizacionCuadroPresupuesto;
 use App\Mail\EmailOrdenAnulada;
 use App\Mail\EmailOrdenServicioOrdenTransformacion;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Estado;
+use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
@@ -107,8 +109,9 @@ class OrdenController extends Controller
         $unidades_medida = UnidadMedida::mostrar();
         $monedas = Moneda::mostrar();
         // $sedes = Auth::user()->sedesAcceso();
+        $periodos = Periodo::mostrar();
 
-        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes', 'empresas', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas'));
+        return view('logistica/ordenes/generar_orden_requerimiento', compact('sedes', 'empresas', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas','periodos'));
     }
     function view_crear_orden_requerimiento()
     {
@@ -153,8 +156,9 @@ class OrdenController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos, $value->id_acceso);
         }
+        $periodos = Periodo::mostrar();
 
-        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('empresas', 'rubros', 'bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas', 'modulo', 'array_accesos_botonera', 'array_accesos'));
+        return view('logistica/gestion_logistica/compras/ordenes/elaborar/crear_orden_requerimiento', compact('empresas', 'rubros', 'bancos', 'tipo_cuenta', 'sedes', 'sis_identidad', 'tp_documento', 'tp_moneda', 'tp_doc', 'condiciones', 'condiciones_softlink', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'unidades_medida', 'monedas', 'modulo', 'array_accesos_botonera', 'array_accesos','periodos'));
     }
 
     function lista_contactos_proveedor($id_proveedor)
@@ -1429,6 +1433,7 @@ class OrdenController extends Controller
             'sis_moneda.simbolo as moneda_simbolo',
             'sis_moneda.descripcion as moneda_descripcion',
             'log_ord_compra.codigo_softlink',
+            'log_ord_compra.id_periodo',
             'log_ord_compra.fecha',
             'log_ord_compra.id_sede',
             'adm_empresa.id_empresa',
@@ -2620,6 +2625,20 @@ class OrdenController extends Controller
 
         try {
             DB::beginTransaction();
+
+            // evaluar si el estado del cierre periodo
+            $periodo = Periodo::find($request->id_periodo);
+            $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+            if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
+                return response()->json(['id_orden_compra' => 0, 'codigo' => '','id_tp_documento' => '', 'tipo_estado' => 'warning', 
+                'lista_estado_requerimiento' => null,
+                'lista_finalizados' => null,
+                'historial_presupuesto_interno' => [],
+                'mensaje' => 'No se puede generar la orden cuando el periodo operativo esta cerrado']);
+            }
+
+
             $idOrden = '';
             $idTipoDocumento = '';
             $codigoOrden = '';
@@ -2642,6 +2661,7 @@ class OrdenController extends Controller
                 $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
                 $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
                 $orden->id_tp_documento = $tp_doc;
+                $orden->id_periodo = $request->id_periodo ? $request->id_periodo : null;
                 $orden->fecha = $request->fecha_emision ? $request->fecha_emision : new Carbon();
                 $orden->fecha_registro = new Carbon();
                 $orden->id_usuario = Auth::user()->id_usuario;
@@ -3100,6 +3120,16 @@ class OrdenController extends Controller
     {
         try {
             DB::beginTransaction();
+
+            // evaluar si el estado del cierre periodo
+            $periodo = Periodo::find($request->id_periodo);
+            $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+            if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
+                return response()->json(['id_orden_compra' => 0, 'codigo' => '','id_tp_documento' => '', 'tipo_estado' => 'warning', 'mensaje' => 'No se puede actualizar la orden cuando el periodo operativo esta cerrado']);
+            }
+
+
             $data = [];
             $status = 0;
 
@@ -3128,6 +3158,7 @@ class OrdenController extends Controller
                 $orden->id_usuario = Auth::user()->id_usuario;
                 $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
                 $orden->fecha = $request->fecha_emision ? $request->fecha_emision : new Carbon();
+                $orden->id_periodo = $request->id_periodo ? $request->id_periodo : null;
                 $orden->incluye_igv = isset($request->incluye_igv) ? filter_var($request->incluye_igv, FILTER_VALIDATE_BOOLEAN) : false;
                 $orden->incluye_icbper = isset($request->incluye_icbper) ? filter_var($request->incluye_icbper, FILTER_VALIDATE_BOOLEAN) : false;
                 $orden->monto_subtotal = isset($request->monto_subtotal) ? $request->monto_subtotal : null;

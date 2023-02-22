@@ -51,6 +51,12 @@ $(function () {
     $('#form-crear-orden-requerimiento').on("click", "button.handleClickEstadoCuadroPresupuesto", () => {
         estadoCuadroPresupuesto();
     });
+    $('#form-crear-orden-requerimiento').on("change", "select.handleChangePeriodo", (e) => {
+        changePeriodo(e.currentTarget);
+    });
+    $('#form-crear-orden-requerimiento').on("change", "input.handleChangeFechaEmision", (e) => {
+        changeFechaEmision(e.currentTarget);
+    });
     $('#form-crear-orden-requerimiento').on("change", "select.handleChangeTipoOrden", (e) => {
         cambiarTipoOrden(e.currentTarget);
     });
@@ -614,6 +620,30 @@ function enviarNotificacionEmailCuadroPresupuestoFinalizado() {
 
 }
 
+function changeFechaEmision(obj) {
+    $añoFechaEmision =  moment(obj.value).format('YYYY');
+    selectPeriodo= document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_periodo']");
+    idPeriodo=0;
+    let intervals = Array.from(selectPeriodo.options)
+
+    intervals.forEach(element => {
+        if(element.textContent == $añoFechaEmision ){
+            idPeriodo=element.value;
+        }
+        
+    });
+    selectPeriodo.value=idPeriodo;
+}
+
+function changePeriodo(obj) {
+    let añoSeleccionado=obj.options[obj.selectedIndex].textContent;
+    let fechaEmision= document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value;
+
+    let nuevaFechaEmision = moment(fechaEmision).format(añoSeleccionado+'-MM-DDThh:mm');
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = nuevaFechaEmision;
+
+}
+
 function cambiarTipoOrden(obj) {
     switch (parseInt(obj.value)) {
         case 2:// orden de compra
@@ -699,6 +729,7 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='codigo_orden']").value = data.codigo_softlink ? data.codigo_softlink : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='fecha_emision']").value = data.fecha_formato ? moment(data.fecha_formato, 'DD-MM-YYYY h:m').format('YYYY-MM-DDThh:mm') : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_sede']").value = data.id_sede ? data.id_sede : '';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] select[name='id_periodo']").value = data.id_periodo ? data.id_periodo : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] img[id='logo_empresa']").setAttribute("src", data.logo_empresa);
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_igv']").checked = data.incluye_igv;
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='incluye_icbper']").checked = data.incluye_icbper;
