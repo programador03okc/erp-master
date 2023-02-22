@@ -608,7 +608,7 @@ function verAdjuntos(id, codigo) {
     $('#modal-verAdjuntos').modal({
         show: true
     });
-    document.querySelector("fieldset[id='fieldsetDatosRequerimiento']").classList.remove('oculto');
+    // document.querySelector("fieldset[id='fieldsetDatosRequerimiento']").classList.remove('oculto');
     document.querySelector("fieldset[id='fieldsetDatosOrden']").classList.add('oculto');
     $('[name=codigo_requerimiento_pago]').text(codigo);
     $('#adjuntosCabecera tbody').html('');
@@ -714,7 +714,7 @@ function verAdjuntosOrden(id, codigo) {
     $('#modal-verAdjuntos').modal({
         show: true
     });
-    document.querySelector("fieldset[id='fieldsetDatosRequerimiento']").classList.add('oculto');
+    // document.querySelector("fieldset[id='fieldsetDatosRequerimiento']").classList.add('oculto');
     document.querySelector("fieldset[id='fieldsetDatosOrden']").classList.remove('oculto');
 
     $('[name=codigo_requerimiento_pago]').text(codigo);
@@ -753,6 +753,41 @@ function verAdjuntosOrden(id, codigo) {
         console.log(textStatus);
         console.log(errorThrown);
     });
+
+    $.ajax({
+        type: 'GET',
+        url: 'verAdjuntosRequerimientoDeOrden/' + id,
+        dataType: 'JSON',
+        success: function (response) {
+            if (response.adjuntoPadre.length > 0) {
+                var html = '';
+                response.adjuntoPadre.forEach(function (element) {
+                    html += `<tr>
+                        <td><a target="_blank" href="/files/necesidades/requerimientos/bienes_servicios/cabecera/${element.archivo}">${element.archivo}</a></td>
+                        <td>${element.categoria_adjunto !== null ? element.categoria_adjunto.descripcion : ''}</td>
+                    </tr>`;
+                });
+                $('#adjuntosCabecera tbody').html(html);
+            }
+        
+            if (response.adjuntoDetalle.length > 0) {
+                var html = '';
+                response.adjuntoDetalle.forEach(function (element) {
+                    html += `<tr>
+                        <td><a target="_blank" href="/files/necesidades/requerimientos/bienes_servicios/detalle/${element.archivo}">${element.archivo}</a></td>
+                    </tr>`;
+                });
+                $('#adjuntosDetalle tbody').html(html);
+            }
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
+
+
 
     obteneAdjuntosOrden(id).then((res) => {
 
