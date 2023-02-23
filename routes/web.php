@@ -2357,6 +2357,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
 			#exportar excel
 			Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
+			Route::post('exportar-excel-prueba', 'Gerencial\Cobranza\RegistroController@exportarExcelPrueba');
             // editar penalidad
 			Route::get('editar-penalidad/{id}', 'Gerencial\Cobranza\RegistroController@editarPenalidad');
 			Route::post('anular-penalidad', 'Gerencial\Cobranza\RegistroController@anularPenalidad');
@@ -2367,6 +2368,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
 
             Route::get('exportar-excel-power-bi/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcelPowerBI');
+            Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad');
 		});
 
 		Route::group(['as' => 'test.', 'prefix' => 'test'], function () {

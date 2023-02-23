@@ -45,6 +45,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use stdClass;
 use Yajra\DataTables\Facades\DataTables;
 
+use function GuzzleHttp\json_encode;
+
 class RegistroController extends Controller
 {
     //
@@ -399,11 +401,7 @@ class RegistroController extends Controller
 
         $cobranza->id_empresa       = $request->empresa;
         $cobranza->id_sector        = $request->sector;
-        // if ($request->id_cliente!==null && $request->id_cliente!=='') {
-        //     $cobranza->id_cliente       = $request->id_cliente;
-        // }else{
-        //     $cobranza->id_cliente_agil      = $request->id_contribuyente;
-        // }
+
         $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
         $cobranza->id_cliente_agil  = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null) ;
 
@@ -466,6 +464,8 @@ class RegistroController extends Controller
             }
 
         }
+
+
 
         return response()->json([
             "success"=>true,
@@ -921,9 +921,6 @@ class RegistroController extends Controller
         $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
         $cobranza->id_cliente_agil       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null);
 
-        // $cobranza->id_cliente       = $request->id_cliente;
-        // $cobranza->id_cliente_agil       = $request->id_contribuyente;
-
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
         $cobranza->fuente_financ    = $request->ff;
@@ -974,6 +971,14 @@ class RegistroController extends Controller
             }
 
         }
+        DB::table('mgcp_ordenes_compra.oc_directas')
+            ->where('nro_orden', str_replace(' ','',$cobranza->ocam))
+            ->update(
+            [
+                'monto_total' => $cobranza->importe,
+                'factura' => $cobranza->factura
+            ]
+        );
 
         return response()->json([
             "success"=>true,
@@ -1184,6 +1189,8 @@ class RegistroController extends Controller
 
         $penalidad =array();
         $registro_cobranza = RegistroCobranza::find($request->id_cobranza_penal);
+
+        $estado = ('PENALIDAD'==$request->tipo_penal?3:1);
         if (intval($request->id) === 0) {
             $penalidad = new Penalidad();
         }else{
@@ -1194,8 +1201,8 @@ class RegistroController extends Controller
         $penalidad->monto           = $request->importe_penal;
         $penalidad->documento       = $request->doc_penal;
         $penalidad->fecha           = $request->fecha_penal;
-        $penalidad->observacion   = $request->obs_penal;
-        $penalidad->estado          = 1;
+        $penalidad->observacion     = $request->obs_penal;
+        $penalidad->estado          = $estado;
         $penalidad->fecha_registro  = date('Y-m-d H:i:s');
         $penalidad->id_registro_cobranza  = $request->id_cobranza_penal;
         $penalidad->id_oc  = $registro_cobranza->id_oc;
@@ -1636,7 +1643,53 @@ class RegistroController extends Controller
         return Excel::download(new CobranzasExpor($data), 'cobranza.xlsx');
         // return response()->json($data);
     }
-
+    public function exportarExcelPrueba(Request $request)
+    {
+        // $data = json_encode($request->data);
+        $request = json_decode($request->data);
+        $data = RegistroCobranza::where('registros_cobranzas.estado',1)
+            ->select(
+                'registros_cobranzas.*',
+                'sector.nombre AS nombre_sector',
+            )
+            ->join('cobranza.sector', 'sector.id_sector','=', 'registros_cobranzas.id_sector')
+            ->orderBy('id_registro_cobranza', 'desc');
+            if (!empty($request->empresa)) {
+                $empresa = DB::table('contabilidad.adm_contri')
+                ->where('id_contribuyente',$request->empresa)
+                ->first();
+                $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente)->orWhere('registros_cobranzas.id_empresa_old',$empresa->id_empresa_gerencial_old);
+                // $data = $data->where('id_empresa_old',$empresa->id_empresa_gerencial_old);
+            }
+            if (!empty($request->estado)) {
+                $data = $data->where('registros_cobranzas.id_estado_doc',$request->estado);
+            }
+            if (!empty($request->fase)) {
+                $fase_text = $request->fase;
+                $data = $data->join('cobranza.cobranza_fase', function ($join) use($fase_text){
+                    $join->on('cobranza_fase.id_registro_cobranza', '=', 'registros_cobranzas.id_registro_cobranza')
+                        ->orOn('cobranza_fase.id_cobranza', '=', 'registros_cobranzas.id_cobranza_old');
+                });
+                $data->where('cobranza_fase.fase', 'like' ,'%'.$fase_text.'%')
+                ->where('cobranza_fase.estado',1);
+            }
+            if (!empty($request->fecha_emision_inicio)) {
+                $data = $data->where('registros_cobranzas.fecha_emision','>=',$request->fecha_emision_inicio);
+            }
+            if (!empty($request->fecha_emision_fin)) {
+                $data = $data->where('registros_cobranzas.fecha_emision','<=',$request->fecha_emision_fin);
+            }
+            if (!empty($request->simbolo) && (int)$request->simbolo=== 1 ) {
+                $importe = $request->importe!==''||$request->importe!==null?$request->importe:0;
+                $data = $data->where('registros_cobranzas.importe','<',(int) $importe);
+            }
+            if (!empty($request->simbolo) && (int)$request->simbolo=== 2 ) {
+                $importe = $request->importe!==''||$request->importe!==null?$request->importe:0;
+                $data = $data->where('registros_cobranzas.importe','>',(int) $importe);
+            }
+        $data=$data->get();
+        return response()->json($data);exit;
+    }
     public function scriptMatchCobranzaVendedor()
     {
         $vendedores_gerencial   = DB::table('gerencial.vendedor')->get();
@@ -2822,5 +2875,17 @@ class RegistroController extends Controller
         }
         // return $tipo_cambios;exit;
         return Excel::download(new CobranzaPowerBIExport($data), 'cobranza-power-bi.xlsx');
+    }
+    public function cambioEstadoPenalidad(Request $request)
+    {
+        $penalidad = Penalidad::find($request->id);
+        $penalidad->estado = 4;
+        $penalidad->motivo = $request->motivo;
+        $penalidad->save();
+        $penalidades = Penalidad::where('estado','!=',7)->where('tipo','PENALIDAD')->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
+        return response()->json([
+            "success"=>true,
+            "data"=>$penalidades
+        ],200);
     }
 }
