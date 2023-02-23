@@ -7,6 +7,8 @@ use App\Exports\RegistroPagosExport;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Almacen\AdjuntoDetalleRequerimiento;
+use App\Models\Almacen\AdjuntoRequerimiento;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\PagoCuota;
 use App\Models\Logistica\PagoCuotaDetalle;
@@ -844,6 +846,38 @@ class RegistroPagoController extends Controller
         ->get();
 
         return response()->json(['adjuntos_pago'=>$adjuntos_pagos,'adjuntos_pagos_complementarios'=>$adjuntos_pagos_complementarios]);
+    }
+    function verAdjuntosRequerimientoDeOrden($id_orden)
+    {
+
+        $orden = Orden::with(['detalle' => function ($q) {
+            $q->where('log_det_ord_compra.estado', '!=',7);
+        }])->find($id_orden);
+        
+        $idRequerimientoList=[];
+        $idDetalleRequerimientoList=[];
+        $adjuntoPadre=[];
+        $adjuntoDetalle=[];
+        if($orden){
+            if(isset($orden->requerimientos)){
+                foreach (($orden->requerimientos) as $key => $value) {
+                    $idRequerimientoList[]=$value->id_requerimiento;
+                }
+            }
+            if(isset($orden->detalle)){
+                foreach (($orden->detalle) as $key => $value) {
+                    $idDetalleRequerimientoList[]=$value->id_detalle_requerimiento;
+                }
+            }
+        }
+        if(count($idRequerimientoList)>0){
+            $adjuntoPadre= AdjuntoRequerimiento::whereIn('id_requerimiento',$idRequerimientoList)->where('alm_req_adjuntos.estado','!=',7)->get();
+        }
+        if(count($idDetalleRequerimientoList)>0){
+            $adjuntoDetalle= AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->where('alm_det_req_adjuntos.estado','!=',7)->get();
+        }
+
+        return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle]);
     }
 
     function listarAdjuntosPago($id_requerimiento_pago)
