@@ -283,6 +283,7 @@ class IncidenciaController extends Controller
 
     function actualizarIncidencia(Request $request)
     {
+        // return $request->all();exit;
         try {
             DB::beginTransaction();
             $mensaje = '';
