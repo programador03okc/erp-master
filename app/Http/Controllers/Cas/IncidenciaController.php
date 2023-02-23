@@ -45,9 +45,9 @@ class IncidenciaController extends Controller
         $tiposProducto = IncidenciaProductoTipo::where('estado', 1)->get();
         $empresas = Empresa::mostrar();
 
-        $cas_marca = CasMarca::where('estado',1)->get();
-        $cas_modelo = CasModelo::where('estado',1)->get();
-        $cas_producto = CasProducto::where('estado',1)->get();
+        $cas_marca = CasMarca::where('estado',1)->orderBy('descripcion','ASC')->get();
+        $cas_modelo = CasModelo::where('estado',1)->orderBy('descripcion','ASC')->get();
+        $cas_producto = CasProducto::where('estado',1)->orderBy('descripcion','ASC')->get();
 
         return view('cas/incidencias/incidencia', compact(
             'tipoFallas',
