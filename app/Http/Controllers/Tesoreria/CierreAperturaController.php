@@ -278,19 +278,12 @@ class CierreAperturaController extends Controller
         return $rspta;
     }
 
-    static function consultarPeriodoOperativo($fecha, $id_almacen)
+    static function consultarPeriodoOperativo($yyyy, $id_empresa)
     {
-        $yyyy = date('Y', strtotime($fecha));
-        $m = date('n', strtotime($fecha));
-
-        $periodo=DB::table('contabilidad.periodo')
-        ->select('periodo.estado_operativo','periodo_estado.nombre')
-        ->join('contabilidad.periodo_estado','periodo_estado.id_estado','=','periodo.estado_operativo')
-        ->where('periodo.anio',$yyyy)
-        ->where('periodo.nro_mes',$m)
-        ->when(($id_almacen >0), function ($query) use($id_almacen){
-            return $query->whereRaw('periodo.id_almacen = ' . $id_almacen);
-        })
+        $periodo=DB::table('contabilidad.periodo_operativo')
+        ->select('periodo_operativo.estado_operativo')
+        ->where('periodo_operativo.anio',$yyyy)
+        ->where('periodo_operativo.id_empresa',$id_empresa)
         ->first();
 
         $rspta = ($periodo == null ? 1 : $periodo->estado_operativo);

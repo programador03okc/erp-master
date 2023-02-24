@@ -37,6 +37,7 @@ use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Estado;
 use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
+use App\Models\Administracion\Sede;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\almacen\Transformacion;
@@ -2627,9 +2628,11 @@ class OrdenController extends Controller
             DB::beginTransaction();
 
             // evaluar si el estado del cierre periodo
-            $periodo = Periodo::find($request->id_periodo);
-            $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
-            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+ 
+            $añoPeriodo= Periodo::find($request->id_periodo)->descripcion;
+            $idEmpresa = Sede::find($request->id_sede)->id_empresa;
+            // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo, $idEmpresa);
             if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
                 return response()->json(['id_orden_compra' => 0, 'codigo' => '','id_tp_documento' => '', 'tipo_estado' => 'warning', 
                 'lista_estado_requerimiento' => null,
@@ -3122,9 +3125,10 @@ class OrdenController extends Controller
             DB::beginTransaction();
 
             // evaluar si el estado del cierre periodo
-            $periodo = Periodo::find($request->id_periodo);
-            $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
-            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+
+            $añoPeriodo= Periodo::find($request->id_periodo)->descripcion;
+            $idEmpresa = Sede::find($request->id_sede)->id_empresa;
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo,$idEmpresa);
             if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
                 return response()->json(['id_orden_compra' => 0, 'codigo' => '','id_tp_documento' => '', 'tipo_estado' => 'warning', 'mensaje' => 'No se puede actualizar la orden cuando el periodo operativo esta cerrado']);
             }
@@ -3271,7 +3275,7 @@ class OrdenController extends Controller
 
                 $detalleParaPresupuestoSumaArray=[];
                 $detalleParaPresupuestoRestaArray=[];
-                Debugbar::info($detalleArray);
+                // Debugbar::info($detalleArray);
                 foreach ($detalleArray as $key => $det) {
                     if(isset($det->operacion_item_para_presupuesto) && $det->operacion_item_para_presupuesto =='suma'){
                         $detalleParaPresupuestoSumaArray[]=$det;
@@ -3280,8 +3284,8 @@ class OrdenController extends Controller
                         $detalleParaPresupuestoRestaArray[]=$det;
                     }
                 }
-                Debugbar::info($detalleParaPresupuestoSumaArray);
-                Debugbar::info($detalleParaPresupuestoRestaArray);
+                // Debugbar::info($detalleParaPresupuestoSumaArray);
+                // Debugbar::info($detalleParaPresupuestoRestaArray);
 
                 $afectaPresupuestoInternoSuma = (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','orden',$orden->id_orden_compra, $detalleParaPresupuestoSumaArray);
                 $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra, $detalleParaPresupuestoRestaArray);
@@ -3918,6 +3922,15 @@ class OrdenController extends Controller
             $idDetalleRequerimientoList = [];
             $detalleOrden = OrdenCompraDetalle::where([["id_orden_compra", $request->idOrden], ["estado", "!=", 7]])->get();
             $orden = Orden::where("id_orden_compra", $request->idOrden)->first();
+
+            // verificar cierre de periodo operativo
+            $añoPeriodo= Periodo::find($orden->id_periodo)->descripcion;
+            $idEmpresa = Sede::find($orden->id_sede)->id_empresa;
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo,$idEmpresa);
+            if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
+                return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'warning', 'mensaje' => 'No se puede anular la orden cuando el periodo operativo esta cerrado']);
+            }
+
             foreach ($detalleOrden as $do) {
                 if ($do->id_detalle_requerimiento > 0) {
                     $idDetalleRequerimientoList[] = $do->id_detalle_requerimiento;
