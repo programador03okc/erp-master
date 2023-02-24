@@ -1430,7 +1430,7 @@ class RegistroController extends Controller
                 $registro_cobranza->oc_fisica        = $value->oc;
                 $registro_cobranza->save();
 
-                if ($success===true) {
+                if ($registro_cobranza) {
                     $programaciones_pagos = DB::table('gerencial.programacion_pago')->where('id_cobranza',$value->id_cobranza)->get();
                     foreach ($programaciones_pagos as $key_programaciones_pagos => $value_programaciones_pagos) {
                         $programacion_pago = new ProgramacionPago();
