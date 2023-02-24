@@ -2115,6 +2115,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('revertirEnvio', 'Tesoreria\RegistroPagoController@revertirEnvio')->name('revertir-envio');
 				Route::get('verAdjuntos/{id}', 'Tesoreria\RegistroPagoController@verAdjuntos')->name('ver-adjuntos');
 				Route::get('verAdjuntosRegistroPagoOrden/{id}', 'Tesoreria\RegistroPagoController@verAdjuntosRegistroPagoOrden')->name('ver-adjuntos-registro-pago-orden');
+				Route::get('verAdjuntosRequerimientoDeOrden/{id}', 'Tesoreria\RegistroPagoController@verAdjuntosRequerimientoDeOrden')->name('ver-adjuntos-requerimiento-de-orden');
 				Route::post('anular-adjunto-requerimiento-pago-tesoreria', 'Tesoreria\RegistroPagoController@anularAdjuntoTesoreria');
 				Route::get('listar-archivos-adjuntos-pago/{id}', 'Logistica\RequerimientoController@listarArchivoAdjuntoPago');
 				Route::get('lista-adjuntos-pago/{idRequerimientoPago}', 'Tesoreria\RegistroPagoController@listarAdjuntosPago');

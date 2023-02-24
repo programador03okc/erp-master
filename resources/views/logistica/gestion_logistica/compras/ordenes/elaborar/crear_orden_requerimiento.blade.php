@@ -82,7 +82,7 @@ Orden de compra / servicio
                             </select>
                         </div>
 
-                        <div class="col-md-2" id="group-fecha_orden">
+                        <div class="col-md-1" id="group-fecha_orden">
                             <h5>Moneda</h5>
                             <select class="form-control activation handleChangeMoneda" name="id_moneda">
                                 @foreach ($tp_moneda as $tpm)
@@ -95,10 +95,21 @@ Orden de compra / servicio
                             <h5>Código orden softlink</h5>
                             <input class="form-control activation" name="codigo_orden" type="text" placeholder="" readonly>
                         </div>
+                        
+                        <div class="col-md-1" id="group-periodo_orden">
+                            <h5>Periodo</h5>
+                            <select class="form-control activation handleChangePeriodo" name="id_periodo">
+                                <option value="" disabled>Elija una opción</option>
+                                @foreach ($periodos as $periodo)
+                                    <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="col-md-2" id="group-fecha_emision_orden">
                             <h5>Fecha emisión</h5>
                             <div style="display:flex">
-                                <input class="form-control activation" name="fecha_emision" type="datetime-local" value={{ date('Y-m-d\TH:i') }}>
+                                <input class="form-control  handleChangeFechaEmision activation" name="fecha_emision" type="datetime-local" value={{ date('Y-m-d\TH:i') }}>
                                 <button type="button" class="group-text handleClickFechaHoy">
                                     HOY
                                 </button>

@@ -264,6 +264,14 @@ class RequerimientoPagoController extends Controller
         DB::beginTransaction();
         try {
 
+            // evaluar si el estado del cierre periodo
+            $periodo= Periodo::find($request->periodo);
+            $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+            if($estadoOperativo!=1){//1:abierto, 2:cerrado, 3:Declarado
+                return response()->json(['id_requerimiento_pago' => 0, 'codigo' => '', 'mensaje' => 'No se puede generar el requerimiento cuando el periodo operativo está cerrado']);
+            }
+
             $requerimientoPago = new RequerimientoPago();
             $requerimientoPago->id_usuario = Auth::user()->id_usuario;
             $requerimientoPago->concepto = strtoupper($request->concepto);
@@ -614,6 +622,15 @@ class RequerimientoPagoController extends Controller
     {
         DB::beginTransaction();
         try {
+
+            // evaluar si el estado del cierre periodo
+            $periodo= Periodo::find($request->periodo);
+            $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+            if($estadoOperativo!=1){//1:abierto, 2:cerrado, 3:Declarado
+                return response()->json(['id_requerimiento_pago' => 0, 'mensaje' => 'No se puede actualizar el requerimiento cuando el periodo operativo está cerrado']);
+            }
+
             $requerimientoPago = RequerimientoPago::where("id_requerimiento_pago", $request->id_requerimiento_pago)->first();
             $requerimientoPago->id_usuario = Auth::user()->id_usuario;
             $requerimientoPago->concepto = strtoupper($request->concepto);

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\ProyectosController;
+use App\Http\Controllers\Tesoreria\CierreAperturaController;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Area;
 use App\Models\Administracion\Division;
@@ -100,29 +101,29 @@ class RequerimientoController extends Controller
         $categoria_adjunto = CategoriaAdjunto::mostrar();
         $tipo_cambio = (new SaldosController)->tipo_cambio_compra(new Carbon());
 
-        $array_accesos=[];
-        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
-            array_push($array_accesos,$value->id_acceso);
+            array_push($array_accesos, $value->id_acceso);
         }
 
-        $array_accesos_botonera=array();
-        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado','=',1)
-        ->select('accesos.*')
-        ->join('configuracion.accesos','accesos.id_acceso','=','accesos_usuarios.id_acceso')
-        ->where('accesos_usuarios.id_usuario',Auth::user()->id_usuario)
-        ->where('accesos_usuarios.id_modulo',57)
-        ->where('accesos_usuarios.id_padre',54)
-        ->get();
+        $array_accesos_botonera = array();
+        $accesos_botonera = AccesosUsuarios::where('accesos_usuarios.estado', '=', 1)
+            ->select('accesos.*')
+            ->join('configuracion.accesos', 'accesos.id_acceso', '=', 'accesos_usuarios.id_acceso')
+            ->where('accesos_usuarios.id_usuario', Auth::user()->id_usuario)
+            ->where('accesos_usuarios.id_modulo', 57)
+            ->where('accesos_usuarios.id_padre', 54)
+            ->get();
         foreach ($accesos_botonera as $key => $value) {
             $value->accesos;
-            array_push($array_accesos_botonera,$value->accesos->accesos_grupo);
+            array_push($array_accesos_botonera, $value->accesos->accesos_grupo);
         }
         $modulo = 'necesidades';
 
-        $presupuestoInternoList=(new PresupuestoInternoController)->comboPresupuestoInterno(0,0);
+        $presupuestoInternoList = (new PresupuestoInternoController)->comboPresupuestoInterno(0, 0);
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones','array_accesos','array_accesos_botonera','modulo','presupuestoInternoList'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones', 'array_accesos', 'array_accesos_botonera', 'modulo', 'presupuestoInternoList'));
     }
 
 
@@ -225,94 +226,93 @@ class RequerimientoController extends Controller
     public function listaDetalleRequerimiento($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
     {
         $detalleRequerimientoList = DB::table('almacen.alm_det_req')
-        ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-        ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
-        ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
-        ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
-        ->leftJoin('configuracion.sis_grupo', 'alm_req.id_grupo', '=', 'sis_grupo.id_grupo')
-        ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
-        ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
-        ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
-        ->leftJoin('administracion.adm_empresa', 'alm_req.id_empresa', '=', 'adm_empresa.id_empresa')
-        ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
-        ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
-        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
-        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
-        ->leftJoin('almacen.alm_tp_req', 'alm_tp_req.id_tipo_requerimiento', '=', 'alm_req.id_tipo_requerimiento')
-        ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
-        ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
-        ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
+            ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
+            ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
+            ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
+            ->leftJoin('configuracion.sis_grupo', 'alm_req.id_grupo', '=', 'sis_grupo.id_grupo')
+            ->leftJoin('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_req.id_sede')
+            ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
+            ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
+            ->leftJoin('administracion.adm_empresa', 'alm_req.id_empresa', '=', 'adm_empresa.id_empresa')
+            ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
+            ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+            ->leftJoin('almacen.alm_tp_req', 'alm_tp_req.id_tipo_requerimiento', '=', 'alm_req.id_tipo_requerimiento')
+            ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
+            ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
+            ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
 
-        ->select(
+            ->select(
 
-            'alm_prod.descripcion as descripcion_producto',
-            'alm_det_req.descripcion as descripcion_detalle_requerimiento',
-            'alm_det_req.motivo',
-            'alm_det_req.cantidad',
-            'alm_det_req.precio_unitario',
-            'alm_det_req.subtotal',
-            'alm_det_req.fecha_registro',
-            'adm_prioridad.descripcion as prioridad',
-            'alm_tp_req.descripcion AS tipo_requerimiento',
-            'alm_req.codigo',
-            'oportunidades.codigo_oportunidad',
-            'alm_req.concepto',
-            'alm_req.codigo',
-            'alm_req.observacion',
-            'sis_moneda.simbolo as simbolo_moneda',
-            'sis_sede.codigo as sede',
-            'sis_sede.descripcion as descripcion_empresa_sede',
-            'adm_contri.razon_social as empresa_razon_social',
-            'sis_identi.descripcion as empresa_tipo_documento',
-            'proy_proyecto.descripcion AS descripcion_proyecto',
-            'sis_grupo.descripcion as grupo',
-            'division.descripcion as division',
-            'alm_req.monto_total',
-            'presup_par.codigo as partida',
-            'presup_par.id_partida',
-            'centro_costo.codigo as centro_costo',
-            'centro_costo.id_centro_costo',
-            'adm_estado_doc.estado_doc as estado_requerimiento'
+                'alm_prod.descripcion as descripcion_producto',
+                'alm_det_req.descripcion as descripcion_detalle_requerimiento',
+                'alm_det_req.motivo',
+                'alm_det_req.cantidad',
+                'alm_det_req.precio_unitario',
+                'alm_det_req.subtotal',
+                'alm_det_req.fecha_registro',
+                'adm_prioridad.descripcion as prioridad',
+                'alm_tp_req.descripcion AS tipo_requerimiento',
+                'alm_req.codigo',
+                'oportunidades.codigo_oportunidad',
+                'alm_req.concepto',
+                'alm_req.codigo',
+                'alm_req.observacion',
+                'sis_moneda.simbolo as simbolo_moneda',
+                'sis_sede.codigo as sede',
+                'sis_sede.descripcion as descripcion_empresa_sede',
+                'adm_contri.razon_social as empresa_razon_social',
+                'sis_identi.descripcion as empresa_tipo_documento',
+                'proy_proyecto.descripcion AS descripcion_proyecto',
+                'sis_grupo.descripcion as grupo',
+                'division.descripcion as division',
+                'alm_req.monto_total',
+                'presup_par.codigo as partida',
+                'presup_par.id_partida',
+                'centro_costo.codigo as centro_costo',
+                'centro_costo.id_centro_costo',
+                'adm_estado_doc.estado_doc as estado_requerimiento'
 
-        )
-        ->when(($meOrAll === 'ME'), function ($query) {
-            $idUsuario = Auth::user()->id_usuario;
-            return $query->whereRaw('alm_req.id_usuario = ' . $idUsuario);
-        })
-        ->when(($meOrAll === 'ALL'), function ($query) {
-            return $query->whereRaw('alm_req.id_usuario > 0');
-        })
-        ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
-            return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
-        })
-        ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
-            return $query->whereRaw('alm_req.id_sede = ' . $idSede);
-        })
-        ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
-            return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
-        })
-        ->when((intval($idDivision) > 0), function ($query)  use ($idDivision) {
-            return $query->whereRaw('alm_req.division_id = ' . $idDivision);
-        })
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
-            return $query->where('alm_req.fecha_registro', '>=', $fechaRegistroDesde);
-        })
-        ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
-            return $query->where('alm_req.fecha_registro', '<=', $fechaRegistroHasta);
-        })
-        ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
-            return $query->whereBetween('alm_req.fecha_registro', [$fechaRegistroDesde, $fechaRegistroHasta]);
-        })
+            )
+            ->when(($meOrAll === 'ME'), function ($query) {
+                $idUsuario = Auth::user()->id_usuario;
+                return $query->whereRaw('alm_req.id_usuario = ' . $idUsuario);
+            })
+            ->when(($meOrAll === 'ALL'), function ($query) {
+                return $query->whereRaw('alm_req.id_usuario > 0');
+            })
+            ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
+                return $query->whereRaw('alm_req.id_empresa = ' . $idEmpresa);
+            })
+            ->when((intval($idSede) > 0), function ($query)  use ($idSede) {
+                return $query->whereRaw('alm_req.id_sede = ' . $idSede);
+            })
+            ->when((intval($idGrupo) > 0), function ($query)  use ($idGrupo) {
+                return $query->whereRaw('sis_grupo.id_grupo = ' . $idGrupo);
+            })
+            ->when((intval($idDivision) > 0), function ($query)  use ($idDivision) {
+                return $query->whereRaw('alm_req.division_id = ' . $idDivision);
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
+                return $query->where('alm_req.fecha_registro', '>=', $fechaRegistroDesde);
+            })
+            ->when((($fechaRegistroDesde == 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroHasta) {
+                return $query->where('alm_req.fecha_registro', '<=', $fechaRegistroHasta);
+            })
+            ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta != 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde, $fechaRegistroHasta) {
+                return $query->whereBetween('alm_req.fecha_registro', [$fechaRegistroDesde, $fechaRegistroHasta]);
+            })
 
-        ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
-            return $query->whereRaw('alm_req.estado = ' . $idEstado);
-        })
-        ->where([['alm_det_req.estado','!=',7],['alm_req.estado','!=',7]])
-        ->orderBy('alm_det_req.fecha_registro','desc')
-        ->get();
+            ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
+                return $query->whereRaw('alm_req.estado = ' . $idEstado);
+            })
+            ->where([['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]])
+            ->orderBy('alm_det_req.fecha_registro', 'desc')
+            ->get();
 
         return $detalleRequerimientoList;
-
     }
 
     public function mostrarRequerimiento($id, $codigo)
@@ -643,7 +643,7 @@ class RequerimientoController extends Controller
                     DB::raw("(SELECT (presup_par.descripcion)
                     FROM finanzas.presup_par
                     WHERE  presup_par.id_partida = alm_det_req.partida ) AS descripcion_partida"),
-                    
+
                     // partida presupuesto interno 
                     DB::raw("(SELECT (presupuesto_interno_detalle.partida)
                     FROM finanzas.presupuesto_interno_detalle
@@ -652,13 +652,13 @@ class RequerimientoController extends Controller
                     FROM finanzas.presupuesto_interno_detalle
                     WHERE  presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.partida ) AS descripcion_partida_presupuesto_interno"),
                     // 
-                    
+
                     DB::raw("(SELECT (presup_par.importe_total)
                     FROM finanzas.presup_par
                     WHERE  presup_par.id_partida = alm_det_req.partida ) AS presupuesto_total_partida")
                 )
                 ->where([
-                    ['alm_det_req.estado','!=',7],
+                    ['alm_det_req.estado', '!=', 7],
                     ['alm_det_req.id_requerimiento', '=', $requerimiento[0]['id_requerimiento']]
 
                 ])
@@ -692,8 +692,8 @@ class RequerimientoController extends Controller
                         'subcategoria'              => $data->subcategoria,
                         'cantidad'                  => $data->cantidad,
                         'suma_transferencias'       => $data->suma_transferencias,
-                        'id_unidad_medida'          => $data->alm_prod_id_unidad_medida != null ?$data->alm_prod_id_unidad_medida : $data->id_unidad_medida,
-                        'unidad_medida'             => $data->alm_prod_unidad_medida!=null ? $data->alm_prod_unidad_medida: $data->unidad_medida,
+                        'id_unidad_medida'          => $data->alm_prod_id_unidad_medida != null ? $data->alm_prod_id_unidad_medida : $data->id_unidad_medida,
+                        'unidad_medida'             => $data->alm_prod_unidad_medida != null ? $data->alm_prod_unidad_medida : $data->unidad_medida,
                         'precio_unitario'           => $data->precio_unitario,
                         'subtotal'                  => $data->subtotal,
                         'descripcion_adicional'     => $data->descripcion_adicional,
@@ -778,26 +778,26 @@ class RequerimientoController extends Controller
 
 
 
-        $historialAprobacionList[]=[
-            'accion'=> "Elaborado",
-            'descripcion_rol'=> null,
-            'detalle_observacion'=> null,
-            'fecha_vobo'=> $requerimiento[0]['fecha_registro'],
-            'id_aprobacion'=> 4689,
-            'id_flujo'=> null,
-            'id_operacion'=> null,
-            'id_rol'=> null,
-            'id_usuario'=> $requerimiento[0]['id_usuario'],
-            'id_vobo'=> 7,
-            'nombre_corto'=> $requerimiento[0]['nombre_corto_usuario'],
-            'nombre_flujo'=> null,
-            'nombre_usuario'=> $requerimiento[0]['persona'],
-            'orden'=> null,
-            'tiene_sustento'=> false
-        ];
+            $historialAprobacionList[] = [
+                'accion' => "Elaborado",
+                'descripcion_rol' => null,
+                'detalle_observacion' => null,
+                'fecha_vobo' => $requerimiento[0]['fecha_registro'],
+                'id_aprobacion' => 4689,
+                'id_flujo' => null,
+                'id_operacion' => null,
+                'id_rol' => null,
+                'id_usuario' => $requerimiento[0]['id_usuario'],
+                'id_vobo' => 7,
+                'nombre_corto' => $requerimiento[0]['nombre_corto_usuario'],
+                'nombre_flujo' => null,
+                'nombre_usuario' => $requerimiento[0]['persona'],
+                'orden' => null,
+                'tiene_sustento' => false
+            ];
 
         foreach ((Aprobacion::getVoBo($num_doc)['data']) as $key => $value) {
-            $historialAprobacionList[] =$value ;
+            $historialAprobacionList[] = $value;
         }
 
         $data = [
@@ -825,29 +825,37 @@ class RequerimientoController extends Controller
 
             $count = count($request->descripcion);
             $montoTotal = 0;
-            $cantidadItemConTransformacion=0;
+            $cantidadItemConTransformacion = 0;
             $cantidadTipoDetalleProducto = 0;
             $cantidadTipoDetalleServicio = 0;
-            $idTipoDetalle=null;
+            $idTipoDetalle = null;
             for ($i = 0; $i < $count; $i++) {
-                if(isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1){
+                if (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i] == 1) {
                     $cantidadItemConTransformacion++;
                 }
-                if(isset($request->tipoItem[$i]) && $request->tipoItem[$i] > 0){
-                    if(intval($request->tipoItem[$i]) ==1){
+                if (isset($request->tipoItem[$i]) && $request->tipoItem[$i] > 0) {
+                    if (intval($request->tipoItem[$i]) == 1) {
                         $cantidadTipoDetalleProducto++;
-                    }else if(intval($request->tipoItem[$i]) ==2){
+                    } else if (intval($request->tipoItem[$i]) == 2) {
                         $cantidadTipoDetalleServicio++;
                     }
                 }
             }
 
-            if($cantidadTipoDetalleProducto>0 && $cantidadTipoDetalleServicio==0 ){
-                $idTipoDetalle= 1;
-            }else if($cantidadTipoDetalleProducto==0 && $cantidadTipoDetalleServicio>0 ){
-                $idTipoDetalle= 2;
-            }else{
-                $idTipoDetalle= 3;
+            if ($cantidadTipoDetalleProducto > 0 && $cantidadTipoDetalleServicio == 0) {
+                $idTipoDetalle = 1;
+            } else if ($cantidadTipoDetalleProducto == 0 && $cantidadTipoDetalleServicio > 0) {
+                $idTipoDetalle = 2;
+            } else {
+                $idTipoDetalle = 3;
+            }
+
+            // evaluar si el estado del cierre periodo
+            $periodo = Periodo::find($request->periodo);
+            $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+            if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
+                return response()->json(['id_requerimiento' => 0, 'codigo' => '', 'mensaje' => 'No se puede generar el requerimiento cuando el periodo operativo está cerrado']);
             }
 
             $requerimiento = new Requerimiento();
@@ -886,14 +894,14 @@ class RequerimientoController extends Controller
             $requerimiento->fecha_entrega = $request->fecha_entrega;
             $requerimiento->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
             $requerimiento->tipo_cuadro = $request->tipo_cuadro;
-            $requerimiento->tiene_transformacion = $cantidadItemConTransformacion>0?true:false;
+            $requerimiento->tiene_transformacion = $cantidadItemConTransformacion > 0 ? true : false;
             $requerimiento->fuente_id = $request->fuente;
             $requerimiento->fuente_det_id = $request->fuente_det;
             $requerimiento->division_id = $request->division;
             $requerimiento->trabajador_id = $request->id_trabajador;
-            $requerimiento->id_incidencia = isset($request->id_incidencia) && $request->id_incidencia!=null ? $request->id_incidencia : null;
+            $requerimiento->id_incidencia = isset($request->id_incidencia) && $request->id_incidencia != null ? $request->id_incidencia : null;
             $requerimiento->id_tipo_detalle = $idTipoDetalle;
-            $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno:null;
+            $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno : null;
             $requerimiento->save();
             $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimiento1;
             $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimiento2;
@@ -919,7 +927,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1)?true:false;
+                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i] == 1) ? true : false;
                 $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
@@ -1178,92 +1186,100 @@ class RequerimientoController extends Controller
         return response()->json($detalleAdjuntos);
     }
 
-    public function obtenerIdDocumento($tipoDocumento,$idReq){
+    public function obtenerIdDocumento($tipoDocumento, $idReq)
+    {
         $result = [];
 
-        $documento = Documento::where([['id_doc',$idReq],['id_tp_documento',$tipoDocumento]])->first();
+        $documento = Documento::where([['id_doc', $idReq], ['id_tp_documento', $tipoDocumento]])->first();
 
-        if( !empty($documento)){
-            $result =[
-                'id'=> $documento->id_doc_aprob,
-                'mensaje'=>'Id encontrado',
-                'estado'=>'success'
-        ];
-
-        }else{
-            $result =[
-            'id'=>0,
-            'mensaje'=>'No se encontro el id',
-            'estado'=>'error'
-        ];
-
+        if (!empty($documento)) {
+            $result = [
+                'id' => $documento->id_doc_aprob,
+                'mensaje' => 'Id encontrado',
+                'estado' => 'success'
+            ];
+        } else {
+            $result = [
+                'id' => 0,
+                'mensaje' => 'No se encontro el id',
+                'estado' => 'error'
+            ];
         }
 
         return $result;
-
     }
 
-    public function getDescripcionEstado($idEstado){
-       return ( Estado::find($idEstado)->estado_doc)??'';
+    public function getDescripcionEstado($idEstado)
+    {
+        return (Estado::find($idEstado)->estado_doc) ?? '';
     }
 
     public function actualizarRequerimiento(Request $request)
     {
         // dd($request->all());
         // exit();
+
+        // evaluar si el estado del cierre periodo
+        $periodo = Periodo::find($request->periodo);
+        $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
+        $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+        if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
+            return response()->json(['id_requerimiento' => 0, 'codigo' => '', 'mensaje' => 'No se puede actualizar el requerimiento cuando el periodo operativo está cerrado']);
+        }
+
         $nombreCompletoUsuario = Usuario::find(Auth::user()->id_usuario)->trabajador->postulante->persona->nombre_completo;
 
         $count = count($request->descripcion);
 
-        $cantidadItemConTransformacion=0;
+        $mensaje = '';
+        $cantidadItemConTransformacion = 0;
         $cantidadTipoDetalleProducto = 0;
         $cantidadTipoDetalleServicio = 0;
-        $idTipoDetalle=null;
+        $idTipoDetalle = null;
 
         for ($i = 0; $i < $count; $i++) {
-            if(isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1){
+            if (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i] == 1) {
                 $cantidadItemConTransformacion++;
             }
-            if(isset($request->tipoItem[$i]) && $request->tipoItem[$i] > 0){
-                if(intval($request->tipoItem[$i]) ==1){
+            if (isset($request->tipoItem[$i]) && $request->tipoItem[$i] > 0) {
+                if (intval($request->tipoItem[$i]) == 1) {
                     $cantidadTipoDetalleProducto++;
-                }else if(intval($request->tipoItem[$i]) ==2){
+                } else if (intval($request->tipoItem[$i]) == 2) {
                     $cantidadTipoDetalleServicio++;
                 }
             }
         }
 
-        if($cantidadTipoDetalleProducto>0 && $cantidadTipoDetalleServicio==0 ){
-            $idTipoDetalle= 1;
-        }else if($cantidadTipoDetalleProducto==0 && $cantidadTipoDetalleServicio>0 ){
-            $idTipoDetalle= 2;
-        }else{
-            $idTipoDetalle= 3;
+        if ($cantidadTipoDetalleProducto > 0 && $cantidadTipoDetalleServicio == 0) {
+            $idTipoDetalle = 1;
+        } else if ($cantidadTipoDetalleProducto == 0 && $cantidadTipoDetalleServicio > 0) {
+            $idTipoDetalle = 2;
+        } else {
+            $idTipoDetalle = 3;
         }
 
         $requerimiento = Requerimiento::where("id_requerimiento", $request->id_requerimiento)->first();
-        $nuevoEstado=1;
+        $nuevoEstado = 1;
         if ($requerimiento->estado == 3) { // si el estado actual es observado
-            $tipo_modena = TipoCambio::where('estado',1)->orderBy('id_tp_cambio','DESC')->first();
+            $tipo_modena = TipoCambio::where('estado', 1)->orderBy('id_tp_cambio', 'DESC')->first();
             // return $tipo_modena->compra;exit;
             $soles_request = $request->monto_total;
             if ($request->moneda == 2) {
                 $soles_request = $request->monto_total *  $tipo_modena->compra;
             }
             $soles_requerimiento = $requerimiento->monto_total;
-            if ($requerimiento->id_moneda ==2) {
+            if ($requerimiento->id_moneda == 2) {
                 $soles_requerimiento = $requerimiento->monto_total *  $tipo_modena->compra;
             }
 
             // if($request->monto_total <= $requerimiento->monto_total){
 
-            if(intval($soles_request) <= intval($soles_requerimiento)){
+            if (intval($soles_request) <= intval($soles_requerimiento)) {
                 $requerimiento->estado = $requerimiento->estado_anterior;
-                $nuevoEstado=$requerimiento->estado_anterior;
-            }else{
+                $nuevoEstado = $requerimiento->estado_anterior;
+            } else {
                 $requerimiento->estado = 1; // elaborado
-                $nuevoEstado=1;
-
+                $nuevoEstado = 1;
             }
             // return response()->json([$soles_request,$soles_requerimiento,$request->moneda, $requerimiento->estado]);exit;
             $trazabilidad = new Trazabilidad();
@@ -1273,34 +1289,37 @@ class RequerimientoController extends Controller
             $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
             $trazabilidad->fecha_registro = new Carbon();
             $trazabilidad->save();
-
-            if(intval($request->id_requerimiento) >0){
-                $documento = $this->obtenerIdDocumento(1,$request->id_requerimiento);
+            if (intval($request->id_requerimiento) > 0) {
+                $documento = $this->obtenerIdDocumento(1, $request->id_requerimiento);
             }
             $aprobacion = new Aprobacion();
             $aprobacion->id_flujo = null;
-            $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+            $aprobacion->id_doc_aprob = (isset($documento) == true) ? $documento['id'] : null;
             $aprobacion->id_usuario = Auth::user()->id_usuario;
             $aprobacion->id_vobo = 8; // sustentado
             $aprobacion->fecha_vobo = new Carbon();
             // $aprobacion->detalle_observacion = 'El Sistema utilizó el sustento del usuario para determinar el nuevo estado del requerimiento, en este momento su estado es '. $this->getDescripcionEstado($nuevoEstado); // comentario
-            $aprobacion->detalle_observacion = isset($request->sustento) && $request->sustento != ''?$request->sustento:''; // comentario
+            $aprobacion->detalle_observacion = isset($request->sustento) && $request->sustento != '' ? $request->sustento : ''; // comentario
             $aprobacion->id_rol = null;
             $aprobacion->tiene_sustento = false;
             $aprobacion->save();
+            $mensaje ='Requerimiento sustentado';
 
 
             $idDocumento = Documento::getIdDocAprob($request->id_requerimiento, 1);
             // $ultimoVoBo = Aprobacion::getUltimoVoBo($idDocumento);
             $observacionesLis = Aprobacion::getObservaciones($idDocumento);
             foreach ($observacionesLis as $key => $value) {
-                if($value->tiene_sustento == false){
+                if ($value->tiene_sustento == false) {
                     $aprobacion = Aprobacion::where("id_aprobacion", $value->id_aprobacion)->first();
                     $aprobacion->tiene_sustento = true;
                     $aprobacion->save();
                 }
             }
             // $aprobacion = Aprobacion::where("id_aprobacion", $ultimoVoBo->id_aprobacion)->first();
+
+        }else{
+            $mensaje ='Requerimiento actualizado';
 
         }
         $requerimiento->id_tipo_requerimiento = $request->tipo_requerimiento;
@@ -1335,7 +1354,7 @@ class RequerimientoController extends Controller
         $requerimiento->fecha_entrega = $request->fecha_entrega;
         $requerimiento->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
         $requerimiento->tipo_cuadro = $request->tipo_cuadro;
-        $requerimiento->tiene_transformacion = $cantidadItemConTransformacion>0?true:false;
+        $requerimiento->tiene_transformacion = $cantidadItemConTransformacion > 0 ? true : false;
         $requerimiento->fuente_id = $request->fuente;
         $requerimiento->fuente_det_id = $request->fuente_det;
         // $requerimiento->para_stock_almacen = $request->para_stock_almacen;
@@ -1344,7 +1363,7 @@ class RequerimientoController extends Controller
 
         $requerimiento->id_incidencia = $request->id_incidencia > 0 ? $request->id_incidencia : null;
         $requerimiento->id_tipo_detalle = $idTipoDetalle;
-        $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ?$request->id_presupuesto_interno:null;
+        $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno : null;
         $requerimiento->save();
         $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1;
         $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2;
@@ -1373,7 +1392,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1)?true:false;
+                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i] == 1) ? true : false;
                 $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
@@ -1391,7 +1410,7 @@ class RequerimientoController extends Controller
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $detalle->subtotal = floatval($request->cantidad[$i] * $request->precioUnitario[$i]);
                 $detalle->motivo = $request->motivo[$i];
-                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i]==1)?true:false;
+                $detalle->tiene_transformacion = (isset($request->conTransformacion[$i]) && $request->conTransformacion[$i] == 1) ? true : false;
                 // $detalle->fecha_registro = new Carbon();
                 $detalle->estado = $requerimiento->id_tipo_requerimiento == 2 ? 19 : 1;
                 $detalle->save();
@@ -1476,45 +1495,45 @@ class RequerimientoController extends Controller
         // if ($requerimiento->estado == 3) {
 
 
-            // TODO:  enviar notificación al usuario aprobante, asuto => se levanto la observación
-            // $idRolPrimerAprobante = 0;
+        // TODO:  enviar notificación al usuario aprobante, asuto => se levanto la observación
+        // $idRolPrimerAprobante = 0;
 
-            // $montoTotal= 0;
-            // $obtenerMontoTotal = $this->obtenerMontoTotalDocumento(1,$idDocumento);
-            // if($obtenerMontoTotal['estado']=='success'){
-            //     $montoTotal=$obtenerMontoTotal['monto'];
-            // }
+        // $montoTotal= 0;
+        // $obtenerMontoTotal = $this->obtenerMontoTotalDocumento(1,$idDocumento);
+        // if($obtenerMontoTotal['estado']=='success'){
+        //     $montoTotal=$obtenerMontoTotal['monto'];
+        // }
 
-            // $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad, $request->id_moneda ,$montoTotal, null);
-            // $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
-            // foreach ($flujoTotal as $flujo) {
-            //     if ($flujo->orden == 1) {
-            //         $idRolPrimerAprobante = $flujo->id_rol;
-            //     }
-            // }
-            // if ($idRolPrimerAprobante > 0) {
+        // $operaciones = Operacion::getOperacion(1, $request->tipo_requerimiento, $request->id_grupo, $request->division, $request->prioridad, $request->id_moneda ,$montoTotal, null);
+        // $flujoTotal = Flujo::getIdFlujo($operaciones[0]->id_operacion)['data'];
+        // foreach ($flujoTotal as $flujo) {
+        //     if ($flujo->orden == 1) {
+        //         $idRolPrimerAprobante = $flujo->id_rol;
+        //     }
+        // }
+        // if ($idRolPrimerAprobante > 0) {
 
 
-            //     $usuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
-            //     if (config('app.debug')) {
-            //         $correoUsuario = config('global.correoDebug1');
-            //         if (!empty($correoUsuario)) {
-            //             $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
-            //         }
-            //     }else{
-            //         foreach ($usuariosList as $idUsuario) {
-            //             $correoUsuario = Usuario::find($idUsuario)->email;
-            //             if (!empty($correoUsuario)) {
-            //                 $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
-            //             }
-            //         }
+        //     $usuariosList = Usuario::getAllIdUsuariosPorRol($idRolPrimerAprobante);
+        //     if (config('app.debug')) {
+        //         $correoUsuario = config('global.correoDebug1');
+        //         if (!empty($correoUsuario)) {
+        //             $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
+        //         }
+        //     }else{
+        //         foreach ($usuariosList as $idUsuario) {
+        //             $correoUsuario = Usuario::find($idUsuario)->email;
+        //             if (!empty($correoUsuario)) {
+        //                 $this->enviarNotificacionPorActualizacion($request, $correoUsuario, $requerimiento);
+        //             }
+        //         }
 
-            //     }
-            // }
+        //     }
+        // }
         // }
 
 
-        return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'codigo' => $requerimiento->codigo]);
+        return response()->json(['id_requerimiento' => $requerimiento->id_requerimiento, 'codigo' => $requerimiento->codigo, 'mensaje'=>$mensaje]);
     }
 
     public function obtenerMontoTotalDocumento($tipoDocumento, $idDocumento)
@@ -1615,12 +1634,12 @@ class RequerimientoController extends Controller
                 $mensaje = 'Se anulo el requerimiento ' . $requerimiento->codigo;
                 $tipoMensaje = 'success';
 
-                if(intval($requerimiento->id_requerimiento) >0){
-                    $documento = $this->obtenerIdDocumento(1,$requerimiento->id_requerimiento);
+                if (intval($requerimiento->id_requerimiento) > 0) {
+                    $documento = $this->obtenerIdDocumento(1, $requerimiento->id_requerimiento);
                 }
                 $aprobacion = new Aprobacion();
                 $aprobacion->id_flujo = null;
-                $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+                $aprobacion->id_doc_aprob = (isset($documento) == true) ? $documento['id'] : null;
                 $aprobacion->id_usuario = Auth::user()->id_usuario;
                 $aprobacion->id_vobo = 7; // Anulado
                 $aprobacion->fecha_vobo = new Carbon();
@@ -1883,7 +1902,7 @@ class RequerimientoController extends Controller
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
-            ->where([['alm_req.flg_compras', '=', 0],['adm_documentos_aprob.id_tp_documento', '=', 1]])
+            ->where([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1]])
             ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList);
 
         return datatables($requerimientos)
@@ -1900,7 +1919,7 @@ class RequerimientoController extends Controller
             })
             ->filterColumn('alm_req.monto_total', function ($query, $keyword) {
                 try {
-                    $query->where('alm_req.monto_total', number_format(trim($keyword),4));
+                    $query->where('alm_req.monto_total', number_format(trim($keyword), 4));
                 } catch (\Throwable $th) {
                 }
             })
@@ -1936,12 +1955,12 @@ class RequerimientoController extends Controller
         $prioridades = Prioridad::mostrar();
         $estados = Estado::mostrar();
 
-        $array_accesos=[];
-        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
-            array_push($array_accesos,$value->id_acceso);
+            array_push($array_accesos, $value->id_acceso);
         }
-        return view('logistica/requerimientos/lista_requerimientos', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades', 'estados','array_accesos'));
+        return view('logistica/requerimientos/lista_requerimientos', compact('periodos', 'gruposUsuario', 'grupos', 'roles', 'empresas', 'prioridades', 'estados', 'array_accesos'));
     }
 
 
@@ -3907,20 +3926,20 @@ class RequerimientoController extends Controller
                 <tr>
                     <td class="subtitle">Presupuesto</td>
                     <td class="subtitle verticalTop">:</td>
-                    <td class="verticalTop">'. $requerimiento['requerimiento'][0]['codigo_presupuesto_interno'] . ' - ' . $requerimiento['requerimiento'][0]['descripcion_presupuesto_interno'] .'</td>
+                    <td class="verticalTop">' . $requerimiento['requerimiento'][0]['codigo_presupuesto_interno'] . ' - ' . $requerimiento['requerimiento'][0]['descripcion_presupuesto_interno'] . '</td>
                 </tr>
                 <tr>
                     <td class="subtitle">Observación</td>
                     <td class="subtitle verticalTop">:</td>
                     <td class="verticalTop">' . $requerimiento['requerimiento'][0]['observacion'] . '</td>';
 
-                    if($requerimiento['requerimiento'][0]['id_incidencia'] >0){
-                        $html .=  '<td class="subtitle verticalTop">Incidencia</td>
+        if ($requerimiento['requerimiento'][0]['id_incidencia'] > 0) {
+            $html .=  '<td class="subtitle verticalTop">Incidencia</td>
                         <td class="subtitle verticalTop">:</td>
                         <td>' . $requerimiento['requerimiento'][0]['codigo_incidencia'] . '</td>';
-                    }
+        }
 
-                    $html .= '</tr>
+        $html .= '</tr>
                 </table>
                 <br>';
 
@@ -3942,20 +3961,20 @@ class RequerimientoController extends Controller
         $simbolMonedaRequerimiento = $this->consult_moneda($requerimiento['requerimiento'][0]['id_moneda'])->simbolo;
 
         foreach ($requerimiento['det_req'] as $key => $data) {
-            if($data['estado']!=7){
+            if ($data['estado'] != 7) {
 
 
-            $html .= '<tr>';
-            $html .= '<td width="10%">' . ($requerimiento['requerimiento'][0]['id_presupuesto_interno']>0?$data['codigo_partida_presupuesto_interno']:$data['codigo_partida']) . '</td>';
-            $html .= '<td width="10%">' . $data['codigo_centro_costo'] . '</td>';
-            $html .= '<td width="12%" style="word-wrap: break-word">' . ($data['id_tipo_item'] == 1 ? ($data['producto_part_number'] ? $data['producto_part_number'] : $data['part_number']) : '(Servicio)') . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
-            $html .= '<td width="30%">' . ($data['producto_descripcion'] ? $data['producto_descripcion'] : ($data['descripcion'] ? $data['descripcion'] : '')) . '</td>';
-            $html .= '<td width="5%" style="text-align:center;">' . $data['unidad_medida'] . '</td>';
-            $html .= '<td width="8%" class="right" style="text-align:center;">' . $data['cantidad'] . '</td>';
-            $html .= '<td width="8%" class="right" style="text-align:right;">' . $simbolMonedaRequerimiento . number_format($data['precio_unitario'], 2) . '</td>';
-            $html .= '<td width="8%" class="right" style="text-align:right;">' . $simbolMonedaRequerimiento . number_format($data['cantidad'] * $data['precio_unitario'], 2) . '</td>';
-            $html .= '</tr>';
-            $total = $total + ($data['cantidad'] * $data['precio_unitario']);
+                $html .= '<tr>';
+                $html .= '<td width="10%">' . ($requerimiento['requerimiento'][0]['id_presupuesto_interno'] > 0 ? $data['codigo_partida_presupuesto_interno'] : $data['codigo_partida']) . '</td>';
+                $html .= '<td width="10%">' . $data['codigo_centro_costo'] . '</td>';
+                $html .= '<td width="12%" style="word-wrap: break-word">' . ($data['id_tipo_item'] == 1 ? ($data['producto_part_number'] ? $data['producto_part_number'] : $data['part_number']) : '(Servicio)') . ($data['tiene_transformacion'] > 0 ? '<br><span style="display: inline-block; font-size: 8px; background:#ddd; color: #666; border-radius:8px; padding:2px 10px;">Transformado</span>' : '') . '</td>';
+                $html .= '<td width="30%">' . ($data['producto_descripcion'] ? $data['producto_descripcion'] : ($data['descripcion'] ? $data['descripcion'] : '')) . '</td>';
+                $html .= '<td width="5%" style="text-align:center;">' . $data['unidad_medida'] . '</td>';
+                $html .= '<td width="8%" class="right" style="text-align:center;">' . $data['cantidad'] . '</td>';
+                $html .= '<td width="8%" class="right" style="text-align:right;">' . $simbolMonedaRequerimiento . number_format($data['precio_unitario'], 2) . '</td>';
+                $html .= '<td width="8%" class="right" style="text-align:right;">' . $simbolMonedaRequerimiento . number_format($data['cantidad'] * $data['precio_unitario'], 2) . '</td>';
+                $html .= '</tr>';
+                $total = $total + ($data['cantidad'] * $data['precio_unitario']);
             }
         }
         $html .= '
@@ -4048,8 +4067,8 @@ class RequerimientoController extends Controller
         $detalleRequerimiento = DetalleRequerimiento::where("id_detalle_requerimiento", $idDetalleRequerimiento)
             ->with(['unidadMedida', 'producto', 'reserva.almacen', 'reserva.usuario',  'reserva.estado', 'estado'])
             ->first();
-            // return response()->json(($detalleRequerimiento));
-            // exit();
+        // return response()->json(($detalleRequerimiento));
+        // exit();
         if ($detalleRequerimiento) {
             return ['data' => $detalleRequerimiento, 'status' => 200];
         } else {
@@ -4268,8 +4287,8 @@ class RequerimientoController extends Controller
                 $idOrdenList[] = $dyo->id_orden_compra;
             }
             if (count($idOrdenList) > 0) {
-                $output= OtrosAdjuntosTesoreria::with('categoriaAdjunto')->whereIn('id_orden',$idOrdenList)->where('id_estado','!=',7)->get();
-                $mensaje='ok';
+                $output = OtrosAdjuntosTesoreria::with('categoriaAdjunto')->whereIn('id_orden', $idOrdenList)->where('id_estado', '!=', 7)->get();
+                $mensaje = 'ok';
             } else {
                 $mensaje = 'Sin ordenes';
             }
@@ -4297,8 +4316,8 @@ class RequerimientoController extends Controller
                 $idOrdenList[] = $dyo->id_orden_compra;
             }
             if (count($idOrdenList) > 0) {
-                $output= AdjuntosLogisticos::with('categoriaAdjunto')->whereIn('id_orden',$idOrdenList)->where('estado','!=',7)->get();
-                $mensaje='ok';
+                $output = AdjuntosLogisticos::with('categoriaAdjunto')->whereIn('id_orden', $idOrdenList)->where('estado', '!=', 7)->get();
+                $mensaje = 'ok';
             } else {
                 $mensaje = 'Sin ordenes';
             }
@@ -4403,57 +4422,57 @@ class RequerimientoController extends Controller
             return response()->json(['status' => 'error', 'mensaje' => 'Hubo un problema al anular el adjuntos. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
     }
-    function listarRequerimientoLogisticosParaVincularView(Request $request){
-        $lista = RequerimientoLogisticoView::whereNotIn('id_estado',[1,7]);
+    function listarRequerimientoLogisticosParaVincularView(Request $request)
+    {
+        $lista = RequerimientoLogisticoView::whereNotIn('id_estado', [1, 7]);
         return datatables($lista)->toJson();
     }
     public function obtenerRequerimientosElaboradosDetalle($id_requerimiento)
     {
-
     }
 
 
     public function mes($mes)
     {
-        $nombre_mes='enero';
+        $nombre_mes = 'enero';
         switch ($mes) {
             case '1':
-                $nombre_mes='enero';
-            break;
+                $nombre_mes = 'enero';
+                break;
 
             case '2':
-                $nombre_mes='febrero';
-            break;
+                $nombre_mes = 'febrero';
+                break;
             case '3':
-                $nombre_mes='marzo';
-            break;
+                $nombre_mes = 'marzo';
+                break;
             case '4':
-                $nombre_mes='abril';
-            break;
+                $nombre_mes = 'abril';
+                break;
             case '5':
-                $nombre_mes='mayo';
-            break;
+                $nombre_mes = 'mayo';
+                break;
             case '6':
-                $nombre_mes='junio';
-            break;
+                $nombre_mes = 'junio';
+                break;
             case '7':
-                $nombre_mes='julio';
-            break;
+                $nombre_mes = 'julio';
+                break;
             case '8':
-                $nombre_mes='agosto';
-            break;
+                $nombre_mes = 'agosto';
+                break;
             case '9':
-                $nombre_mes='setiembre';
-            break;
+                $nombre_mes = 'setiembre';
+                break;
             case '10':
-                $nombre_mes='octubre';
-            break;
+                $nombre_mes = 'octubre';
+                break;
             case '11':
-                $nombre_mes='noviembre';
-            break;
+                $nombre_mes = 'noviembre';
+                break;
             case '12':
-                $nombre_mes='diciembre';
-            break;
+                $nombre_mes = 'diciembre';
+                break;
         }
         return $nombre_mes;
     }
