@@ -16,6 +16,7 @@ use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
 use App\Models\Administracion\Estado;
+use App\Models\Administracion\Sede;
 use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
 use App\models\Configuracion\AccesosUsuarios;
@@ -265,12 +266,15 @@ class RequerimientoPagoController extends Controller
         try {
 
             // evaluar si el estado del cierre periodo
-            $periodo= Periodo::find($request->periodo);
-            $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
-            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+
+            $añoPeriodo= Periodo::find($request->periodo)->descripcion;
+            $idEmpresa = Sede::find($request->sede)->id_empresa;
+            // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo,$idEmpresa);
             if($estadoOperativo!=1){//1:abierto, 2:cerrado, 3:Declarado
                 return response()->json(['id_requerimiento_pago' => 0, 'codigo' => '', 'mensaje' => 'No se puede generar el requerimiento cuando el periodo operativo está cerrado']);
             }
+
 
             $requerimientoPago = new RequerimientoPago();
             $requerimientoPago->id_usuario = Auth::user()->id_usuario;
@@ -624,9 +628,10 @@ class RequerimientoPagoController extends Controller
         try {
 
             // evaluar si el estado del cierre periodo
-            $periodo= Periodo::find($request->periodo);
-            $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
-            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($fechaPeriodo, ($request->id_almacen > 0 ? $request->id_almacen : 0));
+            $añoPeriodo= Periodo::find($request->periodo)->descripcion;
+            $idEmpresa = Sede::find($request->sede)->id_empresa;
+            // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo,$idEmpresa);
             if($estadoOperativo!=1){//1:abierto, 2:cerrado, 3:Declarado
                 return response()->json(['id_requerimiento_pago' => 0, 'mensaje' => 'No se puede actualizar el requerimiento cuando el periodo operativo está cerrado']);
             }
@@ -866,6 +871,17 @@ class RequerimientoPagoController extends Controller
 
             if ($idRequerimientoPago > 0) {
                 $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
+
+                // evaluar si el estado del cierre periodo
+                $añoPeriodo= Periodo::find($requerimientoPago->id_periodo)->descripcion;
+                $idEmpresa = Sede::find($requerimientoPago->id_sede)->id_empresa;
+                // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
+                $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo,$idEmpresa);
+                if($estadoOperativo!=1){//1:abierto, 2:cerrado, 3:Declarado
+                    return response()->json(['id_requerimiento_pago' => 0, 'mensaje' => 'No se puede anular el requerimiento cuando el periodo operativo está cerrado']);
+                }
+
+
                 $todoDetalleRequerimientoPago = RequerimientoPagoDetalle::where("id_requerimiento_pago", $idRequerimientoPago)->get();
 
                 if (in_array($requerimientoPago->id_estado, [1, 3])) { // estado elaborado, estado observado
