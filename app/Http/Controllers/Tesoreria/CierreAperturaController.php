@@ -300,7 +300,7 @@ class CierreAperturaController extends Controller
         ->where('periodo.id_almacen',$id_almacen)
         ->first();
 
-        $rspta = ($periodo == null ? 1 : $periodo->estado);
+        $rspta = ($periodo == null ? 1 : (($periodo->estado==2 || $periodo->estado==3)?2:1));
 
         return $rspta;
     }
