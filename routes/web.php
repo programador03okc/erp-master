@@ -2360,7 +2360,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('exportar-excel-prueba', 'Gerencial\Cobranza\RegistroController@exportarExcelPrueba');
             // editar penalidad
 			Route::get('editar-penalidad/{id}', 'Gerencial\Cobranza\RegistroController@editarPenalidad');
-			Route::post('anular-penalidad', 'Gerencial\Cobranza\RegistroController@anularPenalidad');
+			// Route::post('anular-penalidad', 'Gerencial\Cobranza\RegistroController@anularPenalidad');
 			Route::post('eliminar-penalidad', 'Gerencial\Cobranza\RegistroController@eliminarPenalidad');
             // observaciones
 			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');

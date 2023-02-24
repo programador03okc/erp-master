@@ -1281,16 +1281,17 @@ $(document).on('click','[data-action="editar-penalidad"]',function (e) {
     })
 });
 
-$(document).on('click','[data-action="anular-penalidad"]',function (e) {
+$(document).on('click','[data-action="estados-penalidad"]',function (e) {
     e.preventDefault();
     var id = $(this).attr('data-id'),
         titulo =$('[name="tipo_penal"]').val(),
+        estado_penalidad =$(this).attr('data-title'),
         id_registro_cobranza =$(this).attr('data-id-registro-cobranza');
     $.ajax({
         type: 'POST',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'anular-penalidad',
-        data: {tipo:titulo,id:id,id_registro_cobranza:id_registro_cobranza},
+        url: 'cambio-estado-penalidad',
+        data: {tipo:titulo,id:id,id_registro_cobranza:id_registro_cobranza,estado_penalidad:estado_penalidad},
         dataType: 'JSON'
     }).done(function( data ) {
         listarPenalidades(data);
@@ -1308,29 +1309,21 @@ function listarPenalidades(data) {
             html+='<td>'+element.tipo+'</td>'
             html+='<td>'+element.documento+'</td>'
             html+='<td>'+element.monto+'</td>'
-            switch (element.estado) {
-                case 1:
-                    html+='<td>ELABORADO</td>'
-                break;
-                case 2:
-                    html+='<td>ANULADO</td>'
-                break;
-                case 3:
-                    html+='<td>APLICADA</td>'
-                break;
-                case 4:
-                    html+='<td>DEVOLUCION</td>'
-                break;
-            }
+            // if (element.tipo==='PENALIDAD') {
+            //     html+='<td>'+element.estado_penalidad+'</td>'
+            // }else{
+            //     html+='<td>'+element.estado_penalidad+'</td>'
+            // }
+            html+='<td>'+element.estado_penalidad+'</td>'
 
             html+='<td>'+element.fecha+'</td>'
             html+='<td>';
                 if (element.tipo==='PENALIDAD') {
-                    html+='<button class="btn btn-xs" data-action="penalidad-devolucion" data-title="" title="Devolución" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-exchange-alt"></i></button>';
+                    html+='<button class="btn btn-xs" data-action="estados-penalidad" data-title="DEVOLUCION" title="Devolución" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-exchange-alt"></i></button>';
                 }
 
                 html+='<button class="btn btn-xs" data-action="editar-penalidad" data-title="" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
-                '<button class="btn btn-xs" data-action="anular-penalidad" data-title="" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-trash-alt"></i></button>'+
+                '<button class="btn btn-xs" data-action="estados-penalidad" data-title="ANULADA" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-trash-alt"></i></button>'+
                 '<button class="btn btn-xs" data-action="eliminar-penalidad" data-title="" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-times"></i></button>'+
             '</td>'
         html+='</tr>'

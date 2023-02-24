@@ -35,6 +35,8 @@ use App\Models\Gerencial\RegistroCobranzaOld;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
 use App\Models\Gerencial\Vendedor;
+use App\Models\mgcp\AcuerdoMarco\OrdenCompraPropias;
+use App\Models\mgcp\OrdenCompra\Propia\Directa\OrdenCompraDirecta;
 use App\Models\mgcp\OrdenCompra\Propia\OrdenCompraPropiaView;
 use App\Models\Tesoreria\Empresa as TesoreriaEmpresa;
 use App\Models\Tesoreria\TipoCambio;
@@ -466,6 +468,33 @@ class RegistroController extends Controller
         }
 
 
+        $busqueda = strpos(str_replace(' ','',$cobranza->ocam), 'DIRECTA');
+        if ($busqueda !== false ) {
+
+
+            OrdenCompraDirecta::where('nro_orden', str_replace(' ','',$cobranza->ocam))
+            ->update(
+                [
+                    'factura'        => ($cobranza->factura!==''&&$cobranza->factura!=null? $cobranza->factura : ''),
+                    'siaf'           => ($cobranza->siaf!==''&&$cobranza->siaf!=null? $cobranza->siaf : ''),
+                    'orden_compra'   => ($cobranza->oc_fisica!==''&&$cobranza->oc_fisica!=null? $cobranza->oc_fisica : ''),
+                ]
+            );
+
+        }
+        $busqueda = strpos(str_replace(' ','',$cobranza->ocam), 'OCAM');
+        if ($busqueda !== false ) {
+
+            OrdenCompraPropias::where('orden_am', str_replace(' ','',$cobranza->ocam))
+            ->update(
+                [
+                    'factura'        => ($cobranza->factura!==''&&$cobranza->factura!=null? $cobranza->factura : ''),
+                    'siaf'           => ($cobranza->siaf!==''&&$cobranza->siaf!=null? $cobranza->siaf : ''),
+                    'orden_compra'   => ($cobranza->oc_fisica!==''&&$cobranza->oc_fisica!=null? $cobranza->oc_fisica : ''),
+                ]
+            );
+
+        }
 
         return response()->json([
             "success"=>true,
@@ -971,14 +1000,34 @@ class RegistroController extends Controller
             }
 
         }
-        DB::table('mgcp_ordenes_compra.oc_directas')
-            ->where('nro_orden', str_replace(' ','',$cobranza->ocam))
+        $busqueda = strpos($cobranza->ocam, 'DIRECTA');
+        if ($busqueda !== false ) {
+
+
+            OrdenCompraDirecta::where('nro_orden', str_replace(' ','',$cobranza->ocam))
             ->update(
-            [
-                'monto_total' => $cobranza->importe,
-                'factura' => $cobranza->factura
-            ]
-        );
+                [
+                    'factura'        => ($cobranza->factura!==''&&$cobranza->factura!=null? $cobranza->factura : ''),
+                    'siaf'           => ($cobranza->siaf!==''&&$cobranza->siaf!=null? $cobranza->siaf : ''),
+                    'orden_compra'   => ($cobranza->oc_fisica!==''&&$cobranza->oc_fisica!=null? $cobranza->oc_fisica : ''),
+                ]
+            );
+
+        }
+        $busqueda = strpos($cobranza->ocam, 'OCAM');
+        if ($busqueda !== false ) {
+
+
+            OrdenCompraPropias::where('orden_am', str_replace(' ','',$cobranza->ocam))
+            ->update(
+                [
+                    'factura'        => ($cobranza->factura!==''&&$cobranza->factura!=null? $cobranza->factura : ''),
+                    'siaf'           => ($cobranza->siaf!==''&&$cobranza->siaf!=null? $cobranza->siaf : ''),
+                    'orden_compra'   => ($cobranza->oc_fisica!==''&&$cobranza->oc_fisica!=null? $cobranza->oc_fisica : ''),
+                ]
+            );
+
+        }
 
         return response()->json([
             "success"=>true,
@@ -1190,9 +1239,14 @@ class RegistroController extends Controller
         $penalidad =array();
         $registro_cobranza = RegistroCobranza::find($request->id_cobranza_penal);
 
-        $estado = ('PENALIDAD'==$request->tipo_penal?3:1);
+
         if (intval($request->id) === 0) {
             $penalidad = new Penalidad();
+            if ($request->tipo_penal==='PENALIDAD') {
+                $penalidad->estado_penalidad = 'APLICADA';
+            }else{
+                $penalidad->estado_penalidad = 'ELABORADO';
+            }
         }else{
             $penalidad = Penalidad::find($request->id);
         }
@@ -1202,7 +1256,7 @@ class RegistroController extends Controller
         $penalidad->documento       = $request->doc_penal;
         $penalidad->fecha           = $request->fecha_penal;
         $penalidad->observacion     = $request->obs_penal;
-        $penalidad->estado          = $estado;
+        $penalidad->estado          = 1;
         $penalidad->fecha_registro  = date('Y-m-d H:i:s');
         $penalidad->id_registro_cobranza  = $request->id_cobranza_penal;
         $penalidad->id_oc  = $registro_cobranza->id_oc;
@@ -1235,6 +1289,7 @@ class RegistroController extends Controller
                     "fecha_registro"=>$value->fecha_registro,
                     "id_registro_cobranza"=>$value->id_registro_cobranza,
                     "id_oc"=>$value->id_oc,
+                    "estado_penalidad"=>$value->estado_penalidad,
                 ));
             }
         }
@@ -1252,6 +1307,7 @@ class RegistroController extends Controller
                     "fecha_registro"=>$value->fecha_registro,
                     "id_registro_cobranza"=>$value->id_registro_cobranza,
                     "id_oc"=>$value->id_oc,
+                    "estado_penalidad"=>$value->estado_penalidad,
                 ));
             }
         }
@@ -1300,7 +1356,11 @@ class RegistroController extends Controller
         if (!$contribuyente) {
             $cliente_gerencial = Cliente::where('id_cliente',$id)->first();
 
-            $contribuyente = new Contribuyente;
+            // $contribuyente = new Contribuyente;
+            $contribuyente = Contribuyente::firstOrNew(['nro_documento' => $cliente_gerencial->ruc]);
+            if (!$contribuyente) {
+                $contribuyente = Contribuyente::firstOrNew(['razon_social' => $cliente_gerencial->nombre]);
+            }
             $contribuyente->nro_documento     = $cliente_gerencial->ruc;
             $contribuyente->razon_social      = $cliente_gerencial->nombre;
             $contribuyente->id_pais           = 170;
@@ -1313,7 +1373,8 @@ class RegistroController extends Controller
             $contribuyente->id_cliente_gerencial_old    = $cliente_gerencial->id_cliente;
             $contribuyente->save();
 
-            $com_cliente = new ComercialCliente();
+            // $com_cliente = new ComercialCliente();
+            $com_cliente = ComercialCliente::firstOrNew(['id_contribuyente' => $contribuyente->id_contribuyente]);
             $com_cliente->id_contribuyente=$contribuyente->id_contribuyente;
             $com_cliente->estado=1;
             $com_cliente->fecha_registro = date('Y-m-d H:i:s');
@@ -2068,17 +2129,6 @@ class RegistroController extends Controller
         $penalidad = Penalidad::find($id);
         return response()->json($penalidad,200);
     }
-
-    public function anularPenalidad(Request $request)
-    {
-        $penalidad = Penalidad::find($request->id);
-        $penalidad->estado = 2;
-        $penalidad->save();
-        $penalidades = Penalidad::where('estado','!=',7)->where('tipo',$request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
-
-        return response()->json($penalidades,200);
-    }
-
     public function eliminarPenalidad(Request $request)
     {
         $penalidad = Penalidad::find($request->id);
@@ -2878,14 +2928,22 @@ class RegistroController extends Controller
     }
     public function cambioEstadoPenalidad(Request $request)
     {
+        // return $request->all();exit;
         $penalidad = Penalidad::find($request->id);
-        $penalidad->estado = 4;
+        $penalidad->estado_penalidad = $request->estado_penalidad;
         $penalidad->motivo = $request->motivo;
         $penalidad->save();
-        $penalidades = Penalidad::where('estado','!=',7)->where('tipo','PENALIDAD')->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
-        return response()->json([
-            "success"=>true,
-            "data"=>$penalidades
-        ],200);
+        // $penalidades = Penalidad::where('estado','!=',7)->where('tipo','PENALIDAD')->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
+        $penalidades = Penalidad::where('estado','!=',7)->where('tipo',$request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
+        return response()->json($penalidades,200);
+    }
+    public function anularPenalidad(Request $request)
+    {
+        $penalidad = Penalidad::find($request->id);
+        $penalidad->estado = 2;
+        $penalidad->save();
+        $penalidades = Penalidad::where('estado','!=',7)->where('tipo',$request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
+
+        return response()->json($penalidades,200);
     }
 }
