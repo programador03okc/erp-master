@@ -48,8 +48,12 @@
                                 <option value="{{$emp->id_empresa}}">{{$emp->razon_social}}</option>
                                 @endforeach
                             </select>
-                            <button id="btn_cierre_anual" class="btn btn-info shadow-none" onClick="guardarCierreAnual();">Cierre Anual Contable</button>
+                            @if (in_array(305,$array_accesos))
+                                <button id="btn_cierre_anual" class="btn btn-info shadow-none" onClick="guardarCierreAnual();">Cierre Anual Contable</button>
+                            @endif
+                            @if (in_array(306,$array_accesos))
                             <button id="btn_cierre_anual_operativo" class="btn btn-success shadow-none" onClick="guardarCierreAnualOperativo();">Cierre Anual Operativo</button>
+                            @endif
                         {{-- </form> --}}
                     </div>
 
@@ -165,7 +169,7 @@
             });
 
         });
-        
+
         function guardarCierreAnual(){
             var data = 'anio='+$('[name=anio_lista]').val()+
             '&id_empresa='+$('[name=id_empresa_lista]').val();
@@ -190,7 +194,7 @@
                 console.log(textStatus);
                 console.log(errorThrown);
             });
-            
+
         }
 
         function guardarCierreAnualOperativo(){
@@ -217,7 +221,7 @@
                 console.log(textStatus);
                 console.log(errorThrown);
             });
-            
+
         }
     </script>
 @endsection
