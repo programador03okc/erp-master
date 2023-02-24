@@ -75,7 +75,7 @@ class PresupuestoInterno extends Model
                 "total"=>floatval(str_replace(",", "", $value[$nombreMes])),
             ));
         }
-        
+
         return $array_nivel_partida;
 
     }
@@ -340,8 +340,8 @@ class PresupuestoInterno extends Model
             , ['presupuesto_interno_detalle.estado', 1], ['log_det_ord_compra.estado', '!=',7], ['log_ord_compra.estado', '!=',7]
             ])
             ->whereYear('presupuesto_interno_detalle.fecha_registro', '=', $yyyy)
-            ->select('alm_det_req.id_requerimiento', 'alm_det_req.id_detalle_requerimiento', 
-                    'alm_det_req.partida as id_partida', 'alm_det_req.subtotal', 
+            ->select('alm_det_req.id_requerimiento', 'alm_det_req.id_detalle_requerimiento',
+                    'alm_det_req.partida as id_partida', 'alm_det_req.subtotal',
                     'presupuesto_interno_detalle.partida',
                     'log_det_ord_compra.subtotal as subtotal_orden'
                     )
@@ -376,91 +376,9 @@ class PresupuestoInterno extends Model
         $array_requerimiento_detalle = array();
         $array_id_presupuesto_interno = array();
         $array_id_presupuesto_interno_detalle = array();
-        // $requerimiento = Requerimiento::where('estado','!=',7)
-        // ->where('id_presupuesto_interno','!=',null)
-        // ->whereMonth('fecha_registro',$numero_mes)
-        // ->get();
         $mes_siguiente =  $nombre_mes_siguiente.'_aux';
         $mes_aux = $nombre_mes.'_aux';
-        // if (sizeof($requerimiento)>0) {
-
-
-        //     foreach ($requerimiento as $key => $value) {
-        //         $value->detalle_requerimiento = DetalleRequerimiento::where('id_requerimiento',$value->id_requerimiento)
-        //         ->where('estado','!=',7)
-        //         ->get();
-        //         foreach (DetalleRequerimiento::where('id_requerimiento',$value->id_requerimiento)->where('estado','!=',7)->get() as $key_detalle => $value_detalle) {
-        //             $value_detalle->id_presupuesto_interno = $value->id_presupuesto_interno;
-        //             array_push($array_requerimiento_detalle,$value_detalle);
-        //         }
-
-        //         if (!in_array($value->id_presupuesto_interno, $array_id_presupuesto_interno)) {
-        //             array_push($array_id_presupuesto_interno,$value->id_presupuesto_interno);
-        //         }
-
-        //     }
-        //     if (sizeof($array_requerimiento_detalle)>0) {
-        //         foreach ($array_requerimiento_detalle as $key => $value) {
-        //             if (!in_array($value->partida, $array_id_presupuesto_interno_detalle)) {
-        //                 array_push($array_id_presupuesto_interno_detalle,$value->partida);
-        //             }
-        //         }
-        //     }
-
-
-        //     // $mes_aux = $nombre_mes.'_aux';
-        //     if (sizeof($array_id_presupuesto_interno_detalle)>0) {
-        //         foreach ($array_id_presupuesto_interno_detalle as $key => $value) {
-        //             $historial = HistorialPresupuestoInternoSaldo::where('id_partida',$value)
-        //             ->whereMonth('fecha_registro',$numero_mes)
-        //             ->where('mes',(int)$numero_mes)
-        //             ->orderBy('fecha_registro', 'asc')
-        //             ->get();
-        //             if (sizeof($historial)>0) {
-        //                 $saldo_partida = 0;
-        //                 foreach ($historial as $key_partida => $value_partida) {
-        //                     if ($key_partida===0) {
-        //                         $saldo_partida = floatval(str_replace(",", "", $value_partida->importe)) ;
-        //                     }else{
-        //                         if ($value_partida->operacion === 'R') {
-        //                             $saldo_partida = $saldo_partida - floatval(str_replace(",", "", $value_partida->importe));
-        //                         }else if($value_partida->operacion === 'S'){
-        //                             $saldo_partida = $saldo_partida + floatval(str_replace(",", "", $value_partida->importe));
-        //                         }
-        //                     }
-        //                     // $value_partida->saldo = $saldo_partida;
-        //                 }
-        //                 $partida_detalle = PresupuestoInternoDetalle::find($value);
-
-        //                 // $saldo_mensual = 0;
-        //                 $saldo_siguiente_mes = 0;
-        //                 if ($saldo_partida === floatval(str_replace(",", "", $partida_detalle->$mes_aux))) {
-        //                     $saldo_siguiente_mes = floatval(str_replace(",", "", $partida_detalle->$nombre_mes_siguiente))+$saldo_partida;
-        //                     $partida_detalle->$mes_siguiente = $saldo_siguiente_mes;
-        //                     $partida_detalle->save();
-        //                 }else{
-
-        //                 }
-        //                 PresupuestoInterno::calcularColumnaAuxMensual($partida_detalle->id_presupuesto_interno, $partida_detalle->id_tipo_presupuesto, $partida_detalle->id_presupuesto_interno_detalle,$nombre_mes_siguiente);
-
-        //             }
-
-        //         }
-        //     }
-
-        // }
         $array_historia_presupuesto_interno=array();
-        // if (sizeof($requerimiento)===0) {
-        //     $año_actua = date('Y');
-        //     $presupuesto_interno = PresupuestoInterno::where('estado','!=',7)
-        //     ->whereYear('fecha_registro',$año_actua)
-        //     ->whereYear('id_tipo_presupuesto',3)->get();
-        //     foreach ($presupuesto_interno as $key => $value) {
-        //         if (!in_array($value->id_presupuesto_interno, $array_id_presupuesto_interno)) {
-        //             array_push($array_id_presupuesto_interno,$value->id_presupuesto_interno);
-        //         }
-        //     }
-        // }
         $array_id_presupuesto_interno = array();
         $año_actua = date('Y');
         $presupuesto_interno = PresupuestoInterno::where('estado','!=',7)

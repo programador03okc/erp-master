@@ -67,6 +67,7 @@ function listarRegistros(filtros) {
                 },
                 action: () => {
                     exportarExcel();
+                    // exportarExcelPrueba();
 
                 },
                 className: 'btn-default btn-sm'
@@ -1238,6 +1239,23 @@ $(document).on('click','.eliminar',function (e) {
 function exportarExcel() {
     window.open('exportar-excel/'+JSON.stringify(data_filtros));
 }
+function exportarExcelPrueba() {
+    // window.open('exportar-excel/'+JSON.stringify(data_filtros));
+    var data_json = JSON.stringify(data_filtros);
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'exportar-excel-prueba',
+        data: {data:data_json},
+        dataType: 'JSON'
+    }).done(function( data ) {
+        console.log(data);
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
+}
 
 $(document).on('click','[data-action="editar-penalidad"]',function (e) {
     e.preventDefault();
@@ -1263,19 +1281,19 @@ $(document).on('click','[data-action="editar-penalidad"]',function (e) {
     })
 });
 
-$(document).on('click','[data-action="anular-penalidad"]',function (e) {
+$(document).on('click','[data-action="estados-penalidad"]',function (e) {
     e.preventDefault();
     var id = $(this).attr('data-id'),
         titulo =$('[name="tipo_penal"]').val(),
+        estado_penalidad =$(this).attr('data-title'),
         id_registro_cobranza =$(this).attr('data-id-registro-cobranza');
     $.ajax({
         type: 'POST',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'anular-penalidad',
-        data: {tipo:titulo,id:id,id_registro_cobranza:id_registro_cobranza},
+        url: 'cambio-estado-penalidad',
+        data: {tipo:titulo,id:id,id_registro_cobranza:id_registro_cobranza,estado_penalidad:estado_penalidad},
         dataType: 'JSON'
     }).done(function( data ) {
-        console.log(data);
         listarPenalidades(data);
     }).fail( function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -1291,20 +1309,21 @@ function listarPenalidades(data) {
             html+='<td>'+element.tipo+'</td>'
             html+='<td>'+element.documento+'</td>'
             html+='<td>'+element.monto+'</td>'
-            switch (element.estado) {
-                case 2:
-                    html+='<td>ANULADO</td>'
-                    break;
-
-                default:
-                    html+='<td>ELABORADO</td>'
-                    break;
-            }
+            // if (element.tipo==='PENALIDAD') {
+            //     html+='<td>'+element.estado_penalidad+'</td>'
+            // }else{
+            //     html+='<td>'+element.estado_penalidad+'</td>'
+            // }
+            html+='<td>'+element.estado_penalidad+'</td>'
 
             html+='<td>'+element.fecha+'</td>'
-            html+='<td>'+
-                '<button class="btn btn-xs" data-action="editar-penalidad" data-title="" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
-                '<button class="btn btn-xs" data-action="anular-penalidad" data-title="" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-trash-alt"></i></button>'+
+            html+='<td>';
+                if (element.tipo==='PENALIDAD') {
+                    html+='<button class="btn btn-xs" data-action="estados-penalidad" data-title="DEVOLUCION" title="Devolución" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-exchange-alt"></i></button>';
+                }
+
+                html+='<button class="btn btn-xs" data-action="editar-penalidad" data-title="" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
+                '<button class="btn btn-xs" data-action="estados-penalidad" data-title="ANULADA" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-trash-alt"></i></button>'+
                 '<button class="btn btn-xs" data-action="eliminar-penalidad" data-title="" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-times"></i></button>'+
             '</td>'
         html+='</tr>'
@@ -1403,4 +1422,42 @@ $(document).on('click','[data-action="eliminar-observacion"]',function (e) {
 });
 function exportarExcelPowerBi() {
     window.open('exportar-excel-power-bi/'+JSON.stringify(data_filtros));
+}
+$(document).on('click','[data-action="penalidad-devolucion"]',function (e) {
+    e.preventDefault();
+    var id = $(this).attr('data-id'),
+        id_registro_cobranza = $(this).attr('data-id-registro-cobranza');
+
+    Swal.fire({
+        title: '¿La devolución es por?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Empresa',
+        denyButtonText: `Marca`,
+        }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+
+            devolucion(id,id_registro_cobranza,'Empresa')
+        } else if (result.isDenied) {
+            devolucion(id,id_registro_cobranza, 'Marca')
+        }
+    })
+
+});
+function devolucion(id,id_registro_cobranza,motivo) {
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'cambio-estado-penalidad',
+        data: {id:id,id_registro_cobranza:id_registro_cobranza,motivo:motivo},
+        dataType: 'JSON'
+    }).done(function( data ) {
+        listarPenalidades(data.data);
+        Swal.fire('Éxito!', 'Devolución por '+motivo+'', 'success')
+    }).fail( function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    })
 }

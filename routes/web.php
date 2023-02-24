@@ -2191,6 +2191,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('guardar', 'Tesoreria\CierreAperturaController@guardarAccion')->name('guardar');
 			Route::post('guardarVarios', 'Tesoreria\CierreAperturaController@guardarVarios')->name('guardarVarios');
 			Route::post('guardarCierreAnual', 'Tesoreria\CierreAperturaController@guardarCierreAnual')->name('guardarCierreAnual');
+			Route::post('guardarCierreAnualOperativo', 'Tesoreria\CierreAperturaController@guardarCierreAnualOperativo')->name('guardarCierreAnualOperativo');
 			Route::get('cargarMeses/{id}', 'Tesoreria\CierreAperturaController@cargarMeses');
 			Route::get('listaHistorialAcciones/{id}', 'Tesoreria\CierreAperturaController@listaHistorialAcciones');
 			Route::get('consultarPeriodo/{fec}/{id}', 'Tesoreria\CierreAperturaController@consultarPeriodo');
@@ -2358,9 +2359,10 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
 			#exportar excel
 			Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
+			Route::post('exportar-excel-prueba', 'Gerencial\Cobranza\RegistroController@exportarExcelPrueba');
             // editar penalidad
 			Route::get('editar-penalidad/{id}', 'Gerencial\Cobranza\RegistroController@editarPenalidad');
-			Route::post('anular-penalidad', 'Gerencial\Cobranza\RegistroController@anularPenalidad');
+			// Route::post('anular-penalidad', 'Gerencial\Cobranza\RegistroController@anularPenalidad');
 			Route::post('eliminar-penalidad', 'Gerencial\Cobranza\RegistroController@eliminarPenalidad');
             // observaciones
 			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
@@ -2368,6 +2370,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
 
             Route::get('exportar-excel-power-bi/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcelPowerBI');
+            Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad');
 		});
 
 		Route::group(['as' => 'test.', 'prefix' => 'test'], function () {

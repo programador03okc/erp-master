@@ -12,6 +12,13 @@ class OrdenCompraDirecta extends Model
     // use HasFactory;
     protected $table = 'mgcp_ordenes_compra.oc_directas';
     //public $timestamps = false;
+    protected $primaryKey = 'id';
+    Protected $fillable = ['nro_orden', 'id_empresa', 'id_entidad', 'lugar_entrega', 'monto_total', 'factura', 'guia', 'fecha_guia',
+    'orden_compra', 'id_etapa', 'id_corporativo', 'cobrado', 'conformidad', 'siaf', 'codigo_gasto', 'eliminado', 'fecha_entrega',
+    'id_oportunidad', 'id_contacto', 'fecha_publicacion', 'occ', 'despachada', 'moneda', 'tipo_cambio', 'id_despacho',
+    'created_at', 'updated_at', 'id_ultimo_usuario', 'tipo_venta'];
+    public $timestamps = false;
+
 
     public function setFechaPublicacionAttribute($valor)
     {
@@ -50,7 +57,7 @@ class OrdenCompraDirecta extends Model
     public function ordenCompra() {
         return $this->belongsTo(OrdenCompraPropia::class, 'id_oc');
     }
-    
+
     public function getFechaAttribute() {
         return date_format(date_create($this->attributes['fecha']), 'd-m-Y g:i A');
     }*/

@@ -150,7 +150,7 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="orden_compra_nuevo">Orden de Compra</label>
+                                <label for="orden_compra_nuevo">OC Fisica</label>
                                 <input type="number" class="form-control" name="orden_compra" id="orden_compra_nuevo" value="" placeholder="N° OC">
                             </div>
                         </div>
@@ -482,7 +482,7 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="orden_compra_editar">Orden de Compra</label>
+                                <label for="orden_compra_editar">OC Fisica</label>
                                 <input type="number" class="form-control" name="orden_compra" id="orden_compra_editar" value="" placeholder="N° OC">
                             </div>
                         </div>

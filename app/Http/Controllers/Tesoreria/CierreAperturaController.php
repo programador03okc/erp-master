@@ -214,8 +214,8 @@ class CierreAperturaController extends Controller
                 $id_historial = DB::table('contabilidad.periodo_historial')->insertGetId(
                     [
                         'id_periodo' => $p->id_periodo,
-                        'accion' => 'Cerrado',
-                        'id_estado' => 2,
+                        'accion' => 'Contabilizado',
+                        'id_estado' => 3,
                         'comentario' => 'Cierre Anual periodo '.$request->anio,
                         'id_usuario' => $id_usuario,
                         'estado' => 1,
@@ -225,7 +225,34 @@ class CierreAperturaController extends Controller
                 );
                 DB::table('contabilidad.periodo')
                 ->where('id_periodo',$p->id_periodo)
-                ->update(['estado'=>2]);
+                ->update(['estado'=>3]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'tipo' => 'success',
+                'mensaje' => 'Se proceso correctamente.', 200
+            ]);
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            return response()->json(['tipo' => 'error', 'mensaje' => 'Hubo un problema al guardar la acción. Por favor intente de nuevo', 'error' => $e->getMessage()], 200);
+        }
+    }
+
+    public function guardarCierreAnualOperativo(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            if ($request->id_empresa==0){
+                DB::table('contabilidad.periodo_operativo')
+                ->where('periodo_operativo.anio',$request->anio)
+                ->update(['estado_operativo'=>2]); //cerrado    
+            } else {
+                DB::table('contabilidad.periodo_operativo')
+                ->where('periodo_operativo.anio',$request->anio)
+                ->where('periodo_operativo.id_empresa',$request->id_empresa)
+                ->update(['estado_operativo'=>2]); //cerrado    
             }
 
             DB::commit();
@@ -278,6 +305,24 @@ class CierreAperturaController extends Controller
         return $rspta;
     }
 
+    // static function consultarPeriodoOperativo($fecha, $id_almacen)
+    // {
+    //     $yyyy = date('Y', strtotime($fecha));
+    //     $m = date('n', strtotime($fecha));
+
+    //     $periodo=DB::table('contabilidad.periodo')
+    //     ->select('periodo.estado_operativo','periodo_estado.nombre')
+    //     ->join('contabilidad.periodo_estado','periodo_estado.id_estado','=','periodo.estado_operativo')
+    //     ->where('periodo.anio',$yyyy)
+    //     ->where('periodo.nro_mes',$m)
+    //     ->where('periodo.id_almacen',$id_almacen)
+    //     ->first();
+
+    //     $rspta = ($periodo == null ? 1 : $periodo->estado_operativo);
+
+    //     return $rspta;
+    // }
+
     static function consultarPeriodoOperativo($yyyy, $id_empresa)
     {
         $periodo=DB::table('contabilidad.periodo_operativo')
@@ -294,6 +339,7 @@ class CierreAperturaController extends Controller
     public function autogenerarPeriodos($anio)
     {
         $id_usuario=Auth::user()->id_usuario;
+
         $almacenes=DB::table('almacen.alm_almacen')
         ->where('estado',1)
         ->get();
@@ -331,11 +377,33 @@ class CierreAperturaController extends Controller
                             'id_usuario' => $id_usuario,
                             'id_almacen' => $alm->id_almacen,
                             'estado' => 1, //Abierto
-                            'estado_operativo' => 1, //Abierto
                         ]);
                 }
             }
         }
+        
+        $empresas = DB::table('administracion.adm_empresa')
+        ->select('adm_empresa.id_empresa')
+        ->where('adm_empresa.estado',1)
+        ->get();
+
+        foreach($empresas as $emp){
+            $periodo = DB::table('contabilidad.periodo_operativo')
+                ->where('anio',$anio)
+                ->where('id_empresa',$emp->id_empresa)
+                ->first();
+
+            if ($periodo == null){
+                DB::table('contabilidad.periodo_operativo')->insert(
+                    [
+                        'anio' => $anio,
+                        'id_usuario' => $id_usuario,
+                        'id_empresa' => $emp->id_empresa,
+                        'estado_operativo' => 1, //Abierto
+                    ]);
+            }
+        }
+
         return response()->json('Se ha completado la generación de periodos para el año '.$anio);
     }
 }
