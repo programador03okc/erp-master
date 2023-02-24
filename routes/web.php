@@ -2183,6 +2183,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('guardar', 'Tesoreria\CierreAperturaController@guardarAccion')->name('guardar');
 			Route::post('guardarVarios', 'Tesoreria\CierreAperturaController@guardarVarios')->name('guardarVarios');
 			Route::post('guardarCierreAnual', 'Tesoreria\CierreAperturaController@guardarCierreAnual')->name('guardarCierreAnual');
+			Route::post('guardarCierreAnualOperativo', 'Tesoreria\CierreAperturaController@guardarCierreAnualOperativo')->name('guardarCierreAnualOperativo');
 			Route::get('cargarMeses/{id}', 'Tesoreria\CierreAperturaController@cargarMeses');
 			Route::get('listaHistorialAcciones/{id}', 'Tesoreria\CierreAperturaController@listaHistorialAcciones');
 			Route::get('consultarPeriodo/{fec}/{id}', 'Tesoreria\CierreAperturaController@consultarPeriodo');
