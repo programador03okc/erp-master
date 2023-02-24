@@ -2529,6 +2529,15 @@ class RequerimientoView {
                         // location.reload();
                         this.RestablecerFormularioRequerimiento();
 
+                    }else{
+                        Lobibox.notify(response.tipo_mensaje, {
+                            title: false,
+                            size: 'mini',
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: `${response.mensaje}`
+                        });
                     }
                 },
                 fail: function (jqXHR, textStatus, errorThrown) {

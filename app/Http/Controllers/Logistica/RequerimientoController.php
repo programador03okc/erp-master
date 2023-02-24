@@ -1606,7 +1606,7 @@ class RequerimientoController extends Controller
             // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
             $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo,$idEmpresa);
             if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
-                return response()->json(['id_requerimiento' => 0, 'codigo' => '', 'mensaje' => 'No se puede anular el requerimiento cuando el periodo operativo está cerrado']);
+                return response()->json(['id_requerimiento' => 0, 'codigo' => '','tipo_mensaje' => 'warning', 'mensaje' => 'No se puede anular el requerimiento cuando el periodo operativo está cerrado']);
             }
 
 
