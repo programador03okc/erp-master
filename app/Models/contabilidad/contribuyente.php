@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Contribuyente extends Model
 {
         protected $table = 'contabilidad.adm_contri';
+        protected $fillable = ['id_tipo_contribuyente', 'id_doc_identidad', 'nro_documento', 'razon_social', 'telefono', 'celular', 'direccion_fisca', 'ubigeo', 
+            'id_pais', 'email', 'transportista', 'id_rubro', 'estado', 'fecha_registro'];
         protected $primaryKey = 'id_contribuyente';
         protected $appends = ['ubigeo_completo'];
 
