@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="{{ asset('template/fontawesome/css/all.min.css') }}">
 
 
-	<link rel="stylesheet" href="{{ asset('template/adminlte/css/AdminLTE.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('template/adminlte/css/AdminLTE.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/app.css')}}">
 	<link rel="stylesheet" href="{{ asset('css/skin-okc.css')}}">
 	<link rel="stylesheet" href="{{ asset('template/plugins/lobibox/dist/css/lobibox.min.css')}}">
