@@ -31,7 +31,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-condensed table-striped table-hover" id="tabla">
+                        <table class="table table-bordered table-condensed table-striped table-hover" id="tabla" width="100%">
                             <thead>
                                 <tr>
                                     <th>Fecha</th>
@@ -94,8 +94,10 @@
                             <h6>Entidad</h6>
                             <select name="cliente_id" class="selectpicker" title="Elija una entidad" data-live-search="true" data-width="100%" data-actions-box="true" data-size="10" required>
                                 @foreach ($clientes as $cliente)
-                                    @if ($cliente['contribuyente']['nro_documento'] != null || $cliente['contribuyente']['nro_documento'] != '')
-                                        <option value="{{ $cliente->id_cliente }}">[{{ $cliente['contribuyente']['nro_documento'] }}] - {{ $cliente['contribuyente']['razon_social'] }}</option>
+                                    @if (isset($cliente['contribuyente']))
+                                        @if ($cliente['contribuyente']['nro_documento'] != null || $cliente['contribuyente']['nro_documento'] != '')
+                                            <option value="{{ $cliente->id_cliente }}">[{{ $cliente['contribuyente']['nro_documento'] }}] - {{ $cliente['contribuyente']['razon_social'] }}</option>
+                                        @endif
                                     @endif
                                 @endforeach
                             </select>
