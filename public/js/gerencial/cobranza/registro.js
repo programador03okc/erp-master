@@ -1137,8 +1137,10 @@ $(document).on('click','.modal-penalidad',function (e) {
 
     $('[data-form="guardar-penalidad"]').find('[name="tipo_penal"]').val(titulo);
     if (titulo!=='PENALIDAD') {
+        console.log('diferente');
         $('[data-estado="cambio"]').attr('hidden','true');
     }else{
+        console.log('pensalidad');
         $('[data-estado="cambio"]').removeAttr('hidden');
     }
     // $('[data-estado="cambio"]').attr('hidden','true');
@@ -1313,21 +1315,21 @@ function listarPenalidades(data) {
         html+='<tr>'
             html+='<td>'+element.tipo+'</td>'
             html+='<td>'+element.documento+'</td>'
-            html+='<td>'+element.monto+'</td>'
+            html+='<td>'+element.monto+'</td>';
 
             switch (element.estado) {
-                case '1':
+                case 1:
                     html+='<td>ELABORADO</td>';
                 break;
-                case '2':
+                case 2:
                     html+='<td>ANULADO</td>';
                 break;
             }
-            html+='<td data-estado="cambio" '+(element.tipo!=='PENALIDAD'?`hidden`:``)+' >'+element.estado_penalidad+'</td>'
+            // html+='<td '+(element.tipo!=='PENALIDAD'?`hidden`:``)+' >'+element.estado_penalidad+'</td>'
             // if (element.tipo==='PENALIDAD') {
             //     html+='<td data-estado="cambio">'+element.estado_penalidad+'</td>'
             // }
-
+            html+='<td '+(element.tipo!=='PENALIDAD'?`hidden`:``)+'>'+element.estado_penalidad+'</td>'
 
             html+='<td>'+element.fecha+'</td>'
             html+='<td>';
@@ -1338,7 +1340,7 @@ function listarPenalidades(data) {
 
                 html+='<button class="btn btn-xs" data-action="editar-penalidad" data-title="" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
 
-                '<button class="btn btn-xs" data-action="eliminar-penalidad" data-title="" title="ANULAR" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'" data-estado="2"><i class="fa fa-times"></i></button>'+
+                '<button class="btn btn-xs" data-action="eliminar-penalidad" data-title="" title="ANULAR" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'" data-estado="2"><i class="fa fa-trash"></i></button>'+
 
                 '<button class="btn btn-xs" data-action="eliminar-penalidad" data-title="" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'" data-estado="7"><i class="fa fa-times"></i></button>'+
             '</td>'
