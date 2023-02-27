@@ -29,7 +29,6 @@ class CobranzaFondoController extends Controller
         $formaPago = FormaPago::orderBy('descripcion', 'asc')->get();
         $clientes = Cliente::with('contribuyente')->get();
         $monedas = Moneda::orderBy('id_moneda', 'asc')->get();
-        // $responsables = DB::table('configuracion.sis_usua')->where('estado', 1)->orderBy('nombre_corto', 'asc')->get();
         $responsables = Usuario::where('estado', 1)->orderBy('nombre_corto', 'asc')->get();
         return view('gerencial.cobranza.fondos', get_defined_vars());
     }
