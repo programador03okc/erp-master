@@ -9,11 +9,9 @@
 	<meta http-equiv="Cache-control" content="no-cache">
 	<meta name="csrf-token" content="{{csrf_token()}}">
 	<link rel="icon" type="image/ico" href="{{ asset('images/icono.ico')}}" />
-	<link rel="stylesheet" href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('template/fontawesome/css/all.min.css') }}">
-
-
 	<link rel="stylesheet" href="{{ asset('template/adminlte/css/AdminLTE.css') }}">
+	<link rel="stylesheet" href="{{ asset('template/bootstrap/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('css/app.css')}}">
 	<link rel="stylesheet" href="{{ asset('css/skin-okc.css')}}">
 	<link rel="stylesheet" href="{{ asset('template/plugins/lobibox/dist/css/lobibox.min.css')}}">
