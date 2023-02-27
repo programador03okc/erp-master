@@ -2368,9 +2368,17 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
 			Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
 			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
-
+			
             Route::get('exportar-excel-power-bi/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcelPowerBI');
-            Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad');
+			Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad');
+			
+			// Fondos, Auspicios y Rebates
+			Route::group(['as' => 'fondos.', 'prefix' => 'fondos'], function () {
+				Route::get('index', 'Gerencial\Cobranza\CobranzaFondoController@index')->name('index');
+				Route::get('test', 'Gerencial\Cobranza\CobranzaFondoController@test')->name('test');
+				Route::post('listar', 'Gerencial\Cobranza\CobranzaFondoController@lista')->name('listar');
+				Route::post('guardar', 'Gerencial\Cobranza\CobranzaFondoController@guardar')->name('guardar');
+			});
 		});
 
 		Route::group(['as' => 'test.', 'prefix' => 'test'], function () {
