@@ -1078,7 +1078,9 @@ Cobranzas
                                         <th>Comprobante</th>
                                         <th>Importe</th>
                                         <th>Estado</th>
+                                        <th data-estado="cambio">Estado de Penalidad</th>
                                         <th>Fecha</th>
+                                        <th>-</th>
                                     </tr>
                                 </thead>
 								<tbody data-table="penalidades"></tbody>

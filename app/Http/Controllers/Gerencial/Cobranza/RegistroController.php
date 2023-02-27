@@ -2134,8 +2134,9 @@ class RegistroController extends Controller
     }
     public function eliminarPenalidad(Request $request)
     {
+        // return $request->all();exit;
         $penalidad = Penalidad::find($request->id);
-        $penalidad->estado = 7;
+        $penalidad->estado = $request->estado;
         $penalidad->save();
         $penalidades = Penalidad::where('estado','!=',7)->where('tipo',$request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
         return response()->json($penalidades,200);

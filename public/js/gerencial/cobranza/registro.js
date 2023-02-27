@@ -1136,7 +1136,12 @@ $(document).on('click','.modal-penalidad',function (e) {
     $('#modal-penalidad-cobro').modal('show');
 
     $('[data-form="guardar-penalidad"]').find('[name="tipo_penal"]').val(titulo);
-
+    if (titulo!=='PENALIDAD') {
+        $('[data-estado="cambio"]').attr('hidden','true');
+    }else{
+        $('[data-estado="cambio"]').removeAttr('hidden');
+    }
+    // $('[data-estado="cambio"]').attr('hidden','true');
     $.ajax({
         type: 'GET',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -1309,22 +1314,33 @@ function listarPenalidades(data) {
             html+='<td>'+element.tipo+'</td>'
             html+='<td>'+element.documento+'</td>'
             html+='<td>'+element.monto+'</td>'
+
+            switch (element.estado) {
+                case '1':
+                    html+='<td>ELABORADO</td>';
+                break;
+                case '2':
+                    html+='<td>ANULADO</td>';
+                break;
+            }
+            html+='<td data-estado="cambio" '+(element.tipo!=='PENALIDAD'?`hidden`:``)+' >'+element.estado_penalidad+'</td>'
             // if (element.tipo==='PENALIDAD') {
-            //     html+='<td>'+element.estado_penalidad+'</td>'
-            // }else{
-            //     html+='<td>'+element.estado_penalidad+'</td>'
+            //     html+='<td data-estado="cambio">'+element.estado_penalidad+'</td>'
             // }
-            html+='<td>'+element.estado_penalidad+'</td>'
+
 
             html+='<td>'+element.fecha+'</td>'
             html+='<td>';
                 if (element.tipo==='PENALIDAD') {
-                    html+='<button class="btn btn-xs" data-action="estados-penalidad" data-title="DEVOLUCION" title="Devolución" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-exchange-alt"></i></button>';
+                    html+='<button class="btn btn-xs" data-action="estados-penalidad" data-title="DEVOLUCION" title="Devolución" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-exchange-alt"></i></button>'+
+                    '<button class="btn btn-xs" data-action="estados-penalidad" data-title="ANULADA PENALIDAD" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-trash-alt"></i></button>';
                 }
 
                 html+='<button class="btn btn-xs" data-action="editar-penalidad" data-title="" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
-                '<button class="btn btn-xs" data-action="estados-penalidad" data-title="ANULADA" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-trash-alt"></i></button>'+
-                '<button class="btn btn-xs" data-action="eliminar-penalidad" data-title="" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-times"></i></button>'+
+
+                '<button class="btn btn-xs" data-action="eliminar-penalidad" data-title="" title="ANULAR" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'" data-estado="2"><i class="fa fa-times"></i></button>'+
+
+                '<button class="btn btn-xs" data-action="eliminar-penalidad" data-title="" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'" data-estado="7"><i class="fa fa-times"></i></button>'+
             '</td>'
         html+='</tr>'
     });
@@ -1334,12 +1350,13 @@ function listarPenalidades(data) {
     e.preventDefault();
     var id = $(this).attr('data-id'),
         titulo =$('[data-form="guardar-penalidad"]').find('[name="tipo_penal"]').val(),
-        id_registro_cobranza =$(this).attr('data-id-registro-cobranza');
+        id_registro_cobranza =$(this).attr('data-id-registro-cobranza'),
+        estado = $(this).attr('data-estado');
     $.ajax({
         type: 'POST',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         url: 'eliminar-penalidad',
-        data: {tipo:titulo,id:id,id_registro_cobranza:id_registro_cobranza},
+        data: {tipo:titulo,id:id,id_registro_cobranza:id_registro_cobranza,estado:estado},
         dataType: 'JSON'
     }).done(function( data ) {
         listarPenalidades(data);
