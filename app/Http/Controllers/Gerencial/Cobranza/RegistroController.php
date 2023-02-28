@@ -114,26 +114,7 @@ class RegistroController extends Controller
         }
         return DataTables::of($data)
         ->addColumn('empresa', function($data){
-            // $id_cliente =$data->id_empresa;
 
-            // if ($data->id_empresa!==null && $data->id_empresa !=='') {
-            //     $id_cliente =$data->id_empresa;
-
-            // }else{
-            //     $id_cliente =$data->id_empresa_old;
-            //     $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$id_cliente)->first();
-            //     $id_cliente= $adm_contri->id_contribuyente;
-            // }
-
-            // $empresa = DB::table('administracion.adm_empresa')
-            // ->select(
-            //     'adm_empresa.id_contribuyente',
-            //     'adm_empresa.codigo',
-            //     'adm_contri.razon_social'
-            // )
-            // ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-            // ->where('adm_empresa.id_contribuyente',$id_cliente)
-            // ->first();
             $empresa = DB::table('administracion.adm_empresa')
             ->select(
                 'adm_empresa.id_contribuyente',
@@ -143,7 +124,7 @@ class RegistroController extends Controller
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->where('adm_empresa.id_contribuyente',$data->id_empresa)
             ->first();
-            return $empresa?$empresa->razon_social:'--';
+            return $empresa?$empresa->codigo:'--';
             // return $data->empresa->nombre;
         })
         ->addColumn('cliente', function($data){
