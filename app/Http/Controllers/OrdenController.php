@@ -4498,7 +4498,7 @@ class OrdenController extends Controller
                 $orden->id_persona_pago = $request->id_persona;
                 $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
                 $orden->comentario_pago = $request->comentario;
-                $orden->tiene_pago_en_cuotas = (isset($request->pagoEnCuotasCheckbox) && empty($request->pagoEnCuotasCheckbox) == false) ? true : false;
+                $orden->tiene_pago_en_cuotas = $request->pagoEnCuotasCheckbox;
                 $orden->fecha_solicitud_pago = Carbon::now();
                 $orden->save();
 
