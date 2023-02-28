@@ -13,12 +13,19 @@ class CobranzaFondo extends Model
     use SoftDeletes;
     
     protected $table = 'cobranza.registros_cobranza_fondos';
-    protected $fillable = ['tipo_gestion_id', 'tipo_negocio_id', 'fecha_solicitud', 'cliente_id', 'moneda_id', 'importe', 'forma_pago_id', 'responsable_id', 'detalles', 'usuario_id'];
+    protected $fillable = [
+        'tipo_gestion_id', 'tipo_negocio_id', 'fecha_solicitud', 'cliente_id', 'moneda_id', 'importe', 'fecha_inicio', 'fecha_vencimiento', 'periodo_id',
+        'forma_pago_id', 'responsable_id', 'detalles', 'pagador', 'claim', 'estado', 'nro_documento', 'observaciones', 'fecha_cobranza', 'usuario_id'];
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 
     public function tipo_gestion()
     {
         return $this->belongsTo(TipoGestion::class);
+    }
+
+    public function tipo_negocio()
+    {
+        return $this->belongsTo(TipoNegocio::class);
     }
 
     public function moneda()

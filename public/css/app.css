@@ -745,6 +745,10 @@ ul.nav-tabs li {
 .modal table{
   font-size: 11px;
 }
+.page-main table tbody,
+.modal table tbody{
+  font-size: 10px;
+}
 
 .container-okc {
   width: 96%;

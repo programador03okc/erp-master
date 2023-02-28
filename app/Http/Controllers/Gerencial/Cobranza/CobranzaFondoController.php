@@ -66,10 +66,14 @@ class CobranzaFondoController extends Controller
             $data = CobranzaFondo::firstOrNew(['id' => $request->id]);
                 $data->fecha_solicitud = $request->fecha_solicitud;
                 $data->tipo_gestion_id = $request->tipo_gestion_id;
+                $data->tipo_negocio_id = $request->tipo_negocio_id;
                 $data->forma_pago_id = $request->forma_pago_id;
                 $data->cliente_id = $request->cliente_id;
                 $data->moneda_id = $request->moneda_id;
                 $data->importe = $request->importe;
+                $data->fecha_inicio = $request->fecha_inicio;
+                $data->fecha_vencimiento = $request->fecha_vencimiento;
+                $data->periodo_id = $request->periodo_id;
                 $data->responsable_id = $request->responsable_id;
                 $data->detalles = $request->detalles;
                 $data->usuario_id = Auth::user()->id_usuario;

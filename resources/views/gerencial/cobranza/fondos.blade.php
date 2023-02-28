@@ -153,7 +153,7 @@
                         </div>
                         <div class="col-md-3">
                             <h6>CLAIM</h6>
-                            <input type="text" name="pagador" class="form-control input-sm" placeholder="Ingrese código CLAIM" required>
+                            <input type="text" name="claim" class="form-control input-sm" placeholder="Ingrese código CLAIM" required>
                         </div>
                         <div class="col-md-5">
                             <div class="row">

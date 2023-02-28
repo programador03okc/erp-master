@@ -46,15 +46,15 @@ Cobranzas
                             <tr>
                                 <th></th>
                                 <th width="10">Emp</th>
-								<th width="10">OCAM</th>
+								<th width="50">OCAM</th>
 								<th width="150">Nombre del Cliente</th>
 								<th>Fact.</th>
-								<th>UU. EE.</th>
-								<th>FTE. FTO.</th>
-								<th>OC.</th>
+								<th>UU. EE</th>
+								<th width="10">FTE. FTO</th>
+								<th width="15">OC Fisica</th>
 								<th>SIAF</th>
-								<th>Fecha Emis.</th>
-								<th>Fecha Recep.</th>
+								<th>Fec. Emis</th>
+								<th>Fec. Recep</th>
 								<th>Días A.</th>
 								<th>Mon</th>
 								<th>Importe</th>
@@ -62,8 +62,7 @@ Cobranzas
 								<th id="tdResp">A. Respo.</th>
 								<th width="10">Fase</th>
 								<th class="hidden">Tipo</th>
-
-                                <th width="10">Fecha inicio / entrega </th>
+                                <th width="10">Fec. inicio / entrega </th>
 								{{-- <th width="10">Fecha entrega</th> --}}
 								<th id="tdAct">-</th>
                             </tr>
@@ -75,6 +74,7 @@ Cobranzas
         </div>
     </div>
 </div>
+
 {{-- crear registro de cobranza --}}
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-cobranza" data-action="modal">
 	<div class="modal-dialog" style="width: 70%;">
@@ -329,7 +329,6 @@ Cobranzas
 		</div>
 	</div>
 </div>
-
 
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cliente">
 	<div class="modal-dialog" style="width: 30%;">

@@ -44,7 +44,7 @@ function listarRegistros(filtros) {
         tableRequerimientos = $("#listar-registros").DataTable({
         language: vardataTables[0],
         destroy: true,
-        pageLength: 10,
+        pageLength: 20,
         serverSide: true,
         lengthChange: false,
         dom: vardataTables[1],
@@ -98,19 +98,19 @@ function listarRegistros(filtros) {
         },
         columns: [
             {data: 'id_registro_cobranza', name:"id_registro_cobranza"},
-            {data: 'empresa', name:"empresa"},
+            {data: 'empresa', name:"empresa", className: "text-center"},
             {data: 'ocam', name:"ocam"},
             {data: 'cliente', name:"cliente"},
-            {data: 'factura', name:"factura"},
+            {data: 'factura', name:"factura", className: "text-center"},
             {data: 'uu_ee', name:"uu_ee"},
-            {data: 'fuente_financ', name:"fuente_financ"},
-            {data: 'oc_fisica', name:"oc_fisica"},
-            {data: 'siaf', name:"siaf"},
+            {data: 'fuente_financ', name:"fuente_financ", className: "text-center"},
+            {data: 'oc_fisica', name:"oc_fisica", className: "text-center"},
+            {data: 'siaf', name:"siaf", className: "text-center"},
             {data: 'fecha_emision', name:"fecha_emision"},
             {data: 'fecha_recepcion', name:"fecha_recepcion"},
-            {data: 'atraso', name:"atraso"},
-            {data: 'moneda', name:"moneda"},
-            {data: 'importe', name:"importe"},
+            {data: 'atraso', name:"atraso", className: "text-center"},
+            {data: 'moneda', name:"moneda", className: "text-center"},
+            {data: 'importe', name:"importe", className: "text-right"},
             {
                 render: function (data, type, row) {
 
