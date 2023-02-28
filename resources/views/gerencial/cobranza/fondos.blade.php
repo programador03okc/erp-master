@@ -44,6 +44,7 @@
                                     <th>Forma de pago</th>
                                     <th>Plazos</th>
                                     <th>Responsable</th>
+                                    <th>Estado</th>
                                     <th width="70"></th>
                                 </tr>
                             </thead>
@@ -78,7 +79,7 @@
                             <select name="periodo_id" class="form-control input-sm" required>
                                 <option value="" selected disabled>Elija una opción</option>
                                 @foreach ($periodos as $periodo)
-                                    <option value="{{ $periodo->id }}">{{ $periodo->descripcion }}</option>
+                                    <option value="{{ $periodo->id_periodo }}">{{ $periodo->descripcion }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -166,7 +167,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <h6>Fecha de vencimiento</h6>
-                                    <input type="date" name="fecha_vencimiento" class="form-control input-sm text-center" value="{{ date('Y-m-d') }}" required>
+                                    <input type="date" name="fecha_vencimiento" class="form-control input-sm text-center" value="{{ date('Y-m-d', strtotime(date('Y-m-d').'+ 1 month')) }}" required>
                                 </div>
                             </div>
                         </div>
@@ -175,6 +176,46 @@
                         <div class="col-md-12">
                             <h6>Motivo de la solicitud</h6>
                             <textarea name="detalles" class="form-control" rows="3" placeholder="Escriba el motivo de la solicitud" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-pill btn-default shadow-none" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-pill btn-success shadow-none">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalControl" tabindex="-1" role="dialog" aria-labelledby="modal-control">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form id="formulario-cobro" method="POST" autocomplete="off">
+                <input type="hidden" name="_method" value="POST">
+                <input type="hidden" name="cobranza_fondo_id" value="0">
+                @csrf
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h5>Cerrar cobranza</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Fecha de cobro</h6>
+                            <input type="date" name="fecha_cobranza" class="form-control input-sm text-center" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Nro documento</h6>
+                            <input type="text" name="nro_documento" class="form-control input-sm" placeholder="Ingrese nombre de la entidad" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Observaciones del cobro</h6>
+                            <textarea name="observaciones" class="form-control" rows="3" placeholder="Escriba las observaciones del cobro" required></textarea>
                         </div>
                     </div>
                 </div>
@@ -234,6 +275,7 @@
     
         
         $(document).ready(function() {
+            $('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click()
             seleccionarMenu(window.location);
             $('.numero').number(true, 2);
         });

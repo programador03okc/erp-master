@@ -2378,6 +2378,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('test', 'Gerencial\Cobranza\CobranzaFondoController@test')->name('test');
 				Route::post('listar', 'Gerencial\Cobranza\CobranzaFondoController@lista')->name('listar');
 				Route::post('guardar', 'Gerencial\Cobranza\CobranzaFondoController@guardar')->name('guardar');
+				Route::post('cargar-cobro', 'Gerencial\Cobranza\CobranzaFondoController@cargarCobro')->name('cargar-cobro');
+				Route::post('guardar-cobro', 'Gerencial\Cobranza\CobranzaFondoController@guardarCobro')->name('guardar-cobro');
 			});
 		});
 

@@ -750,6 +750,10 @@ ul.nav-tabs li {
   font-size: 10px;
 }
 
+table.table tbody tr td {
+  vertical-align: middle;
+}
+
 .container-okc {
   width: 96%;
   margin: auto;

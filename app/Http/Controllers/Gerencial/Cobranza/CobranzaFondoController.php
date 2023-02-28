@@ -48,18 +48,33 @@ class CobranzaFondoController extends Controller
         ->addColumn('moneda', function ($data) { return $data->moneda->codigo_divisa; })
         ->addColumn('cliente', function ($data) { return $data->cliente->contribuyente->razon_social; })
         ->addColumn('responsable', function ($data) { return $data->responsable->nombre_corto; })
-        ->addColumn('fechas', function ($data) { return 'Ini: '.date('d-m-Y', strtotime($data->fecha_inicio)).'<br>Venc: '.date('d-m-Y', strtotime($data->fecha_vencimiento)); })
-        ->addColumn('accion', function ($data) { return 
-            '<button type="button" class="btn btn-success btn-xs" data-id="'.$data->id.'">
-                <span class="fas fa-check"></span>
-            </button>
-            <button type="button" class="btn btn-primary btn-xs" data-id="'.$data->id.'">
-                <span class="fas fa-edit"></span>
-            </button>
-            <button type="button" class="btn btn-danger btn-xs" data-id="'.$data->id.'">
-                <span class="fas fa-trash-alt"></span>
-            </button>';
-        })->rawColumns(['fechas', 'accion'])->make(true);
+        ->addColumn('fechas', function ($data) { return 'Inicio: '.date('d-m-Y', strtotime($data->fecha_inicio)).'<br>Venc: '.date('d-m-Y', strtotime($data->fecha_vencimiento)); })
+        ->addColumn('flag_estado', function($data) {
+            return ($data->estado == 1) ? '<label class="label label-primary" style="font-size: 10.5px;">PENDIENTE</label>' : '<label class="label label-success" style="font-size: 10.5px;">COBRADO</label>';;
+        })
+        ->addColumn('accion', function ($data) {
+            $button = '' ;
+            if ($data->estado == 1) {
+                if (Auth::user()->id_usuario == 1 || Auth::user()->id_usuario == 20) {
+                    $button .=
+                    '<button type="button" class="btn btn-success btn-xs cobrar" data-id="'.$data->id.'">
+                        <span class="fas fa-check"></span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
+                        <span class="fas fa-edit"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-xs eliminar" data-id="'.$data->id.'">
+                        <span class="fas fa-trash-alt"></span>
+                    </button>';
+                } else {
+                    $button .=
+                    '<button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
+                        <span class="fas fa-edit"></span>
+                    </button>';
+                }
+            }
+            return $button;
+        })->rawColumns(['fechas', 'flag_estado', 'accion'])->make(true);
     }
 
     public function guardar(Request $request)
@@ -69,7 +84,6 @@ class CobranzaFondoController extends Controller
                 $data->fecha_solicitud = $request->fecha_solicitud;
                 $data->tipo_gestion_id = $request->tipo_gestion_id;
                 $data->tipo_negocio_id = $request->tipo_negocio_id;
-                $data->periodo_id = $request->periodo_id;
                 $data->forma_pago_id = $request->forma_pago_id;
                 $data->cliente_id = $request->cliente_id;
                 $data->moneda_id = $request->moneda_id;
@@ -86,6 +100,35 @@ class CobranzaFondoController extends Controller
             $data->save();
 
             $mensaje = ($request->id > 0) ? 'Se ha editado el registro' : 'Se ha registrado el registro';
+            $respuesta = 'ok';
+            $alerta = 'success';
+            $error = '';
+        } catch (Exception $ex) {
+            $respuesta = 'error';
+            $alerta = 'error';
+            $mensaje = 'Hubo un problema al registrar. Por favor intente de nuevo';
+            $error = $ex;
+        }
+        return response()->json(array('respuesta' => $respuesta, 'alerta' => $alerta, 'mensaje' => $mensaje, 'error' => $error), 200);
+    }
+
+    public function cargarCobro(Request $request)
+    {
+        $data = CobranzaFondo::find($request->id);
+        return response()->json($data);
+    }
+
+    public function guardarCobro(Request $request)
+    {
+        try {
+            $data = CobranzaFondo::find($request->cobranza_fondo_id);
+                $data->fecha_cobranza = $request->fecha_cobranza;
+                $data->nro_documento = $request->nro_documento;
+                $data->observaciones = $request->observaciones;
+                $data->estado = 2;
+            $data->save();
+
+            $mensaje = 'Se ha cerrado el registro de cobranza';
             $respuesta = 'ok';
             $alerta = 'success';
             $error = '';
