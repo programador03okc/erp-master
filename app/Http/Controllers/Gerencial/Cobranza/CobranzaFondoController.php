@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Gerencial\Cobranza;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Administracion\Periodo;
 use App\Models\Comercial\Cliente;
 use App\Models\Configuracion\Moneda;
 use App\Models\Configuracion\Usuario;
 use App\Models\Gerencial\CobranzaFondo;
 use App\Models\Gerencial\FormaPago;
 use App\Models\Gerencial\TipoGestion;
+use App\Models\Gerencial\TipoNegocio;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -26,8 +28,10 @@ class CobranzaFondoController extends Controller
     public function index()
     {
         $tipoGestion = TipoGestion::orderBy('descripcion', 'asc')->get();
+        $tipoNegocio = TipoNegocio::orderBy('descripcion', 'asc')->get();
         $formaPago = FormaPago::orderBy('descripcion', 'asc')->get();
         $clientes = Cliente::with('contribuyente')->get();
+        $periodos = Periodo::where('estado', 1)->orderBy('descripcion', 'asc')->get();
         $monedas = Moneda::orderBy('id_moneda', 'asc')->get();
         $responsables = Usuario::where('estado', 1)->orderBy('nombre_corto', 'asc')->get();
         return view('gerencial.cobranza.fondos', get_defined_vars());
