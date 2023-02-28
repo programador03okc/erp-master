@@ -1242,11 +1242,7 @@ class RegistroController extends Controller
 
         if (intval($request->id) === 0) {
             $penalidad = new Penalidad();
-            if ($request->tipo_penal==='PENALIDAD') {
-                $penalidad->estado_penalidad = 'APLICADA';
-            }else{
-                $penalidad->estado_penalidad = 'ELABORADO';
-            }
+            $penal_est = ($request->tipo_penal == 'PENALIDAD') ? 'APLICADA' :'ELABORADO';
         }else{
             $penalidad = Penalidad::find($request->id);
         }
@@ -1260,6 +1256,7 @@ class RegistroController extends Controller
         $penalidad->fecha_registro  = date('Y-m-d H:i:s');
         $penalidad->id_registro_cobranza  = $request->id_cobranza_penal;
         $penalidad->id_oc  = $registro_cobranza->id_oc;
+        $penalidad->estado_penalidad = $penal_est;
         $penalidad->save();
         return response()->json([
             "status"=>200,

@@ -160,7 +160,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="guardar-formulario">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" data-form="guardar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -175,7 +175,7 @@ Cobranzas
 
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="OCAM" data-action="oc">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="guardar-formulario">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" data-form="guardar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -404,8 +404,6 @@ Cobranzas
 	</div>
 </div>
 
-
-
   {{-- editar cobranza --}}
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cobranza" data-action="modal">
 	<div class="modal-dialog" style="width: 70%;">
@@ -492,7 +490,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" placeholder="N° CDP" data-action="cdp">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="editar-formulario">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" data-form="editar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -692,7 +690,7 @@ Cobranzas
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button class="btn btn-primary btn-seleccionar" data-id="" disabled>Seleccionar</button>
+                <button class="btn btn-primary btn-seleccionar" data disabled>Seleccionar</button>
             </div>
         </div>
     </div>
@@ -1037,7 +1035,7 @@ Cobranzas
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Fecha :</label>
-                                <input type="date" class="form-control input-sm" name="fecha_penal" id="fecha_penal" required>
+                                <input type="date" class="form-control input-sm text-center" name="fecha_penal" id="fecha_penal" value="{{ date('Y-m-d') }}" required>
                             </div>
                         </div>
                         <div class="col-md-3">

@@ -212,6 +212,11 @@ body .login-box {
   }
 }
 
+.dropdown-menu,
+.btn.dropdown-toggle {
+  font-size: 12px;
+}
+
 /* FIN ESTILOS PARA LOADER (BARRA SUPERIOR EN CADA SOLICITUD) */
 
 /* COLORES */
@@ -735,7 +740,9 @@ ul.nav-tabs li {
   border: 1px solid #ddd;
 }
 
-.page-main table {
+
+.page-main table,
+.modal table{
   font-size: 11px;
 }
 
