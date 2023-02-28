@@ -707,7 +707,7 @@ Cobranzas
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="form-group">
+							{{-- <div class="form-group">
                                 <button class="btn btn-success btn-flat" title="Agregar Nuevo" type="button" id="add_new_customer"
 								onclick="ModalAddNewCustomer();">
                                     <span class="fa fa-plus"></span> Nuevo
@@ -716,7 +716,7 @@ Cobranzas
                                      disabled>
                                     <span class="fa fa-edit"></span> Editar
                                 </button>
-                            </div>
+                            </div> --}}
 						</div>
 						<div class="col-md-12">
 							<table class="table table-hover" id="tabla-clientes" width="100%" style="font-size: 11px;">

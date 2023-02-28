@@ -114,26 +114,7 @@ class RegistroController extends Controller
         }
         return DataTables::of($data)
         ->addColumn('empresa', function($data){
-            // $id_cliente =$data->id_empresa;
 
-            // if ($data->id_empresa!==null && $data->id_empresa !=='') {
-            //     $id_cliente =$data->id_empresa;
-
-            // }else{
-            //     $id_cliente =$data->id_empresa_old;
-            //     $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$id_cliente)->first();
-            //     $id_cliente= $adm_contri->id_contribuyente;
-            // }
-
-            // $empresa = DB::table('administracion.adm_empresa')
-            // ->select(
-            //     'adm_empresa.id_contribuyente',
-            //     'adm_empresa.codigo',
-            //     'adm_contri.razon_social'
-            // )
-            // ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-            // ->where('adm_empresa.id_contribuyente',$id_cliente)
-            // ->first();
             $empresa = DB::table('administracion.adm_empresa')
             ->select(
                 'adm_empresa.id_contribuyente',
@@ -143,7 +124,7 @@ class RegistroController extends Controller
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->where('adm_empresa.id_contribuyente',$data->id_empresa)
             ->first();
-            return $empresa?$empresa->razon_social:'--';
+            return $empresa?$empresa->codigo:'--';
             // return $data->empresa->nombre;
         })
         ->addColumn('cliente', function($data){
@@ -203,7 +184,12 @@ class RegistroController extends Controller
 	}
     public function listarClientes()
     {
-        $data = Cliente::select('*')->orderBy('id_cliente', 'desc');
+        // $data = Cliente::select('*')->orderBy('id_cliente', 'desc');
+        $data = Contribuyente::where('adm_contri.estado',1)
+        ->select(
+            'adm_contri.*'
+        )
+        ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
         return DataTables::of($data)->make(true);;
     }
 
@@ -1348,35 +1334,36 @@ class RegistroController extends Controller
 
     public function buscarClienteSeleccionado($id)
     {
-        $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$id)->where('id_cliente_gerencial_old','!=',null)->first();
+        // $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$id)->where('id_cliente_gerencial_old','!=',null)->first();
+        $contribuyente = Contribuyente::where('id_contribuyente',$id)->first();
         $cliente_gerencial=null;
-        if (!$contribuyente) {
-            $cliente_gerencial = Cliente::where('id_cliente',$id)->first();
+        // if (!$contribuyente) {
+        //     $cliente_gerencial = Cliente::where('id_cliente',$id)->first();
 
-            // $contribuyente = new Contribuyente;
-            $contribuyente = Contribuyente::firstOrNew(['nro_documento' => $cliente_gerencial->ruc]);
-            if (!$contribuyente) {
-                $contribuyente = Contribuyente::firstOrNew(['razon_social' => $cliente_gerencial->nombre]);
-            }
-            $contribuyente->nro_documento     = $cliente_gerencial->ruc;
-            $contribuyente->razon_social      = $cliente_gerencial->nombre;
-            $contribuyente->id_pais           = 170;
-            $contribuyente->estado            = 1;
-            $contribuyente->fecha_registro    = date('Y-m-d H:i:s');
-            $contribuyente->transportista     = false;
+        //     // $contribuyente = new Contribuyente;
+        //     $contribuyente = Contribuyente::firstOrNew(['nro_documento' => $cliente_gerencial->ruc]);
+        //     if (!$contribuyente) {
+        //         $contribuyente = Contribuyente::firstOrNew(['razon_social' => $cliente_gerencial->nombre]);
+        //     }
+        //     $contribuyente->nro_documento     = $cliente_gerencial->ruc;
+        //     $contribuyente->razon_social      = $cliente_gerencial->nombre;
+        //     $contribuyente->id_pais           = 170;
+        //     $contribuyente->estado            = 1;
+        //     $contribuyente->fecha_registro    = date('Y-m-d H:i:s');
+        //     $contribuyente->transportista     = false;
 
-            $contribuyente->ubigeo            = 0;
+        //     $contribuyente->ubigeo            = 0;
 
-            $contribuyente->id_cliente_gerencial_old    = $cliente_gerencial->id_cliente;
-            $contribuyente->save();
+        //     $contribuyente->id_cliente_gerencial_old    = $cliente_gerencial->id_cliente;
+        //     $contribuyente->save();
 
-            // $com_cliente = new ComercialCliente();
-            $com_cliente = ComercialCliente::firstOrNew(['id_contribuyente' => $contribuyente->id_contribuyente]);
-            $com_cliente->id_contribuyente=$contribuyente->id_contribuyente;
-            $com_cliente->estado=1;
-            $com_cliente->fecha_registro = date('Y-m-d H:i:s');
-            $com_cliente->save();
-        }
+        //     // $com_cliente = new ComercialCliente();
+        //     $com_cliente = ComercialCliente::firstOrNew(['id_contribuyente' => $contribuyente->id_contribuyente]);
+        //     $com_cliente->id_contribuyente=$contribuyente->id_contribuyente;
+        //     $com_cliente->estado=1;
+        //     $com_cliente->fecha_registro = date('Y-m-d H:i:s');
+        //     $com_cliente->save();
+        // }
         return response()->json([
             "success"=>true,
             "status"=>200,
