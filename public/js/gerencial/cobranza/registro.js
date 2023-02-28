@@ -205,6 +205,10 @@ function customerList() {
             {data: 'id_cliente', name:"id_cliente"},
             {data: 'nombre', name:"nombre"},
             {data: 'ruc', name:"ruc"},
+
+            // {data: 'id_contribuyente', name:"id_contribuyente"},
+            // {data: 'razon_social', name:"razon_social"},
+            // {data: 'nro_documento', name:"nro_documento"},
         ],
         order: [[1, "asc"]],
         initComplete: function(data){
