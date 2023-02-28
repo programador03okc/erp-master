@@ -203,12 +203,12 @@ class RegistroController extends Controller
 	}
     public function listarClientes()
     {
-        $data = Cliente::select('*')->orderBy('id_cliente', 'desc');
-        // $data = Contribuyente::where('adm_contri.estado',1)
-        // ->select(
-        //     'adm_contri.*'
-        // )
-        // ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
+        // $data = Cliente::select('*')->orderBy('id_cliente', 'desc');
+        $data = Contribuyente::where('adm_contri.estado',1)
+        ->select(
+            'adm_contri.*'
+        )
+        ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
         return DataTables::of($data)->make(true);;
     }
 
@@ -1353,35 +1353,36 @@ class RegistroController extends Controller
 
     public function buscarClienteSeleccionado($id)
     {
-        $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$id)->where('id_cliente_gerencial_old','!=',null)->first();
+        // $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$id)->where('id_cliente_gerencial_old','!=',null)->first();
+        $contribuyente = Contribuyente::where('id_contribuyente',$id)->first();
         $cliente_gerencial=null;
-        if (!$contribuyente) {
-            $cliente_gerencial = Cliente::where('id_cliente',$id)->first();
+        // if (!$contribuyente) {
+        //     $cliente_gerencial = Cliente::where('id_cliente',$id)->first();
 
-            // $contribuyente = new Contribuyente;
-            $contribuyente = Contribuyente::firstOrNew(['nro_documento' => $cliente_gerencial->ruc]);
-            if (!$contribuyente) {
-                $contribuyente = Contribuyente::firstOrNew(['razon_social' => $cliente_gerencial->nombre]);
-            }
-            $contribuyente->nro_documento     = $cliente_gerencial->ruc;
-            $contribuyente->razon_social      = $cliente_gerencial->nombre;
-            $contribuyente->id_pais           = 170;
-            $contribuyente->estado            = 1;
-            $contribuyente->fecha_registro    = date('Y-m-d H:i:s');
-            $contribuyente->transportista     = false;
+        //     // $contribuyente = new Contribuyente;
+        //     $contribuyente = Contribuyente::firstOrNew(['nro_documento' => $cliente_gerencial->ruc]);
+        //     if (!$contribuyente) {
+        //         $contribuyente = Contribuyente::firstOrNew(['razon_social' => $cliente_gerencial->nombre]);
+        //     }
+        //     $contribuyente->nro_documento     = $cliente_gerencial->ruc;
+        //     $contribuyente->razon_social      = $cliente_gerencial->nombre;
+        //     $contribuyente->id_pais           = 170;
+        //     $contribuyente->estado            = 1;
+        //     $contribuyente->fecha_registro    = date('Y-m-d H:i:s');
+        //     $contribuyente->transportista     = false;
 
-            $contribuyente->ubigeo            = 0;
+        //     $contribuyente->ubigeo            = 0;
 
-            $contribuyente->id_cliente_gerencial_old    = $cliente_gerencial->id_cliente;
-            $contribuyente->save();
+        //     $contribuyente->id_cliente_gerencial_old    = $cliente_gerencial->id_cliente;
+        //     $contribuyente->save();
 
-            // $com_cliente = new ComercialCliente();
-            $com_cliente = ComercialCliente::firstOrNew(['id_contribuyente' => $contribuyente->id_contribuyente]);
-            $com_cliente->id_contribuyente=$contribuyente->id_contribuyente;
-            $com_cliente->estado=1;
-            $com_cliente->fecha_registro = date('Y-m-d H:i:s');
-            $com_cliente->save();
-        }
+        //     // $com_cliente = new ComercialCliente();
+        //     $com_cliente = ComercialCliente::firstOrNew(['id_contribuyente' => $contribuyente->id_contribuyente]);
+        //     $com_cliente->id_contribuyente=$contribuyente->id_contribuyente;
+        //     $com_cliente->estado=1;
+        //     $com_cliente->fecha_registro = date('Y-m-d H:i:s');
+        //     $com_cliente->save();
+        // }
         return response()->json([
             "success"=>true,
             "status"=>200,

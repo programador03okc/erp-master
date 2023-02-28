@@ -202,13 +202,13 @@ function customerList() {
             {'aTargets': [0], 'sClass': 'text-center'}
         ],
         columns: [
-            {data: 'id_cliente', name:"id_cliente"},
-            {data: 'nombre', name:"nombre"},
-            {data: 'ruc', name:"ruc"},
+            // {data: 'id_cliente', name:"id_cliente"},
+            // {data: 'nombre', name:"nombre"},
+            // {data: 'ruc', name:"ruc"},
 
-            // {data: 'id_contribuyente', name:"id_contribuyente"},
-            // {data: 'razon_social', name:"razon_social"},
-            // {data: 'nro_documento', name:"nro_documento"},
+            {data: 'id_contribuyente', name:"id_contribuyente"},
+            {data: 'razon_social', name:"razon_social"},
+            {data: 'nro_documento', name:"nro_documento"},
         ],
         order: [[1, "asc"]],
         initComplete: function(data){
@@ -225,15 +225,15 @@ function customerList() {
 $('#tabla-clientes tbody').on('click', 'tr', function(){
     if ($(this).hasClass('selected')){
         $(this).removeClass('selected');
-        document.querySelector("button[id='edit_customer']").setAttribute('disabled',true)
+        // document.querySelector("button[id='edit_customer']").setAttribute('disabled',true)
         document.querySelector("button[id='btnAgregarCliente']").setAttribute('disabled',true)
 
     } else {
         $('#tablaClientes').dataTable().$('tr.selected').removeClass('selected');
         $(this).addClass('selected');
-        document.querySelector("button[id='edit_customer']").removeAttribute('disabled')
+        // document.querySelector("button[id='edit_customer']").removeAttribute('disabled')
         document.querySelector("button[id='btnAgregarCliente']").removeAttribute('disabled')
-        $("button[id='edit_customer']").attr('data-id',$(this)[0].firstChild.innerHTML);
+        // $("button[id='edit_customer']").attr('data-id',$(this)[0].firstChild.innerHTML);
 
     }
     var id = $(this)[0].firstChild.innerHTML;
@@ -242,6 +242,7 @@ $('#tabla-clientes tbody').on('click', 'tr', function(){
     tempClienteSelected = {
         id,nombre,ruc
     };
+    console.log(tempClienteSelected);
 });
 function ModalAddNewCustomer() {
     $('#modal-agregar-cliente').modal({show: true});
