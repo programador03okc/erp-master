@@ -43,10 +43,12 @@ class CobranzaFondoController extends Controller
         return DataTables::of($data)
         ->editColumn('fecha_solicitud', function ($data) { return date('d-m-Y', strtotime($data->fecha_solicitud)); })
         ->addColumn('tipo_gestion', function ($data) { return $data->tipo_gestion->descripcion; })
+        ->addColumn('tipo_negocio', function ($data) { return $data->tipo_negocio->descripcion; })
         ->addColumn('forma_pago', function ($data) { return $data->forma_pago->descripcion; })
         ->addColumn('moneda', function ($data) { return $data->moneda->codigo_divisa; })
         ->addColumn('cliente', function ($data) { return $data->cliente->contribuyente->razon_social; })
         ->addColumn('responsable', function ($data) { return $data->responsable->nombre_corto; })
+        ->addColumn('fechas', function ($data) { return 'Ini: '.date('d-m-Y', strtotime($data->fecha_inicio)).'<br>Venc: '.date('d-m-Y', strtotime($data->fecha_vencimiento)); })
         ->addColumn('accion', function ($data) { return 
             '<button type="button" class="btn btn-success btn-xs" data-id="'.$data->id.'">
                 <span class="fas fa-check"></span>
@@ -57,7 +59,7 @@ class CobranzaFondoController extends Controller
             <button type="button" class="btn btn-danger btn-xs" data-id="'.$data->id.'">
                 <span class="fas fa-trash-alt"></span>
             </button>';
-        })->rawColumns(['accion'])->make(true);
+        })->rawColumns(['fechas', 'accion'])->make(true);
     }
 
     public function guardar(Request $request)
@@ -67,6 +69,7 @@ class CobranzaFondoController extends Controller
                 $data->fecha_solicitud = $request->fecha_solicitud;
                 $data->tipo_gestion_id = $request->tipo_gestion_id;
                 $data->tipo_negocio_id = $request->tipo_negocio_id;
+                $data->periodo_id = $request->periodo_id;
                 $data->forma_pago_id = $request->forma_pago_id;
                 $data->cliente_id = $request->cliente_id;
                 $data->moneda_id = $request->moneda_id;
@@ -76,6 +79,9 @@ class CobranzaFondoController extends Controller
                 $data->periodo_id = $request->periodo_id;
                 $data->responsable_id = $request->responsable_id;
                 $data->detalles = $request->detalles;
+                $data->claim = $request->claim;
+                $data->pagador = $request->pagador;
+                $data->estado = 1;
                 $data->usuario_id = Auth::user()->id_usuario;
             $data->save();
 

@@ -55,10 +55,13 @@ function listar() {
         columns: [
             {data: 'fecha_solicitud', className: 'text-center'},
             {data: 'tipo_gestion'},
+            {data: 'tipo_negocio'},
             {data: 'cliente'},
+            {data: 'claim'},
             {data: 'moneda'},
             {data: 'importe'},
             {data: 'forma_pago'},
+            {data: 'fechas'},
             {data: 'responsable'},
             {data: 'accion', orderable: false, searchable: false, className: 'text-center'}
         ],

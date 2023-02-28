@@ -36,10 +36,13 @@
                                 <tr>
                                     <th>Fecha</th>
                                     <th>Tipo</th>
+                                    <th>Negocio</th>
                                     <th>Nombre de la entidad</th>
+                                    <th>CLAIM</th>
                                     <th>Moneda</th>
                                     <th>Importe</th>
                                     <th>Forma de pago</th>
+                                    <th>Plazos</th>
                                     <th>Responsable</th>
                                     <th width="70"></th>
                                 </tr>
