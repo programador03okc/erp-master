@@ -490,7 +490,8 @@ $(document).on('change','[name="documento"]',function () {
         type: 'POST',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         url: 'buscar-cliente-documento',
-        data: {documento:documento},
+        data: {
+            documento:documento},
         dataType: 'JSON',
         beforeSend: (data) => {
 
