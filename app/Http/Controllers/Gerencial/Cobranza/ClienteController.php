@@ -505,6 +505,26 @@ class ClienteController extends Controller
         if ($contribuyente) {
             $success =true;
         }
+
         return response()->json(["success"=>$success,"data"=>$contribuyente],200);
+    }
+    public function buscarClienteDocumentoEditar(Request $request)
+    {
+        $contribuyente = Contribuyente::where('nro_documento',$request->documento)->first();
+        $success =false;
+        if ($contribuyente) {
+            $success =true;
+            if ($contribuyente->nro_documento==$request->data_documento) {
+                $success =false;
+            }
+        }
+
+        return response()->json(
+            [
+                "success"=>$success,
+                "data"=>$contribuyente
+            ],
+            200
+        );
     }
 }

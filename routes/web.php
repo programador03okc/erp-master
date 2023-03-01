@@ -2292,7 +2292,9 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('clientes', 'Gerencial\Cobranza\ClienteController@listarCliente')->name('listar.cliente');
 			Route::post('clientes/crear', 'Gerencial\Cobranza\ClienteController@crear')->name('clientes.crear');
 			Route::post('buscar-cliente-documento', 'Gerencial\Cobranza\ClienteController@buscarClienteDocumento');
+
 			Route::post('clientes/editar', 'Gerencial\Cobranza\ClienteController@editar')->name('clientes.editar');
+
 			Route::get('cliente/ver/{id_contribuyente}', 'Gerencial\Cobranza\ClienteController@ver')->name('clientes.ver');
 			Route::post('clientes/actualizar', 'Gerencial\Cobranza\ClienteController@actualizar')->name('clientes.actulizar');
 			Route::post('clientes/eliminar', 'Gerencial\Cobranza\ClienteController@eliminar');
@@ -2300,6 +2302,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('cliente/get-distrito/{id_provincia}', 'Gerencial\Cobranza\ClienteController@getDistrito');
 
             Route::get('cliente/{id_contribuyente}', 'Gerencial\Cobranza\ClienteController@editarContribuyente');
+
+            Route::post('cliente/buscar-cliente-documento-editar', 'Gerencial\Cobranza\ClienteController@buscarClienteDocumentoEditar');
 
 			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
 			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
