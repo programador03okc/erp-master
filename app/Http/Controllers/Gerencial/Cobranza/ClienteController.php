@@ -498,4 +498,13 @@ class ClienteController extends Controller
             "cliente"=>$cliente
         ]);
     }
+    public function buscarClienteDocumento(Request $request)
+    {
+        $contribuyente = Contribuyente::where('nro_documento',$request->documento)->first();
+        $success =false;
+        if ($contribuyente) {
+            $success =true;
+        }
+        return response()->json(["success"=>$success,"data"=>$contribuyente],200);
+    }
 }

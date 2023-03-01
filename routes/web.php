@@ -2291,6 +2291,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('crear-cliente', 'Gerencial\Cobranza\ClienteController@nuevoCliente')->name('nuevo.cliente');
 			Route::post('clientes', 'Gerencial\Cobranza\ClienteController@listarCliente')->name('listar.cliente');
 			Route::post('clientes/crear', 'Gerencial\Cobranza\ClienteController@crear')->name('clientes.crear');
+			Route::post('buscar-cliente-documento', 'Gerencial\Cobranza\ClienteController@buscarClienteDocumento');
 			Route::post('clientes/editar', 'Gerencial\Cobranza\ClienteController@editar')->name('clientes.editar');
 			Route::get('cliente/ver/{id_contribuyente}', 'Gerencial\Cobranza\ClienteController@ver')->name('clientes.ver');
 			Route::post('clientes/actualizar', 'Gerencial\Cobranza\ClienteController@actualizar')->name('clientes.actulizar');
@@ -2368,10 +2369,10 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
 			Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
 			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
-			
+
             Route::get('exportar-excel-power-bi/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcelPowerBI');
 			Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad');
-			
+
 			// Fondos, Auspicios y Rebates
 			Route::group(['as' => 'fondos.', 'prefix' => 'fondos'], function () {
 				Route::get('index', 'Gerencial\Cobranza\CobranzaFondoController@index')->name('index');
