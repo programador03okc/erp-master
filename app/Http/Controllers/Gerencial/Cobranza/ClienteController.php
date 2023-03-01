@@ -54,8 +54,12 @@ class ClienteController extends Controller
         $text=  'Este usuario ya esta registrado';
         $icon = 'warning';
 
-        $contribuyente = Contribuyente::where([["estado", 1], ["id_doc_identidad", $request->tipo_documnto], ["nro_documento", $request->documento]])->first();
-
+        $contribuyente = Contribuyente::where([
+            ["estado", 1],
+            // ["id_doc_identidad", $request->tipo_documnto],
+            ["nro_documento", $request->documento]
+        ])->first();
+            // return $contribuyente;exit;
         if (!$contribuyente) {
             $contribuyente = new Contribuyente();
             $contribuyente->id_tipo_contribuyente = $request->tipo_contribuyente;
@@ -78,66 +82,68 @@ class ClienteController extends Controller
             $title= 'Éxito';
             $text=  'Se registro con éxito';
             $icon = 'success';
-        }
 
-        $com_cliente = Cliente::where('id_contribuyente',$contribuyente->id_contribuyente)->where('estado',1)->first();
+            $com_cliente = Cliente::where('id_contribuyente',$contribuyente->id_contribuyente)->where('estado',1)->first();
 
-        if (!$com_cliente) {
-            $com_cliente = new Cliente();
-            $com_cliente->id_contribuyente = $contribuyente->id_contribuyente;
-            $com_cliente->observacion = $request->observacion;
-            $com_cliente->estado = 1;
-            $com_cliente->fecha_registro = new Carbon();
-            $com_cliente->save();
+            if (!$com_cliente) {
+                $com_cliente = new Cliente();
+                $com_cliente->id_contribuyente = $contribuyente->id_contribuyente;
+                $com_cliente->observacion = $request->observacion;
+                $com_cliente->estado = 1;
+                $com_cliente->fecha_registro = new Carbon();
+                $com_cliente->save();
 
-            $success = true;
-            $status = 200;
-            $title= 'Éxito';
-            $text=  'Se registro con éxito';
-            $icon = 'success';
-        }
-
-        if ($status===200) {
-            foreach ( (object)$request->establecimiento as $key => $value) {
-                $establecimientoProveedor = new EstablecimientoCliente();
-                $establecimientoProveedor->id_cliente = $com_cliente->id_cliente;
-                $establecimientoProveedor->direccion = $value['direccion'];
-                $establecimientoProveedor->horario = $value['horario'];
-                $establecimientoProveedor->ubigeo = $value['ubigeo'];
-                $establecimientoProveedor->estado = 1;
-                $establecimientoProveedor->fecha_registro = new Carbon();
-                $establecimientoProveedor->save();
+                $success = true;
+                $status = 200;
+                $title= 'Éxito';
+                $text=  'Se registro con éxito';
+                $icon = 'success';
             }
 
-            foreach ( (object)$request->contacto as $key => $value) {
-                $contactoContribuyente = new ContactoContribuyente();
-                $contactoContribuyente->id_contribuyente    = $contribuyente->id_contribuyente;
-                $contactoContribuyente->nombre              = $value['nombre'];
-                $contactoContribuyente->telefono            = $value['telefono'];
-                $contactoContribuyente->email               = $value['email'];
-                $contactoContribuyente->cargo               = $value['cargo'];
-                $contactoContribuyente->fecha_registro      = new Carbon();
-                $contactoContribuyente->direccion           = $value['direccion'];
-                $contactoContribuyente->estado              = 1;
-                $contactoContribuyente->horario             = $value['horario'];
-                $contactoContribuyente->ubigeo              = $value['ubigeo'];
-                $contactoContribuyente->save();
-            }
+            if ($status===200) {
+                foreach ( (object)$request->establecimiento as $key => $value) {
+                    $establecimientoProveedor = new EstablecimientoCliente();
+                    $establecimientoProveedor->id_cliente = $com_cliente->id_cliente;
+                    $establecimientoProveedor->direccion = $value['direccion'];
+                    $establecimientoProveedor->horario = $value['horario'];
+                    $establecimientoProveedor->ubigeo = $value['ubigeo'];
+                    $establecimientoProveedor->estado = 1;
+                    $establecimientoProveedor->fecha_registro = new Carbon();
+                    $establecimientoProveedor->save();
+                }
 
-            foreach ( (object)$request->cuenta_bancaria as $key => $value) {
-                $cuentaBancariaProveedor = new CuentaContribuyente();
-                $cuentaBancariaProveedor->id_contribuyente          = $contribuyente->id_contribuyente;
-                $cuentaBancariaProveedor->id_banco                  = $value['banco'];
-                $cuentaBancariaProveedor->id_tipo_cuenta            = $value['tipo_cuenta'];
-                $cuentaBancariaProveedor->id_moneda                 = $value['moneda'];
-                $cuentaBancariaProveedor->nro_cuenta                = $value['numero_cuenta'];
-                $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $value['cuenta_interbancaria'];
-                $cuentaBancariaProveedor->swift                     = $value['swift'];
-                $cuentaBancariaProveedor->estado                    = 1;
-                $cuentaBancariaProveedor->fecha_registro            = new Carbon();
-                $cuentaBancariaProveedor->save();
+                foreach ( (object)$request->contacto as $key => $value) {
+                    $contactoContribuyente = new ContactoContribuyente();
+                    $contactoContribuyente->id_contribuyente    = $contribuyente->id_contribuyente;
+                    $contactoContribuyente->nombre              = $value['nombre'];
+                    $contactoContribuyente->telefono            = $value['telefono'];
+                    $contactoContribuyente->email               = $value['email'];
+                    $contactoContribuyente->cargo               = $value['cargo'];
+                    $contactoContribuyente->fecha_registro      = new Carbon();
+                    $contactoContribuyente->direccion           = $value['direccion'];
+                    $contactoContribuyente->estado              = 1;
+                    $contactoContribuyente->horario             = $value['horario'];
+                    $contactoContribuyente->ubigeo              = $value['ubigeo'];
+                    $contactoContribuyente->save();
+                }
+
+                foreach ( (object)$request->cuenta_bancaria as $key => $value) {
+                    $cuentaBancariaProveedor = new CuentaContribuyente();
+                    $cuentaBancariaProveedor->id_contribuyente          = $contribuyente->id_contribuyente;
+                    $cuentaBancariaProveedor->id_banco                  = $value['banco'];
+                    $cuentaBancariaProveedor->id_tipo_cuenta            = $value['tipo_cuenta'];
+                    $cuentaBancariaProveedor->id_moneda                 = $value['moneda'];
+                    $cuentaBancariaProveedor->nro_cuenta                = $value['numero_cuenta'];
+                    $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $value['cuenta_interbancaria'];
+                    $cuentaBancariaProveedor->swift                     = $value['swift'];
+                    $cuentaBancariaProveedor->estado                    = 1;
+                    $cuentaBancariaProveedor->fecha_registro            = new Carbon();
+                    $cuentaBancariaProveedor->save();
+                }
             }
         }
+
+
 
 
         return response()->json([
