@@ -29,6 +29,7 @@ use App\models\Gerencial\Empresa;
 use App\models\Gerencial\EstadoDocumento;
 use App\Models\Gerencial\Observaciones;
 use App\Models\Gerencial\Penalidad;
+use App\Models\Gerencial\PenalidadCobro;
 use App\Models\Gerencial\ProgramacionPago;
 use App\Models\Gerencial\RegistroCobranza;
 use App\Models\Gerencial\RegistroCobranzaOld;
@@ -1244,19 +1245,20 @@ class RegistroController extends Controller
         $penalidad->id_oc  = $registro_cobranza->id_oc;
         $penalidad->estado_penalidad = $penal_est;
         $penalidad->save();
-        return response()->json([
-            "status"=>200,
-            "success"=>true,
-        ]);
+        return response()->json(["status"=>200, "success"=>true, "data" => $penalidad]);
     }
 
-    public function obtenerPenalidades($id_registro_cobranza,Request $request)
+    public function obtenerPenalidades($id_registro_cobranza, Request $request)
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id_registro_cobranza)->first();
         $array_penalidades = array();
         // return $registro_cobranza;exit;
-        $penalidad_cobranza = Penalidad::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('tipo',$request->tipo)->where('id_cobranza','!=',null)->where('estado','!=',7)->get();
-        $penalidad_registro = Penalidad::where('id_registro_cobranza',$id_registro_cobranza)->where('tipo',$request->tipo)->where('estado','!=',7)->get();
+        $penalidad_cobranza = Penalidad::where('id_cobranza', $registro_cobranza->id_cobranza_old)
+                            ->where('tipo', $request->tipo)->where('id_cobranza','!=',null)->where('estado','!=',7)
+                            ->orderBy('fecha_registro', 'desc')->get();
+        $penalidad_registro = Penalidad::where('id_registro_cobranza', $id_registro_cobranza)
+                            ->where('tipo', $request->tipo)->where('estado','!=',7)
+                            ->orderBy('fecha_registro', 'desc')->get();
 
         if (sizeof($penalidad_cobranza)>0) {
             foreach ($penalidad_cobranza as $key => $value) {
@@ -2919,10 +2921,19 @@ class RegistroController extends Controller
         // return $request->all();exit;
         $penalidad = Penalidad::find($request->id);
         $penalidad->estado_penalidad = $request->estado_penalidad;
-        $penalidad->motivo = $request->motivo;
+        $penalidad->motivo = ($request->estado_penalidad == 'DEVOLUCION') ? $request->estado_penalidad.' DE LA PENALIDAD' : 'PENALIDAD '.$request->estado_penalidad;
         $penalidad->save();
-        // $penalidades = Penalidad::where('estado','!=',7)->where('tipo','PENALIDAD')->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
         $penalidades = Penalidad::where('estado','!=',7)->where('tipo',$request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
+
+        if ($request->estado_penalidad == 'DEVOLUCION') {
+            $control = new PenalidadCobro();
+                $control->id_penalidad = $penalidad->id_penalidad;
+                $control->id_registro_cobranza = $penalidad->id_registro_cobranza;
+                $control->importe = $penalidad->monto;
+                $control->estado = 'PENDIENTE';
+                $control->gestion = $request->gestion;
+            $control->save();
+        }
         return response()->json($penalidades,200);
     }
     public function anularPenalidad(Request $request)
