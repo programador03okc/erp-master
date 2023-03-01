@@ -11,6 +11,7 @@ $(function () {
             dataType: 'JSON',
             success: function(response) {
                 $('#tabla').DataTable().ajax.reload();
+                Util.notify(response.alerta, response.mensaje);
                 $('#modalFondo').modal('hide');
             }
         }).fail( function(jqXHR, textStatus, errorThrown) {
@@ -30,6 +31,7 @@ $(function () {
             dataType: 'JSON',
             success: function(response) {
                 $('#tabla').DataTable().ajax.reload();
+                Util.notify(response.alerta, response.mensaje);
                 $('#modalControl').modal('hide');
             }
         }).fail( function(jqXHR, textStatus, errorThrown) {
@@ -70,6 +72,7 @@ $(function () {
                 $("[name=claim]").val(response.claim);
                 $("[name=fecha_inicio]").val(response.fecha_inicio);
                 $("[name=fecha_vencimiento]").val(response.fecha_vencimiento);
+                $("[name=detalles]").val(response.detalles);
                 $("#modalFondo").find(".modal-title").text("Editar el registro");
                 $('#modalFondo').modal('show');
             }
@@ -132,6 +135,8 @@ function listar() {
                 action: function () {
                     $("#formulario")[0].reset();
                     $("[name=id]").val(0);
+                    $("[name=cliente_id]").val(null).trigger('change');
+                    $("[name=responsable_id]").val(null).trigger('change');
                     $("#modalFondo").find(".modal-title").text("Agregar nuevo registro");
                     $("#modalFondo").modal("show");
                 },

@@ -240,6 +240,7 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('js/util.js') }}"></script>
 
     <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
