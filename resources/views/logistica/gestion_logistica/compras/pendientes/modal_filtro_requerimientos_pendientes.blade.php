@@ -43,6 +43,9 @@
                                 </label>
                                 <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosPendientes" name="sede" readOnly>
+                                    @foreach ($sedes as $sede)
+                                        <option value="{{$sede->id_sede}}">{{$sede->descripcion}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -65,6 +68,24 @@
                                     <small class="help-block">Hasta (dd-mm-aaaa)</small>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label title="Estado">
+                                            <input type="checkbox" name="chkEstado"> Estado
+                                        </label>
+                                    </div>
+                                </label>
+                                <div class="col-sm-8">
+                                    <select class="form-control input-sm handleChangeFiltroEstado handleChangeUpdateValorFiltroRequerimientosPendientes" name="estado" readOnly>
+                                        @foreach ($estados as $estado)
+                                        <option value="{{$estado->id_estado_doc}}">{{$estado->estado_doc}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
                         </fieldset>
                         <h5 style="display:flex;justify-content: space-between; font-weight:bold;">Nivel Item </h5> 
                         <fieldset class="group-table">

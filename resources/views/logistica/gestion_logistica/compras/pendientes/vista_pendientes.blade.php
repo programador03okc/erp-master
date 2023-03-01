@@ -206,7 +206,7 @@ Requerimientos pendientes
         const requerimientoPendienteController = new RequerimientoPendienteCtrl(requerimientoPendienteModel);
         const requerimientoPendienteView = new RequerimientoPendienteView(requerimientoPendienteController);
 
-        requerimientoPendienteView.renderRequerimientoPendienteList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
+        requerimientoPendienteView.renderRequerimientoPendienteList('SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO','SIN_FILTRO');
         requerimientoPendienteView.initializeEventHandler();
 
     });
