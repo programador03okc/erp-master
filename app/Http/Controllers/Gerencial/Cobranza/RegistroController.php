@@ -191,7 +191,10 @@ class RegistroController extends Controller
             'adm_contri.*'
         )
         ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
-        return DataTables::of($data)->make(true);;
+
+        return DataTables::of($data)
+        ->make(true);
+
     }
 
     public function prueba()
