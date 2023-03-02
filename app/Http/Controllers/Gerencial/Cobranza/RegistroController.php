@@ -1484,10 +1484,10 @@ class RegistroController extends Controller
                     }
                 }
             }
-            // else{
-            //     $registro_cobranza = RegistroCobranza::find($registro_cobranza->id_registro_cobranza);
-            //     $success = false;
-            // }
+            else{
+                // $registro_cobranza = RegistroCobranza::find($registro_cobranza->id_registro_cobranza);
+                // $success = false;
+            }
 
 
         }
