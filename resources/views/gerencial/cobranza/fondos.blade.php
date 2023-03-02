@@ -273,7 +273,6 @@
                     ": Activar para ordenar la columna de manera descendente"
             }
         };
-    
         
         $(document).ready(function() {
             $('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click()

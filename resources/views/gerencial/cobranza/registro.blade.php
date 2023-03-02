@@ -1159,8 +1159,55 @@ Cobranzas
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
-    <script src="{{ asset('js/gerencial/cobranza/registro.js') }}"></script>
+    
     <script>
+    let csrf_token = '{{ csrf_token() }}';
+    let carga_ini = 1;
+    let tempClienteSelected = {};
+    let tempoNombreCliente = '';
+    let userNickname = '';
+    let data_filtros ={
+        "empresa":null,
+        "estado":null,
+        "fase":null,
+        "fecha_emision_inicio":null,
+        "fecha_emision_fin":null,
+        "simbolo":null,
+        "importe":null
+    };
+    let empresa_filtro = null,
+        estado_filttro = null,
+        fase_filtro = null,
+        fecha_emision_inicio_filtro = null,
+        fecha_emision_fin_filtro = null,
+        importe_simbolo_filtro = null,
+        importe_total_filtro = null;
+    const idioma = {
+        sProcessing: "<div class='spinner'></div>",
+        sLengthMenu: "Mostrar _MENU_ registros",
+        sZeroRecords: "No se encontraron resultados",
+        sEmptyTable: "Ningún dato disponible en esta tabla",
+        sInfo: "Del _START_ al _END_ de un total de _TOTAL_ registros",
+        sInfoEmpty: "Del 0 al 0 de un total de 0 registros",
+        sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+        sInfoPostFix: "",
+        sSearch: "Buscar:",
+        sUrl: "",
+        sInfoThousands: ",",
+        sLoadingRecords: "Cargando...",
+        oPaginate: {
+            sFirst: "Primero",
+            sLast: "Último",
+            sNext: "Siguiente",
+            sPrevious: "Anterior"
+        },
+        oAria: {
+            sSortAscending:
+                ": Actilet para ordenar la columna de manera ascendente",
+            sSortDescending:
+                ": Activar para ordenar la columna de manera descendente"
+        }
+    };
 
     $(document).ready(function() {
         $('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click();
@@ -1179,15 +1226,9 @@ Cobranzas
                         searchTerm: params.term, // search term
                         page: params.page
                     };
-                    // return query;
             },
             processResults: function (data, params) {
-                // params.page = params.page || 1;
                 return {
-                    // results: data.items,
-                    // pagination: {
-                    //     more: (params.page * 30) < data.total_count
-                    // }
                     results: $.map(data, function (item) {
                         return{
                             text:item.nombre,
@@ -1240,20 +1281,22 @@ Cobranzas
             templateResult: formatRepo,
             templateSelection: formatRepoSelection
         });
-        function formatRepo (repo) {
-            if (repo.id) {
-                return repo.text;
-            }
-            var state = $(
-                `<span>`+repo.text+`</span>`
-            );
-            return state;
-
-        }
-
-        function formatRepoSelection (repo) {
-            return repo.nombre || repo.text;
-        }
     });
+
+    function formatRepo (repo) {
+        if (repo.id) {
+            return repo.text;
+        }
+        var state = $(
+            `<span>`+repo.text+`</span>`
+        );
+        return state;
+    
+    }
+    
+    function formatRepoSelection (repo) {
+        return repo.nombre || repo.text;
+    }
     </script>
+    <script src="{{ asset('js/gerencial/cobranza/registro.js') }}"></script>
 @endsection

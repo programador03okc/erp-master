@@ -2386,6 +2386,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('cargar-cobro', 'Gerencial\Cobranza\CobranzaFondoController@cargarCobro')->name('cargar-cobro');
 				Route::post('guardar-cobro', 'Gerencial\Cobranza\CobranzaFondoController@guardarCobro')->name('guardar-cobro');
 			});
+
+			Route::group(['as' => 'devoluciones.', 'prefix' => 'devoluciones'], function () {
+				Route::get('index', 'Gerencial\Cobranza\DevolucionPenalidadController@index')->name('index');
+			});
 		});
 
 		Route::group(['as' => 'test.', 'prefix' => 'test'], function () {

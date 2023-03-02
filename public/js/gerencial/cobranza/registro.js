@@ -1,25 +1,3 @@
-let idioma;
-let carga_ini = 1;
-var tempClienteSelected = {};
-var tempoNombreCliente = '';
-var userNickname= '';
-var data_filtros={
-    "empresa":null,
-    "estado":null,
-    "fase":null,
-    "fecha_emision_inicio":null,
-    "fecha_emision_fin":null,
-    "simbolo":null,
-    "importe":null
-};
-var empresa_filtro=null,
-    estado_filttro=null,
-    fase_filtro=null,
-    fecha_emision_inicio_filtro=null,
-    fecha_emision_fin_filtro=null,
-    importe_simbolo_filtro=null,
-    importe_total_filtro=null;
-
 $(function () {
     // list();
     listarRegistros();
@@ -57,7 +35,6 @@ $(function () {
         tempClienteSelected = {
             id,nombre,ruc
         };
-        console.log(tempClienteSelected);
     });
 
     $(document).on('click','.modal-editar',function () {
@@ -160,6 +137,7 @@ $(function () {
             console.log(errorThrown);
         })
     });
+
     $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
         e.preventDefault();
         var data = $(this).serialize();
@@ -206,6 +184,7 @@ $(function () {
             }
         })
     });
+
     $(document).on('change','[data-select="departamento-select"]',function () {
         var id_departamento = $(this).val()
             this_select = $(this).closest('div.modal-body').find('div [name="provincia"]'),
@@ -344,6 +323,7 @@ $(function () {
     $(document).on('click','[data-action="actualizar"]',function () {
         actualizarDocVentReq();
     });
+
     $(document).on('click','.modal-lista-procesadas',function () {
         const input = $(this).closest('div').find('input').val();
         const action = $(this).closest('div').find('input').data('action');
@@ -365,6 +345,7 @@ $(function () {
         }
 
     });
+
     $(document).on('click','#lista-procesadas .btn-seleccionar',function () {
         const id_requerimiento = $(this).attr('data-id');
         var data_form =$(this).attr('data-form');
@@ -439,6 +420,7 @@ $(function () {
             console.log(errorThrown);
         })
     });
+
     $(document).on('submit','[data-form="editar"]',function (e) {
         e.preventDefault();
         var data = $(this).serialize();
@@ -481,6 +463,7 @@ $(function () {
         })
 
     });
+
     $(document).on('click','.editar-registro',function (e) {
         e.preventDefault();
         let id_registro_cobranza = $(this).data('id');
@@ -653,6 +636,7 @@ $(function () {
         })
 
     });
+
     $(document).on('click','.modal-fase',function (e) {
         e.preventDefault();
         var id = $(this).attr('data-id'),
@@ -686,6 +670,7 @@ $(function () {
             console.log(errorThrown);
         })
     });
+
     $(document).on('submit','[data-form="guardar-fase"]',function (e) {
         e.preventDefault();
         var data = $(this).serialize();
@@ -1035,61 +1020,35 @@ function list() {
 }
 
 function listarRegistros(filtros) {
-    var vardataTables = funcDatatables();
-        tableRequerimientos = $("#listar-registros").DataTable({
-        language: vardataTables[0],
-        destroy: true,
-        pageLength: 20,
+    const $tabla = $('#listar-registros').DataTable({
+        dom: 'Bfrtip',
+        pageLength: 30,
+        language: idioma,
         serverSide: true,
-        lengthChange: false,
-        dom: vardataTables[1],
-        buttons:[
-            {
-                text: '<i class="fas fa-filter"></i> Filtros : 0',
-                attr: {
-                    id: 'btnFiltros'
-                },
-                action: () => {
-                    $('#modal-filtros').modal('show');
-
-                },
-                className: 'btn-default btn-sm'
-            },
-            {
-                text: '<i class="fas fa-file-excel"></i> Descargar',
-                attr: {
-                    id: 'btnExcel'
-                },
-                action: () => {
-                    exportarExcel();
-                    // exportarExcelPrueba();
-
-                },
-                className: 'btn-default btn-sm'
-            },
-            {
-                text: '<i class="fas fa-file-excel"></i> Descargar Power BI',
-                attr: {
-                    id: 'btnExcelPowerBI'
-                },
-                action: () => {
-                    exportarExcelPowerBi();
-
-                },
-                className: 'btn-default btn-sm'
-            }
-        ],
+        initComplete: function (settings, json) {
+            const $filter = $('#listar-registros_filter');
+            const $input = $filter.find('input');
+            $filter.append('<button id="btnBuscar" class="btn btn-default btn-sm pull-right" type="button"><i class="fas fa-search"></i></button>');
+            $input.off();
+            $input.on('keyup', (e) => {
+                if (e.key == 'Enter') {
+                    $('#btnBuscar').trigger('click');
+                }
+            });
+            $('#btnBuscar').on('click', (e) => {
+                $tabla.search($input.val()).draw();
+            });
+        },
+        drawCallback: function (settings) {
+            $('#listar-registros_filter input').prop('disabled', false);
+            $('#btnBuscar').html('<i class="fas fa-search"></i>').prop('disabled', false);
+            $('#listar-registros_filter input').trigger('focus');
+        },
+        order: [[0, 'asc']],
         ajax: {
-            url: "listar-registros",
-            type: "POST",
-            data:filtros,
-            beforeSend: data => {
-                $("#listar-registros").LoadingOverlay("show", {
-                    imageAutoResize: true,
-                    progress: true,
-                    imageColor: "#3c8dbc"
-                });
-            }
+            url: 'listar-registros',
+            method: 'POST',
+            headers: {'X-CSRF-TOKEN': csrf_token}
         },
         columns: [
             {data: 'id_registro_cobranza', name:"id_registro_cobranza"},
@@ -1162,11 +1121,42 @@ function listarRegistros(filtros) {
                 className: "text-center"
             }
         ],
-        order: [[1, "desc"]],
-        columnDefs: [{ aTargets: [0], sClass: "invisible" }],
-        "drawCallback": function (settings) {
-
-            $("#listar-registros").LoadingOverlay("hide", true);
+        buttons: [
+            {
+                text: '<i class="fas fa-filter"></i> Filtros : 0',
+                attr: { id: 'btnFiltros' },
+                action: () => {
+                    $('#modal-filtros').modal('show');
+                }, className: 'btn-default btn-sm'
+            },
+            {
+                text: '<i class="fas fa-file-excel"></i> Descargar',
+                attr: { id: 'btnExcel' },
+                action: () => {
+                    exportarExcel();
+                }, className: 'btn-default btn-sm'
+            },
+            {
+                text: '<i class="fas fa-file-excel"></i> Descargar Power BI',
+                attr: { id: 'btnExcelPowerBI' },
+                action: () => {
+                    exportarExcelPowerBi();
+                }, className: 'btn-default btn-sm'
+            }
+        ]
+    });
+    $tabla.on('search.dt', function() {
+        $('#listar-registros_filter input').attr('disabled', true);
+        $('#btnBuscar').html('<i class="fas fa-clock" aria-hidden="true"></i>').prop('disabled', true);
+    });
+    $tabla.on('init.dt', function(e, settings, processing) {
+        $(e.currentTarget).LoadingOverlay('show', { imageAutoResize: true, progress: true, imageColor: '#3c8dbc' });
+    });
+    $tabla.on('processing.dt', function(e, settings, processing) {
+        if (processing) {
+            $(e.currentTarget).LoadingOverlay('show', { imageAutoResize: true, progress: true, imageColor: '#3c8dbc' });
+        } else {
+            $(e.currentTarget).LoadingOverlay("hide", true);
         }
     });
 }
@@ -1202,6 +1192,7 @@ function customerList() {
         }
     });
 }
+
 function ModalAddNewCustomer() {
     $('#modal-agregar-cliente').modal({show: true});
     $('[name=nuevo_ruc_dni_cliente]').val('');
