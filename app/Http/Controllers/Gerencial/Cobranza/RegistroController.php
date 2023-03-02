@@ -1470,10 +1470,16 @@ class RegistroController extends Controller
                     }
                 }
             }
-            // else{
-            //     $registro_cobranza = RegistroCobranza::find($registro_cobranza->id_registro_cobranza);
-            //     $success = false;
-            // }
+            else{
+                $registro_cobranza = RegistroCobranza::find($registro_cobranza->id_registro_cobranza);
+                $registro_cobranza->factura           = ($value->factura=='--'||$value->factura=='-'||$value->factura=='---'?'':$value->factura);
+                $registro_cobranza->siaf              = ($value->siaf=='--'||$value->siaf=='-'||$value->siaf=='---'?'':$value->siaf) ;
+                $registro_cobranza->oc_fisica        = ($value->oc=='--'||$value->oc=='-'||$value->oc=='---'?'':$value->oc);
+                $registro_cobranza->fecha_emision     = ($value->fecha_emision=='--'||$value->fecha_emision=='-'||$value->fecha_emision=='---'?'':$value->fecha_emision);
+                $registro_cobranza->fecha_recepcion   = ($value->fecha_recepcion=='--'||$value->fecha_recepcion=='-'||$value->fecha_recepcion=='---'?'':$value->fecha_recepcion) ;
+                $registro_cobranza->save();
+                $success = false;
+            }
 
 
         }
