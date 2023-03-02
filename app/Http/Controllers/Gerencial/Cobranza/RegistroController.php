@@ -130,19 +130,19 @@ class RegistroController extends Controller
         })
         ->addColumn('cliente', function($data){
 
-            $contribuyente=null;
-            if (!empty($data->id_cliente)) {
-                $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$data->id_cliente)->where('id_cliente_gerencial_old','!=',null)->first();
-            }
-            if (!empty($data->id_cliente_agil)) {
-                // if (!$contribuyente) {
-                    $contribuyente = Contribuyente::where('id_contribuyente',$data->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
-                // }
-            }
+            // $contribuyente=null;
+            // if (!empty($data->id_cliente)) {
+            //     $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$data->id_cliente)->where('id_cliente_gerencial_old','!=',null)->first();
+            // }
+            // if (!empty($data->id_cliente_agil)) {
+            //     // if (!$contribuyente) {
+            //         $contribuyente = Contribuyente::where('id_contribuyente',$data->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
+            //     // }
+            // }
 
+            $contribuyente = Contribuyente::where('id_contribuyente',$data->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
 
-
-            return $contribuyente ? $contribuyente->razon_social:'--';
+            return $contribuyente ? $contribuyente->razon_social:' ';
         })
         ->addColumn('atraso', function($data){
             return ($this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) > 0) ? $this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) : '0';
@@ -884,30 +884,43 @@ class RegistroController extends Controller
         $contribuyente = array();
         if ($registro_cobranza->id_cliente_agil!==null) {
             $contribuyente = Contribuyente::where('id_contribuyente',$registro_cobranza->id_cliente_agil)->first();
-        }
-
-        if (!$contribuyente) {
-            if ($registro_cobranza->id_cliente!==null) {
-                $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$registro_cobranza->id_cliente)->first();
-            }
-
-            if ($contribuyente) {
-                array_push($cliente_array,array(
-                    "id_cliente"=>null,
-                    "id_contribuyente"=>$contribuyente->id_contribuyente,
-                    "nro_documento"=>$contribuyente->nro_documento,
-                    "razon_social"=>$contribuyente->razon_social
-                ));
-            }
-
-
-        }else{
             array_push($cliente_array,array(
                 "id_cliente"=>null,
                 "id_contribuyente"=>$contribuyente->id_contribuyente,
                 "nro_documento"=>$contribuyente->nro_documento,
                 "razon_social"=>$contribuyente->razon_social
             ));
+        }else{
+            array_push($cliente_array,array(
+                "id_cliente"=>' ',
+                "id_contribuyente"=>' ',
+                "nro_documento"=>' ',
+                "razon_social"=>' '
+            ));
+        }
+
+        if (!$contribuyente) {
+            // if ($registro_cobranza->id_cliente!==null) {
+            //     $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$registro_cobranza->id_cliente)->first();
+            // }
+
+            // if ($contribuyente) {
+            //     array_push($cliente_array,array(
+            //         "id_cliente"=>null,
+            //         "id_contribuyente"=>$contribuyente->id_contribuyente,
+            //         "nro_documento"=>$contribuyente->nro_documento,
+            //         "razon_social"=>$contribuyente->razon_social
+            //     ));
+            // }
+
+
+        }else{
+            // array_push($cliente_array,array(
+            //     "id_cliente"=>null,
+            //     "id_contribuyente"=>$contribuyente->id_contribuyente,
+            //     "nro_documento"=>$contribuyente->nro_documento,
+            //     "razon_social"=>$contribuyente->razon_social
+            // ));
         }
 
         $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)
@@ -2950,5 +2963,35 @@ class RegistroController extends Controller
         $penalidades = Penalidad::where('estado','!=',7)->where('tipo',$request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
 
         return response()->json($penalidades,200);
+    }
+    public function scriptClienteUnificar()
+    {
+        $registro_cobranza = RegistroCobranza::all();
+        $array_excluidos = array();
+        foreach ($registro_cobranza as $key => $value) {
+            if ($value->id_cliente!==null && $value->id_cliente!=='') {
+                $cliente_gerencial = Cliente::find($value->id_cliente);
+                $contribuyente = Contribuyente::where('nro_documento','!=',null)
+                ->where('nro_documento',$cliente_gerencial->ruc)
+                ->first();
+                if (!$contribuyente) {
+                    $contribuyente = Contribuyente::where('razon_social','!=',null)
+                    ->where('razon_social',$cliente_gerencial->nombre)
+                    ->first();
+                }
+
+                if ($contribuyente) {
+                    $actualizar_registro_cobranza = RegistroCobranza::find($value->id_registro_cobranza);
+                    $actualizar_registro_cobranza->id_cliente_agil = $contribuyente->id_contribuyente;
+                    $actualizar_registro_cobranza->save();
+                }
+
+
+            }else{
+                array_push($array_excluidos,$value);
+            }
+
+        }
+        return response()->json($array_excluidos,200);
     }
 }
