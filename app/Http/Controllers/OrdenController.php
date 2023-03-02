@@ -2669,7 +2669,7 @@ class OrdenController extends Controller
                 $orden->fecha_registro = new Carbon();
                 $orden->id_usuario = Auth::user()->id_usuario;
                 $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
-                $orden->incluye_igv = isset($request->incluye_igv) ? true : false;
+                $orden->incluye_igv = isset($request->incluye_igv) ? $request->incluye_igv : false;
                 $orden->incluye_icbper = isset($request->incluye_icbper) ? true : false;
                 $orden->monto_subtotal = isset($request->monto_subtotal) ? $request->monto_subtotal : null;
                 $orden->monto_igv = isset($request->monto_igv) ? $request->monto_igv : null;
@@ -3163,8 +3163,8 @@ class OrdenController extends Controller
                 $orden->id_moneda = $request->id_moneda ? $request->id_moneda : null;
                 $orden->fecha = $request->fecha_emision ? $request->fecha_emision : new Carbon();
                 $orden->id_periodo = $request->id_periodo ? $request->id_periodo : null;
-                $orden->incluye_igv = isset($request->incluye_igv) ? filter_var($request->incluye_igv, FILTER_VALIDATE_BOOLEAN) : false;
-                $orden->incluye_icbper = isset($request->incluye_icbper) ? filter_var($request->incluye_icbper, FILTER_VALIDATE_BOOLEAN) : false;
+                $orden->incluye_igv = isset($request->incluye_igv) ? $request->incluye_igv : false;
+                $orden->incluye_icbper = isset($request->incluye_icbper) ? true : false;
                 $orden->monto_subtotal = isset($request->monto_subtotal) ? $request->monto_subtotal : null;
                 $orden->monto_igv = isset($request->monto_igv) ? $request->monto_igv : null;
                 $orden->monto_total = isset($request->monto_total) ? $request->monto_total : null;

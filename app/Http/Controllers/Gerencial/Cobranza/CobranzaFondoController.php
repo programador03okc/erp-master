@@ -140,4 +140,20 @@ class CobranzaFondoController extends Controller
         }
         return response()->json(array('respuesta' => $respuesta, 'alerta' => $alerta, 'mensaje' => $mensaje, 'error' => $error), 200);
     }
+
+    public function eliminar(Request $request)
+    {
+        try {
+            $data = CobranzaFondo::find($request->id);
+            $data->delete();
+            $alerta = 'info';
+            $mensaje = 'Se ha eliminado el registro de cobranza';
+            $error = '';
+        } catch (Exception $ex) {
+            $alerta = 'error';
+            $mensaje ='Hubo un problema al eliminar. Por favor intente de nuevo';
+            $error = $ex;
+        }
+        return response()->json(array('mensaje' => $mensaje, 'alerta' => $alerta, 'error' => $error), 200);
+    }
 }

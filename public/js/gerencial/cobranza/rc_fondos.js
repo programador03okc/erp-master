@@ -82,6 +82,37 @@ $(function () {
             console.log(errorThrown);
         })
     });
+
+    $('#tabla').on('click', 'button.eliminar', function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: '¿Desea eliminar el registro?',
+            text: '',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'eliminar',
+                    data: {id: $(e.currentTarget).data('id')},
+                    dataType: 'JSON',
+                    success: function(response) {
+                        $('#tabla').DataTable().ajax.reload();
+                        Util.notify(response.alerta, response.mensaje);
+                    }
+                }).fail( function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                });
+            }
+        });
+    });
 });
 
 function listar() {

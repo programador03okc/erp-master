@@ -80,6 +80,8 @@ class ComprasPendientesController extends Controller
         $tipos = AlmacenController::mostrar_tipos_cbo();
         $almacenes = Almacen::mostrar();
 
+        $estados = $this->select_estado();
+
         $array_accesos=[];
         $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
@@ -104,6 +106,7 @@ class ComprasPendientesController extends Controller
                 'monedas',
                 'tipos',
                 'almacenes',
+                'estados',
                 'array_accesos'
             )
         );
@@ -120,6 +123,14 @@ class ComprasPendientesController extends Controller
         return $data;
     }
 
+    public function select_estado()
+    {
+        $data = DB::table('administracion.adm_estado_doc')
+            ->select('adm_estado_doc.id_estado_doc', 'adm_estado_doc.estado_doc')
+            ->orderBy('adm_estado_doc.id_estado_doc', 'asc')
+            ->get();
+        return $data;
+    }
     public function select_moneda()
     {
         $data = DB::table('configuracion.sis_moneda')
@@ -241,6 +252,7 @@ class ComprasPendientesController extends Controller
         $fechaRegistroHasta = $request->fechaRegistroHasta ?? 'SIN_FILTRO';
         $reserva = $request->reserva ?? 'SIN_FILTRO';
         $orden = $request->orden ?? 'SIN_FILTRO';
+        $estado = $request->estado ?? 'SIN_FILTRO';
 
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
@@ -356,6 +368,9 @@ class ComprasPendientesController extends Controller
             ->when(($orden == 'SIN_ORDEN'), function ($query) {
                 $query->Join('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
                 return $query->rightJoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+            })
+            ->when(($estado > 0), function ($query) use ($estado) {
+                return $query->where('alm_req.estado', '=', $estado);
             })
 
             ->when((($fechaRegistroDesde != 'SIN_FILTRO') and ($fechaRegistroHasta == 'SIN_FILTRO')), function ($query) use ($fechaRegistroDesde) {
