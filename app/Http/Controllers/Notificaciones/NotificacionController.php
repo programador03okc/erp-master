@@ -29,13 +29,26 @@ class NotificacionController extends Controller
     public function ver($id) {
         $notificacion = Notificacion::find($id);
         if ($notificacion == null || $notificacion->id_usuario != Auth::user()->id_usuario) {
-            return redirect()->route('modulos');
+            if($notificacion->documento_interno_id == 1 && $notificacion->documento_id>0){
+                return redirect('/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/'.$notificacion->documento_id.'/0');
+            }else if($notificacion->documento_interno_id == 11 && $notificacion->documento_id>0){
+                return redirect('/necesidades/pago/listado/imprimir-requerimiento-pago-pdf/'.$notificacion->documento_id);
+            }else{
+                return redirect()->route('modulos');
+            }
         } else {
             $notificacion->leido = 1;
             $notificacion->save();
 
             if ($notificacion->url == '' || $notificacion->url == null) {
-                return redirect()->route('modulos');
+                if($notificacion->documento_interno_id == 1 && $notificacion->documento_id>0){
+                    return redirect('/necesidades/requerimiento/elaboracion/imprimir-requerimiento-pdf/'.$notificacion->documento_id.'/0');
+                }else if($notificacion->documento_interno_id == 11 && $notificacion->documento_id>0){
+                    return redirect('/necesidades/pago/listado/imprimir-requerimiento-pago-pdf/'.$notificacion->documento_id);
+                }else{
+                    return redirect()->route('modulos');
+                }
+
             } else {
                 return redirect($notificacion->url);
             }

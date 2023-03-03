@@ -820,6 +820,8 @@ class RevisarAprobarController extends Controller{
                 // $correoDestinatario = [];
                 $idUsuarioDestinatario=[];
                 $codigoRequerimiento='';
+                $documentoInternoId='';
+                $documentoId='';
                 if (config('app.debug')) {
                     // $correoDestinatario[] = config('global.correoDebug1');
                     if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
@@ -837,11 +839,15 @@ class RevisarAprobarController extends Controller{
                         // $correoDestinatario[] = Usuario::withTrashed()->find($requerimiento->id_usuario)->email;
                         $idUsuarioDestinatario[] = $requerimiento->id_usuario;
                         $codigoRequerimiento = $requerimiento->codigo??'';
+                        $documentoInternoId= 1;
+                        $documentoId=$requerimiento->id_requerimiento;
 
                     }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
                         // $correoDestinatario[] = Usuario::withTrashed()->find($requerimientoPago->id_usuario)->email;
                         $idUsuarioDestinatario[] = $requerimientoPago->id_usuario;
                         $codigoRequerimiento = $requerimientoPago->codigo??'';
+                        $documentoInternoId= 11;
+                        $documentoId=$requerimiento->id_requerimiento_pago;
 
                     }
 
@@ -853,7 +859,7 @@ class RevisarAprobarController extends Controller{
                 NotificacionHelper::notificacionRequerimiento($idUsuarioDestinatario,$mensajeNotificacion);
                 
                 if($nombreAccion == 'Aprobado'){
-                    NotificacionHelper::notificacionRequerimiento([78,75,122,5,27],$mensajeNotificacion);
+                    NotificacionHelper::notificacionRequerimiento([78,75,122,5,27],$mensajeNotificacion,$documentoInternoId,$documentoId);
                 }
                 // if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
                     // Mail::to($correoDestinatario)->send(new EmailNotificarUsuarioPropietarioDeDocumento($request->idTipoDocumento,$requerimiento,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$nombreAccion));
