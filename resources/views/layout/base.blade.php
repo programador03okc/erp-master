@@ -127,9 +127,10 @@
                             <div class="col-md-12">
                                 <div class="alert alert-warning" role="alert">
                                     <p>Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos.</p>
-                                    <p>Ejemplos:</p>
-                                    <p>Inicio01.</p>
-                                    <p>Inicio01.@</p>
+                                    <p>Mínimo una Mayúscula</p>
+									<p>Mínimo una Minúscula</p>
+									<p>Mínimo un número</p>
+									<p>Mínimo un caracter especial (@#_%)</p>
                                 </div>
                             </div>
                         </div>
