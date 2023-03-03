@@ -34,18 +34,18 @@
                         <table class="table table-bordered table-condensed table-striped table-hover" id="tabla" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Fecha</th>
-                                    <th>Tipo</th>
-                                    <th>Negocio</th>
-                                    <th>Nombre de la entidad</th>
-                                    <th>CLAIM</th>
-                                    <th>Moneda</th>
+                                    <th width="10">Emp</th>
+                                    <th width="80">OCAM</th>
+                                    <th width="150">Nombre del Cliente</th>
+                                    <th width="30">Fact.</th>
+                                    <th width="20">OC Fisica</th>
+                                    <th width="20">SIAF</th>
+                                    <th>Gestión</th>
+                                    <th>Pagador</th>
+                                    <th width="10">Mon</th>
                                     <th>Importe</th>
-                                    <th>Forma de pago</th>
-                                    <th>Plazos</th>
-                                    <th>Responsable</th>
                                     <th>Estado</th>
-                                    <th width="70"></th>
+                                    <th width="30"></th>
                                 </tr>
                             </thead>
                             <tbody id="resultado"></tbody>
@@ -150,5 +150,5 @@
             $('.numero').number(true, 2);
         });
     </script>
-    {{--  <script src="{{ asset('js/gerencial/cobranza/rc_devolucion.js') }}?v={{ filemtime(public_path('js/gerencial/cobranza/rc_devolucion.js')) }}"></script>  --}}
+    <script src="{{ asset('js/gerencial/cobranza/rc_devolucion.js') }}?v={{ filemtime(public_path('js/gerencial/cobranza/rc_devolucion.js')) }}"></script>
 @endsection
