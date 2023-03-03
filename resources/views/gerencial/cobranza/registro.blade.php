@@ -1061,7 +1061,7 @@ Cobranzas
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="submit" class="btn btn-block btn-sm btn-success">Grabar Penalidad <span class="fa fa-save"></span></button>
+                            <button type="submit" class="btn btn-block btn-sm btn-success" id="btnPenalidad">Grabar <span class="fa fa-save"></span></button>
                         </div>
                     </div>
                 </form>
