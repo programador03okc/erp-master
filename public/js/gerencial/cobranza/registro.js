@@ -774,7 +774,8 @@ $(function () {
         $('[data-form="guardar-penalidad"]')[0].reset();
         $('[data-form="guardar-penalidad"]').find('[name="id"]').val(0);
         $('#modal-penalidad-cobro input[name="id_cobranza_penal"]').val(id);
-        $('#modal-penalidad-cobro h3').text(titulo);
+        $('#modal-penalidad-cobro h3').text('REGISTRO DE ' + titulo);
+        $('#modal-penalidad-cobro #btnPenalidad').text('Grabar ' + titulo.toLowerCase());
         $('#modal-penalidad-cobro').modal('show');
 
         $('[data-form="guardar-penalidad"]').find('[name="tipo_penal"]').val(titulo);
@@ -819,7 +820,8 @@ $(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 if (result.value.status === 200) {
-                    obtenerPenalidades(result.value.data.id_registro_cobranza, 'PENALIDAD');
+                    obtenerPenalidades(result.value.data.id_registro_cobranza, result.value.data.tipo);
+                    $('[data-form="guardar-penalidad"]')[0].reset();
                 }
             }
         })
@@ -1051,7 +1053,6 @@ function listarRegistros(filtros) {
             headers: {'X-CSRF-TOKEN': csrf_token}
         },
         columns: [
-            {data: 'id_registro_cobranza', name:"id_registro_cobranza"},
             {data: 'empresa', name:"empresa", className: "text-center"},
             {data: 'ocam', name:"ocam"},
             {data: 'cliente', name:"cliente"},
@@ -1372,10 +1373,10 @@ function checkFiltros(key,this_check) {
 function obtenerPenalidades(id, titulo) {
     let html = '';
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        url: 'obtener-penalidades/'+id,
-        data: {tipo:titulo},
+        url: 'obtener-penalidades',
+        data: {tipo:titulo, id:id},
         dataType: 'JSON',
         success: function(data) {
             if (data.status===200) {
