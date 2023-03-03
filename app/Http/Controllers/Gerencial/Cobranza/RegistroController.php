@@ -1265,15 +1265,15 @@ class RegistroController extends Controller
         return response()->json(["status"=>200, "success"=>true, "data" => $penalidad]);
     }
 
-    public function obtenerPenalidades($id_registro_cobranza, Request $request)
+    public function obtenerPenalidades(Request $request)
     {
-        $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id_registro_cobranza)->first();
+        $registro_cobranza = RegistroCobranza::where('id_registro_cobranza', $request->id)->first();
         $array_penalidades = array();
         // return $registro_cobranza;exit;
         $penalidad_cobranza = Penalidad::where('id_cobranza', $registro_cobranza->id_cobranza_old)
                             ->where('tipo', $request->tipo)->where('id_cobranza','!=',null)->where('estado','!=',7)
                             ->orderBy('fecha_registro', 'desc')->get();
-        $penalidad_registro = Penalidad::where('id_registro_cobranza', $id_registro_cobranza)
+        $penalidad_registro = Penalidad::where('id_registro_cobranza', $request->id)
                             ->where('tipo', $request->tipo)->where('estado','!=',7)
                             ->orderBy('fecha_registro', 'desc')->get();
 
