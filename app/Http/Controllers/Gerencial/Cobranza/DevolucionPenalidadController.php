@@ -25,7 +25,7 @@ class DevolucionPenalidadController extends Controller
         return DataTables::of($data)
         ->addColumn('empresa', function ($data) { return $data->cobranza->empresa->codigo; })
         ->addColumn('ocam', function ($data) { return $data->cobranza->ocam; })
-        ->addColumn('cliente', function ($data) { return $data['cliente']['contribuyente']['razon_social']; })
+        ->addColumn('cliente', function ($data) { return (isset($data->cliente)) ? $data->cliente->contribuyente->razon_social : ''; })
         ->addColumn('factura', function ($data) { return $data->cobranza->factura; })
         ->addColumn('oc_fisica', function ($data) { return $data->cobranza->oc_fisica; })
         ->addColumn('siaf', function ($data) { return $data->cobranza->siaf; })
