@@ -8,6 +8,7 @@ class Empresa extends Model
 {
   protected $table = 'administracion.adm_empresa';
   protected $primaryKey = 'id_empresa';
+  protected $fillable = ['id_contribuyente', 'codigo', 'estado', 'logo_empresa'];
   public $timestamps = false;
 
 

@@ -36,11 +36,15 @@
                                 <tr>
                                     <th>Fecha</th>
                                     <th>Tipo</th>
+                                    <th>Negocio</th>
                                     <th>Nombre de la entidad</th>
+                                    <th>CLAIM</th>
                                     <th>Moneda</th>
                                     <th>Importe</th>
                                     <th>Forma de pago</th>
+                                    <th>Plazos</th>
                                     <th>Responsable</th>
+                                    <th>Estado</th>
                                     <th width="70"></th>
                                 </tr>
                             </thead>
@@ -54,7 +58,7 @@
 </div>
 
 <div class="modal fade" id="modalFondo" tabindex="-1" role="dialog" aria-labelledby="modal-fondo">
-    <div class="modal-dialog modal-xs" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form id="formulario" method="POST" autocomplete="off">
                 <input type="hidden" name="_method" value="POST">
@@ -66,25 +70,34 @@
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <h6>Fecha de solicitud</h6>
                             <input type="date" name="fecha_solicitud" class="form-control input-sm text-center" value="{{ date('Y-m-d') }}" required>
                         </div>
-                        <div class="col-md-4">
-                            <h6>Tipo de gestión</h6>
-                            <select name="tipo_gestion_id" class="form-control input-sm" required>
+                        <div class="col-md-3">
+                            <h6>Periodo</h6>
+                            <select name="periodo_id" class="form-control input-sm" required>
                                 <option value="" selected disabled>Elija una opción</option>
-                                @foreach ($tipoGestion as $tipo)
-                                    <option value="{{ $tipo->id }}">{{ $tipo->descripcion }}</option>
+                                @foreach ($periodos as $periodo)
+                                    <option value="{{ $periodo->id_periodo }}">{{ $periodo->descripcion }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <h6>Forma de pago</h6>
-                            <select name="forma_pago_id" class="form-control input-sm" required>
+                        <div class="col-md-3">
+                            <h6>Tipo de gestión</h6>
+                            <select name="tipo_gestion_id" class="form-control input-sm" required>
                                 <option value="" selected disabled>Elija una opción</option>
-                                @foreach ($formaPago as $forma)
-                                    <option value="{{ $forma->id }}">{{ $forma->descripcion }}</option>
+                                @foreach ($tipoGestion as $tipog)
+                                    <option value="{{ $tipog->id }}">{{ $tipog->descripcion }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <h6>Tipo de negocio</h6>
+                            <select name="tipo_negocio_id" class="form-control input-sm" required>
+                                <option value="" selected disabled>Elija una opción</option>
+                                @foreach ($tipoNegocio as $tipon)
+                                    <option value="{{ $tipon->id }}">{{ $tipon->descripcion }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -104,7 +117,16 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
+                            <h6>Forma de pago</h6>
+                            <select name="forma_pago_id" class="form-control input-sm" required>
+                                <option value="" selected disabled>Elija una opción</option>
+                                @foreach ($formaPago as $forma)
+                                    <option value="{{ $forma->id }}">{{ $forma->descripcion }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-5">
                             <div class="form-group">
                                 <h6>Importe</h6>
                                 <div class="group-okc-ini">
@@ -117,7 +139,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <h6>Responsable</h6>
                             <select name="responsable_id" class="selectpicker" title="Elija un responsable" data-live-search="true" data-width="100%" data-actions-box="true" data-size="5" required>
                                 @foreach ($responsables as $resp)
@@ -129,9 +151,71 @@
                         </div>
                     </div>
                     <div class="row mb-3">
+                        <div class="col-md-4">
+                            <h6>Nombre del pagador (Entidad/Marca)</h6>
+                            <input type="text" name="pagador" class="form-control input-sm" placeholder="Ingrese nombre de la entidad" required>
+                        </div>
+                        <div class="col-md-3">
+                            <h6>CLAIM</h6>
+                            <input type="text" name="claim" class="form-control input-sm" placeholder="Ingrese código CLAIM" required>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Fecha de inicio</h6>
+                                    <input type="date" name="fecha_inicio" class="form-control input-sm text-center" value="{{ date('Y-m-d') }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Fecha de vencimiento</h6>
+                                    <input type="date" name="fecha_vencimiento" class="form-control input-sm text-center" value="{{ date('Y-m-d', strtotime(date('Y-m-d').'+ 1 month')) }}" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Motivo de la solicitud</h6>
                             <textarea name="detalles" class="form-control" rows="3" placeholder="Escriba el motivo de la solicitud" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-pill btn-default shadow-none" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-pill btn-success shadow-none">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalControl" tabindex="-1" role="dialog" aria-labelledby="modal-control">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <form id="formulario-cobro" method="POST" autocomplete="off">
+                <input type="hidden" name="_method" value="POST">
+                <input type="hidden" name="cobranza_fondo_id" value="0">
+                @csrf
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h5>Cerrar cobranza</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Fecha de cobro</h6>
+                            <input type="date" name="fecha_cobranza" class="form-control input-sm text-center" value="{{ date('Y-m-d') }}" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Nro documento</h6>
+                            <input type="text" name="nro_documento" class="form-control input-sm" placeholder="Ingrese nombre de la entidad" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Observaciones del cobro</h6>
+                            <textarea name="observaciones" class="form-control" rows="3" placeholder="Escriba las observaciones del cobro" required></textarea>
                         </div>
                     </div>
                 </div>
@@ -156,6 +240,7 @@
     <script src="{{ asset('datatables/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('datatables/pdfmake/vfs_fonts.js') }}"></script>
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
+    <script src="{{ asset('js/util.js') }}"></script>
 
     <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
@@ -188,9 +273,9 @@
                     ": Activar para ordenar la columna de manera descendente"
             }
         };
-    
         
         $(document).ready(function() {
+            $('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click()
             seleccionarMenu(window.location);
             $('.numero').number(true, 2);
         });

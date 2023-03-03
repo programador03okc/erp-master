@@ -46,15 +46,15 @@ Cobranzas
                             <tr>
                                 <th></th>
                                 <th width="10">Emp</th>
-								<th width="10">OCAM</th>
+								<th width="50">OCAM</th>
 								<th width="150">Nombre del Cliente</th>
 								<th>Fact.</th>
-								<th>UU. EE.</th>
-								<th>FTE. FTO.</th>
-								<th>OC.</th>
+								<th>UU. EE</th>
+								<th width="10">FTE. FTO</th>
+								<th width="15">OC Fisica</th>
 								<th>SIAF</th>
-								<th>Fecha Emis.</th>
-								<th>Fecha Recep.</th>
+								<th>Fec. Emis</th>
+								<th>Fec. Recep</th>
 								<th>Días A.</th>
 								<th>Mon</th>
 								<th>Importe</th>
@@ -62,8 +62,7 @@ Cobranzas
 								<th id="tdResp">A. Respo.</th>
 								<th width="10">Fase</th>
 								<th class="hidden">Tipo</th>
-
-                                <th width="10">Fecha inicio / entrega </th>
+                                <th width="10">Fec. inicio / entrega </th>
 								{{-- <th width="10">Fecha entrega</th> --}}
 								<th id="tdAct">-</th>
                             </tr>
@@ -75,6 +74,7 @@ Cobranzas
         </div>
     </div>
 </div>
+
 {{-- crear registro de cobranza --}}
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-cobranza" data-action="modal">
 	<div class="modal-dialog" style="width: 70%;">
@@ -90,7 +90,7 @@ Cobranzas
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="empresa">Empresa</label>
+                                <h6>Empresa</h6>
                                 <select class="form-control input-sm" name="empresa" id="empresa" required>
                                     <option value="" disabled selected>Elija una opción</option>
                                     @foreach ($empresa as $item)
@@ -101,7 +101,7 @@ Cobranzas
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="sector">Sector</label>
+                                <h6>Sector</h6>
                                 <select class="form-control input-sm" name="sector" id="sector" required>
                                     <option value="" disabled selected>Elija una opción</option>
                                     @foreach ($sector as $item)
@@ -112,7 +112,7 @@ Cobranzas
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="tramite">Trámite</label>
+                                <h6>Trámite</h6>
                                 <select class="form-control input-sm" name="tramite" id="tramite" required>
                                     <option value="" disabled selected>Elija una opción</option>
                                     @foreach ($tipo_ramite as $item)
@@ -123,7 +123,7 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="periodo">Periodo</label>
+                                <h6>Periodo</h6>
                                 <select name="periodo" id="periodo" class="form-control input-sm">
                                     @foreach ($periodo as $item)
                                         <option value="{{$item->id_periodo }}" {{ ($item->id_periodo===5?'selected':'') }} >{{$item->descripcion}}</option>
@@ -135,7 +135,7 @@ Cobranzas
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="cliente">Cliente</label>
+                                <h6>Cliente</h6>
                                 <input type="hidden" name="id_cliente" id="id_cliente" value="0">
                                 <input type="hidden" name="id_contribuyente" value="0">
                                 <div class="input-group input-group-sm">
@@ -150,17 +150,17 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="orden_compra_nuevo">OC Fisica</label>
+                                <h6>OC Fisica</h6>
                                 <input type="text" class="form-control" name="orden_compra" id="orden_compra_nuevo" value="" placeholder="N° OC">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="cdp">Cuadro de Presup.</label>
+                                <h6>Cuadro de Presup.</h6>
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" id="cdp" placeholder="N° CDP" data-action="cdp">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="guardar-formulario">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" data-form="guardar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -170,12 +170,12 @@ Cobranzas
                         <input type="hidden"name="id_oc" >
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="oc">OCAM</label>
+                                <h6>OCAM</h6>
                                 <div class="input-group input-group-sm">
 
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="oc" id="oc" required placeholder="OCAM" data-action="oc">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="guardar-formulario">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" data-form="guardar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -186,25 +186,25 @@ Cobranzas
                     <div class="row">
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="fact">Factura</label>
+                                <h6>Factura</h6>
                                 <input type="text" class="form-control input-sm text-center buscar-factura" name="fact" id="fact" required placeholder="N° Fact">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="siaf">N° SIAF</label>
+                                <h6>N° SIAF</h6>
                                 <input type="text" class="form-control input-sm text-center" name="siaf" id="siaf" placeholder="SIAF">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="ue">Unidad Ejec.</label>
+                                <h6>Unidad Ejec.</h6>
                                 <input type="text" class="form-control input-sm text-center" name="ue" id="ue" placeholder="UU.EE">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="ff">FTE FTO.</label>
+                                <h6>FTE FTO.</h6>
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center" name="ff" id="ff" readonly>
                                     <span class="input-group-btn">
@@ -217,13 +217,13 @@ Cobranzas
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="importe">Importe</label>
+                                <h6>Importe</h6>
                                 <div class="group-okc-ini">
-                                    <select class="form-control input-sm" name="moneda" id="moneda" required>
+                                    <select class="form-control input-sm" name="moneda" id="moneda" style="width: 40%;" required>
                                         <option value="1" selected>S/.</option>
                                         <option value="2">$</option>
                                     </select>
-                                    <input type="number" class="form-control input-sm number text-right" name="importe" id="importe" required placeholder="0.00" step="0.01">
+                                    <input type="text" class="form-control input-sm numero text-right" name="importe" id="importe" required placeholder="0.00">
                                 </div>
                             </div>
                         </div>
@@ -231,26 +231,26 @@ Cobranzas
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="categ">Categoría</label>
+                                <h6>Categoría</h6>
                                 <input type="text" class="form-control input-sm text-center" name="categ" id="categ" placeholder="Categoría">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="fecha_emi">Fecha Emisión</label>
+                                <h6>Fecha Emisión</h6>
                                 <input type="date" class="form-control input-sm text-center" name="fecha_emi" id="fecha_emi"
                                 required>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="fecha_rec">Fecha Recepción</label>
+                                <h6>Fecha Recepción</h6>
                                 <input type="date" class="form-control input-sm text-center dias-atraso" data-form="guardar-formulario" name="fecha_rec" id="fecha_rec"  required>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="estado_doc">Estado Documento</label>
+                                <h6>Estado Documento</h6>
                                 <select class="form-control input-sm" name="estado_doc" id="estado_doc" required>
                                     <option value="" disabled selected>Elija una opción</option>
                                     @foreach ($estado_documento as $item)
@@ -261,7 +261,7 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="fecha_act">Fecha Actual</label>
+                                <h6>Fecha Actual</h6>
                                 <input type="date" class="form-control input-sm text-center" name="fecha_act" id="fecha_act" value="{{date('Y-m-d')}}" disabled>
                             </div>
                         </div>
@@ -269,26 +269,26 @@ Cobranzas
 					<div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="fecha_ppago">Fecha Pago (próx)</label>
+                                <h6>Fecha Pago (próx)</h6>
                                 <input type="date" class="form-control input-sm text-center dias-atraso" data-form="editar-formulario" name="fecha_ppago" id="fecha_ppago" value="{{date('Y-m-d')}}">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="atraso">Días Atraso</label>
+                                <h6>Días Atraso</h6>
                                 <input type="hidden" name="dias_atraso" value="0">
                                 <input type="text" class="form-control input-sm text-center dias-atraso" name="atraso" id="atraso" value="0" data-form="guardar-formulario" disabled>
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="plazo_credito">Plazo Crédito</label>
+                                <h6>Plazo Crédito</h6>
                                 <input type="text" class="form-control input-sm text-center" name="plazo_credito" id="plazo_credito" value="0">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="nom_vendedor">Nombre del Vendedor</label>
+                                <h6>Nombre del Vendedor</h6>
                                 {{-- <input type="text" class="form-control input-sm" name="nom_vendedor" id="nom_vendedor" placeholder="Nombre y Apellido"> --}}
                                 <select class="select2 search-vendedor-guardar" name="nom_vendedor">
                                 </select>
@@ -296,7 +296,7 @@ Cobranzas
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <label for="area">Area</label>
+                                <h6>Area</h6>
                                 <select class="form-control input-sm" name="area" id="area" required>
                                     <option value="1" selected>Almacén</option>
                                     <option value="2">Contabilidad</option>
@@ -309,13 +309,13 @@ Cobranzas
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="fecha_inicio_nuevo">Fecha inicio :</label>
+                                <h6>Fecha inicio :</h6>
                                 <input id="fecha_inicio_nuevo" class="form-control text-center" type="date" name="fecha_inicio">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="fecha_entrega_nuevo">Fecha entrega :</label>
+                                <h6>Fecha entrega :</h6>
                                 <input id="fecha_entrega_nuevo" class="form-control text-center" type="date" name="fecha_entrega">
                             </div>
                         </div>
@@ -329,7 +329,6 @@ Cobranzas
 		</div>
 	</div>
 </div>
-
 
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cliente">
 	<div class="modal-dialog" style="width: 30%;">
@@ -403,8 +402,6 @@ Cobranzas
 		</div>
 	</div>
 </div>
-
-
 
   {{-- editar cobranza --}}
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-editar-cobranza" data-action="modal">
@@ -492,7 +489,7 @@ Cobranzas
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm text-center buscar-registro" name="cdp" placeholder="N° CDP" data-action="cdp">
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" id="" data-form="editar-formulario">
+                                        <button class="btn btn-default btn-flat modal-lista-procesadas" type="button" data-form="editar-formulario">
                                             <span class="fa fa-search"></span>
                                         </button>
                                     </span>
@@ -692,7 +689,7 @@ Cobranzas
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button class="btn btn-primary btn-seleccionar" data-id="" disabled>Seleccionar</button>
+                <button class="btn btn-primary btn-seleccionar" data disabled>Seleccionar</button>
             </div>
         </div>
     </div>
@@ -710,7 +707,7 @@ Cobranzas
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="form-group">
+							{{-- <div class="form-group">
                                 <button class="btn btn-success btn-flat" title="Agregar Nuevo" type="button" id="add_new_customer"
 								onclick="ModalAddNewCustomer();">
                                     <span class="fa fa-plus"></span> Nuevo
@@ -719,7 +716,7 @@ Cobranzas
                                      disabled>
                                     <span class="fa fa-edit"></span> Editar
                                 </button>
-                            </div>
+                            </div> --}}
 						</div>
 						<div class="col-md-12">
 							<table class="table table-hover" id="tabla-clientes" width="100%" style="font-size: 11px;">
@@ -1021,6 +1018,7 @@ Cobranzas
 		</div>
 	</div>
 </div>
+
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-penalidad-cobro">
 	<div class="modal-dialog" style="width: 700px;">
 		<div class="modal-content">
@@ -1029,7 +1027,7 @@ Cobranzas
 				<h3 class="modal-title"> </h3>
 			</div>
 			<div class="modal-body">
-                <form action="" data-form="guardar-penalidad">
+                <form id="form-penalidad" data-form="guardar-penalidad">
                     <input type="hidden" name="id" value="0">
                     <input type="hidden" name="tipo_penal" value="">
                     <input type="hidden" name="id_cobranza_penal">
@@ -1037,7 +1035,7 @@ Cobranzas
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Fecha :</label>
-                                <input type="date" class="form-control input-sm" name="fecha_penal" id="fecha_penal" required>
+                                <input type="date" class="form-control input-sm text-center" name="fecha_penal" id="fecha_penal" value="{{ date('Y-m-d') }}" required>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -1049,7 +1047,7 @@ Cobranzas
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Importe</label>
-                                <input type="number" class="form-control input-sm" name="importe_penal" id="importe_penal" step="any" required>
+                                <input type="text" class="form-control input-sm numero" name="importe_penal" id="importe_penal" placeholder="0.00" required>
                             </div>
                         </div>
                     </div>
@@ -1071,7 +1069,7 @@ Cobranzas
 					<div class="col-md-12">
 						<fieldset>
                             <legend><h4>1° Historial de Penalidades</h4></legend>
-							<table class="table table-bordered table-hover table-aux text-center" >
+							<table class="table table-bordered table-hover table-aux text-center" id="tablaPenalidad">
 								<thead>
                                     <tr>
                                         <th>Tipo</th>
@@ -1158,14 +1156,62 @@ Cobranzas
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
-<!-- Select2 -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
-<script src="{{ asset('js/gerencial/cobranza/registro.js') }}"></script>
-<script>
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
+    
+    <script>
+    let csrf_token = '{{ csrf_token() }}';
+    let carga_ini = 1;
+    let tempClienteSelected = {};
+    let tempoNombreCliente = '';
+    let userNickname = '';
+    let data_filtros ={
+        "empresa":null,
+        "estado":null,
+        "fase":null,
+        "fecha_emision_inicio":null,
+        "fecha_emision_fin":null,
+        "simbolo":null,
+        "importe":null
+    };
+    let empresa_filtro = null,
+        estado_filttro = null,
+        fase_filtro = null,
+        fecha_emision_inicio_filtro = null,
+        fecha_emision_fin_filtro = null,
+        importe_simbolo_filtro = null,
+        importe_total_filtro = null;
+    const idioma = {
+        sProcessing: "<div class='spinner'></div>",
+        sLengthMenu: "Mostrar _MENU_ registros",
+        sZeroRecords: "No se encontraron resultados",
+        sEmptyTable: "Ningún dato disponible en esta tabla",
+        sInfo: "Del _START_ al _END_ de un total de _TOTAL_ registros",
+        sInfoEmpty: "Del 0 al 0 de un total de 0 registros",
+        sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
+        sInfoPostFix: "",
+        sSearch: "Buscar:",
+        sUrl: "",
+        sInfoThousands: ",",
+        sLoadingRecords: "Cargando...",
+        oPaginate: {
+            sFirst: "Primero",
+            sLast: "Último",
+            sNext: "Siguiente",
+            sPrevious: "Anterior"
+        },
+        oAria: {
+            sSortAscending:
+                ": Actilet para ordenar la columna de manera ascendente",
+            sSortDescending:
+                ": Activar para ordenar la columna de manera descendente"
+        }
+    };
 
     $(document).ready(function() {
-        $('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click()
+        $('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click();
+        $('.numero').number(true, 2);
         $('.select2').select2();
         $('.search-vendedor-guardar').select2({
             dropdownParent: $('#modal-cobranza'),
@@ -1180,15 +1226,9 @@ Cobranzas
                         searchTerm: params.term, // search term
                         page: params.page
                     };
-                    // return query;
             },
             processResults: function (data, params) {
-                // params.page = params.page || 1;
                 return {
-                    // results: data.items,
-                    // pagination: {
-                    //     more: (params.page * 30) < data.total_count
-                    // }
                     results: $.map(data, function (item) {
                         return{
                             text:item.nombre,
@@ -1241,23 +1281,22 @@ Cobranzas
             templateResult: formatRepo,
             templateSelection: formatRepoSelection
         });
-        function formatRepo (repo) {
-            if (repo.id) {
-                return repo.text;
-            }
-            var state = $(
-                `<span>`+repo.text+`</span>`
-            );
-            return state;
-
-        }
-
-        function formatRepoSelection (repo) {
-            return repo.nombre || repo.text;
-        }
     });
 
-
-
-</script>
+    function formatRepo (repo) {
+        if (repo.id) {
+            return repo.text;
+        }
+        var state = $(
+            `<span>`+repo.text+`</span>`
+        );
+        return state;
+    
+    }
+    
+    function formatRepoSelection (repo) {
+        return repo.nombre || repo.text;
+    }
+    </script>
+    <script src="{{ asset('js/gerencial/cobranza/registro.js') }}"></script>
 @endsection

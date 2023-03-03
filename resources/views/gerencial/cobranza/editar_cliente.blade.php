@@ -143,7 +143,7 @@ Cobranzas
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="documento">RUC/DNI :</label>
-                                                <input id="" class="form-control" type="text" name="documento" value="{{$contribuyente->nro_documento}}" required>
+                                                <input id="" class="form-control" type="text" name="documento" value="{{$contribuyente->nro_documento}}" data-documento="{{$contribuyente->nro_documento}}" required>
                                             </div>
                                         </div>
                                         <div class="col-md-3">

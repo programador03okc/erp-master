@@ -483,3 +483,32 @@ $(document).on('submit','[data-form="guardar-cliente"]',function (e) {
 $(document).on('click','.volver-cliente',function () {
     window.location.href = "cliente";
 });
+$(document).on('change','[name="documento"]',function () {
+    var documento = $(this).val(),
+        this_input = $(this);
+    $.ajax({
+        type: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        url: 'buscar-cliente-documento',
+        data: {
+            documento:documento},
+        dataType: 'JSON',
+        beforeSend: (data) => {
+
+        }
+    }).done(function(response) {
+        if (response.success===true) {
+            Swal.fire(
+                'Información',
+                'Número de documento se encuentra en uso',
+                'warning'
+            )
+            this_input.val('');
+        }
+
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+});
