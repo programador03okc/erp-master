@@ -70,7 +70,7 @@ class RegistroController extends Controller
 
         $pais = Pais::get();
         $departamento = Departamento::get();
-        return view('gerencial/cobranza/registro',compact('sector','tipo_ramite','empresa','periodo','estado_documento', 'pais', 'departamento'));
+        return view('gerencial.cobranza.registro',compact('sector','tipo_ramite','empresa','periodo','estado_documento', 'pais', 'departamento'));
     }
 
     public function listarRegistros(Request $request)
@@ -192,7 +192,8 @@ class RegistroController extends Controller
         // )
         // ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
         // $data = Contribuyente::all();
-        $data = Contribuyente::where('estado',1);
+        // $data = Contribuyente::where('estado',1);
+        $data = Contribuyente::all();
         return DataTables::of($data)
         ->make(true);
 
@@ -500,8 +501,7 @@ class RegistroController extends Controller
         $status=404;
         $json_obtener_listado=[];
         $array_id=[];
-        $obtener_listado = DB::table('almacen.alm_req')->where('alm_req.enviar_facturacion','t')->where('doc_ven.estado',1)
-        ->where('alm_req.traslado',1)
+        $obtener_listado = DB::table('almacen.alm_req')
         ->select(
             'alm_req.id_requerimiento',
             'alm_req.fecha_registro as fecha_registro_requerimiento',
@@ -513,12 +513,16 @@ class RegistroController extends Controller
             'doc_ven.serie',
             'doc_ven.numero'
         )
-        ->join('almacen.alm_det_req' , 'alm_det_req.id_requerimiento', '=' ,'alm_req.id_requerimiento')
+        ->join('almacen.alm_det_req' , 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento')
         ->join('almacen.doc_ven_det' , 'doc_ven_det.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento')
-        ->join('almacen.doc_ven' , 'doc_ven.id_doc_ven' ,'=' ,'doc_ven_det.id_doc')
-        // ->groupBy('alm_req.id_requerimiento')
+        ->join('almacen.doc_ven' , 'doc_ven.id_doc_ven', '=', 'doc_ven_det.id_doc')
+
+        ->where('alm_req.enviar_facturacion','t')
+        ->where('doc_ven.estado',1)
+        // ->where('alm_req.traslado',1)
         ->get();
 
+        // return response()->json($obtener_listado,200);exit;
         if (sizeof($obtener_listado)>0) {
             $success=true;
             $status=200;
@@ -539,10 +543,12 @@ class RegistroController extends Controller
                 $doc_vent_req->id_doc_venta = $value->id_doc_ven;
                 $doc_vent_req->estado = 1;
                 $doc_vent_req->save();
+
+                DB::table('almacen.alm_req')->where('id_requerimiento',$value->id_requerimiento)->update([
+                    'traslado'=>2
+                ]);
             }
-            DB::table('almacen.alm_req')->where('traslado',1)->update([
-                'traslado'=>2
-            ]);
+
         }
         return response()->json([
             "success"=>$success,
