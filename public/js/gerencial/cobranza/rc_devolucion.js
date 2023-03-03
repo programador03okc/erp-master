@@ -1,10 +1,37 @@
 $(function () {
     listar();
+
+    $('#tabla').on('click', 'button.cobrar', function (e) {
+        e.preventDefault();
+        $("#formulario-cobro")[0].reset();
+        $("[name=cobranza_penalidad_id]").val($(e.currentTarget).data('id'));
+        $("#modalControl").modal("show");
+    });
+
+    $('#formulario-cobro').on('submit', function (e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: 'guardar',
+            data: data,
+            dataType: 'JSON',
+            success: function(response) {
+                $('#tabla').DataTable().ajax.reload();
+                Util.notify(response.alerta, response.mensaje);
+                $('#modalControl').modal('hide');
+            }
+        }).fail( function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    });
 });
 
 function listar() {
     const $tabla = $('#tabla').DataTable({
-        dom: 'Bfrtip',
+        dom: 'frtip',
         pageLength: 30,
         language: idioma,
         serverSide: true,
@@ -44,22 +71,10 @@ function listar() {
             {data: 'pagador'},
             {data: 'moneda'},
             {data: 'importe', className: 'text-right'},
+            {data: 'importe_cobro', className: 'text-right'},
+            {data: 'motivo'},
             {data: 'estado'},
             {data: 'accion', orderable: false, searchable: false, className: 'text-center'}
-        ],
-        buttons: [
-            {
-                text: '<i class="fas fa-plus"></i> Agregar registro',
-                action: function () {
-                    $("#formulario")[0].reset();
-                    $("[name=id]").val(0);
-                    $("[name=cliente_id]").val(null).trigger('change');
-                    $("[name=responsable_id]").val(null).trigger('change');
-                    $("#modalFondo").find(".modal-title").text("Agregar nuevo registro");
-                    $("#modalFondo").modal("show");
-                },
-                className: 'btn btn-sm btn-primary',
-            },
         ]
     });
     $tabla.on('search.dt', function() {

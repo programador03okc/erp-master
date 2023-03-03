@@ -50,7 +50,7 @@ class CobranzaFondoController extends Controller
         ->addColumn('responsable', function ($data) { return $data->responsable->nombre_corto; })
         ->addColumn('fechas', function ($data) { return 'Inicio: '.date('d-m-Y', strtotime($data->fecha_inicio)).'<br>Venc: '.date('d-m-Y', strtotime($data->fecha_vencimiento)); })
         ->addColumn('flag_estado', function($data) {
-            return ($data->estado == 1) ? '<label class="label label-primary" style="font-size: 10.5px;">PENDIENTE</label>' : '<label class="label label-success" style="font-size: 10.5px;">COBRADO</label>';;
+            return ($data->estado == 1) ? '<label class="label label-primary" style="font-size: 10.5px;">PENDIENTE</label>' : '<label class="label label-success" style="font-size: 10.5px;">COBRADO</label>';
         })
         ->addColumn('accion', function ($data) {
             $button = '' ;
