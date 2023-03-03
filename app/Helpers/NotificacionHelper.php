@@ -213,7 +213,7 @@ class NotificacionHelper
         }
     }
 
-    static public function notificacionRequerimiento($idUsuarioDestinatario,$mensajeNotificacion){
+    static public function notificacionRequerimiento($idUsuarioDestinatario,$mensajeNotificacion,$documentoIternoId=null, $documentoId=null){
         try {
 
 
@@ -228,6 +228,8 @@ class NotificacionHelper
                     $notificacion->fecha = new Carbon();
                     $notificacion->url = '';
                     $notificacion->leido = 0;
+                    $notificacion->documento_interno_id = $documentoIternoId;
+                    $notificacion->documento_id = $documentoId;
                     $notificacion->save();
                 }
 

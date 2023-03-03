@@ -72,6 +72,11 @@ class CobranzaFondoController extends Controller
                         <span class="fas fa-edit"></span>
                     </button>';
                 }
+            } else {
+                $button .=
+                    '<button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
+                        <span class="fas fa-edit"></span>
+                    </button>';
             }
             return $button;
         })->rawColumns(['fechas', 'flag_estado', 'accion'])->make(true);
@@ -95,7 +100,9 @@ class CobranzaFondoController extends Controller
                 $data->detalles = $request->detalles;
                 $data->claim = $request->claim;
                 $data->pagador = $request->pagador;
-                $data->estado = 1;
+                if ($request->id == 0) {
+                    $data->estado = 1;
+                }
                 $data->usuario_id = Auth::user()->id_usuario;
             $data->save();
 

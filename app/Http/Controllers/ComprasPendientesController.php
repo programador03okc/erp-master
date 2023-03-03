@@ -13,6 +13,7 @@ use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Documento;
 use App\Models\Administracion\Flujo;
 use App\Models\Administracion\Operacion;
+use App\Models\Administracion\Sede;
 use App\Models\Almacen\Almacen;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\almacen\GuiaCompraDetalle;
@@ -348,8 +349,16 @@ class ComprasPendientesController extends Controller
             ->when(($empresa > 0), function ($query) use ($empresa) {
                 return $query->where('alm_req.id_empresa', '=', $empresa);
             })
-            ->when(($sede > 0), function ($query) use ($sede) {
-                return $query->where('alm_req.id_sede', '=', $sede);
+            // ->when(($sede > 0), function ($query) use ($sede) {
+            //     return $query->where('alm_req.id_sede', '=', $sede);
+            // })
+            ->when(( $sede != 'SIN_FILTRO' ), function ($query) use ($sede) {
+                $sedeList=[];
+                $sedes=Sede::where('codigo',$sede)->get();
+                foreach ($sedes as $key => $value) {
+                    $sedeList[]= $value->id_sede;
+                }
+                return $query->whereIn('alm_req.id_sede', $sedeList);
             })
             ->when(($reserva == 'SIN_RESERVA'), function ($query) {
                 $query->leftJoin('almacen.alm_det_req', 'alm_det_req.id_requerimiento', '=', 'alm_req.id_requerimiento');
