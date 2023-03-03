@@ -43,9 +43,10 @@
                                 </label>
                                 <div class="col-sm-8">
                                     <select class="form-control input-sm handleChangeUpdateValorFiltroRequerimientosPendientes" name="sede" readOnly>
-                                    @foreach ($sedes as $sede)
-                                        <option value="{{$sede->id_sede}}">{{$sede->descripcion}}</option>
-                                        @endforeach
+                                        <option value="LIMA">Lima</option>
+                                        <option value="ILO">ILO</option>
+                                        <option value="MOQUEGUA">MOQUEGUA</option>
+                                        <option value="AREQUIPA">AREQUIPA</option>
                                     </select>
                                 </div>
                             </div>
