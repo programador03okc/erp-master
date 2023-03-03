@@ -1260,7 +1260,9 @@ class RegistroController extends Controller
         $penalidad->fecha_registro  = date('Y-m-d H:i:s');
         $penalidad->id_registro_cobranza  = $request->id_cobranza_penal;
         $penalidad->id_oc  = $registro_cobranza->id_oc;
-        $penalidad->estado_penalidad = $penal_est;
+        if ($request->id == 0) {
+            $penalidad->estado_penalidad = $penal_est;
+        }
         $penalidad->save();
         return response()->json(["status"=>200, "success"=>true, "data" => $penalidad]);
     }
