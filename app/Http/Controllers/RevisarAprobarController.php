@@ -847,7 +847,7 @@ class RevisarAprobarController extends Controller{
                         $idUsuarioDestinatario[] = $requerimientoPago->id_usuario;
                         $codigoRequerimiento = $requerimientoPago->codigo??'';
                         $documentoInternoId= 11;
-                        $documentoId=$requerimiento->id_requerimiento_pago;
+                        $documentoId=$requerimientoPago->id_requerimiento_pago;
 
                     }
 
