@@ -44,7 +44,7 @@ Cobranzas
                     <table class="mytable table table-striped table-condensed table-bordered" id="listar-registros">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th hidden></th>
                                 <th width="10">Emp</th>
 								<th width="50">OCAM</th>
 								<th width="150">Nombre del Cliente</th>
@@ -1159,7 +1159,7 @@ Cobranzas
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
-    
+
     <script>
     let csrf_token = '{{ csrf_token() }}';
     let carga_ini = 1;
@@ -1291,9 +1291,9 @@ Cobranzas
             `<span>`+repo.text+`</span>`
         );
         return state;
-    
+
     }
-    
+
     function formatRepoSelection (repo) {
         return repo.nombre || repo.text;
     }

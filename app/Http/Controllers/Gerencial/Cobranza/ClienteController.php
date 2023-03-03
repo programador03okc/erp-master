@@ -41,7 +41,7 @@ class ClienteController extends Controller
         //     'adm_contri.*'
         // )
         // ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
-        $data = Contribuyente::where('estado',1);
+        $data = Contribuyente::all();
         return DataTables::of($data)
         // return datatables($data)
         // ->toJson();
@@ -326,7 +326,7 @@ class ClienteController extends Controller
         $monedas = Moneda::where('estado',1)->get();
         $bancos = Banco::mostrar();
         $tipo_cuenta = TipoCuenta::mostrar();
-        return view('gerencial/cobranza/nuevo_cliente',compact('pais','departamento','tipo_documentos','tipo_contribuyente','monedas','bancos','tipo_cuenta'));
+        return view('gerencial.cobranza.nuevo_cliente',compact('pais','departamento','tipo_documentos','tipo_contribuyente','monedas','bancos','tipo_cuenta'));
     }
     public function getDistrito($id_provincia)
     {
