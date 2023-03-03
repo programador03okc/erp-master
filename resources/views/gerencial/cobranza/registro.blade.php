@@ -94,7 +94,7 @@ Cobranzas
                                 <select class="form-control input-sm" name="empresa" id="empresa" required>
                                     <option value="" disabled selected>Elija una opción</option>
                                     @foreach ($empresa as $item)
-                                        <option value="{{$item->id_contribuyente }}">{{$item->razon_social }}</option>
+                                        <option value="{{$item->id_empresa }}">{{$item->razon_social }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -136,7 +136,7 @@ Cobranzas
                         <div class="col-md-4">
                             <div class="form-group">
                                 <h6>Cliente</h6>
-                                <input type="hidden" name="id_cliente" id="id_cliente" value="0">
+                                {{-- <input type="hidden" name="id_cliente" id="id_cliente" value="0"> --}}
                                 <input type="hidden" name="id_contribuyente" value="0">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm" name="cliente" id="cliente" placeholder="N° RUC" readonly>
@@ -423,7 +423,7 @@ Cobranzas
                                 <select class="form-control input-sm" name="empresa" required>
                                     <option value="" disabled selected>Elija una opción</option>
                                     @foreach ($empresa as $item)
-                                        <option value="{{$item->id_contribuyente }}">{{$item->razon_social }}</option>
+                                        <option value="{{$item->id_empresa }}">{{$item->razon_social }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -465,7 +465,7 @@ Cobranzas
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="cliente">Cliente</label>
-                                <input type="hidden" name="id_cliente" value="0">
+                                {{-- <input type="hidden" name="id_cliente" value="0"> --}}
                                 <input type="hidden" name="id_contribuyente" value="0">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm" name="cliente" placeholder="N° RUC" readonly>
@@ -934,7 +934,7 @@ Cobranzas
                                 <select class="form-control" name="empresa" data-select="select" data-check="empresa" disabled>
                                     <option value="">Elija una opción</option>
                                     @foreach ($empresa as $item)
-                                        <option value="{{$item->id_contribuyente }}">{{$item->razon_social }}</option>
+                                        <option value="{{$item->id_empresa }}">{{$item->razon_social }}</option>
                                     @endforeach
                                 </select>
 							</div>
