@@ -2391,6 +2391,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'devoluciones.', 'prefix' => 'devoluciones'], function () {
 				Route::get('index', 'Gerencial\Cobranza\DevolucionPenalidadController@index')->name('index');
+				Route::post('listar', 'Gerencial\Cobranza\DevolucionPenalidadController@lista')->name('listar');
 			});
 		});
 
