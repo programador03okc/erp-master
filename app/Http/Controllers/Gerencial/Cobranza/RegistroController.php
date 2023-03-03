@@ -186,12 +186,16 @@ class RegistroController extends Controller
     public function listarClientes()
     {
         // $data = Cliente::select('*')->orderBy('id_cliente', 'desc');
-        $data = Contribuyente::where('adm_contri.estado',1)
-        ->select(
-            'adm_contri.*'
-        )
-        ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
-        return DataTables::of($data)->make(true);;
+        // $data = Contribuyente::where('adm_contri.estado',1)
+        // ->select(
+        //     'adm_contri.*'
+        // )
+        // ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
+        // $data = Contribuyente::all();
+        $data = Contribuyente::where('estado',1);
+        return DataTables::of($data)
+        ->make(true);
+
     }
 
     public function prueba()
