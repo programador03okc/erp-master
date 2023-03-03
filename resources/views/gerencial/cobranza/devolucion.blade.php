@@ -43,8 +43,10 @@
                                     <th>Gestión</th>
                                     <th>Pagador</th>
                                     <th width="10">Mon</th>
-                                    <th>Importe</th>
-                                    <th>Estado</th>
+                                    <th>Monto Pen.</th>
+                                    <th>Monto Cobrado</th>
+                                    <th>Detalles</th>
+                                    <th width="30">Estado</th>
                                     <th width="30"></th>
                                 </tr>
                             </thead>
@@ -63,7 +65,7 @@
         <div class="modal-content">
             <form id="formulario-cobro" method="POST" autocomplete="off">
                 <input type="hidden" name="_method" value="POST">
-                <input type="hidden" name="cobranza_fondo_id" value="0">
+                <input type="hidden" name="cobranza_penalidad_id" value="0">
                 @csrf
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -73,19 +75,31 @@
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Fecha de cobro</h6>
-                            <input type="date" name="fecha_cobranza" class="form-control input-sm text-center" value="{{ date('Y-m-d') }}" required>
+                            <input type="date" name="fecha_cobro" class="form-control input-sm text-center" value="{{ date('Y-m-d') }}" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Nro documento</h6>
-                            <input type="text" name="nro_documento" class="form-control input-sm" placeholder="Ingrese nombre de la entidad" required>
+                            <input type="text" name="nro_documento" class="form-control input-sm" placeholder="Ingrese nro del documento" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Pagador</h6>
+                            <input type="text" name="pagador" class="form-control input-sm" placeholder="Ingrese nombre de la entidad" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Importe cobrado</h6>
+                            <input type="text" name="importe_cobro" class="form-control input-sm text-right numero" placeholder="0.00" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Observaciones del cobro</h6>
-                            <textarea name="observaciones" class="form-control" rows="3" placeholder="Escriba las observaciones del cobro" required></textarea>
+                            <textarea name="motivo" class="form-control" rows="3" placeholder="Escriba las observaciones del cobro" required></textarea>
                         </div>
                     </div>
                 </div>
