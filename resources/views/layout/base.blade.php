@@ -104,7 +104,7 @@
     <div class="modal fade" tabindex="-1" role="dialog" id="atualizar-contraseña" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
         <div class="modal-dialog modal-style">
             <div class="modal-content">
-                <form data-form="actualizar-contraseña" accept="{{ route('modificarClave') }}" method="POST">
+                <form id="form-clave" data-form="actualizar-contraseña" accept="{{ route('modificarClave') }}" method="POST">
                     <div class="modal-header">
                         <h3 class="modal-title" id="titulo">Actualizar contraseña</h3>
                     </div>
@@ -130,7 +130,6 @@
                                     <p>Ejemplos:</p>
                                     <p>Inicio01.</p>
                                     <p>Inicio01.@</p>
-                                    <p>@'+*}-+</p>
                                 </div>
                             </div>
                         </div>
@@ -143,8 +142,7 @@
         </div>
     </div>
 	<script type="text/javascript">
-		var auth_user = <?= $auth_user ?>;
-        // console.log(auth_user);
+		var auth_user = {!! $auth_user !!};
 	</script>
 	<script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
 	<script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -159,8 +157,6 @@
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
-
-    // <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 	<script>
 		$(document).ready(function() {
@@ -178,7 +174,8 @@
 				}
 			});
 		});
-        $(document).on('submit','[data-form="actualizar-contraseña"]',function (e) {
+
+        $("#form-clave").on('submit',function (e) {
             e.preventDefault();
             var data = $(this).serialize();
             var clave = $('.contraseña-validar[name="clave"]').val(),
@@ -245,8 +242,7 @@
             }
 
         });
-	</script>
-	<script>
+
 		function seleccionarMenu(url) {
 			$('ul.sidebar-menu a').filter(function() {
 				return this.href == url;
@@ -291,8 +287,6 @@
 			});
 		}
 	</script>
-
 	@yield('scripts')
 </body>
-
 </html>
