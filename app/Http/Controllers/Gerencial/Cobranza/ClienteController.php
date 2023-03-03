@@ -36,11 +36,12 @@ class ClienteController extends Controller
     }
     public function listarCliente()
     {
-        $data = Contribuyente::where('adm_contri.estado',1)
-        ->select(
-            'adm_contri.*'
-        )
-        ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
+        // $data = Contribuyente::where('adm_contri.estado',1)
+        // ->select(
+        //     'adm_contri.*'
+        // )
+        // ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
+        $data = Contribuyente::where('estado',1);
         return DataTables::of($data)
         // return datatables($data)
         // ->toJson();
