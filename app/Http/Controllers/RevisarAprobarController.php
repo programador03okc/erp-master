@@ -856,10 +856,10 @@ class RevisarAprobarController extends Controller{
                 // Debugbar::info($codigoRequerimiento);
 
                 $mensajeNotificacion = $codigoRequerimiento.' '.$nombreAccion.' por '.$nombreCompletoUsuarioRevisaAprueba.($request->sustento !=null?(', observación: '.$request->sustento):'');
-                NotificacionHelper::notificacionRequerimiento($idUsuarioDestinatario,$mensajeNotificacion);
+                NotificacionHelper::notificacionRequerimiento($idUsuarioDestinatario,$mensajeNotificacion,$documentoInternoId,$documentoId);
                 
                 if($nombreAccion == 'Aprobado'){
-                    NotificacionHelper::notificacionRequerimiento([78,75,122,5,27],$mensajeNotificacion,$documentoInternoId,$documentoId);
+                    NotificacionHelper::notificacionRequerimiento([78,75,122,5],$mensajeNotificacion,$documentoInternoId,$documentoId);
                 }
                 // if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
                     // Mail::to($correoDestinatario)->send(new EmailNotificarUsuarioPropietarioDeDocumento($request->idTipoDocumento,$requerimiento,$request->sustento,$nombreCompletoUsuarioPropietarioDelDocumento,$nombreCompletoUsuarioRevisaAprueba,$montoTotal,$nombreAccion));
