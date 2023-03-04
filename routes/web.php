@@ -2350,6 +2350,16 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('script-vendedor', 'Gerencial\Cobranza\RegistroController@scriptVendedor');
             #scrip 11
 			Route::get('script-cliente-unificar', 'Gerencial\Cobranza\RegistroController@scriptClienteUnificar');
+            // -----
+            #scrip 12 empresas
+			Route::get('script-empresa-remplazar-adm-cliente', 'Gerencial\Cobranza\RegistroController@scriptEmpresaRemplazarAdmCliente');
+            #scrip 13 revierte el script 12
+			Route::get('script-empresa-remplazar-adm-cliente-revertir', 'Gerencial\Cobranza\RegistroController@scriptEmpresaRemplazarAdmClienteRevertir');
+            #scrip 14 clientes
+			Route::get('script-cliente-remplazar-com-cliente', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComCliente');
+            #scrip 15 revierte el script 14
+			Route::get('script-cliente-remplazar-com-cliente-revertir', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComClienteRevertir');
+            // ------------------
             #scrip para pasar el registro de cobranzas
             Route::get('script-observaciones-oc', 'Gerencial\Cobranza\RegistroController@scriptObservacionesOC');
 

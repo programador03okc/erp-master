@@ -78,7 +78,7 @@ $(function () {
                     $('#modal-editar-cliente .modal-body select[name="distrito"] option').removeAttr('selected');
                     $('#modal-editar-cliente .modal-body select[name="distrito"] option[value="'+response.id_dis+'"]').attr('selected',true)
 
-                    $('#modal-editar-cliente .modal-body input[name="id_cliente"]').val(response.data_old.id_cliente)
+                    // $('#modal-editar-cliente .modal-body input[name="id_cliente"]').val(response.data_old.id_cliente)
                     $('#modal-editar-cliente .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente)
                 }
             }
@@ -368,7 +368,7 @@ $(function () {
                             $('[data-form="guardar-formulario"] .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
                             $('[data-form="guardar-formulario"] .modal-body input[name="oc"]').val(response.data.nro_orden)
                             $('[data-form="guardar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
-                            $('[data-form="guardar-formulario"] .modal-body input[name="id_cliente"]').val('')
+                            // $('[data-form="guardar-formulario"] .modal-body input[name="id_cliente"]').val('')
                             $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente_cliente)
                             $('[data-form="guardar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
                             $('[data-form="guardar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
@@ -393,7 +393,7 @@ $(function () {
                         $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(response.data.nro_orden)
                         $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
 
-                        $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val('')
+                        // $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val('')
                         $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente_cliente)
                         $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
                         $('[data-form="editar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
@@ -495,10 +495,10 @@ $(function () {
                 $('[data-form="editar-formulario"] .modal-body select[name="periodo"] option').removeAttr('selected');
                 $('[data-form="editar-formulario"] .modal-body select[name="periodo"] option[value="'+data.data.id_periodo+'"]').attr('selected','true');
 
-                $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val(data.data.id_cliente);
+                // $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val(data.data.id_cliente);
                 $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(data.data.id_cliente_agil);
-                if (data.cliente.length>0) {
-                    $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.cliente[0].razon_social);
+                if (data.cliente) {
+                    $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.cliente.razon_social);
                 }
 
                 $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(data.data.cdp);
@@ -784,7 +784,7 @@ $(function () {
         }else{
             $('[data-estado="cambio"]').removeAttr('hidden');
         }
-        
+
         obtenerPenalidades(id, titulo);
     });
 
@@ -1381,13 +1381,13 @@ function obtenerPenalidades(id, titulo) {
         success: function(data) {
             if (data.status===200) {
                 let datos = data.penalidades;
-    
+
                 datos.forEach(element => {
                     html+='<tr>'
                     html+='<td>'+element.tipo+'</td>'
                     html+='<td>'+element.documento+'</td>'
                     html+='<td>'+element.monto+'</td>';
-    
+
                     switch (element.estado) {
                         case 1:
                             html+='<td>ELABORADO</td>';
@@ -1397,14 +1397,14 @@ function obtenerPenalidades(id, titulo) {
                         break;
                     }
                     html+='<td '+(element.tipo!=='PENALIDAD'?`hidden`:``)+'>'+element.estado_penalidad+'</td>'
-    
+
                     html+='<td>'+element.fecha+'</td>'
                     html+='<td>';
                         if (element.tipo==='PENALIDAD') {
                             html+='<button class="btn btn-xs btn-success" data-action="estados-penalidad" data-title="DEVOLUCION" title="Devolución" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-exchange-alt"></i></button>'+
                             '<button class="btn btn-xs" data-action="estados-penalidad" data-title="ANULADA" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-ban"></i></button>';
                         }
-    
+
                         html+='<button class="btn btn-xs btn-primary" data-action="editar-penalidad" data-title="" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
                             '<button class="btn btn-xs btn-danger" data-action="eliminar-penalidad" data-title="" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'" data-estado="7"><i class="fa fa-times"></i></button>'+
                         '</td>'
