@@ -36,6 +36,9 @@ class DevolucionPenalidadController extends Controller
                 $button .=
                     '<button type="button" class="btn btn-success btn-xs cobrar" data-id="'.$data->id.'">
                         <span class="fas fa-check"></span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
+                        <span class="fas fa-edit"></span>
                     </button>';
             }
             return $button;
@@ -45,6 +48,12 @@ class DevolucionPenalidadController extends Controller
         })
         ->rawColumns(['estado', 'accion'])
         ->make(true);
+    }
+
+    public function cargarCobroDev(Request $request)
+    {
+        $data = PenalidadCobro::find($request->id);
+        return response()->json($data);
     }
 
     public function guardar(Request $request)
@@ -60,6 +69,26 @@ class DevolucionPenalidadController extends Controller
             $data->save();
 
             $mensaje = 'Se ha cerrado el registro de devolución';
+            $respuesta = 'ok';
+            $alerta = 'success';
+            $error = '';
+        } catch (Exception $ex) {
+            $respuesta = 'error';
+            $alerta = 'error';
+            $mensaje = 'Hubo un problema al registrar. Por favor intente de nuevo';
+            $error = $ex;
+        }
+        return response()->json(array('respuesta' => $respuesta, 'alerta' => $alerta, 'mensaje' => $mensaje, 'error' => $error), 200);
+    }
+
+    public function guardarPagador(Request $request)
+    {
+        try {
+            $data = PenalidadCobro::find($request->id);
+                $data->pagador = $request->pagador;
+            $data->save();
+
+            $mensaje = 'Se ha actualizado el dato de pagador';
             $respuesta = 'ok';
             $alerta = 'success';
             $error = '';

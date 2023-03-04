@@ -2403,6 +2403,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Gerencial\Cobranza\DevolucionPenalidadController@index')->name('index');
 				Route::post('listar', 'Gerencial\Cobranza\DevolucionPenalidadController@lista')->name('listar');
 				Route::post('guardar', 'Gerencial\Cobranza\DevolucionPenalidadController@guardar')->name('guardar');
+				Route::post('guardar-pagador', 'Gerencial\Cobranza\DevolucionPenalidadController@guardarPagador')->name('guardar-pagador');
+				Route::post('cargar-cobro-dev', 'Gerencial\Cobranza\DevolucionPenalidadController@cargarCobroDev')->name('cargar-cobro-dev');
 			});
 		});
 
