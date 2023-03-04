@@ -117,13 +117,13 @@ $(function () {
                     switch (data_form) {
                         case 'guardar-formulario':
                             document.querySelector("form[form='cobranza'] input[id='cliente']").value= response.data.razon_social;
-                            document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= null;
+                            // document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= null;
                             document.querySelector("form[form='cobranza'] input[name='id_contribuyente']").value= response.data.id_contribuyente;
                         break;
 
                         case 'editar-formulario':
 
-                            $('[data-form="editar-formulario"] .modal-body [name="id_cliente"]').val(null);
+                            // $('[data-form="editar-formulario"] .modal-body [name="id_cliente"]').val(null);
                             $('[data-form="editar-formulario"] .modal-body [name="cliente"]').val(response.data.razon_social);
                             $('[data-form="editar-formulario"] .modal-body [name="id_contribuyente"]').val(response.data.id_contribuyente);
                         break;
@@ -1027,6 +1027,7 @@ function listarRegistros(filtros) {
         pageLength: 30,
         language: idioma,
         serverSide: true,
+        destroy:true,
         initComplete: function (settings, json) {
             const $filter = $('#listar-registros_filter');
             const $input = $filter.find('input');
@@ -1050,7 +1051,15 @@ function listarRegistros(filtros) {
         ajax: {
             url: 'listar-registros',
             method: 'POST',
-            headers: {'X-CSRF-TOKEN': csrf_token}
+            headers: {'X-CSRF-TOKEN': csrf_token},
+            // data: {
+            //     empresa: meOrAll,
+            //     estado: idEmpresa,
+            //     fase: idSede,
+            //     fecha_emision_inicio: idGrupo,
+            //     fecha_emision_fin: idDivision,
+            //     simbolo: fechaRegistroDesde
+            // },
         },
         columns: [
             {data: 'empresa', name:"empresa", className: "text-center"},
