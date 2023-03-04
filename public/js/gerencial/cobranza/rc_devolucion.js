@@ -8,6 +8,26 @@ $(function () {
         $("#modalControl").modal("show");
     });
 
+    $('#formulario').on('submit', function (e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: 'guardar-pagador',
+            data: data,
+            dataType: 'JSON',
+            success: function(response) {
+                $('#tabla').DataTable().ajax.reload();
+                Util.notify(response.alerta, response.mensaje);
+                $('#modalDevolucion').modal('hide');
+            }
+        }).fail( function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        });
+    });
+
     $('#formulario-cobro').on('submit', function (e) {
         e.preventDefault();
         let data = $(this).serialize();
@@ -26,6 +46,28 @@ $(function () {
             console.log(textStatus);
             console.log(errorThrown);
         });
+    });
+
+    $('#tabla').on('click', 'button.editar', function (e) {
+        e.preventDefault();
+        $("#formulario-cobro")[0].reset();
+
+        $.ajax({
+            type: 'POST',
+            url: 'cargar-cobro-dev',
+            data: {id: $(e.currentTarget).data('id')},
+            dataType: 'JSON',
+            success: function(response) {
+                $("[name=id]").val(response.id);
+                $("[name=pagador]").val(response.pagador);
+                $("#modalDevolucion").find(".modal-title").text("Editar el registro del pagador");
+                $('#modalDevolucion').modal('show');
+            }
+        }).fail( function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        })
     });
 });
 
