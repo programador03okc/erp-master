@@ -74,7 +74,13 @@
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Nombre del pagador (Entidad/Marca)</h6>
-                            <input type="text" name="pagador" class="form-control input-sm" placeholder="Ingrese nombre de la entidad" required>
+                            <input type="text" name="pagador_dev" class="form-control input-sm" placeholder="Ingrese nombre de la entidad" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Importe cobrado</h6>
+                            <input type="text" name="importe_cobro_dev" class="form-control input-sm text-right numero" placeholder="0.00" required>
                         </div>
                     </div>
                 </div>

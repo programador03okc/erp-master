@@ -85,7 +85,8 @@ class DevolucionPenalidadController extends Controller
     {
         try {
             $data = PenalidadCobro::find($request->id);
-                $data->pagador = $request->pagador;
+                $data->pagador = $request->pagador_dev;
+                $data->importe_cobro = $request->importe_cobro_dev;
             $data->save();
 
             $mensaje = 'Se ha actualizado el dato de pagador';
