@@ -133,21 +133,11 @@ class RegistroController extends Controller
         })
         ->addColumn('cliente', function($data){
 
-            // $contribuyente=null;
-            // if (!empty($data->id_cliente)) {
-            //     $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$data->id_cliente)->where('id_cliente_gerencial_old','!=',null)->first();
-            // }
-            // if (!empty($data->id_cliente_agil)) {
-            //     // if (!$contribuyente) {
-            //         $contribuyente = Contribuyente::where('id_contribuyente',$data->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
-            //     // }
-            // }
             $com_cliente = ComercialCliente::find($data->id_cliente_agil);
             $contribuyente = array();
             if ($com_cliente) {
                 $contribuyente = Contribuyente::where('id_contribuyente',$com_cliente->id_contribuyente)->where('id_contribuyente','!=',null)->first();
             }
-
 
             return $contribuyente ? $contribuyente->razon_social:' ';
         })
