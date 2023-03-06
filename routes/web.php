@@ -2365,6 +2365,9 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('script-cliente-remplazar-com-cliente-estado-cero', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComClienteEstadoCero');
             #scrip 18 clientes en vacio los nuevo generados
 			Route::get('script-cliente-nuevos-ingresado', 'Gerencial\Cobranza\RegistroController@scriptClienteNuevosIngresados');
+            #scrip 19 clientes en vacio de la vista
+            Route::get('script-cliente-vista-null', 'Gerencial\Cobranza\RegistroController@scriptClienteVistaNull');
+            Route::get('script-contribuyente-vista-null', 'Gerencial\Cobranza\RegistroController@scriptClienteContribuyenteVistaNull');
             // ------------------
             #scrip para pasar el registro de cobranzas
             Route::get('script-observaciones-oc', 'Gerencial\Cobranza\RegistroController@scriptObservacionesOC');
