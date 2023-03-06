@@ -369,7 +369,7 @@ $(function () {
                             $('[data-form="guardar-formulario"] .modal-body input[name="oc"]').val(response.data.nro_orden)
                             $('[data-form="guardar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
                             // $('[data-form="guardar-formulario"] .modal-body input[name="id_cliente"]').val('')
-                            $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente_cliente)
+                            $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
                             $('[data-form="guardar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
                             $('[data-form="guardar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 
@@ -394,7 +394,7 @@ $(function () {
                         $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
 
                         // $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val('')
-                        $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente_cliente)
+                        $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
                         $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
                         $('[data-form="editar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 

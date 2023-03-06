@@ -3175,4 +3175,47 @@ class RegistroController extends Controller
         }
         return response()->json(["success"=>$array_agregar],200);
     }
+    public function scriptClienteNuevosIngresados()
+    {
+        $com_cliente = ComercialCliente::all();
+        $registro_cobranza = RegistroCobranza::where('id_cliente',null)->where('estado',1)
+        // ->where('id_registro_cobranza',6474)
+        // ->where('id_registro_cobranza',6458)
+        ->get();
+
+        $array_agregar=array();
+        foreach ($registro_cobranza as $key_cobranza => $value_cobranza) {
+            if ($value_cobranza->id_cliente_agil) {
+
+                $cobranza_actualizar = RegistroCobranza::find($value_cobranza->id_registro_cobranza);
+                $cobranza_actualizar->id_cliente = $value_cobranza->id_cliente_agil;
+                $cobranza_actualizar->save();
+
+                $com_cliente = ComercialCliente::where('id_contribuyente',$value_cobranza->id_cliente_agil)->first();
+                // return $com_cliente;exit;
+                if ($com_cliente) {
+                    $cobranza_actualizar = RegistroCobranza::find($value_cobranza->id_registro_cobranza);
+                    $cobranza_actualizar->id_cliente_agil = $com_cliente->id_cliente;
+                    $cobranza_actualizar->save();
+                }else{
+                    $com_cliente = new ComercialCliente();
+                    $com_cliente->id_contribuyente = $value_cobranza->id_cliente_agil;
+                    $com_cliente->estado = 1;
+                    $com_cliente->fecha_registro = date('Y-m-d H:i:s');
+                    $com_cliente->save();
+
+                    $cobranza_actualizar = RegistroCobranza::find($value_cobranza->id_registro_cobranza);
+                    $cobranza_actualizar->id_cliente_agil = $com_cliente->id_cliente;
+                    $cobranza_actualizar->save();
+                    // return $com_cliente;exit;
+                    array_push($array_agregar,array(
+                        "id"=>$value_cobranza->id_cliente_agil,
+                        "id_cobranza"=>$cobranza_actualizar->id_registro_cobranza,
+                    ));
+                }
+            }
+        }
+
+        return response()->json(["success"=>$registro_cobranza],200);
+    }
 }
