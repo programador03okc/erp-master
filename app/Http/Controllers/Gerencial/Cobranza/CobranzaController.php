@@ -66,12 +66,19 @@ class CobranzaController extends Controller
 
     public function scriptPeriodos()
     {
-        $cobranza = Cobranza::all();
         $cont = 0;
+        // $cobranza = Cobranza::all();
+
+        // foreach ($cobranza as $key) {
+        //     $periodos = DB::table('gerencial.periodo')->select('descripcion')->where('id_periodo', $key->id_periodo)->first();
+        //     RegistroCobranza::where('id_cobranza_old', $key->id_cobranza)->update(['periodo' => $periodos->descripcion]);
+        //     $cont++;
+        // }
+        $cobranza = RegistroCobranza::all();
 
         foreach ($cobranza as $key) {
-            $periodos = DB::table('gerencial.periodo')->select('descripcion')->where('id_periodo', $key->id_periodo)->first();
-            RegistroCobranza::where('id_cobranza_old', $key->id_cobranza)->update(['periodo' => $periodos->descripcion]);
+            $periodos = Periodo::where('descripcion', $key->periodo)->first();
+            RegistroCobranza::where('id_registro_cobranza', $key->id_registro_cobranza)->update(['id_periodo' => $periodos->id_periodo]);
             $cont++;
         }
         return response()->json($cont, 200);
