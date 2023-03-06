@@ -2359,6 +2359,10 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('script-cliente-remplazar-com-cliente', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComCliente');
             #scrip 15 revierte el script 14
 			Route::get('script-cliente-remplazar-com-cliente-revertir', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComClienteRevertir');
+            #scrip 16 empresas para los de estado 0
+			Route::get('script-empresa-remplazar-adm-cliente-estadp-cero', 'Gerencial\Cobranza\RegistroController@scriptEmpresaRemplazarAdmClienteEstadoCero');
+            #scrip 17 clientes
+			Route::get('script-cliente-remplazar-com-cliente-estado-cero', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComClienteEstadoCero');
             // ------------------
             #scrip para pasar el registro de cobranzas
             Route::get('script-observaciones-oc', 'Gerencial\Cobranza\RegistroController@scriptObservacionesOC');

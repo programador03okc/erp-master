@@ -143,7 +143,11 @@ class RegistroController extends Controller
             //     // }
             // }
             $com_cliente = ComercialCliente::find($data->id_cliente_agil);
-            $contribuyente = Contribuyente::where('id_contribuyente',$com_cliente->id_contribuyente)->where('id_contribuyente','!=',null)->first();
+            $contribuyente = array();
+            if ($com_cliente) {
+                $contribuyente = Contribuyente::where('id_contribuyente',$com_cliente->id_contribuyente)->where('id_contribuyente','!=',null)->first();
+            }
+
 
             return $contribuyente ? $contribuyente->razon_social:' ';
         })
@@ -3096,5 +3100,79 @@ class RegistroController extends Controller
             $cobranza_actualizar->id_cliente_agil = $value_cobranza->id_cliente;
             $cobranza_actualizar->save();
         }
+    }
+
+    public function scriptEmpresaRemplazarAdmClienteEstadoCero()
+    {
+        $adm_empresa = AdministracionEmpresa::all();
+        $registro_cobranza = RegistroCobranza::where('estado',0)
+        // ->where('id_registro_cobranza',6455)
+        // ->where('id_registro_cobranza',6458)
+        ->get();
+        foreach ($registro_cobranza as $key_cobranza => $value_cobranza) {
+            foreach ($adm_empresa as $key_empresa => $value_empresa) {
+                if ($value_empresa->id_contribuyente === $value_cobranza->id_empresa) {
+
+                    $cobranza_actualizar = RegistroCobranza::find($value_cobranza->id_registro_cobranza);
+                    $cobranza_actualizar->id_empresa_old = $value_cobranza->id_empresa;
+                    $cobranza_actualizar->save();
+
+                    $cobranza_actualizar = RegistroCobranza::find($value_cobranza->id_registro_cobranza);
+                    $cobranza_actualizar->id_empresa = $value_empresa->id_empresa;
+                    $cobranza_actualizar->save();
+                }
+            }
+        }
+        return response()->json(["success"=>true],200);
+    }
+    public function scriptClienteRemplazarComClienteEstadoCero()
+    {
+        # code...
+        $com_cliente = ComercialCliente::all();
+        $registro_cobranza = RegistroCobranza::where('estado',0)
+        // ->where('id_registro_cobranza',598)
+        // ->where('id_registro_cobranza',6458)
+        ->get();
+
+        $array_agregar=array();
+        foreach ($registro_cobranza as $key_cobranza => $value_cobranza) {
+            if ($value_cobranza->id_cliente_agil) {
+
+                $cobranza_actualizar = RegistroCobranza::find($value_cobranza->id_registro_cobranza);
+                $cobranza_actualizar->id_cliente = $value_cobranza->id_cliente_agil;
+                $cobranza_actualizar->save();
+
+                $com_cliente = ComercialCliente::where('id_contribuyente',$value_cobranza->id_cliente_agil)->first();
+                // return $com_cliente;exit;
+                if ($com_cliente) {
+                    $cobranza_actualizar = RegistroCobranza::find($value_cobranza->id_registro_cobranza);
+                    $cobranza_actualizar->id_cliente_agil = $com_cliente->id_cliente;
+                    $cobranza_actualizar->save();
+                }else{
+                    $com_cliente = new ComercialCliente();
+                    $com_cliente->id_contribuyente = $value_cobranza->id_cliente_agil;
+                    $com_cliente->estado = 1;
+                    $com_cliente->fecha_registro = date('Y-m-d H:i:s');
+                    $com_cliente->save();
+
+                    $cobranza_actualizar = RegistroCobranza::find($value_cobranza->id_registro_cobranza);
+                    $cobranza_actualizar->id_cliente_agil = $com_cliente->id_cliente;
+                    $cobranza_actualizar->save();
+                    // return $com_cliente;exit;
+                    array_push($array_agregar,array(
+                        "id"=>$value_cobranza->id_cliente_agil,
+                        "id_cobranza"=>$cobranza_actualizar->id_registro_cobranza,
+                    ));
+                }
+            }
+
+
+            // }
+            // if (!$com_cliente) {
+            //     return $value_cobranza;exit;
+            // }
+            // return $com_cliente;exit;
+        }
+        return response()->json(["success"=>$array_agregar],200);
     }
 }
