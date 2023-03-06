@@ -2308,6 +2308,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('registro', 'Gerencial\Cobranza\CobranzaController@registro')->name('registro');
 			Route::get('test', 'Gerencial\Cobranza\CobranzaController@test')->name('test');
 			Route::get('script-periodo', 'Gerencial\Cobranza\CobranzaController@scriptPeriodos')->name('script-periodo');
+			Route::get('script-cobranza-fase', 'Gerencial\Cobranza\CobranzaController@scriptFases')->name('script-cobranza-fase');
 			// Route::post('listar-registros', 'Gerencial\Cobranza\CobranzaController@listarRegistros');
 
 			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');

@@ -1076,6 +1076,7 @@ function listarRegistros(filtros) {
             {data: 'moneda', className: "text-center"},
             {data: 'importe', className: "text-right"},
             {data: 'estado', className: "text-right"},
+            // {data: 'estado_documento', className: "text-right"},
             {data: 'area', className: "text-right"},
             {
                 render: function (data, type, row) {

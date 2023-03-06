@@ -9,7 +9,7 @@ class CobranzaFase extends Model
     //
     protected $table = 'cobranza.cobranza_fase';
     protected $primaryKey = 'id_fase';
-    protected $fillable = ['id_cobranza', 'fase', 'fecha', 'estado', 'fecha_registro'];
+    protected $fillable = ['id_cobranza', 'fase', 'fecha', 'estado', 'fecha_registro', 'id_registro_cobranza'];
     public $timestamps = false;
 
     public function cobranza()

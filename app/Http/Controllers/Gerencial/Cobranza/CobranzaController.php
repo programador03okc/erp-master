@@ -8,7 +8,6 @@ use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Periodo;
 use App\Models\Configuracion\Departamento;
 use App\Models\Configuracion\Pais;
-use App\models\Gerencial\Cobranza;
 use App\models\Gerencial\CobranzaFase;
 use App\Models\Gerencial\CobranzaView;
 use App\models\Gerencial\EstadoDocumento;
@@ -16,7 +15,6 @@ use App\Models\Gerencial\RegistroCobranza;
 use App\Models\Gerencial\RegistroCobranzaFase;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
-use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class CobranzaController extends Controller
@@ -82,6 +80,30 @@ class CobranzaController extends Controller
             $cont++;
         }
         return response()->json($cont, 200);
+    }
+
+    public function scriptFases()
+    {
+        $data = CobranzaFase::all();
+        $cont = 0;
+        $dele = 0;
+
+        foreach ($data as $key) {
+            $nuevo = new RegistroCobranzaFase();
+                $nuevo->id_registro_cobranza = $key->id_registro_cobranza;
+                $nuevo->fase = $key->fase;
+                $nuevo->fecha = $key->fecha;
+            $nuevo->save();
+            $cont++;
+        }
+
+        foreach ($data as $key) {
+            if ($key->estado == 0) {
+                RegistroCobranzaFase::find($key->id_registro_cobranza)->delete();
+                $dele++;
+            }
+        }
+        return response()->json(array("cargados" => $cont, "eliminados" => $dele), 200);
     }
 
     public function restar_fechas($fi, $ff){
