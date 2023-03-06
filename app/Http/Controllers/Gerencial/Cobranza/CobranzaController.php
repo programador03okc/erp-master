@@ -16,6 +16,7 @@ use App\Models\Gerencial\RegistroCobranza;
 use App\Models\Gerencial\RegistroCobranzaFase;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class CobranzaController extends Controller
@@ -58,6 +59,19 @@ class CobranzaController extends Controller
                 $nuevo->fase = 'COMPROMISO';
                 $nuevo->fecha = $key->fecha_registro;
             $nuevo->save();
+            $cont++;
+        }
+        return response()->json($cont, 200);
+    }
+
+    public function scriptPeriodos()
+    {
+        $cobranza = Cobranza::all();
+        $cont = 0;
+
+        foreach ($cobranza as $key) {
+            $periodos = DB::table('gerencial.periodo')->select('descripcion')->where('id_periodo', $key->id_periodo)->first();
+            RegistroCobranza::where('id_cobranza_old', $key->id_cobranza)->update(['periodo' => $periodos->descripcion]);
             $cont++;
         }
         return response()->json($cont, 200);
