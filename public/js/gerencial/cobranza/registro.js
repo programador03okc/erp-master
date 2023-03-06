@@ -117,13 +117,13 @@ $(function () {
                     switch (data_form) {
                         case 'guardar-formulario':
                             document.querySelector("form[form='cobranza'] input[id='cliente']").value= response.data.razon_social;
-                            document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= null;
+                            // document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= null;
                             document.querySelector("form[form='cobranza'] input[name='id_contribuyente']").value= response.data.id_contribuyente;
                         break;
 
                         case 'editar-formulario':
 
-                            $('[data-form="editar-formulario"] .modal-body [name="id_cliente"]').val(null);
+                            // $('[data-form="editar-formulario"] .modal-body [name="id_cliente"]').val(null);
                             $('[data-form="editar-formulario"] .modal-body [name="cliente"]').val(response.data.razon_social);
                             $('[data-form="editar-formulario"] .modal-body [name="id_contribuyente"]').val(response.data.id_contribuyente);
                         break;
@@ -369,7 +369,7 @@ $(function () {
                             $('[data-form="guardar-formulario"] .modal-body input[name="oc"]').val(response.data.nro_orden)
                             $('[data-form="guardar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
                             // $('[data-form="guardar-formulario"] .modal-body input[name="id_cliente"]').val('')
-                            $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente_cliente)
+                            $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
                             $('[data-form="guardar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
                             $('[data-form="guardar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 
@@ -394,7 +394,7 @@ $(function () {
                         $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
 
                         // $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val('')
-                        $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente_cliente)
+                        $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
                         $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
                         $('[data-form="editar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 
@@ -1027,6 +1027,7 @@ function listarRegistros(filtros) {
         pageLength: 30,
         language: idioma,
         serverSide: true,
+        destroy:true,
         initComplete: function (settings, json) {
             const $filter = $('#listar-registros_filter');
             const $input = $filter.find('input');
@@ -1050,38 +1051,35 @@ function listarRegistros(filtros) {
         ajax: {
             url: 'listar-registros',
             method: 'POST',
-            headers: {'X-CSRF-TOKEN': csrf_token}
+            headers: {'X-CSRF-TOKEN': csrf_token},
+            // data: {
+            //     empresa: meOrAll,
+            //     estado: idEmpresa,
+            //     fase: idSede,
+            //     fecha_emision_inicio: idGrupo,
+            //     fecha_emision_fin: idDivision,
+            //     simbolo: fechaRegistroDesde
+            // },
         },
         columns: [
-            {data: 'empresa', name:"empresa", className: "text-center"},
-            {data: 'ocam', name:"ocam"},
-            {data: 'cliente', name:"cliente"},
-            {data: 'factura', name:"factura", className: "text-center"},
-            {data: 'uu_ee', name:"uu_ee"},
-            {data: 'fuente_financ', name:"fuente_financ", className: "text-center"},
-            {data: 'oc_fisica', name:"oc_fisica", className: "text-center"},
-            {data: 'siaf', name:"siaf", className: "text-center"},
-            {data: 'fecha_emision', name:"fecha_emision"},
-            {data: 'fecha_recepcion', name:"fecha_recepcion"},
-            {data: 'atraso', name:"atraso", className: "text-center"},
-            {data: 'moneda', name:"moneda", className: "text-center"},
-            {data: 'importe', name:"importe", className: "text-right"},
+            {data: 'empresa', className: "text-center"},
+            {data: 'ocam', className: "text-center"},
+            {data: 'cliente'},
+            {data: 'factura', className: "text-center"},
+            {data: 'uu_ee', className: "text-center"},
+            {data: 'fuente_financ', className: "text-center"},
+            {data: 'oc_fisica', className: "text-center"},
+            {data: 'siaf', className: "text-center"},
+            {data: 'fecha_emision', className: "text-center"},
+            {data: 'fecha_recepcion', className: "text-center"},
+            {data: 'atraso', className: "text-center"},
+            {data: 'moneda', className: "text-center"},
+            {data: 'importe', className: "text-right"},
+            {data: 'estado_documento', className: "text-right"},
+            {data: 'area', className: "text-right"},
             {
                 render: function (data, type, row) {
-
-                    return (row['estado']);
-                },
-                className: "text-center"
-            },
-            {
-                render: function (data, type, row) {
-                    return (row['area']);
-                },
-                className: "text-center"
-            },
-            {
-                render: function (data, type, row) {
-                    return (`<label class="label label-primary">${row['fase']}</label>`);
+                    return (`<label class="label label-primary" style="font-size: 10px;">${row['fase']}</label>`);
                 },
                 className: "text-center"
             },
@@ -1089,7 +1087,7 @@ function listarRegistros(filtros) {
                 render: function (data, type, row) {
                     var fecha_inicio = row['inicio_entrega'] ? row['inicio_entrega']:'-';
                     var fecha_entrega = row['fecha_entrega'] ? row['fecha_entrega']:'-';
-                    return (`${fecha_inicio} / ${fecha_entrega}`);
+                    return (`${fecha_inicio} <br> ${fecha_entrega}`);
                 },
                 className: "text-center"
             },

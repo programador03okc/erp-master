@@ -93,8 +93,12 @@ Cobranzas
                                 <h6>Empresa</h6>
                                 <select class="form-control input-sm" name="empresa" id="empresa" required>
                                     <option value="" disabled selected>Elija una opción</option>
-                                    @foreach ($empresa as $item)
-                                        <option value="{{$item->id_empresa }}">{{$item->razon_social }}</option>
+                                    @foreach ($empresas as $empresa)
+                                        @if (isset($empresa['contribuyente']))
+                                            @if ($empresa['contribuyente']['nro_documento'] != null || $empresa['contribuyente']['nro_documento'] != '')
+                                                <option value="{{ $empresa['id_empresa'] }}">[{{ $empresa['contribuyente']['nro_documento'] }}] - {{ $empresa['contribuyente']['razon_social'] }}</option>
+                                            @endif
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -422,8 +426,12 @@ Cobranzas
                                 <label for="empresa">Empresa</label>
                                 <select class="form-control input-sm" name="empresa" required>
                                     <option value="" disabled selected>Elija una opción</option>
-                                    @foreach ($empresa as $item)
-                                        <option value="{{$item->id_empresa }}">{{$item->razon_social }}</option>
+                                    @foreach ($empresas as $empresa)
+                                        @if (isset($empresa['contribuyente']))
+                                            @if ($empresa['contribuyente']['nro_documento'] != null || $empresa['contribuyente']['nro_documento'] != '')
+                                                <option value="{{ $empresa['id_empresa'] }}">[{{ $empresa['contribuyente']['nro_documento'] }}] - {{ $empresa['contribuyente']['razon_social'] }}</option>
+                                            @endif
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -933,8 +941,12 @@ Cobranzas
 							<div class="col-md-8">
                                 <select class="form-control" name="empresa" data-select="select" data-check="empresa" disabled>
                                     <option value="">Elija una opción</option>
-                                    @foreach ($empresa as $item)
-                                        <option value="{{$item->id_empresa }}">{{$item->razon_social }}</option>
+                                    @foreach ($empresas as $empresa)
+                                        @if (isset($empresa['contribuyente']))
+                                            @if ($empresa['contribuyente']['nro_documento'] != null || $empresa['contribuyente']['nro_documento'] != '')
+                                                <option value="{{ $empresa['id_empresa'] }}">[{{ $empresa['contribuyente']['nro_documento'] }}] - {{ $empresa['contribuyente']['razon_social'] }}</option>
+                                            @endif
+                                        @endif
                                     @endforeach
                                 </select>
 							</div>

@@ -2305,7 +2305,11 @@ Route::group(['middleware' => ['auth']], function () {
 
             Route::post('cliente/buscar-cliente-documento-editar', 'Gerencial\Cobranza\ClienteController@buscarClienteDocumentoEditar');
 
-			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
+			Route::get('registro', 'Gerencial\Cobranza\CobranzaController@registro')->name('registro');
+			Route::get('test', 'Gerencial\Cobranza\CobranzaController@test')->name('test');
+			Route::get('script-periodo', 'Gerencial\Cobranza\CobranzaController@scriptPeriodos')->name('script-periodo');
+			// Route::post('listar-registros', 'Gerencial\Cobranza\CobranzaController@listarRegistros');
+
 			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
 			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
 			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente');
@@ -2359,6 +2363,12 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('script-cliente-remplazar-com-cliente', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComCliente');
             #scrip 15 revierte el script 14
 			Route::get('script-cliente-remplazar-com-cliente-revertir', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComClienteRevertir');
+            #scrip 16 empresas para los de estado 0
+			Route::get('script-empresa-remplazar-adm-cliente-estadp-cero', 'Gerencial\Cobranza\RegistroController@scriptEmpresaRemplazarAdmClienteEstadoCero');
+            #scrip 17 clientes
+			Route::get('script-cliente-remplazar-com-cliente-estado-cero', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComClienteEstadoCero');
+            #scrip 18 clientes en vacio los nuevo generados
+			Route::get('script-cliente-nuevos-ingresado', 'Gerencial\Cobranza\RegistroController@scriptClienteNuevosIngresados');
             // ------------------
             #scrip para pasar el registro de cobranzas
             Route::get('script-observaciones-oc', 'Gerencial\Cobranza\RegistroController@scriptObservacionesOC');
@@ -2403,6 +2413,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Gerencial\Cobranza\DevolucionPenalidadController@index')->name('index');
 				Route::post('listar', 'Gerencial\Cobranza\DevolucionPenalidadController@lista')->name('listar');
 				Route::post('guardar', 'Gerencial\Cobranza\DevolucionPenalidadController@guardar')->name('guardar');
+				Route::post('guardar-pagador', 'Gerencial\Cobranza\DevolucionPenalidadController@guardarPagador')->name('guardar-pagador');
+				Route::post('cargar-cobro-dev', 'Gerencial\Cobranza\DevolucionPenalidadController@cargarCobroDev')->name('cargar-cobro-dev');
 			});
 		});
 
