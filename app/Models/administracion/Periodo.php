@@ -17,9 +17,10 @@ class Periodo extends Model
                 'adm_periodo.*'
             )
             ->where([
-                ['adm_periodo.estado', '=', 1]
+                ['adm_periodo.estado', '=', 1],
+                ['adm_periodo.activo', '=', true]
             ])
-            ->orderBy('adm_periodo.id_periodo', 'desc')
+            ->orderBy('adm_periodo.descripcion', 'asc')
             ->get();
         return $data;
     }
