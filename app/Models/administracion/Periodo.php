@@ -20,7 +20,7 @@ class Periodo extends Model
                 ['adm_periodo.estado', '=', 1],
                 ['adm_periodo.activo', '=', true]
             ])
-            ->orderBy('adm_periodo.descripcion', 'asc')
+            ->orderBy('adm_periodo.descripcion', 'desc')
             ->get();
         return $data;
     }

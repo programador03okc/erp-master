@@ -101,11 +101,7 @@ Orden de compra / servicio
                             <select class="form-control activation handleChangePeriodo" name="id_periodo">
                                 <option value="" disabled>Elija una opción</option>
                                 @foreach ($periodos as $periodo)
-                                @if($periodo->activo == true)
-                                    <option value="{{$periodo->id_periodo}}" selected>{{$periodo->descripcion}}</option>
-                                    @else
                                     <option value="{{$periodo->id_periodo}}">{{$periodo->descripcion}}</option>
-                                @endif
                                 @endforeach
                             </select>
                         </div>
