@@ -4,7 +4,7 @@ namespace App\models\Gerencial;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CobanzaFase extends Model
+class CobranzaFase extends Model
 {
     //
     protected $table = 'cobranza.cobranza_fase';

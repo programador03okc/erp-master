@@ -23,7 +23,7 @@ use App\Models\Contabilidad\Contribuyente;
 use App\Models\Contabilidad\TipoCuenta;
 use App\models\Gerencial\AreaResponsable;
 use App\models\Gerencial\Cliente;
-use App\models\Gerencial\CobanzaFase;
+use App\models\Gerencial\CobranzaFase;
 use App\models\Gerencial\Cobranza;
 use App\models\Gerencial\Empresa;
 use App\models\Gerencial\EstadoDocumento;
@@ -173,9 +173,9 @@ class RegistroController extends Controller
             return $area_responsable_nombre->descripcion;
          })
         ->addColumn('fase', function($data) {
-            $fase = CobanzaFase::where('id_cobranza', $data->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->first();
+            $fase = CobranzaFase::where('id_cobranza', $data->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->first();
             if (!$fase) {
-                $fase = CobanzaFase::where('id_registro_cobranza', $data->id_registro_cobranza)->where('estado',1)->first();
+                $fase = CobranzaFase::where('id_registro_cobranza', $data->id_registro_cobranza)->where('estado',1)->first();
             }
             return ($fase?$fase->fase : '-');
             // return ($fase?$fase->fase[0] : '-');
@@ -1062,9 +1062,9 @@ class RegistroController extends Controller
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
         // return $registro_cobranza;
         if ($registro_cobranza) {
-            $cobranzas_fases = CobanzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado','!=',0)->get();
+            $cobranzas_fases = CobranzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado','!=',0)->get();
             if (sizeof($cobranzas_fases)===0) {
-                $cobranzas_fases = CobanzaFase::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado','!=',0)->get();
+                $cobranzas_fases = CobranzaFase::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado','!=',0)->get();
             }
             if (sizeof($cobranzas_fases)>0) {
                 return response()->json([
@@ -1093,7 +1093,7 @@ class RegistroController extends Controller
     public function guardarFase(Request $request)
     {
         $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$request->id_registro_cobranza)->first();
-        // $cobranza_fase = CobanzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->first();
+        // $cobranza_fase = CobranzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->first();
         DB::table('cobranza.cobranza_fase')
             ->where('id_registro_cobranza', $registro_cobranza->id_registro_cobranza)
             ->where('estado','!=', 0)
@@ -1104,7 +1104,7 @@ class RegistroController extends Controller
             ->where('estado','!=', 0)
             ->where('id_cobranza','!=' , null)
             ->update(['estado' => 2]);
-        $cobranza_fase          = new CobanzaFase();
+        $cobranza_fase          = new CobranzaFase();
         if ($registro_cobranza) {
             $cobranza_fase->id_cobranza    = $registro_cobranza->id_cobranza_old;
         }
@@ -1123,7 +1123,7 @@ class RegistroController extends Controller
 
     public function eliminarFase(Request $request)
     {
-        $cobranza_fase = CobanzaFase::find($request->id);
+        $cobranza_fase = CobranzaFase::find($request->id);
         $cobranza_fase->estado = 0;
         $cobranza_fase->save();
         if ($cobranza_fase) {
@@ -1237,7 +1237,7 @@ class RegistroController extends Controller
         }
         $array_cambios=array();
         foreach ($array_id_conbranza as $key => $value) {
-            $cobranza_fase = CobanzaFase::where('id_cobranza',$value)->where('estado',1)->orderBy('id_fase','DESC')->get();
+            $cobranza_fase = CobranzaFase::where('id_cobranza',$value)->where('estado',1)->orderBy('id_fase','DESC')->get();
             foreach ($cobranza_fase as $key => $value) {
                 if ($key!==0) {
                     DB::table('cobranza.cobranza_fase')
@@ -1452,7 +1452,7 @@ class RegistroController extends Controller
 
                     $cobranzas_fases = DB::table('gerencial.cobranza_fase')->where('id_cobranza',$value->id_cobranza)->get();
                     foreach ($cobranzas_fases as $key_cobranzas_fases => $value_cobranzas_fases) {
-                        $cobranza_fase = new CobanzaFase();
+                        $cobranza_fase = new CobranzaFase();
                         $cobranza_fase->id_registro_cobranza    = $registro_cobranza->id_registro_cobranza;
                         $cobranza_fase->fase                    = $value_cobranzas_fases->fase;
                         $cobranza_fase->fecha                   = $value_cobranzas_fases->fecha;
@@ -1658,9 +1658,9 @@ class RegistroController extends Controller
             $value->area =  $area_responsable_nombre->descripcion;
 
             #fase
-            $fase = CobanzaFase::where('id_cobranza', $value->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->first();
+            $fase = CobranzaFase::where('id_cobranza', $value->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->first();
             if (!$fase) {
-                $fase = CobanzaFase::where('id_registro_cobranza', $value->id_registro_cobranza)->where('estado',1)->first();
+                $fase = CobranzaFase::where('id_registro_cobranza', $value->id_registro_cobranza)->where('estado',1)->first();
             }
             $value->fase = ($fase?$fase->fase : '-');
             #fecha de pago

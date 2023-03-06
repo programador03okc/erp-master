@@ -1062,35 +1062,24 @@ function listarRegistros(filtros) {
             // },
         },
         columns: [
-            {data: 'empresa', name:"empresa", className: "text-center"},
-            {data: 'ocam', name:"ocam"},
-            {data: 'cliente', name:"cliente"},
-            {data: 'factura', name:"factura", className: "text-center"},
-            {data: 'uu_ee', name:"uu_ee"},
-            {data: 'fuente_financ', name:"fuente_financ", className: "text-center"},
-            {data: 'oc_fisica', name:"oc_fisica", className: "text-center"},
-            {data: 'siaf', name:"siaf", className: "text-center"},
-            {data: 'fecha_emision', name:"fecha_emision"},
-            {data: 'fecha_recepcion', name:"fecha_recepcion"},
-            {data: 'atraso', name:"atraso", className: "text-center"},
-            {data: 'moneda', name:"moneda", className: "text-center"},
-            {data: 'importe', name:"importe", className: "text-right"},
+            {data: 'empresa', className: "text-center"},
+            {data: 'ocam', className: "text-center"},
+            {data: 'cliente'},
+            {data: 'factura', className: "text-center"},
+            {data: 'uu_ee', className: "text-center"},
+            {data: 'fuente_financ', className: "text-center"},
+            {data: 'oc_fisica', className: "text-center"},
+            {data: 'siaf', className: "text-center"},
+            {data: 'fecha_emision', className: "text-center"},
+            {data: 'fecha_recepcion', className: "text-center"},
+            {data: 'atraso', className: "text-center"},
+            {data: 'moneda', className: "text-center"},
+            {data: 'importe', className: "text-right"},
+            {data: 'estado_documento', className: "text-right"},
+            {data: 'area', className: "text-right"},
             {
                 render: function (data, type, row) {
-
-                    return (row['estado']);
-                },
-                className: "text-center"
-            },
-            {
-                render: function (data, type, row) {
-                    return (row['area']);
-                },
-                className: "text-center"
-            },
-            {
-                render: function (data, type, row) {
-                    return (`<label class="label label-primary">${row['fase']}</label>`);
+                    return (`<label class="label label-primary" style="font-size: 10px;">${row['fase']}</label>`);
                 },
                 className: "text-center"
             },
@@ -1098,7 +1087,7 @@ function listarRegistros(filtros) {
                 render: function (data, type, row) {
                     var fecha_inicio = row['inicio_entrega'] ? row['inicio_entrega']:'-';
                     var fecha_entrega = row['fecha_entrega'] ? row['fecha_entrega']:'-';
-                    return (`${fecha_inicio} / ${fecha_entrega}`);
+                    return (`${fecha_inicio} <br> ${fecha_entrega}`);
                 },
                 className: "text-center"
             },
