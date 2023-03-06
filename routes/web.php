@@ -2305,8 +2305,10 @@ Route::group(['middleware' => ['auth']], function () {
 
             Route::post('cliente/buscar-cliente-documento-editar', 'Gerencial\Cobranza\ClienteController@buscarClienteDocumentoEditar');
 
-			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
-			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
+			Route::get('registro', 'Gerencial\Cobranza\CobranzaController@registro')->name('registro');
+			Route::get('test', 'Gerencial\Cobranza\CobranzaController@test')->name('test');
+			Route::post('listar-registros', 'Gerencial\Cobranza\CobranzaController@listarRegistros');
+			
 			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
 			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente');
 
