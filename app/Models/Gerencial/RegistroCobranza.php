@@ -23,7 +23,7 @@ class RegistroCobranza extends Model
 
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class, 'id_empresa_old', 'id_empresa');
+        return $this->belongsTo(Empresa::class, 'id_empresa', 'id_empresa');
     }
 
     public function sector()
@@ -33,7 +33,7 @@ class RegistroCobranza extends Model
 
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class, 'id_cliente_agil', 'id_cliente');
+        return $this->belongsTo(Cliente::class, 'id_cliente', 'id_cliente');
     }
 
     public function estado_doc()
