@@ -148,7 +148,7 @@ class RegistroController extends Controller
             // if (!$fase) {
             //     $fase = CobranzaFase::where('id_registro_cobranza', $data->id_registro_cobranza)->where('estado',1)->first();
             // }
-            $fase = RegistroCobranzaFase::where('id_registro_cobranza',$data->id_registro_cobranza)->first();
+            $fase = RegistroCobranzaFase::where('id_registro_cobranza',$data->id_registro_cobranza)->orderBy('id','DESC')->first();
             return ($fase?$fase->fase : '-');
         })
         ->make(true);
