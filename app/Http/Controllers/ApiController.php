@@ -16,6 +16,7 @@ class ApiController extends Controller
         $ffin = new DateTime($hasta);
         $compra = 0;
         $venta = 0;
+        $promedio = 0;
         $data = [];
 
         for ($i = $fini; $i <= $ffin; $i->modify('+1 day')) {
@@ -24,9 +25,11 @@ class ApiController extends Controller
 
             if ($query->count() == 0) {
                 $apiQ = json_decode($this->consultaSunat('https://api.apis.net.pe/v1/tipo-cambio-sunat'));
-                $compra = (float) $apiQ->compra;
-                $venta = (float) $apiQ->venta;
-                $promedio = ($compra + $venta) / 2;
+                if ($apiQ) {
+                    $compra = (float) $apiQ->compra;
+                    $venta = (float) $apiQ->venta;
+                    $promedio = ($compra + $venta) / 2;
+                }
 
                 DB::table('contabilidad.cont_tp_cambio')->insertGetId([
                     'fecha'     => $fecha,
