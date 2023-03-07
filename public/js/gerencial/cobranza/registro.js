@@ -496,7 +496,7 @@ $(function () {
                 $('[data-form="editar-formulario"] .modal-body select[name="periodo"] option[value="'+data.data.id_periodo+'"]').attr('selected','true');
 
                 // $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val(data.data.id_cliente);
-                $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(data.data.id_cliente_agil);
+                $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(data.data.id_cliente);
                 if (data.cliente) {
                     $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.cliente.razon_social);
                 }
@@ -655,7 +655,7 @@ $(function () {
                     html+='<tr>'+
                         '<td class="text-center">'+element.fase+'</td>'+
                         '<td class="text-center">'+element.fecha+'</td>'+
-                        '<td class="text-center"><button class="btn btn-danger eliminar-fase" data-id="'+element.id_fase+'"><i class="fa fa-trash"></i></button></td>'+
+                        '<td class="text-center"><button class="btn btn-danger eliminar-fase" data-id="'+element.id+'"><i class="fa fa-trash"></i></button></td>'+
                     '</tr>';
                 });
                 $('[data-table="table-fase"]').html(html);

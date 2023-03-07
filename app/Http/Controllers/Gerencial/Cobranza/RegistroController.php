@@ -32,6 +32,7 @@ use App\Models\Gerencial\Penalidad;
 use App\Models\Gerencial\PenalidadCobro;
 use App\Models\Gerencial\ProgramacionPago;
 use App\Models\Gerencial\RegistroCobranza;
+use App\Models\Gerencial\RegistroCobranzaFase;
 use App\Models\Gerencial\RegistroCobranzaOld;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
@@ -80,14 +81,7 @@ class RegistroController extends Controller
 
         $data = RegistroCobranza::where('registros_cobranzas.estado',1)->select('registros_cobranzas.*')->orderBy('id_registro_cobranza', 'desc');
         if (!empty($request->empresa)) {
-
-            $empresa = DB::table('contabilidad.adm_contri')
-            ->where('id_contribuyente',$request->empresa)
-            ->first();
-            // $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente)->orWhere('registros_cobranzas.id_empresa_old',$empresa->id_empresa_gerencial_old);
-            // $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente);
             $data = $data->where('registros_cobranzas.id_empresa',$request->empres);
-            // $data = $data->where('id_empresa_old',$empresa->id_empresa_gerencial_old);
         }
         if (!empty($request->estado)) {
             $data = $data->where('registros_cobranzas.id_estado_doc',$request->estado);
@@ -118,22 +112,13 @@ class RegistroController extends Controller
         return DataTables::of($data)
         ->addColumn('empresa', function($data){
 
-            // $empresa = DB::table('administracion.adm_empresa')
-            // ->select(
-            //     'adm_empresa.id_contribuyente',
-            //     'adm_empresa.codigo',
-            //     'adm_contri.razon_social'
-            // )
-            // ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-            // ->where('adm_empresa.id_contribuyente',$data->id_empresa)
-            // ->first();
             $empresa = AdministracionEmpresa::find($data->id_empresa);
-            return $empresa?$empresa->codigo:'--';
-            // return $data->empresa->nombre;
+            return $empresa?$empresa->codigo:' ';
         })
         ->addColumn('cliente', function($data){
 
-            $com_cliente = ComercialCliente::find($data->id_cliente_agil);
+            // $com_cliente = ComercialCliente::find($data->id_cliente_agil);
+            $com_cliente = ComercialCliente::find($data->id_cliente);
             $contribuyente = array();
             if ($com_cliente) {
                 $contribuyente = Contribuyente::where('id_contribuyente',$com_cliente->id_contribuyente)->where('id_contribuyente','!=',null)->first();
@@ -151,26 +136,21 @@ class RegistroController extends Controller
             return number_format($data->importe, 2);
         })
         ->addColumn('estado', function($data){
-            // $estado_documento = EstadoDocumento::where('estado',1)->get();
             $estado_documento_nombre = EstadoDocumento::where('id_estado_doc',$data->id_estado_doc)->first();
-            // return [$data->estadoDocumento->id_estado_doc,$estado_documento,$estado_documento_nombre];
             return $estado_documento_nombre->nombre;
         })
         ->addColumn('area', function($data){
-            // $area_responsable = AreaResponsable::where('estado',1)->get();
             $area_responsable_nombre = AreaResponsable::where('id_area',$data->id_area)->first();
-            // return [$data->areaResponsable->id_area, $area_responsable];
             return $area_responsable_nombre->descripcion;
          })
         ->addColumn('fase', function($data) {
-            $fase = CobranzaFase::where('id_cobranza', $data->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->first();
-            if (!$fase) {
-                $fase = CobranzaFase::where('id_registro_cobranza', $data->id_registro_cobranza)->where('estado',1)->first();
-            }
+            // $fase = CobranzaFase::where('id_cobranza', $data->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado',1)->first();
+            // if (!$fase) {
+            //     $fase = CobranzaFase::where('id_registro_cobranza', $data->id_registro_cobranza)->where('estado',1)->first();
+            // }
+            $fase = RegistroCobranzaFase::where('id_registro_cobranza',$data->id_registro_cobranza)->first();
             return ($fase?$fase->fase : '-');
-            // return ($fase?$fase->fase[0] : '-');
         })
-        // ->toJson();
         ->make(true);
     }
     public function restar_fechas($fi, $ff){
@@ -393,8 +373,8 @@ class RegistroController extends Controller
         $cobranza->id_empresa       = $request->empresa;
         $cobranza->id_sector        = $request->sector;
 
-        $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
-        $cobranza->id_cliente_agil  = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null) ;
+        // $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
+        $cobranza->id_cliente  = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null) ;
 
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
@@ -484,6 +464,11 @@ class RegistroController extends Controller
             );
 
         }
+        $nuevo = new RegistroCobranzaFase();
+            $nuevo->id_registro_cobranza = $cobranza->id_registro_cobranza;
+            $nuevo->fase = 'COMPROMISO';
+            $nuevo->fecha = $cobranza->fecha_registro;
+        $nuevo->save();
 
         return response()->json([
             "success"=>true,
@@ -889,49 +874,9 @@ class RegistroController extends Controller
         }
         // return $vendedor;exit;
         $contribuyente = array();
-        $comercial_cliente = ComercialCliente::find($registro_cobranza->id_cliente_agil);
+        $comercial_cliente = ComercialCliente::find($registro_cobranza->id_cliente);
         if ($comercial_cliente) {
             $contribuyente = Contribuyente::where('id_contribuyente',$comercial_cliente->id_contribuyente)->first();
-        }
-
-        // if ($registro_cobranza->id_cliente_agil!==null) {
-        //     $contribuyente = Contribuyente::where('id_contribuyente',$registro_cobranza->id_cliente_agil)->first();
-        //     array_push($cliente_array,array(
-        //         "id_contribuyente"=>$contribuyente->id_contribuyente,
-        //         "nro_documento"=>$contribuyente->nro_documento,
-        //         "razon_social"=>$contribuyente->razon_social
-        //     ));
-        // }else{
-        //     array_push($cliente_array,array(
-        //         "id_cliente"=>' ',
-        //         "id_contribuyente"=>' ',
-        //         "nro_documento"=>' ',
-        //         "razon_social"=>' '
-        //     ));
-        // }
-
-        if (!$contribuyente) {
-            // if ($registro_cobranza->id_cliente!==null) {
-            //     $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$registro_cobranza->id_cliente)->first();
-            // }
-
-            // if ($contribuyente) {
-            //     array_push($cliente_array,array(
-            //         "id_cliente"=>null,
-            //         "id_contribuyente"=>$contribuyente->id_contribuyente,
-            //         "nro_documento"=>$contribuyente->nro_documento,
-            //         "razon_social"=>$contribuyente->razon_social
-            //     ));
-            // }
-
-
-        }else{
-            // array_push($cliente_array,array(
-            //     "id_cliente"=>null,
-            //     "id_contribuyente"=>$contribuyente->id_contribuyente,
-            //     "nro_documento"=>$contribuyente->nro_documento,
-            //     "razon_social"=>$contribuyente->razon_social
-            // ));
         }
 
         $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)
@@ -958,8 +903,8 @@ class RegistroController extends Controller
         $cobranza->id_empresa       = $request->empresa;
         $cobranza->id_sector        = $request->sector;
 
-        $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
-        $cobranza->id_cliente_agil       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null);
+        // $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
+        $cobranza->id_cliente       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null);
 
         $cobranza->factura          = $request->fact;
         $cobranza->uu_ee            = $request->ue;
@@ -1049,33 +994,39 @@ class RegistroController extends Controller
 
     public function obtenerFase($id)
     {
-        $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
+        // $registro_cobranza = RegistroCobranza::where('id_registro_cobranza',$id)->first();
+        $cobranza_registro_fase = RegistroCobranzaFase::where('id_registro_cobranza',$id)->get();
         // return $registro_cobranza;
-        if ($registro_cobranza) {
-            $cobranzas_fases = CobranzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado','!=',0)->get();
-            if (sizeof($cobranzas_fases)===0) {
-                $cobranzas_fases = CobranzaFase::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado','!=',0)->get();
-            }
-            if (sizeof($cobranzas_fases)>0) {
-                return response()->json([
-                    "success"=>true,
-                    "status"=>200,
-                    "fases"=>$cobranzas_fases
-                ]);
-            }else{
-                return response()->json([
-                    "success"=>false,
-                    "status"=>404,
-                    "fases"=>null
-                ]);
-            }
-        }else{
-            return response()->json([
-                "success"=>false,
-                "status"=>404,
-                "fases"=>null
-            ]);
-        }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            "fases"=>$cobranza_registro_fase
+        ]);
+        // if ($registro_cobranza) {
+        //     $cobranzas_fases = CobranzaFase::where('id_cobranza',$registro_cobranza->id_cobranza_old)->where('id_cobranza','!=',null)->where('estado','!=',0)->get();
+        //     if (sizeof($cobranzas_fases)===0) {
+        //         $cobranzas_fases = CobranzaFase::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)->where('estado','!=',0)->get();
+        //     }
+        //     if (sizeof($cobranzas_fases)>0) {
+        //         return response()->json([
+        //             "success"=>true,
+        //             "status"=>200,
+        //             "fases"=>$cobranzas_fases
+        //         ]);
+        //     }else{
+        //         return response()->json([
+        //             "success"=>false,
+        //             "status"=>404,
+        //             "fases"=>null
+        //         ]);
+        //     }
+        // }else{
+        //     return response()->json([
+        //         "success"=>false,
+        //         "status"=>404,
+        //         "fases"=>null
+        //     ]);
+        // }
 
 
     }
@@ -1105,6 +1056,13 @@ class RegistroController extends Controller
         $cobranza_fase->estado  = 1;
         $cobranza_fase->id_registro_cobranza  = $request->id_registro_cobranza;
         $cobranza_fase->save();
+
+        $nuevo = new RegistroCobranzaFase();
+            $nuevo->id_registro_cobranza = $request->id_registro_cobranza;
+            $nuevo->fase = $request->fase;
+            $nuevo->fecha = $request->fecha_fase;
+        $nuevo->save();
+
         return response()->json([
             "success"=>true,
             "status"=>200,
@@ -1113,22 +1071,29 @@ class RegistroController extends Controller
 
     public function eliminarFase(Request $request)
     {
-        $cobranza_fase = CobranzaFase::find($request->id);
-        $cobranza_fase->estado = 0;
-        $cobranza_fase->save();
-        if ($cobranza_fase) {
-            return response()->json([
-                "success"=>true,
-                "status"=>200,
-                "data"=>$cobranza_fase
-            ]);
-        }else{
-            return response()->json([
-                "success"=>false,
-                "status"=>404,
-            ]);
-        }
+        // $cobranza_fase = CobranzaFase::find($request->id);
+        // $cobranza_fase->estado = 0;
+        // $cobranza_fase->save();
 
+        $registro_cobranza_fase = RegistroCobranzaFase::find($request->id);
+        $registro_cobranza_fase->delete();
+        // if ($cobranza_fase) {
+        //     return response()->json([
+        //         "success"=>true,
+        //         "status"=>200,
+        //         "data"=>$cobranza_fase
+        //     ]);
+        // }else{
+        //     return response()->json([
+        //         "success"=>false,
+        //         "status"=>404,
+        //     ]);
+        // }
+        return response()->json([
+            "success"=>true,
+            "status"=>200,
+            // "data"=>$cobranza_fase
+        ]);
     }
 
     public function scriptEmpresa()
@@ -1400,7 +1365,7 @@ class RegistroController extends Controller
 
                 $registro_cobranza->id_empresa        = null;
                 $registro_cobranza->id_sector         = $value->id_sector;
-                $registro_cobranza->id_cliente        = $value->id_cliente;
+                // $registro_cobranza->id_cliente        = $value->id_cliente;
                 $registro_cobranza->factura           = $value->factura;
                 $registro_cobranza->uu_ee             = $value->uu_ee;
                 $registro_cobranza->fuente_financ     = $value->fuente_financ;
@@ -1422,7 +1387,7 @@ class RegistroController extends Controller
                 $registro_cobranza->cdp               = $value->cdp;
                 $registro_cobranza->plazo_credito     = $value->plazo_credito;
                 $registro_cobranza->id_doc_ven       = $value->id_venta;
-                $registro_cobranza->id_cliente_agil   = null;
+                // $registro_cobranza->id_cliente_agil   = null;
                 $registro_cobranza->id_cobranza_old   = $value->id_cobranza;
                 $registro_cobranza->id_empresa_old    = $value->id_empresa;
                 $registro_cobranza->oc_fisica        = $value->oc;
@@ -1561,11 +1526,11 @@ class RegistroController extends Controller
         ->join('cobranza.sector', 'sector.id_sector','=', 'registros_cobranzas.id_sector')
         ->orderBy('id_registro_cobranza', 'desc');
         if (!empty($request->empresa)) {
-            $empresa = DB::table('contabilidad.adm_contri')
-            ->where('id_contribuyente',$request->empresa)
-            ->first();
-            $data = $data->where('registros_cobranzas.id_empresa',$empresa->id_contribuyente)->orWhere('registros_cobranzas.id_empresa_old',$empresa->id_empresa_gerencial_old);
-            // $data = $data->where('id_empresa_old',$empresa->id_empresa_gerencial_old);
+
+            // $empresa = DB::table('contabilidad.adm_contri')
+            // ->where('id_contribuyente',$request->empresa)
+            // ->first();
+            $data = $data->where('registros_cobranzas.id_empresa',$request->empres);
         }
         if (!empty($request->estado)) {
             $data = $data->where('registros_cobranzas.id_estado_doc',$request->estado);
@@ -1598,35 +1563,15 @@ class RegistroController extends Controller
         foreach ($data as $key => $value) {
 
             # empresa
-            $id_cliente =$value->id_empresa;
-            if (!$id_cliente) {
-                $id_cliente =$value->id_empresa_old;
-                $adm_contri = Contribuyente::where('id_empresa_gerencial_old',$value->id_empresa_old)->first();
-                $id_cliente = $adm_contri->id_contribuyente;
-
-            }
-
-            $empresa = DB::table('administracion.adm_empresa')
-            ->select(
-                'adm_empresa.id_contribuyente',
-                'adm_empresa.codigo',
-                'adm_contri.razon_social'
-            )
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-            ->where('adm_empresa.id_contribuyente',$id_cliente)
-            ->first();
-            $value->empresa = $empresa?$empresa->razon_social:'--';
+            $admi_empresa = AdministracionEmpresa::find($value->id_empresa);
+            $adm_contri = Contribuyente::where('id_contribuyente',$admi_empresa->id_contribuyente)->first();
+            $value->empresa = $adm_contri?$adm_contri->razon_social:'--';
 
             #cliente
             $contribuyente=null;
-            if (!empty($value->id_cliente)) {
-                $contribuyente = Contribuyente::where('id_cliente_gerencial_old',$value->id_cliente)->where('id_cliente_gerencial_old','!=',null)->first();
-            }
-            if (!empty($value->id_cliente_agil)) {
-                // if (!$contribuyente) {
-                    $contribuyente = Contribuyente::where('id_contribuyente',$value->id_cliente_agil)->where('id_contribuyente','!=',null)->first();
-                // }
-            }
+            $com_cliente = ComercialCliente::find($value->id_cliente);
+            $contribuyente = Contribuyente::where('id_contribuyente',$com_cliente->id_contribuyente)->first();
+
             $value->cliente =  $contribuyente ? $contribuyente->razon_social:'--';
             $value->cliente_ruc =  $contribuyente ? $contribuyente->nro_documento:'--';
 
