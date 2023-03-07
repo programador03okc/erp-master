@@ -84,11 +84,10 @@ class CobranzaController extends Controller
 
     public function scriptFases()
     {
-        $data = CobranzaFase::all();
+        $dataActiva = CobranzaFase::all();
         $cont = 0;
-        $dele = 0;
 
-        foreach ($data as $key) {
+        foreach ($dataActiva as $key) {
             $nuevo = new RegistroCobranzaFase();
                 $nuevo->id_registro_cobranza = $key->id_registro_cobranza;
                 $nuevo->fase = $key->fase;
@@ -97,11 +96,15 @@ class CobranzaController extends Controller
             $cont++;
         }
 
-        foreach ($data as $key) {
-            if ($key->estado == 0) {
-                RegistroCobranzaFase::find($key->id_registro_cobranza)->delete();
-                $dele++;
+        $dataInactiva = CobranzaFase::where('estado', 1)->get();
+        $dele = 0;
+
+        foreach ($dataInactiva as $row) {
+            $eliminar = RegistroCobranzaFase::find($row->id_registro_cobranza);
+            if ($eliminar) {
+                $eliminar->delete();
             }
+            $dele++;
         }
         return response()->json(array("cargados" => $cont, "eliminados" => $dele), 200);
     }
