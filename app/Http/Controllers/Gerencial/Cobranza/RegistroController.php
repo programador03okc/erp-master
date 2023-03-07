@@ -3373,4 +3373,108 @@ class RegistroController extends Controller
             "contribuyente_no_comercial_encontrado"=>sizeof($array_contribuyente_no_comercial_encontrado)
         ],200);
     }
+    public function scriptClienteAgilGerencial()
+    {
+        $registro_cobranza = RegistroCobranza::where('id_cobranza_old','!=',null);
+        $count = $registro_cobranza->count();
+        $registro_cobranza = $registro_cobranza->get();
+
+        $contador_gerencial_cobranza = 0;
+        $contador_gerencial_cobranza_cliente = 0;
+        #comparando con los del agil si estan todos registrados
+        $contador_agil_contribuyente = 0;
+        $contador_agil_contribuyente_no_encontrados = 0;
+        $contador_agil_cliente = 0;
+        $contador_agil_cliente_no_encontrados = 0;
+        #faltantes
+        $contador_contribuyente_no_clientes = array();
+
+        foreach ($registro_cobranza as $key => $value) {
+            $gerencial_cobranza = DB::table('gerencial.cobranza')->where('id_cobranza',$value->id_cobranza_old)->first();
+
+            if ($gerencial_cobranza) {
+                $contador_gerencial_cobranza = DB::table('gerencial.cobranza')->where('id_cobranza',$value->id_cobranza_old)->count() + $contador_gerencial_cobranza;
+
+                $gerencial_cliente = DB::table('gerencial.cliente')->where('id_cliente',$gerencial_cobranza->id_cliente)->first();
+                if ($gerencial_cliente) {
+                    $contador_gerencial_cobranza_cliente = DB::table('gerencial.cliente')->where('id_cliente',$gerencial_cobranza->id_cliente)->count() + $contador_gerencial_cobranza_cliente;
+                    $contribuyente = Contribuyente::where('razon_social','like','%'.$gerencial_cliente->nombre.'%')->first();
+                    if (!$contribuyente) {
+                        $contribuyente = Contribuyente::where('nro_documento',$gerencial_cliente->ruc)->first();
+                    }
+                    if ($contribuyente) {
+                        $contador_agil_contribuyente = $contador_agil_contribuyente + 1;
+                        $comercial_cliente = ComercialCliente::where('id_contribuyente',$contribuyente->id_contribuyente)->first();
+
+                        if ($comercial_cliente) {
+                            $contador_agil_cliente = $contador_agil_cliente+1;
+                        //     array_push($array_contribuyente_comercial_encontrado,$comercial_cliente);
+                            $cobranza_actualizar = RegistroCobranza::find($value->id_registro_cobranza);
+                            $cobranza_actualizar->id_cliente_auxiliar = $comercial_cliente->id_cliente;
+                            $cobranza_actualizar->save();
+                        }else{
+                            array_push($contador_contribuyente_no_clientes,$contribuyente);
+                            $contador_agil_cliente_no_encontrados = $contador_agil_cliente_no_encontrados+1;
+                        //     array_push($array_contribuyente_no_comercial_encontrado,$contribuyente);
+                            $comercial_cliente = new ComercialCliente();
+                            $comercial_cliente->id_contribuyente = $contribuyente->id_contribuyente;
+                            $comercial_cliente->estado = 1;
+                            $comercial_cliente->fecha_registro = date('Y-m-d H:i:s');
+                            $comercial_cliente->save();
+
+                            $cobranza_actualizar = RegistroCobranza::find($value->id_registro_cobranza);
+                            $cobranza_actualizar->id_cliente_auxiliar = $comercial_cliente->id_cliente;
+                            $cobranza_actualizar->save();
+
+                        }
+                    }else{
+                        $contador_agil_contribuyente_no_encontrados = $contador_agil_contribuyente_no_encontrados+1;
+                        // $guardar_contribuyente = new Contribuyente;
+                        // $guardar_contribuyente->nro_documento   =$gerencial_cliente->ruc;
+                        // $guardar_contribuyente->razon_social    =$gerencial_cliente->nombre;
+                        // $guardar_contribuyente->ubigeo          =0;
+                        // $guardar_contribuyente->id_pais         =170;
+                        // $guardar_contribuyente->fecha_registro  =date('Y-m-d H:i:s');
+                        // $guardar_contribuyente->id_cliente_gerencial_old    =$gerencial_cobranza->id_cobranza;
+                        // $guardar_contribuyente->estado          =1;
+                        // $guardar_contribuyente->transportista   ='f';
+                        // $guardar_contribuyente->save();
+
+                        // $comercial_cliente = new ComercialCliente();
+                        // $comercial_cliente->id_contribuyente = $guardar_contribuyente->id_contribuyente;
+                        // $comercial_cliente->estado = 1;
+                        // $comercial_cliente->fecha_registro = date('Y-m-d H:i:s');
+                        // $comercial_cliente->save();
+
+                        // $cobranza_actualizar = RegistroCobranza::find($value->id_registro_cobranza);
+                        // $cobranza_actualizar->id_cliente_agil = $comercial_cliente->id_cliente;
+                        // $cobranza_actualizar->save();
+                    }
+
+
+                    // if ($contribuyente) {
+                    //     $cobranza_actualizar = RegistroCobranza::find($value->id_registro_cobranza);
+                    //     $cobranza_actualizar->id_cliente = $value->id_cliente_agil;
+                    //     $cobranza_actualizar->save();
+                    // }
+                }
+            }else{
+                // array_push($array_cobranza_null,$value);
+            }
+
+        }
+        $contador_cliente_auxiliar = RegistroCobranza::where('id_cliente_auxiliar','!=',null);
+        $contador_cliente_auxiliar = $contador_cliente_auxiliar->count();
+        return response()->json([
+            "total"=>$count,
+            "gerencial_cobranza"=>$contador_gerencial_cobranza,
+            "gerencial_cobranza_cliente"=>$contador_gerencial_cobranza_cliente,
+            "agil_contribuyente"=>$contador_agil_contribuyente,
+            "agil_contribuyente_no_encontrados"=>$contador_agil_contribuyente_no_encontrados,
+            "agil_cliente"=>$contador_agil_cliente,
+            "agil_cliente_no_encontrados"=>$contador_agil_cliente_no_encontrados,
+            "cliente_auxiliar"=>$contador_cliente_auxiliar,
+            "agil_contribuyentes_no_clientes"=>$contador_contribuyente_no_clientes,
+        ],200);
+    }
 }

@@ -2373,6 +2373,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('script-cliente-vista-null', 'Gerencial\Cobranza\RegistroController@scriptClienteVistaNull');
             Route::get('script-contribuyente-vista-null', 'Gerencial\Cobranza\RegistroController@scriptClienteContribuyenteVistaNull');
             // ------------------
+            #script 20 verificar los clientes con los antiguos registros de cobranza
+            Route::get('script-cliente-agil-gerencial', 'Gerencial\Cobranza\RegistroController@scriptClienteAgilGerencial');
             #scrip para pasar el registro de cobranzas
             Route::get('script-observaciones-oc', 'Gerencial\Cobranza\RegistroController@scriptObservacionesOC');
 
