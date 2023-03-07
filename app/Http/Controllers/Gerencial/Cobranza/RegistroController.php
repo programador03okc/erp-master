@@ -3397,7 +3397,9 @@ class RegistroController extends Controller
 
                 $gerencial_cliente = DB::table('gerencial.cliente')->where('id_cliente',$gerencial_cobranza->id_cliente)->first();
                 if ($gerencial_cliente) {
+                    #contador
                     $contador_gerencial_cobranza_cliente = DB::table('gerencial.cliente')->where('id_cliente',$gerencial_cobranza->id_cliente)->count() + $contador_gerencial_cobranza_cliente;
+                    #----
                     $contribuyente = Contribuyente::where('razon_social','like','%'.$gerencial_cliente->nombre.'%')->first();
                     if (!$contribuyente) {
                         $contribuyente = Contribuyente::where('nro_documento',$gerencial_cliente->ruc)->first();
@@ -3410,7 +3412,11 @@ class RegistroController extends Controller
                             $contador_agil_cliente = $contador_agil_cliente+1;
                         //     array_push($array_contribuyente_comercial_encontrado,$comercial_cliente);
                             $cobranza_actualizar = RegistroCobranza::find($value->id_registro_cobranza);
+
+                            $cobranza_actualizar->id_cliente = $value->id_cliente_agil;
+                            $cobranza_actualizar->id_cliente_agil = $comercial_cliente->id_cliente;
                             $cobranza_actualizar->id_cliente_auxiliar = $comercial_cliente->id_cliente;
+
                             $cobranza_actualizar->save();
                         }else{
                             array_push($contador_contribuyente_no_clientes,$contribuyente);
@@ -3423,40 +3429,38 @@ class RegistroController extends Controller
                             $comercial_cliente->save();
 
                             $cobranza_actualizar = RegistroCobranza::find($value->id_registro_cobranza);
+                            $cobranza_actualizar->id_cliente = $value->id_cliente_agil;
+                            $cobranza_actualizar->id_cliente_agil = $comercial_cliente->id_cliente;
                             $cobranza_actualizar->id_cliente_auxiliar = $comercial_cliente->id_cliente;
+
                             $cobranza_actualizar->save();
 
                         }
                     }else{
                         $contador_agil_contribuyente_no_encontrados = $contador_agil_contribuyente_no_encontrados+1;
-                        // $guardar_contribuyente = new Contribuyente;
-                        // $guardar_contribuyente->nro_documento   =$gerencial_cliente->ruc;
-                        // $guardar_contribuyente->razon_social    =$gerencial_cliente->nombre;
-                        // $guardar_contribuyente->ubigeo          =0;
-                        // $guardar_contribuyente->id_pais         =170;
-                        // $guardar_contribuyente->fecha_registro  =date('Y-m-d H:i:s');
-                        // $guardar_contribuyente->id_cliente_gerencial_old    =$gerencial_cobranza->id_cobranza;
-                        // $guardar_contribuyente->estado          =1;
-                        // $guardar_contribuyente->transportista   ='f';
-                        // $guardar_contribuyente->save();
+                        $guardar_contribuyente = new Contribuyente;
+                        $guardar_contribuyente->nro_documento   =$gerencial_cliente->ruc;
+                        $guardar_contribuyente->razon_social    =$gerencial_cliente->nombre;
+                        $guardar_contribuyente->ubigeo          =0;
+                        $guardar_contribuyente->id_pais         =170;
+                        $guardar_contribuyente->fecha_registro  =date('Y-m-d H:i:s');
+                        $guardar_contribuyente->id_cliente_gerencial_old    =$gerencial_cobranza->id_cobranza;
+                        $guardar_contribuyente->estado          =1;
+                        $guardar_contribuyente->transportista   ='f';
+                        $guardar_contribuyente->save();
 
-                        // $comercial_cliente = new ComercialCliente();
-                        // $comercial_cliente->id_contribuyente = $guardar_contribuyente->id_contribuyente;
-                        // $comercial_cliente->estado = 1;
-                        // $comercial_cliente->fecha_registro = date('Y-m-d H:i:s');
-                        // $comercial_cliente->save();
+                        $comercial_cliente = new ComercialCliente();
+                        $comercial_cliente->id_contribuyente = $guardar_contribuyente->id_contribuyente;
+                        $comercial_cliente->estado = 1;
+                        $comercial_cliente->fecha_registro = date('Y-m-d H:i:s');
+                        $comercial_cliente->save();
 
-                        // $cobranza_actualizar = RegistroCobranza::find($value->id_registro_cobranza);
-                        // $cobranza_actualizar->id_cliente_agil = $comercial_cliente->id_cliente;
-                        // $cobranza_actualizar->save();
+                        $cobranza_actualizar = RegistroCobranza::find($value->id_registro_cobranza);
+                        $cobranza_actualizar->id_cliente = $value->id_cliente_agil;
+                        $cobranza_actualizar->id_cliente_agil = $comercial_cliente->id_cliente;
+                        $cobranza_actualizar->id_cliente_auxiliar = $comercial_cliente->id_cliente;
+                        $cobranza_actualizar->save();
                     }
-
-
-                    // if ($contribuyente) {
-                    //     $cobranza_actualizar = RegistroCobranza::find($value->id_registro_cobranza);
-                    //     $cobranza_actualizar->id_cliente = $value->id_cliente_agil;
-                    //     $cobranza_actualizar->save();
-                    // }
                 }
             }else{
                 // array_push($array_cobranza_null,$value);
