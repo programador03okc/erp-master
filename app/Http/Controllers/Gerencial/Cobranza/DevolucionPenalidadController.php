@@ -25,7 +25,7 @@ class DevolucionPenalidadController extends Controller
         return DataTables::of($data)
         ->addColumn('empresa', function ($data) { return (isset($data->cobranza->empresa)) ? $data->cobranza->empresa->codigo : ''; })
         ->addColumn('ocam', function ($data) { return $data->cobranza->ocam; })
-        ->addColumn('cliente', function ($data) { return (isset($data->cliente)) ? $data->cliente->contribuyente->razon_social : ''; })
+        ->addColumn('cliente', function ($data) { return (isset($data->cobranza->cliente)) ? $data->cobranza->cliente->contribuyente->razon_social : ''; })
         ->addColumn('factura', function ($data) { return $data->cobranza->factura; })
         ->addColumn('oc_fisica', function ($data) { return $data->cobranza->oc_fisica; })
         ->addColumn('siaf', function ($data) { return $data->cobranza->siaf; })
@@ -87,9 +87,10 @@ class DevolucionPenalidadController extends Controller
             $data = PenalidadCobro::find($request->id);
                 $data->pagador = $request->pagador_dev;
                 $data->importe_cobro = $request->importe_cobro_dev;
+                $data->motivo = $request->motivo_dev;
             $data->save();
 
-            $mensaje = 'Se ha actualizado el dato de pagador';
+            $mensaje = 'Se ha actualizado los datos de la devolución';
             $respuesta = 'ok';
             $alerta = 'success';
             $error = '';

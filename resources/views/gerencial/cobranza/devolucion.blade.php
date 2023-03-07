@@ -35,16 +35,16 @@
                             <thead>
                                 <tr>
                                     <th width="10">Emp</th>
-                                    <th width="80">OCAM</th>
-                                    <th width="150">Nombre del Cliente</th>
-                                    <th width="30">Fact.</th>
-                                    <th width="20">OC Fisica</th>
-                                    <th width="20">SIAF</th>
-                                    <th>Gestión</th>
+                                    <th width="120">OCAM</th>
+                                    <th width="200">Nombre del Cliente</th>
+                                    <th width="50">Fact.</th>
+                                    <th width="40">OC Fisica</th>
+                                    <th width="30">SIAF</th>
+                                    <th width="60">Gestión</th>
                                     <th>Pagador</th>
                                     <th width="10">Mon</th>
-                                    <th>Monto Pen.</th>
-                                    <th>Monto Cobrado</th>
+                                    <th width="100">Monto Pen.</th>
+                                    <th width="100">Monto Cobrado</th>
                                     <th>Detalles</th>
                                     <th width="30">Estado</th>
                                     <th width="50"></th>
@@ -81,6 +81,12 @@
                         <div class="col-md-12">
                             <h6>Importe cobrado</h6>
                             <input type="text" name="importe_cobro_dev" class="form-control input-sm text-right numero" placeholder="0.00" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <h6>Observaciones de la devolución</h6>
+                            <textarea name="motivo_dev" class="form-control" rows="3" placeholder="Escriba las observaciones" required></textarea>
                         </div>
                     </div>
                 </div>
@@ -192,7 +198,7 @@
         };
         
         $(document).ready(function() {
-            //$('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click()
+            $('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click()
             seleccionarMenu(window.location);
             $('.numero').number(true, 2);
         });
