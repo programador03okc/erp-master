@@ -8,10 +8,12 @@ use App\Http\Controllers\Controller;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 
+ini_set('max_execution_time', 0);
 class ApiController extends Controller
 {
     public function tipoCambioMasivo($desde, $hasta)
     {
+
         $fini = new DateTime($desde);
         $ffin = new DateTime($hasta);
         $compra = 0;
