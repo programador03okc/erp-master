@@ -2380,7 +2380,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('script-observaciones-oc', 'Gerencial\Cobranza\RegistroController@scriptObservacionesOC');
 
 			Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
-			Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
+			Route::post('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
 			Route::post('guardar-fase', 'Gerencial\Cobranza\RegistroController@guardarFase');
 			Route::get('obtener-fase/{id}', 'Gerencial\Cobranza\RegistroController@obtenerFase');
 			Route::post('eliminar-fase', 'Gerencial\Cobranza\RegistroController@eliminarFase');

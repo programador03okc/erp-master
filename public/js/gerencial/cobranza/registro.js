@@ -613,7 +613,7 @@ $(function () {
             showLoaderOnConfirm: true,
             preConfirm: (login) => {
             return $.ajax({
-                    type: 'GET',
+                    type: 'POST',
                     headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     url: 'modificar-registro',
                     data: data,
