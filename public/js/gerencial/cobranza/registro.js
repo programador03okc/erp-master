@@ -297,7 +297,6 @@ $(function () {
                             ).then((result) => {
                                 $('#listar-registros').DataTable().ajax.reload();
                                 $('#modal-cobranza').modal('hide');
-                                // location.reload();
                             })
                         }else{
                             Swal.fire(
@@ -630,7 +629,8 @@ $(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 if (result.value.status === 200) {
-                    location.reload();
+                    $('#istar-registro').DataTable().ajax.reload();
+                    $('#modal-editar-cobranza').modal('hide');
                 }
             }
         })

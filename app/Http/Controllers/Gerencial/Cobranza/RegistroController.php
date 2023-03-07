@@ -897,99 +897,81 @@ class RegistroController extends Controller
     public function modificarRegistro(Request $request)
     {
         $data=$request;
-        $empresa = DB::table('administracion.adm_empresa')->where('id_contribuyente',$request->empresa)->first();
-        $cobranza = RegistroCobranza::find($request->id_registro_cobranza);
+        try {
+            $empresa = DB::table('administracion.adm_empresa')->where('id_contribuyente',$request->empresa)->first();
+            $cobranza = RegistroCobranza::find($request->id_registro_cobranza);
 
-        $cobranza->id_empresa       = $request->empresa;
-        $cobranza->id_sector        = $request->sector;
+            $cobranza->id_empresa       = $request->empresa;
+            $cobranza->id_sector        = $request->sector;
+            $cobranza->id_cliente       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null);
+            $cobranza->factura          = $request->fact;
+            $cobranza->uu_ee            = $request->ue;
+            $cobranza->fuente_financ    = $request->ff;
+            $cobranza->ocam               = $request->oc; // OCAM es igul que la oc
+            $cobranza->siaf             = $request->siaf;
+            $cobranza->fecha_emision    = $request->fecha_emi;
+            $cobranza->fecha_recepcion  = $request->fecha_rec;
+            $cobranza->moneda           = $request->moneda;
+            $cobranza->importe          = $request->importe;
+            $cobranza->id_estado_doc    = $request->estado_doc;
+            $cobranza->id_tipo_tramite  = $request->tramite;
+            $cobranza->vendedor         = ($request->nom_vendedor?$request->nom_vendedor:null);
+            $cobranza->estado           = 1;
+            $cobranza->id_area          = $request->area;
+            $cobranza->id_periodo       = $request->periodo;
+            $cobranza->codigo_empresa   = $empresa->codigo;
+            $cobranza->categoria        = $request->categ;
+            $cobranza->cdp              = $request->cdp;
+            $cobranza->plazo_credito    = $request->plazo_credito;
+            $cobranza->id_doc_ven       = $request->id_doc_ven;
+            $cobranza->oc_fisica       = $request->orden_compra;
+            $cobranza->inicio_entrega       = $request->fecha_inicio;
+            $cobranza->fecha_entrega       = $request->fecha_entrega;
+            $cobranza->id_oc       = $request->id_oc;
+            $cobranza->save();
+            if ($cobranza) {
+                $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$cobranza->id_registro_cobranza)->first();
 
-        // $cobranza->id_cliente       = (!empty($request->id_cliente) ? $request->id_cliente:null);
-        $cobranza->id_cliente       = (!empty($request->id_contribuyente) ? $request->id_contribuyente:null);
+                if ($programacion_pago) {
+                    $programacion_pago->fecha   = $request->fecha_ppago;
+                    $programacion_pago->estado  = 1;
+                    $programacion_pago->save();
+                }else{
+                    $programacion_pago = new ProgramacionPago();
+                    $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
+                    $programacion_pago->fecha   = $request->fecha_ppago;
+                    $programacion_pago->estado  = 1;
+                    $programacion_pago->fecha_registro = date('Y-m-d H:i:s');
+                    $programacion_pago->save();
+                }
 
-        $cobranza->factura          = $request->fact;
-        $cobranza->uu_ee            = $request->ue;
-        $cobranza->fuente_financ    = $request->ff;
-        $cobranza->ocam               = $request->oc; // OCAM es igul que la oc
-        $cobranza->siaf             = $request->siaf;
-        $cobranza->fecha_emision    = $request->fecha_emi;
-        $cobranza->fecha_recepcion  = $request->fecha_rec;
-        $cobranza->moneda           = $request->moneda;
-        $cobranza->importe          = $request->importe;
-        $cobranza->id_estado_doc    = $request->estado_doc;
-        $cobranza->id_tipo_tramite  = $request->tramite;
-        $cobranza->vendedor         = ($request->nom_vendedor?$request->nom_vendedor:null);
-        $cobranza->estado           = 1;
-        // $cobranza->fecha_registro   = date('Y-m-d H:i:s');
-        $cobranza->id_area          = $request->area;
-        $cobranza->id_periodo       = $request->periodo;
-        // $cobranza->ocam             = $request->ocam;
-        $cobranza->codigo_empresa   = $empresa->codigo;
-        $cobranza->categoria        = $request->categ;
-        $cobranza->cdp              = $request->cdp;
-        $cobranza->plazo_credito    = $request->plazo_credito;
-        $cobranza->id_doc_ven       = $request->id_doc_ven;
-        // $cobranza->id_vent          = ;
-        $cobranza->oc_fisica       = $request->orden_compra;
-        $cobranza->inicio_entrega       = $request->fecha_inicio;
-        $cobranza->fecha_entrega       = $request->fecha_entrega;
-        $cobranza->id_oc       = $request->id_oc;
-        $cobranza->save();
-        // return $request->fecha_ppago;exit;
-        if ($cobranza) {
-            $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$cobranza->id_registro_cobranza)->first();
-
-            if ($programacion_pago) {
-                // return $programacion_pago;exit;
-                // $programacion_pago = ProgramacionPago::find($cobranza->id_registro_cobranza);
-                // $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
-                $programacion_pago->fecha   = $request->fecha_ppago;
-                $programacion_pago->estado  = 1;
-                // $programacion_pago->fecha_registro = date('Y-m-d H:i:s');
-                $programacion_pago->save();
-            }else{
-                $programacion_pago = new ProgramacionPago();
-                $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
-                $programacion_pago->fecha   = $request->fecha_ppago;
-                $programacion_pago->estado  = 1;
-                $programacion_pago->fecha_registro = date('Y-m-d H:i:s');
-                $programacion_pago->save();
             }
-
+            $busqueda = strpos($cobranza->ocam, 'DIRECTA');
+            if ($busqueda !== false ) {
+                OrdenCompraDirecta::where('nro_orden', str_replace(' ','',$cobranza->ocam))
+                ->update(
+                    [
+                        'factura'        => ($cobranza->factura!==''&&$cobranza->factura!=null? $cobranza->factura : ''),
+                        'siaf'           => ($cobranza->siaf!==''&&$cobranza->siaf!=null? $cobranza->siaf : ''),
+                        'orden_compra'   => ($cobranza->oc_fisica!==''&&$cobranza->oc_fisica!=null? $cobranza->oc_fisica : ''),
+                    ]
+                );
+            }
+            $busqueda = strpos($cobranza->ocam, 'OCAM');
+            if ($busqueda !== false ) {
+                OrdenCompraPropias::where('orden_am', str_replace(' ','',$cobranza->ocam))
+                ->update(
+                    [
+                        'factura'        => ($cobranza->factura!==''&&$cobranza->factura!=null? $cobranza->factura : ''),
+                        'siaf'           => ($cobranza->siaf!==''&&$cobranza->siaf!=null? $cobranza->siaf : ''),
+                        'orden_compra'   => ($cobranza->oc_fisica!==''&&$cobranza->oc_fisica!=null? $cobranza->oc_fisica : ''),
+                    ]
+                );
+            }
+            return response()->json(["success" => true, "status" => 200, "data" => $data]);
+        } catch (Exception $ex) {
+            return response()->json(["success" => true, "status" => 200, "data" => $data, "error" => $ex]);
         }
-        $busqueda = strpos($cobranza->ocam, 'DIRECTA');
-        if ($busqueda !== false ) {
-
-
-            OrdenCompraDirecta::where('nro_orden', str_replace(' ','',$cobranza->ocam))
-            ->update(
-                [
-                    'factura'        => ($cobranza->factura!==''&&$cobranza->factura!=null? $cobranza->factura : ''),
-                    'siaf'           => ($cobranza->siaf!==''&&$cobranza->siaf!=null? $cobranza->siaf : ''),
-                    'orden_compra'   => ($cobranza->oc_fisica!==''&&$cobranza->oc_fisica!=null? $cobranza->oc_fisica : ''),
-                ]
-            );
-
-        }
-        $busqueda = strpos($cobranza->ocam, 'OCAM');
-        if ($busqueda !== false ) {
-
-
-            OrdenCompraPropias::where('orden_am', str_replace(' ','',$cobranza->ocam))
-            ->update(
-                [
-                    'factura'        => ($cobranza->factura!==''&&$cobranza->factura!=null? $cobranza->factura : ''),
-                    'siaf'           => ($cobranza->siaf!==''&&$cobranza->siaf!=null? $cobranza->siaf : ''),
-                    'orden_compra'   => ($cobranza->oc_fisica!==''&&$cobranza->oc_fisica!=null? $cobranza->oc_fisica : ''),
-                ]
-            );
-
-        }
-
-        return response()->json([
-            "success"=>true,
-            "status"=>200,
-            "data"=>$data
-        ]);
     }
 
     public function obtenerFase($id)
