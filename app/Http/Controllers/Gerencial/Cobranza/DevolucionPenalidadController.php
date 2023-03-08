@@ -70,7 +70,7 @@ class DevolucionPenalidadController extends Controller
                 $data->pagador = $request->pagador;
                 $data->importe_cobro = $request->importe_cobro;
                 $data->motivo = $request->motivo;
-                $data->estado = 'FINALIZADO';
+                $data->estado = 'PAGADO';
             $data->save();
 
             $mensaje = 'Se ha cerrado el registro de devolución';
