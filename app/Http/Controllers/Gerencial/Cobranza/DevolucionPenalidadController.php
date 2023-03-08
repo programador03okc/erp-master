@@ -47,7 +47,7 @@ class DevolucionPenalidadController extends Controller
             return $button;
         })
         ->editColumn('estado', function ($data) { 
-            return ($data->estado == 'PENDIENTE') ? '<label class="label label-primary" style="font-size: 10.5px;">PENDIENTE</label>' : '<label class="label label-success" style="font-size: 10.5px;">FINALIZADO</label>';
+            return ($data->estado == 'PENDIENTE') ? '<label class="label label-primary" style="font-size: 10.5px;">PENDIENTE</label>' : '<label class="label label-success" style="font-size: 10.5px;">PAGADO</label>';
         })
         ->editColumn('importe', function ($data) { return number_format($data->importe, 2); })
         ->editColumn('importe_cobro', function ($data) { return number_format($data->importe, 2); })
