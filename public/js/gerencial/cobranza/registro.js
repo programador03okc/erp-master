@@ -295,7 +295,7 @@ $(function () {
                             'Se guardo con éxito.',
                             'success'
                             ).then((result) => {
-                                $('#listar-registros').DataTable().ajax.reload();
+                                $('#istar-registro').DataTable().ajax.reload(null, false);
                                 $('#modal-cobranza').modal('hide');
                             })
                         }else{
@@ -601,39 +601,34 @@ $(function () {
         e.preventDefault();
         var data = $(this).serialize();
         Swal.fire({
-            title: '¿Está seguro de guardar?',
-            text: "Se guardara el registro",
+            title: '¿Está seguro de editar el registro?',
+            text: 'Se editará el registro',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No',
-            showLoaderOnConfirm: true,
-            preConfirm: (login) => {
-            return $.ajax({
+            confirmButtonText: 'Si, continuar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
                     type: 'POST',
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     url: 'modificar-registro',
                     data: data,
-                    dataType: 'JSON'
-                }).done(function( data ) {
-                    return data
+                    dataType: 'JSON',
+                    success: function(response) {
+                        // $('#listar-registro').DataTable().ajax.reload(null, false);
+                        // $('#modal-editar-cobranza').modal('hide');
+                        window.location.reload();
+                    }
                 }).fail( function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
-                })
-            },
-            allowOutsideClick: () => !Swal.isLoading()
-        }).then((result) => {
-            if (result.isConfirmed) {
-                if (result.value.status === 200) {
-                    $('#istar-registro').DataTable().ajax.reload();
-                    $('#modal-editar-cobranza').modal('hide');
-                }
+                });
+                return false;
             }
-        })
+        });
 
     });
 
@@ -704,7 +699,7 @@ $(function () {
             if (result.isConfirmed) {
                 if (result.value.status === 200) {
                     $('#modal-agregar-fase').modal('hide');
-                    $('#listar-registros').DataTable().ajax.reload();
+                    $('#istar-registro').DataTable().ajax.reload(null, false);
                 }
             }
         })
@@ -748,7 +743,7 @@ $(function () {
                 if (result.value.status === 200) {
                     // $('#modal-agregar-fase').modal('hide');
                     $(this).closest('tr').remove();
-                    $('#listar-registros').DataTable().ajax.reload();
+                    $('#istar-registro').DataTable().ajax.reload(null, false);
                 }
             }
         })
@@ -865,7 +860,7 @@ $(function () {
                     'Se elimino con éxito',
                     'success'
                 )
-                $('#listar-registros').DataTable().ajax.reload();
+                $('#istar-registro').DataTable().ajax.reload(null, false);
             }
         })
 

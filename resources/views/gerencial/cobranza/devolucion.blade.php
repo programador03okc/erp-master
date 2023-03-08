@@ -47,7 +47,7 @@
                                     <th width="100">Monto Cobrado</th>
                                     <th>Detalles</th>
                                     <th width="30">Estado</th>
-                                    <th width="50"></th>
+                                    <th width="80"></th>
                                 </tr>
                             </thead>
                             <tbody id="resultado"></tbody>
@@ -74,19 +74,19 @@
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Nombre del pagador (Entidad/Marca)</h6>
-                            <input type="text" name="pagador_dev" class="form-control input-sm" placeholder="Ingrese nombre de la entidad" required>
+                            <input type="text" name="pagador_dev" class="form-control input-sm" placeholder="Ingrese nombre de la entidad">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Importe cobrado</h6>
-                            <input type="text" name="importe_cobro_dev" class="form-control input-sm text-right numero" placeholder="0.00" required>
+                            <input type="text" name="importe_cobro_dev" class="form-control input-sm text-right numero" placeholder="0.00">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Observaciones de la devolución</h6>
-                            <textarea name="motivo_dev" class="form-control" rows="3" placeholder="Escriba las observaciones" required></textarea>
+                            <textarea name="motivo_dev" class="form-control" rows="3" placeholder="Escriba las observaciones"></textarea>
                         </div>
                     </div>
                 </div>

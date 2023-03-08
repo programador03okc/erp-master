@@ -39,6 +39,9 @@ class DevolucionPenalidadController extends Controller
                     </button>
                     <button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
                         <span class="fas fa-edit"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-xs eliminar" data-id="'.$data->id.'">
+                        <span class="fas fa-trash-alt"></span>
                     </button>';
             }
             return $button;
@@ -46,6 +49,8 @@ class DevolucionPenalidadController extends Controller
         ->editColumn('estado', function ($data) { 
             return ($data->estado == 'PENDIENTE') ? '<label class="label label-primary" style="font-size: 10.5px;">PENDIENTE</label>' : '<label class="label label-success" style="font-size: 10.5px;">FINALIZADO</label>';
         })
+        ->editColumn('importe', function ($data) { return number_format($data->importe, 2); })
+        ->editColumn('importe_cobro', function ($data) { return number_format($data->importe, 2); })
         ->rawColumns(['estado', 'accion'])
         ->make(true);
     }
@@ -85,9 +90,9 @@ class DevolucionPenalidadController extends Controller
     {
         try {
             $data = PenalidadCobro::find($request->id);
-                $data->pagador = $request->pagador_dev;
-                $data->importe_cobro = $request->importe_cobro_dev;
-                $data->motivo = $request->motivo_dev;
+                ($request->pagador_dev != null) ?? $data->pagador = $request->pagador_dev;
+                ($request->importe_cobro_dev != null) ?? $data->importe_cobro = $request->importe_cobro_dev;
+                ($request->motivo_dev != null) ?? $data->motivo = $request->motivo_dev;
             $data->save();
 
             $mensaje = 'Se ha actualizado los datos de la devolución';
@@ -101,5 +106,21 @@ class DevolucionPenalidadController extends Controller
             $error = $ex;
         }
         return response()->json(array('respuesta' => $respuesta, 'alerta' => $alerta, 'mensaje' => $mensaje, 'error' => $error), 200);
+    }
+
+    public function eliminar(Request $request)
+    {
+        try {
+            $data = PenalidadCobro::find($request->id);
+            $data->delete();
+            $alerta = 'info';
+            $mensaje = 'Se ha eliminado el registro de penalidad';
+            $error = '';
+        } catch (Exception $ex) {
+            $alerta = 'error';
+            $mensaje ='Hubo un problema al eliminar. Por favor intente de nuevo';
+            $error = $ex;
+        }
+        return response()->json(array('mensaje' => $mensaje, 'alerta' => $alerta, 'error' => $error), 200);
     }
 }

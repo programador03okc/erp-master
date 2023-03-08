@@ -2421,6 +2421,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar', 'Gerencial\Cobranza\DevolucionPenalidadController@guardar')->name('guardar');
 				Route::post('guardar-pagador', 'Gerencial\Cobranza\DevolucionPenalidadController@guardarPagador')->name('guardar-pagador');
 				Route::post('cargar-cobro-dev', 'Gerencial\Cobranza\DevolucionPenalidadController@cargarCobroDev')->name('cargar-cobro-dev');
+				Route::post('eliminar', 'Gerencial\Cobranza\DevolucionPenalidadController@eliminar')->name('eliminar');
 			});
 		});
 

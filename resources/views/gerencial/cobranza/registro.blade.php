@@ -87,6 +87,7 @@ Cobranzas
 				<div class="modal-body">
                     <input type="hidden" name="id" id="id">
                     <input type="hidden" name="id_doc_ven" value="">
+                    <input type="hidden"name="id_oc">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -171,7 +172,6 @@ Cobranzas
                                 </div>
                             </div>
                         </div>
-                        <input type="hidden"name="id_oc" >
                         <div class="col-md-3">
                             <div class="form-group">
                                 <h6>OCAM</h6>
@@ -311,16 +311,20 @@ Cobranzas
                         </div>
 					</div>
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <h6>Fecha inicio :</h6>
-                                <input id="fecha_inicio_nuevo" class="form-control text-center" type="date" name="fecha_inicio">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <h6>Fecha entrega :</h6>
-                                <input id="fecha_entrega_nuevo" class="form-control text-center" type="date" name="fecha_entrega">
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <h6>Fecha inicio :</h6>
+                                        <input id="fecha_inicio_nuevo" class="form-control text-center" type="date" name="fecha_inicio">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <h6>Fecha entrega :</h6>
+                                        <input id="fecha_entrega_nuevo" class="form-control text-center" type="date" name="fecha_entrega">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -417,9 +421,9 @@ Cobranzas
                     <h3 class="modal-title">Editar Registro de Cobranza</h3>
 				</div>
 				<div class="modal-body">
-                    {{-- <input type="hidden" name="id" id="id"> --}}
                     <input type="hidden" name="id_doc_ven" value="">
                     <input type="hidden" name="id_registro_cobranza" value="">
+                    <input type="hidden"name="id_oc">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -473,7 +477,6 @@ Cobranzas
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="cliente">Cliente</label>
-                                {{-- <input type="hidden" name="id_cliente" value="0"> --}}
                                 <input type="hidden" name="id_contribuyente" value="0">
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control input-sm" name="cliente" placeholder="N° RUC" readonly>
@@ -505,7 +508,6 @@ Cobranzas
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <input type="hidden"name="id_oc">
                             <div class="form-group">
                                 <label for="oc">Orden de Compra / OCAM</label>
                                 <div class="input-group input-group-sm">
@@ -643,16 +645,20 @@ Cobranzas
                         </div>
 					</div>
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="fecha_inicio_editar">Fecha inicio :</label>
-                                <input id="fecha_inicio_editar" class="form-control" type="date" name="fecha_inicio">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="fecha_entrega_editar">Fecha entrega :</label>
-                                <input id="fecha_entrega_editar" class="form-control" type="date" name="fecha_entrega">
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fecha_inicio_editar">Fecha inicio :</label>
+                                        <input id="fecha_inicio_editar" class="form-control" type="date" name="fecha_inicio">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fecha_entrega_editar">Fecha entrega :</label>
+                                        <input id="fecha_entrega_editar" class="form-control" type="date" name="fecha_entrega">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

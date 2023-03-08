@@ -79,7 +79,9 @@ class CobranzaFondoController extends Controller
                     </button>';
             }
             return $button;
-        })->rawColumns(['fechas', 'flag_estado', 'accion'])->make(true);
+        })
+        ->editColumn('importe', function ($data) { return number_format($data->importe, 2); })
+        ->rawColumns(['fechas', 'flag_estado', 'accion'])->make(true);
     }
 
     public function guardar(Request $request)
