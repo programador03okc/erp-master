@@ -1439,14 +1439,40 @@ class RegistroController extends Controller
             }
             else{
                 $registro_cobranza = RegistroCobranza::find($registro_cobranza->id_registro_cobranza);
-                $registro_cobranza->factura           = ($value->factura=='--'||$value->factura=='-'||$value->factura=='---'?'':$value->factura);
-                $registro_cobranza->siaf              = ($value->siaf=='--'||$value->siaf=='-'||$value->siaf=='---'?'':$value->siaf) ;
-                $registro_cobranza->oc_fisica        = ($value->oc=='--'||$value->oc=='-'||$value->oc=='---'?'':$value->oc);
-                $registro_cobranza->fecha_emision     = ($value->fecha_emision=='--'||$value->fecha_emision=='-'||$value->fecha_emision=='---'?'':$value->fecha_emision);
-                $registro_cobranza->fecha_recepcion   = ($value->fecha_recepcion=='--'||$value->fecha_recepcion=='-'||$value->fecha_recepcion=='---'?'':$value->fecha_recepcion) ;
-
-                $registro_cobranza->ocam           = ($value->ocam=='--'||$value->ocam=='-'||$value->ocam=='---'?'':$value->ocam);
-                $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
+                if ($value->factura!='--' && $value->factura!='-' && $value->factura!='---' && $value->factura!=null && $value->factura!='') {
+                    $registro_cobranza->factura =$value->factura;
+                }
+                // $registro_cobranza->factura           = ($value->factura=='--'||$value->factura=='-'||$value->factura=='---'?'':$value->factura);
+                if ($value->siaf!='--' && $value->siaf!='-' && $value->siaf!='---' && $value->siaf!=null && $value->siaf!='') {
+                    $registro_cobranza->siaf = $value->siaf;
+                }
+                // $registro_cobranza->siaf              = ($value->siaf=='--'||$value->siaf=='-'||$value->siaf=='---'?'':$value->siaf);
+                if (
+                    $value->oc!=='--' &&
+                    $value->oc!='-' &&
+                    $value->oc!=='---' &&
+                    $value->oc!==null &&
+                    $value->oc!==''
+                ) {
+                    $registro_cobranza->oc_fisica = $value->oc;
+                }
+                // $registro_cobranza->oc_fisica        = ($value->oc=='--'||$value->oc=='-'||$value->oc=='---'?'':$value->oc);
+                if ($value->fecha_emision!='--' && $value->fecha_emision!='-' && $value->fecha_emision!='---' && $value->fecha_emision!=null && $value->fecha_emision!='') {
+                    $registro_cobranza->fecha_emision = $value->fecha_emision;
+                }
+                // $registro_cobranza->fecha_emision     = ($value->fecha_emision=='--'||$value->fecha_emision=='-'||$value->fecha_emision=='---'?'':$value->fecha_emision);
+                if ($value->fecha_recepcion!='--' && $value->fecha_recepcion!='-' && $value->fecha_recepcion!='---' && $value->fecha_recepcion!=null && $value->fecha_recepcion!='') {
+                    $registro_cobranza->fecha_recepcion = $value->fecha_recepcion;
+                }
+                // $registro_cobranza->fecha_recepcion   = ($value->fecha_recepcion=='--'||$value->fecha_recepcion=='-'||$value->fecha_recepcion=='---'?'':$value->fecha_recepcion) ;
+                if ($value->ocam!='--' && $value->ocam!='-' && $value->ocam!='---' && $value->ocam!=null && $value->ocam!='') {
+                    $registro_cobranza->ocam = $value->ocam;
+                }
+                // $registro_cobranza->ocam           = ($value->ocam=='--'||$value->ocam=='-'||$value->ocam=='---'?'':$value->ocam);
+                if ($value->cdp!='--' && $value->cdp!='-' && $value->cdp!='---' && $value->cdp!=null && $value->cdp!='') {
+                    $registro_cobranza->cdp = $value->cdp;
+                }
+                // $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
                 $registro_cobranza->save();
                 $success = false;
             }
