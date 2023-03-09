@@ -1444,6 +1444,9 @@ class RegistroController extends Controller
                 $registro_cobranza->oc_fisica        = ($value->oc=='--'||$value->oc=='-'||$value->oc=='---'?'':$value->oc);
                 $registro_cobranza->fecha_emision     = ($value->fecha_emision=='--'||$value->fecha_emision=='-'||$value->fecha_emision=='---'?'':$value->fecha_emision);
                 $registro_cobranza->fecha_recepcion   = ($value->fecha_recepcion=='--'||$value->fecha_recepcion=='-'||$value->fecha_recepcion=='---'?'':$value->fecha_recepcion) ;
+
+                $registro_cobranza->ocam           = ($value->ocam=='--'||$value->ocam=='-'||$value->ocam=='---'?'':$value->ocam);
+                $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
                 $registro_cobranza->save();
                 $success = false;
             }
