@@ -1473,6 +1473,20 @@ class RegistroController extends Controller
                     $registro_cobranza->cdp = $value->cdp;
                 }
                 // $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
+
+                if ($value->categoria!='--' && $value->categoria!='-' && $value->categoria!='---' && $value->categoria!=null && $value->categoria!='') {
+                    $registro_cobranza->categoria = $value->categoria;
+                }
+                // $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
+
+                if ($value->id_tipo_tramite!='--' && $value->id_tipo_tramite!='-' && $value->id_tipo_tramite!='---' && $value->id_tipo_tramite!=null && $value->id_tipo_tramite!='') {
+                    $registro_cobranza->id_tipo_tramite = $value->id_tipo_tramite;
+                }
+                // $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
+                if ($value->plazo_credito!='--' && $value->plazo_credito!='-' && $value->plazo_credito!='---' && $value->plazo_credito!=null && $value->plazo_credito!='') {
+                    $registro_cobranza->plazo_credito = $value->plazo_credito;
+                }
+                // $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
                 $registro_cobranza->save();
                 $success = false;
             }
