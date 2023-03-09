@@ -96,7 +96,7 @@ class CobranzaController extends Controller
             $cont++;
         }
 
-        $dataInactiva = CobranzaFase::where('estado', 1)->get();
+        $dataInactiva = CobranzaFase::where('estado', 0)->get();
         $dele = 0;
 
         foreach ($dataInactiva as $row) {
