@@ -16,6 +16,7 @@ use App\Models\Gerencial\RegistroCobranzaFase;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
 
 class CobranzaController extends Controller
 {
@@ -84,29 +85,47 @@ class CobranzaController extends Controller
 
     public function scriptFases()
     {
+        $cobranzas_fases = DB::table('gerencial.cobranza_fase')->where('estado', 1)->get();
+        $init = 0;
+
+        foreach ($cobranzas_fases as $key => $value) {
+            $cobranza = RegistroCobranza::where('id_cobranza_old', $value->id_cobranza)->first();
+            $cobranza_fase = new CobranzaFase();
+            $cobranza_fase->id_registro_cobranza = $cobranza->id_registro_cobranza;
+                $cobranza_fase->fase = $value->fase;
+                $cobranza_fase->fecha = $value->fecha;
+                $cobranza_fase->estado = $value->estado;
+                $cobranza_fase->fecha_registro = $value->fecha_registro;
+                $cobranza_fase->id_cobranza = $value->id_cobranza;
+            $cobranza_fase->save();
+            $init++;
+        }
+
         $dataActiva = CobranzaFase::all();
         $cont = 0;
-
         foreach ($dataActiva as $key) {
-            $nuevo = new RegistroCobranzaFase();
-                $nuevo->id_registro_cobranza = $key->id_registro_cobranza;
-                $nuevo->fase = $key->fase;
-                $nuevo->fecha = $key->fecha;
-            $nuevo->save();
-            $cont++;
+            $consulta = RegistroCobranzaFase::where('id_registro_cobranza', $key->id_registro_cobranza)->where('fase', $key->fase)->count();
+            if ($consulta == 0) {
+                $nuevo = new RegistroCobranzaFase();
+                    $nuevo->id_registro_cobranza = $key->id_registro_cobranza;
+                    $nuevo->fase = $key->fase;
+                    $nuevo->fecha = $key->fecha;
+                $nuevo->save();
+                $cont++;
+            }
         }
 
         $dataInactiva = CobranzaFase::where('estado', 0)->get();
         $dele = 0;
 
         foreach ($dataInactiva as $row) {
-            $eliminar = RegistroCobranzaFase::find($row->id_registro_cobranza);
+            $eliminar = RegistroCobranzaFase::where('id_registro_cobranza', $row->id_registro_cobranza);
             if ($eliminar) {
                 $eliminar->delete();
             }
             $dele++;
         }
-        return response()->json(array("cargados" => $cont, "eliminados" => $dele), 200);
+        return response()->json(array("inicializado" => $init, "cargados" => $cont, "eliminados" => $dele), 200);
     }
 
     public function restar_fechas($fi, $ff){
