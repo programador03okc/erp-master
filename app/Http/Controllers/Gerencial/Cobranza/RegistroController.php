@@ -1438,15 +1438,14 @@ class RegistroController extends Controller
                 }
             }
             else{
+                /*
                 $registro_cobranza = RegistroCobranza::find($registro_cobranza->id_registro_cobranza);
                 if ($value->factura!='--' && $value->factura!='-' && $value->factura!='---' && $value->factura!=null && $value->factura!='') {
                     $registro_cobranza->factura =$value->factura;
                 }
-                // $registro_cobranza->factura           = ($value->factura=='--'||$value->factura=='-'||$value->factura=='---'?'':$value->factura);
                 if ($value->siaf!='--' && $value->siaf!='-' && $value->siaf!='---' && $value->siaf!=null && $value->siaf!='') {
                     $registro_cobranza->siaf = $value->siaf;
                 }
-                // $registro_cobranza->siaf              = ($value->siaf=='--'||$value->siaf=='-'||$value->siaf=='---'?'':$value->siaf);
                 if (
                     $value->oc!=='--' &&
                     $value->oc!='-' &&
@@ -1456,37 +1455,38 @@ class RegistroController extends Controller
                 ) {
                     $registro_cobranza->oc_fisica = $value->oc;
                 }
-                // $registro_cobranza->oc_fisica        = ($value->oc=='--'||$value->oc=='-'||$value->oc=='---'?'':$value->oc);
                 if ($value->fecha_emision!='--' && $value->fecha_emision!='-' && $value->fecha_emision!='---' && $value->fecha_emision!=null && $value->fecha_emision!='') {
                     $registro_cobranza->fecha_emision = $value->fecha_emision;
                 }
-                // $registro_cobranza->fecha_emision     = ($value->fecha_emision=='--'||$value->fecha_emision=='-'||$value->fecha_emision=='---'?'':$value->fecha_emision);
                 if ($value->fecha_recepcion!='--' && $value->fecha_recepcion!='-' && $value->fecha_recepcion!='---' && $value->fecha_recepcion!=null && $value->fecha_recepcion!='') {
                     $registro_cobranza->fecha_recepcion = $value->fecha_recepcion;
                 }
-                // $registro_cobranza->fecha_recepcion   = ($value->fecha_recepcion=='--'||$value->fecha_recepcion=='-'||$value->fecha_recepcion=='---'?'':$value->fecha_recepcion) ;
                 if ($value->ocam!='--' && $value->ocam!='-' && $value->ocam!='---' && $value->ocam!=null && $value->ocam!='') {
                     $registro_cobranza->ocam = $value->ocam;
                 }
-                // $registro_cobranza->ocam           = ($value->ocam=='--'||$value->ocam=='-'||$value->ocam=='---'?'':$value->ocam);
                 if ($value->cdp!='--' && $value->cdp!='-' && $value->cdp!='---' && $value->cdp!=null && $value->cdp!='') {
                     $registro_cobranza->cdp = $value->cdp;
                 }
-                // $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
 
                 if ($value->categoria!='--' && $value->categoria!='-' && $value->categoria!='---' && $value->categoria!=null && $value->categoria!='') {
                     $registro_cobranza->categoria = $value->categoria;
                 }
-                // $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
 
                 if ($value->id_tipo_tramite!='--' && $value->id_tipo_tramite!='-' && $value->id_tipo_tramite!='---' && $value->id_tipo_tramite!=null && $value->id_tipo_tramite!='') {
                     $registro_cobranza->id_tipo_tramite = $value->id_tipo_tramite;
                 }
-                // $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
+
                 if ($value->plazo_credito!='--' && $value->plazo_credito!='-' && $value->plazo_credito!='---' && $value->plazo_credito!=null && $value->plazo_credito!='') {
                     $registro_cobranza->plazo_credito = $value->plazo_credito;
                 }
-                // $registro_cobranza->cdp           = ($value->cdp=='--'||$value->cdp=='-'||$value->cdp=='---'?'':$value->cdp);
+                */
+                if ($value->id_area!='--' && $value->id_area!='-' && $value->id_area!='---' && $value->id_area!=null && $value->id_area!='') {
+                    $registro_cobranza->id_area = $value->id_area;
+                }
+
+                if ($value->id_estado_doc!='--' && $value->id_estado_doc!='-' && $value->id_estado_doc!='---' && $value->id_estado_doc!=null && $value->id_estado_doc!='') {
+                    $registro_cobranza->id_estado_doc = $value->id_estado_doc;
+                }
                 $registro_cobranza->save();
                 $success = false;
             }
