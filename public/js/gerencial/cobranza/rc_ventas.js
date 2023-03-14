@@ -527,16 +527,16 @@ function listar() {
             {data: 'importe', className: "text-right"},
             {data: 'estado_cobranza', className: "text-center"},
             {data: 'area', className: "text-center"},
-            {data: 'fase', className: "text-center", searchable: false},
+            {data: 'fase', className: "text-center", searchable: false, orderable: false},
             {
                 render: function (data, type, row) {
                     var fecha_inicio = row['inicio_entrega'] ? row['inicio_entrega']:'-';
                     var fecha_entrega = row['fecha_entrega'] ? row['fecha_entrega']:'-';
                     return (`${fecha_inicio} <br> ${fecha_entrega}`);
                 },
-                className: "text-center", searchable: false
+                className: "text-center", searchable: false, orderable: false
             },
-            {data: 'accion', className: "text-center", searchable: false},
+            {data: 'accion', className: "text-center", searchable: false, orderable: false},
         ],
         buttons: [
             {
