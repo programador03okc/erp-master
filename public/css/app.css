@@ -145,6 +145,13 @@ body .login-box {
   font-size: 14px !important;
 }
 
+.label-badge {
+  font-size: 10px;
+}
+.select-filter {
+  margin: 0 15px;
+}
+
 /*  ESTILOS PARA LOADER (BARRA SUPERIOR EN CADA SOLICITUD) */
 
 .pace {

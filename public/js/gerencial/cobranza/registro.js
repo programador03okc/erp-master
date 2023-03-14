@@ -352,7 +352,6 @@ $(function () {
             type: 'get',
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             url: 'seleccionar-registro/'+id_requerimiento,
-            data: {},
             dataType: 'JSON',
             success: function(response){
 
@@ -569,17 +568,15 @@ $(function () {
     $(document).on('change','.dias-atraso',function () {
         var data_form = $(this).attr('data-form');
         var fecha_emision = new Date($('[data-form="'+data_form+'"] input[name="fecha_rec"]').val().split('/').reverse().join('-')).getTime() ,
-            fecha_vencimiento= new Date($('[data-form="'+data_form+'"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime(),
-            numero_dias=0;
+            fecha_vencimiento = new Date($('[data-form="'+data_form+'"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime(),
+            numero_dias = 0;
 
         numero_dias = fecha_vencimiento - fecha_emision  ;
         numero_dias = numero_dias/(1000*60*60*24)
         numero_dias = numero_dias*-1;
-        if (numero_dias<=0) {
+        if (numero_dias <= 0) {
             numero_dias = 0;
         }
-
-
 
         var fecha_actual = new Date().getTime();
         var atraso = fecha_actual - fecha_emision;

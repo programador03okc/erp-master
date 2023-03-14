@@ -36,9 +36,6 @@
             .modal-style-recuperar{
                 width:90%;
             }
-            /* #atualizar-contraseña{
-                padding-left: 180px !import;
-            } */
         }
     </style>
 </head>
@@ -140,9 +137,6 @@
         </div>
     </div>
 	
-	<script type="text/javascript">
-		var auth_user = {!! $auth_user !!};
-	</script>
 	<script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
 	<script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>
 	<script src="{{ asset('template/adminlte/js/adminlte.min.js') }}"></script>
@@ -156,136 +150,6 @@
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
-
-	<script>
-		$(document).ready(function() {
-			notificacionesNoLeidas();
-
-            $.ajax({
-				url: '{{ route("actualizar") }}',
-				data: {_token: '{{ csrf_token() }}'},
-				type: 'GET',
-				dataType: 'JSON',
-				success: function (data) {
-					if (data.success===true) {
-                        $('#atualizar-contraseña').modal('show');
-                    }
-				}
-			});
-		});
-
-        $("#form-clave").on('submit',function (e) {
-            e.preventDefault();
-            var data = $(this).serialize();
-            var clave = $('.contraseña-validar[name="clave"]').val(),
-                repita_clave = $('.contraseña-validar[name="repita_clave"]').val(),
-                // regularExpression  = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%.*?&])([A-Za-z\d$@$!%*?&]|[^ ])$/;
-                // regularExpression = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8}$/
-                // regularExpression = /^(?=\w*[A-Z])(?=\w*[a-z])\S{8}$/;
-                regularExpression = /^(?=^.{8,}$)((.)(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
-                success=false;
-
-            if (clave === repita_clave) {
-                if (regularExpression.test(clave)) {
-                    success=true;
-                } else {
-                    success=false;
-                    Swal.fire(
-                        'Información',
-                        'Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos. Ejemplos: Inicio01., Inicio01.@, @"+*}-+',
-                        'warning',
-                    );
-
-                }
-            }else{
-                Swal.fire(
-                    'Información',
-                    'Su clave no coincide, ingrese correctamente en ambos campos su clave',
-                    'warning'
-                );
-            }
-
-            if (success) {
-                $.ajax({
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    url: '/modificar-clave',
-                    data: data,
-                    dataType: 'JSON',
-                    beforeSend: (data) => {
-
-                    }
-                }).done(function(response) {
-                    // console.log(response);
-                    if (response.success===true) {
-                        $('#atualizar-contraseña').modal('hide');
-                        Swal.fire(
-                        'Éxito',
-                        'Se actualizo con éxito',
-                        'success'
-                        )
-                    }else{
-                        Swal.fire(
-                        'Información',
-                        'Ingrese de nuevo su clave',
-                        'warning'
-                        )
-                    }
-                }).fail( function( jqXHR, textStatus, errorThrown ){
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                });
-            }
-
-        });
-
-		function seleccionarMenu(url) {
-			$('ul.sidebar-menu a').filter(function() {
-				return this.href == url;
-
-			}).parent().addClass('active');
-
-			$('ul.treeview-menu a').filter(function() {
-				return this.href == url;
-			}).parentsUntil(".sidebar-menu > .treeview-menu").addClass('active');
-
-			// sidebar with box collapsed-box
-			$('ul.treeview-menu a').filter(function() {
-				return this.href == url;
-			}).parents("div.box.collapsed-box.active").find('div.box-body.active').removeAttr('style');;
-
-			$('ul.treeview-menu a').filter(function() {
-				return this.href == url;
-			}).parents("div.box.collapsed-box.active").removeClass('collapsed-box');
-
-			$('ul.treeview-menu a').filter(function() {
-				return this.href == url;
-			}).parents('div.box.active').find("button.btn.btn-box-tool i").attr("class", "fa fa-minus");
-		}
-
-		function notificacionesNoLeidas() {
-			const $spanNotificaciones = $('#spanNotificaciones');
-			$.ajax({
-				url: '{{ route("notificaciones.cantidad-no-leidas") }}',
-				data: {_token: '{{ csrf_token() }}'},
-				type: 'POST',
-				dataType: 'JSON',
-				success: function (data) {
-					$spanNotificaciones.html(data.mensaje);
-					if (data.mensaje > 0) {
-						$spanNotificaciones.removeClass('label-default');
-						$spanNotificaciones.addClass('label-warning');
-					} else {
-						$spanNotificaciones.removeClass('label-warning');
-						$spanNotificaciones.addClass('label-default');
-					}
-				}
-			});
-		}
-	</script>
 	@yield('scripts')
 </body>
 </html>
