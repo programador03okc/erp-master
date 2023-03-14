@@ -324,7 +324,7 @@ class VentasInternasController extends Controller
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->join('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
-            ->where('doc_com_det.id_doc', $id_doc_com)
+            ->where([['doc_com_det.id_doc', $id_doc_com],['guia_com.estado','!=',7]])
             ->distinct()
             ->get();
         return response()->json($detalle);
