@@ -143,6 +143,7 @@ class CobranzaController extends Controller
         DB::beginTransaction();
         try {
             $empresa = Empresa::find($request->empresa);
+            $programacion_pago = [];
 
             /**
              * Registro de cobranza
