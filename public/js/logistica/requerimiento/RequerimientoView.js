@@ -968,11 +968,15 @@ class RequerimientoView {
         }
 
         if (obj.target.value == 6 || obj.target.value == 7) { // se seleccionó el tipo de requerimiento de "atención de garantías" o "Otros"
-            this.actualizarEstadoBotonProductoTransformado('ACTIVAR');
             document.querySelector("div[id='input-group-incidencia']").removeAttribute('hidden');
         } else {
-            this.actualizarEstadoBotonProductoTransformado('DESACTIVAR');
             document.querySelector("div[id='input-group-incidencia']").setAttribute('hidden',true);
+        }
+
+        if (obj.target.value != 4) { // se seleccionó el tipo de requerimiento diferente a compras para stock
+            this.actualizarEstadoBotonProductoTransformado('ACTIVAR');
+        } else {
+            this.actualizarEstadoBotonProductoTransformado('DESACTIVAR');
         }
     }
 

@@ -11,6 +11,7 @@
             <tr>
                 <th style="background-color: #cccccc;" width="18"><b>Cod.Despacho</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Cod.Req.</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Fecha despacho</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>CDP</b></th>
                 <th style="background-color: #cccccc;" width="30"><b>Cliente</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Almacén</b></th>
@@ -29,6 +30,7 @@
             <tr>
                 <td>{{$d->codigo}}</td>
                 <td>{{$d->codigo_req}}</td>
+                <td>{{$d->fecha_despacho}}</td>
                 <td>{{$d->codigo_oportunidad}}</td>
                 <td>{{$d->razon_social}}</td>
                 <td>{{$d->almacen_descripcion}}</td>

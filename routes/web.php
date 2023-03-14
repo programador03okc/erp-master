@@ -2287,6 +2287,39 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('prueba', 'Gerencial\Cobranza\RegistroController@prueba')->name('prueba');
 
 		Route::group(['as' => 'cobranza.', 'prefix' => 'cobranza'], function () {
+			/**
+			 * Módulo cobranzas
+			 * */
+			
+			Route::get('index', 'Gerencial\Cobranza\CobranzaController@index')->name('index');
+			Route::post('listar', 'Gerencial\Cobranza\CobranzaController@listar')->name('listar');
+			Route::post('listar-clientes', 'Gerencial\Cobranza\CobranzaController@listarClientes')->name('listar-clientes');
+			Route::post('buscar-registro', 'Gerencial\Cobranza\CobranzaController@buscarRegistro')->name('buscar-registro');
+			Route::get('seleccionar-registro/{id_requerimiento}', 'Gerencial\Cobranza\CobranzaController@cargarDatosRequerimiento')->name('seleccionar-registro');
+			Route::get('obtener-fases/{id}', 'Gerencial\Cobranza\CobranzaController@obtenerFase')->name('obtener-fases');
+			Route::post('guardar-fase', 'Gerencial\Cobranza\CobranzaController@guardarFase')->name('guardar-fase');
+			Route::post('eliminar-fase', 'Gerencial\Cobranza\CobranzaController@eliminarFase')->name('eliminar-fase');
+			Route::get('obtener-observaciones/{id}', 'Gerencial\Cobranza\CobranzaController@obtenerObservaciones')->name('obtener-observaciones');
+			Route::post('guardar-observaciones', 'Gerencial\Cobranza\CobranzaController@guardarObservaciones')->name('guardar-observaciones');
+			Route::post('eliminar-observacion', 'Gerencial\Cobranza\CobranzaController@eliminarObservaciones')->name('eliminar-observacion');
+			Route::post('guardar-registro-cobranza', 'Gerencial\Cobranza\CobranzaController@guardarRegistro')->name('guardar-registro-cobranza');
+			Route::post('editar-registro', 'Gerencial\Cobranza\CobranzaController@editarRegistro')->name('editar-registro');
+			Route::post('eliminar-registro-cobranza', 'Gerencial\Cobranza\CobranzaController@eliminarRegistro')->name('eliminar-registro-cobranza');
+			Route::post('filtros-cobranzas', 'Gerencial\Cobranza\CobranzaController@filtros')->name('filtros-cobranzas');
+			Route::post('obtener-penalidades', 'Gerencial\Cobranza\CobranzaController@obtenerPenalidades')->name('obtener-penalidades');
+			Route::post('guardar-penalidad', 'Gerencial\Cobranza\CobranzaController@guardarPenalidad')->name('guardar-penalidad');
+			Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad')->name('cambio-estado-penalidad');
+			
+			/**
+			 * Script para recuperar la info de Gerencia e Iniciar en las nuevas tablas
+			 */
+			Route::group(['as' => 'script.', 'prefix' => 'script'], function () {
+				Route::get('script-periodo', 'Gerencial\Cobranza\CobranzaController@scriptPeriodos')->name('script-periodo');
+				Route::get('script-fases-inicial', 'Gerencial\Cobranza\CobranzaController@scriptRegistroFase')->name('script-fases-inicial');
+				Route::get('script-cobranza-fase', 'Gerencial\Cobranza\CobranzaController@scriptFases')->name('script-cobranza-fase');
+			});
+
+
 			Route::get('cliente', 'Gerencial\Cobranza\ClienteController@cliente')->name('cliente');
 			Route::get('crear-cliente', 'Gerencial\Cobranza\ClienteController@nuevoCliente')->name('nuevo.cliente');
 			Route::post('clientes', 'Gerencial\Cobranza\ClienteController@listarCliente')->name('listar.cliente');
@@ -2305,9 +2338,8 @@ Route::group(['middleware' => ['auth']], function () {
 
             Route::post('cliente/buscar-cliente-documento-editar', 'Gerencial\Cobranza\ClienteController@buscarClienteDocumentoEditar');
 
-			Route::get('registro', 'Gerencial\Cobranza\RegistroController@registro')->name('registro');
-			Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
-			Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
+			// Route::post('listar-registros', 'Gerencial\Cobranza\RegistroController@listarRegistros');
+			// Route::post('listar-clientes', 'Gerencial\Cobranza\RegistroController@listarClientes');
 			Route::post('nuevo-cliente', 'Gerencial\Cobranza\RegistroController@nuevoCliente');
 
 			Route::get('provincia/{id_departamento}', 'Gerencial\Cobranza\RegistroController@provincia');
@@ -2317,10 +2349,10 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::get('get-cliente/{id_cliente}', 'Gerencial\Cobranza\RegistroController@getCliente');
 			Route::get('buscar-factura/{factura}', 'Gerencial\Cobranza\RegistroController@getFactura');
-			Route::get('buscar-registro/{input}/{tipo}', 'Gerencial\Cobranza\RegistroController@getRegistro');
-			Route::get('seleccionar-registro/{id_requerimiento}', 'Gerencial\Cobranza\RegistroController@selecconarRequerimiento');
+			// Route::get('buscar-registro/{input}/{tipo}', 'Gerencial\Cobranza\RegistroController@getRegistro');
+			// Route::get('seleccionar-registro/{id_requerimiento}', 'Gerencial\Cobranza\RegistroController@selecconarRequerimiento');
 			// registro de cobranza
-			Route::post('guardar-registro-cobranza', 'Gerencial\Cobranza\RegistroController@guardarRegistroCobranza');
+			// Route::post('guardar-registro-cobranza', 'Gerencial\Cobranza\RegistroController@guardarRegistroCobranza');
 			Route::get('actualizar-ven-doc-req', 'Gerencial\Cobranza\RegistroController@actualizarDocVentReq');
 			Route::post('editar-cliente', 'Gerencial\Cobranza\RegistroController@editarCliente');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
@@ -2350,18 +2382,39 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('script-vendedor', 'Gerencial\Cobranza\RegistroController@scriptVendedor');
             #scrip 11
 			Route::get('script-cliente-unificar', 'Gerencial\Cobranza\RegistroController@scriptClienteUnificar');
+            // -----
+            #scrip 12 empresas
+			Route::get('script-empresa-remplazar-adm-cliente', 'Gerencial\Cobranza\RegistroController@scriptEmpresaRemplazarAdmCliente');
+            #scrip 13 revierte el script 12
+			Route::get('script-empresa-remplazar-adm-cliente-revertir', 'Gerencial\Cobranza\RegistroController@scriptEmpresaRemplazarAdmClienteRevertir');
+            #scrip 14 clientes
+			Route::get('script-cliente-remplazar-com-cliente', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComCliente');
+            #scrip 15 revierte el script 14
+			Route::get('script-cliente-remplazar-com-cliente-revertir', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComClienteRevertir');
+            #scrip 16 empresas para los de estado 0
+			Route::get('script-empresa-remplazar-adm-cliente-estadp-cero', 'Gerencial\Cobranza\RegistroController@scriptEmpresaRemplazarAdmClienteEstadoCero');
+            #scrip 17 clientes
+			Route::get('script-cliente-remplazar-com-cliente-estado-cero', 'Gerencial\Cobranza\RegistroController@scriptClienteRemplazarComClienteEstadoCero');
+            #scrip 18 clientes en vacio los nuevo generados
+			Route::get('script-cliente-nuevos-ingresado', 'Gerencial\Cobranza\RegistroController@scriptClienteNuevosIngresados');
+            #scrip 19 clientes en vacio de la vista
+            Route::get('script-cliente-vista-null', 'Gerencial\Cobranza\RegistroController@scriptClienteVistaNull');
+            Route::get('script-contribuyente-vista-null', 'Gerencial\Cobranza\RegistroController@scriptClienteContribuyenteVistaNull');
+            // ------------------
+            #script 20 verificar los clientes con los antiguos registros de cobranza
+            Route::get('script-cliente-agil-gerencial', 'Gerencial\Cobranza\RegistroController@scriptClienteAgilGerencial');
             #scrip para pasar el registro de cobranzas
             Route::get('script-observaciones-oc', 'Gerencial\Cobranza\RegistroController@scriptObservacionesOC');
 
-			Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
-			Route::get('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
-			Route::post('guardar-fase', 'Gerencial\Cobranza\RegistroController@guardarFase');
-			Route::get('obtener-fase/{id}', 'Gerencial\Cobranza\RegistroController@obtenerFase');
-			Route::post('eliminar-fase', 'Gerencial\Cobranza\RegistroController@eliminarFase');
-			Route::post('guardar-penalidad', 'Gerencial\Cobranza\RegistroController@guardarPenalidad');
-			Route::get('obtener-penalidades/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@obtenerPenalidades');
+			// Route::get('editar-registro/{id}', 'Gerencial\Cobranza\RegistroController@editarRegistro');
+			Route::post('modificar-registro', 'Gerencial\Cobranza\RegistroController@modificarRegistro');
+			// Route::post('guardar-fase', 'Gerencial\Cobranza\RegistroController@guardarFase');
+			// Route::get('obtener-fase/{id}', 'Gerencial\Cobranza\RegistroController@obtenerFase');
+			// Route::post('eliminar-fase', 'Gerencial\Cobranza\RegistroController@eliminarFase');
+			// Route::post('guardar-penalidad', 'Gerencial\Cobranza\RegistroController@guardarPenalidad');
+			// Route::post('obtener-penalidades', 'Gerencial\Cobranza\RegistroController@obtenerPenalidades');
 			Route::post('buscar-vendedor', 'Gerencial\Cobranza\RegistroController@buscarVendedor');
-			Route::get('eliminar-registro-cobranza/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@eliminarRegistroCobranza');
+			// Route::get('eliminar-registro-cobranza/{id_registro_cobranza}', 'Gerencial\Cobranza\RegistroController@eliminarRegistroCobranza');
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
 			#exportar excel
@@ -2372,12 +2425,12 @@ Route::group(['middleware' => ['auth']], function () {
 			// Route::post('anular-penalidad', 'Gerencial\Cobranza\RegistroController@anularPenalidad');
 			Route::post('eliminar-penalidad', 'Gerencial\Cobranza\RegistroController@eliminarPenalidad');
             // observaciones
-			Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
-			Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
-			Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
+			// Route::post('obtener-observaciones', 'Gerencial\Cobranza\RegistroController@obtenerObservaciones');
+			// Route::post('guardar-observaciones', 'Gerencial\Cobranza\RegistroController@guardarObservaciones');
+			// Route::post('eliminar-observacion', 'Gerencial\Cobranza\RegistroController@eliminarObservaciones');
 
             Route::get('exportar-excel-power-bi/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcelPowerBI');
-			Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad');
+			// Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad');
 
 			// Fondos, Auspicios y Rebates
 			Route::group(['as' => 'fondos.', 'prefix' => 'fondos'], function () {
@@ -2391,6 +2444,11 @@ Route::group(['middleware' => ['auth']], function () {
 
 			Route::group(['as' => 'devoluciones.', 'prefix' => 'devoluciones'], function () {
 				Route::get('index', 'Gerencial\Cobranza\DevolucionPenalidadController@index')->name('index');
+				Route::post('listar', 'Gerencial\Cobranza\DevolucionPenalidadController@lista')->name('listar');
+				Route::post('guardar', 'Gerencial\Cobranza\DevolucionPenalidadController@guardar')->name('guardar');
+				Route::post('guardar-pagador', 'Gerencial\Cobranza\DevolucionPenalidadController@guardarPagador')->name('guardar-pagador');
+				Route::post('cargar-cobro-dev', 'Gerencial\Cobranza\DevolucionPenalidadController@cargarCobroDev')->name('cargar-cobro-dev');
+				Route::post('eliminar', 'Gerencial\Cobranza\DevolucionPenalidadController@eliminar')->name('eliminar');
 			});
 		});
 

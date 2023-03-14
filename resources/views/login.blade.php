@@ -1,4 +1,4 @@
-@extends('layout.base')
+@extends('layout.base_login')
 
 @section('cabecera')
 Iniciar sesión

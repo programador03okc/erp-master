@@ -78,7 +78,7 @@ $(function () {
                     $('#modal-editar-cliente .modal-body select[name="distrito"] option').removeAttr('selected');
                     $('#modal-editar-cliente .modal-body select[name="distrito"] option[value="'+response.id_dis+'"]').attr('selected',true)
 
-                    $('#modal-editar-cliente .modal-body input[name="id_cliente"]').val(response.data_old.id_cliente)
+                    // $('#modal-editar-cliente .modal-body input[name="id_cliente"]').val(response.data_old.id_cliente)
                     $('#modal-editar-cliente .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente)
                 }
             }
@@ -117,13 +117,13 @@ $(function () {
                     switch (data_form) {
                         case 'guardar-formulario':
                             document.querySelector("form[form='cobranza'] input[id='cliente']").value= response.data.razon_social;
-                            document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= null;
+                            // document.querySelector("form[form='cobranza'] input[id='id_cliente']").value= null;
                             document.querySelector("form[form='cobranza'] input[name='id_contribuyente']").value= response.data.id_contribuyente;
                         break;
 
                         case 'editar-formulario':
 
-                            $('[data-form="editar-formulario"] .modal-body [name="id_cliente"]').val(null);
+                            // $('[data-form="editar-formulario"] .modal-body [name="id_cliente"]').val(null);
                             $('[data-form="editar-formulario"] .modal-body [name="cliente"]').val(response.data.razon_social);
                             $('[data-form="editar-formulario"] .modal-body [name="id_contribuyente"]').val(response.data.id_contribuyente);
                         break;
@@ -295,9 +295,8 @@ $(function () {
                             'Se guardo con éxito.',
                             'success'
                             ).then((result) => {
-                                $('#listar-registros').DataTable().ajax.reload();
+                                $('#istar-registro').DataTable().ajax.reload(null, false);
                                 $('#modal-cobranza').modal('hide');
-                                // location.reload();
                             })
                         }else{
                             Swal.fire(
@@ -353,7 +352,6 @@ $(function () {
             type: 'get',
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             url: 'seleccionar-registro/'+id_requerimiento,
-            data: {},
             dataType: 'JSON',
             success: function(response){
 
@@ -368,8 +366,8 @@ $(function () {
                             $('[data-form="guardar-formulario"] .modal-body input[name="fecha_emi"]').val(response.data.fecha_emision)
                             $('[data-form="guardar-formulario"] .modal-body input[name="oc"]').val(response.data.nro_orden)
                             $('[data-form="guardar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
-                            $('[data-form="guardar-formulario"] .modal-body input[name="id_cliente"]').val('')
-                            $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente_cliente)
+                            // $('[data-form="guardar-formulario"] .modal-body input[name="id_cliente"]').val('')
+                            $('[data-form="guardar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
                             $('[data-form="guardar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
                             $('[data-form="guardar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 
@@ -393,8 +391,8 @@ $(function () {
                         $('[data-form="editar-formulario"] .modal-body input[name="oc"]').val(response.data.nro_orden)
                         $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(response.data.codigo_oportunidad)
 
-                        $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val('')
-                        $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_contribuyente_cliente)
+                        // $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val('')
+                        $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(response.data.id_cliente)
                         $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(response.data.razon_social)
                         $('[data-form="editar-formulario"] .modal-body input[name="id_doc_ven"]').val(response.data.id_doc_ven)
 
@@ -495,10 +493,10 @@ $(function () {
                 $('[data-form="editar-formulario"] .modal-body select[name="periodo"] option').removeAttr('selected');
                 $('[data-form="editar-formulario"] .modal-body select[name="periodo"] option[value="'+data.data.id_periodo+'"]').attr('selected','true');
 
-                $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val(data.data.id_cliente);
-                $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(data.data.id_cliente_agil);
-                if (data.cliente.length>0) {
-                    $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.cliente[0].razon_social);
+                // $('[data-form="editar-formulario"] .modal-body input[name="id_cliente"]').val(data.data.id_cliente);
+                $('[data-form="editar-formulario"] .modal-body input[name="id_contribuyente"]').val(data.data.id_cliente);
+                if (data.cliente) {
+                    $('[data-form="editar-formulario"] .modal-body input[name="cliente"]').val(data.cliente.razon_social);
                 }
 
                 $('[data-form="editar-formulario"] .modal-body input[name="cdp"]').val(data.data.cdp);
@@ -570,17 +568,15 @@ $(function () {
     $(document).on('change','.dias-atraso',function () {
         var data_form = $(this).attr('data-form');
         var fecha_emision = new Date($('[data-form="'+data_form+'"] input[name="fecha_rec"]').val().split('/').reverse().join('-')).getTime() ,
-            fecha_vencimiento= new Date($('[data-form="'+data_form+'"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime(),
-            numero_dias=0;
+            fecha_vencimiento = new Date($('[data-form="'+data_form+'"] input[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime(),
+            numero_dias = 0;
 
         numero_dias = fecha_vencimiento - fecha_emision  ;
         numero_dias = numero_dias/(1000*60*60*24)
         numero_dias = numero_dias*-1;
-        if (numero_dias<=0) {
+        if (numero_dias <= 0) {
             numero_dias = 0;
         }
-
-
 
         var fecha_actual = new Date().getTime();
         var atraso = fecha_actual - fecha_emision;
@@ -602,38 +598,34 @@ $(function () {
         e.preventDefault();
         var data = $(this).serialize();
         Swal.fire({
-            title: '¿Está seguro de guardar?',
-            text: "Se guardara el registro",
+            title: '¿Está seguro de editar el registro?',
+            text: 'Se editará el registro',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No',
-            showLoaderOnConfirm: true,
-            preConfirm: (login) => {
-            return $.ajax({
-                    type: 'GET',
-                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            confirmButtonText: 'Si, continuar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
                     url: 'modificar-registro',
                     data: data,
-                    dataType: 'JSON'
-                }).done(function( data ) {
-                    return data
+                    dataType: 'JSON',
+                    success: function(response) {
+                        // $('#listar-registro').DataTable().ajax.reload(null, false);
+                        // $('#modal-editar-cobranza').modal('hide');
+                        window.location.reload();
+                    }
                 }).fail( function(jqXHR, textStatus, errorThrown) {
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
-                })
-            },
-            allowOutsideClick: () => !Swal.isLoading()
-        }).then((result) => {
-            if (result.isConfirmed) {
-                if (result.value.status === 200) {
-                    location.reload();
-                }
+                });
+                return false;
             }
-        })
+        });
 
     });
 
@@ -655,7 +647,7 @@ $(function () {
                     html+='<tr>'+
                         '<td class="text-center">'+element.fase+'</td>'+
                         '<td class="text-center">'+element.fecha+'</td>'+
-                        '<td class="text-center"><button class="btn btn-danger eliminar-fase" data-id="'+element.id_fase+'"><i class="fa fa-trash"></i></button></td>'+
+                        '<td class="text-center"><button class="btn btn-danger eliminar-fase" data-id="'+element.id+'"><i class="fa fa-trash"></i></button></td>'+
                     '</tr>';
                 });
                 $('[data-table="table-fase"]').html(html);
@@ -704,7 +696,7 @@ $(function () {
             if (result.isConfirmed) {
                 if (result.value.status === 200) {
                     $('#modal-agregar-fase').modal('hide');
-                    $('#listar-registros').DataTable().ajax.reload();
+                    $('#istar-registro').DataTable().ajax.reload(null, false);
                 }
             }
         })
@@ -748,7 +740,7 @@ $(function () {
                 if (result.value.status === 200) {
                     // $('#modal-agregar-fase').modal('hide');
                     $(this).closest('tr').remove();
-                    $('#listar-registros').DataTable().ajax.reload();
+                    $('#istar-registro').DataTable().ajax.reload(null, false);
                 }
             }
         })
@@ -784,7 +776,7 @@ $(function () {
         }else{
             $('[data-estado="cambio"]').removeAttr('hidden');
         }
-        
+
         obtenerPenalidades(id, titulo);
     });
 
@@ -865,7 +857,7 @@ $(function () {
                     'Se elimino con éxito',
                     'success'
                 )
-                $('#listar-registros').DataTable().ajax.reload();
+                $('#istar-registro').DataTable().ajax.reload(null, false);
             }
         })
 
@@ -1027,6 +1019,7 @@ function listarRegistros(filtros) {
         pageLength: 30,
         language: idioma,
         serverSide: true,
+        destroy:true,
         initComplete: function (settings, json) {
             const $filter = $('#listar-registros_filter');
             const $input = $filter.find('input');
@@ -1050,38 +1043,36 @@ function listarRegistros(filtros) {
         ajax: {
             url: 'listar-registros',
             method: 'POST',
-            headers: {'X-CSRF-TOKEN': csrf_token}
+            headers: {'X-CSRF-TOKEN': csrf_token},
+            // data: {
+            //     empresa: meOrAll,
+            //     estado: idEmpresa,
+            //     fase: idSede,
+            //     fecha_emision_inicio: idGrupo,
+            //     fecha_emision_fin: idDivision,
+            //     simbolo: fechaRegistroDesde
+            // },
         },
         columns: [
-            {data: 'empresa', name:"empresa", className: "text-center"},
-            {data: 'ocam', name:"ocam"},
-            {data: 'cliente', name:"cliente"},
-            {data: 'factura', name:"factura", className: "text-center"},
-            {data: 'uu_ee', name:"uu_ee"},
-            {data: 'fuente_financ', name:"fuente_financ", className: "text-center"},
-            {data: 'oc_fisica', name:"oc_fisica", className: "text-center"},
-            {data: 'siaf', name:"siaf", className: "text-center"},
-            {data: 'fecha_emision', name:"fecha_emision"},
-            {data: 'fecha_recepcion', name:"fecha_recepcion"},
-            {data: 'atraso', name:"atraso", className: "text-center"},
-            {data: 'moneda', name:"moneda", className: "text-center"},
-            {data: 'importe', name:"importe", className: "text-right"},
+            {data: 'empresa', className: "text-center"},
+            {data: 'ocam', className: "text-center"},
+            {data: 'cliente'},
+            {data: 'factura', className: "text-center"},
+            {data: 'uu_ee', className: "text-center"},
+            {data: 'fuente_financ', className: "text-center"},
+            {data: 'oc_fisica', className: "text-center"},
+            {data: 'siaf', className: "text-center"},
+            {data: 'fecha_emision', className: "text-center"},
+            {data: 'fecha_recepcion', className: "text-center"},
+            {data: 'atraso', className: "text-center"},
+            {data: 'moneda', className: "text-center"},
+            {data: 'importe', className: "text-right"},
+            {data: 'estado', className: "text-right"},
+            // {data: 'estado_documento', className: "text-right"},
+            {data: 'area', className: "text-right"},
             {
                 render: function (data, type, row) {
-
-                    return (row['estado']);
-                },
-                className: "text-center"
-            },
-            {
-                render: function (data, type, row) {
-                    return (row['area']);
-                },
-                className: "text-center"
-            },
-            {
-                render: function (data, type, row) {
-                    return (`<label class="label label-primary">${row['fase']}</label>`);
+                    return (`<label class="label label-primary" style="font-size: 10px;">${row['fase']}</label>`);
                 },
                 className: "text-center"
             },
@@ -1089,7 +1080,7 @@ function listarRegistros(filtros) {
                 render: function (data, type, row) {
                     var fecha_inicio = row['inicio_entrega'] ? row['inicio_entrega']:'-';
                     var fecha_entrega = row['fecha_entrega'] ? row['fecha_entrega']:'-';
-                    return (`${fecha_inicio} / ${fecha_entrega}`);
+                    return (`${fecha_inicio} <br> ${fecha_entrega}`);
                 },
                 className: "text-center"
             },
@@ -1381,13 +1372,13 @@ function obtenerPenalidades(id, titulo) {
         success: function(data) {
             if (data.status===200) {
                 let datos = data.penalidades;
-    
+
                 datos.forEach(element => {
                     html+='<tr>'
                     html+='<td>'+element.tipo+'</td>'
                     html+='<td>'+element.documento+'</td>'
                     html+='<td>'+element.monto+'</td>';
-    
+
                     switch (element.estado) {
                         case 1:
                             html+='<td>ELABORADO</td>';
@@ -1397,14 +1388,14 @@ function obtenerPenalidades(id, titulo) {
                         break;
                     }
                     html+='<td '+(element.tipo!=='PENALIDAD'?`hidden`:``)+'>'+element.estado_penalidad+'</td>'
-    
+
                     html+='<td>'+element.fecha+'</td>'
                     html+='<td>';
                         if (element.tipo==='PENALIDAD') {
                             html+='<button class="btn btn-xs btn-success" data-action="estados-penalidad" data-title="DEVOLUCION" title="Devolución" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-exchange-alt"></i></button>'+
                             '<button class="btn btn-xs" data-action="estados-penalidad" data-title="ANULADA" title="Anular" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-ban"></i></button>';
                         }
-    
+
                         html+='<button class="btn btn-xs btn-primary" data-action="editar-penalidad" data-title="" title="Editar" data-id="'+element.id_penalidad+'" data-id-registro-cobranza="'+element.id_registro_cobranza+'"><i class="fa fa-edit"></i></button>'+
                             '<button class="btn btn-xs btn-danger" data-action="eliminar-penalidad" data-title="" title="Eliminar" data-id="'+element.id_penalidad+'"data-id-registro-cobranza="'+element.id_registro_cobranza+'" data-estado="7"><i class="fa fa-times"></i></button>'+
                         '</td>'

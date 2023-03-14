@@ -209,7 +209,7 @@
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Nro documento</h6>
-                            <input type="text" name="nro_documento" class="form-control input-sm" placeholder="Ingrese nombre de la entidad" required>
+                            <input type="text" name="nro_documento" class="form-control input-sm" placeholder="nro del documento" required>
                         </div>
                     </div>
                     <div class="row mb-3">
