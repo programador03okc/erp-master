@@ -188,17 +188,17 @@ class CobranzaController extends Controller
                     $nuevo->fase = 'COMPROMISO';
                     $nuevo->fecha = $cobranza->fecha_registro;
                 $nuevo->save();
-    
-                /**
-                 * Programacion de pagos
-                 */
-                $programacion_pago = new ProgramacionPago();
-                    $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
-                    $programacion_pago->fecha = $request->fecha_ppago;
-                    $programacion_pago->estado = 1;
-                    $programacion_pago->fecha_registro = new Carbon();
-                $programacion_pago->save();
             }
+
+            /**
+             * Programacion de pagos
+             */
+            $programacion_pago = new ProgramacionPago();
+                $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
+                $programacion_pago->fecha = $request->fecha_ppago;
+                $programacion_pago->estado = 1;
+                $programacion_pago->fecha_registro = new Carbon();
+            $programacion_pago->save();
 
             /**
              * Penalidad automática
@@ -266,7 +266,7 @@ class CobranzaController extends Controller
 
         $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)
             ->where('estado', 1)->orWhere('id_cobranza', $registro_cobranza->id_cobranza_old)
-            ->orderBy('id_programacion_pago','desc')->first();
+            ->orderBy('id_programacion_pago', 'desc')->first();
 
         return response()->json(["status" => 200, "success" => true, "data" => $registro_cobranza, "programacion_pago" => $programacion_pago, "cliente" => $contribuyente]);
     }
