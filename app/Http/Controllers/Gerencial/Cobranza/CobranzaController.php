@@ -178,24 +178,26 @@ class CobranzaController extends Controller
                 $cobranza->id_oc = $request->id_oc;
             $cobranza->save();
 
-            /**
-             * Registro de Fase automática
-             */
-            $nuevo = new RegistroCobranzaFase();
-                $nuevo->id_registro_cobranza = $cobranza->id_registro_cobranza;
-                $nuevo->fase = 'COMPROMISO';
-                $nuevo->fecha = $cobranza->fecha_registro;
-            $nuevo->save();
-
-            /**
-             * Programacion de pagos
-             */
-            $programacion_pago = new ProgramacionPago();
-                $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
-                $programacion_pago->fecha = $request->fecha_ppago;
-                $programacion_pago->estado = 1;
-                $programacion_pago->fecha_registro = new Carbon();
-            $programacion_pago->save();
+            if ($request->id) {
+                /**
+                 * Registro de Fase automática
+                 */
+                $nuevo = new RegistroCobranzaFase();
+                    $nuevo->id_registro_cobranza = $cobranza->id_registro_cobranza;
+                    $nuevo->fase = 'COMPROMISO';
+                    $nuevo->fecha = $cobranza->fecha_registro;
+                $nuevo->save();
+    
+                /**
+                 * Programacion de pagos
+                 */
+                $programacion_pago = new ProgramacionPago();
+                    $programacion_pago->id_registro_cobranza = $cobranza->id_registro_cobranza;
+                    $programacion_pago->fecha = $request->fecha_ppago;
+                    $programacion_pago->estado = 1;
+                    $programacion_pago->fecha_registro = new Carbon();
+                $programacion_pago->save();
+            }
 
             /**
              * Penalidad automática
