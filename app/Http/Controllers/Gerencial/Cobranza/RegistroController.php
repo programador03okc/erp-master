@@ -849,7 +849,7 @@ class RegistroController extends Controller
         if ($comercial_cliente) {
             $contribuyente = Contribuyente::where('id_contribuyente',$comercial_cliente->id_contribuyente)->first();
         }
-
+        // return $registro_cobranza->id_registro_cobranza;exit;
         $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)
         ->where('estado',1)
         ->orWhere('id_cobranza',$registro_cobranza->id_cobranza_old)
