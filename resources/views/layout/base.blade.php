@@ -44,11 +44,7 @@
 </head>
 
 <body class="hold-transition skin-okc sidebar-mini">
-
-
 	@yield('body')
-
-
 
 	<div class="modal fade" role="dialog" id="modal-sobre-erp">
 		<div class="modal-dialog" style="width: 40%;">
@@ -101,6 +97,7 @@
 			</div>
 		</div>
 	</div>
+
     <div class="modal fade" tabindex="-1" role="dialog" id="atualizar-contraseña" data-backdrop="static" data-keyboard="false" style="overflow-y: scroll;">
         <div class="modal-dialog modal-style">
             <div class="modal-content">
@@ -142,6 +139,7 @@
             </div>
         </div>
     </div>
+	
 	<script type="text/javascript">
 		var auth_user = {!! $auth_user !!};
 	</script>

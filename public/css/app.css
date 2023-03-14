@@ -138,6 +138,20 @@ body .login-box {
   z-index: 999999;
 }
 
+.swal2-html-container,
+.swal2-styled.swal2-confirm,
+.swal2-styled.swal2-cancel,
+.swal2-styled.swal2-deny {
+  font-size: 14px !important;
+}
+
+.label-badge {
+  font-size: 10px;
+}
+.select-filter {
+  margin: 0 15px;
+}
+
 /*  ESTILOS PARA LOADER (BARRA SUPERIOR EN CADA SOLICITUD) */
 
 .pace {

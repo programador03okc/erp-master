@@ -50,7 +50,7 @@ use stdClass;
 use Yajra\DataTables\Facades\DataTables;
 
 use function GuzzleHttp\json_encode;
-
+ini_set('max_execution_time', '0');
 class RegistroController extends Controller
 {
     //
@@ -577,13 +577,6 @@ class RegistroController extends Controller
     public function selecconarRequerimiento($id_requerimiento)
     {
         $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view')
-        // if ($tipo==='oc') {
-        //     $cliente_gerencial->where('requerimiento_logistico_view.nro_orden',$data);
-        // }
-        // if ($tipo === 'cdp') {
-        //     $cliente_gerencial->where('requerimiento_logistico_view.codigo_oportunidad',$data);
-        // }
-        // $cliente_gerencial = $cliente_gerencial
         ->where('requerimiento_logistico_view.id_requerimiento_logistico',$id_requerimiento)
         ->select(
             'requerimiento_logistico_view.id_requerimiento_logistico',
@@ -591,54 +584,32 @@ class RegistroController extends Controller
             'requerimiento_logistico_view.nro_orden',
             'requerimiento_logistico_view.id_contribuyente_cliente',
             'requerimiento_logistico_view.id_contribuyente_empresa',
-
             'doc_vent_req.id_documento_venta_requerimiento',
-            // 'doc_vent_req.id_doc_venta',
             'doc_ven.id_doc_ven',
-            // 'doc_ven.*',
-
             'doc_ven.serie',
             'doc_ven.numero',
             'doc_ven.fecha_emision',
             'doc_ven.credito_dias',
             'doc_ven.total_a_pagar',
-            // 'doc_ven.modena'
             'adm_contri.nro_documento',
             'adm_contri.razon_social',
             'com_cliente.id_cliente'
-
         )
         ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
         ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')
 
         ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
         ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
-        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')
-        ->first();
+        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')->first();
 
-        $doc_ven=[];
-
+        $doc_ven = [];
         $oc_propias_view = DB::table('mgcp_ordenes_compra.oc_propias_view')->where('nro_orden',$cliente_gerencial->nro_orden)->first();
-        // return [$cliente_gerencial];exit;
-        if ($cliente_gerencial) {
 
-            $doc_ven = DocumentoVenta::where('id_doc_ven',$cliente_gerencial->id_doc_ven)->first();
-            // return [$cliente_gerencial];exit;
-            return response()->json([
-                "status"=>200,
-                "success"=>true,
-                "data"=>$cliente_gerencial,
-                "factura"=>$doc_ven,
-                "oc"=>$oc_propias_view ? $oc_propias_view:[]
-            ]);
+        if ($cliente_gerencial) {
+            $doc_ven = DocumentoVenta::where('id_doc_ven', $cliente_gerencial->id_doc_ven)->first();
+            return response()->json(["status"=>200, "success"=>true, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=>$oc_propias_view ? $oc_propias_view:[]]);
         }else{
-            return response()->json([
-                "status"=>400,
-                "success"=>false,
-                "data"=>$cliente_gerencial,
-                "factura"=>$doc_ven,
-                "oc"=>$oc_propias_view? $oc_propias_view:[]
-            ]);
+            return response()->json(["status"=>400, "success"=>false, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=> $oc_propias_view ? $oc_propias_view : []]);
         }
 
     }
@@ -3458,5 +3429,67 @@ class RegistroController extends Controller
             "cliente_auxiliar"=>$contador_cliente_auxiliar,
             "agil_contribuyentes_no_clientes"=>$contador_contribuyente_no_clientes,
         ],200);
+    }
+
+    public function scriptRegistroFase()
+    {
+        $data = RegistroCobranza::where('estado', 1)->get();
+        $cont = 0;
+        foreach ($data as $key) {
+            $nuevo = new RegistroCobranzaFase();
+                $nuevo->id_registro_cobranza = $key->id_registro_cobranza;
+                $nuevo->fase = 'COMPROMISO';
+                $nuevo->fecha = $key->fecha_registro;
+            $nuevo->save();
+            $cont++;
+        }
+        return response()->json($cont, 200);
+    }
+
+    public function scriptPeriodosActual()
+    {
+        $cont = 0;
+        // $cobranza = Cobranza::all();
+
+        // foreach ($cobranza as $key) {
+        //     $periodos = DB::table('gerencial.periodo')->select('descripcion')->where('id_periodo', $key->id_periodo)->first();
+        //     RegistroCobranza::where('id_cobranza_old', $key->id_cobranza)->update(['periodo' => $periodos->descripcion]);
+        //     $cont++;
+        // }
+        $cobranza = RegistroCobranza::all();
+
+        foreach ($cobranza as $key) {
+            $periodos = Periodo::where('descripcion', $key->periodo)->first();
+            RegistroCobranza::where('id_registro_cobranza', $key->id_registro_cobranza)->update(['id_periodo' => $periodos->id_periodo]);
+            $cont++;
+        }
+        return response()->json($cont, 200);
+    }
+
+    public function scriptFasesActual()
+    {
+        $dataActiva = CobranzaFase::all();
+        $cont = 0;
+
+        foreach ($dataActiva as $key) {
+            $nuevo = new RegistroCobranzaFase();
+                $nuevo->id_registro_cobranza = $key->id_registro_cobranza;
+                $nuevo->fase = $key->fase;
+                $nuevo->fecha = $key->fecha;
+            $nuevo->save();
+            $cont++;
+        }
+
+        $dataInactiva = CobranzaFase::where('estado', 1)->get();
+        $dele = 0;
+
+        foreach ($dataInactiva as $row) {
+            $eliminar = RegistroCobranzaFase::find($row->id_registro_cobranza);
+            if ($eliminar) {
+                $eliminar->delete();
+            }
+            $dele++;
+        }
+        return response()->json(array("cargados" => $cont, "eliminados" => $dele), 200);
     }
 }
