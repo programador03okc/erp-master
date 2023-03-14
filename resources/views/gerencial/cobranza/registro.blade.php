@@ -87,7 +87,7 @@
                     <h3 class="modal-title"></h3>
 				</div>
 				<div class="modal-body">
-                    <input type="hidden" name="id" id="id">
+                    <input type="hidden" name="id" id="id" value="0">
                     <input type="hidden" name="id_doc_ven" value="">
                     <input type="hidden" name="id_oc" value="">
                     

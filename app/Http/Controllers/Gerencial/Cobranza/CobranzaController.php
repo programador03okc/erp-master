@@ -178,7 +178,7 @@ class CobranzaController extends Controller
                 $cobranza->id_oc = $request->id_oc;
             $cobranza->save();
 
-            if ($request->id) {
+            if ($request->id == 0) {
                 /**
                  * Registro de Fase automática
                  */

@@ -527,7 +527,7 @@ function listar() {
             {data: 'importe', className: "text-right"},
             {data: 'estado_cobranza', className: "text-center"},
             {data: 'area', className: "text-center"},
-            {data: 'fase', className: "text-center"},
+            {data: 'fase', className: "text-center", searchable: false},
             {
                 render: function (data, type, row) {
                     var fecha_inicio = row['inicio_entrega'] ? row['inicio_entrega']:'-';
