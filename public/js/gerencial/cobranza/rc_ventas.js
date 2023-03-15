@@ -758,7 +758,7 @@ function listarObservaciones(id) {
                             <td class="text-center">`+ usuario +`</td>
                             <td class="text-center">`+ estado +`</td>
                             <td class="text-center">`+ fecha +`</td>
-                            <td class="text-center"><button class="btn btn-xs btn-danger eliminar-observacion" data-id="`+ element.id +`" data-cobranza="`+ element.id_registro_cobranza +`"><i class="fa fa-trash"></i></button></td>
+                            <td class="text-center"><button class="btn btn-xs btn-danger eliminar-observacion" data-id="`+ element.id +`" data-cobranza="`+ element.cobranza_id +`"><i class="fa fa-trash"></i></button></td>
                         </tr>`;
                     });
                 } else {
