@@ -383,7 +383,7 @@ $(function () {
         });
     });
 
-    $('#resultObservaciones').on('click', '.eliminar-observacion', function (e) {
+    $('#resultadoObservaciones').on('click', '.eliminar-observacion', function (e) {
         let id = $(e.currentTarget).data('id');
         let idCobranza = $(e.currentTarget).data('cobranza');
         Swal.fire({
@@ -752,7 +752,7 @@ function listarObservaciones(id) {
                     datos.forEach(element => {
                         let fecha = moment(element.created_at).format("MM-DD-YY");
                         let usuario = (element.usuario_id != null) ? element.usuario.nombre_corto : '-';
-                        let estado = (element.estado == 1) ? 'ELEABORADO' : 'ANULADO';
+                        let estado = (element.estado == 1) ? 'ELABORADO' : 'ANULADO';
                         resultado += `<tr>
                             <td class="text-center">`+ element.descripcion +`</td>
                             <td class="text-center">`+ usuario +`</td>
