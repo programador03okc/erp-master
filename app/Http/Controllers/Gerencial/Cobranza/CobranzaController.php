@@ -334,40 +334,47 @@ class CobranzaController extends Controller
 
     public function cargarDatosRequerimiento($id_requerimiento)
     {
-        $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view')
-        ->where('requerimiento_logistico_view.id_requerimiento_logistico', $id_requerimiento)
-        ->select(
-            'requerimiento_logistico_view.id_requerimiento_logistico',
-            'requerimiento_logistico_view.codigo_oportunidad',
-            'requerimiento_logistico_view.nro_orden',
-            'requerimiento_logistico_view.id_contribuyente_cliente',
-            'requerimiento_logistico_view.id_contribuyente_empresa',
-            'doc_vent_req.id_documento_venta_requerimiento',
-            'doc_ven.id_doc_ven',
-            'doc_ven.serie',
-            'doc_ven.numero',
-            'doc_ven.fecha_emision',
-            'doc_ven.credito_dias',
-            'doc_ven.total_a_pagar',
-            'adm_contri.nro_documento',
-            'adm_contri.razon_social',
-            'com_cliente.id_cliente'
-        )
-        ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
-        ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')
+        // $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view')
+        // ->where('requerimiento_logistico_view.id_requerimiento_logistico', $id_requerimiento)
+        // ->select(
+        //     'requerimiento_logistico_view.id_requerimiento_logistico',
+        //     'requerimiento_logistico_view.codigo_oportunidad',
+        //     'requerimiento_logistico_view.nro_orden',
+        //     'requerimiento_logistico_view.id_contribuyente_cliente',
+        //     'requerimiento_logistico_view.id_contribuyente_empresa',
+        //     'doc_vent_req.id_documento_venta_requerimiento',
+        //     'doc_ven.id_doc_ven',
+        //     'doc_ven.serie',
+        //     'doc_ven.numero',
+        //     'doc_ven.fecha_emision',
+        //     'doc_ven.credito_dias',
+        //     'doc_ven.total_a_pagar',
+        //     'adm_contri.nro_documento',
+        //     'adm_contri.razon_social',
+        //     'com_cliente.id_cliente'
+        // )
+        // ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+        // ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')
 
-        ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
-        ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
-        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')->first();
+        // ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+        // ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+        // ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')->first();
 
         $doc_ven = [];
-        $oc_propias_view = DB::table('mgcp_ordenes_compra.oc_propias_view')->where('nro_orden',$cliente_gerencial->nro_orden)->first();
+        // $oc_propias_view = DB::table('mgcp_ordenes_compra.oc_propias_view')->where('nro_orden',$cliente_gerencial->nro_orden)->first();
 
-        if ($cliente_gerencial) {
-            $doc_ven = DocumentoVenta::where('id_doc_ven', $cliente_gerencial->id_doc_ven)->first();
-            return response()->json(["status"=>200, "success"=>true, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=>$oc_propias_view ? $oc_propias_view:[]]);
+
+        // if ($cliente_gerencial) {
+        //     $doc_ven = DocumentoVenta::where('id_doc_ven', $cliente_gerencial->id_doc_ven)->first();
+        //     return response()->json(["status"=>200, "success"=>true, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=>$oc_propias_view ? $oc_propias_view:[]]);
+        // }else{
+        //     return response()->json(["status"=>400, "success"=>false, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=> $oc_propias_view ? $oc_propias_view : []]);
+        // }
+        $oc_propias_view = OrdenCompraPropiaView::find($id_requerimiento);
+        if ($oc_propias_view) {
+            return response()->json(["status"=>200,"data"=>$oc_propias_view],200);
         }else{
-            return response()->json(["status"=>400, "success"=>false, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=> $oc_propias_view ? $oc_propias_view : []]);
+            return response()->json(["status"=>401],401);
         }
     }
 

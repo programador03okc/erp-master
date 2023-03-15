@@ -320,6 +320,7 @@ $(function () {
     });
 
     $('#btnAgregarMgc').on('click', function (e) {
+
         if (idRequerimiento > 0) {
             cargarValores(idRequerimiento);
             idRequerimiento = 0;
@@ -657,27 +658,41 @@ function cargarValores(idReq) {
         url: 'seleccionar-registro/'+idReq,
         dataType: 'JSON',
         success: function(response) {
+            console.log(response);
             if (response.status == 200) {
                 $('[name="moneda"]').removeAttr('selected');
-                $('[name="moneda"] option[value="' + response.data.id_moneda + '"]').attr('selected', 'true');
-                $('[name="importe"]').val(response.data.total_a_pagar);
-                $('[name="plazo_credito"]').val(response.data.credito_dias);
-                $('[name="fecha_emi"]').val(response.data.fecha_emision);
+                if (response.data.moneda_oc==='s') {
+                    $('[name="moneda"] option[value="1"]').attr('selected', 'true');
+                }
+                if (response.data.moneda_oc==='d') {
+                    $('[name="moneda"] option[value="2"]').attr('selected', 'true');
+                }
+
+                $('[name="importe"]').val(response.data.monto_total);
+                // $('[name="plazo_credito"]').val(response.data.credito_dias);//falta
+                $('[name="fecha_emi"]').val(response.data.fecha_salida);
                 $('[name="oc"]').val(response.data.nro_orden);
                 $('[name="cdp"]').val(response.data.codigo_oportunidad);
-                $('[name="id_contribuyente"]').val(response.data.id_cliente);
-                $('[name="cliente"]').val(response.data.razon_social);
-                $('[name="id_doc_ven"]').val(response.data.id_doc_ven);
 
-                if (response.factura && response.factura) {
-                    $('[name="fact"]').val(response.factura.serie + '-' + response.factura.numero);
+                // $('[name="id_contribuyente"]').val(response.data.id_cliente);//cambio
+                // $('[name="cliente"]').val(response.data.razon_social);//cambio
+
+                // $('[name="id_doc_ven"]').val(response.data.id_doc_ven);
+
+                if (response.data.factura && response.data.factura) {
+                    $('[name="fact"]').val(response.data.factura + '-' + response.data.factura);
                 }
 
                 $('[name="empresa"]').removeAttr('selected');
-                $('[name="empresa"] option[value="' + response.data.id_contribuyente_empresa + '"]').attr('selected','true');
-                $('[name="fecha_inicio"]').val(response.oc.inicio_entrega);
-                $('[name="fecha_entrega"]').val(response.oc.fecha_entrega);
-                $('[name="id_oc"]').val(response.oc.id);
+                // $('[name="empresa"] option[value="' + response.data.id_contribuyente_empresa + '"]').attr('selected','true');//cambio
+
+                $('[name="fecha_inicio"]').val(response.data.inicio_entrega);
+                $('[name="fecha_entrega"]').val(response.data.fecha_entrega);
+                $('[name="id_oc"]').val(response.data.id);
+
+                $('[name="orden_compra"]').val(response.data.orden_compra);
+                $('[name="siaf"]').val(response.data.siaf);
+                console.log(response.data);
             }
         }
     }).fail( function(jqXHR, textStatus, errorThrown) {
