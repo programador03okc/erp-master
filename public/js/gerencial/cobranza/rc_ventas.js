@@ -77,6 +77,7 @@ $(function () {
                     dataType: 'JSON',
                     success: function(response) {
                         listarFases(response.data.id_registro_cobranza);
+                        $('#tablaCobranza').DataTable().ajax.reload(null, false);
                         $('#formulario-fase')[0].reset();
                     }
                 }).fail( function(jqXHR, textStatus, errorThrown) {
