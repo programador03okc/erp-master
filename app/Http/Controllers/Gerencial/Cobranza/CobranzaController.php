@@ -203,21 +203,21 @@ class CobranzaController extends Controller
             /**
              * Penalidad automática
              */
-            if ($request->importe) {
-                if (intval($request->dias_atraso) > 0) {
-                    $formula_penalidad = (0.10 * floatval($request->importe))/(0.4*intval($request->dias_atraso));
-                    $penalidad = new Penalidad();
-                        $penalidad->tipo                    = 'PENALIDAD';
-                        $penalidad->monto                   = $formula_penalidad;
-                        $penalidad->documento               = '--';
-                        $penalidad->fecha                   = date('Y-m-d');
-                        $penalidad->observacion             = 'PENALIDAD CALCULADA';
-                        $penalidad->estado                  = 1;
-                        $penalidad->fecha_registro          = date('Y-m-d H:i:s');
-                        $penalidad->id_registro_cobranza    = $cobranza->id_registro_cobranza;
-                    $penalidad->save();
-                }
-            }
+            // if ($request->importe) {
+            //     if (intval($request->dias_atraso) > 0) {
+            //         $formula_penalidad = (0.10 * floatval($request->importe))/(0.4*intval($request->dias_atraso));
+            //         $penalidad = new Penalidad();
+            //             $penalidad->tipo                    = 'PENALIDAD';
+            //             $penalidad->monto                   = $formula_penalidad;
+            //             $penalidad->documento               = '--';
+            //             $penalidad->fecha                   = date('Y-m-d');
+            //             $penalidad->observacion             = 'PENALIDAD CALCULADA';
+            //             $penalidad->estado                  = 1;
+            //             $penalidad->fecha_registro          = date('Y-m-d H:i:s');
+            //             $penalidad->id_registro_cobranza    = $cobranza->id_registro_cobranza;
+            //         $penalidad->save();
+            //     }
+            // }
 
             /**
              * Consulta de OCAM y CDP
