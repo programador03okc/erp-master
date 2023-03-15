@@ -247,14 +247,14 @@ class CobranzaController extends Controller
                     }
                 }
 
-                // $penalidad = Penalidad::where('id_registro_cobranza', $cobranza->id_registro_cobranza)->get();
-                // if ($penalidad) {
-                //     foreach ($penalidad as $key) {
-                //         $actualizarPenalidad = Penalidad::find($key->id_penalidad);
-                //             $actualizarPenalidad->id_oc = $cobranza->id_oc;
-                //         $actualizarPenalidad->save();
-                //     }
-                // }
+                $penalidad = Penalidad::where('id_registro_cobranza', $cobranza->id_registro_cobranza)->where('estado', 1)->get();
+                if ($penalidad) {
+                    foreach ($penalidad as $key) {
+                        $actualizarPenalidad = Penalidad::find($key->id_penalidad);
+                            $actualizarPenalidad->id_oc = $cobranza->id_oc;
+                        $actualizarPenalidad->save();
+                    }
+                }
             }
             DB::commit();
             return response()->json(["success" => true, "status" => 200, "data" => $cobranza, "pago" => $programacion_pago, "view" => $ordenVista]);
