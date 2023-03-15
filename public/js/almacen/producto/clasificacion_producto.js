@@ -6,6 +6,7 @@ $(function () {
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language': vardataTables[0],
+        'pageLength': 20,
         'ajax': 'listarClasificaciones',
         'columns': [
             { 'data': 'id_clasificacion' },

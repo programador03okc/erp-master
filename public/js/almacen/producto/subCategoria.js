@@ -5,6 +5,7 @@ $(function () {
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language': vardataTables[0],
+        'pageLength': 20,
         'ajax': 'listar_categorias',
         'columns': [
             { 'data': 'id_categoria' },

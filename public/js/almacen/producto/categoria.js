@@ -6,6 +6,7 @@ $(function () {
         'dom': vardataTables[1],
         'buttons': vardataTables[2],
         'language': vardataTables[0],
+        'pageLength': 20,
         'ajax': 'listarCategorias',
         'columns': [
             { 'data': 'id_tipo_producto' },
