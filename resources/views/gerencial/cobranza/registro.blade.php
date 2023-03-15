@@ -21,7 +21,7 @@
             margin-bottom: 15px;
         }
 
-        .flag-amarillo {
+        .flag-rojo {
             background-color: #ffd6d6;
         }
 
