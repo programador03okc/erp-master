@@ -319,18 +319,18 @@
                         </div>
 					</div>
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <h6>Fecha inicio :</h6>
-                                        <input id="fecha_inicio_nuevo" class="form-control text-center" type="date" name="fecha_inicio">
+                                        <input id="fecha_inicio_nuevo" class="form-control input-sm text-center" type="date" name="fecha_inicio">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <h6>Fecha entrega :</h6>
-                                        <input id="fecha_entrega_nuevo" class="form-control text-center" type="date" name="fecha_entrega">
+                                        <h6>Fecha termino :</h6>
+                                        <input id="fecha_entrega_nuevo" class="form-control input-sm text-center" type="date" name="fecha_entrega">
                                     </div>
                                 </div>
                             </div>

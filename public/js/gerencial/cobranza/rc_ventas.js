@@ -163,6 +163,7 @@ $(function () {
     $('#tablaCobranza').on('click', 'a.editar', function (e) {
         e.preventDefault();
         $("#formulario")[0].reset();
+        $('[name="vendedor"]').val(null).trigger('change');
 
         $.ajax({
             type: 'POST',
@@ -209,6 +210,7 @@ $(function () {
                 if (pagos) {
                     $('[name="fecha_ppago"]').val(pagos.fecha);
                 }
+                diasAtraso();
 
                 $('[name="plazo_credito"]').val(datos.plazo_credito);
                 $('[name="area"] option').removeAttr('selected');
@@ -346,24 +348,7 @@ $(function () {
     });
 
     $('.dias-atraso').on('change', function (e) {
-        let fecha_emision = new Date($('[name="fecha_rec"]').val().split('/').reverse().join('-')).getTime() ,
-            fecha_vencimiento = new Date($('[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime(),
-            numero_dias = 0;
-
-        numero_dias = fecha_vencimiento - fecha_emision  ;
-        numero_dias = numero_dias / (1000 * 60 * 60 * 24)
-        numero_dias = numero_dias * (-1);
-        if (numero_dias <= 0) {
-            numero_dias = 0;
-        }
-
-        let fecha_actual = new Date().getTime();
-        let atraso = fecha_actual - fecha_emision;
-        atraso = atraso / (1000 * 60 * 60 * 24);
-        let diasAtraso = (atraso > 0) ? atraso = Math.trunc(atraso) : atraso = 0;
-
-        $('[name="atraso"]').val(diasAtraso);
-        $('[name="dias_atraso"]').val(diasAtraso);
+        diasAtraso();
     });
 
     $('#resultadoFase').on('click', '.eliminar-fase', function (e) {
@@ -561,7 +546,8 @@ function listar() {
                 text: '<i class="fas fa-plus"></i> Nuevo registro',
                 action: () => {
                     $('#formulario')[0].reset();
-                    $('.search-vendedor-guardar').val(null).trigger('change');
+                    $('.selectpicker').val(null).trigger('change');
+                    // $('[name="vendedor"]').val(null).trigger('change');
                     $("#modal-cobranza").find(".modal-title").text("Editar el registro de Cobranza");
                     $('#modal-cobranza').modal('show');
                 }, className: 'btn-success btn-sm'
@@ -905,4 +891,25 @@ function generarFiltros() {
         console.log(textStatus);
         console.log(errorThrown);
     });
+}
+
+function diasAtraso() {
+    let fecha_emision = new Date($('[name="fecha_rec"]').val().split('/').reverse().join('-')).getTime();
+    let fecha_vencimiento = new Date($('[name="fecha_ppago"]').val().split('/').reverse().join('-')).getTime();
+    let numero_dias = 0;
+
+    numero_dias = fecha_vencimiento - fecha_emision  ;
+    numero_dias = numero_dias / (1000 * 60 * 60 * 24)
+    numero_dias = numero_dias * (-1);
+    if (numero_dias <= 0) {
+        numero_dias = 0;
+    }
+
+    let fecha_actual = new Date().getTime();
+    let atraso = fecha_actual - fecha_emision;
+    atraso = atraso / (1000 * 60 * 60 * 24);
+    let diasAtraso = (atraso > 0) ? atraso = Math.trunc(atraso) : atraso = 0;
+
+    $('[name="atraso"]').val(diasAtraso);
+    $('[name="dias_atraso"]').val(diasAtraso);
 }
