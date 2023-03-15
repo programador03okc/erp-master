@@ -7,6 +7,7 @@ $(function () {
         'buttons': vardataTables[2],
         'language': vardataTables[0],
         'ajax': 'listarClasificaciones',
+        'pageLength': 20,
         'columns': [
             { 'data': 'id_clasificacion' },
             { 'data': 'descripcion' },
