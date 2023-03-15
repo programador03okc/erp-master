@@ -24,6 +24,10 @@
         .flag-amarillo {
             background-color: #ffd6d6;
         }
+
+        .flag-amarillo {
+            background-color: #fff799;
+        }
     </style>
 @endsection
 

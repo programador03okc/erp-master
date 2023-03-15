@@ -569,7 +569,11 @@ function listar() {
         ],
         rowCallback: function(row, data) {
             if (data.id_oc == null) {
-                $($(row).find("td")[1]).addClass('flag-amarillo');
+                $($(row).find("td")[1]).addClass('flag-rojo');
+            }
+
+            if (data.tiene_penalidad) {
+                $($(row).find("td")[16]).addClass('flag-amarillo');
             }
         },
     });
