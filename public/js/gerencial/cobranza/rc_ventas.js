@@ -545,18 +545,18 @@ function listar() {
                     $('#modal-filtros').modal('show');
                 }, className: 'btn-default btn-sm'
             },
-            {
-                text: '<i class="fas fa-file-excel"></i> Descargar',
-                action: () => {
-                    exportarExcel();
-                }, className: 'btn-default btn-sm'
-            },
-            {
-                text: '<i class="fas fa-file-excel"></i> Descargar Power BI',
-                action: () => {
-                    exportarExcelPowerBi();
-                }, className: 'btn-default btn-sm'
-            },
+            // {
+            //     text: '<i class="fas fa-file-excel"></i> Descargar',
+            //     action: () => {
+            //         exportarExcel();
+            //     }, className: 'btn-default btn-sm'
+            // },
+            // {
+            //     text: '<i class="fas fa-file-excel"></i> Descargar Power BI',
+            //     action: () => {
+            //         exportarExcelPowerBi();
+            //     }, className: 'btn-default btn-sm'
+            // },
             {
                 text: '<i class="fas fa-plus"></i> Nuevo registro',
                 action: () => {
