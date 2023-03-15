@@ -222,7 +222,7 @@ $(function () {
 
                 $('[name="id_doc_ven"]').val(datos.id_doc_ven);
                 $('[name="id"]').val(datos.id_registro_cobranza);
-                
+
                 $("#modal-cobranza").find(".modal-title").text("Editar el registro de Cobranza");
                 $('#modal-cobranza').modal('show');
             }
@@ -627,11 +627,16 @@ function buscarRegistro(tipo, valor) {
         },
         order: [[2, "asc"]],
         columns: [
-            {data: 'id_requerimiento_logistico'},
+            {data: 'id'},
             {data: 'nro_orden'},
             {data: 'codigo_oportunidad'},
             {data: 'documento'},
-            {data: 'fecha_emision'},
+            // {data: 'inicio_entrega'},
+            { className: "text-center selecionar",
+                render: function (data, type, row) {
+                    return ('<p>'+row['inicio_entrega']+'</p>'+'<p>'+row['fecha_entrega']+'</p>')
+                }
+            },
         ],
     });
     $tablaVenta.on('init.dt', function(e, settings, processing) {
@@ -799,7 +804,7 @@ function listarAcciones(id, tipo) {
 
                         if (tipo == 'penalidad') {
                             if (estado_pen != 'DEVOLUCION' || estado_pen != 'ANULADA') {
-                                opcion += 
+                                opcion +=
                                 `<button class="btn btn-xs btn-success estados" data-id="`+ element.id_penalidad +`" data-cobranza="`+ element.id_registro_cobranza +`" data-evento="DEVOLUCION" title="Devolución"><i class="fa fa-exchange-alt"></i></button>
                                 <button class="btn btn-xs btn-warning estados" data-id="`+ element.id_penalidad +`" data-cobranza="`+ element.id_registro_cobranza +`" data-evento="ANULADA" title="Anular"><i class="fa fa-ban"></i></button>`;
                             }

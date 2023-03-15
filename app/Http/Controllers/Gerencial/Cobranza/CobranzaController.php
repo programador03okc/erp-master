@@ -299,23 +299,35 @@ class CobranzaController extends Controller
 
     public function buscarRegistro(Request $request)
     {
-        $data = DB::table('almacen.requerimiento_logistico_view');
+        // $data = DB::table('almacen.requerimiento_logistico_view');
+        // if ($request->tipo == 'oc') {
+        //     $data->where('requerimiento_logistico_view.nro_orden', $request->valor);
+        // }
+        // if ($request->tipo == 'cdp') {
+        //     $data->where('requerimiento_logistico_view.codigo_oportunidad', $request->valor);
+        // }
+        // $data = $data->select(
+        //     'requerimiento_logistico_view.id_requerimiento_logistico',
+        //     'requerimiento_logistico_view.codigo_oportunidad',
+        //     'requerimiento_logistico_view.nro_orden',
+        //     'doc_ven.serie',
+        //     'doc_ven.numero',
+        //     'doc_ven.fecha_emision'
+        // )
+        // ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+        // ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')->distinct();
+
+        // $data = DB::table('mgcp_ordenes_compra.oc_propias_view');
+
+
         if ($request->tipo == 'oc') {
-            $data->where('requerimiento_logistico_view.nro_orden', $request->valor);
+            // $data->where('requerimiento_logistico_view.nro_orden', $request->valor);
+            $data = OrdenCompraPropiaView::where('nro_orden',$request->valor)->distinct();
         }
         if ($request->tipo == 'cdp') {
-            $data->where('requerimiento_logistico_view.codigo_oportunidad', $request->valor);
+            // $data->where('requerimiento_logistico_view.codigo_oportunidad', $request->valor);
+            $data = OrdenCompraPropiaView::where('codigo_oportunidad',$request->valor)->distinct();
         }
-        $data = $data->select(
-            'requerimiento_logistico_view.id_requerimiento_logistico',
-            'requerimiento_logistico_view.codigo_oportunidad',
-            'requerimiento_logistico_view.nro_orden',
-            'doc_ven.serie',
-            'doc_ven.numero',
-            'doc_ven.fecha_emision'
-        )
-        ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
-        ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')->distinct();
 
         return DataTables::of($data)->addColumn('documento', function ($data) { return $data->serie.'-'.$data->numero; })->make(true);
     }
