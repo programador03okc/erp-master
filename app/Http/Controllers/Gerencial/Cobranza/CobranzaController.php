@@ -115,7 +115,7 @@ class CobranzaController extends Controller
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li><a href="javascript: void(0);" class="editar" data-id="'. $data->id .'" data-toggle="tooltip" title="Editar" data-original-title="Editar">Editar</a></li>
                     <li><a href="javascript: void(0);" class="fases" data-id="'. $data->id .'" title="Fases">Fases</a></li>';
-                
+
                 if ($data->estado_cobranza == 'PAGADO') {
                     $btn.= '
                     <li><a href="javascript: void(0);" class="acciones" data-accion="penalidad" data-id="'. $data->id .'"data-toggle="tooltip" title="Penalidad">Penalidades</a></li>
@@ -483,7 +483,7 @@ class CobranzaController extends Controller
         }
         return response()->json($cont, 200);
     }
-    
+
     public function scriptFasesActual()
     {
         $cobranzas_fases = DB::table('gerencial.cobranza_fase')->where('estado', 1)->get();
@@ -601,4 +601,22 @@ class CobranzaController extends Controller
 		$diasFalt = ((($dif / 60) / 60) / 24);
 		return ceil($diasFalt);
 	}
+    public function scriptContribuyenteCliente()
+    {
+        $contribuyente = Contribuyente::all();
+        $array_clientes_nuevos=array();
+        foreach ($contribuyente as $key => $value) {
+            $com_cliente = Cliente::where('id_contribuyente',$value->id_contribuyente)->first();
+            if (!$com_cliente) {
+                $com_cliente = new Cliente();
+                $com_cliente->id_contribuyente = $value->id_contribuyente;
+                // $com_cliente->observacion = $request->observacion;
+                $com_cliente->estado = 1;
+                // $com_cliente->fecha_registro = new Carbon();
+                $com_cliente->save();
+                array_push($array_clientes_nuevos,$com_cliente);
+            }
+        }
+        return response()->json(["data"=>$array_clientes_nuevos],200);
+    }
 }
