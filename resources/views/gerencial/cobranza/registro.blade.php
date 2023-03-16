@@ -94,7 +94,7 @@
                     <input type="hidden" name="id" id="id" value="0">
                     <input type="hidden" name="id_doc_ven" value="">
                     <input type="hidden" name="id_oc" value="">
-                    
+
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -484,7 +484,7 @@
                                         <label for="">Fecha :</label>
                                         <input type="date" class="form-control text-center" name="fecha_fase" value="{{date('Y-m-d')}}" required>
                                     </div>
-        
+
                                 </div>
                             </div>
                             <div class="row">

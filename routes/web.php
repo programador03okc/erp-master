@@ -2290,7 +2290,7 @@ Route::group(['middleware' => ['auth']], function () {
 			/**
 			 * Módulo cobranzas
 			 * */
-			
+
 			Route::get('index', 'Gerencial\Cobranza\CobranzaController@index')->name('index');
 			Route::post('listar', 'Gerencial\Cobranza\CobranzaController@listar')->name('listar');
 			Route::post('listar-clientes', 'Gerencial\Cobranza\CobranzaController@listarClientes')->name('listar-clientes');
@@ -2309,7 +2309,7 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('obtener-penalidades', 'Gerencial\Cobranza\CobranzaController@obtenerPenalidades')->name('obtener-penalidades');
 			Route::post('guardar-penalidad', 'Gerencial\Cobranza\CobranzaController@guardarPenalidad')->name('guardar-penalidad');
 			Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad')->name('cambio-estado-penalidad');
-			
+
 			/**
 			 * Script para recuperar la info de Gerencia e Iniciar en las nuevas tablas
 			 */
@@ -2317,6 +2317,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('script-periodo', 'Gerencial\Cobranza\CobranzaController@scriptPeriodos')->name('script-periodo');
 				Route::get('script-fases-inicial', 'Gerencial\Cobranza\CobranzaController@scriptRegistroFase')->name('script-fases-inicial');
 				Route::get('script-cobranza-fase', 'Gerencial\Cobranza\CobranzaController@scriptFases')->name('script-cobranza-fase');
+                #pasa los contribuyentes a clientes
+                Route::get('script-contribuyentes-clientes', 'Gerencial\Cobranza\CobranzaController@scriptContribuyenteCliente')->name('script-contribuyente-cliente');
 			});
 
 

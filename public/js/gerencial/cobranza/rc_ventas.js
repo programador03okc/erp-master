@@ -77,6 +77,7 @@ $(function () {
                     dataType: 'JSON',
                     success: function(response) {
                         listarFases(response.data.id_registro_cobranza);
+                        $('#tablaCobranza').DataTable().ajax.reload(null, false);
                         $('#formulario-fase')[0].reset();
                     }
                 }).fail( function(jqXHR, textStatus, errorThrown) {
@@ -221,7 +222,7 @@ $(function () {
 
                 $('[name="id_doc_ven"]').val(datos.id_doc_ven);
                 $('[name="id"]').val(datos.id_registro_cobranza);
-                
+
                 $("#modal-cobranza").find(".modal-title").text("Editar el registro de Cobranza");
                 $('#modal-cobranza').modal('show');
             }
@@ -319,6 +320,7 @@ $(function () {
     });
 
     $('#btnAgregarMgc').on('click', function (e) {
+
         if (idRequerimiento > 0) {
             cargarValores(idRequerimiento);
             idRequerimiento = 0;
@@ -382,7 +384,7 @@ $(function () {
         });
     });
 
-    $('#resultObservaciones').on('click', '.eliminar-observacion', function (e) {
+    $('#resultadoObservaciones').on('click', '.eliminar-observacion', function (e) {
         let id = $(e.currentTarget).data('id');
         let idCobranza = $(e.currentTarget).data('cobranza');
         Swal.fire({
@@ -626,11 +628,16 @@ function buscarRegistro(tipo, valor) {
         },
         order: [[2, "asc"]],
         columns: [
-            {data: 'id_requerimiento_logistico'},
+            {data: 'id'},
             {data: 'nro_orden'},
             {data: 'codigo_oportunidad'},
             {data: 'documento'},
-            {data: 'fecha_emision'},
+            // {data: 'inicio_entrega'},
+            { className: "text-center selecionar",
+                render: function (data, type, row) {
+                    return ('<p>'+row['inicio_entrega']+'</p>'+'<p>'+row['fecha_entrega']+'</p>')
+                }
+            },
         ],
     });
     $tablaVenta.on('init.dt', function(e, settings, processing) {
@@ -651,27 +658,41 @@ function cargarValores(idReq) {
         url: 'seleccionar-registro/'+idReq,
         dataType: 'JSON',
         success: function(response) {
+            console.log(response);
             if (response.status == 200) {
                 $('[name="moneda"]').removeAttr('selected');
-                $('[name="moneda"] option[value="' + response.data.id_moneda + '"]').attr('selected', 'true');
-                $('[name="importe"]').val(response.data.total_a_pagar);
-                $('[name="plazo_credito"]').val(response.data.credito_dias);
-                $('[name="fecha_emi"]').val(response.data.fecha_emision);
+                if (response.data.moneda_oc==='s') {
+                    $('[name="moneda"] option[value="1"]').attr('selected', 'true');
+                }
+                if (response.data.moneda_oc==='d') {
+                    $('[name="moneda"] option[value="2"]').attr('selected', 'true');
+                }
+
+                $('[name="importe"]').val(response.data.monto_total);
+                // $('[name="plazo_credito"]').val(response.data.credito_dias);//falta
+                $('[name="fecha_emi"]').val(response.data.fecha_salida);
                 $('[name="oc"]').val(response.data.nro_orden);
                 $('[name="cdp"]').val(response.data.codigo_oportunidad);
-                $('[name="id_contribuyente"]').val(response.data.id_cliente);
-                $('[name="cliente"]').val(response.data.razon_social);
-                $('[name="id_doc_ven"]').val(response.data.id_doc_ven);
 
-                if (response.factura && response.factura) {
-                    $('[name="fact"]').val(response.factura.serie + '-' + response.factura.numero);
+                // $('[name="id_contribuyente"]').val(response.data.id_cliente);//cambio
+                // $('[name="cliente"]').val(response.data.razon_social);//cambio
+
+                // $('[name="id_doc_ven"]').val(response.data.id_doc_ven);
+
+                if (response.data.factura && response.data.factura) {
+                    $('[name="fact"]').val(response.data.factura + '-' + response.data.factura);
                 }
 
                 $('[name="empresa"]').removeAttr('selected');
-                $('[name="empresa"] option[value="' + response.data.id_contribuyente_empresa + '"]').attr('selected','true');
-                $('[name="fecha_inicio"]').val(response.oc.inicio_entrega);
-                $('[name="fecha_entrega"]').val(response.oc.fecha_entrega);
-                $('[name="id_oc"]').val(response.oc.id);
+                // $('[name="empresa"] option[value="' + response.data.id_contribuyente_empresa + '"]').attr('selected','true');//cambio
+
+                $('[name="fecha_inicio"]').val(response.data.inicio_entrega);
+                $('[name="fecha_entrega"]').val(response.data.fecha_entrega);
+                $('[name="id_oc"]').val(response.data.id);
+
+                $('[name="orden_compra"]').val(response.data.orden_compra);
+                $('[name="siaf"]').val(response.data.siaf);
+                console.log(response.data);
             }
         }
     }).fail( function(jqXHR, textStatus, errorThrown) {
@@ -751,13 +772,13 @@ function listarObservaciones(id) {
                     datos.forEach(element => {
                         let fecha = moment(element.created_at).format("MM-DD-YY");
                         let usuario = (element.usuario_id != null) ? element.usuario.nombre_corto : '-';
-                        let estado = (element.estado == 1) ? 'ELEABORADO' : 'ANULADO';
+                        let estado = (element.estado == 1) ? 'ELABORADO' : 'ANULADO';
                         resultado += `<tr>
                             <td class="text-center">`+ element.descripcion +`</td>
                             <td class="text-center">`+ usuario +`</td>
                             <td class="text-center">`+ estado +`</td>
                             <td class="text-center">`+ fecha +`</td>
-                            <td class="text-center"><button class="btn btn-xs btn-danger eliminar-observacion" data-id="`+ element.id +`" data-cobranza="`+ element.id_registro_cobranza +`"><i class="fa fa-trash"></i></button></td>
+                            <td class="text-center"><button class="btn btn-xs btn-danger eliminar-observacion" data-id="`+ element.id +`" data-cobranza="`+ element.cobranza_id +`"><i class="fa fa-trash"></i></button></td>
                         </tr>`;
                     });
                 } else {
@@ -798,7 +819,7 @@ function listarAcciones(id, tipo) {
 
                         if (tipo == 'penalidad') {
                             if (estado_pen != 'DEVOLUCION' || estado_pen != 'ANULADA') {
-                                opcion += 
+                                opcion +=
                                 `<button class="btn btn-xs btn-success estados" data-id="`+ element.id_penalidad +`" data-cobranza="`+ element.id_registro_cobranza +`" data-evento="DEVOLUCION" title="Devolución"><i class="fa fa-exchange-alt"></i></button>
                                 <button class="btn btn-xs btn-warning estados" data-id="`+ element.id_penalidad +`" data-cobranza="`+ element.id_registro_cobranza +`" data-evento="ANULADA" title="Anular"><i class="fa fa-ban"></i></button>`;
                             }
