@@ -532,12 +532,12 @@ function listar() {
                     $('#modal-filtros').modal('show');
                 }, className: 'btn-default btn-sm'
             },
-            // {
-            //     text: '<i class="fas fa-file-excel"></i> Descargar',
-            //     action: () => {
-            //         exportarExcel();
-            //     }, className: 'btn-default btn-sm'
-            // },
+            {
+                text: '<i class="fas fa-file-excel"></i> Descargar',
+                action: () => {
+                    exportarExcel();
+                }, className: 'btn-default btn-sm'
+            },
             // {
             //     text: '<i class="fas fa-file-excel"></i> Descargar Power BI',
             //     action: () => {
@@ -933,4 +933,8 @@ function diasAtraso() {
 
     $('[name="atraso"]').val(diasAtraso);
     $('[name="dias_atraso"]').val(diasAtraso);
+}
+
+function exportarExcel() {
+    window.open('exportar-excel')
 }
