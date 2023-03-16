@@ -460,7 +460,7 @@ class CobranzaController extends Controller
                 if ($request->id_penalidad == 0) {
                     $penalidad->estado_penalidad = $estado;
                 }
-                $penalidad->id_usuario = Auth::user()->id_usuario;
+                // $penalidad->id_usuario = Auth::user()->id_usuario;
             $penalidad->save();
         }
         return response()->json(["status" => 200, "success" => true, "data" => $penalidad]);

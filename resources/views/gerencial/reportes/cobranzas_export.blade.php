@@ -32,12 +32,12 @@
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="35">Categoría</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="30">Observaciones</th>
 
-                {{--  <th style="border: 6px solid #000 !important; text-align: center;" width="20">Penalidad</th>
+                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Penalidad</th>
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Penalidad Monto</th>
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Retención</th>
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Retención Monto</th>
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción</th>
-                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción Monto</th>  --}}
+                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción Monto</th>
             </tr>
         </thead>
         <tbody>
@@ -66,12 +66,12 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->categoria }}</td>
                 <td style="border: 6px solid #000 !important;"><p>{{ $item->observacion }}</p></td>
 
-                {{--  <td style="border: 6px solid #000 !important;">{{ $item->penalidad }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->penalidad }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->penalidad_importe }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->retencion }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->retencion_importe }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->detraccion }}</td>
-                <td style="border: 6px solid #000 !important;">{{ $item->detraccion_importe }}</td>  --}}
+                <td style="border: 6px solid #000 !important;">{{ $item->detraccion_importe }}</td>
 
             </tr>
             @endforeach
