@@ -1807,7 +1807,11 @@ class ListaOrdenView {
                 const $filter = $('#listaOrdenes_filter');
                 const $input = $filter.find('input');
                 
-                const selectFiltro= '<select class="form-control input-sm ml-4 handleChangeFiltroListaOrdenes" id="selectFiltroListaOrden" style="margin-left: 1rem;"> <option value="SIN_FILTRO" >Todo</option> <option value="ORDENES_SIN_ENVIAR_A_PAGO">Ordenes sin envío a pago</option> </select>';
+                const selectFiltro= `<select class="form-control input-sm ml-4 handleChangeFiltroListaOrdenes" id="selectFiltroListaOrden" style="margin-left: 1rem;"> 
+                    <option value="SIN_FILTRO" >Todo</option>
+                    <option value="ORDENES_SIN_ENVIAR_A_PAGO">Ordenes sin envío a pago</option> 
+                    <option value="ORDENES_AUTORIZADAS_PARA_PAGO">Ordenes autorizadas para pago</option> 
+                    </select>`;
                 document.querySelector("div[id='listaOrdenes_wrapper'] div[class='dt-buttons btn-group']").insertAdjacentHTML('afterbegin', selectFiltro);
                 document.querySelector("select[id='selectFiltroListaOrden']").value=that.filtro;
 
