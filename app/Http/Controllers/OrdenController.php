@@ -1037,6 +1037,9 @@ class OrdenController extends Controller
                     return $query->whereIn('ordenes_view.estado_pago', [1]);
 
                     break;
+                case 'ORDENES_AUTORIZADAS_PARA_PAGO':
+                    return $query->whereIn('ordenes_view.estado_pago', [5]);
+                    break;
                 
                 default:
                     break;
@@ -4685,7 +4688,9 @@ class OrdenController extends Controller
                     case 'ORDENES_SIN_ENVIAR_A_PAGO':
                         return $query->whereIn('ordenes_view.estado_pago',[1]);
                         break;
-                    
+                    case 'ORDENES_AUTORIZADAS_PARA_PAGO':
+                        return $query->whereIn('ordenes_view.estado_pago', [5]);
+                        break;
                     default:
                         # code...
                         break;
