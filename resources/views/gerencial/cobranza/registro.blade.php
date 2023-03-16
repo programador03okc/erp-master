@@ -21,8 +21,12 @@
             margin-bottom: 15px;
         }
 
-        .flag-amarillo {
+        .flag-rojo {
             background-color: #ffd6d6;
+        }
+
+        .flag-amarillo {
+            background-color: #fff799;
         }
     </style>
 @endsection
@@ -87,10 +91,10 @@
                     <h3 class="modal-title"></h3>
 				</div>
 				<div class="modal-body">
-                    <input type="hidden" name="id" id="id">
+                    <input type="hidden" name="id" id="id" value="0">
                     <input type="hidden" name="id_doc_ven" value="">
                     <input type="hidden" name="id_oc" value="">
-                    
+
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -315,18 +319,18 @@
                         </div>
 					</div>
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <h6>Fecha inicio :</h6>
-                                        <input id="fecha_inicio_nuevo" class="form-control text-center" type="date" name="fecha_inicio">
+                                        <input id="fecha_inicio_nuevo" class="form-control input-sm text-center" type="date" name="fecha_inicio">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <h6>Fecha entrega :</h6>
-                                        <input id="fecha_entrega_nuevo" class="form-control text-center" type="date" name="fecha_entrega">
+                                        <h6>Fecha termino :</h6>
+                                        <input id="fecha_entrega_nuevo" class="form-control input-sm text-center" type="date" name="fecha_entrega">
                                     </div>
                                 </div>
                             </div>
@@ -480,7 +484,7 @@
                                         <label for="">Fecha :</label>
                                         <input type="date" class="form-control text-center" name="fecha_fase" value="{{date('Y-m-d')}}" required>
                                     </div>
-        
+
                                 </div>
                             </div>
                             <div class="row">

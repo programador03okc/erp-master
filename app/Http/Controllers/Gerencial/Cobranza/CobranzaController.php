@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
+use App\Exports\CobranzaExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Empresa;
@@ -33,6 +34,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 ini_set('max_execution_time', '0');
@@ -115,7 +117,7 @@ class CobranzaController extends Controller
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li><a href="javascript: void(0);" class="editar" data-id="'. $data->id .'" data-toggle="tooltip" title="Editar" data-original-title="Editar">Editar</a></li>
                     <li><a href="javascript: void(0);" class="fases" data-id="'. $data->id .'" title="Fases">Fases</a></li>';
-                
+
                 if ($data->estado_cobranza == 'PAGADO') {
                     $btn.= '
                     <li><a href="javascript: void(0);" class="acciones" data-accion="penalidad" data-id="'. $data->id .'"data-toggle="tooltip" title="Penalidad">Penalidades</a></li>
@@ -143,6 +145,7 @@ class CobranzaController extends Controller
         DB::beginTransaction();
         try {
             $empresa = Empresa::find($request->empresa);
+            $programacion_pago = [];
 
             /**
              * Registro de cobranza
@@ -178,14 +181,16 @@ class CobranzaController extends Controller
                 $cobranza->id_oc = $request->id_oc;
             $cobranza->save();
 
-            /**
-             * Registro de Fase automática
-             */
-            $nuevo = new RegistroCobranzaFase();
-                $nuevo->id_registro_cobranza = $cobranza->id_registro_cobranza;
-                $nuevo->fase = 'COMPROMISO';
-                $nuevo->fecha = $cobranza->fecha_registro;
-            $nuevo->save();
+            if ($request->id == 0) {
+                /**
+                 * Registro de Fase automática
+                 */
+                $nuevo = new RegistroCobranzaFase();
+                    $nuevo->id_registro_cobranza = $cobranza->id_registro_cobranza;
+                    $nuevo->fase = 'COMPROMISO';
+                    $nuevo->fecha = $cobranza->fecha_registro;
+                $nuevo->save();
+            }
 
             /**
              * Programacion de pagos
@@ -200,21 +205,21 @@ class CobranzaController extends Controller
             /**
              * Penalidad automática
              */
-            if ($request->importe) {
-                if (intval($request->dias_atraso) > 0) {
-                    $formula_penalidad = (0.10 * floatval($request->importe))/(0.4*intval($request->dias_atraso));
-                    $penalidad = new Penalidad();
-                        $penalidad->tipo                    = 'PENALIDAD';
-                        $penalidad->monto                   = $formula_penalidad;
-                        $penalidad->documento               = '--';
-                        $penalidad->fecha                   = date('Y-m-d');
-                        $penalidad->observacion             = 'PENALIDAD CALCULADA';
-                        $penalidad->estado                  = 1;
-                        $penalidad->fecha_registro          = date('Y-m-d H:i:s');
-                        $penalidad->id_registro_cobranza    = $cobranza->id_registro_cobranza;
-                    $penalidad->save();
-                }
-            }
+            // if ($request->importe) {
+            //     if (intval($request->dias_atraso) > 0) {
+            //         $formula_penalidad = (0.10 * floatval($request->importe))/(0.4*intval($request->dias_atraso));
+            //         $penalidad = new Penalidad();
+            //             $penalidad->tipo                    = 'PENALIDAD';
+            //             $penalidad->monto                   = $formula_penalidad;
+            //             $penalidad->documento               = '--';
+            //             $penalidad->fecha                   = date('Y-m-d');
+            //             $penalidad->observacion             = 'PENALIDAD CALCULADA';
+            //             $penalidad->estado                  = 1;
+            //             $penalidad->fecha_registro          = date('Y-m-d H:i:s');
+            //             $penalidad->id_registro_cobranza    = $cobranza->id_registro_cobranza;
+            //         $penalidad->save();
+            //     }
+            // }
 
             /**
              * Consulta de OCAM y CDP
@@ -243,6 +248,15 @@ class CobranzaController extends Controller
                         ]);
                     }
                 }
+
+                $penalidad = Penalidad::where('id_registro_cobranza', $cobranza->id_registro_cobranza)->where('estado', 1)->get();
+                if ($penalidad) {
+                    foreach ($penalidad as $key) {
+                        $actualizarPenalidad = Penalidad::find($key->id_penalidad);
+                            $actualizarPenalidad->id_oc = $cobranza->id_oc;
+                        $actualizarPenalidad->save();
+                    }
+                }
             }
             DB::commit();
             return response()->json(["success" => true, "status" => 200, "data" => $cobranza, "pago" => $programacion_pago, "view" => $ordenVista]);
@@ -263,7 +277,7 @@ class CobranzaController extends Controller
 
         $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)
             ->where('estado', 1)->orWhere('id_cobranza', $registro_cobranza->id_cobranza_old)
-            ->orderBy('id_programacion_pago','desc')->first();
+            ->orderBy('id_programacion_pago', 'desc')->first();
 
         return response()->json(["status" => 200, "success" => true, "data" => $registro_cobranza, "programacion_pago" => $programacion_pago, "cliente" => $contribuyente]);
     }
@@ -278,7 +292,7 @@ class CobranzaController extends Controller
 
     public function listarClientes()
     {
-        $data = Cliente::has('contribuyente')->select(['*']);
+        $data = Cliente::has('contribuyente')->get();
         return DataTables::of($data)
         ->addColumn('id_contribuyente', function ($data) { return $data->contribuyente->id_contribuyente; })
         ->addColumn('documento_cliente', function ($data) { return $data->contribuyente->nro_documento; })
@@ -287,63 +301,82 @@ class CobranzaController extends Controller
 
     public function buscarRegistro(Request $request)
     {
-        $data = DB::table('almacen.requerimiento_logistico_view');
+        // $data = DB::table('almacen.requerimiento_logistico_view');
+        // if ($request->tipo == 'oc') {
+        //     $data->where('requerimiento_logistico_view.nro_orden', $request->valor);
+        // }
+        // if ($request->tipo == 'cdp') {
+        //     $data->where('requerimiento_logistico_view.codigo_oportunidad', $request->valor);
+        // }
+        // $data = $data->select(
+        //     'requerimiento_logistico_view.id_requerimiento_logistico',
+        //     'requerimiento_logistico_view.codigo_oportunidad',
+        //     'requerimiento_logistico_view.nro_orden',
+        //     'doc_ven.serie',
+        //     'doc_ven.numero',
+        //     'doc_ven.fecha_emision'
+        // )
+        // ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+        // ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')->distinct();
+
+        // $data = DB::table('mgcp_ordenes_compra.oc_propias_view');
+
+
         if ($request->tipo == 'oc') {
-            $data->where('requerimiento_logistico_view.nro_orden', $request->valor);
+            // $data->where('requerimiento_logistico_view.nro_orden', $request->valor);
+            $data = OrdenCompraPropiaView::where('nro_orden',$request->valor)->distinct();
         }
         if ($request->tipo == 'cdp') {
-            $data->where('requerimiento_logistico_view.codigo_oportunidad', $request->valor);
+            // $data->where('requerimiento_logistico_view.codigo_oportunidad', $request->valor);
+            $data = OrdenCompraPropiaView::where('codigo_oportunidad',$request->valor)->distinct();
         }
-        $data = $data->select(
-            'requerimiento_logistico_view.id_requerimiento_logistico',
-            'requerimiento_logistico_view.codigo_oportunidad',
-            'requerimiento_logistico_view.nro_orden',
-            'doc_ven.serie',
-            'doc_ven.numero',
-            'doc_ven.fecha_emision'
-        )
-        ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
-        ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')->distinct();
 
         return DataTables::of($data)->addColumn('documento', function ($data) { return $data->serie.'-'.$data->numero; })->make(true);
     }
 
     public function cargarDatosRequerimiento($id_requerimiento)
     {
-        $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view')
-        ->where('requerimiento_logistico_view.id_requerimiento_logistico', $id_requerimiento)
-        ->select(
-            'requerimiento_logistico_view.id_requerimiento_logistico',
-            'requerimiento_logistico_view.codigo_oportunidad',
-            'requerimiento_logistico_view.nro_orden',
-            'requerimiento_logistico_view.id_contribuyente_cliente',
-            'requerimiento_logistico_view.id_contribuyente_empresa',
-            'doc_vent_req.id_documento_venta_requerimiento',
-            'doc_ven.id_doc_ven',
-            'doc_ven.serie',
-            'doc_ven.numero',
-            'doc_ven.fecha_emision',
-            'doc_ven.credito_dias',
-            'doc_ven.total_a_pagar',
-            'adm_contri.nro_documento',
-            'adm_contri.razon_social',
-            'com_cliente.id_cliente'
-        )
-        ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
-        ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')
+        // $cliente_gerencial = DB::table('almacen.requerimiento_logistico_view')
+        // ->where('requerimiento_logistico_view.id_requerimiento_logistico', $id_requerimiento)
+        // ->select(
+        //     'requerimiento_logistico_view.id_requerimiento_logistico',
+        //     'requerimiento_logistico_view.codigo_oportunidad',
+        //     'requerimiento_logistico_view.nro_orden',
+        //     'requerimiento_logistico_view.id_contribuyente_cliente',
+        //     'requerimiento_logistico_view.id_contribuyente_empresa',
+        //     'doc_vent_req.id_documento_venta_requerimiento',
+        //     'doc_ven.id_doc_ven',
+        //     'doc_ven.serie',
+        //     'doc_ven.numero',
+        //     'doc_ven.fecha_emision',
+        //     'doc_ven.credito_dias',
+        //     'doc_ven.total_a_pagar',
+        //     'adm_contri.nro_documento',
+        //     'adm_contri.razon_social',
+        //     'com_cliente.id_cliente'
+        // )
+        // ->join('almacen.doc_vent_req', 'doc_vent_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+        // ->join('almacen.doc_ven', 'doc_ven.id_doc_ven', '=', 'doc_vent_req.id_doc_venta')
 
-        ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
-        ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
-        ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')->first();
+        // ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'requerimiento_logistico_view.id_requerimiento_logistico')
+        // ->join('comercial.com_cliente', 'com_cliente.id_cliente', '=', 'alm_req.id_cliente')
+        // ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'com_cliente.id_contribuyente')->first();
 
         $doc_ven = [];
-        $oc_propias_view = DB::table('mgcp_ordenes_compra.oc_propias_view')->where('nro_orden',$cliente_gerencial->nro_orden)->first();
+        // $oc_propias_view = DB::table('mgcp_ordenes_compra.oc_propias_view')->where('nro_orden',$cliente_gerencial->nro_orden)->first();
 
-        if ($cliente_gerencial) {
-            $doc_ven = DocumentoVenta::where('id_doc_ven', $cliente_gerencial->id_doc_ven)->first();
-            return response()->json(["status"=>200, "success"=>true, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=>$oc_propias_view ? $oc_propias_view:[]]);
+
+        // if ($cliente_gerencial) {
+        //     $doc_ven = DocumentoVenta::where('id_doc_ven', $cliente_gerencial->id_doc_ven)->first();
+        //     return response()->json(["status"=>200, "success"=>true, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=>$oc_propias_view ? $oc_propias_view:[]]);
+        // }else{
+        //     return response()->json(["status"=>400, "success"=>false, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=> $oc_propias_view ? $oc_propias_view : []]);
+        // }
+        $oc_propias_view = OrdenCompraPropiaView::find($id_requerimiento);
+        if ($oc_propias_view) {
+            return response()->json(["status"=>200,"data"=>$oc_propias_view],200);
         }else{
-            return response()->json(["status"=>400, "success"=>false, "data"=>$cliente_gerencial, "factura"=>$doc_ven, "oc"=> $oc_propias_view ? $oc_propias_view : []]);
+            return response()->json(["status"=>401],401);
         }
     }
 
@@ -427,6 +460,7 @@ class CobranzaController extends Controller
                 if ($request->id_penalidad == 0) {
                     $penalidad->estado_penalidad = $estado;
                 }
+                // $penalidad->id_usuario = Auth::user()->id_usuario;
             $penalidad->save();
         }
         return response()->json(["status" => 200, "success" => true, "data" => $penalidad]);
@@ -438,7 +472,6 @@ class CobranzaController extends Controller
             $penalidad->estado_penalidad = $request->estado_penalidad;
             $penalidad->motivo = ($request->estado_penalidad == 'DEVOLUCION') ? $request->estado_penalidad.' DE LA PENALIDAD' : 'PENALIDAD '.$request->estado_penalidad;
         $penalidad->save();
-        // $penalidades = Penalidad::where('estado', '!=', 7)->where('tipo', $request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
 
         if ($request->estado_penalidad == 'DEVOLUCION') {
             $control = new PenalidadCobro();
@@ -450,6 +483,11 @@ class CobranzaController extends Controller
             $control->save();
         }
         return response()->json($penalidad,200);
+    }
+
+    public function exportarExcel()
+    {
+        return Excel::download(new CobranzaExport(), 'cobranza.xlsx');
     }
 
     /**
@@ -470,7 +508,7 @@ class CobranzaController extends Controller
         }
         return response()->json($cont, 200);
     }
-    
+
     public function scriptFasesActual()
     {
         $cobranzas_fases = DB::table('gerencial.cobranza_fase')->where('estado', 1)->get();
@@ -588,4 +626,22 @@ class CobranzaController extends Controller
 		$diasFalt = ((($dif / 60) / 60) / 24);
 		return ceil($diasFalt);
 	}
+    public function scriptContribuyenteCliente()
+    {
+        $contribuyente = Contribuyente::all();
+        $array_clientes_nuevos=array();
+        foreach ($contribuyente as $key => $value) {
+            $com_cliente = Cliente::where('id_contribuyente',$value->id_contribuyente)->first();
+            if (!$com_cliente) {
+                $com_cliente = new Cliente();
+                $com_cliente->id_contribuyente = $value->id_contribuyente;
+                // $com_cliente->observacion = $request->observacion;
+                $com_cliente->estado = 1;
+                // $com_cliente->fecha_registro = new Carbon();
+                $com_cliente->save();
+                array_push($array_clientes_nuevos,$com_cliente);
+            }
+        }
+        return response()->json(["data"=>$array_clientes_nuevos],200);
+    }
 }

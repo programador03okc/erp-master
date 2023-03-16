@@ -36,12 +36,12 @@ class ClienteController extends Controller
     }
     public function listarCliente()
     {
-        // $data = Contribuyente::where('adm_contri.estado',1)
-        // ->select(
-        //     'adm_contri.*'
-        // )
-        // ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
-        $data = Contribuyente::all();
+        $data = Contribuyente::where('adm_contri.estado',1)
+        ->select(
+            'adm_contri.*'
+        )
+        ->join('comercial.com_cliente', 'com_cliente.id_contribuyente', '=', 'adm_contri.id_contribuyente');
+        // $data = Contribuyente::all();
         return DataTables::of($data)
         // return datatables($data)
         // ->toJson();
@@ -216,12 +216,17 @@ class ClienteController extends Controller
             $icon = 'success';
         }
 
-        $com_cliente = Cliente::find($request->id_cliente);
-        $com_cliente->id_contribuyente = $contribuyente->id_contribuyente;
-        $com_cliente->observacion = $request->observacion;
-        $com_cliente->estado = 1;
-        // $com_cliente->fecha_registro = new Carbon();
-        $com_cliente->save();
+        $com_cliente = Cliente::where('id_contribuyente',$contribuyente->id_contribuyente)->first();
+        // $com_cliente = Cliente::find($request->id_cliente);
+        // return $com_cliente;exit;
+        if ($com_cliente) {
+            $com_cliente->id_contribuyente = $contribuyente->id_contribuyente;
+            $com_cliente->observacion = $request->observacion;
+            $com_cliente->estado = 1;
+            // $com_cliente->fecha_registro = new Carbon();
+            $com_cliente->save();
+        }
+
 
         if ($com_cliente) {
 

@@ -2290,7 +2290,7 @@ Route::group(['middleware' => ['auth']], function () {
 			/**
 			 * Módulo cobranzas
 			 * */
-			
+
 			Route::get('index', 'Gerencial\Cobranza\CobranzaController@index')->name('index');
 			Route::post('listar', 'Gerencial\Cobranza\CobranzaController@listar')->name('listar');
 			Route::post('listar-clientes', 'Gerencial\Cobranza\CobranzaController@listarClientes')->name('listar-clientes');
@@ -2308,8 +2308,9 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('filtros-cobranzas', 'Gerencial\Cobranza\CobranzaController@filtros')->name('filtros-cobranzas');
 			Route::post('obtener-penalidades', 'Gerencial\Cobranza\CobranzaController@obtenerPenalidades')->name('obtener-penalidades');
 			Route::post('guardar-penalidad', 'Gerencial\Cobranza\CobranzaController@guardarPenalidad')->name('guardar-penalidad');
-			Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad')->name('cambio-estado-penalidad');
-			
+			Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\CobranzaController@cambioEstadoPenalidad')->name('cambio-estado-penalidad');
+			Route::get('exportar-excel', 'Gerencial\Cobranza\CobranzaController@exportarExcel')->name('exportar-excel');
+
 			/**
 			 * Script para recuperar la info de Gerencia e Iniciar en las nuevas tablas
 			 */
@@ -2317,6 +2318,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('script-periodo', 'Gerencial\Cobranza\CobranzaController@scriptPeriodos')->name('script-periodo');
 				Route::get('script-fases-inicial', 'Gerencial\Cobranza\CobranzaController@scriptRegistroFase')->name('script-fases-inicial');
 				Route::get('script-cobranza-fase', 'Gerencial\Cobranza\CobranzaController@scriptFases')->name('script-cobranza-fase');
+                #pasa los contribuyentes a clientes
+                Route::get('script-contribuyentes-clientes', 'Gerencial\Cobranza\CobranzaController@scriptContribuyenteCliente')->name('script-contribuyente-cliente');
 			});
 
 
@@ -2418,7 +2421,7 @@ Route::group(['middleware' => ['auth']], function () {
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
 			#exportar excel
-			Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
+			// Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
 			Route::post('exportar-excel-prueba', 'Gerencial\Cobranza\RegistroController@exportarExcelPrueba');
             // editar penalidad
 			Route::get('editar-penalidad/{id}', 'Gerencial\Cobranza\RegistroController@editarPenalidad');
