@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Debugbar;
 use Exception;
 use Illuminate\Support\Facades\Mail;
+use Yajra\DataTables\Facades\DataTables;
 
 class RevisarAprobarController extends Controller{
 
@@ -395,8 +396,9 @@ class RevisarAprobarController extends Controller{
         foreach ($allRol as  $rol) {
             $idRolUsuarioList[] = $rol->id_rol;
         }
-        $documentos = DocumentosView::whereNotIn('id_estado',[1,7])->whereIn('ultimo_rol_aprobador',$idRolUsuarioList)->get();
-        return datatables($documentos)->toJson();
+        $documentos = DocumentosView::whereNotIn('id_estado',[1,7])->whereIn('ultimo_rol_aprobador',$idRolUsuarioList);
+        
+        return DataTables::of($documentos)->toJson();
     }
 
     public function obtenerRelacionadoAIdDocumento($tipoDocumento,$idDocumento){

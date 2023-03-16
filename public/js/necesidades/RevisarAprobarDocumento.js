@@ -326,13 +326,17 @@ class RevisarAprobarDocumentoView {
             'language': vardataTables[0],
             'order': [[12, 'asc']],
             'bLengthChange': false,
-            // 'serverSide': false,
+            'serverSide': true,
             'destroy': true,
             'ajax': {
                 'url': 'documentos-aprobados',
                 'type': 'POST',
                 beforeSend: data => {
-
+                    $("#listaDocumetosRevisados").LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
                 }
 
             },
@@ -416,6 +420,8 @@ class RevisarAprobarDocumentoView {
 
             },
             "drawCallback": function (settings) {
+                $("#listaDocumetosRevisados").LoadingOverlay("hide", true);
+
             }
         });
     }
