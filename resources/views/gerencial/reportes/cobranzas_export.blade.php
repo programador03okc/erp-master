@@ -1,77 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h2>Lista de Cobranzas </h2>
+    <br>
+    <table>
+        <thead>
+            <tr style="text-align: center;">
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Empresa</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Tipo</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">RUC Cliente</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">Cliente</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">OCAM</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Fact.</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">UU.EE.</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">OC.</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">SIAF</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">FTE FTO</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Fecha Emisión</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Fecha Recepción</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Periodo</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Moneda</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Importe</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Plazo Crédito </th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Estado</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Fase</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">Area Responsable</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">Vendedor</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="35">Categoría</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="30">Observaciones</th>
 
-<h3>Lista de Cobranzas </h3>
-<table>
-    <thead>
-        <tr style="text-align: center;">
-            <th style="border: 6px solid #000 !important;text-align: center;" width="10">Empresa</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="10">Tipo</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="15">RUC Cliente</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="25">Cliente</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="25">OCAM</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="15">Fact.</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="10">UU.EE.</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">OC.</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="10">SIAF</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="10">FTE FTO</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="15">Fecha Emisión</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="15">Fecha Recepción</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="10">Moneda</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="10">Importe</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">Plazo Crédito </th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">Días de Retraso</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">Estado</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="10">Fase</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="25">Area Responsable</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="25">Vendedor</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="30">Programación de Pago </th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="35">Categoría</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="30">Observaciones</th>
+                {{--  <th style="border: 6px solid #000 !important; text-align: center;" width="20">Penalidad</th>
+                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Penalidad Monto</th>
+                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Retención</th>
+                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Retención Monto</th>
+                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción</th>
+                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción Monto</th>  --}}
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($data as $item)
+            <tr>
+                <td style="border: 6px solid #000 !important;">{{ $item->empresa }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->sector }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->cliente_ruc }}</td>
+                <td style="border: 6px solid #000 !important;" ><p>{{ $item->cliente }}</p></td>
+                <td style="border: 6px solid #000 !important;">{{ $item->ocam }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->factura }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->uu_ee }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->oc_fisica }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->siaf }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->fuente_financ }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->fecha_emision }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->fecha_recepcion }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->periodo }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->moneda }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->importe }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->plazo_credito }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->estado_cobranza }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->fase }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->area }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->vendedor }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->categoria }}</td>
+                <td style="border: 6px solid #000 !important;"><p>{{ $item->observacion }}</p></td>
 
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">Penalidad</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">Penalidad Monto</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">Retención</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">Retención Monto</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">Detracción</th>
-            <th style="border: 6px solid #000 !important;text-align: center;" width="20">Detracción Monto</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($data as $requerimiento)
-        <tr>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->codigo_empresa }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->nombre_sector }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->cliente_ruc }}</td>
-            <td style="border: 6px solid #000 !important;" ><p>{{ $requerimiento->cliente }}</p></td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->ocam }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->factura }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->uu_ee }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->oc_fisica }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->siaf }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->fuente_financ }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->fecha_emision }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->fecha_recepcion }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->moneda }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->importe }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->plazo_credito }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->atraso }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->estado }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->fase }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->area }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->vendedor }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->fecha_pago }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->categoria }}</td>
-            <td style="border: 6px solid #000 !important;"><p>{{ $requerimiento->observacion }}</p></td>
+                {{--  <td style="border: 6px solid #000 !important;">{{ $item->penalidad }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->penalidad_importe }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->retencion }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->retencion_importe }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->detraccion }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->detraccion_importe }}</td>  --}}
 
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->penalidad }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->penalidad_importe }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->retencion }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->retencion_importe }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->detraccion }}</td>
-            <td style="border: 6px solid #000 !important;">{{ $requerimiento->detraccion_importe }}</td>
-
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-
-
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+</body>
+</html>

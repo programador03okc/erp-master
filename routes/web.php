@@ -2308,7 +2308,8 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('filtros-cobranzas', 'Gerencial\Cobranza\CobranzaController@filtros')->name('filtros-cobranzas');
 			Route::post('obtener-penalidades', 'Gerencial\Cobranza\CobranzaController@obtenerPenalidades')->name('obtener-penalidades');
 			Route::post('guardar-penalidad', 'Gerencial\Cobranza\CobranzaController@guardarPenalidad')->name('guardar-penalidad');
-			Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\RegistroController@cambioEstadoPenalidad')->name('cambio-estado-penalidad');
+			Route::post('cambio-estado-penalidad', 'Gerencial\Cobranza\CobranzaController@cambioEstadoPenalidad')->name('cambio-estado-penalidad');
+			Route::get('exportar-excel', 'Gerencial\Cobranza\CobranzaController@exportarExcel')->name('exportar-excel');
 
 			/**
 			 * Script para recuperar la info de Gerencia e Iniciar en las nuevas tablas
@@ -2420,7 +2421,7 @@ Route::group(['middleware' => ['auth']], function () {
 			// Route::group(['as' => 'cliente.', 'prefix' => 'cliente'], function () {
 			Route::get('buscar-cliente-seleccionado/{id}', 'Gerencial\Cobranza\RegistroController@buscarClienteSeleccionado');
 			#exportar excel
-			Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
+			// Route::get('exportar-excel/{request}', 'Gerencial\Cobranza\RegistroController@exportarExcel');
 			Route::post('exportar-excel-prueba', 'Gerencial\Cobranza\RegistroController@exportarExcelPrueba');
             // editar penalidad
 			Route::get('editar-penalidad/{id}', 'Gerencial\Cobranza\RegistroController@editarPenalidad');

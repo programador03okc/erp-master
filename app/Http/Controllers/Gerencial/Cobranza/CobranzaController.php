@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
+use App\Exports\CobranzaExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Empresa;
@@ -33,6 +34,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 ini_set('max_execution_time', '0');
@@ -470,7 +472,6 @@ class CobranzaController extends Controller
             $penalidad->estado_penalidad = $request->estado_penalidad;
             $penalidad->motivo = ($request->estado_penalidad == 'DEVOLUCION') ? $request->estado_penalidad.' DE LA PENALIDAD' : 'PENALIDAD '.$request->estado_penalidad;
         $penalidad->save();
-        // $penalidades = Penalidad::where('estado', '!=', 7)->where('tipo', $request->tipo)->where('id_registro_cobranza',$request->id_registro_cobranza)->get();
 
         if ($request->estado_penalidad == 'DEVOLUCION') {
             $control = new PenalidadCobro();
@@ -482,6 +483,11 @@ class CobranzaController extends Controller
             $control->save();
         }
         return response()->json($penalidad,200);
+    }
+
+    public function exportarExcel()
+    {
+        return Excel::download(new CobranzaExport(), 'cobranza.xlsx');
     }
 
     /**
