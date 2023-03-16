@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <style>
+        h1 {
+            font-size: 30px !important;
+        }
+    </style>
 </head>
 <body>
-    <h2>Lista de Cobranzas </h2>
+    <h1>Lista de Cobranzas </h1>
     <br>
     <table>
         <thead>
