@@ -14,6 +14,7 @@ use App\Models\Configuracion\Departamento;
 use App\Models\Configuracion\Pais;
 use App\Models\Configuracion\SisUsua;
 use App\Models\Contabilidad\Contribuyente;
+use App\Models\contabilidad\ContribuyenteView;
 use App\models\Gerencial\CobranzaFase;
 use App\Models\Gerencial\CobranzaView;
 use App\models\Gerencial\EstadoDocumento;
@@ -294,11 +295,9 @@ class CobranzaController extends Controller
 
     public function listarClientes()
     {
-        $data = Cliente::has('contribuyente')->get();
-        return DataTables::of($data)
-        ->addColumn('id_contribuyente', function ($data) { return $data->contribuyente->id_contribuyente; })
-        ->addColumn('documento_cliente', function ($data) { return $data->contribuyente->nro_documento; })
-        ->addColumn('nombre_cliente', function ($data) { return $data->contribuyente->razon_social; })->make(true);
+        // $data = Cliente::has('contribuyente')->get();
+        $data = ContribuyenteView::select(['*'])->where('tipo', 'CLIENTE');
+        return DataTables::of($data)->make(true);
     }
 
     public function buscarRegistro(Request $request)
