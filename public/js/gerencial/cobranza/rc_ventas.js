@@ -713,7 +713,11 @@ function fuenteFinan(valor) {
     } else if (valor == 4){
         opcion += '<option value="13">DONACIONES Y TRANSFERENCIAS</option>';
     } else if (valor == 5){
-        opcion += '<option value="04">CONTRIBUCIONES A FONDOS</option><option value="07">FONDO DE COMPENSACION MUNICIPAL</option><option value="08">IMPUESTOS MUNICIPALES</option><option value="18">CANON Y SOBRECANON, REGALIAS, RENTA DE ADUANAS Y PARTICIPACIONES</option>';
+        opcion += `<option value="04">CONTRIBUCIONES A FONDOS</option>
+        <option value="07">FONDO DE COMPENSACION MUNICIPAL</option>
+        <option value="08">IMPUESTOS MUNICIPALES</option>
+        <option value="15">FONDO DE COMPENSACION REGIONAL</option>
+        <option value="18">CANON Y SOBRECANON, REGALIAS, RENTA DE ADUANAS Y PARTICIPACIONES</option>`;
     }
     $('#rubro').append(opcion);
 }
