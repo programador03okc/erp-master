@@ -651,7 +651,7 @@ class CobranzaController extends Controller
 
         $com_cliente = Cliente::orderBy('id_cliente','ASC')->where('codigo',null)->get();
         foreach ($com_cliente as $key => $value) {
-            $codigo = ConfiguracionHelper::generarCodigo('','',3,'clienteCodigo');
+            $codigo = ConfiguracionHelper::generarCodigo('C','-',3,'clienteCodigo');
             $cliente = Cliente::find($value->id_cliente);
             $cliente->codigo = $codigo;
             $cliente->save();
@@ -666,7 +666,7 @@ class CobranzaController extends Controller
 
         $log_proveedor = Proveedor::orderBy('id_proveedor','ASC')->where('codigo',null)->get();
         foreach ($log_proveedor as $key => $value) {
-            $codigo = ConfiguracionHelper::generarCodigo('','',3,'proveedoresCodigo');
+            $codigo = ConfiguracionHelper::generarCodigo('P','-',3,'proveedoresCodigo');
             $proveedor = Proveedor::find($value->id_proveedor);
             $proveedor->codigo = $codigo;
             $proveedor->save();

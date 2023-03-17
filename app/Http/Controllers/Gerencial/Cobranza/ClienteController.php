@@ -88,7 +88,7 @@ class ClienteController extends Controller
             $com_cliente = Cliente::where('id_contribuyente',$contribuyente->id_contribuyente)->where('estado',1)->first();
 
             if (!$com_cliente) {
-                $codigo = ConfiguracionHelper::generarCodigo('','',3,'cliente');
+                $codigo = ConfiguracionHelper::generarCodigo('C','-',3,'cliente');
                 $com_cliente = new Cliente();
                 $com_cliente->id_contribuyente = $contribuyente->id_contribuyente;
                 $com_cliente->observacion = $request->observacion;
