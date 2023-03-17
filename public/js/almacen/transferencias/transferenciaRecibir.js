@@ -10,6 +10,7 @@ function open_transferencia_detalle(data) {
         $("[name=almacen_destino]").val(data.alm_destino_descripcion);
         $("[name=responsable_destino]").val(usuario_session);
         $("[name=estado]").val(data.estado);
+        $("[name=id_transferencia_recibir]").val(data.id_transferencia);
         $("#submit_transferencia").removeAttr("disabled");
 
         if (data.estado == 14 || data.estado == 7) {
@@ -170,7 +171,7 @@ function recibir() {
 
                 $("#submit_transferencia").attr("disabled", "true");
 
-                var id_transferencia = $("[name=id_transferencia]").val();
+                var id_transferencia = $("[name=id_transferencia_recibir]").val();
                 var id_guia_ven = $("[name=id_guia_ven]").val();
                 var id_req = $("[name=id_requerimiento]").val();
                 var fecha_almacen = $("[name=fecha_almacen_recibir]").val();
