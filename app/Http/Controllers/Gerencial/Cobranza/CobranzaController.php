@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
 use App\Exports\CobranzaExport;
+use App\Helpers\ConfiguracionHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Empresa;
@@ -26,6 +27,7 @@ use App\Models\Gerencial\RegistroCobranzaFase;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
 use App\Models\Gerencial\Vendedor;
+use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\AcuerdoMarco\OrdenCompraPropias;
 use App\Models\mgcp\OrdenCompra\Propia\Directa\OrdenCompraDirecta;
 use App\Models\mgcp\OrdenCompra\Propia\OrdenCompraPropiaView;
@@ -643,5 +645,35 @@ class CobranzaController extends Controller
             }
         }
         return response()->json(["data"=>$array_clientes_nuevos],200);
+    }
+    public function scriptGenerarCodigoCliente()
+    {
+        $sincodigo = Cliente::where('codigo','!=',null)->count();
+
+        $com_cliente = Cliente::orderBy('id_cliente','ASC')->where('codigo',null)->get();
+        foreach ($com_cliente as $key => $value) {
+            $codigo = ConfiguracionHelper::generarCodigo('','',3,'clienteCodigo');
+            $cliente = Cliente::find($value->id_cliente);
+            $cliente->codigo = $codigo;
+            $cliente->save();
+        }
+        $con_codigo = Cliente::where('codigo','!=',null)->count();
+
+        return response()->json(["mensaje"=>"Los clientes cuenta con su codigo correspondiente","cantidad_null"=>$sincodigo,"cantidad_not_null"=>$con_codigo],200);
+    }
+    public function scriptGenerarCodigoProveedores()
+    {
+        $sincodigo = Proveedor::where('codigo','!=',null)->count();
+
+        $log_proveedor = Proveedor::orderBy('id_proveedor','ASC')->where('codigo',null)->get();
+        foreach ($log_proveedor as $key => $value) {
+            $codigo = ConfiguracionHelper::generarCodigo('','',3,'proveedoresCodigo');
+            $proveedor = Proveedor::find($value->id_proveedor);
+            $proveedor->codigo = $codigo;
+            $proveedor->save();
+        }
+        $con_codigo = Proveedor::where('codigo','!=',null)->count();
+
+        return response()->json(["mensaje"=>"Los proveedores cuenta con su codigo correspondiente","cantidad_null"=>$sincodigo,"cantidad_not_null"=>$con_codigo],200);
     }
 }
