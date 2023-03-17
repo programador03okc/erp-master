@@ -596,10 +596,10 @@ function listaClientes() {
         },
         order: [[2, "asc"]],
         columns: [
-            {data: 'id_cliente'},
+            {data: 'id'},
             {data: 'id_contribuyente', visible: false},
-            {data: 'documento_cliente'},
-            {data: 'nombre_cliente'},
+            {data: 'documento'},
+            {data: 'nombre'},
         ],
     });
     $tablaCliente.on('init.dt', function(e, settings, processing) {
