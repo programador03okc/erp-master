@@ -594,7 +594,7 @@ function listaClientes() {
             type: "POST",
             headers: {'X-CSRF-TOKEN': csrf_token},
         },
-        order: [[2, "asc"]],
+        order: [[3, "asc"]],
         columns: [
             {data: 'id'},
             {data: 'id_contribuyente', visible: false},
