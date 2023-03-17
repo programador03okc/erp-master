@@ -6,7 +6,7 @@
                 <h3 class="modal-title">Recepción de la Transferencia <label class="subtitulo_red" id="cod_trans"></label> - Guía: <label id="guia" class="subtitulo_blue"></label></h3>
             </div>
             <div class="modal-body">
-                <input type="text" class="oculto" name="id_transferencia">
+                <input type="text" class="oculto" name="id_transferencia_recibir">
                 <input type="text" class="oculto" name="id_guia_ven">
                 <input type="text" class="oculto" name="id_requerimiento">
                 <input type="text" class="oculto" name="estado">

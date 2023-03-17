@@ -28,10 +28,11 @@ class CentroCostoController extends Controller
 
     public function mostrarCentroCostos()
     {
-        $anio = date('Y', strtotime(date('Y-m-d')));
+        // $anio = date('Y', strtotime(date('Y-m-d')));
         $centro_costos = CentroCosto::leftJoin('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'centro_costo.id_grupo')
             ->select('centro_costo.*', 'sis_grupo.descripcion as grupo_descripcion')
-            ->where([['estado', '=', 1], ['periodo', '=', $anio]])
+            // ->where([['estado', '=', 1], ['periodo', '=', $anio]])
+            ->where('estado', '=', 1)
             ->orderBy('codigo')
             ->get();
 

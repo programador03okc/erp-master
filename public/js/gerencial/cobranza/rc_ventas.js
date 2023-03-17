@@ -548,6 +548,7 @@ function listar() {
                 text: '<i class="fas fa-plus"></i> Nuevo registro',
                 action: () => {
                     $('#formulario')[0].reset();
+                    $('#id').val(0);
                     $('.selectpicker').val(null).trigger('change');
                     // $('[name="vendedor"]').val(null).trigger('change');
                     $("#modal-cobranza").find(".modal-title").text("Editar el registro de Cobranza");
@@ -669,23 +670,15 @@ function cargarValores(idReq) {
                 }
 
                 $('[name="importe"]').val(response.data.monto_total);
-                // $('[name="plazo_credito"]').val(response.data.credito_dias);//falta
                 $('[name="fecha_emi"]').val(response.data.fecha_salida);
                 $('[name="oc"]').val(response.data.nro_orden);
                 $('[name="cdp"]').val(response.data.codigo_oportunidad);
 
-                // $('[name="id_contribuyente"]').val(response.data.id_cliente);//cambio
-                // $('[name="cliente"]').val(response.data.razon_social);//cambio
-
-                // $('[name="id_doc_ven"]').val(response.data.id_doc_ven);
-
                 if (response.data.factura && response.data.factura) {
-                    $('[name="fact"]').val(response.data.factura + '-' + response.data.factura);
+                    $('[name="fact"]').val(response.data.factura);
                 }
-
+                
                 $('[name="empresa"]').removeAttr('selected');
-                // $('[name="empresa"] option[value="' + response.data.id_contribuyente_empresa + '"]').attr('selected','true');//cambio
-
                 $('[name="fecha_inicio"]').val(response.data.inicio_entrega);
                 $('[name="fecha_entrega"]').val(response.data.fecha_entrega);
                 $('[name="id_oc"]').val(response.data.id);
@@ -721,7 +714,11 @@ function fuenteFinan(valor) {
     } else if (valor == 4){
         opcion += '<option value="13">DONACIONES Y TRANSFERENCIAS</option>';
     } else if (valor == 5){
-        opcion += '<option value="04">CONTRIBUCIONES A FONDOS</option><option value="07">FONDO DE COMPENSACION MUNICIPAL</option><option value="08">IMPUESTOS MUNICIPALES</option><option value="18">CANON Y SOBRECANON, REGALIAS, RENTA DE ADUANAS Y PARTICIPACIONES</option>';
+        opcion += `<option value="04">CONTRIBUCIONES A FONDOS</option>
+        <option value="07">FONDO DE COMPENSACION MUNICIPAL</option>
+        <option value="08">IMPUESTOS MUNICIPALES</option>
+        <option value="15">FONDO DE COMPENSACION REGIONAL</option>
+        <option value="18">CANON Y SOBRECANON, REGALIAS, RENTA DE ADUANAS Y PARTICIPACIONES</option>`;
     }
     $('#rubro').append(opcion);
 }
