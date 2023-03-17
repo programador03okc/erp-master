@@ -548,6 +548,7 @@ function listar() {
                 text: '<i class="fas fa-plus"></i> Nuevo registro',
                 action: () => {
                     $('#formulario')[0].reset();
+                    $('#id').val(0);
                     $('.selectpicker').val(null).trigger('change');
                     // $('[name="vendedor"]').val(null).trigger('change');
                     $("#modal-cobranza").find(".modal-title").text("Editar el registro de Cobranza");
