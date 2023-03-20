@@ -42,7 +42,7 @@ function listarDevoluciones() {
             {
                 'data': 'usuario_conformidad', name: 'usuario_conforme.nombre_corto',
                 'render': function (data, type, row) {
-                    return `${row["usuario_conformidad"]!=null || row["usuario_conformidad"]!='null' || row["usuario_conformidad"]!=undefined?(row["usuario_conformidad"]+" el "):''} ${formatDateHour(row["fecha_revision"])}`;
+                    return `${row["usuario_conformidad"]!=null && row["usuario_conformidad"]!='null' && row["usuario_conformidad"]!=undefined?(row["usuario_conformidad"]+" el "):''} ${formatDateHour(row["fecha_revision"])}`;
                 }, className: "text-center"
             },
             { 'data': 'comentario_revision' },
