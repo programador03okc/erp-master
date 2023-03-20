@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Gerencial\CobranzaView;
 use App\Models\Gerencial\Penalidad;
+use App\Models\Gerencial\ProgramacionPago;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -56,6 +57,16 @@ class CobranzaExport implements FromView, WithStyles
                 $value->detraccion = $penalidad->tipo;
                 $value->detraccion_importe = $penalidad->monto;
             }
+
+            #fecha programacion de pago
+            $programacionPago = ProgramacionPago::where('id_registro_cobranza',$value->id)
+            ->orderBy('id_programacion_pago', 'desc')
+            ->first();
+
+            if ($programacionPago) {
+                $value->programacion_pago = $programacionPago->fecha;
+            }
+
         }
 
         return view('gerencial.reportes.cobranzas_export', ['data' => $data]);

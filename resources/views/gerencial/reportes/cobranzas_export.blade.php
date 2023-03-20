@@ -43,6 +43,8 @@
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Retención Monto</th>
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción</th>
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción Monto</th>
+
+                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Fecha Pago (próx)</th>
             </tr>
         </thead>
         <tbody>
@@ -77,6 +79,8 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->retencion_importe }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->detraccion }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->detraccion_importe }}</td>
+
+                <td style="border: 6px solid #000 !important;">{{ $item->programacion_pago }}</td>
 
             </tr>
             @endforeach
