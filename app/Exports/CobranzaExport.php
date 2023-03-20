@@ -23,9 +23,9 @@ class CobranzaExport implements FromView, WithStyles
             $data = $data->where('fase', session()->get('cobranzaFase'));
         }
 
-        if (session()->has('cobranzaPeriodo')) {
-            $data = $data->where('periodo', session()->get('cobranzaPeriodo'));
-        }
+        // if (session()->has('cobranzaPeriodo')) {
+        //     $data = $data->where('periodo', session()->get('cobranzaPeriodo'));
+        // }
 
         if (session()->has('cobranzaEmisionDesde')) {
             $data = $data->whereBetween('fecha_emision', [session()->get('cobranzaEmisionDesde'), session()->get('cobranzaEmisionHasta')]);
