@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
 use App\Exports\CobranzaExport;
+use App\Helpers\ConfiguracionHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Empresa;
@@ -13,6 +14,7 @@ use App\Models\Configuracion\Departamento;
 use App\Models\Configuracion\Pais;
 use App\Models\Configuracion\SisUsua;
 use App\Models\Contabilidad\Contribuyente;
+use App\Models\contabilidad\ContribuyenteView;
 use App\models\Gerencial\CobranzaFase;
 use App\Models\Gerencial\CobranzaView;
 use App\models\Gerencial\EstadoDocumento;
@@ -26,6 +28,7 @@ use App\Models\Gerencial\RegistroCobranzaFase;
 use App\models\Gerencial\Sector;
 use App\models\Gerencial\TipoTramite;
 use App\Models\Gerencial\Vendedor;
+use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\AcuerdoMarco\OrdenCompraPropias;
 use App\Models\mgcp\OrdenCompra\Propia\Directa\OrdenCompraDirecta;
 use App\Models\mgcp\OrdenCompra\Propia\OrdenCompraPropiaView;
@@ -292,11 +295,9 @@ class CobranzaController extends Controller
 
     public function listarClientes()
     {
-        $data = Cliente::has('contribuyente')->get();
-        return DataTables::of($data)
-        ->addColumn('id_contribuyente', function ($data) { return $data->contribuyente->id_contribuyente; })
-        ->addColumn('documento_cliente', function ($data) { return $data->contribuyente->nro_documento; })
-        ->addColumn('nombre_cliente', function ($data) { return $data->contribuyente->razon_social; })->make(true);
+        // $data = Cliente::has('contribuyente')->get();
+        $data = ContribuyenteView::select(['*'])->where('tipo', 'CLIENTE');
+        return DataTables::of($data)->make(true);
     }
 
     public function buscarRegistro(Request $request)
@@ -643,5 +644,35 @@ class CobranzaController extends Controller
             }
         }
         return response()->json(["data"=>$array_clientes_nuevos],200);
+    }
+    public function scriptGenerarCodigoCliente()
+    {
+        $sincodigo = Cliente::where('codigo','!=',null)->count();
+
+        $com_cliente = Cliente::orderBy('id_cliente','ASC')->where('codigo',null)->get();
+        foreach ($com_cliente as $key => $value) {
+            $codigo = ConfiguracionHelper::generarCodigo('C','-',3,'clienteCodigo');
+            $cliente = Cliente::find($value->id_cliente);
+            $cliente->codigo = $codigo;
+            $cliente->save();
+        }
+        $con_codigo = Cliente::where('codigo','!=',null)->count();
+
+        return response()->json(["mensaje"=>"Los clientes cuenta con su codigo correspondiente","cantidad_null"=>$sincodigo,"cantidad_not_null"=>$con_codigo],200);
+    }
+    public function scriptGenerarCodigoProveedores()
+    {
+        $sincodigo = Proveedor::where('codigo','!=',null)->count();
+
+        $log_proveedor = Proveedor::orderBy('id_proveedor','ASC')->where('codigo',null)->get();
+        foreach ($log_proveedor as $key => $value) {
+            $codigo = ConfiguracionHelper::generarCodigo('P','-',3,'proveedoresCodigo');
+            $proveedor = Proveedor::find($value->id_proveedor);
+            $proveedor->codigo = $codigo;
+            $proveedor->save();
+        }
+        $con_codigo = Proveedor::where('codigo','!=',null)->count();
+
+        return response()->json(["mensaje"=>"Los proveedores cuenta con su codigo correspondiente","cantidad_null"=>$sincodigo,"cantidad_not_null"=>$con_codigo],200);
     }
 }

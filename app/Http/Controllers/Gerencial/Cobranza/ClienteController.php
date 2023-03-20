@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
+use App\Helpers\ConfiguracionHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Comercial\Cliente;
@@ -87,10 +88,12 @@ class ClienteController extends Controller
             $com_cliente = Cliente::where('id_contribuyente',$contribuyente->id_contribuyente)->where('estado',1)->first();
 
             if (!$com_cliente) {
+                $codigo = ConfiguracionHelper::generarCodigo('C','-',3,'cliente');
                 $com_cliente = new Cliente();
                 $com_cliente->id_contribuyente = $contribuyente->id_contribuyente;
                 $com_cliente->observacion = $request->observacion;
                 $com_cliente->estado = 1;
+                $com_cliente->codigo = $codigo;
                 $com_cliente->fecha_registro = new Carbon();
                 $com_cliente->save();
 

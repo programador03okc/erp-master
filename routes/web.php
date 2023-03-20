@@ -2320,6 +2320,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('script-cobranza-fase', 'Gerencial\Cobranza\CobranzaController@scriptFases')->name('script-cobranza-fase');
                 #pasa los contribuyentes a clientes
                 Route::get('script-contribuyentes-clientes', 'Gerencial\Cobranza\CobranzaController@scriptContribuyenteCliente')->name('script-contribuyente-cliente');
+                #generar codigo para los clientes
+                Route::get('script-generar-codigo-clientes', 'Gerencial\Cobranza\CobranzaController@scriptGenerarCodigoCliente')->name('script-generar-codigo-clientes');
+                #generar codigo para los clientes
+                Route::get('script-generar-codigo-proveedores', 'Gerencial\Cobranza\CobranzaController@scriptGenerarCodigoProveedores')->name('script-generar-codigo-proveedores');
 			});
 
 
