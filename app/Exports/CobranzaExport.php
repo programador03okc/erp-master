@@ -7,11 +7,13 @@ use App\Models\Gerencial\Penalidad;
 use App\Models\Gerencial\ProgramacionPago;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class CobranzaExport implements FromView, WithStyles
+class CobranzaExport implements FromView, WithStyles, WithColumnFormatting
 {
     public function view(): View {
         $data = CobranzaView::select(['*']);
@@ -82,6 +84,15 @@ class CobranzaExport implements FromView, WithStyles
             'A:Z' => [
                 'font' => [ 'family' => 'Arial', 'size' => 10 ]
             ],
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            "O" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            "X" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            "AB" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
 }

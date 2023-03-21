@@ -37,13 +37,13 @@
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Categoría</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="30">Observaciones</th>
 
-                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Penalidad</th>
-                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Penalidad Monto</th>
-                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Retención</th>
-                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Retención Monto</th>
-                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción</th>
-                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción Monto</th>
-                <th style="border: 6px solid #000 !important; text-align: center;" width="20">Fecha Pago (próx)</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Penalidad</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Penalidad Monto</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Retención</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Retención Monto</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Detracción</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Detracción Monto</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Fecha Pago (próx)</th>
             </tr>
         </thead>
         <tbody>
