@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <h1 style="font-size: 24px !important;">Lista de Devoluciones de penalidad </h1>
+    <h1>Lista de Devoluciones de penalidad </h1>
     <br>
     <table>
         <thead>

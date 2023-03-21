@@ -2,11 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <style>
-        h1 {
-            font-size: 30px !important;
-        }
-    </style>
 </head>
 <body>
     <h1>Lista de Cobranzas </h1>

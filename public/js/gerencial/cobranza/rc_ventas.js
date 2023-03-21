@@ -530,13 +530,17 @@ function listar() {
                 text: '<i class="fas fa-filter"></i> Filtros <span class="badge badge-secondary right" id="spanCantFiltros">'+ spanFiltro +'</span>',
                 action: () => {
                     $('#modal-filtros').modal('show');
-                }, className: 'btn-default btn-sm'
+                }, className: 'btn btn-default btn-sm'
             },
             {
                 text: '<i class="fas fa-file-excel"></i> Descargar',
                 action: () => {
                     exportarExcel();
-                }, className: 'btn-default btn-sm'
+                },
+                className: 'btn btn-success btn-sm',
+                init: function(api, node, config) {
+                    $(node).removeClass('btn-default')
+                }
             },
             // {
             //     text: '<i class="fas fa-file-excel"></i> Descargar Power BI',
@@ -553,7 +557,11 @@ function listar() {
                     // $('[name="vendedor"]').val(null).trigger('change');
                     $("#modal-cobranza").find(".modal-title").text("Editar el registro de Cobranza");
                     $('#modal-cobranza').modal('show');
-                }, className: 'btn-success btn-sm'
+                },
+                className: 'btn btn-primary btn-sm',
+                init: function(api, node, config) {
+                    $(node).removeClass('btn-default')
+                }
             },
         ],
         rowCallback: function(row, data) {

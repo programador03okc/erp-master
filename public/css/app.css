@@ -578,15 +578,15 @@ label.btn-primary > span {
   font-size: 18px;
 }
 
-button span i.fa-file-pdf {
+button.btn-default span i.fa-file-pdf {
   color: #c11f1f;
 }
 
-button span i.fa-file-excel {
+button.btn-default span i.fa-file-excel {
   color: #2bb62d;
 }
 
-button span i.fa-copy {
+button.btn-default span i.fa-copy {
   color: #2b70b6;
 }
 

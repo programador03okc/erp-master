@@ -2447,6 +2447,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('eliminar', 'Gerencial\Cobranza\CobranzaFondoController@eliminar')->name('eliminar');
 				Route::post('cargar-cobro', 'Gerencial\Cobranza\CobranzaFondoController@cargarCobro')->name('cargar-cobro');
 				Route::post('guardar-cobro', 'Gerencial\Cobranza\CobranzaFondoController@guardarCobro')->name('guardar-cobro');
+				Route::get('exportar-excel', 'Gerencial\Cobranza\CobranzaFondoController@exportarExcel')->name('exportar-excel');
 			});
 
 			Route::group(['as' => 'devoluciones.', 'prefix' => 'devoluciones'], function () {
