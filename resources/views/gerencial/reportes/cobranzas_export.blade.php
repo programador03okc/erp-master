@@ -72,12 +72,12 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->categoria }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->observacion }}</td>
 
-                <td style="border: 6px solid #000 !important;">{{ $item->penalidad }}</td>
-                <td style="border: 6px solid #000 !important;">{{ $item->penalidad_importe }}</td>
-                <td style="border: 6px solid #000 !important;">{{ $item->retencion }}</td>
-                <td style="border: 6px solid #000 !important;">{{ $item->retencion_importe }}</td>
-                <td style="border: 6px solid #000 !important;">{{ $item->detraccion }}</td>
-                <td style="border: 6px solid #000 !important;">{{ $item->detraccion_importe }}</td>
+                <td style="border: 6px solid #000 !important;">{{ ($item->tiene_penalidad) ? 'SI' : 'NO' }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->monto_penalidad }}</td>
+                <td style="border: 6px solid #000 !important;">{{ ($item->tiene_retencion) ? 'SI' : 'NO' }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->monto_retencion }}</td>
+                <td style="border: 6px solid #000 !important;">{{ ($item->tiene_detraccion) ? 'SI' : 'NO' }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->monto_detraccion }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->programacion_pago }}</td>
 
             </tr>
