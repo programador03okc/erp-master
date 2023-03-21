@@ -66,11 +66,6 @@ Atención de Salidas
                                             <th>CDP</th>
                                             <th>Cliente</th>
                                             <th>Almacén</th>
-                                            {{-- <th>Estado</th> --}}
-                                            <!-- <th>Ubigeo</th>
-                                            <th>Dirección Destino</th> -->
-                                            {{-- <th>Fecha Entrega</th>
-                                            <th>Registrado por</th> --}}
                                             <th width="90px">Acción</th>
                                         </tr>
                                     </thead>
@@ -96,9 +91,7 @@ Atención de Salidas
                                             <th width="10%">Razón Social</th>
                                             <th width="10%">Almacén</th>
                                             <th width="20%">Concepto</th>
-                                            {{-- <th width="10%">Fichas Técnicas</th> --}}
                                             <th width="10%">Elaborado Por</th>
-                                            {{-- <th width="10%">Revisado Por</th> --}}
                                             <th width="6%">Acción</th>
                                         </tr>
                                     </thead>
@@ -123,6 +116,7 @@ Atención de Salidas
                                             <th>Req.</th>
                                             <th>Cliente</th>
                                             <th>OCAM</th>
+                                            <th>Dev.</th>
                                             <th>Guia venta</th>
                                             <th>Fecha Salida</th>
                                             <th>Comprobantes</th>
