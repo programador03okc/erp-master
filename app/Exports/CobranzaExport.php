@@ -8,12 +8,14 @@ use App\Models\Gerencial\ProgramacionPago;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class CobranzaExport implements FromView, WithStyles, WithColumnFormatting
+class CobranzaExport implements FromView, WithStyles, WithColumnFormatting, WithEvents
 {
     public function view(): View {
         $data = CobranzaView::select(['*']);
@@ -26,16 +28,21 @@ class CobranzaExport implements FromView, WithStyles, WithColumnFormatting
             $data = $data->where('fase', session()->get('cobranzaFase'));
         }
 
-        // if (session()->has('cobranzaPeriodo')) {
-        //     $data = $data->where('periodo', session()->get('cobranzaPeriodo'));
-        // }
-
         if (session()->has('cobranzaEmisionDesde')) {
             $data = $data->whereBetween('fecha_emision', [session()->get('cobranzaEmisionDesde'), session()->get('cobranzaEmisionHasta')]);
         }
         $data = $data->orderBy('fecha_emision', 'desc')->get();
 
         return view('gerencial.reportes.cobranzas_export', ['data' => $data]);
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function(AfterSheet $event) {
+                $event->sheet->getDelegate()->getStyle('1')->getFont()->setSize(16);
+            },
+        ];
     }
 
     public function styles(Worksheet $sheet)

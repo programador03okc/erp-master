@@ -933,5 +933,5 @@ function diasAtraso() {
 }
 
 function exportarExcel() {
-    window.open('exportar-excel')
+    window.open('exportar-excel');
 }

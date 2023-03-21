@@ -1,10 +1,12 @@
 <?php
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
+use App\Exports\DevolucionPenalidadExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Gerencial\PenalidadCobro;
 use Exception;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class DevolucionPenalidadController extends Controller
@@ -122,5 +124,10 @@ class DevolucionPenalidadController extends Controller
             $error = $ex;
         }
         return response()->json(array('mensaje' => $mensaje, 'alerta' => $alerta, 'error' => $error), 200);
+    }
+
+    public function exportarExcel()
+    {
+        return Excel::download(new DevolucionPenalidadExport(), 'devolucion_penalidad.xlsx');
     }
 }
