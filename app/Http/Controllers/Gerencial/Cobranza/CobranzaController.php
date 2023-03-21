@@ -145,6 +145,7 @@ class CobranzaController extends Controller
 
     public function guardarRegistro(Request $request)
     {
+        // return [$request->ip()];exit;
         DB::beginTransaction();
         try {
             $empresa = Empresa::find($request->empresa);
@@ -156,7 +157,15 @@ class CobranzaController extends Controller
             $cobranza = RegistroCobranza::firstOrNew(['id_registro_cobranza' => $request->id]);
                 if ($request->id===0 || $request->id==='0') {
                     $cobranza->fecha_registro = new Carbon();
+
+                    $cobranza->created_at   = new Carbon(); #obtiene la fecha de creacion del registro
+                    $cobranza->created_id      = Auth::user()->id_usuario;
+
                 }
+                $cobranza->updated_at   = new Carbon(); #obtiene la fecha de actualizacion del registro
+                $cobranza->updated_id   = Auth::user()->id_usuario; #obtiene la fecha de actualizacion del registro
+                $cobranza->user_ip   = $request->ip(); #obtiene la fecha de actualizacion del registro
+
                 $cobranza->id_empresa = $request->empresa;
                 $cobranza->id_sector = $request->sector;
                 $cobranza->id_cliente = $request->id_cliente;
@@ -294,6 +303,9 @@ class CobranzaController extends Controller
     {
         $registro_cobranza = RegistroCobranza::find($request->id);
             $registro_cobranza->estado = 0;
+            $registro_cobranza->deleted_at   = new Carbon(); #obtiene la fecha de la eliminacion del registro
+            $registro_cobranza->deleted_id   = Auth::user()->id_usuario; #obtiene la fecha de la eliminacion del registro
+            $registro_cobranza->user_ip   = $request->ip();
         $registro_cobranza->save();
         return response()->json(["success" => true, "status" => 200]);
     }
