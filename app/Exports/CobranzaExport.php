@@ -54,7 +54,7 @@ class CobranzaExport implements FromView, WithStyles, WithColumnFormatting, With
         $sheet->getStyle('A:AC')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         return [
-            'A:Z' => [
+            'A:AC' => [
                 'font' => [ 'family' => 'Arial', 'size' => 10 ]
             ],
         ];

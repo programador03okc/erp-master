@@ -154,7 +154,11 @@ function listar() {
                 text: '<i class="fas fa-file-excel"></i> Descargar',
                 action: () => {
                     exportarExcel();
-                }, className: 'btn-default btn-sm'
+                },
+                className: 'btn-default btn-sm',
+                init: function(api, node, config) {
+                    $(node).removeClass('btn-default')
+                }
             },
         ]
     });

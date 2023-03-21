@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Gerencial\Cobranza;
 
+use App\Exports\FondoExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Periodo;
@@ -16,6 +17,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
 class CobranzaFondoController extends Controller
@@ -164,5 +166,10 @@ class CobranzaFondoController extends Controller
             $error = $ex;
         }
         return response()->json(array('mensaje' => $mensaje, 'alerta' => $alerta, 'error' => $error), 200);
+    }
+
+    public function exportarExcel()
+    {
+        return Excel::download(new FondoExport(), 'fondo.xlsx');
     }
 }
