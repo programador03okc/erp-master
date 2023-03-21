@@ -29,12 +29,12 @@
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Periodo</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Moneda</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Importe</th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Plazo Crédito </th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="20">Estado</th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Fase</th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">Area Responsable</th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">Vendedor</th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="35">Categoría</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="5">Plazo Crédito </th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">Estado</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Fase</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Area Responsable</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Vendedor</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Categoría</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="30">Observaciones</th>
 
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Penalidad</th>
@@ -52,7 +52,7 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->empresa }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->sector }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->cliente_ruc }}</td>
-                <td style="border: 6px solid #000 !important;"><p>{{ $item->cliente }}</p></td>
+                <td style="border: 6px solid #000 !important;">{{ $item->cliente }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->ocam }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->factura }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->uu_ee }}</td>
@@ -70,7 +70,7 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->area }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->usuario_responsable }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->categoria }}</td>
-                <td style="border: 6px solid #000 !important;"><p>{{ $item->observacion }}</p></td>
+                <td style="border: 6px solid #000 !important;">{{ $item->observacion }}</td>
 
                 <td style="border: 6px solid #000 !important;">{{ $item->penalidad }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->penalidad_importe }}</td>
