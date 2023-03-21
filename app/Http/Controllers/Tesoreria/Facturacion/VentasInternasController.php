@@ -240,6 +240,7 @@ class VentasInternasController extends Controller
                             'id_moneda' => $doc_ven->moneda,
                             'tiene_transformacion' => false,
                             'precio_unitario' => $item->precio_unitario,
+                            'centro_costo_id' => 215, //GERENCIA DE ADMINISTRACIóN	
                             'estado' => 9,
                             'fecha_registro' => $fecha,
                         ],

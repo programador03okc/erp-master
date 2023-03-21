@@ -145,6 +145,7 @@ class CobranzaController extends Controller
 
     public function guardarRegistro(Request $request)
     {
+        // return [$request->ip()];exit;
         DB::beginTransaction();
         try {
             $empresa = Empresa::find($request->empresa);
@@ -154,6 +155,17 @@ class CobranzaController extends Controller
              * Registro de cobranza
              */
             $cobranza = RegistroCobranza::firstOrNew(['id_registro_cobranza' => $request->id]);
+                if ($request->id===0 || $request->id==='0') {
+                    $cobranza->fecha_registro = new Carbon();
+
+                    $cobranza->created_at   = new Carbon(); #obtiene la fecha de creacion del registro
+                    $cobranza->created_id      = Auth::user()->id_usuario;
+
+                }
+                $cobranza->updated_at   = new Carbon(); #obtiene la fecha de actualizacion del registro
+                $cobranza->updated_id   = Auth::user()->id_usuario; #obtiene la fecha de actualizacion del registro
+                $cobranza->user_ip   = $request->ip(); #obtiene la fecha de actualizacion del registro
+
                 $cobranza->id_empresa = $request->empresa;
                 $cobranza->id_sector = $request->sector;
                 $cobranza->id_cliente = $request->id_cliente;
@@ -170,7 +182,7 @@ class CobranzaController extends Controller
                 $cobranza->id_tipo_tramite = $request->tramite;
                 $cobranza->vendedor = ($request->vendedor) ? $request->vendedor : null;
                 $cobranza->estado = 1;
-                $cobranza->fecha_registro = new Carbon();
+
                 $cobranza->id_area = $request->area;
                 $cobranza->id_periodo = $request->periodo;
                 $cobranza->codigo_empresa = $empresa->codigo;
@@ -278,10 +290,12 @@ class CobranzaController extends Controller
             $contribuyente = Contribuyente::where('id_contribuyente', $comercial_cliente->id_contribuyente)->first();
         }
 
+        // $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)
+        //     ->where('estado', 1)->orWhere('id_cobranza', $registro_cobranza->id_cobranza_old)
+        //     ->orderBy('id_programacion_pago', 'desc')->first();
         $programacion_pago = ProgramacionPago::where('id_registro_cobranza',$registro_cobranza->id_registro_cobranza)
-            ->where('estado', 1)->orWhere('id_cobranza', $registro_cobranza->id_cobranza_old)
-            ->orderBy('id_programacion_pago', 'desc')->first();
-
+        ->orderBy('id_programacion_pago', 'desc')
+        ->first();
         return response()->json(["status" => 200, "success" => true, "data" => $registro_cobranza, "programacion_pago" => $programacion_pago, "cliente" => $contribuyente]);
     }
 
@@ -289,6 +303,9 @@ class CobranzaController extends Controller
     {
         $registro_cobranza = RegistroCobranza::find($request->id);
             $registro_cobranza->estado = 0;
+            $registro_cobranza->deleted_at   = new Carbon(); #obtiene la fecha de la eliminacion del registro
+            $registro_cobranza->deleted_id   = Auth::user()->id_usuario; #obtiene la fecha de la eliminacion del registro
+            $registro_cobranza->user_ip   = $request->ip();
         $registro_cobranza->save();
         return response()->json(["success" => true, "status" => 200]);
     }
