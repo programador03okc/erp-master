@@ -76,7 +76,7 @@ class CobranzaExport implements FromView, WithStyles
     {
         $sheet->getStyle('D3:D' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
         $sheet->getStyle('W3:W' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
-        $sheet->getStyle('A:W')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A:AC')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         return [
             'A:Z' => [

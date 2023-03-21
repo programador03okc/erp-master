@@ -43,7 +43,6 @@
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Retención Monto</th>
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción</th>
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Detracción Monto</th>
-
                 <th style="border: 6px solid #000 !important; text-align: center;" width="20">Fecha Pago (próx)</th>
             </tr>
         </thead>
@@ -53,7 +52,7 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->empresa }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->sector }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->cliente_ruc }}</td>
-                <td style="border: 6px solid #000 !important;" ><p>{{ $item->cliente }}</p></td>
+                <td style="border: 6px solid #000 !important;"><p>{{ $item->cliente }}</p></td>
                 <td style="border: 6px solid #000 !important;">{{ $item->ocam }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->factura }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->uu_ee }}</td>
@@ -69,7 +68,7 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->estado_cobranza }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->fase }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->area }}</td>
-                <td style="border: 6px solid #000 !important;">{{ $item->vendedor }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->usuario_responsable }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->categoria }}</td>
                 <td style="border: 6px solid #000 !important;"><p>{{ $item->observacion }}</p></td>
 
@@ -79,7 +78,6 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->retencion_importe }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->detraccion }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->detraccion_importe }}</td>
-
                 <td style="border: 6px solid #000 !important;">{{ $item->programacion_pago }}</td>
 
             </tr>
