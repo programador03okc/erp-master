@@ -632,13 +632,15 @@ class SalidasPendientesController extends Controller
             'oc_propias_view.codigo_oportunidad',
             'oc_propias_view.id as id_oc_propia',
             'oc_propias_view.tipo',
-            'usua_anula.nombre_corto as usuario_anulacion_nombre'
+            'usua_anula.nombre_corto as usuario_anulacion_nombre',
+            'devolucion.codigo as codigo_devolucion'
             // DB::raw("(SELECT ingreso.codigo FROM almacen.mov_alm as ingreso
             // where ingreso.id_transformacion = mov_alm.id_transformacion
             //   and ingreso.id_tp_mov = 1
             //   and ingreso.estado != 7) AS tiene_ingreso_transformacion")
         )
             ->leftjoin('almacen.guia_ven', 'guia_ven.id_guia_ven', '=', 'mov_alm.id_guia_ven')
+            ->leftjoin('cas.devolucion', 'devolucion.id_devolucion', '=', 'guia_ven.id_devolucion')
             ->leftjoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'mov_alm.id_almacen')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'mov_alm.usuario')
             ->leftjoin('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'guia_ven.id_od')
@@ -657,7 +659,12 @@ class SalidasPendientesController extends Controller
     public function listarSalidasDespacho(Request $request)
     {
         $data = $this->listarSalidasProcesadas();
-        return datatables($data)->toJson();
+        return datatables($data)
+        ->filterColumn('codigo_od', function ($query, $keyword) {
+            $keywords = trim(strtoupper($keyword));
+            $query->whereRaw("devolucion.codigo LIKE ?", ["%{$keywords}%"]);
+        })
+        ->toJson();
     }
 
 

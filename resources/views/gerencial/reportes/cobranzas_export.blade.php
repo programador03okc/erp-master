@@ -79,7 +79,6 @@
                 <td style="border: 6px solid #000 !important;">{{ ($item->tiene_detraccion) ? 'SI' : 'NO' }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->monto_detraccion }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->programacion_pago }}</td>
-
             </tr>
             @endforeach
         </tbody>

@@ -104,7 +104,7 @@ $(function () {
 
 function listar() {
     const $tabla = $('#tabla').DataTable({
-        dom: 'frtip',
+        dom: 'Bfrtip',
         pageLength: 30,
         language: idioma,
         serverSide: true,
@@ -148,6 +148,14 @@ function listar() {
             {data: 'motivo'},
             {data: 'estado'},
             {data: 'accion', orderable: false, searchable: false, className: 'text-center'}
+        ],
+        buttons: [
+            {
+                text: '<i class="fas fa-file-excel"></i> Descargar',
+                action: () => {
+                    exportarExcel();
+                }, className: 'btn-default btn-sm'
+            },
         ]
     });
     $tabla.on('search.dt', function() {
@@ -164,4 +172,8 @@ function listar() {
             $(e.currentTarget).LoadingOverlay("hide", true);
         }
     });
+}
+
+function exportarExcel() {
+    window.open('exportar-excel');
 }

@@ -328,7 +328,7 @@ function listarDespachosEntregados(permiso) {
         'columns': [
             { 'data': 'id_mov_alm' },
             {
-                'data': 'codigo_od', name: 'orden_despacho.codigo',
+                'data': 'codigo_od', name: 'orden_despacho.codigo', filterable: true,
                 'render':
                     function (data, type, row) {
                         if (row['codigo_od'] !== null) {
@@ -387,6 +387,12 @@ function listarDespachosEntregados(permiso) {
                         );
                     }
                 }, className: "text-center"
+            },
+            {
+                data: 'codigo_devolucion', name: 'devolucion.codigo',
+                'render': function (data, type, row) {
+                    return (row['codigo_devolucion'] !== null ? '<label class="lbl-codigo" title="Abrir Devolución" onClick="abrirDevolucion(' + row['id_devolucion'] + ')">' + row['codigo_devolucion'] + '</label>' : '');
+                }
             },
             {
                 data: 'numero', name: 'guia_ven.numero',
@@ -452,7 +458,7 @@ function listarDespachosEntregados(permiso) {
                     } else {
                         return '';
                     }
-                }, targets: 12
+                }, targets: 13
             }
         ],
     });
@@ -488,6 +494,11 @@ function abrir_salida(id_mov_alm) {
     window.open('imprimir_salida/' + id_mov_alm);
 }
 
+function abrirDevolucion(id_devolucion) {
+    localStorage.setItem("id_devolucion", id_devolucion);
+    var win = window.open("/cas/garantias/devolucionCas/index", '_blank');
+    win.focus();
+}
 $('#despachosEntregados tbody').on("click", "button.anular", function () {
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
