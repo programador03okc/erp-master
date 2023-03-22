@@ -90,6 +90,12 @@ class CobranzaController extends Controller
             $request->session()->forget('cobranzaEmisionHasta');
         }
 
+        if ($request->checkPenalidad == 'on') {
+            $request->session()->put('cobranzaPenalidad', true);
+        } else {
+            $request->session()->forget('cobranzaPenalidad');
+        }
+
         $request->session()->put('cobranzaPeriodo', $request->filterPeriodo);
         return response()->json('filtros', 200);
     }
@@ -99,6 +105,10 @@ class CobranzaController extends Controller
 
 
         $data = CobranzaView::select(['*']);
+
+        if ($request->session()->has('cobranzaPenalidad')) {
+            $data = $data->where('tiene_penalidad', session()->get('cobranzaPenalidad'));
+        }
 
         if ($request->session()->has('cobranzaEmpresa')) {
             $data = $data->where('empresa', session()->get('cobranzaEmpresa'));
