@@ -20,6 +20,10 @@ class CobranzaExport implements FromView, WithStyles, WithColumnFormatting, With
     public function view(): View {
         $data = CobranzaView::select(['*']);
 
+        if (session()->has('cobranzaPenalidad')) {
+            $data = $data->where('tiene_penalidad', session()->get('cobranzaPenalidad'));
+        }
+
         if (session()->has('cobranzaEmpresa')) {
             $data = $data->where('empresa', session()->get('cobranzaEmpresa'));
         }

@@ -153,10 +153,7 @@ class CobranzaController extends Controller
                     <li><a href="javascript: void(0);" class="acciones" data-accion="detraccion" data-id="'. $data->id .'"data-toggle="tooltip" title="Detraccion">Detracciones</a></li>';
                 }
 
-                $btn .=
-                (in_array(313,$array_accesos)?'<li><a href="javascript: void(0);" class="observaciones" data-id="'. $data->id .'" title="OBSERVACIONES">Observaciones</a></li>
-                    <li role="separator" class="divider"></li>':'').'
-
+                $btn .= '<li><a href="javascript: void(0);" class="observaciones" data-id="'. $data->id .'" title="OBSERVACIONES">Observaciones</a></li>
                     '.(in_array(310,$array_accesos)?'<li><a href="javascript: void(0);" class="eliminar" data-id="'. $data->id .'" title="Eliminar">Eliminar</a></li>':'').'
                 </ul>
             </div>';
