@@ -803,7 +803,7 @@ class ComprasPendientesController extends Controller
             $mensaje = '';
             $crearNuevaReserva = true;
             $codigoOIdReservaAnulada = '';
-            $idRequerimientoList = [];
+            // $idRequerimientoList = [];
 
 
             $requerimientoHelper = new RequerimientoHelper();
@@ -838,9 +838,9 @@ class ComprasPendientesController extends Controller
                     $reserva->estado = 1;
                     $reserva->save();
 
-                    if ($request->idDetalleRequerimiento > 0) {
-                        $idRequerimientoList[] = DetalleRequerimiento::find($request->idDetalleRequerimiento)->first()->id_requerimiento;
-                    }
+                    // if ($request->idDetalleRequerimiento > 0) {
+                    //     $idRequerimientoList[] = DetalleRequerimiento::find($request->idDetalleRequerimiento)->first()->id_requerimiento;
+                    // }
                 }
 
 

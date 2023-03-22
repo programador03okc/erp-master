@@ -450,6 +450,32 @@ function actualizarCantidadFiltrosAplicados() {
 }
 
 function listar() {
+    const button_nuevo_registro=(array_accesos.find(element => element === 309)?{
+        text: '<i class="fas fa-plus"></i> Nuevo registro',
+        action: () => {
+            $('#formulario')[0].reset();
+            $('#id').val(0);
+            $('.selectpicker').val(null).trigger('change');
+            // $('[name="vendedor"]').val(null).trigger('change');
+            $("#modal-cobranza").find(".modal-title").text("Nuevo el registro de Cobranza");
+            $('#modal-cobranza').modal('show');
+        },
+        className: 'btn btn-primary btn-sm',
+        init: function(api, node, config) {
+            $(node).removeClass('btn-default')
+        }
+    }:[]);
+    const button_descargar_excel=(array_accesos.find(element => element === 311)?{
+        text: '<i class="fas fa-file-excel"></i> Descargar',
+        action: () => {
+            exportarExcel();
+        },
+        className: 'btn btn-success btn-sm',
+        init: function(api, node, config) {
+            $(node).removeClass('btn-default')
+        }
+    }:[]);
+
     const $tabla = $('#tablaCobranza').DataTable({
         dom: 'Bfrtip',
         pageLength: 30,
@@ -532,37 +558,15 @@ function listar() {
                     $('#modal-filtros').modal('show');
                 }, className: 'btn btn-default btn-sm'
             },
-            {
-                text: '<i class="fas fa-file-excel"></i> Descargar',
-                action: () => {
-                    exportarExcel();
-                },
-                className: 'btn btn-success btn-sm',
-                init: function(api, node, config) {
-                    $(node).removeClass('btn-default')
-                }
-            },
+            button_descargar_excel
+            ,
             // {
             //     text: '<i class="fas fa-file-excel"></i> Descargar Power BI',
             //     action: () => {
             //         exportarExcelPowerBi();
             //     }, className: 'btn-default btn-sm'
             // },
-            {
-                text: '<i class="fas fa-plus"></i> Nuevo registro',
-                action: () => {
-                    $('#formulario')[0].reset();
-                    $('#id').val(0);
-                    $('.selectpicker').val(null).trigger('change');
-                    // $('[name="vendedor"]').val(null).trigger('change');
-                    $("#modal-cobranza").find(".modal-title").text("Editar el registro de Cobranza");
-                    $('#modal-cobranza').modal('show');
-                },
-                className: 'btn btn-primary btn-sm',
-                init: function(api, node, config) {
-                    $(node).removeClass('btn-default')
-                }
-            },
+            button_nuevo_registro,
         ],
         rowCallback: function(row, data) {
             if (data.id_oc == null) {
@@ -685,7 +689,7 @@ function cargarValores(idReq) {
                 if (response.data.factura && response.data.factura) {
                     $('[name="fact"]').val(response.data.factura);
                 }
-                
+
                 $('[name="empresa"]').removeAttr('selected');
                 $('[name="fecha_inicio"]').val(response.data.inicio_entrega);
                 $('[name="fecha_entrega"]').val(response.data.fecha_entrega);
