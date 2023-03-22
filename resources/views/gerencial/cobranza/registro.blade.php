@@ -40,6 +40,7 @@
 @endsection
 
 @section('content')
+@if (in_array(307,$array_accesos))
 <div class="page-main" type="usuarios">
     <div class="box box-solid">
         <div class="box-header">
@@ -710,6 +711,17 @@
 		</div>
 	</div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error de Accesos:</span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @endsection
 
 @section('scripts')
@@ -730,6 +742,7 @@
     <script src="{{ asset('js/util.js') }}"></script>
 
     <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     let csrf_token = '{{ csrf_token() }}';
     let carga_ini = 1;
     let tempClienteSelected = {};

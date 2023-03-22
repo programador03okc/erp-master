@@ -10,6 +10,7 @@ use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Periodo;
 use App\Models\almacen\DocumentoVenta;
 use App\Models\Comercial\Cliente;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Departamento;
 use App\Models\Configuracion\Pais;
 use App\Models\Configuracion\SisUsua;
@@ -58,6 +59,12 @@ class CobranzaController extends Controller
             session()->put('cobranzaPeriodo', $periodoActual->descripcion);
         }
 
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
+
         return view('gerencial.cobranza.registro', get_defined_vars());
     }
 
@@ -89,6 +96,8 @@ class CobranzaController extends Controller
 
     public function listar(Request $request)
     {
+
+
         $data = CobranzaView::select(['*']);
 
         if ($request->session()->has('cobranzaEmpresa')) {
@@ -114,12 +123,20 @@ class CobranzaController extends Controller
             return ($this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) > 0) ? $this->restar_fechas($data->fecha_recepcion, date('Y-m-d')) : '0';
         })
         ->addColumn('accion', function ($data) {
+            $array_accesos = [];
+            $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+            foreach ($accesos_usuario as $key => $value) {
+                array_push($array_accesos, $value->id_acceso);
+            }
+            $btn_editar = (in_array(307,$array_accesos)?'':'');
             $btn ='
             <div class="btn-group">
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  <span class="caret"></span></button>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="javascript: void(0);" class="editar" data-id="'. $data->id .'" data-toggle="tooltip" title="Editar" data-original-title="Editar">Editar</a></li>
-                    <li><a href="javascript: void(0);" class="fases" data-id="'. $data->id .'" title="Fases">Fases</a></li>';
+
+                    '.(in_array(308,$array_accesos)?'<li><a href="javascript: void(0);" class="editar" data-id="'. $data->id .'" data-toggle="tooltip" title="Editar" data-original-title="Editar">Editar</a></li>':'').'
+
+                    '.(in_array(312,$array_accesos)?'<li><a href="javascript: void(0);" class="fases" data-id="'. $data->id .'" title="Fases">Fases</a></li>':'').'';
 
                 if ($data->estado_cobranza == 'PAGADO') {
                     $btn.= '
@@ -129,9 +146,10 @@ class CobranzaController extends Controller
                 }
 
                 $btn .=
-                    '<li><a href="javascript: void(0);" class="observaciones" data-id="'. $data->id .'" title="OBSERVACIONES">Observaciones</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="javascript: void(0);" class="eliminar" data-id="'. $data->id .'" title="Eliminar">Eliminar</a></li>
+                (in_array(313,$array_accesos)?'<li><a href="javascript: void(0);" class="observaciones" data-id="'. $data->id .'" title="OBSERVACIONES">Observaciones</a></li>
+                    <li role="separator" class="divider"></li>':'').'
+
+                    '.(in_array(310,$array_accesos)?'<li><a href="javascript: void(0);" class="eliminar" data-id="'. $data->id .'" title="Eliminar">Eliminar</a></li>':'').'
                 </ul>
             </div>';
             return $btn;
