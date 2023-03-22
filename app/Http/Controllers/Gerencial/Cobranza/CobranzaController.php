@@ -102,8 +102,6 @@ class CobranzaController extends Controller
 
     public function listar(Request $request)
     {
-
-
         $data = CobranzaView::select(['*']);
 
         if ($request->session()->has('cobranzaPenalidad')) {
