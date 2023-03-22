@@ -455,7 +455,7 @@ function listar() {
         pageLength: 30,
         language: idioma,
         serverSide: true,
-        destroy:true,
+        destroy: true,
         initComplete: function (settings, json) {
             const $filter = $('#tablaCobranza_filter');
             const $input = $filter.find('input');

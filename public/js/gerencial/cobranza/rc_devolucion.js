@@ -108,6 +108,7 @@ function listar() {
         pageLength: 30,
         language: idioma,
         serverSide: true,
+        destroy: true,
         initComplete: function (settings, json) {
             const $filter = $('#tabla_filter');
             const $input = $filter.find('input');
