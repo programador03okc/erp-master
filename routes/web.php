@@ -731,7 +731,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('listar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-compra', 'Logistica\RequerimientoController@guardarAdjuntosAdicionales');
-
+				
+				Route::get('listar-flujo/{idDocumento}', 'RevisarAprobarController@mostrarTodoFlujoAprobacionDeDocumento');
 				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 
 			});

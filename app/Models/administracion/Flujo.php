@@ -78,4 +78,9 @@ class Flujo extends Model
         }
         return $flujo;
     }
+
+    public function rol()
+    {
+        return $this->belongsTo('App\Models\Configuracion\Rol', 'id_rol', 'id_rol');
+    }
 }
