@@ -2177,6 +2177,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('lista_comprobante_compra/{id_sede}/{all_or_id_doc_com}', 'ContabilidadController@lista_comprobante_compra');
 		});
 
+		Route::group(['as' => 'documento-compra.', 'prefix' => 'documento-compra'], function () {
+			//Documento de compra
+			Route::get('index', 'ComprobanteCompraController@view_crear_comprobante_compra')->name('index');
+			// Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+			// Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
+		});
+
 		Route::group(['as' => 'tipo-cambio.', 'prefix' => 'tipo-cambio'], function () {
 			Route::get('index', 'Tesoreria\TipoCambioController@index')->name('index');
 			Route::post('listar', 'Tesoreria\TipoCambioController@listar')->name('listar');
