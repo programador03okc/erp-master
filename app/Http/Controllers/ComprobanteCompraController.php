@@ -27,6 +27,7 @@ use App\Models\Tesoreria\Usuario;
 use App\Models\Tesoreria\Grupo;
 use DataTables;
 use Debugbar;
+use App\Http\Controllers\AlmacenController as GenericoAlmacenController;
 
 date_default_timezone_set('America/Lima');
 
@@ -159,6 +160,25 @@ class ComprobanteCompraController extends Controller
         $bancos = Banco::mostrar();
         $tipo_cuenta = TipoCuenta::mostrar();
         return view('logistica/comprobantes/generar_comprobante_compra', compact('bancos', 'tipo_cuenta', 'igv', 'proveedores', 'clasificaciones', 'condiciones', 'tp_doc', 'moneda', 'detracciones', 'impuestos', 'usuarios', 'tp_contribuyente', 'sis_identidad'));
+    }
+
+    function view_crear_comprobante_compra()
+    {
+        $proveedores = $this->mostrar_proveedores_cbo();
+        $condiciones = $this->mostrar_condiciones_cbo();
+        $tp_doc = $this->mostrar_tp_doc_cbo();
+        $monedas = $this->mostrar_moneda_cbo();
+        $usuarios = $this->select_usuarios();
+        $tp_doc = GenericoAlmacenController::mostrar_tp_doc_cbo();
+        $tp_contribuyente = $this->tp_contribuyente_cbo();
+        $sis_identidad = $this->sis_identidad_cbo();
+        $igv = $this->get_igv();
+        $bancos = Banco::mostrar();
+        $tipo_cuenta = TipoCuenta::mostrar();
+        $sedes = GenericoAlmacenController::mostrar_sedes_cbo();
+
+        return view('tesoreria/comprobantes_compra/comprobanteCompra', 
+        compact('bancos', 'tipo_cuenta', 'igv', 'proveedores', 'condiciones', 'tp_doc', 'monedas', 'usuarios', 'tp_contribuyente', 'sis_identidad','sedes'));
     }
 
     // public function getListaComprobantesCompra(){

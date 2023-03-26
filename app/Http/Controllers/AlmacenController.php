@@ -4674,19 +4674,8 @@ class AlmacenController extends Controller
                     $cant_ing = 0;
                     $cant_sal = 0;
                     $stock_inicial = false;
-
-                    $html .= '
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td><td></td><td></td><td></td><td></td><td></td>
-                                    <td></td><td></td><td></td><td></td><td></td><td></td>
-                                    <td></td><td></td>
-                                    <td>Stock Inicial:</td>
-                                    <td class="right" style="mso-number-format:"0.00";">' . $saldo . '</td>
-                                    <td class="right" style="mso-number-format:"0.00";">' . ($saldo !== 0 ? ($saldo_valor / $saldo) : 0) . '</td>
-                                    <td class="right" style="mso-number-format:"0.00";">' . $saldo_valor . '</td>
-                                </tr>';
+                    $costo_promedio = 0;
+                    $valor_salida = 0;
 
                     foreach ($detalle as $det) {
                         if ($det->tipo == 1 || $det->tipo == 0) {
@@ -4694,9 +4683,28 @@ class AlmacenController extends Controller
                             $saldo_valor += $det->valorizacion;
                         } else if ($det->tipo == 2) {
                             $saldo -= $det->cantidad;
-                            $saldo_valor -= $det->valorizacion;
+                            // $saldo_valor -= $det->valorizacion;
+                            $valor_salida = $costo_promedio * $det->cantidad;
+                            $saldo_valor -= $valor_salida;
                         }
-                        if ($det->tipo == 1) {
+                        if ($saldo !== 0) {
+                            $costo_promedio = ($saldo == 0 ? 0 : $saldo_valor / $saldo);
+                        }
+                        if ($det->tipo == 0) {
+                            $total_ing += floatval($det->valorizacion);
+                            $cant_ing += floatval($det->cantidad);
+                            $html .= '  <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td><td></td><td></td><td></td><td></td><td></td>
+                                <td></td><td></td><td></td><td></td><td></td><td></td>
+                                <td></td><td></td>
+                                <td>Stock Inicial:</td>
+                                <td class="right" style="mso-number-format:"0.00";">' . $saldo . '</td>
+                                <td class="right" style="mso-number-format:"0.00";">' . ($saldo !== 0 ? ($saldo_valor / $saldo) : 0) . '</td>
+                                <td class="right" style="mso-number-format:"0.00";">' . $saldo_valor . '</td>
+                            </tr>';
+                        } else if ($det->tipo == 1) {
                             $total_ing += floatval($det->valorizacion);
                             $cant_ing += floatval($det->cantidad);
                             $unitario = floatval($det->valorizacion) / floatval($det->cantidad);
@@ -4726,7 +4734,7 @@ class AlmacenController extends Controller
                                             <td class="right" style="mso-number-format:"0.00";">' . number_format($saldo_valor, 3, ".", ",") . '</td>
                                         </tr>';
                         } else if ($det->tipo == 2) {
-                            $total_sal += floatval($det->valorizacion);
+                            $total_sal += floatval($valor_salida);
                             $cant_sal += floatval($det->cantidad);
                             $unitario = floatval($det->valorizacion) / floatval($det->cantidad);
                             $saldo_unitario = $saldo !== 0 ? ($saldo_valor / $saldo) : 0;
@@ -4748,8 +4756,8 @@ class AlmacenController extends Controller
                                             <td class="right">0</td>
                                             <td class="right">0</td>
                                             <td class="right" style="mso-number-format:"0.00";">' . floatval($det->cantidad) . '</td>
-                                            <td class="right" style="mso-number-format:"0.00";">' . (floatval($det->valorizacion) / floatval($det->cantidad)) . '</td>
-                                            <td class="right" style="mso-number-format:"0.00";">' . $det->valorizacion . '</td>
+                                            <td class="right" style="mso-number-format:"0.00";">' . number_format($costo_promedio, 3, ".", ",") . '</td>
+                                            <td class="right" style="mso-number-format:"0.00";">' . number_format($valor_salida, 3, ".", ",") . '</td>
                                             <td class="right" style="mso-number-format:"0.00";">' . number_format($saldo, 2, ".", ",") . '</td>
                                             <td class="right" style="mso-number-format:"0.00";">' . number_format($saldo_unitario, 3, ".", ",") . '</td>
                                             <td class="right" style="mso-number-format:"0.00";">' . number_format($saldo_valor, 3, ".", ",") . '</td>
@@ -4763,9 +4771,9 @@ class AlmacenController extends Controller
                                     <td></td><td></td><td></td><td></td>
                                     <td><strong>Total:</strong></td>
                                     <td class="right"><strong>' . $cant_ing . '</strong></td><td></td>
-                                    <td class="right"><strong>' . $total_ing . '</strong></td>
+                                    <td class="right"><strong>' . number_format($total_ing, 2, ".", ",") . '</strong></td>
                                     <td class="right"><strong>' . $cant_sal . '</strong></td><td></td>
-                                    <td class="right"><strong>' . $total_sal . '</strong></td><td></td><td></td><td></td>
+                                    <td class="right"><strong>' . number_format($total_sal, 2, ".", ",") . '</strong></td><td></td><td></td><td></td>
                                 </tr>';
                 }
             }
