@@ -17,7 +17,7 @@
             <th>División</th>
             <th>Proyecto</th>
             <th>Cantidad</th>
-            <th>Precio Unitario</th>
+            <th>Precio Unitario (Sin IGV)</th>
             <th>Subtotal</th>
             <th>Moneda</th>
             <th>Observación</th>
