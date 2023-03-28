@@ -64,6 +64,7 @@ class ClienteController extends Controller
                     'razon_social' => $request->razon_social,
                     'direccion_fiscal' => $request->direccion_fiscal,
                     'estado' => 1,
+                    'transportista' => false,
                     'fecha_registro' => $fecha
                 ],
                     'id_contribuyente'
