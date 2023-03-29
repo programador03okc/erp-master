@@ -4057,7 +4057,7 @@ class RequerimientoController extends Controller
     {
         $detalleRequerimiento = DetalleRequerimiento::where("id_detalle_requerimiento", $idDetalleRequerimiento)
             ->with(['unidadMedida', 'producto', 'reserva' => function ($q) {
-                $q->where('alm_reserva.estado', '=', 1);
+                $q->whereIn('alm_reserva.estado', [1,5]);
             }, 'reserva.almacen', 'reserva.usuario', 'reserva.estado', 'estado'])
 
             ->first();
