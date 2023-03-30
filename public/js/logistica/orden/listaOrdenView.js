@@ -192,6 +192,8 @@ class ListaOrdenView {
                                 'id':element.id_adjunto,
                                 'category':element.categoria_adjunto_id,
                                 'fecha_emision':element.fecha_emision,
+                                'monto_total': element.monto_total,
+                                'id_moneda': element.id_moneda,
                                 'nro_comprobante':(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:""),
                                 'nameFile':element.archivo,
                                 'accion':'',
@@ -282,6 +284,9 @@ class ListaOrdenView {
         });
         $(document).on("change", "input.handleChangeNroComprobante", (e) => {
             this.actualizarNroComprobanteDeAdjunto(e.currentTarget);
+        });
+        $(document).on("change", "input.handleChangeMontoTotalComprobante", (e) => {
+            this.actualizarMontoTotalComprobanteDeAdjunto(e.currentTarget);
         });
         $(document).on("click", "button.handleClickEditarAdjuntoProveedor", (e) => {
             this.editarAdjuntoProveedor(e.currentTarget);
@@ -469,7 +474,7 @@ class ListaOrdenView {
     buildFormat(obj, table_id, id, row) {
         obj.setAttribute('disabled', true);
         this.listaOrdenCtrl.obtenerDetalleOrdenElaboradas(id).then((res) => {
-            console.log(res);
+            // console.log(res);
             obj.removeAttribute('disabled');
             this.construirDetalleOrdenElaboradas(table_id, row, res);
         }).catch((err) => {
@@ -820,6 +825,9 @@ class ListaOrdenView {
 
         // document.querySelector("div[id='modal-enviar-solicitud-pago'] div[name='simboloMoneda']").textContent = obj.dataset.simboloMonedaOrden;
         $( "div[name*='simboloMoneda']" ).text(obj.dataset.simboloMonedaOrden);
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_moneda']").value =obj.dataset.idMonedaOrden;
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='simbolo_moneda']").value =obj.dataset.simboloMonedaOrden;
+
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_proveedor']").value = obj.dataset.idProveedor;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
@@ -861,7 +869,7 @@ class ListaOrdenView {
         this.obteneAdjuntosOrden(obj.dataset.idOrdenCompra).then((res) => {
 
             let htmlAdjunto = '';
-            // console.log(res.length);
+            console.log(res);
             if (res.length > 0) {
                 (res).forEach(element => {
 
@@ -871,6 +879,8 @@ class ListaOrdenView {
                             'category':element.categoria_adjunto_id,
                             'fecha_emision':element.fecha_emision,
                             'nro_comprobante':(element.nro_comprobante !=null && element.nro_comprobante.length > 0?element.nro_comprobante:""),
+                            'id_moneda':element.id_moneda,
+                            'monto_total':element.monto_total,
                             'nameFile':element.archivo,
                             'accion':'',
                             'file':[element.id_adjunto]
@@ -891,8 +901,13 @@ class ListaOrdenView {
                             htmlAdjunto+='</td>'
 
                             htmlAdjunto+='<td>'
-                                htmlAdjunto+=''+element.descripcion+''
+                                htmlAdjunto+=''+element.descripcion_categoria_adjunto+''
                             htmlAdjunto+='</td>'
+                        
+                            htmlAdjunto+='<td>'
+                            htmlAdjunto+=''+element.simbolo_moneda!=null ? (element.simbolo_moneda + element.monto_total):(element.monto_total??'')+''
+                            htmlAdjunto+='</td>'
+
                             htmlAdjunto+='<td>'
                                 htmlAdjunto+='<div style="display:flex;"><button type="button" class="btn btn-sm btn-warning boton handleClickEditarAdjuntoProveedor" title="Editar" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-edit"></i> </button>'
                                 htmlAdjunto+='<button type="button" class="btn btn-sm btn-danger boton handleClickAnularAdjuntoProveedor" title="Anular" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-trash"></i> </button></div>'
@@ -913,11 +928,12 @@ class ListaOrdenView {
         })
 
         this.obteneHistorialDeEnviosAPagoEnCuotas(obj.dataset.idOrdenCompra).then((res) => {
-            console.log(res);
+            // console.log(res);
             let htmlTable = '';
 
             let sumaMontoTotalMontoCuota=0;
 
+            console.log(res);
             if (res.hasOwnProperty('detalle') && res.detalle.length > 0) {
                 let contadorCuota=0;
                 (res.detalle).forEach((element,index) => {
@@ -945,7 +961,23 @@ class ListaOrdenView {
 
                                 if(element.adjuntos.length >0){
                                     (element.adjuntos).forEach(adjunto => {
-                                        enlaceAdjunto.push(`<a href="/files/logistica/comporbantes_proveedor/${adjunto.archivo}" target="_blank">${adjunto.archivo}</a>`);
+                                        // enlaceAdjunto.push(`<a href="/files/logistica/comporbantes_proveedor/${adjunto.archivo}" target="_blank">${adjunto.archivo}</a>`);
+                                        enlaceAdjunto.push( `<a data-toggle="collapse" href="#collapse${adjunto.id_adjunto}" aria-expanded="false" aria-controls="collapse${adjunto.id_adjunto}">
+                                        ${adjunto.archivo}</a>
+                                        <i class="fas fa-caret-left"></i>
+                                        <div class="collapse" id="collapse${adjunto.id_adjunto}">            
+                                        
+                                        <dl>
+                                        <dt>Archivo</dt>
+                                        <dd><a href="/files/logistica/comporbantes_proveedor/${adjunto.archivo}" target="_blank">Descargar</a></dd>
+                                        <dt>Nro Comprobante</dt>
+                                        <dd>${adjunto.nro_comprobante}</dd>
+                                        <dt>Fecha emisión</dt>
+                                        <dd>${adjunto.fecha_emision}</dd>
+                                        <dt>Monto</dt>
+                                        <dd>${adjunto.moneda !=null?(adjunto.moneda.simbolo+adjunto.monto_total):adjunto.monto_total}</dd>
+                                        </dl>
+                                        </div>`);
                                     });
                                 }
 
@@ -1647,7 +1679,7 @@ class ListaOrdenView {
             'dom': vardataTables[1],
             'buttons': [button_descargar_excel],
             'language': vardataTables[0],
-            'order': [[6, 'desc']],
+            'order': [6, 'desc'],
             'bLengthChange': false,
             'serverSide': true,
             'destroy': true,
@@ -1770,6 +1802,7 @@ class ListaOrdenView {
                                 data-id-orden-compra="${row.id ?? ''}"
                                 data-codigo-orden="${row.codigo ?? ''}"
                                 data-monto-total-orden="${row.monto_total ?? ''}"
+                                data-id-moneda-orden="${row.id_moneda ?? ''}"
                                 data-simbolo-moneda-orden="${row.simbolo_moneda ?? ''}"
                                 data-id-proveedor="${row.id_proveedor ?? ''}"
                                 data-id-cuenta-principal="${row.id_cta_principal ?? ''}"
@@ -2059,13 +2092,15 @@ class ListaOrdenView {
             //     );
             // }else{
                 Array.prototype.forEach.call(obj.files, (file) => {
-                    console.log(file);
+                    // console.log(file);
                     if (this.estaHabilitadoLaExtension(file) == true) {
                         let payload = {
                             id: this.makeId(),
                             category: 1, //default: otros adjuntos
                             fecha_emision: moment().format('YYYY-MM-DD'),
                             nro_comprobante: '',
+                            id_moneda: document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_moneda']").value,
+                            monto_total: document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value,
                             nameFile: file.name,
                             accion: 'GUARDAR',
                             file: file
@@ -2113,6 +2148,29 @@ class ListaOrdenView {
             Swal.fire(
                 '',
                 'Hubo un error inesperado al intentar cambiar la categoría del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                'error'
+            );
+        }
+    }
+    actualizarMontoTotalComprobanteDeAdjunto(obj) {
+
+        if (tempArchivoAdjuntoRequerimientoCabeceraList.length > 0) {
+            let indice = tempArchivoAdjuntoRequerimientoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoCabeceraList[indice].monto_total = obj.value;
+            if (tempArchivoAdjuntoRequerimientoCabeceraList[indice].id > 0) {
+
+            }
+            var regExp = /[a-zA-Z]/g; //expresión regular
+            if (regExp.test(tempArchivoAdjuntoRequerimientoCabeceraList[indice].id) == false) {
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'ACTUALIZAR';
+            } else {
+                tempArchivoAdjuntoRequerimientoCabeceraList[indice].accion = 'GUARDAR';
+            }
+
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un error inesperado al intentar cambiar el monto del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
                 'error'
             );
         }
@@ -2208,10 +2266,12 @@ class ListaOrdenView {
         });
     }
     addToTablaArchivosRequerimientoCabecera(payload) {
+        const simboloMonedaOrden = document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='simbolo_moneda']").value;
         this.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
-
+            // console.log(payload);
             let html = '';
-            html = `<tr id="${payload.id}" style="text-align:center">
+            html = `    
+            <tr id="${payload.id}" style="text-align:center">
             <td style="text-align:left;">${payload.nameFile}</td>
             <td style="text-align:left;"><input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" placeholder="Fecha emisión"  value="${moment().format("YYYY-MM-DD")}"></td>
             <td style="text-align:left;"><input type="text" class="form-control handleChangeNroComprobante" name="nro_comprobante"  placeholder="Nro comprobante"></td>
@@ -2227,6 +2287,12 @@ class ListaOrdenView {
                 }
             });
             html += `</select>
+            </td>
+            <td style="text-align:left;">
+                <div class="input-group">
+                <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${simboloMonedaOrden}</div>
+                <input type="number" class="form-control handleChangeMontoTotalComprobante" placeholder="Monto comprobante" value="${payload.monto_total??''}">
+                </div>
             </td>
             <td style="text-align:center;">
                 <div class="btn-group" role="group">
@@ -2329,7 +2395,7 @@ class ListaOrdenView {
 
                     } else {
                         $('#modal-adjuntar-orden .modal-content').LoadingOverlay("hide", true);
-                        console.log(response);
+                        // console.log(response);
                         Swal.fire(
                             '',
                             response.mensaje,
