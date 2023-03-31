@@ -215,7 +215,7 @@ class ListaOrdenView {
                                 htmlAdjunto+='</td>'
 
                                 htmlAdjunto+='<td>'
-                                    htmlAdjunto+=''+element.descripcion+''
+                                    htmlAdjunto+=''+element.descripcion_categoria_adjunto+''
                                 htmlAdjunto+='</td>'
                                 htmlAdjunto+='<td>'
                                     htmlAdjunto+='<div style="display:flex;"><button type="button" class="btn btn-sm btn-warning boton handleClickEditarAdjuntoProveedor" title="Editar" data-id-adjunto="'+element.id_adjunto+'" '+(![27,5,122,14,17,3].includes(auth_user.id_usuario)?'disables':'')+'> <i class="fas fa-edit"></i> </button>'
@@ -905,7 +905,7 @@ class ListaOrdenView {
                             htmlAdjunto+='</td>'
                         
                             htmlAdjunto+='<td>'
-                            htmlAdjunto+=''+element.simbolo_moneda!=null ? (element.simbolo_moneda + element.monto_total):(element.monto_total??'')+''
+                            htmlAdjunto+=''+(element.simbolo_moneda!=null ? element.simbolo_moneda:'') + (element.monto_total !=null ? element.monto_total:'')
                             htmlAdjunto+='</td>'
 
                             htmlAdjunto+='<td>'
@@ -975,7 +975,7 @@ class ListaOrdenView {
                                         <dt>Fecha emisión</dt>
                                         <dd>${adjunto.fecha_emision}</dd>
                                         <dt>Monto</dt>
-                                        <dd>${adjunto.moneda !=null?(adjunto.moneda.simbolo+adjunto.monto_total):adjunto.monto_total}</dd>
+                                        <dd>${adjunto.moneda !=null?adjunto.moneda.simbolo:''} ${adjunto.monto_total=null?adjunto.monto_total:''}</dd>
                                         </dl>
                                         </div>`);
                                     });
@@ -2096,7 +2096,7 @@ class ListaOrdenView {
                     if (this.estaHabilitadoLaExtension(file) == true) {
                         let payload = {
                             id: this.makeId(),
-                            category: 1, //default: otros adjuntos
+                            category: 2, //default: factura
                             fecha_emision: moment().format('YYYY-MM-DD'),
                             nro_comprobante: '',
                             id_moneda: document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_moneda']").value,

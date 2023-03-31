@@ -156,9 +156,9 @@
                                                 <tr>
                                                     <th style="width: 30%;">Nombre archivo</th>
                                                     <th>Fecha emisión</th>
-                                                    <th>N° comprob.</th>
-                                                    <th>Categoría comprob.</th>
-                                                    <th>Monto total comprob.</th>
+                                                    <th>Número y serie</th>
+                                                    <th>Categoría adjunto</th>
+                                                    <th>Monto total</th>
                                                     <th>Acción</th>
                                                 </tr>
                                             </thead>
@@ -181,9 +181,9 @@
                                                 <tr>
                                                     <th>Archivo</th>
                                                     <th>Fecha emisión</th>
-                                                    <th>Nro comprob.</th>
-                                                    <th>Categoría comprob.</th>
-                                                    <th>Moto total comprob.</th>
+                                                    <th>Número y serie</th>
+                                                    <th>Categoría adjunto</th>
+                                                    <th>Moto total</th>
                                                     <th>Acción</th>
                                                 </tr>
                                             </thead>
