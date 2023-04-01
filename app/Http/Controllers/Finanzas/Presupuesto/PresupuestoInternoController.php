@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\administracion\AdmGrupo;
 use App\Models\Administracion\Division;
+use App\Models\Administracion\Empresa;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Configuracion\Grupo;
@@ -58,7 +59,8 @@ class PresupuestoInternoController extends Controller
     }
     public function crear()
     {
-        // $grupos = Grupo::get();
+        $empresas = Empresa::all();
+        // return $empresas[0]->contribuyente->razon_social;exit;
         $grupos = AdmGrupo::get();
         $area = FinanzasArea::where('estado',1)->get();
         $moneda = Moneda::where('estado',1)->get();
@@ -69,7 +71,7 @@ class PresupuestoInternoController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
-        return view('finanzas.presupuesto_interno.crear', compact('grupos','area','moneda','array_accesos'));
+        return view('finanzas.presupuesto_interno.crear', compact('grupos','area','moneda','array_accesos','empresas'));
     }
     public function presupuestoInternoDetalle(Request $request)
     {
@@ -143,6 +145,7 @@ class PresupuestoInternoController extends Controller
             $presupuesto_interno->id_moneda             = $request->id_moneda;
             $presupuesto_interno->gastos                = $request->tipo_gastos;
             $presupuesto_interno->ingresos              = $request->tipo_ingresos;
+            $presupuesto_interno->empresa_id              = $request->empresa_id;
             $presupuesto_interno->save();
             // return $request->id_tipo_presupuesto;exit;
             if ($request->tipo_ingresos === '1') {
@@ -651,6 +654,7 @@ class PresupuestoInternoController extends Controller
     }
     public function editar(Request $request)
     {
+        $empresas = Empresa::all();
         $grupos = Grupo::get();
         // $area = Area::where('estado',1)->get();
         $area = Division::where('estado',1)->get();
@@ -674,10 +678,11 @@ class PresupuestoInternoController extends Controller
             array_push($array_accesos,$value->id_acceso);
         }
 
-        return view('finanzas.presupuesto_interno.editar', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos'));
+        return view('finanzas.presupuesto_interno.editar', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos','empresas'));
     }
     public function editarPresupuestoAprobado(Request $request)
     {
+        $empresas = Empresa::all();
         $grupos = Grupo::get();
         // $area = Area::where('estado',1)->get();
         $area = Division::where('estado',1)->get();
@@ -700,7 +705,7 @@ class PresupuestoInternoController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
-        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos'));
+        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos','empresas'));
     }
     public function actualizar(Request $request)
     {
