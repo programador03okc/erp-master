@@ -41,7 +41,7 @@ class DevolucionPenalidadExport implements FromView, WithStyles, WithColumnForma
         $sheet->getStyle('A:R')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         return [
-            'A:Z' => [
+            'A:R' => [
                 'font' => [ 'family' => 'Arial', 'size' => 10 ]
             ],
         ];

@@ -373,7 +373,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('guardar_crono_propuesta', 'ProyectosController@guardar_crono_propuesta');
 				Route::get('listar_propuesta_crono/{id}', 'ProyectosController@listar_propuesta_crono');
 				Route::get('ver_gant_propuesta/{id}', 'ProyectosController@ver_gant_propuesta');
-				Route::get('mostrar_acu/{id}', 'ProyectosController@mostrar_acu');
+				Route::get('mostrar_acu/{id}', 'Proyectos\Catalogos\AcuController@mostrar_acu');
 
 				Route::get('listar_obs_cd/{id}', 'ProyectosController@listar_obs_cd');
 				Route::get('listar_obs_ci/{id}', 'ProyectosController@listar_obs_ci');
@@ -443,51 +443,51 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'presupuestos-ejecucion.', 'prefix' => 'presupuestos-ejecucion'], function () {
 				//Presupuesto Ejecución
 				Route::get('index', 'ProyectosController@view_preseje')->name('index');
-				Route::get('mostrar_presint/{id}', 'ProyectosController@mostrar_presint');
+				Route::get('mostrar_presint/{id}', 'Proyectos\Opciones\PresupuestoInternoController@mostrar_presint');
 				Route::post('guardar_preseje', 'ProyectosController@guardar_preseje');
 				Route::post('update_preseje', 'ProyectosController@update_preseje');
 				Route::get('anular_presint/{id}', 'ProyectosController@anular_presint');
 
 				Route::get('generar_estructura/{id}/{tp}', 'ProyectosController@generar_estructura');
-				Route::get('listar_presupuesto_proyecto/{id}', 'ProyectosController@listar_presupuesto_proyecto');
+				Route::get('listar_presupuesto_proyecto/{id}', 'Proyectos\Opciones\PresupuestoInternoController@listar_presupuesto_proyecto');
 				Route::get('anular_estructura/{id}', 'ProyectosController@anular_estructura');
 				Route::get('totales/{id}', 'ProyectosController@totales');
 				Route::get('download_presupuesto/{id}', 'ProyectosController@download_presupuesto');
 				Route::get('generar_preseje/{id}', 'ProyectosController@generar_preseje');
 				Route::get('actualiza_moneda/{id}', 'ProyectosController@actualiza_moneda');
-				Route::get('mostrar_presupuestos/{id}', 'ProyectosController@mostrar_presupuestos');
+				Route::get('mostrar_presupuestos/{id}', 'Proyectos\Opciones\PresupuestoInternoController@mostrar_presupuestos');
 				Route::get('listar_presupuestos_copia/{tp}/{id}', 'ProyectosController@listar_presupuestos_copia');
 				Route::get('generar_partidas_presupuesto/{id}/{ida}', 'ProyectosController@generar_partidas_presupuesto');
 				Route::get('listar_proyectos', 'ProyectosController@listar_proyectos');
 
-				Route::get('listar_acus_cd/{id}', 'ProyectosController@listar_acus_cd');
-				Route::get('listar_cd/{id}', 'ProyectosController@listar_cd');
-				Route::get('listar_ci/{id}', 'ProyectosController@listar_ci');
-				Route::get('listar_gg/{id}', 'ProyectosController@listar_gg');
-				Route::post('guardar_componente_cd', 'ProyectosController@guardar_componente_cd');
-				Route::post('guardar_componente_ci', 'ProyectosController@guardar_componente_ci');
-				Route::post('guardar_componente_gg', 'ProyectosController@guardar_componente_gg');
-				Route::post('update_componente_cd', 'ProyectosController@update_componente_cd');
-				Route::post('update_componente_ci', 'ProyectosController@update_componente_ci');
-				Route::post('update_componente_gg', 'ProyectosController@update_componente_gg');
-				Route::post('anular_compo_cd', 'ProyectosController@anular_compo_cd');
-				Route::post('anular_compo_ci', 'ProyectosController@anular_compo_ci');
-				Route::post('anular_compo_gg', 'ProyectosController@anular_compo_gg');
-				Route::post('guardar_partida_cd', 'ProyectosController@guardar_partida_cd');
-				Route::post('guardar_partida_ci', 'ProyectosController@guardar_partida_ci');
-				Route::post('guardar_partida_gg', 'ProyectosController@guardar_partida_gg');
-				Route::post('update_partida_cd', 'ProyectosController@update_partida_cd');
-				Route::post('update_partida_ci', 'ProyectosController@update_partida_ci');
-				Route::post('update_partida_gg', 'ProyectosController@update_partida_gg');
-				Route::post('anular_partida_cd', 'ProyectosController@anular_partida_cd');
-				Route::post('anular_partida_ci', 'ProyectosController@anular_partida_ci');
-				Route::post('anular_partida_gg', 'ProyectosController@anular_partida_gg');
-				Route::get('subir_partida_cd/{id}', 'ProyectosController@subir_partida_cd');
-				Route::get('subir_partida_ci/{id}', 'ProyectosController@subir_partida_ci');
-				Route::get('subir_partida_gg/{id}', 'ProyectosController@subir_partida_gg');
-				Route::get('bajar_partida_cd/{id}', 'ProyectosController@bajar_partida_cd');
-				Route::get('bajar_partida_ci/{id}', 'ProyectosController@bajar_partida_ci');
-				Route::get('bajar_partida_gg/{id}', 'ProyectosController@bajar_partida_gg');
+				Route::get('listar_acus_cd/{id}', 'Proyectos\Opciones\ComponentesController@listar_acus_cd');
+				Route::get('listar_cd/{id}', 'Proyectos\Opciones\ComponentesController@listar_cd');
+				Route::get('listar_ci/{id}', 'Proyectos\Opciones\ComponentesController@listar_ci');
+				Route::get('listar_gg/{id}', 'Proyectos\Opciones\ComponentesController@listar_gg');
+				Route::post('guardar_componente_cd', 'Proyectos\Opciones\ComponentesController@guardar_componente_cd');
+				Route::post('guardar_componente_ci', 'Proyectos\Opciones\ComponentesController@guardar_componente_ci');
+				Route::post('guardar_componente_gg', 'Proyectos\Opciones\ComponentesController@guardar_componente_gg');
+				Route::post('update_componente_cd', 'Proyectos\Opciones\ComponentesController@update_componente_cd');
+				Route::post('update_componente_ci', 'Proyectos\Opciones\ComponentesController@update_componente_ci');
+				Route::post('update_componente_gg', 'Proyectos\Opciones\ComponentesController@update_componente_gg');
+				Route::post('anular_compo_cd', 'Proyectos\Opciones\ComponentesController@anular_compo_cd');
+				Route::post('anular_compo_ci', 'Proyectos\Opciones\ComponentesController@anular_compo_ci');
+				Route::post('anular_compo_gg', 'Proyectos\Opciones\ComponentesController@anular_compo_gg');
+				Route::post('guardar_partida_cd', 'Proyectos\Opciones\PartidasController@guardar_partida_cd');
+				Route::post('guardar_partida_ci', 'Proyectos\Opciones\PartidasController@guardar_partida_ci');
+				Route::post('guardar_partida_gg', 'Proyectos\Opciones\PartidasController@guardar_partida_gg');
+				Route::post('update_partida_cd', 'Proyectos\Opciones\PartidasController@update_partida_cd');
+				Route::post('update_partida_ci', 'Proyectos\Opciones\PartidasController@update_partida_ci');
+				Route::post('update_partida_gg', 'Proyectos\Opciones\PartidasController@update_partida_gg');
+				Route::post('anular_partida_cd', 'Proyectos\Opciones\PartidasController@anular_partida_cd');
+				Route::post('anular_partida_ci', 'Proyectos\Opciones\PartidasController@anular_partida_ci');
+				Route::post('anular_partida_gg', 'Proyectos\Opciones\PartidasController@anular_partida_gg');
+				Route::get('subir_partida_cd/{id}', 'Proyectos\Opciones\PartidasController@subir_partida_cd');
+				Route::get('subir_partida_ci/{id}', 'Proyectos\Opciones\PartidasController@subir_partida_ci');
+				Route::get('subir_partida_gg/{id}', 'Proyectos\Opciones\PartidasController@subir_partida_gg');
+				Route::get('bajar_partida_cd/{id}', 'Proyectos\Opciones\PartidasController@bajar_partida_cd');
+				Route::get('bajar_partida_ci/{id}', 'Proyectos\Opciones\PartidasController@bajar_partida_ci');
+				Route::get('bajar_partida_gg/{id}', 'Proyectos\Opciones\PartidasController@bajar_partida_gg');
 				Route::get('crear_titulos_ci/{id}', 'ProyectosController@crear_titulos_ci');
 				Route::get('crear_titulos_gg/{id}', 'ProyectosController@crear_titulos_gg');
 
@@ -495,7 +495,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('update_unitario_partida_cd', 'ProyectosController@update_unitario_partida_cd');
 				Route::get('listar_acus_sin_presup', 'ProyectosController@listar_acus_sin_presup');
 
-				Route::get('mostrar_acu/{id}', 'ProyectosController@mostrar_acu');
+				Route::get('mostrar_acu/{id}', 'Proyectos\Catalogos\AcuController@mostrar_acu');
 				Route::get('partida_insumos_precio/{id}/{ins}', 'ProyectosController@partida_insumos_precio');
 				Route::get('listar_acu_detalle/{id}', 'ProyectosController@listar_acu_detalle');
 				Route::post('guardar_acu', 'ProyectosController@guardar_acu');
@@ -524,27 +524,27 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'cronogramas-ejecucion.', 'prefix' => 'cronogramas-ejecucion'], function () {
 
 				Route::get('index', 'ProyectosController@view_cronoeje')->name('index');
-				Route::get('nuevo_cronograma/{id}', 'ProyectosController@nuevo_cronograma');
-				Route::get('listar_acus_cronograma/{id}', 'ProyectosController@listar_acus_cronograma');
-				Route::get('listar_pres_crono/{tc}/{tp}', 'ProyectosController@listar_pres_crono');
-				Route::get('listar_pres_cronoval/{tc}/{tp}', 'ProyectosController@listar_pres_cronoval');
-				Route::post('guardar_crono', 'ProyectosController@guardar_crono');
-				Route::get('anular_crono/{id}', 'ProyectosController@anular_crono');
-				Route::get('ver_gant/{id}', 'ProyectosController@ver_gant');
-				Route::get('listar_cronograma/{id}', 'ProyectosController@listar_cronograma');
-				Route::get('mostrar_acu/{id}', 'ProyectosController@mostrar_acu');
-				Route::get('listar_obs_cd/{id}', 'ProyectosController@listar_obs_cd');
+				Route::get('nuevo_cronograma/{id}', 'Proyectos\Opciones\CronogramaInternoController@nuevo_cronograma');
+				Route::get('listar_acus_cronograma/{id}', 'ProyectosController@listar_acus_cronograma'); // ! no existe método
+				Route::get('listar_pres_crono/{tc}/{tp}', 'Proyectos\Opciones\CronogramaInternoController@listar_pres_crono');
+				Route::get('listar_pres_cronoval/{tc}/{tp}', 'Proyectos\Opciones\CronogramaValorizadoInternoController@listar_pres_cronoval');
+				Route::post('guardar_crono', 'Proyectos\Opciones\CronogramaInternoController@guardar_crono');
+				Route::get('anular_crono/{id}', 'Proyectos\Opciones\CronogramaInternoController@anular_crono');
+				Route::get('ver_gant/{id}', 'Proyectos\Opciones\CronogramaInternoController@ver_gant');
+				Route::get('listar_cronograma/{id}', 'Proyectos\Opciones\CronogramaInternoController@listar_cronograma');
+				Route::get('mostrar_acu/{id}', 'Proyectos\Catalogos\AcuController@mostrar_acu');
+				Route::get('listar_obs_cd/{id}', 'Proyectos\Opciones\PartidasController@listar_obs_cd');
 			});
 
 			Route::group(['as' => 'cronogramas-valorizados-ejecucion.', 'prefix' => 'cronogramas-valorizados-ejecucion'], function () {
 				//Cronograma Valorizado Ejecucion
 				Route::get('index', 'ProyectosController@view_cronovaleje')->name('index');
-				Route::get('nuevo_crono_valorizado/{id}', 'ProyectosController@nuevo_crono_valorizado');
-				Route::get('mostrar_crono_valorizado/{id}', 'ProyectosController@mostrar_crono_valorizado');
-				Route::get('download_cronoval/{id}/{nro}', 'ProyectosController@download_cronoval');
-				Route::post('guardar_cronoval_presupuesto', 'ProyectosController@guardar_cronoval_presupuesto');
-				Route::get('anular_cronoval/{id}', 'ProyectosController@anular_cronoval');
-				Route::get('listar_pres_cronoval/{tc}/{tp}', 'ProyectosController@listar_pres_cronoval');
+				Route::get('nuevo_crono_valorizado/{id}', 'Proyectos\Opciones\CronogramaValorizadoInternoController@nuevo_crono_valorizado');
+				Route::get('mostrar_crono_valorizado/{id}', 'Proyectos\Opciones\CronogramaValorizadoInternoController@mostrar_crono_valorizado');
+				Route::get('download_cronoval/{id}/{nro}', 'Proyectos\Opciones\CronogramaValorizadoInternoController@download_cronoval');
+				Route::post('guardar_cronoval_presupuesto', 'Proyectos\Opciones\CronogramaValorizadoInternoController@guardar_cronoval_presupuesto');
+				Route::get('anular_cronoval/{id}', 'Proyectos\Opciones\CronogramaValorizadoInternoController@anular_cronoval');
+				Route::get('listar_pres_cronoval/{tc}/{tp}', 'Proyectos\Opciones\CronogramaValorizadoInternoController@listar_pres_cronoval');
 			});
 		});
 
@@ -731,7 +731,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('listar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-compra', 'Logistica\RequerimientoController@guardarAdjuntosAdicionales');
-
+				
+				Route::get('listar-flujo/{idDocumento}', 'RevisarAprobarController@mostrarTodoFlujoAprobacionDeDocumento');
 				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 
 			});
@@ -2176,6 +2177,13 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('lista_comprobante_compra/{id_sede}/{all_or_id_doc_com}', 'ContabilidadController@lista_comprobante_compra');
 		});
 
+		Route::group(['as' => 'documento-compra.', 'prefix' => 'documento-compra'], function () {
+			//Documento de compra
+			Route::get('index', 'ComprobanteCompraController@view_crear_comprobante_compra')->name('index');
+			// Route::post('mostrar_prods', 'Almacen\Catalogo\ProductoController@mostrar_prods');
+			// Route::get('listarDevoluciones', 'Almacen\Movimiento\DevolucionController@listarDevoluciones');
+		});
+
 		Route::group(['as' => 'tipo-cambio.', 'prefix' => 'tipo-cambio'], function () {
 			Route::get('index', 'Tesoreria\TipoCambioController@index')->name('index');
 			Route::post('listar', 'Tesoreria\TipoCambioController@listar')->name('listar');
@@ -2447,6 +2455,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('eliminar', 'Gerencial\Cobranza\CobranzaFondoController@eliminar')->name('eliminar');
 				Route::post('cargar-cobro', 'Gerencial\Cobranza\CobranzaFondoController@cargarCobro')->name('cargar-cobro');
 				Route::post('guardar-cobro', 'Gerencial\Cobranza\CobranzaFondoController@guardarCobro')->name('guardar-cobro');
+				Route::get('exportar-excel', 'Gerencial\Cobranza\CobranzaFondoController@exportarExcel')->name('exportar-excel');
 			});
 
 			Route::group(['as' => 'devoluciones.', 'prefix' => 'devoluciones'], function () {

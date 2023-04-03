@@ -330,6 +330,7 @@ $(document).on('click','[data-action="disabled-accesos"]',function () {
 });
 $(document).on('click','[data-action="guardar"]',function () {
     var data = $('[data-form="accesos-seleccionados"]').serialize();
+
     Swal.fire({
         title: 'Guardar',
         text: "¿Esta seguro de guardar?",

@@ -8,7 +8,7 @@ use App\Http\Controllers\Proyectos\Catalogos\GenericoController;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 
-class CronogramaValorizadoInterno extends Controller
+class CronogramaValorizadoInternoController extends Controller
 {
     function view_cronovalint(){
         $unid_program = GenericoController::mostrar_unid_program_cbo();

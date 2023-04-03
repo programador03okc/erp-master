@@ -2160,13 +2160,15 @@ class RequerimientoPendienteView {
             (data).forEach(element => {
                 if (element.estado.id_estado_doc != 7) {
                     cantidadTotalStockComprometido += parseFloat(element.stock_comprometido);
+
+                    let botonAnularReserva = `<button type="button" class="btn btn-xs btn-danger btnAnularReserva handleClickAnularReserva" data-codigo-reserva="${element.codigo}" data-id-reserva="${element.id_reserva}"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" title="Anular"><i class="fas fa-times fa-xs"></i></button>`;
                     document.querySelector("tbody[id='bodyListaConReserva']").insertAdjacentHTML('beforeend', `<tr style="text-align:center">
                     <td>${(element.codigo != null && element.codigo != '') ? element.codigo : (element.id_reserva)}</td>
                     <td>${element.almacen.descripcion}</td>
                     <td>${element.stock_comprometido}</td>
                     <td>${element.usuario.nombre_corto}</td>
                     <td>${element.estado.estado_doc}</td>
-                    <td><button type="button" class="btn btn-xs btn-danger btnAnularReserva handleClickAnularReserva" data-codigo-reserva="${element.codigo}" data-id-reserva="${element.id_reserva}"  data-id-detalle-requerimiento="${element.id_detalle_requerimiento}" title="Anular"><i class="fas fa-times fa-xs"></i></button></td>
+                    <td>${element.estado.id_estado_doc ==1 ? botonAnularReserva:''}</td>
                     </tr>`);
                 }
             });

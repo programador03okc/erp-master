@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Comercial\ClienteController;
 use App\Http\Controllers\Proyectos\Catalogos\GenericoController;
+use App\Http\Controllers\Proyectos\Opciones\ComponentesController;
+use App\Http\Controllers\Proyectos\Variables\CategoriaAcuController;
+use App\Http\Controllers\Proyectos\Variables\IuController;
+use App\Http\Controllers\Proyectos\Variables\TipoInsumoController;
 use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Presupuestos\CentroCosto;
 use Illuminate\Http\Request;
@@ -39,36 +43,36 @@ class ProyectosController extends Controller
 
 
     function view_propuesta(){
-        $monedas = $this->mostrar_monedas_cbo();
-        $sistemas = $this->mostrar_sis_contrato_cbo();
-        $unidades = $this->mostrar_unidades_cbo();
-        $unid_program = $this->mostrar_unid_program_cbo();
+        $monedas = GenericoController::mostrar_monedas_cbo();
+        $sistemas = GenericoController::mostrar_sis_contrato_cbo();
+        $unidades = AlmacenController::mostrar_unidades_cbo();
+        $unid_program = GenericoController::mostrar_unid_program_cbo();
         $usuarios = $this->select_usuarios();
         return view('proyectos/presupuesto/propuesta', compact('monedas','sistemas','unidades','unid_program','usuarios'));
     }
     function view_preseje(){
-        $monedas = $this->mostrar_monedas_cbo();
-        $sistemas = $this->mostrar_sis_contrato_cbo();
-        $unidades = $this->mostrar_unidades_cbo();
-        $tipos = $this->mostrar_tipos_insumos_cbo();
-        $ius = $this->mostrar_ius_cbo();
-        $categorias = $this->select_categorias_acus();
+        $monedas = GenericoController::mostrar_monedas_cbo();
+        $sistemas = GenericoController::mostrar_sis_contrato_cbo();
+        $unidades = AlmacenController::mostrar_unidades_cbo();
+        $tipos = TipoInsumoController::mostrar_tipos_insumos_cbo();
+        $ius = IuController::mostrar_ius_cbo();
+        $categorias = CategoriaAcuController::select_categorias_acus();
         return view('proyectos/presupuesto/preseje', compact('monedas','sistemas','unidades','tipos','ius','categorias'));
     }
     function view_cronoeje(){
-        $unid_program = $this->mostrar_unid_program_cbo();
+        $unid_program = GenericoController::mostrar_unid_program_cbo();
         return view('proyectos/cronograma/cronoeje', compact('unid_program'));
     }
     function view_cronopro(){
-        $unid_program = $this->mostrar_unid_program_cbo();
+        $unid_program = GenericoController::mostrar_unid_program_cbo();
         return view('proyectos/cronograma/cronopro', compact('unid_program'));
     }
     function view_cronovaleje(){
-        $unid_program = $this->mostrar_unid_program_cbo();
+        $unid_program = GenericoController::mostrar_unid_program_cbo();
         return view('proyectos/cronograma/cronovaleje', compact('unid_program'));
     }
     function view_cronovalpro(){
-        $unid_program = $this->mostrar_unid_program_cbo();
+        $unid_program = GenericoController::mostrar_unid_program_cbo();
         return view('proyectos/cronograma/cronovalpro', compact('unid_program'));
     }
     function view_valorizacion(){
@@ -556,7 +560,7 @@ class ProyectosController extends Controller
                 ->whereYear('fecha_inicio', '=', $yyyy)
                 ->count();
 
-        $number = GenericoController::leftZero(3,$data+1);
+        $number = (new GenericoController)->leftZero(3,$data+1);
         $result = "PY-".$code_emp."-".$anio."-".$number;
 
         return $result;
@@ -571,7 +575,7 @@ class ProyectosController extends Controller
             $id_usuario = Auth::user()->id_usuario;
 
             //Proyectos
-            $id_padre = 71;
+            $id_padre = 301; // TODO : el usuario debe seleccionar a que centro de costo estaría agregandose uno nuevo
             $count = CentroCosto::where('id_padre',$id_padre)->where('estado',1)->count();
             $nro = $count + 1;
             $codigo_cc = '03.03.'.(($nro<10) ? ('0'.$nro) : $nro);
@@ -1211,7 +1215,7 @@ class ProyectosController extends Controller
                 ->whereYear('fecha_emision', '=', $yyyy)
                 ->count();
 
-        $number = $this->leftZero(3,$data+1);
+        $number = (new GenericoController)->leftZero(3,$data+1);
         $result = "GP/".$code_emp."-".$anio."".$mes."".$number;
 
         return $result;
@@ -2157,7 +2161,7 @@ class ProyectosController extends Controller
 
 
     public function solo_cd($id_pres){
-        $data = $this->cd($id_pres);
+        $data = (new ComponentesController)->cd($id_pres);
         return $data['array'];
     }
 
@@ -2495,7 +2499,7 @@ class ProyectosController extends Controller
                 ->whereYear('fecha_emision', '=', $yyyy)
                 ->count();
 
-        $number = $this->leftZero(3,$data+1);
+        $number = (new GenericoController)->leftZero(3,$data+1);
         $gru = strtoupper(substr($grupo->descripcion, 0, 2));
         $tp = '';
 
@@ -3511,7 +3515,7 @@ class ProyectosController extends Controller
         $nuevos_titulos = [];
         $array = [];
         $html = '';
-        $unidades = $this->mostrar_unidades_cbo();
+        $unidades = AlmacenController::mostrar_unidades_cbo();
 
         foreach ($titulos as $titu){
             // $total = 0;
@@ -3696,7 +3700,7 @@ class ProyectosController extends Controller
         if ($nuevo > 0){
             //obtiene el codigo
             $padre = substr($cid->codigo,0,strlen($cid->codigo)-2);
-            $nuevo_codigo = $padre.$this->leftZero(2,$nuevo);
+            $nuevo_codigo = $padre.(new GenericoController)->leftZero(2,$nuevo);
 
             //obtener el anterior y sumarle una posicion
             $ant = DB::table('finanzas.presup_par')
@@ -3722,7 +3726,7 @@ class ProyectosController extends Controller
             $nuevo = $anterior - 1;
             //obtiene el codigo
             $nuevo_codigo = substr($cid->codigo,0,strlen($cid->codigo)-5);
-            $nue_padre = $nuevo_codigo.$this->leftZero(2,$nuevo);
+            $nue_padre = $nuevo_codigo.(new GenericoController)->leftZero(2,$nuevo);
             $padre_anterior = substr($cid->codigo,0,strlen($cid->codigo)-3);
 
             //obtener el anterior y sumarle una posicion
@@ -3732,7 +3736,7 @@ class ProyectosController extends Controller
                     ['id_presup','=',$cid->id_presup]])
             ->count();
 
-            $cod = $nue_padre.'.'.$this->leftZero(2,($count+1));
+            $cod = $nue_padre.'.'.(new GenericoController)->leftZero(2,($count+1));
 
             if (isset($cod)){
                 // actualiza el codigo actual
@@ -3752,7 +3756,7 @@ class ProyectosController extends Controller
                 foreach($hijos as $h){
                     $i++;
                     $c = substr($h->codigo,0,strlen($h->codigo)-3);
-                    $nuevo_hijo = $c.'.'.$this->leftZero(2,($i));
+                    $nuevo_hijo = $c.'.'.(new GenericoController)->leftZero(2,($i));
                     //actualiza nuevo codigo
                     DB::table('finanzas.presup_par')
                     ->where('id_partida',$h->id_partida)
@@ -3782,7 +3786,7 @@ class ProyectosController extends Controller
             //suma uno al numero
             $nuevo = $ultimo + 1;
             //genera el nuevo codigo
-            $nuevo_codigo = $padre.'.'.$this->leftZero(2,$nuevo);
+            $nuevo_codigo = $padre.'.'.(new GenericoController)->leftZero(2,$nuevo);
             //obtener el anterior
             $ant = DB::table('finanzas.presup_par')
             ->where([['id_presup','=',$cid->id_presup],
@@ -3807,8 +3811,8 @@ class ProyectosController extends Controller
             //suma al padre
             $nue = $padre_actual + 1;
             //obtiene el codigo
-            $nuevo_padre = substr($cid->codigo,0,strlen($cid->codigo)-5).$this->leftZero(2,$nue);
-            $nuevo_codigo = $nuevo_padre.'.'.$this->leftZero(2,1);
+            $nuevo_padre = substr($cid->codigo,0,strlen($cid->codigo)-5).(new GenericoController)->leftZero(2,$nue);
+            $nuevo_codigo = $nuevo_padre.'.'.(new GenericoController)->leftZero(2,1);
 
             if (isset($nuevo_codigo)){
                 // actualiza los hijos del nuevo padre
@@ -3821,7 +3825,7 @@ class ProyectosController extends Controller
                 foreach($hijos as $h){
                     $i++;
                     $c = substr($h->codigo,0,strlen($h->codigo)-3);
-                    $nuevo_hijo = $c.'.'.$this->leftZero(2,$i);
+                    $nuevo_hijo = $c.'.'.(new GenericoController)->leftZero(2,$i);
                     //actualiza nuevo codigo
                     DB::table('finanzas.presup_par')
                     ->where('id_partida',$h->id_partida)

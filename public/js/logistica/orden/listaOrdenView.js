@@ -1694,7 +1694,7 @@ class ListaOrdenView {
                     // }
                 },
                 { 'data': 'descripcion_sede_empresa', 'name': 'descripcion_sede_empresa','className': 'text-center' },
-                { 'data': 'simbolo_moneda', 'name': 'simbolo_moneda','className': 'text-center' },
+                { 'data': 'simbolo_moneda', 'name': 'simbolo_moneda','className': 'text-center','searchable':false },
                 { 'data': 'fecha_emision', 'name': 'fecha_emision','className': 'text-center' },
                 { 'data': 'fecha_llegada',
                     render: function (data, type, row) {
@@ -1717,7 +1717,7 @@ class ListaOrdenView {
                         return row.razon_social_proveedor + " RUC:" + row.nro_documento_proveedor;
                     }
                 },
-                { 'data': 'condicion', 'name': 'condicion' },
+                { 'data': 'condicion', 'name': 'condicion','searchable':false },
                 { 'data': 'razon_social_proveedor',
                     render: function (data, type, row) {
                         return `<a class="handleClickEditarEstadoOrden" data-id-estado-orden-compra="${row.id_estado}" data-codigo-orden="${row.codigo}" data-id-orden-compra="${row.id}" style="cursor:pointer;">${row.descripcion_estado}</a>`;

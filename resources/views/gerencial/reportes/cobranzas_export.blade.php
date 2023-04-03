@@ -2,11 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <style>
-        h1 {
-            font-size: 30px !important;
-        }
-    </style>
 </head>
 <body>
     <h1>Lista de Cobranzas </h1>
@@ -18,6 +13,7 @@
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Tipo</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">RUC Cliente</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">Cliente</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">CDP</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">OCAM</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Fact.</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">UU.EE.</th>
@@ -53,6 +49,7 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->sector }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->cliente_ruc }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->cliente }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->cdp }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->ocam }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->factura }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->uu_ee }}</td>

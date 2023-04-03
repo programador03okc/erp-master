@@ -20,6 +20,10 @@ class CobranzaExport implements FromView, WithStyles, WithColumnFormatting, With
     public function view(): View {
         $data = CobranzaView::select(['*']);
 
+        if (session()->has('cobranzaPenalidad')) {
+            $data = $data->where('tiene_penalidad', session()->get('cobranzaPenalidad'));
+        }
+
         if (session()->has('cobranzaEmpresa')) {
             $data = $data->where('empresa', session()->get('cobranzaEmpresa'));
         }
@@ -48,13 +52,13 @@ class CobranzaExport implements FromView, WithStyles, WithColumnFormatting, With
     public function styles(Worksheet $sheet)
     {
         $sheet->getStyle('D3:D' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
-        $sheet->getStyle('E3:E' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
-        $sheet->getStyle('U3:U' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
+        $sheet->getStyle('F3:F' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
         $sheet->getStyle('V3:V' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
-        $sheet->getStyle('A:AC')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('W3:W' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A:AD')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         return [
-            'A:Z' => [
+            'A:AC' => [
                 'font' => [ 'family' => 'Arial', 'size' => 10 ]
             ],
         ];
@@ -63,9 +67,9 @@ class CobranzaExport implements FromView, WithStyles, WithColumnFormatting, With
     public function columnFormats(): array
     {
         return [
-            "O" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            "X" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            "AB" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            "P" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            "Y" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            "AC" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
 }

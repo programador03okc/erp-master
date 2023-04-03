@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\ProyectosController;
+use App\Http\Controllers\RevisarAprobarController;
 use App\Http\Controllers\Tesoreria\CierreAperturaController;
 use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Area;
@@ -774,8 +775,6 @@ class RequerimientoController extends Controller
         $cantidad_aprobados = Aprobacion::cantidadAprobaciones($num_doc);
 
 
-        $usuarioElaboradorDeRequerimiento =
-
 
 
             $historialAprobacionList[] = [
@@ -783,7 +782,7 @@ class RequerimientoController extends Controller
                 'descripcion_rol' => null,
                 'detalle_observacion' => null,
                 'fecha_vobo' => $requerimiento[0]['fecha_registro'],
-                'id_aprobacion' => 4689,
+                'id_aprobacion' => 1,
                 'id_flujo' => null,
                 'id_operacion' => null,
                 'id_rol' => null,
@@ -800,12 +799,17 @@ class RequerimientoController extends Controller
             $historialAprobacionList[] = $value;
         }
 
+
+        $flujoDeAprobacion = (new RevisarAprobarController)->mostrarTodoFlujoAprobacionDeDocumento($num_doc);
+
+
         $data = [
             "requerimiento" => $requerimiento ? $requerimiento : [],
             "det_req" => $detalle_requerimiento ? $detalle_requerimiento : [],
             "observacion_requerimiento" => $req_observacion ? $req_observacion : [],
             "aprobaciones" => $cantidad_aprobados ? $cantidad_aprobados : 0,
-            "historial_aprobacion" => $historialAprobacionList ? $historialAprobacionList : []
+            "historial_aprobacion" => $flujoDeAprobacion ? $historialAprobacionList : [],
+            "flujo_aprobacion" => $historialAprobacionList ? $flujoDeAprobacion : []
         ];
 
         return $data;
@@ -4053,7 +4057,7 @@ class RequerimientoController extends Controller
     {
         $detalleRequerimiento = DetalleRequerimiento::where("id_detalle_requerimiento", $idDetalleRequerimiento)
             ->with(['unidadMedida', 'producto', 'reserva' => function ($q) {
-                $q->where('alm_reserva.estado', '=', 1);
+                $q->whereIn('alm_reserva.estado', [1,5]);
             }, 'reserva.almacen', 'reserva.usuario', 'reserva.estado', 'estado'])
 
             ->first();

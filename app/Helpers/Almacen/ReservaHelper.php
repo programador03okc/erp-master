@@ -4,11 +4,15 @@ namespace App\Helpers\Almacen;
 
 use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\almacen\DevolucionDetalle;
 use App\Models\almacen\GuiaCompraDetalle;
+use App\Models\almacen\GuiaVentaDetalle;
+use App\Models\almacen\Materia;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Almacen\Reserva;
 use App\Models\almacen\TransferenciaDetalle;
 use App\Models\almacen\Transformacion;
+use App\Models\almacen\Transformado;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +28,9 @@ class ReservaHelper
             $CantidadGuiaComDet = 0;
             $CantidadTransDetalle = 0;
             $CantidadTransformado = 0;
+            $CantidadMateria = 0;
+            $CantidadDevolucionDetalle = 0;
+            $CantidadGuiaVentaDetalle = 0;
             $cantidadEstadoNoElaborado = 0;
             $mensajeAdicional = '';
             $tipo_estado='';
@@ -71,7 +78,35 @@ class ReservaHelper
                             }
                         }
                     }
-                    if (($reserva->id_guia_com_det == null || $CantidadGuiaComDet == 0) && ($reserva->id_trans_detalle == null || $CantidadTransDetalle == 0) && ($reserva->id_transformado == null || $CantidadTransformado == 0)) {
+                    if ($reserva->id_materia > 0) {
+                        if(Materia::find($reserva->id_materia)){
+                            if (Materia::find($reserva->id_materia)->estado != 7) {
+                                $CantidadMateria++;
+                            }
+                        }
+                    }
+                    if ($reserva->id_detalle_devolucion > 0) {
+                        if(DevolucionDetalle::find($reserva->id_detalle_devolucion)){
+                            if (DevolucionDetalle::find($reserva->id_detalle_devolucion)->estado != 7) {
+                                $CantidadDevolucionDetalle++;
+                            }
+                        }
+                    }
+                    if ($reserva->id_guia_vent_det > 0) {
+                        if(GuiaVentaDetalle::find($reserva->id_guia_vent_det)){
+                            if (GuiaVentaDetalle::find($reserva->id_guia_vent_det)->estado != 7) {
+                                $CantidadGuiaVentaDetalle++;
+                            }
+                        }
+                    }
+                    if (($reserva->id_guia_com_det == null || $CantidadGuiaComDet == 0) 
+                    && ($reserva->id_trans_detalle == null || $CantidadTransDetalle == 0) 
+                    && ($reserva->id_transformado == null || $CantidadTransformado == 0)
+                    && ($reserva->id_materia == null || $CantidadMateria == 0)
+                    && ($reserva->id_detalle_devolucion == null || $CantidadDevolucionDetalle == 0)
+                    && ($reserva->id_guia_vent_det == null || $CantidadGuiaVentaDetalle == 0)
+
+                    ) {
                         $tipo_estado = $this->efectuarAnulacionReserva($reserva->id_reserva,$motivoDeAnulacion);
                     }
                 } else {
@@ -81,13 +116,22 @@ class ReservaHelper
                     $mensajeAdicional .= ' Estados de reserva no permitido para anular.';
                 }
                 if ($CantidadGuiaComDet > 0) {
-                    $mensajeAdicional .= ' Vínculo con guía.';
+                    $mensajeAdicional .= ' Vínculo con detalle guía compra';
                 }
                 if ($CantidadTransDetalle > 0) {
                     $mensajeAdicional .= ' Vínculo con trasnferencia.';
                 }
                 if ($CantidadTransformado > 0) {
                     $mensajeAdicional .= ' Vínculo con item transformado.';
+                }
+                if ($CantidadMateria > 0) {
+                    $mensajeAdicional .= ' Vínculo con materia.';
+                }
+                if ($CantidadDevolucionDetalle > 0) {
+                    $mensajeAdicional .= ' Vínculo con detalle de devolución.';
+                }
+                if ($CantidadGuiaVentaDetalle > 0) {
+                    $mensajeAdicional .= ' Vínculo con detalle de guia venta.';
                 }
             }
 
@@ -148,6 +192,9 @@ class ReservaHelper
             $CantidadGuiaComDet = 0;
             $CantidadTransDetalle = 0;
             $CantidadTransformado = 0;
+            $CantidadMateria = 0;
+            $CantidadDevolucionDetalle = 0;
+            $CantidadGuiaVentaDetalle = 0;
             $cantidadEstadoElaborado = 0;
             $mensajeAdicional = '';
             if ($requerimientoHelper->EstaHabilitadoRequerimiento([$idDetalleRequerimiento]) == true) {
@@ -171,13 +218,40 @@ class ReservaHelper
                             }
                         }
                         if ($r->id_transformado > 0) {
-                            if(Transformacion::find($r->id_transformado)){
-                                if (Transformacion::find($r->id_transformado)->estado != 7) {
+                            if(Transformado::find($r->id_transformado)){
+                                if (Transformado::find($r->id_transformado)->estado != 7) {
                                     $CantidadTransformado++;
                                 }
                             }
                         }
-                        if (($r->id_guia_com_det == null || $CantidadGuiaComDet == 0) && ($r->id_trans_detalle == null || $CantidadTransDetalle == 0) && ($r->id_transformado == null || $CantidadTransformado == 0)) {
+                        if ($r->id_materia > 0) {
+                            if(Materia::find($r->id_materia)){
+                                if (Materia::find($r->id_materia)->estado != 7) {
+                                    $CantidadMateria++;
+                                }
+                            }
+                        }
+                        if ($r->id_detalle_devolucion > 0) {
+                            if(DevolucionDetalle::find($r->id_detalle_devolucion)){
+                                if (DevolucionDetalle::find($r->id_detalle_devolucion)->estado != 7) {
+                                    $CantidadDevolucionDetalle++;
+                                }
+                            }
+                        }
+                        if ($r->id_guia_vent_det > 0) {
+                            if(GuiaVentaDetalle::find($r->id_guia_vent_det)){
+                                if (GuiaVentaDetalle::find($r->id_guia_vent_det)->estado != 7) {
+                                    $CantidadGuiaVentaDetalle++;
+                                }
+                            }
+                        }
+                        if (($r->id_guia_com_det == null || $CantidadGuiaComDet == 0) 
+                        && ($r->id_trans_detalle == null || $CantidadTransDetalle == 0) 
+                        && ($r->id_transformado == null || $CantidadTransformado == 0)
+                        && ($r->id_materia == null || $CantidadMateria == 0)
+                        && ($r->id_detalle_devolucion == null || $CantidadDevolucionDetalle == 0)
+                        && ($r->id_guia_vent_det == null || $CantidadGuiaVentaDetalle == 0)
+                        ) {
                             $reserva = Reserva::where('id_reserva', $r->id_reserva)->first();
                             $reserva->estado = 7;
                             $reserva->usuario_anulacion = Auth::user()->id_usuario;
@@ -197,13 +271,22 @@ class ReservaHelper
                     $mensajeAdicional .= ' Estados de reserva no permitido para anular.';
                 }
                 if ($CantidadGuiaComDet > 0) {
-                    $mensajeAdicional .= ' Vínculo con guía.';
+                    $mensajeAdicional .= ' Vínculo con detalle de guía compra';
                 }
                 if ($CantidadTransDetalle > 0) {
                     $mensajeAdicional .= ' Vínculo con trasnferencia.';
                 }
                 if ($CantidadTransformado > 0) {
                     $mensajeAdicional .= ' Vínculo con item transformado.';
+                }
+                if ($CantidadMateria > 0) {
+                    $mensajeAdicional .= ' Vínculo con materia.';
+                }
+                if ($CantidadDevolucionDetalle > 0) {
+                    $mensajeAdicional .= ' Vínculo con detalle de devolución.';
+                }
+                if ($CantidadGuiaVentaDetalle > 0) {
+                    $mensajeAdicional .= ' Vínculo con detalle de guia venta.';
                 }
 
                 if (($cantidadReservasAnuladas > 0) && ($totalReservas == $cantidadReservasAnuladas)) {

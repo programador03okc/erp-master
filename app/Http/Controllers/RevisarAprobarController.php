@@ -20,6 +20,7 @@ use App\Models\Almacen\Trazabilidad;
 use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Usuario;
 use App\Models\Configuracion\UsuarioDivision;
+use App\models\Configuracion\UsuarioRol;
 use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use Carbon\Carbon;
@@ -42,6 +43,166 @@ class RevisarAprobarController extends Controller{
             array_push($array_accesos,$value->id_acceso);
         }
         return view('necesidades/revisar_aprobar/lista',compact('gruposUsuario','array_accesos'));
+    }
+
+
+    public static function getOperacionSinConsiderarRol($IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago)
+    {
+        
+        // return [$IdTipoDocumento,$idTipoRequerimientoCompra, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago];
+        $montoTotalDolares=0;
+        $montoTotalSoles=0;
+        if($idMoneda ==1){ // soles convertir a dolares
+            $montoTotalDolares = floatval($montoTotal)/3.7; // TODO llamar a función para obtener el tipo de cambio
+            $montoTotalSoles=$montoTotal;
+        }elseif($idMoneda ==2){
+            $montoTotalDolares=$montoTotal;
+            $montoTotalSoles = floatval($montoTotal)*3.7;
+        }
+        // para residente de obra
+  
+
+        $totalOperaciones = Operacion::where("estado","!=",7)->get();
+        // para residente de obra
+
+
+        // $totalOperaciones = Operacion::where("estado","!=",7)->get();
+        $operacionesCoincidenciaTipoDocumentoGrupo=[];
+        foreach ($totalOperaciones as $k => $o) {
+            if($o->id_tp_documento ==$IdTipoDocumento && $o->id_grupo ==$idGrupo){
+                $operacionesCoincidenciaTipoDocumentoGrupo[]= $o;
+            }
+        }
+
+
+        $operacionesCoincidenciaPorTipoRequerimiento=[];
+        if(count($operacionesCoincidenciaTipoDocumentoGrupo)!=1){
+            foreach ($operacionesCoincidenciaTipoDocumentoGrupo as $k => $o) {
+                if($o->tipo_requerimiento_id !=null){
+                    if($o->tipo_requerimiento_id ==$idTipoRequerimientoCompra){
+                        $operacionesCoincidenciaPorTipoRequerimiento[]= $o;
+                    }
+                }elseif($o->tipo_requerimiento_pago_id !=null){
+                    if($o->tipo_requerimiento_pago_id ==$idTipoRequerimientoPago){
+                        $operacionesCoincidenciaPorTipoRequerimiento[]= $o;
+                    }
+
+                }
+            }
+        }else{
+            //$operacionesCoincidenciaTipoDocumentoGrupo solo tiene un valor
+            return $operacionesCoincidenciaTipoDocumentoGrupo;
+        }
+
+        $operacionesCoincidenciaPorDivision=[];
+        if(count($operacionesCoincidenciaPorTipoRequerimiento) !=1){
+            foreach ($operacionesCoincidenciaPorTipoRequerimiento as $k => $o) {
+                if($o->division_id ==$idDivision){
+                    $operacionesCoincidenciaPorDivision[]= $o;
+                }
+            }
+        }else{
+            return $operacionesCoincidenciaPorTipoRequerimiento;
+        }
+ 
+
+        $operacionesCoincidenciaPorMonedaMonto=[];
+        $elMontoEsMayor='NO';
+        $elMontoEsMenor='NO';
+        $elMontoEsIgual='NO';
+        $elMontoEsEntre='NO';
+        if(count($operacionesCoincidenciaPorDivision) !=1){
+            foreach ($operacionesCoincidenciaPorDivision as $k => $o) {
+                if($o->monto_mayor >0 ){ // tiene monto definido
+                    $elMontoEsMayor = $o->id_moneda ==1?($montoTotalSoles > $o->monto_mayor?'SI':'NO'):($o->id_moneda ==2?($montoTotalDolares > $o->monto_mayor?'SI':'NO'):'NO');
+                    $operacionPropuestaPorMonto1[]= $o;
+                }
+                if($o->monto_menor >0 ){ // tiene monto definido
+                    $elMontoEsMenor = $o->id_moneda ==1?($montoTotalSoles < $o->monto_menor?'SI':'NO'):($o->id_moneda ==2?($montoTotalDolares < $o->monto_menor?'SI':'NO'):'NO');
+                    $operacionPropuestaPorMonto2[]= $o;
+
+                }
+                if($o->monto_igual >0){ // tiene monto definido
+                    $elMontoEsIgual = $o->id_moneda ==1?($montoTotalSoles == $o->monto_igual?'SI':'NO'):($o->id_moneda ==2?($montoTotalDolares == $o->monto_igual?'SI':'NO'):'NO');
+                    $operacionPropuestaPorMonto3[]= $o;
+                }
+                if($o->monto_igual >0 && $o->monto_menor >0){ // tiene monto definido
+                    $elMontoEsEntre = $o->id_moneda ==1?((($montoTotalSoles > $o->monto_mayor && $montoTotalSoles < $o->monto_menor ))?'SI':'NO'):($o->id_moneda ==2?(($montoTotalSoles > $o->monto_mayor && $montoTotalSoles < $o->monto_menor )?'SI':'NO'):'NO');
+                    $operacionPropuestaPorMonto4[]= $o;
+
+                }
+            }
+
+            if($elMontoEsEntre =='SI'){
+                return $operacionPropuestaPorMonto4;
+            }else{
+                if($elMontoEsMayor == 'SI'){
+                    return $operacionPropuestaPorMonto1;
+                }elseif($elMontoEsMenor == 'SI'){
+                    return $operacionPropuestaPorMonto2;
+                }elseif($elMontoEsIgual == 'SI'){
+                    return $operacionPropuestaPorMonto3;
+                }
+            }
+            
+        }else{
+            return $operacionesCoincidenciaPorDivision;
+        }
+    }
+
+    public function mostrarTodoFlujoAprobacionDeDocumento($idDocumento){
+
+            $documento = DocumentosView::find($idDocumento);
+            if(!isset($documento)){
+                return [];
+            }
+            $tipoDocumento = $documento->id_tp_documento;
+            $idGrupo = $documento->id_grupo;
+
+            if($documento->id_tp_documento ==1 ){
+                $idTipoRequerimiento = $documento->id_tipo_requerimiento;
+                if($idTipoRequerimiento ==1 ){ // los requerimiento tipo MPC no tiene flujo en Agil
+                    return [];
+                }
+                $idTipoRequerimientoPago=null;
+            }elseif($documento->id_tp_documento ==2){
+                $idTipoRequerimiento=null;
+                $idTipoRequerimientoPago= $documento->id_tipo_requerimiento;
+            }
+            $idPrioridad = $documento->id_prioridad;
+            $idMoneda = $documento->id_moneda;
+            $idDivision = $documento->id_division;
+
+            if($idDivision==null || $tipoDocumento ==null){
+                return []; // si no existe división 
+            }
+            $montoTotal= 0;
+            $obtenerMontoTotal = $this->obtenerMontoTotalDocumento($tipoDocumento,$idDocumento);
+            if($obtenerMontoTotal['estado']=='success'){
+                $montoTotal=$obtenerMontoTotal['monto'];
+            }
+
+            $operaciones = $idDivision>0? $this->getOperacionSinConsiderarRol($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago):[];
+
+            if(isset($operaciones)){
+                $flujo = Flujo::with('rol')->where([['id_operacion',$operaciones[0]->id_operacion],['estado',1]])->get();
+
+                foreach ($flujo as $keyF => $valueF) {
+                    $nombreCortoUsuario=[];
+                    $usuarioRol= UsuarioRol::with('sisUSua')->where([['id_rol',$valueF->id_rol],['estado','!=',7]])->get();
+                    foreach ($usuarioRol as $keyUr => $valueUr) {
+                        $nombreCortoUsuario[] = $valueUr->sisUSua->nombre_corto;
+                    }
+                    $flujo[$keyF]['nombre_usuarios'] = $nombreCortoUsuario;
+                
+                }
+                return $flujo;
+            }else{
+                return [];
+            }
+
+
+            
     }
 
 

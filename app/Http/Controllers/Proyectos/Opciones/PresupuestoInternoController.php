@@ -9,6 +9,7 @@ use App\Http\Controllers\Proyectos\Catalogos\GenericoController;
 use App\Http\Controllers\Proyectos\Variables\CategoriaAcuController;
 use App\Http\Controllers\Proyectos\Variables\IuController;
 use App\Http\Controllers\Proyectos\Variables\TipoInsumoController;
+use App\Http\Controllers\ProyectosController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -272,8 +273,9 @@ class PresupuestoInternoController extends Controller
             ->where('id_presupuesto',$id_presupuesto)
             ->first();
 
-            $id_grupo = 5;
-            $codigo = $this->nextCodigoPresupuesto($id_grupo, $presup->fecha_emision, $tipo);
+            $id_grupo = 3;
+            $codigo = (new ProyectosController)->nextCodigoPresupuesto($id_grupo, $presup->fecha_emision, $tipo);
+
 
             //Inserta Nuevo Presupuesto
             $id_presup = DB::table('finanzas.presup')
@@ -324,7 +326,7 @@ class PresupuestoInternoController extends Controller
             ->get();
 
             // $nuevas_partidas = [];
-            $cd = $this->solo_cd($id_presupuesto);
+            $cd = (new ProyectosController)->solo_cd($id_presupuesto);
             $ci = DB::table('proyectos.proy_ci_compo')
                 ->where([['id_ci', '=', $id_presupuesto],
                         ['estado', '=', 1]])
@@ -426,7 +428,7 @@ class PresupuestoInternoController extends Controller
             ->where('id_presupuesto',$id_presupuesto)
             ->update(['estado'=>8, 'id_presup'=>$id_presup]);//Emitido
 
-            $this->suma_titulos($id_presup);
+            (new ProyectosController)->suma_titulos($id_presup);
             // $html = $this->html_presupuesto_proyecto($id_presup,'imprimir_padres');
 
             // return json_encode(['id_presup'=>$id_presup,'html'=>$html]);

@@ -121,6 +121,7 @@ function listar() {
         pageLength: 30,
         language: idioma,
         serverSide: true,
+        destroy: true,
         initComplete: function (settings, json) {
             const $filter = $('#tabla_filter');
             const $input = $filter.find('input');
@@ -162,6 +163,16 @@ function listar() {
         ],
         buttons: [
             {
+                text: '<i class="fas fa-file-excel"></i> Descargar',
+                action: () => {
+                    exportarExcel();
+                },
+                className: 'btn btn-sm btn-success',
+                init: function(api, node, config) {
+                    $(node).removeClass('btn-default')
+                }
+            },
+            {
                 text: '<i class="fas fa-plus"></i> Agregar registro',
                 action: function () {
                     $("#formulario")[0].reset();
@@ -172,6 +183,9 @@ function listar() {
                     $("#modalFondo").modal("show");
                 },
                 className: 'btn btn-sm btn-primary',
+                init: function(api, node, config) {
+                    $(node).removeClass('btn-default')
+                }
             },
         ]
     });
@@ -189,4 +203,8 @@ function listar() {
             $(e.currentTarget).LoadingOverlay("hide", true);
         }
     });
+}
+
+function exportarExcel() {
+    window.open('exportar-excel');
 }

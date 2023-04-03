@@ -28,6 +28,10 @@
         .flag-amarillo {
             background-color: #fff799;
         }
+        .label-check {
+            cursor: pointer;
+            font-weight: normal;
+        }
     </style>
 @endsection
 
@@ -40,6 +44,7 @@
 @endsection
 
 @section('content')
+@if (in_array(307,$array_accesos))
 <div class="page-main" type="usuarios">
     <div class="box box-solid">
         <div class="box-header">
@@ -579,7 +584,7 @@
                                 <div class="col-md-4">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="checkEmpresa" name="checkEmpresa" @if (session('cobranzaEmpresa') !== null) checked @endif>
-                                        <label class="text-muted">Empresa</label>
+                                        <label class="text-muted label-check" for="checkEmpresa">Empresa</label>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -600,7 +605,7 @@
                                 <div class="col-md-4">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="checkFase" name="checkFase" @if (session('cobranzaFase') !== null) checked @endif>
-                                        <label class="text-muted" for="checkFase">Fases</label>
+                                        <label class="text-muted label-check" for="checkFase">Fases</label>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
@@ -613,12 +618,11 @@
                                     </select>
                                 </div>
                             </div>
-                            <br>
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="checkEmi" name="checkEmi" @if (session('cobranzaEmisionDesde') !== null) checked @endif>
-                                        <label class="text-muted" for="checkEmi">Fecha Emisión</label>
+                                        <label class="text-muted label-check" for="checkEmi">Fecha Emisión</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -626,6 +630,14 @@
                                 </div>
                                 <div class="col-md-4">
                                     <input type="date" class="form-control input-sm" name="filterEmisionHasta" id="filterEmisionHasta" value="@if(session('cobranzaEmisionHasta') !== null){{session('cobranzaEmisionHasta')}}@else{{date('Y-m-d')}}@endif">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="checkPenalidad" name="checkPenalidad" @if (session('cobranzaPenalidad') !== null) checked @endif>
+                                        <label class="text-muted label-check" for="checkPenalidad">Lista que tienen penalidad</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -710,6 +722,17 @@
 		</div>
 	</div>
 </div>
+@else
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-danger pulse" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error de Accesos:</span>
+            Solicite los accesos
+        </div>
+    </div>
+</div>
+@endif
 @endsection
 
 @section('scripts')
@@ -730,6 +753,7 @@
     <script src="{{ asset('js/util.js') }}"></script>
 
     <script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     let csrf_token = '{{ csrf_token() }}';
     let carga_ini = 1;
     let tempClienteSelected = {};

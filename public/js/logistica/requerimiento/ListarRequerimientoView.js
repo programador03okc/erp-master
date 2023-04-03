@@ -625,6 +625,7 @@ class ListarRequerimientoView {
                 that.construirSeccionDatosGenerales(res['requerimiento'][0]);
                 that.construirSeccionItemsDeRequerimiento(res['det_req'], res['requerimiento'][0]['simbolo_moneda'],res['requerimiento'][0]['id_presupuesto_interno']);
                 that.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
+                that.construirSeccionFlujoAprobacion(res['flujo_aprobacion']);
                 $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
 
             }).catch(function (err) {
@@ -872,6 +873,23 @@ class ListarRequerimientoView {
             }
         }
         document.querySelector("tbody[id='body_historial_revision']").insertAdjacentHTML('beforeend', html)
+
+    }
+    construirSeccionFlujoAprobacion(data) {
+        console.log(data);
+        this.limpiarTabla('listaFlujoAprobacion');
+        let html = '';
+        if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                html += `<tr>
+                    <td style="text-align:center;">${data[i].orden ? data[i].orden : ''}</td>
+                    <td style="text-align:center;">${data[i].rol ? data[i].rol.descripcion : ''}</td>
+                    <td style="text-align:left;">${data[i].nombre_usuarios ? data[i].nombre_usuarios.toString() : ''}</td>
+                    <td style="text-align:center;">${data[i].aprobar_sin_respetar_orden =='true' ? 'SI' : 'NO'}</td>
+                </tr>`;
+            }
+        }
+        document.querySelector("tbody[id='body_flujo_aprobacion']").insertAdjacentHTML('beforeend', html)
 
     }
     // requerimientoAPago(idRequerimiento){

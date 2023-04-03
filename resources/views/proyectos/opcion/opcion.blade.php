@@ -72,6 +72,7 @@ Opciones Comerciales
     <script src="{{ asset('js/proyectos/opcion/opcion.js')}}"></script>
     <script src="{{ asset('js/logistica/clienteModal.js')}}"></script>
     <script src="{{ asset('js/proyectos/variables/add_cliente.js')}}"></script>
+    <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

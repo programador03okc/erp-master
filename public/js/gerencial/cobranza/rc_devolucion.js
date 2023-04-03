@@ -108,6 +108,7 @@ function listar() {
         pageLength: 30,
         language: idioma,
         serverSide: true,
+        destroy: true,
         initComplete: function (settings, json) {
             const $filter = $('#tabla_filter');
             const $input = $filter.find('input');
@@ -154,7 +155,11 @@ function listar() {
                 text: '<i class="fas fa-file-excel"></i> Descargar',
                 action: () => {
                     exportarExcel();
-                }, className: 'btn-default btn-sm'
+                },
+                className: 'btn-default btn-sm',
+                init: function(api, node, config) {
+                    $(node).removeClass('btn-default')
+                }
             },
         ]
     });

@@ -499,6 +499,7 @@ function abrirDevolucion(id_devolucion) {
     var win = window.open("/cas/garantias/devolucionCas/index", '_blank');
     win.focus();
 }
+
 $('#despachosEntregados tbody').on("click", "button.anular", function () {
     var id_mov_alm = $(this).data('id');
     var id_guia = $(this).data('guia');
