@@ -65,6 +65,18 @@ Presupuesto Interno
                         </div>
                     </div>
                     <div class="box-body">
+                        @if ($presupuesto_interno->estado === 2)
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-warning" role="alert">
+                                        <strong><i class="fa fa-question-circle"></i></strong>
+                                        El presupuestato se encuentra aprobado.
+                                        Al editar tener en concideración que suma de las partidas no puede pasar el monot ya aprobado del Presupuesto Interno.
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">

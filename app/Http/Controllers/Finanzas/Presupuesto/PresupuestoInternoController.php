@@ -52,9 +52,12 @@ class PresupuestoInternoController extends Controller
         $data = PresupuestoInterno::where('presupuesto_interno.estado','!=',7)
         ->whereIn('presupuesto_interno.id_grupo', $array_grupos_id)
         ->select('presupuesto_interno.*', 'adm_grupo.descripcion as grupo')
-        ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
+        ->join('administracion.adm_grupo', 'adm_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')->get()
             ;
         return DataTables::of($data)
+        // ->addColumn('grupo', function ($data){
+        //     return $data->grupo->descripcion;
+        // })
         // ->toJson();
         ->make(true);
     }
