@@ -12,6 +12,15 @@
                     <div class="row">
                         <input style="display: none" name="id_presup"/> 
                         <div class="col-md-4">
+                            <h5>Empresa</h5>
+                            <select class="form-control" name="id_empresa">
+                                <option value="0">Elija una opción</option>
+                                @foreach($empresas as $item)
+                                    <option value="{{$item->id_empresa}}">{{$item->codigo}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
                             <h5>Grupo</h5>
                             <select class="form-control" name="id_grupo">
                                 <option value="0">Elija una opción</option>
