@@ -21,5 +21,4 @@ class PresupuestoInternoDetalleHistorial extends Model
         'setiembre_aux', 'octubre_aux', 'noviembre_aux', 'diciembre_aux', 'saldo_anual'
     ];
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
-    public $timestamps = false;
 }
