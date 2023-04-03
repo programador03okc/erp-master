@@ -82,6 +82,12 @@ class CobranzaController extends Controller
             $request->session()->forget('cobranzaFase');
         }
 
+        if ($request->checkEstadoDoc == 'on') {
+            $request->session()->put('cobranzaEstadoDoc', $request->filterEstadoDoc);
+        } else {
+            $request->session()->forget('cobranzaEstadoDoc');
+        }
+
         if ($request->checkEmi == 'on') {
             $request->session()->put('cobranzaEmisionDesde', $request->filterEmisionDesde);
             $request->session()->put('cobranzaEmisionHasta', $request->filterEmisionHasta);
@@ -114,6 +120,10 @@ class CobranzaController extends Controller
 
         if ($request->session()->has('cobranzaFase')) {
             $data = $data->where('fase', session()->get('cobranzaFase'));
+        }
+
+        if ($request->session()->has('cobranzaEstadoDoc')) {
+            $data = $data->where('estado_cobranza', session()->get('cobranzaEstadoDoc'));
         }
 
         if ($request->session()->has('cobranzaPeriodo')) {

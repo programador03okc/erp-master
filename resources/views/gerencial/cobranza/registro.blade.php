@@ -621,6 +621,23 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="checkEstadoDoc" name="checkEstadoDoc" @if (session('cobranzaEstadoDoc') !== null) checked @endif>
+                                        <label class="text-muted label-check" for="checkEstadoDoc">Estado cobranza</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-control input-sm" name="filterEstadoDoc" id="estado_doc" required>
+                                        <option value="" disabled selected>Elija una opción</option>
+                                        @foreach ($estado_documento as $estado)
+                                        <option @if (session()->has('cobranzaEstadoDoc')) @if ($estado->nombre == session('cobranzaEstadoDoc')) selected @endif @endif
+                                            value="{{ $estado->nombre }}">{{ $estado->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="checkEmi" name="checkEmi" @if (session('cobranzaEmisionDesde') !== null) checked @endif>
                                         <label class="text-muted label-check" for="checkEmi">Fecha Emisión</label>
                                     </div>

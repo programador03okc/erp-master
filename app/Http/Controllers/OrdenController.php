@@ -3726,6 +3726,8 @@ class OrdenController extends Controller
         $notificacion = [];
         $detalleArray=[];
         
+        $orden = Orden::with('sede')->find($id_orden);
+
         $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
             ->where([
                 ['id_orden_compra', $id_orden]
@@ -3862,7 +3864,6 @@ class OrdenController extends Controller
 
                     }
 
-                    $orden = Orden::with('sede')->find($id_orden);
                     // Compras (Karla Quijano, Luis Alegre, Richard Dorado) //id_usuario (78,75,4)
                     // Despacho (Ricardo Visbal, Yennifer Chicata, Silvia Nashñate) //id_usuario (64,74,97)
                     // Almacen (Henry Lozano, Dora Casales, Leandro Somontes y Geraldine Capcha) //id_usuario (60,93,96,66)
