@@ -1747,14 +1747,14 @@ class OrdenesPendientesController extends Controller
                             'trans_detalle.id_trans_detalle',
                             'trans.id_transferencia',
                             'trans.estado as estado_trans',
-                            // 'orden_despacho.id_od',
+                            'orden_despacho.id_od',
                             'guia_com_det.id_transformado'
                         )
                         ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
                         ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
                         ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
-                        // ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
-                        // ->leftjoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_det_req.id_requerimiento')
+                        ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+                        ->leftjoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_det_req.id_requerimiento')
                         ->leftJoin('almacen.trans_detalle', function ($join) {
                             $join->on('trans_detalle.id_requerimiento_detalle', '=', 'alm_det_req.id_detalle_requerimiento');
                             $join->where('trans_detalle.estado', '!=', 7);
@@ -1767,8 +1767,7 @@ class OrdenesPendientesController extends Controller
 
                         $validado = true;
                         foreach ($detalle as $det) {
-                            // if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14)) || $det->id_od !== null) {
-                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14))) {
+                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14)) || $det->id_od !== null) {
                                 $validado = false;
                             }
                         }
