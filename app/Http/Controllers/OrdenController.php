@@ -4867,6 +4867,7 @@ class OrdenController extends Controller
                         'id_moneda'             => $archivo->id_moneda,
                         'monto_total'           => $archivo->monto_total,
                         'id_pago_cuota_detalle' => (isset($archivo->id_pago_cuota_detalle) && $archivo->id_pago_cuota_detalle > 0 ? $archivo->id_pago_cuota_detalle : null),
+                        'id_usuario'            => Auth::user()->id_usuario,
                         'fecha_registro'        => $fechaHoy
                     ],
                     'id_adjunto'
