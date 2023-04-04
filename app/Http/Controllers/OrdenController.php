@@ -3984,13 +3984,14 @@ class OrdenController extends Controller
                         if ($hasIngreso['status'] != 200) {
                             $status = $hasIngreso['status'];
                             $tipo_estado = $hasIngreso['tipo_estado'];
+                            $msj[] = $hasIngreso['mensaje'];
+
                         } elseif ($hasPagoAutorizado['status'] != 200) {
                             $status = $hasPagoAutorizado['status'];
                             $tipo_estado = $hasPagoAutorizado['tipo_estado'];
+                            $msj[] = $hasPagoAutorizado['mensaje'];
                         }
 
-                        $msj[] = $hasIngreso['mensaje'];
-                        $msj[] = $hasPagoAutorizado['mensaje'];
                     }
 
 
