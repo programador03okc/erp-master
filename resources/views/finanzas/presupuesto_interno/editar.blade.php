@@ -1563,7 +1563,22 @@ Presupuesto Interno
         // $elemento_array
         $(document).ready(function () {
             $('select[name="mes"] option[value="'+"{{$presupuesto_interno->mes}}"+'"]').attr('selected',true);
+
+
         });
+
+        // window.onscroll = function() {
+        //     var y = window.scrollY;
+        //     var position = $('table#partida-ingresos').position();
+        //     var top = position.top;
+        //     var left = position.left;
+        //     // console.log(y);
+        //     console.log(top);
+
+
+
+        // };
+
     </script>
 
     <script src="{{asset('js/finanzas/presupuesto_interno/crear.js') }}""></script>

@@ -731,7 +731,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('listar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-compra', 'Logistica\RequerimientoController@guardarAdjuntosAdicionales');
-				
+
 				Route::get('listar-flujo/{idDocumento}', 'RevisarAprobarController@mostrarTodoFlujoAprobacionDeDocumento');
 				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 
@@ -2078,6 +2078,10 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('buscar-partida-combo', 'Finanzas\Presupuesto\PresupuestoInternoController@buscarPartidaCombo');
                 // prueba de presupuestos
 				Route::get('cierre-mes', 'Finanzas\Presupuesto\PresupuestoInternoController@cierreMes');
+
+                Route::group(['as' => 'script.', 'prefix' => 'script'], function () {
+                    Route::get('generar-presupuesto-gastos', 'Finanzas\Presupuesto\ScriptController@generarPresupuestoGastos');
+                });
             });
 		});
 
