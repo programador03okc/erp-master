@@ -18,7 +18,7 @@ Cuadro de gastos
     <div class="thumbnail" style="padding-left: 20px;padding-right: 20px;padding-top: 20px;">
         <div class="row">
             <div class="col-md-12">
-                <h5>Proyecto/presupuesto</h5>
+                <h5>Presupuesto</h5>
 
                 <div style="display:flex;">
                     <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
@@ -30,14 +30,18 @@ Cuadro de gastos
                             @endforeach
                         </select>
                     </div>
+                    <button data-toggle="tooltip" data-placement="bottom" title="Exportar a excel" 
+                        class="btn btn-success btn-sm exportar" style="color:#fff !important;" onClick="exportarCuadroCostos()">
+                        <i class="fas fa-file-excel"></i> Exportar a excel
+                    </button>
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-12">
-                <div class="box box-widget">
-                    <div class="box-body">
+                {{-- <div class="box box-widget">
+                    <div class="box-body"> --}}
                         <div class="table-responsive">
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="listaEstructura" style="font-size: 13px;">
                                 <thead>
@@ -67,8 +71,8 @@ Cuadro de gastos
                                 <tbody></tbody>
                             </table>
                         </div>
-                    </div>
-                </div>
+                    {{-- </div>
+                </div> --}}
             </div>
         </div>
     </div>
