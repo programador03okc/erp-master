@@ -570,6 +570,12 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'ProyectosController@view_opciones_todo')->name('index');
 				Route::get('listar_opciones_todo', 'ProyectosController@listar_opciones_todo');
 			});
+
+			Route::group(['as' => 'cuadro-gastos.', 'prefix' => 'cuadro-gastos'], function () {
+				//Opciones y Relaciones
+				Route::get('index', 'ProyectosController@view_cuadro_gastos')->name('index');
+				Route::get('listar', 'ProyectosController@listar_cuadro_gastos');
+			});
 		});
 
 		Route::group(['as' => 'configuraciones.', 'prefix' => 'configuraciones'], function () {

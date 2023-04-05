@@ -31,4 +31,8 @@ class AdjuntosLogisticos extends Model
     {
         return $this->belongsTo('App\Models\Logistica\CategoriaAdjunto','categoria_adjunto_id','id_categoria_adjunto');
     }
+    public function moneda()
+    {
+        return $this->belongsTo('App\Models\Configuracion\Moneda', 'id_moneda', 'id_moneda');
+    }
 }
