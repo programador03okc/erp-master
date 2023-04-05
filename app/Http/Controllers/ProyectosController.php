@@ -99,9 +99,12 @@ class ProyectosController extends Controller
     }
 
     function view_cuadro_gastos(){
-        $proyectos = $this->listar_proyectos_activos();
-        
-        return view('proyectos/reportes/cuadro_gastos', compact('proyectos'));
+        $presupuestos = DB::table('finanzas.presup')
+        ->select('presup.id_presup','presup.descripcion')
+        ->where('tp_presup',4) //presupuestos ejecucion proyectos
+        ->whereNotNull('id_proyecto')
+        ->get();
+        return view('proyectos/reportes/cuadro_gastos', compact('presupuestos'));
     }
 
     public function select_cargos(){

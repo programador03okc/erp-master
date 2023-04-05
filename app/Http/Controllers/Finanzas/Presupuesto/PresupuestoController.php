@@ -205,6 +205,15 @@ class PresupuestoController extends Controller
         ), $presup->descripcion . '.xlsx');
     }
 
+    public function mostrarPresupuestosProyectos(){
+        $lista = DB::table('finanzas.presup')
+        ->select('presup.id_presup','presup.descripcion')
+        ->where('tp_presup',4) //presupuestos ejecucion proyectos
+        ->whereNotNull('id_proyecto')
+        ->get();
+        return response()->json($lista);
+    }
+
     public function store()
     {
         $codigo = $this->presupNextCodigo(

@@ -17,16 +17,16 @@ Cuadro de gastos
 <div class="page-main" type="cuadro_gastos">
     <div class="thumbnail" style="padding-left: 20px;padding-right: 20px;padding-top: 20px;">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8">
                 <h5>Presupuesto</h5>
 
                 <div style="display:flex;">
-                    <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                    {{-- <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly> --}}
                     <div class="input-group-okc">
-                        <select class="form-control activation handleChangeProyecto" name="id_proyecto">
+                        <select class="form-control activation handleChangeProyecto" name="id_presup">
                             <option value="0">Seleccione un Proyecto</option>
-                            @foreach ($proyectos as $proyecto)
-                            <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo-proyecto="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
+                            @foreach ($presupuestos as $p)
+                            <option value="{{$p->id_presup}}">{{$p->descripcion}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -94,8 +94,10 @@ Cuadro de gastos
 
 <script src="{{ asset('js/proyectos/reportes/cuadro_gastos.js')}}"></script>
 <script>
+    let csrf_token = "{{ csrf_token() }}";
     $(document).ready(function() {
         seleccionarMenu(window.location);
+        
     });
 </script>
 @endsection
