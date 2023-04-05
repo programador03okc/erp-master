@@ -79,6 +79,7 @@ class PresupuestoController extends Controller
         return response()->json(['req_compras' => $detalle, 'req_pagos' => $pagos]);
     }
 
+
     public function obtenerDetallePresupuesto($id_presupuesto)
     {
         $detalle = DB::table('logistica.log_det_ord_compra')
@@ -89,7 +90,12 @@ class PresupuestoController extends Controller
                 'adm_contri.razon_social',
                 // 'registro_pago.fecha_pago',
                 'alm_und_medida.abreviatura',
+                'log_ord_compra.fecha as fecha_orden',
+                DB::raw("(SELECT cont_tp_cambio.venta FROM contabilidad.cont_tp_cambio
+                WHERE cont_tp_cambio.fecha = log_ord_compra.fecha
+                order by cont_tp_cambio.fecha desc limit 1) AS tipo_cambio"),
                 'log_ord_compra.codigo as codigo_oc',
+                'log_ord_compra.id_moneda',
                 'sis_moneda.simbolo',
                 'proveedor.nro_documento',
                 'proveedor.razon_social as proveedor_razon_social',
@@ -112,6 +118,12 @@ class PresupuestoController extends Controller
             ->join('finanzas.presup', 'presup.id_presup', '=', 'presup_par.id_presup')
             // ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
             ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+            // ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            // ->leftJoin('finanzas.presup_titu', function ($join) {
+            //     $join->on('presup_titu.codigo', '=', 'presup_par.cod_padre');
+            //     $join->where('presup_titu.id_presup', '=', 'presup_par.id_presup');
+            // })
+            // ->join('contabilidad.adm_contri as prove', 'prove.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
             ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
             ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
@@ -145,6 +157,7 @@ class PresupuestoController extends Controller
                 DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
                 WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                 limit 1) AS fecha_pago"),
+                'rrhh_perso.apellido_paterno','rrhh_perso.apellido_materno','rrhh_perso.nombres'
                 // DB::raw("(SELECT sum(registro_pago.total_pago) FROM tesoreria.registro_pago
                 // WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago) AS suma_pago"),
             )
@@ -155,7 +168,9 @@ class PresupuestoController extends Controller
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->join('finanzas.presup_par', 'presup_par.id_partida', '=', 'requerimiento_pago_detalle.id_partida')
             ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
-            // ->join('finanzas.presup_titu', 'presup_titu.codigo', '=', 'presup_par.cod_padre')
+            ->leftjoin('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'requerimiento_pago.id_trabajador')
+            ->leftjoin('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
+            ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')
             // ->leftJoin('finanzas.presup_titu', function ($join) {
             //     $join->on('presup_titu.codigo', '=', 'presup_par.cod_padre');
             //     $join->where('presup_titu.id_presup', '=', 'presup_par.id_presup');

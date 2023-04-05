@@ -9,14 +9,17 @@
     <table>
         <thead>
             <tr>
-                <th style="background-color: #cccccc;" width="25"><b>Empresa</b></th>
+                <th style="background-color: #cccccc;text-align:center;" width="15"><b>Mes</b></th>
+                <th style="background-color: #cccccc;text-align:center;" width="15"><b>Año</b></th>
+                <th style="background-color: #cccccc;text-align:center;" width="15"><b>Fecha</b></th>
+                {{-- <th style="background-color: #cccccc;" width="25"><b>Empresa</b></th> --}}
                 <th style="background-color: #cccccc;" width="15"><b>Cod.Req.</b></th>
-                <th style="background-color: #cccccc;" width="15"><b>Cod.Orden</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Titulo</b></th>
-                <th style="background-color: #cccccc;" width="40"><b>Partida</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Cuenta (Partida)</b></th>
+                <th style="background-color: #cccccc;" width="40"><b>Cuenta (Sub Partida)</b></th>
+                <th style="background-color: #cccccc;" width="15"><b>Proveedor o Persona asignada</b></th>
+                <th style="background-color: #cccccc;" width="8"><b>Cant.</b></th>
+                <th style="background-color: #cccccc;" width="10"><b>Unid.</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Descripción</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Cant.</b></th>
-                <th style="background-color: #cccccc;" width="18"><b>Unid.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Mnd.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Unit.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>SubTotal</b></th>
@@ -27,16 +30,22 @@
             </tr>
         </thead>
         <tbody>
+            <?php
+            $meses = array(1 => 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+            ?>
             @foreach ($req_compras as $d)
             <tr>
-                <td>{{$d->razon_social}}</td>
+                <td>{{$meses[date('n', strtotime($d->fecha_requerimiento) )]}}</td>
+                <td style="text-align:center;">{{date("Y", strtotime($d->fecha_requerimiento))}}</td>
+                <td style="text-align:center;">{{date("d-m-Y", strtotime($d->fecha_requerimiento))}}</td>
                 <td>{{$d->codigo}}</td>
-                <td>{{$d->codigo_oc}}</td>
                 <td>{{$d->titulo_descripcion}}</td>
                 <td>{{$d->partida_descripcion}}</td>
-                <td>{{$d->descripcion_adicional}}</td>
+                <td>{{$d->proveedor_razon_social}}</td>
                 <td>{{$d->cantidad}}</td>
                 <td>{{$d->abreviatura}}</td>
+                <td>{{$d->descripcion_adicional}}</td>
                 <td>{{$d->simbolo}}</td>
                 <td>{{$d->precio}}</td>
                 <td>{{$d->subtotal}}</td>
@@ -48,14 +57,16 @@
             @endforeach
             @foreach ($req_pagos as $d)
             <tr>
-                <td>{{$d->razon_social}}</td>
+                <td>{{$meses[date('n', strtotime($d->fecha_registro) )]}}</td>
+                <td style="text-align:center;">{{date("Y", strtotime($d->fecha_registro))}}</td>
+                <td style="text-align:center;">{{date("d-m-Y", strtotime($d->fecha_registro))}}</td>
                 <td>{{$d->codigo}}</td>
-                <td></td>
                 <td>{{$d->titulo_descripcion}}</td>
                 <td>{{$d->partida_descripcion}}</td>
-                <td>{{$d->descripcion}}</td>
+                <td>{{$d->apellido_paterno.' '.$d->apellido_materno.' '.$d->nombres}}</td>
                 <td>{{$d->cantidad}}</td>
                 <td>{{$d->abreviatura}}</td>
+                <td>{{$d->descripcion}}</td>
                 <td>{{$d->simbolo}}</td>
                 <td>{{$d->precio_unitario}}</td>
                 <td>{{$d->subtotal}}</td>
