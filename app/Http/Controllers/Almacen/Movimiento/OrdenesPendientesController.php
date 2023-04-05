@@ -434,7 +434,7 @@ class OrdenesPendientesController extends Controller
         ), 'Ingresos Procesados al ' . new Carbon() . '.xlsx');
     }
 
-    public function detalleOrden($id_orden)
+    public function detalleOrden($id_orden, $soloProductos=null)
     {
         $detalle = DB::table('logistica.log_det_ord_compra')
             ->select(
@@ -476,6 +476,9 @@ class OrdenesPendientesController extends Controller
             ->leftJoin('mgcp_ordenes_compra.oc_propias_view', 'oc_propias_view.id_oportunidad', '=', 'cc.id_oportunidad')
             ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
             ->join('administracion.adm_estado_doc', 'adm_estado_doc.id_estado_doc', '=', 'log_det_ord_compra.estado')
+            ->when(($soloProductos != null), function ($query) use ($soloProductos) {
+                return $query->whereRaw('log_det_ord_compra.tipo_item_id = 1');
+            })
             ->where([
                 ['log_det_ord_compra.id_orden_compra', '=', $id_orden],
                 ['log_det_ord_compra.estado', '!=', 7]

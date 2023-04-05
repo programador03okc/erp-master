@@ -1420,7 +1420,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Almacen\Movimiento\OrdenesPendientesController@view_ordenesPendientes')->name('index');
 				Route::post('listarOrdenesPendientes', 'Almacen\Movimiento\OrdenesPendientesController@listarOrdenesPendientes');
 				Route::post('listarIngresos', 'Almacen\Movimiento\OrdenesPendientesController@listarIngresos');
-				Route::get('detalleOrden/{id}', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrden');
+				Route::get('detalleOrden/{id}/{soloProductos}', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrden');
 				Route::post('guardar_guia_com_oc', 'Almacen\Movimiento\OrdenesPendientesController@guardar_guia_com_oc');
 				Route::get('verGuiasOrden/{id}', 'Almacen\Movimiento\OrdenesPendientesController@verGuiasOrden');
 				// Route::post('guardar_guia_transferencia', 'Almacen\Movimiento\OrdenesPendientesController@guardar_guia_transferencia');
