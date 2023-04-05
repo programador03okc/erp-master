@@ -2219,17 +2219,17 @@ class RequerimientoView {
         let tbodyChildren = document.querySelector("tbody[id='body_detalle_requerimiento']").children;
         for (let index = 0; index < tbodyChildren.length; index++) {
 
-            // if (tbodyChildren[index].querySelector("input[class~='partida']").value == '') {
-            //     continuar = false;
-            //     if (tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("span") == null) {
-            //         let newSpanInfo = document.createElement("span");
-            //         newSpanInfo.classList.add('text-danger');
-            //         newSpanInfo.textContent = 'Ingrese una partida';
-            //         tbodyChildren[index].querySelector("input[class~='partida']").closest('td').appendChild(newSpanInfo);
-            //         tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
-            //     }
+            if (tbodyChildren[index].querySelector("input[class~='partida']").value == '') {
+                continuar = false;
+                if (tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("span") == null) {
+                    let newSpanInfo = document.createElement("span");
+                    newSpanInfo.classList.add('text-danger');
+                    newSpanInfo.textContent = 'Ingrese una partida';
+                    tbodyChildren[index].querySelector("input[class~='partida']").closest('td').appendChild(newSpanInfo);
+                    tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                }
 
-            // }
+            }
             if (tbodyChildren[index].querySelector("input[class~='centroCosto']").value == '') {
                 continuar = false;
                 if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
