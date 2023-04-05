@@ -576,6 +576,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'ProyectosController@view_cuadro_gastos')->name('index');
 				Route::get('listar', 'ProyectosController@listar_cuadro_gastos');
 				Route::post('cuadroGastosExcel', 'Finanzas\Presupuesto\PresupuestoController@cuadroGastosExcel')->name('cuadroGastosExcel');
+				Route::get('mostrarGastosPorPresupuesto/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarGastosPorPresupuesto')->name('mostrar-gastos-presupuesto');
 
 			});
 		});

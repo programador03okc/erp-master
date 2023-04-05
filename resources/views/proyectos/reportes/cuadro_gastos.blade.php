@@ -17,13 +17,13 @@ Cuadro de gastos
 <div class="page-main" type="cuadro_gastos">
     <div class="thumbnail" style="padding-left: 20px;padding-right: 20px;padding-top: 20px;">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <h5>Presupuesto</h5>
 
                 <div style="display:flex;">
                     {{-- <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly> --}}
                     <div class="input-group-okc">
-                        <select class="form-control activation handleChangeProyecto" name="id_presup">
+                        <select class="form-control activation" name="id_presup">
                             <option value="0">Seleccione un Proyecto</option>
                             @foreach ($presupuestos as $p)
                             <option value="{{$p->id_presup}}">{{$p->descripcion}}</option>
@@ -52,17 +52,17 @@ Cuadro de gastos
                                         <th class="text-center">N° Req.</th>
                                         <th class="text-center">Cuenta(Partida)</th>
                                         <th class="text-center">Cuenta(Sub partida)</th>
-                                        <th class="text-center">Doc</th>
+                                        {{-- <th class="text-center">Doc</th>
                                         <th class="text-center">Serie - número</th>
-                                        <th class="text-center">RUC</th>
+                                        <th class="text-center">RUC</th> --}}
                                         <th class="text-center">Proveedor o persona asignada</th>
                                         <th class="text-center">Cant.</th>
                                         <th class="text-center">Und.</th>
                                         <th class="text-center">Desripción</th>
+                                        <th class="text-center">Mon.</th>
                                         <th class="text-center">P.U</th>
-                                        <th class="text-center">M.Ex</th>
-                                        <th class="text-center">Tipo</th>
-                                        <th class="text-center">Exone</th>
+                                        {{-- <th class="text-center">Tipo</th> --}}
+                                        {{-- <th class="text-center">Exone</th> --}}
                                         <th class="text-center">V.Compra</th>
                                         <th class="text-center">IGV</th>
                                         <th class="text-center">P.Compra</th>

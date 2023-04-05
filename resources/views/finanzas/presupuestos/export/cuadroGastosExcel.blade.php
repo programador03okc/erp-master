@@ -16,10 +16,10 @@
                 <th style="background-color: #cccccc;" width="15"><b>Cod.Req.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Cuenta (Partida)</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Cuenta (Sub Partida)</b></th>
-                <th style="background-color: #cccccc;" width="15"><b>Proveedor o Persona asignada</b></th>
+                <th style="background-color: #cccccc;" width="40"><b>Proveedor o Persona asignada</b></th>
                 <th style="background-color: #cccccc;" width="8"><b>Cant.</b></th>
                 <th style="background-color: #cccccc;" width="10"><b>Unid.</b></th>
-                <th style="background-color: #cccccc;" width="40"><b>Descripción</b></th>
+                <th style="background-color: #cccccc;" width="50"><b>Descripción</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Mnd.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Unit.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>SubTotal</b></th>
