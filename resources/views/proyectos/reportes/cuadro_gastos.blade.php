@@ -52,9 +52,9 @@ Cuadro de gastos
                                         <th class="text-center">N° Req.</th>
                                         <th class="text-center">Cuenta(Partida)</th>
                                         <th class="text-center">Cuenta(Sub partida)</th>
-                                        {{-- <th class="text-center">Doc</th>
+                                        <th class="text-center">Tipo Doc.</th>
                                         <th class="text-center">Serie - número</th>
-                                        <th class="text-center">RUC</th> --}}
+                                        <th class="text-center">RUC/DNI</th>
                                         <th class="text-center">Proveedor o persona asignada</th>
                                         <th class="text-center">Cant.</th>
                                         <th class="text-center">Und.</th>

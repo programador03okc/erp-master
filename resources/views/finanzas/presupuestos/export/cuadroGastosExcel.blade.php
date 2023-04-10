@@ -16,6 +16,10 @@
                 <th style="background-color: #cccccc;" width="15"><b>Cod.Req.</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Cuenta (Partida)</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Cuenta (Sub Partida)</b></th>
+                <th style="background-color: #cccccc;" width="20"><b>Tipo documento</b></th>
+                <th style="background-color: #cccccc;" width="10"><b>Número - serie</b></th>
+                <th style="background-color: #cccccc;" width="10"><b>Fecha emisión</b></th>
+                <th style="background-color: #cccccc;" width="10"><b>Ruc/DNI</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Proveedor o Persona asignada</b></th>
                 <th style="background-color: #cccccc;" width="8"><b>Cant.</b></th>
                 <th style="background-color: #cccccc;" width="10"><b>Unid.</b></th>
@@ -42,6 +46,10 @@
                 <td>{{$d->codigo}}</td>
                 <td>{{$d->titulo_descripcion}}</td>
                 <td>{{$d->partida_descripcion}}</td>
+                <td>{{$d->tipo_comprobante}}</td>
+                <td>{{$d->nro_comprobante}}</td>
+                <td>{{$d->fecha_emision_comprobante}}</td>
+                <td>{{($d->nro_documento_proveedor !=null ? $d->nro_documento_proveedor : ($request->nro_documento_persona != null ? $request->nro_documento_persona :''))}}</td>
                 <td>{{$d->proveedor_razon_social}}</td>
                 <td>{{$d->cantidad}}</td>
                 <td>{{$d->abreviatura}}</td>

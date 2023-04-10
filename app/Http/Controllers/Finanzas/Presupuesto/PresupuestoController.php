@@ -88,6 +88,7 @@ class PresupuestoController extends Controller
                 'alm_req.codigo',
                 'alm_req.fecha_requerimiento',
                 'adm_contri.razon_social',
+                'adm_contri.nro_documento as nro_documento_proveedor',
                 // 'registro_pago.fecha_pago',
                 'alm_und_medida.abreviatura',
                 'log_ord_compra.fecha as fecha_orden',
@@ -106,7 +107,12 @@ class PresupuestoController extends Controller
                 DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
                 WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
                 limit 1) AS fecha_pago"),
-                'requerimiento_pago_estado.descripcion as estado_pago'
+                'requerimiento_pago_estado.descripcion as estado_pago',
+                'categoria_adjunto.descripcion as tipo_comprobante',
+                'adjuntos_logisticos.nro_comprobante',
+                'adjuntos_logisticos.fecha_emision as fecha_emision_comprobante'
+                // 'adjuntos_logisticos.monto_total as monto_total_comprobante'
+
                 // DB::raw("(SELECT sum(registro_pago.total_pago) FROM tesoreria.registro_pago
                 // WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra) AS suma_pago"),
             )
@@ -130,6 +136,9 @@ class PresupuestoController extends Controller
             ->join('contabilidad.adm_contri as proveedor', 'proveedor.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_det_ord_compra.id_orden_compra')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
+            ->leftjoin('logistica.adjuntos_logisticos', 'adjuntos_logisticos.id_orden', '=', 'log_ord_compra.id_orden_compra')
+            ->leftjoin('logistica.categoria_adjunto', 'categoria_adjunto.id_categoria_adjunto', '=', 'adjuntos_logisticos.categoria_adjunto_id')
+
             ->where([
                 ['presup.id_presup', '=', $id_presupuesto],
                 ['log_det_ord_compra.estado', '!=', 7]
@@ -157,7 +166,13 @@ class PresupuestoController extends Controller
                 DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
                 WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                 limit 1) AS fecha_pago"),
-                'rrhh_perso.apellido_paterno','rrhh_perso.apellido_materno','rrhh_perso.nombres'
+                'rrhh_perso.apellido_paterno','rrhh_perso.apellido_materno','rrhh_perso.nombres',
+                'rrhh_perso.nro_documento as nro_documento_persona',
+                'requerimiento_pago_categoria_adjunto.descripcion as tipo_comprobante',
+                'requerimiento_pago_adjunto.nro_comprobante',
+                'requerimiento_pago_adjunto.fecha_emision as fecha_emision_comprobante'
+                // 'requerimiento_pago_adjunto.monto_total as monto_tota_comprobante'
+
                 // DB::raw("(SELECT sum(registro_pago.total_pago) FROM tesoreria.registro_pago
                 // WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago) AS suma_pago"),
             )
@@ -176,6 +191,9 @@ class PresupuestoController extends Controller
             //     $join->where('presup_titu.id_presup', '=', 'presup_par.id_presup');
             // })
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'requerimiento_pago_detalle.id_unidad_medida')
+            ->leftjoin('tesoreria.requerimiento_pago_adjunto', 'requerimiento_pago_adjunto.id_requerimiento_pago', '=', 'requerimiento_pago.id_requerimiento_pago')
+            ->leftjoin('tesoreria.requerimiento_pago_categoria_adjunto', 'requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto', '=', 'requerimiento_pago_adjunto.id_categoria_adjunto')
+
             ->where([
                 ['presup_par.id_presup', '=', $id_presupuesto],
                 // ['registro_pago.estado', '!=', 7],

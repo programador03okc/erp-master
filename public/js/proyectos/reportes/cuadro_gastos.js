@@ -38,6 +38,9 @@ $("[name=id_presup]").on('change', function () {
                             <td>${element.codigo}</td>
                             <td>${element.titulo_descripcion}</td>
                             <td>${element.partida_descripcion}</td>
+                            <td>${element.tipo_comprobante??''}</td>
+                            <td>${element.nro_comprobante??''}</td>
+                            <td>${element.nro_documento_proveedor??''}</td>
                             <td>${element.proveedor_razon_social}</td>
                             <td>${element.cantidad}</td>
                             <td>${element.abreviatura}</td>
@@ -63,6 +66,9 @@ $("[name=id_presup]").on('change', function () {
                             <td>${element.codigo ?? ''}</td>
                             <td>${element.titulo_descripcion ?? ''}</td>
                             <td>${element.partida_descripcion ?? ''}</td>
+                            <td>${element.tipo_comprobante ?? ''}</td>
+                            <td>${element.nro_comprobante ?? ''}</td>
+                            <td>${element.nro_documento_persona ?? ''}</td>
                             <td>${element.apellido_paterno !== null ? (element.apellido_paterno + ' ' + element.apellido_materno + ' ' + element.nombres) : ''}</td>
                             <td>${element.cantidad ?? ''}</td>
                             <td>${element.abreviatura ?? ''}</td>
