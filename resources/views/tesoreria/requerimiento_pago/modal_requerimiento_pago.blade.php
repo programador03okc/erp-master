@@ -106,7 +106,7 @@
                                         <div class="form-group">
 
                                             <h5>Proyecto</h5>
-                                            <select class="form-control activation handleCheckStatusValue" name="proyecto">
+                                            <select class="form-control activation handleCheckStatusValue handleChangeProyecto" name="proyecto">
                                                 <option value="0">Seleccione un Proyecto</option>
                                                 @foreach ($proyectosActivos as $proyecto)
                                                 <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
@@ -123,6 +123,9 @@
 
                                                 <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP">
                                                     <i class="fas fa-search"></i>
+                                                </button>
+                                                <button type="button" class="btn-primary handleClickLimpiarSeleccionCuadroDePresupuesto" title="Limpiar selección" name="btnCleanCDP" disabled>
+                                                    <i class="fas fa-broom"></i>
                                                 </button>
                                             </div>
                                         </div>
