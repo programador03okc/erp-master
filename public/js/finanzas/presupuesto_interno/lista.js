@@ -53,6 +53,7 @@ function lista() {
             {data: 'fecha_registro', name:"fecha_registro" , class:"text-center"},
             {data: 'grupo', name:"grupo" , class:"text-center"},
             {data: 'estadopi', name:"estadopi" , class:"text-center"},
+            {data: 'sede', name:"sede" , class:"text-center"},
             // {
             //     render: function (data, type, row) {
             //         var estado = row['estado'],

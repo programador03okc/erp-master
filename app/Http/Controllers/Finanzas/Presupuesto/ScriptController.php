@@ -17,39 +17,106 @@ class ScriptController extends Controller
     //
     public function generarPresupuestoGastos()
     {
+        ini_set('max_execution_time', 5000);
         $presupuestpInterno = PresupuestoInternoModelo::where('id_tipo_presupuesto',3)->get();
         $division = array(
             array(
-                "division"=>2,
-                "empresa"=>1
+                "division"=>1,
+                "empresa"=>1,
+                "sede"=>1,
             ),
             array(
-                "division"=>3,
-                "empresa"=>5
+                "division"=>2,
+                "empresa"=>1,
+                "sede"=>1,
             ),
-            // array(
-            //     "division"=>4,
-            //     "empresa"=>4
-            // ),
-            // array(
-            //     "division"=>5,
-            //     "empresa"=>3
-            // ),
-            // array(
-            //     "division"=>13,
-            //     "empresa"=>2
-            // ),
+            array(
+                "division"=>5,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>10,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>11,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>9,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>12,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>13,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>14,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>15,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>16,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>20,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>21,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+            array(
+                "division"=>22,
+                "empresa"=>1,
+                "sede"=>1,
+            ),
+
+            array(
+                "division"=>15,
+                "empresa"=>1,
+                "sede"=>4,
+            ),
+            array(
+                "division"=>11,
+                "empresa"=>1,
+                "sede"=>4,
+            ),
+            array(
+                "division"=>1,
+                "empresa"=>1,
+                "sede"=>4,
+            ),
         ); //area
         foreach ($division as $key => $value) {
 
             $admDivision = Division::find($value['division']);
-            $presupuesto_interno_count = PresupuestoInterno::count();
-            $presupuesto_interno_count = $presupuesto_interno_count +1;
-            $codigo = StringHelper::leftZero(2,$presupuesto_interno_count);
+            // $presupuesto_interno_count = PresupuestoInterno::count();
+            // $presupuesto_interno_count = $presupuesto_interno_count +1;
+            // $codigo = StringHelper::leftZero(2,$presupuesto_interno_count);
 
             $presupuesto_interno = new PresupuestoInterno();
-            $presupuesto_interno->codigo                = 'PI-'.$codigo;
-            $presupuesto_interno->descripcion           = 'PI-'.$codigo;
+            $presupuesto_interno->codigo                = $admDivision->codigo;
+            $presupuesto_interno->descripcion           = $admDivision->codigo;
             $presupuesto_interno->id_grupo              = $admDivision->grupo_id;
             $presupuesto_interno->id_area               = $admDivision->id_division;
             $presupuesto_interno->fecha_registro        = date('Y-m-d H:i:s');
@@ -58,6 +125,7 @@ class ScriptController extends Controller
             $presupuesto_interno->gastos                = 3;
             $presupuesto_interno->ingresos              = 0;//1 si es que se usa
             $presupuesto_interno->empresa_id            = $value['empresa'];
+            $presupuesto_interno->sede_id            = $value['sede'];
             $presupuesto_interno->save();
 
             foreach ($presupuestpInterno as $key_partidas => $value_partidas) {
