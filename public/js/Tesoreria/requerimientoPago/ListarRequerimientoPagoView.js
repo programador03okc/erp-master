@@ -237,6 +237,59 @@ class ListarRequerimientoPagoView {
         $('#modal-adjuntar-archivos-requerimiento-pago-detalle').on("click", "button.handleClickEliminarArchivoRequerimientoPagoDetalle", (e) => {
             this.eliminarArchivoRequerimientoPagoDetalle(e.currentTarget);
         });
+
+        $('#modal-requerimiento-pago').on("change", "select.handleChangeProyecto", (e) => {
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PROYECTOS',e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
+        });
+        $('#modal-requerimiento-pago').on("change", "select.handleChangePresupuestoInterno", (e) => {
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PRESUPUESTO_INTERNO',e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
+        });
+        $('#listaCuadroPresupuesto').on("click", "button.handleClickSeleccionarCDP", (e) => {
+            console.log(e.currentTarget.dataset.idCc);
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP',e.currentTarget.dataset.idCc);  
+        });
+        
+        $('#modal-requerimiento-pago').on("click", "button.handleClickLimpiarSeleccionCuadroDePresupuesto", (e) => {
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP',0); 
+            document.querySelector("input[name='id_cc']").value ='';
+            document.querySelector("input[name='codigo_oportunidad']").value = '';
+        });
+    }
+
+
+    deshabilitarOtrosTiposDePresupuesto(origen, valor){
+        switch (origen) {
+            case 'SELECCION_PRESUPUESTO_INTERNO':
+                if(valor >0){
+                    document.querySelector("select[name='proyecto']").setAttribute("disabled",true);
+                    document.querySelector("input[name='id_cc']").setAttribute("disabled",true);
+                }else{
+                    document.querySelector("select[name='proyecto']").removeAttribute("disabled");
+                    document.querySelector("input[name='id_cc']").removeAttribute("disabled");
+                }
+                break;
+            case 'SELECCION_PROYECTOS':
+                if(valor >0){
+                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled",true);
+                    document.querySelector("input[name='id_cc']").setAttribute("disabled",true);
+                }else{
+                    document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
+                    document.querySelector("input[name='id_cc']").removeAttribute("disabled");
+                }
+                break;
+            case 'SELECCION_CDP':
+                if(valor >0){
+                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled",true);
+                    document.querySelector("select[name='proyecto']").setAttribute("disabled",true);
+                }else{
+                    document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
+                    document.querySelector("select[name='proyecto']").removeAttribute("disabled");
+                }
+                break;
+        
+            default:
+                break;
+        }
     }
 
     changeBtnIcon(obj) {
@@ -686,7 +739,7 @@ class ListarRequerimientoPagoView {
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
                         let btnVerEnModal = (array_accesos.find(element => element === 13)?'<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>':'');
-                        let btnVerAdjuntosModal = (array_accesos.find(element => element === 31)?'<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>':'');
+                        let btnVerAdjuntosModal = (array_accesos.find(element => element === 31)?'<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '"  data-id-moneda="' + row.id_moneda + '" data-simbolo-moneda="' + row.simbolo_moneda +  '" data-monto-a-pagar="' + row.monto_total +'" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>':'');
                         let btnEditar = '<button type="button" class="btn btn-xs btn-warning  handleClickEditarRequerimientoPago" name="btnEditarRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
                         let btnAnular = '<button type="button" class="btn btn-xs btn-danger  handleClickAnularRequerimientoPago" name="btnAnularRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Anular"><i class="fas fa-ban fa-xs"></i></button>';
                         let btnImprimirEnPdf = (array_accesos.find(element => element === 30)?`<button type="button" class="btn btn-xs btn-default handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
@@ -1582,17 +1635,27 @@ class ListarRequerimientoPagoView {
         for (let index = 0; index < tbodyChildren.length; index++) {
             if (tbodyChildren[index].querySelector("input[class~='idEstado']").value != 7) {
 
-                // if (!(tbodyChildren[index].querySelector("input[class~='centroCosto']").value > 0)) {
-                //     continuar = false;
-                //     if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
-                //         let newSpanInfo = document.createElement("span");
-                //         newSpanInfo.classList.add('text-danger');
-                //         newSpanInfo.textContent = 'Ingrese un centro de costo';
-                //         tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("h5").appendChild(newSpanInfo);
-                //         tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
-                //     }
+                if (!(tbodyChildren[index].querySelector("input[class~='centroCosto']").value > 0)) {
+                    continuar = false;
+                    if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
+                        let newSpanInfo = document.createElement("span");
+                        newSpanInfo.classList.add('text-danger');
+                        newSpanInfo.textContent = 'Ingrese un centro de costo';
+                        tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("h5").appendChild(newSpanInfo);
+                        tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                    }
+                }
+                if (!(tbodyChildren[index].querySelector("input[class~='partida']").value > 0)) {
+                    continuar = false;
+                    if (tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("span") == null) {
+                        let newSpanInfo = document.createElement("span");
+                        newSpanInfo.classList.add('text-danger');
+                        newSpanInfo.textContent = 'Ingrese una partida';
+                        tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("h5").appendChild(newSpanInfo);
+                        tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                    }
+                }
 
-                // }
                 if (!(tbodyChildren[index].querySelector("input[class~='cantidad']").value > 0)) {
                     continuar = false;
                     if (tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("span") == null) {

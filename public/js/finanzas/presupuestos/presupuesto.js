@@ -109,6 +109,7 @@ function mostrarPartidas(id) {
             $('[name=id_presup]').val(id);
             $('[name=codigo]').text(response.codigo);
             $('[name=descripcion]').text(response.descripcion);
+            $('[name=name_empresa]').text(response.empresa['codigo']);
             $('[name=name_grupo]').text(response.grupo['descripcion']);
             $('[name=fecha_emision]').text(response.fecha_emision);
             $('[name=name_moneda]').text(response.moneda_seleccionada['descripcion']);

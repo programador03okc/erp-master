@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-ver-agregar-adjuntos-requerimiento-pago" style="overflow-y: scroll;">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
@@ -8,6 +8,9 @@
             <div class="modal-body">
                 <form id="form_ver_agregar_adjuntos_requerimiento_pago">
                     <input type="text" class="oculto" name="id_requerimiento_pago" />
+                    <input type="text" class="oculto" name="id_moneda" />
+                    <input type="text" class="oculto" name="simbolo_moneda" />
+                    <input type="text" class="oculto" name="monto_a_pagar" />
                     <fieldset class="group-table">
                         <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntar nuevo</strong></h5>
                         <div class="row">
@@ -48,9 +51,11 @@
                                 <table id="adjuntosCabecera" class="mytable table table-condensed table-bordered table-okc-view">
                                     <tbody id="body_archivos_requerimiento_pago_cabecera">
                                         <thead>
-                                            <th>Adjunto</th>
+                                            <th style="width: 30%;">Nombre archivo</th>
                                             <th>Fecha emisión</th>
-                                            <th>Tipo adjunto</th>
+                                            <th>Número y serie</th>
+                                            <th>Categoría adjunto</th>
+                                            <th>Monto total</th>
                                             <th>Acción</th>
                                         </thead>
                                     </tbody>

@@ -67,6 +67,7 @@
                 <li><a href="{{route('proyectos.reportes.saldos.index')}}"> Saldos por Presupuesto </a></li>
                 <li><a href="{{route('proyectos.reportes.opciones-relaciones.index')}}"> Opciones y sus Relaciones </a></li>
                 <li><a href="{{route('logistica.gestion-logistica.reportes.compras-locales')}}"> Compras locales</a></li>
+                <li><a href="{{route('proyectos.reportes.cuadro-gastos.index')}}">Cuadro de gastos</a></li>
 
             </ul>
         </li>

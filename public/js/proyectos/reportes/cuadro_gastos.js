@@ -1,7 +1,20 @@
+$(function () {
+    vista_extendida();
+});
 
-function mostrarCuadroGastos(id) {
-    // var id_presupuesto = $('[name=id_presup]').val();
+function exportarCuadroCostos() {
+    var id_presup = $('[name=id_presup]').val();
+    var form = $(`<form action="cuadroGastosExcel" method="post" target="_blank">
+        <input type="hidden" name="_token" value="${csrf_token}"/>
+        <input type="hidden" name="id_presupuesto" value="${id_presup}"/>
+        </form>`);
+    $('body').append(form);
+    form.trigger('submit');
+}
 
+$("[name=id_presup]").on('change', function () {
+    // var id = $('[name=id_presup]').val();
+    var id = $(this).val();
     if (id !== '') {
         $.ajax({
             type: 'GET',
@@ -19,14 +32,20 @@ function mostrarCuadroGastos(id) {
                     total_sin_igv += parseFloat(sub_total);
                     total += (sub_total + igv);
                     html += `<tr>
-                            <td>${element.razon_social ?? ''}</td>
-                            <td>${element.fecha_pago !== null ? formatDate(element.fecha_pago) : ''}</td>
+                            <td>${element.fecha_requerimiento}</td>
+                            <td>${element.fecha_requerimiento}</td>
+                            <td>${element.fecha_requerimiento}</td>
                             <td>${element.codigo}</td>
                             <td>${element.titulo_descripcion}</td>
                             <td>${element.partida_descripcion}</td>
-                            <td>${element.descripcion_adicional}</td>
+                            <td>${element.tipo_comprobante??''}</td>
+                            <td>${element.nro_comprobante??''}</td>
+                            <td>${element.nro_documento_proveedor??''}</td>
+                            <td>${element.proveedor_razon_social}</td>
                             <td>${element.cantidad}</td>
                             <td>${element.abreviatura}</td>
+                            <td>${element.descripcion_adicional}</td>
+                            <td>${element.simbolo}</td>
                             <td style="text-align:right">${formatNumber.decimal(element.precio, '', -2)}</td>
                             <td style="text-align:right">${formatNumber.decimal(element.subtotal, '', -2)}</td>
                             <td style="text-align:right">${formatNumber.decimal(igv, '', -2)}</td>
@@ -41,14 +60,20 @@ function mostrarCuadroGastos(id) {
                     total_sin_igv += parseFloat(sub_total);
                     total += (sub_total + igv);
                     html += `<tr>
-                            <td>${element.razon_social ?? ''}</td>
-                            <td>${element.fecha_pago !== null ? formatDate(element.fecha_pago) : ''}</td>
+                            <td>${formatDate(element.fecha_registro)}</td>
+                            <td>${formatDate(element.fecha_registro)}</td>
+                            <td>${formatDate(element.fecha_registro)}</td>
                             <td>${element.codigo ?? ''}</td>
                             <td>${element.titulo_descripcion ?? ''}</td>
                             <td>${element.partida_descripcion ?? ''}</td>
-                            <td>${element.descripcion ?? ''}</td>
+                            <td>${element.tipo_comprobante ?? ''}</td>
+                            <td>${element.nro_comprobante ?? ''}</td>
+                            <td>${element.nro_documento_persona ?? ''}</td>
+                            <td>${element.apellido_paterno !== null ? (element.apellido_paterno + ' ' + element.apellido_materno + ' ' + element.nombres) : ''}</td>
                             <td>${element.cantidad ?? ''}</td>
                             <td>${element.abreviatura ?? ''}</td>
+                            <td>${element.descripcion ?? ''}</td>
+                            <td>${element.simbolo ?? ''}</td>
                             <td style="text-align:right">${formatNumber.decimal(element.precio_unitario ?? '', '', -2)}</td>
                             <td style="text-align:right">${formatNumber.decimal(element.subtotal ?? '', '', -2)}</td>
                             <td style="text-align:right">${formatNumber.decimal(igv, '', -2)}</td>
@@ -57,14 +82,14 @@ function mostrarCuadroGastos(id) {
                 });
 
                 html += `<tr>
-                        <td colSpan="8"></td>
+                        <td colSpan="11"></td>
                         <td style="font-size: 14px;"><strong>Total Consumido</strong></td>
-                        <td style="font-size: 14px; text-align:right;"><strong>${formatter.format(total_sin_igv)}</strong></td>
+                        <td style="font-size: 14px; text-align:right;"><strong>${formatNumber.decimal(total_sin_igv, '', -2)}</strong></td>
                         <td style="font-size: 14px; text-align:right;"></td>
-                        <td style="font-size: 14px; text-align:right;"><strong>${formatter.format(total)}</strong></td>
+                        <td style="font-size: 14px; text-align:right;"><strong>${formatNumber.decimal(total, '', -2)}</strong></td>
                     </tr>`;
 
-                $('#listaGastosPartidas tbody').html(html);
+                $('#listaEstructura tbody').html(html);
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
@@ -72,14 +97,4 @@ function mostrarCuadroGastos(id) {
             console.log(errorThrown);
         });
     }
-}
-
-function exportarCuadroCostos() {
-    var id_presup = $('[name=id_presup]').val();
-    var form = $(`<form action="cuadroGastosExcel" method="post" target="_blank">
-        <input type="hidden" name="_token" value="${csrf_token}"/>
-        <input type="hidden" name="id_presupuesto" value="${id_presup}"/>
-        </form>`);
-    $('body').append(form);
-    form.trigger('submit');
-}
+});

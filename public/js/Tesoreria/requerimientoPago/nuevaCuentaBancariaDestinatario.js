@@ -235,7 +235,7 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
             dataType: 'JSON',
         }).done(function (response) {
             // console.log(response);
-            console.log(response);//no este
+            // console.log(response);//no este
             if (response.tipo_estado == 'success') {
                 if (response.data.length > 0) {
                     // llenar cuenta bancaria

@@ -3984,13 +3984,14 @@ class OrdenController extends Controller
                         if ($hasIngreso['status'] != 200) {
                             $status = $hasIngreso['status'];
                             $tipo_estado = $hasIngreso['tipo_estado'];
+                            $msj[] = $hasIngreso['mensaje'];
+
                         } elseif ($hasPagoAutorizado['status'] != 200) {
                             $status = $hasPagoAutorizado['status'];
                             $tipo_estado = $hasPagoAutorizado['tipo_estado'];
+                            $msj[] = $hasPagoAutorizado['mensaje'];
                         }
 
-                        $msj[] = $hasIngreso['mensaje'];
-                        $msj[] = $hasPagoAutorizado['mensaje'];
                     }
 
 
@@ -4424,7 +4425,7 @@ class OrdenController extends Controller
 
             if (!empty($orden)) {
                 //ya fue autorizado?
-                Debugbar::info(isset($request->pagoEnCuotasCheckbox));
+                // Debugbar::info(isset($request->pagoEnCuotasCheckbox));
                 if (intval($orden->estado_pago) !== 5) {
                     //ya fue pagado?
                     if (intval($orden->estado_pago) !== 6) {
@@ -4664,7 +4665,7 @@ class OrdenController extends Controller
     {
         return PagoCuota::with(['detalle' => function ($query) {
             $query->orderBy('fecha_registro', 'asc');
-        }, 'detalle.creadoPor', 'detalle.adjuntos'])->where('id_orden', $idOrden)->first();
+        }, 'detalle.creadoPor', 'detalle.adjuntos.moneda'])->where('id_orden', $idOrden)->first();
     }
 
     function obtenerContribuyente($idContribuyente)
@@ -4864,7 +4865,10 @@ class OrdenController extends Controller
                         'categoria_adjunto_id'  => $archivo->category,
                         'fecha_emision'         => $archivo->fecha_emision,
                         'nro_comprobante'       => $archivo->nro_comprobante,
+                        'id_moneda'             => $archivo->id_moneda,
+                        'monto_total'           => $archivo->monto_total,
                         'id_pago_cuota_detalle' => (isset($archivo->id_pago_cuota_detalle) && $archivo->id_pago_cuota_detalle > 0 ? $archivo->id_pago_cuota_detalle : null),
+                        'id_usuario'            => Auth::user()->id_usuario,
                         'fecha_registro'        => $fechaHoy
                     ],
                     'id_adjunto'
@@ -4905,8 +4909,9 @@ class OrdenController extends Controller
     public function listarArchivosOrder($idOrden)
     {
         return DB::table('logistica.adjuntos_logisticos')
-            ->select('adjuntos_logisticos.*', 'categoria_adjunto.descripcion')
-            ->join('logistica.categoria_adjunto', 'adjuntos_logisticos.categoria_adjunto_id', '=', 'categoria_adjunto.id_categoria_adjunto')
+            ->select('adjuntos_logisticos.*', 'categoria_adjunto.descripcion as descripcion_categoria_adjunto', 'sis_moneda.simbolo as simbolo_moneda')
+            ->leftjoin('logistica.categoria_adjunto', 'adjuntos_logisticos.categoria_adjunto_id', '=', 'categoria_adjunto.id_categoria_adjunto')
+            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'adjuntos_logisticos.id_moneda')
             ->where([['adjuntos_logisticos.id_orden', $idOrden], ['adjuntos_logisticos.estado', 1]])
             ->get();
     }

@@ -45,7 +45,7 @@ Gestión de ordenes
                     <div class="box box-widget">
                         <div class="box-body">
                             <div class="table-responsive">
-                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaOrdenes">
+                                <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaOrdenes">
                                     <thead>
                                     <tr>
                                     <th>cod. ord.</th>
@@ -81,7 +81,7 @@ Gestión de ordenes
                     <div class="box box-widget">
                         <div class="box-body">
                             <div class="table-responsive">
-                                <table class="mytable table table-condensed table-bordered table-okc-view" id="listaItemsOrden" style="font-size: 0.9rem;">
+                                <table class="mytable table table-hover table-condensed table-bordered table-okc-view" id="listaItemsOrden" style="font-size: 0.9rem;">
                                     <thead>
                                         <tr>
                                             <th>cod. ord.</th>

@@ -40,7 +40,7 @@ $("#ordenesPendientes tbody").on("click", "td button.ver-detalle", function () {
 function format(table_id, id, row) {
     $.ajax({
         type: "GET",
-        url: "detalleOrden/" + id,
+        url: "detalleOrden/" + id + '/soloProductos',
         dataType: "JSON",
         success: function (response) {
             var html = "";

@@ -44,8 +44,8 @@
                                     <thead>
                                         <th>Archivo</th>
                                         <th>Fecha emisión</th>
-                                        <th>Nro comprobante</th>
-                                        <th>Tipo</th>
+                                        <th>Número y serie</th>
+                                        <th>Categoría adjunto</th>
                                         <th>Acción</th>
                                     </thead>
                                     <tbody id="body_adjuntos_logisticos"></tbody>

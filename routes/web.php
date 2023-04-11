@@ -570,6 +570,15 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'ProyectosController@view_opciones_todo')->name('index');
 				Route::get('listar_opciones_todo', 'ProyectosController@listar_opciones_todo');
 			});
+
+			Route::group(['as' => 'cuadro-gastos.', 'prefix' => 'cuadro-gastos'], function () {
+				//Opciones y Relaciones
+				Route::get('index', 'ProyectosController@view_cuadro_gastos')->name('index');
+				Route::get('listar', 'ProyectosController@listar_cuadro_gastos');
+				Route::post('cuadroGastosExcel', 'Finanzas\Presupuesto\PresupuestoController@cuadroGastosExcel')->name('cuadroGastosExcel');
+				Route::get('mostrarGastosPorPresupuesto/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarGastosPorPresupuesto')->name('mostrar-gastos-presupuesto');
+
+			});
 		});
 
 		Route::group(['as' => 'configuraciones.', 'prefix' => 'configuraciones'], function () {
@@ -1420,7 +1429,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Almacen\Movimiento\OrdenesPendientesController@view_ordenesPendientes')->name('index');
 				Route::post('listarOrdenesPendientes', 'Almacen\Movimiento\OrdenesPendientesController@listarOrdenesPendientes');
 				Route::post('listarIngresos', 'Almacen\Movimiento\OrdenesPendientesController@listarIngresos');
-				Route::get('detalleOrden/{id}', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrden');
+				Route::get('detalleOrden/{id}/{soloProductos}', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrden');
 				Route::post('guardar_guia_com_oc', 'Almacen\Movimiento\OrdenesPendientesController@guardar_guia_com_oc');
 				Route::get('verGuiasOrden/{id}', 'Almacen\Movimiento\OrdenesPendientesController@verGuiasOrden');
 				// Route::post('guardar_guia_transferencia', 'Almacen\Movimiento\OrdenesPendientesController@guardar_guia_transferencia');
