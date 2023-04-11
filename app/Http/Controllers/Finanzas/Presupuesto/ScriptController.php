@@ -101,11 +101,11 @@ class ScriptController extends Controller
                 "empresa"=>1,
                 "sede"=>4,
             ),
-            array(
-                "division"=>1,
-                "empresa"=>1,
-                "sede"=>4,
-            ),
+            // array(
+            //     "division"=>1,
+            //     "empresa"=>1,
+            //     "sede"=>4,
+            // ),
         ); //area
         foreach ($division as $key => $value) {
 
