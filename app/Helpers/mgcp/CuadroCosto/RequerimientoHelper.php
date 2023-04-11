@@ -107,10 +107,10 @@ class RequerimientoHelper
     public function retirarAprobacionCuadroCosto($cuadro)
     {
         try {
-            $requerimiento = Requerimiento::where('id_cc', $cuadro->id)->orderBy('id_requerimiento', 'desc')->first();
+            $requerimiento = Requerimiento::where('id_cc', $cuadro->id)->where('id_tipo_requerimiento', 1)->orderBy('id_requerimiento', 'desc')->first();
             if ($requerimiento != null) {
                 $requerimiento->estado_anterior=$requerimiento->estado;
-                $requerimiento->estado=39;//En pausa
+                $requerimiento->estado = 39;//En pausa
                 $requerimiento->save();
             }
 
@@ -207,7 +207,7 @@ class RequerimientoHelper
             $requerimiento->estado = $requerimiento->estado_anterior ?? $requerimiento->estado;
         }
 
-        $requerimiento->id_tipo_detalle = $this->obtenerTipoDetalle($cuadro->id); // retorna: 1= producto, 2= servicio, 3= mixto
+            $requerimiento->id_tipo_detalle = $this->obtenerTipoDetalle($cuadro->id); 
         $requerimiento->save();
         return $estado;
     }
@@ -273,7 +273,7 @@ class RequerimientoHelper
         $requerimiento->id_sede = $ordenCompra == null ? 4 : $this->obtenerIdSede($ordenCompra->id_empresa); //sede de la empresa de donde viene el requerimiento
 
         $requerimiento->id_cliente = $this->obtenerCliente($oportunidad->id_entidad)->id_cliente;
-        $requerimiento->id_tipo_detalle = $this->obtenerTipoDetalle($cuadro->id); // retorna: 1= producto, 2= servicio, 3= mixto
+        $requerimiento->id_tipo_detalle = $this->obtenerTipoDetalle($cuadro->id);
         //die("OKA");
 
         $requerimiento->tipo_cliente = 2; //Cliente persona jurídica
@@ -283,7 +283,7 @@ class RequerimientoHelper
         //id del almacen que va a atender
             //$requerimiento->id_almacen = $ordenCompra == null ? 2 : $this->obtenerIdAlmacen($ordenCompra->id_empresa);
         //id del almacen que va a atender con id_sede
-        $requerimiento->id_almacen = $ordenCompra == null ? 2 : $this->obtenerIdAlmacen($requerimiento->id_sede);
+        $requerimiento->id_almacen = $ordenCompra == null ? 78 : $this->obtenerIdAlmacen($requerimiento->id_sede);
         $requerimiento->confirmacion_pago = true;
         $requerimiento->fecha_entrega = ($ordenCompra == null ? (new Carbon()) : $ordenCompra->fecha_entrega);
         $requerimiento->id_cc = $cuadro->id;
@@ -310,8 +310,6 @@ class RequerimientoHelper
             $documento->save();
         }
     }
-
-
 
     private function crearHistorialAprobacion($requerimiento, $cuadro, $tipoAprobacion, $comentario = null)
     {
@@ -419,7 +417,7 @@ class RequerimientoHelper
                 ['alm_almacen.estado', '!=', 7],
                 ['alm_almacen.id_tipo_almacen', '=', 1],
                 ['alm_almacen.id_sede', '=', $idSede]
-            ])
+            ])->orderBy('id_almacen', 'desc')
             ->first();
         return $almacenSeleccionado->id_almacen;
     }
@@ -598,15 +596,15 @@ class RequerimientoHelper
         return $periodo;
     }
 
-    private function obtenerTipoDetalle($idCuadro)
+    private function obtenerTipoDetalle($idCuadro) 
     {
-        $idTipoDetalle=null;
-        $cantidad_productos=0;
-        $cantidad_licencias=0;
-        $cantidad_servicios=0;
-        $cantidad_fondos_microsft=0;
+        $idTipoDetalle = null;
+        $cantidad_productos = 0;
+        $cantidad_licencias = 0;
+        $cantidad_servicios = 0;
+        $cantidad_fondos_microsft = 0;
 
-        if($idCuadro>0){
+        if($idCuadro > 0){
             $filaCuadro = CcAmFila::where('id_cc_am',$idCuadro)->get();
             foreach ($filaCuadro as $key => $fila) {
                 switch ($fila->id_tipo_fila) {
@@ -627,16 +625,14 @@ class RequerimientoHelper
                 }
             }
             //obtener tipo detalle para Agil
-            if($cantidad_productos >0 && $cantidad_licencias==0 && $cantidad_servicios==0 && $cantidad_fondos_microsft==0 ){
+            if($cantidad_productos > 0 && $cantidad_licencias == 0 && $cantidad_servicios == 0 && $cantidad_fondos_microsft == 0 ){
                 $idTipoDetalle=1;
-            } else if($cantidad_productos ==0 &&  $cantidad_servicios > 0 &&  $cantidad_licencias ==0 && $cantidad_fondos_microsft==0 ){
+            } else if($cantidad_productos  == 0 &&  $cantidad_servicios > 0 &&  $cantidad_licencias  == 0 && $cantidad_fondos_microsft == 0 ){
                 $idTipoDetalle=2;
             }else{
                 $idTipoDetalle=3;
             }
         } 
-
         return $idTipoDetalle;
     }
 }
-
