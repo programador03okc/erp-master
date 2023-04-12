@@ -2165,6 +2165,7 @@ class OrdenesPendientesController extends Controller
                         'porcen_dscto' => $item->porcentaje_dscto,
                         'total_dscto' => $item->total_dscto,
                         'precio_total' => $item->total,
+                        'id_oc_det' => $item->id_oc_det,
                         'estado' => 1,
                         'fecha_registro' => $fecha,
                     ]);

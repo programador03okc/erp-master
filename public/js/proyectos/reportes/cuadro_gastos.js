@@ -27,7 +27,8 @@ $("[name=id_presup]").on('change', function () {
                 var total = 0;
 
                 response.req_compras.forEach(element => {
-                    var sub_total = parseFloat(element.precio) * parseFloat(element.cantidad);
+                    var unitario = (element.precio !== null ? element.precio : element.precio_requerimiento);
+                    var sub_total = parseFloat(unitario) * parseFloat(element.cantidad);
                     var igv = sub_total * 0.18;
                     total_sin_igv += parseFloat(sub_total);
                     total += (sub_total + igv);
@@ -39,13 +40,13 @@ $("[name=id_presup]").on('change', function () {
                             <td>${element.tipo_comprobante ?? ''}</td>
                             <td>${element.serie_numero ?? ''}</td>
                             <td>${element.fecha_emision_comprobante ?? ''}</td>
-                            <td>${element.proveedor_razon_social}</td>
+                            <td>${element.proveedor_razon_social ?? ''}</td>
                             <td>${element.cantidad}</td>
                             <td>${element.abreviatura}</td>
-                            <td>${element.descripcion_adicional}</td>
-                            <td>${element.simbolo}</td>
-                            <td style="text-align:right">${formatNumber.decimal(element.precio, '', -2)}</td>
-                            <td style="text-align:right">${formatNumber.decimal(element.subtotal, '', -2)}</td>
+                            <td>${element.descripcion}</td>
+                            <td>${element.simbolo ?? ''}</td>
+                            <td style="text-align:right">${formatNumber.decimal(unitario, '', -2)}</td>
+                            <td style="text-align:right">${formatNumber.decimal(sub_total, '', -2)}</td>
                             <td style="text-align:right">${formatNumber.decimal(igv, '', -2)}</td>
                             <td style="text-align:right">${formatNumber.decimal((sub_total + igv), '', -2)}</td>
                             <td>${element.estado_pago ?? ''}</td>

@@ -82,31 +82,27 @@ class PresupuestoController extends Controller
 
     public function obtenerDetallePresupuesto($id_presupuesto)
     {
-        $detalle = DB::table('logistica.log_det_ord_compra')
-            ->select(
-                'log_det_ord_compra.*',
+        $detalle = DB::table('almacen.alm_det_req')
+            ->select('alm_det_req.id_detalle_requerimiento',
+                'alm_det_req.cantidad',
+                'alm_det_req.descripcion',
+                'alm_det_req.precio_unitario as precio_requerimiento',
+                'log_det_ord_compra.precio',
                 'alm_req.codigo',
                 'alm_req.fecha_requerimiento',
-                'adm_contri.razon_social',
-                'adm_contri.nro_documento as nro_documento_proveedor',
-                // 'registro_pago.fecha_pago',
+                'proveedor.nro_documento as nro_documento_proveedor',
+                'proveedor.razon_social as proveedor_razon_social',
                 'alm_und_medida.abreviatura',
-                'log_ord_compra.fecha as fecha_orden',
-                DB::raw("(SELECT cont_tp_cambio.venta FROM contabilidad.cont_tp_cambio
-                WHERE cont_tp_cambio.fecha = log_ord_compra.fecha
-                order by cont_tp_cambio.fecha desc limit 1) AS tipo_cambio"),
-                'log_ord_compra.codigo as codigo_oc',
+                'log_ord_compra.codigo as codigo_orden',
                 'log_ord_compra.id_moneda',
                 'sis_moneda.simbolo',
-                'proveedor.nro_documento',
-                'proveedor.razon_social as proveedor_razon_social',
                 'presup_par.descripcion as partida_descripcion',
                 DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
                 WHERE presup_titu.codigo = presup_par.cod_padre
                 and presup_titu.id_presup = presup_par.id_presup) AS titulo_descripcion"),
-                DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
-                WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
-                limit 1) AS fecha_pago"),
+                // DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
+                // WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
+                // limit 1) AS fecha_pago"),
                 'requerimiento_pago_estado.descripcion as estado_pago',
                 DB::raw("CONCAT(doc_com.serie,'-',doc_com.numero) AS serie_numero"),
                 'cont_tp_doc.descripcion as tipo_comprobante',
@@ -115,50 +111,39 @@ class PresupuestoController extends Controller
                 // DB::raw("(SELECT sum(registro_pago.total_pago) FROM tesoreria.registro_pago
                 // WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra) AS suma_pago"),
             )
-            ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+            ->leftjoin('logistica.log_det_ord_compra', function ($join) {
+                $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
+                $join->where('log_det_ord_compra.estado', '!=', 7);
+            })
             ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
-            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'alm_req.id_empresa')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->join('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
             ->join('finanzas.presup', 'presup.id_presup', '=', 'presup_par.id_presup')
-            ->join('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
-            ->leftJoin('almacen.guia_com_det', function ($join) {
-                $join->on('guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
-                $join->where('guia_com_det.estado', '!=', 7);
-            })
-            // ->leftjoin('almacen.doc_com_det', 'doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det')
+            ->leftjoin('logistica.log_ord_compra', 'log_ord_compra.id_orden_compra', '=', 'log_det_ord_compra.id_orden_compra')
+            // ->leftJoin('almacen.guia_com_det', function ($join) {
+            //     $join->on('guia_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
+            //     $join->where('guia_com_det.estado', '!=', 7);
+            // })
             ->leftJoin('almacen.doc_com_det', function ($join) {
-                $join->on('doc_com_det.id_guia_com_det', '=', 'guia_com_det.id_guia_com_det');
+                $join->on('doc_com_det.id_oc_det', '=', 'log_det_ord_compra.id_detalle_orden');
                 $join->where('doc_com_det.estado', '!=', 7);
             })
-            // ->leftjoin('almacen.doc_com', 'doc_com.id_doc_com', '=', 'doc_com_det.id_doc')
             ->leftJoin('almacen.doc_com', function ($join) {
                 $join->on('doc_com.id_doc_com', '=', 'doc_com_det.id_doc');
                 $join->where('doc_com.estado', '!=', 7);
             })
-            // ->leftjoin('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
             ->leftJoin('contabilidad.cont_tp_doc', function ($join) {
                 $join->on('cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc');
                 $join->where('cont_tp_doc.estado', '=', 1);
             })
-            // ->leftJoin('finanzas.presup_titu', function ($join) {
-            //     $join->on('presup_titu.codigo', '=', 'presup_par.cod_padre');
-            //     $join->where('presup_titu.id_presup', '=', 'presup_par.id_presup');
-            // })
-            ->join('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
-            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
-            ->join('contabilidad.adm_contri as proveedor', 'proveedor.id_contribuyente', '=', 'log_prove.id_contribuyente')
-            ->join('tesoreria.registro_pago', 'registro_pago.id_oc', '=', 'log_det_ord_compra.id_orden_compra')
+            ->leftjoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
+            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+            ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
+            ->leftjoin('contabilidad.adm_contri as proveedor', 'proveedor.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
-            // ->leftjoin('logistica.adjuntos_logisticos', 'adjuntos_logisticos.id_orden', '=', 'log_ord_compra.id_orden_compra')
-            // ->leftjoin('logistica.categoria_adjunto', 'categoria_adjunto.id_categoria_adjunto', '=', 'adjuntos_logisticos.categoria_adjunto_id')
-
             ->where([
                 ['presup.id_presup', '=', $id_presupuesto],
-                ['log_det_ord_compra.estado', '!=', 7]
-            ])
-            ->get();
+                ['alm_det_req.estado', '!=', 7]
+            ])->distinct()->get();
 
         return $detalle;
     }

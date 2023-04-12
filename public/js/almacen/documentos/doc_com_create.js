@@ -360,6 +360,7 @@ $("#form-doc_create").on("submit", function (e) {
                         'porcentaje_dscto': element.porcentaje_dscto,
                         'total_dscto': element.total_dscto,
                         'total': element.total,
+                        'id_oc_det': element.id_oc_det,
                     }
                     listaItemsDetalle.push(nuevo);
                 });

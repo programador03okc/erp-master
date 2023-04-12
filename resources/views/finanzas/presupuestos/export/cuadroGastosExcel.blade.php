@@ -20,6 +20,7 @@
                 <th style="background-color: #cccccc;" width="15"><b>Fecha emisión</b></th>
                 <th style="background-color: #cccccc;" width="15"><b>Ruc/DNI</b></th>
                 <th style="background-color: #cccccc;" width="40"><b>Proveedor o Persona asignada</b></th>
+                <th style="background-color: #cccccc;" width="15"><b>OC/OS</b></th>
                 <th style="background-color: #cccccc;" width="8"><b>Cant.</b></th>
                 <th style="background-color: #cccccc;" width="10"><b>Unid.</b></th>
                 <th style="background-color: #cccccc;" width="50"><b>Descripción</b></th>
@@ -28,7 +29,6 @@
                 <th style="background-color: #cccccc;" width="18"><b>SubTotal</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>IGV</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>P.Compra</b></th>
-                {{-- <th style="background-color: #cccccc;" width="18"><b>Fecha pago</b></th> --}}
                 <th style="background-color: #cccccc;" width="18"><b>Estado pago</b></th>
             </tr>
         </thead>
@@ -45,20 +45,20 @@
                 <td>{{$d->codigo}}</td>
                 <td>{{$d->titulo_descripcion}}</td>
                 <td>{{$d->partida_descripcion}}</td>
-                <td>{{$d->tipo_comprobante}}</td>
-                <td>{{$d->serie_numero}}</td>
-                <td>{{$d->fecha_emision_comprobante}}</td>
-                <td>{{($d->nro_documento_proveedor !=null ? $d->nro_documento_proveedor : ($request->nro_documento_persona != null ? $request->nro_documento_persona :''))}}</td>
-                <td>{{$d->proveedor_razon_social}}</td>
+                <td>{{$d->tipo_comprobante !=null ? $d->tipo_comprobante : ''}}</td>
+                <td>{{$d->serie_numero !=null ? $d->serie_numero : ''}}</td>
+                <td>{{$d->fecha_emision_comprobante !=null ? $d->fecha_emision_comprobante : ''}}</td>
+                <td>{{($d->nro_documento_proveedor !=null ? $d->nro_documento_proveedor : '')}}</td>
+                <td>{{$d->proveedor_razon_social !=null ? $d->proveedor_razon_social : ''}}</td>
+                <td>{{$d->codigo_orden!==null?$d->codigo_orden:''}}</td>
                 <td>{{$d->cantidad}}</td>
                 <td>{{$d->abreviatura}}</td>
-                <td>{{$d->descripcion_adicional}}</td>
-                <td>{{$d->simbolo}}</td>
-                <td>{{$d->precio}}</td>
-                <td>{{$d->subtotal}}</td>
-                <td>{{$d->subtotal*0.18}}</td>
-                <td>{{$d->subtotal + ($d->subtotal*0.18)}}</td>
-                {{-- <td>{{$d->fecha_pago}}</td> --}}
+                <td>{{$d->descripcion}}</td>
+                <td>{{$d->simbolo!==null?$d->simbolo:''}}</td>
+                <td>{{($d->precio!==null?$d->precio:$d->precio_requerimiento)}}</td>
+                <td>{{($d->cantidad * ($d->precio!==null?$d->precio:$d->precio_requerimiento))}}</td>
+                <td>{{($d->cantidad * ($d->precio!==null?$d->precio:$d->precio_requerimiento)) * 0.18}}</td>
+                <td>{{($d->cantidad * ($d->precio!==null?$d->precio:$d->precio_requerimiento)) + (($d->cantidad * ($d->precio!==null?$d->precio:$d->precio_requerimiento))*0.18)}}</td>
                 <td>{{$d->estado_pago}}</td>
             </tr>
             @endforeach
@@ -70,14 +70,12 @@
                 <td>{{$d->codigo}}</td>
                 <td>{{$d->titulo_descripcion}}</td>
                 <td>{{$d->partida_descripcion}}</td>
-                {{-- <td>{{$d->tipo_comprobante}}</td>
-                <td>{{$d->nro_comprobante}}</td>
-                <td>{{$d->fecha_emision_comprobante}}</td> --}}
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td>{{$d->apellido_paterno.' '.$d->apellido_materno.' '.$d->nombres}}</td>
+                <td></td>
                 <td>{{$d->cantidad}}</td>
                 <td>{{$d->abreviatura}}</td>
                 <td>{{$d->descripcion}}</td>
@@ -86,7 +84,6 @@
                 <td>{{$d->subtotal}}</td>
                 <td>0</td>
                 <td>{{$d->subtotal}}</td>
-                {{-- <td>{{$d->fecha_pago}}</td> --}}
                 <td>{{$d->estado_pago}}</td>
             </tr>
             @endforeach

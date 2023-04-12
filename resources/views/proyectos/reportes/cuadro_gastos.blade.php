@@ -40,36 +40,32 @@ Cuadro de gastos
 
         <div class="row">
             <div class="col-md-12">
-                {{-- <div class="box box-widget">
-                    <div class="box-body"> --}}
-                        <div class="table-responsive">
-                            <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="listaEstructura" style="font-size: 13px;">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">Fecha</th>
-                                        <th class="text-center">N° Req.</th>
-                                        <th class="text-center">Cuenta(Partida)</th>
-                                        <th class="text-center">Cuenta(Sub partida)</th>
-                                        <th class="text-center">Tipo Doc.</th>
-                                        <th class="text-center">Serie - número</th>
-                                        <th class="text-center">RUC/DNI</th>
-                                        <th class="text-center">Proveedor o persona asignada</th>
-                                        <th class="text-center">Cant.</th>
-                                        <th class="text-center">Und.</th>
-                                        <th class="text-center">Desripción</th>
-                                        <th class="text-center">Mon.</th>
-                                        <th class="text-center">P.U</th>
-                                        <th class="text-center">V.Compra</th>
-                                        <th class="text-center">IGV</th>
-                                        <th class="text-center">P.Compra</th>
-                                        <th class="text-center">Estado Pago</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-                    {{-- </div>
-                </div> --}}
+                <div class="table-responsive">
+                    <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="listaEstructura" style="font-size: 13px;">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Fecha</th>
+                                <th class="text-center">N° Req.</th>
+                                <th class="text-center">Cuenta(Partida)</th>
+                                <th class="text-center">Cuenta(Sub partida)</th>
+                                <th class="text-center">Tipo Doc.</th>
+                                <th class="text-center">Serie - número</th>
+                                <th class="text-center">RUC/DNI</th>
+                                <th class="text-center">Proveedor o persona asignada</th>
+                                <th class="text-center">Cant.</th>
+                                <th class="text-center">Und.</th>
+                                <th class="text-center">Desripción</th>
+                                <th class="text-center">Mon.</th>
+                                <th class="text-center">P.U</th>
+                                <th class="text-center">V.Compra</th>
+                                <th class="text-center">IGV</th>
+                                <th class="text-center">P.Compra</th>
+                                <th class="text-center">Estado Pago</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
