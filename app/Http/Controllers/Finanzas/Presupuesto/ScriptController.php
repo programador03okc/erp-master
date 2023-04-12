@@ -482,4 +482,12 @@ class ScriptController extends Controller
         }
         return response()->json(["success"=>$array_modificados],200);
     }
+    public function totalPresupuesto()
+    {
+        $ingresos = 0;
+        $costos = $gastos = PresupuestoInterno::calcularTotalPresupuestoAnual(49,2);
+        $gastos = PresupuestoInterno::calcularTotalPresupuestoAnual(49,3);
+        $total = $ingresos - $costos - $gastos;
+        return response()->json(["ingresos"=>$ingresos,"costos"=>$costos,"gastos"=>$gastos,"total"=>$total],200);
+    }
 }

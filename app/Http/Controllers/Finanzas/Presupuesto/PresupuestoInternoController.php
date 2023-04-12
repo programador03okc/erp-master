@@ -60,9 +60,11 @@ class PresupuestoInternoController extends Controller
         ->get()
             ;
         return DataTables::of($data)
-        // ->addColumn('grupo', function ($data){
-        //     return $data->grupo->descripcion;
-        // })
+        ->addColumn('total', function ($data){
+            $total = ($data->gastos=='3'?PresupuestoInterno::calcularTotalPresupuestoAnual($data->id_presupuesto_interno,3):0);
+
+            return floatval(str_replace(",", "", $total));
+        })
         // ->toJson();
         ->make(true);
     }
