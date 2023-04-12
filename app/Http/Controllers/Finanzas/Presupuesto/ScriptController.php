@@ -6,6 +6,8 @@ use App\Helpers\StringHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Division;
+use App\Models\administracion\DivisionCodigo;
+use App\Models\Administracion\Sede;
 use App\Models\Finanzas\HistorialPresupuestoInternoSaldo;
 use App\Models\Finanzas\PresupuestoInterno;
 use App\Models\Finanzas\PresupuestoInternoModelo;
@@ -107,16 +109,20 @@ class ScriptController extends Controller
             //     "sede"=>4,
             // ),
         ); //area
+        // array(
+        //     "division"=>1,
+        //     "empresa"=>1,
+        //     "sede"=>1,
+        // ),
         foreach ($division as $key => $value) {
 
             $admDivision = Division::find($value['division']);
-            // $presupuesto_interno_count = PresupuestoInterno::count();
-            // $presupuesto_interno_count = $presupuesto_interno_count +1;
-            // $codigo = StringHelper::leftZero(2,$presupuesto_interno_count);
+            $sede = Sede::find($value['sede']);
+            $division_codigo = DivisionCodigo::where('sede_id',$value['sede'])->where('division_id',$value['division'])->first();
 
             $presupuesto_interno = new PresupuestoInterno();
-            $presupuesto_interno->codigo                = $admDivision->codigo;
-            $presupuesto_interno->descripcion           = $admDivision->codigo;
+            $presupuesto_interno->codigo                = $division_codigo->codigo;
+            $presupuesto_interno->descripcion           = $division_codigo->descripcion.'-'.$sede->codigo.' '.date('Y');
             $presupuesto_interno->id_grupo              = $admDivision->grupo_id;
             $presupuesto_interno->id_area               = $admDivision->id_division;
             $presupuesto_interno->fecha_registro        = date('Y-m-d H:i:s');
