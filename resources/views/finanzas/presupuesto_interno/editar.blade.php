@@ -91,6 +91,17 @@ Presupuesto Interno
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
+                                    <label for="sede_id">Sedes :</label>
+                                    <select class="form-control" name="sede_id" id="sede_id" required>
+                                        <option value="">Seleccione...</option>
+                                        @foreach ($sedes as $item)
+                                            <option value="{{ $item->id_sede }}" {{($item->id_sede===$presupuesto_interno->sede_id?'selected':'')}}>{{ $item->descripcion }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
                                     {{-- <input type="hidden" name="id_tipo_presupuesto"value="{{$presupuesto_interno->id_tipo_presupuesto}}"> --}}
 
                                     <input type="hidden" name="tipo_ingresos"value="{{$presupuesto_interno->ingresos}}">
@@ -1563,7 +1574,22 @@ Presupuesto Interno
         // $elemento_array
         $(document).ready(function () {
             $('select[name="mes"] option[value="'+"{{$presupuesto_interno->mes}}"+'"]').attr('selected',true);
+
+
         });
+
+        // window.onscroll = function() {
+        //     var y = window.scrollY;
+        //     var position = $('table#partida-ingresos').position();
+        //     var top = position.top;
+        //     var left = position.left;
+        //     // console.log(y);
+        //     console.log(top);
+
+
+
+        // };
+
     </script>
 
     <script src="{{asset('js/finanzas/presupuesto_interno/crear.js') }}""></script>

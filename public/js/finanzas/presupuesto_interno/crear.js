@@ -1482,3 +1482,33 @@ function modalPorcentaje(numero_partida, partida, concatener_partida, key, data_
         elemento.partida_privada = partida_privada;
     }
 }
+
+// sedes por empresa
+$('[name="empresa_id"]').change(function (e) {
+    var id = $(this).val(),
+        html = '';
+    console.log(id);
+    $.ajax({
+        type: 'GET',
+        url: '/necesidades/requerimiento/elaboracion/listar-sedes-por-empresa/'+id,
+        data: {},
+        // processData: false,
+        // contentType: false,
+        dataType: 'JSON',
+        beforeSend: (data) => {
+            // console.log(data);
+        }
+    }).done(function(response) {
+        html = '<option value="">Seleccione...</option>';
+        $.each(response, function (index, element) {
+            html += '<option value="'+element.id_sede+'">'+element.descripcion+'</option>';
+        });
+        $('[name="sede_id"]').html(html);
+        console.log(response);
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
+});
