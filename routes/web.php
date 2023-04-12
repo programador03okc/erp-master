@@ -2090,6 +2090,7 @@ Route::group(['middleware' => ['auth']], function () {
 
                 Route::group(['as' => 'script.', 'prefix' => 'script'], function () {
                     Route::get('generar-presupuesto-gastos', 'Finanzas\Presupuesto\ScriptController@generarPresupuestoGastos');
+                    Route::get('homologacion-partidas', 'Finanzas\Presupuesto\ScriptController@homologarPartida');
                 });
             });
 		});

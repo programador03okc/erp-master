@@ -1592,6 +1592,6 @@ Presupuesto Interno
 
     </script>
 
-    <script src="{{asset('js/finanzas/presupuesto_interno/crear.js') }}""></script>
+    <script src="{{asset('js/finanzas/presupuesto_interno/crear.js') }}"></script>
     @endif
 @endsection
