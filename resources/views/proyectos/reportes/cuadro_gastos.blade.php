@@ -46,8 +46,6 @@ Cuadro de gastos
                             <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="listaEstructura" style="font-size: 13px;">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">Mes</th>
-                                        <th class="text-center">Año</th>
                                         <th class="text-center">Fecha</th>
                                         <th class="text-center">N° Req.</th>
                                         <th class="text-center">Cuenta(Partida)</th>
@@ -61,11 +59,10 @@ Cuadro de gastos
                                         <th class="text-center">Desripción</th>
                                         <th class="text-center">Mon.</th>
                                         <th class="text-center">P.U</th>
-                                        {{-- <th class="text-center">Tipo</th> --}}
-                                        {{-- <th class="text-center">Exone</th> --}}
                                         <th class="text-center">V.Compra</th>
                                         <th class="text-center">IGV</th>
                                         <th class="text-center">P.Compra</th>
+                                        <th class="text-center">Estado Pago</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
