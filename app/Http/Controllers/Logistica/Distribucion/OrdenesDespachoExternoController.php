@@ -48,7 +48,7 @@ class OrdenesDespachoExternoController extends Controller
             //     ['id_estado', '>=', 3],
             //     ['id_estado', '<=', 8]
             // ])
-            ->whereIn('id_estado', [3, 4, 5, 6, 7, 8, 11, 12, 13])->orderBy('descripcion', 'asc')
+            ->whereIn('id_estado', [3, 4, 5, 6, 7, 8, 11, 12, 13, 14])->orderBy('descripcion', 'asc')
             ->get();
         $array_accesos = [];
         $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
