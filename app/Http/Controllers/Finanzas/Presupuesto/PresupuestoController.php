@@ -181,9 +181,9 @@ class PresupuestoController extends Controller
                 // limit 1) AS fecha_pago"),
                 'rrhh_perso.apellido_paterno','rrhh_perso.apellido_materno','rrhh_perso.nombres',
                 'rrhh_perso.nro_documento as nro_documento_persona',
-                'requerimiento_pago_categoria_adjunto.descripcion as tipo_comprobante',
-                'requerimiento_pago_adjunto.nro_comprobante',
-                'requerimiento_pago_adjunto.fecha_emision as fecha_emision_comprobante'
+                // 'requerimiento_pago_categoria_adjunto.descripcion as tipo_comprobante',
+                // 'requerimiento_pago_adjunto.nro_comprobante',
+                // 'requerimiento_pago_adjunto.fecha_emision as fecha_emision_comprobante'
                 // 'requerimiento_pago_adjunto.monto_total as monto_tota_comprobante'
                 // DB::raw("(SELECT sum(registro_pago.total_pago) FROM tesoreria.registro_pago
                 // WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago) AS suma_pago"),
@@ -204,11 +204,11 @@ class PresupuestoController extends Controller
             // })
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'requerimiento_pago_detalle.id_unidad_medida')
             // ->leftjoin('tesoreria.requerimiento_pago_adjunto', 'requerimiento_pago_adjunto.id_requerimiento_pago', '=', 'requerimiento_pago.id_requerimiento_pago')
-            ->leftJoin('tesoreria.requerimiento_pago_adjunto', function ($join) {
-                    $join->on('requerimiento_pago_adjunto.id_requerimiento_pago', '=', 'requerimiento_pago.id_requerimiento_pago');
-                    $join->where('requerimiento_pago_adjunto.id_estado', '!=', 7);
-                })
-            ->leftjoin('tesoreria.requerimiento_pago_categoria_adjunto', 'requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto', '=', 'requerimiento_pago_adjunto.id_categoria_adjunto')
+            // ->leftJoin('tesoreria.requerimiento_pago_adjunto', function ($join) {
+            //         $join->on('requerimiento_pago_adjunto.id_requerimiento_pago', '=', 'requerimiento_pago.id_requerimiento_pago');
+            //         $join->where('requerimiento_pago_adjunto.id_estado', '!=', 7);
+            //     })
+            // ->leftjoin('tesoreria.requerimiento_pago_categoria_adjunto', 'requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto', '=', 'requerimiento_pago_adjunto.id_categoria_adjunto')
             ->where([
                 ['presup_par.id_presup', '=', $id_presupuesto],
                 // ['registro_pago.estado', '!=', 7],

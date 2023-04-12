@@ -70,9 +70,12 @@
                 <td>{{$d->codigo}}</td>
                 <td>{{$d->titulo_descripcion}}</td>
                 <td>{{$d->partida_descripcion}}</td>
-                <td>{{$d->tipo_comprobante}}</td>
+                {{-- <td>{{$d->tipo_comprobante}}</td>
                 <td>{{$d->nro_comprobante}}</td>
-                <td>{{$d->fecha_emision_comprobante}}</td>
+                <td>{{$d->fecha_emision_comprobante}}</td> --}}
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td>{{$d->apellido_paterno.' '.$d->apellido_materno.' '.$d->nombres}}</td>
                 <td>{{$d->cantidad}}</td>
@@ -81,8 +84,8 @@
                 <td>{{$d->simbolo}}</td>
                 <td>{{$d->precio_unitario}}</td>
                 <td>{{$d->subtotal}}</td>
-                <td>{{$d->subtotal*0.18}}</td>
-                <td>{{$d->subtotal + ($d->subtotal*0.18)}}</td>
+                <td>0</td>
+                <td>{{$d->subtotal}}</td>
                 {{-- <td>{{$d->fecha_pago}}</td> --}}
                 <td>{{$d->estado_pago}}</td>
             </tr>
