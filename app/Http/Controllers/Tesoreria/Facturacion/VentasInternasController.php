@@ -190,6 +190,13 @@ class VentasInternasController extends Controller
                 }
 
                 $codigo_oc = Orden::nextCodigoOrden(2);
+                
+                $subtotal=0;
+                foreach ($detalle as $item) {
+                    $subtotal+= floatval($item->precio_unitario) * floatval($item->precio_unitario);
+                }
+                $montoIGV = floatval($subtotal) * 0.18;
+                $montoTotal = floatval($subtotal)+floatval($montoIGV);
 
                 $id_orden_compra = DB::table('logistica.log_ord_compra')->insertGetId(
                     [
@@ -208,6 +215,9 @@ class VentasInternasController extends Controller
                         'id_tp_doc' => 2,
                         'observacion' => 'Autogenerado por venta interna',
                         'incluye_igv' => true,
+                        'monto_subtotal' => $subtotal > 0 ? $subtotal : null,
+                        'monto_igv' => $montoIGV > 0 ? $montoIGV : null,
+                        'monto_total' => $montoTotal > 0 ? $montoTotal : null,
                         'estado' => 28,
                         'compra_local' => ($doc_ven->id_proveedor == 4) ? true : false,
                     ],
