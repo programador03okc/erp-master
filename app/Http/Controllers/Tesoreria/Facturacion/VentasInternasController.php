@@ -193,7 +193,7 @@ class VentasInternasController extends Controller
                 
                 $subtotal=0;
                 foreach ($detalle as $item) {
-                    $subtotal+= floatval($item->precio_unitario) * floatval($item->precio_unitario);
+                    $subtotal+= floatval($item->cantidad) * floatval($item->precio_unitario);
                 }
                 $montoIGV = floatval($subtotal) * 0.18;
                 $montoTotal = floatval($subtotal)+floatval($montoIGV);
