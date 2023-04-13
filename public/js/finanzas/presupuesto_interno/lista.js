@@ -54,6 +54,7 @@ function lista() {
             {data: 'grupo', name:"grupo" , class:"text-center"},
             {data: 'estadopi', name:"estadopi" , class:"text-center"},
             {data: 'sede', name:"sede" , class:"text-center"},
+            {data: 'total', name:"total" , class:"text-center"},
             // {
             //     render: function (data, type, row) {
             //         var estado = row['estado'],

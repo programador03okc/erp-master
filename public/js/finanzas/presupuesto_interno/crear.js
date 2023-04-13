@@ -1056,7 +1056,7 @@ $(document).on('change','[data-input="partida"]',function (e) {
                         servicios       = (total * PORCENTAJE_SERVICIOS).toFixed(2);
                         gratificaciones = (total / GRATIFICACIONES).toFixed(2);
                         vacacione       = (total / VACACIONES).toFixed(2);
-
+                        console.log(partida_padre);
                         var array_partida_padre = partida_padre.split('.'),
                             partida_ESSALUD = '.01',
                             partida_SCTR = '.02',
