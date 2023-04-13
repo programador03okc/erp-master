@@ -1757,7 +1757,10 @@ class OrdenesPendientesController extends Controller
                         ->leftjoin('logistica.log_det_ord_compra', 'log_det_ord_compra.id_detalle_orden', '=', 'guia_com_det.id_oc_det')
                         ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
                         ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
-                        ->leftjoin('almacen.orden_despacho','orden_despacho.id_requerimiento','=','alm_det_req.id_requerimiento')
+                        ->leftJoin('almacen.orden_despacho', function ($join) {
+                            $join->on('orden_despacho.id_requerimiento','=','alm_det_req.id_requerimiento');
+                            $join->where('orden_despacho.estado', '!=', 7);
+                        })
                         ->leftJoin('almacen.trans_detalle', function ($join) {
                             $join->on('trans_detalle.id_requerimiento_detalle', '=', 'alm_det_req.id_detalle_requerimiento');
                             $join->where('trans_detalle.estado', '!=', 7);
