@@ -4,8 +4,10 @@
             <th>Prioridad</th>
             <th>Requerimiento</th>
             <th>CDP</th>
-            <th>Partida</th>
-            <th>Centro Costo</th>
+            <th>Cod.Partida</th>
+            <th>Des.Partida</th>
+            <th>Cod.Centro Costo</th>
+            <th>Des.Centro Costo</th>
             <th>Motivo</th>
             <th>Concepto</th>
             <th>Item</th>
@@ -31,7 +33,9 @@
                     <td>{{ $item['codigo'] }}</td>
                     <td>{{ $item['codigo_oportunidad'] }}</td>
                     <td>{{ $item['partida'] }}</td>
+                    <td>{{ $item['descripcion_partida'] }}</td>
                     <td>{{ $item['centro_costo'] }}</td>
+                    <td>{{ $item['descripcion_centro_costo'] }}</td>
                     <td>{{ $item['motivo'] }}</td>
                     <td>{{ $item['concepto'] }}</td>
                     <td>{{ $item['descripcion'] }}</td>
