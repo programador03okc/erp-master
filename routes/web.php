@@ -2940,6 +2940,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::group(['as' => 'scripts.', 'prefix' => 'scripts'], function () {
         Route::get('usuarios', 'ScriptController@usuarios');
+        Route::get('empresas', 'ScriptController@empresas');
+        Route::get('sedes', 'ScriptController@sedes');
+        Route::get('grupos', 'ScriptController@grupos');
     });
 
 });
