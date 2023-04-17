@@ -63,7 +63,6 @@ Route::post('enviar-correo', 'RecuperarClaveController@enviarCorreo')->name('env
 Route::get('recueperar-clave/ingresar-nueva-clave', 'RecuperarClaveController@ingresarNuevaClave')->name('recuperar.clave.ingresar');
 Route::post('buscar-codigo', 'RecuperarClaveController@buscarCodigo')->name('buscar.codigo');
 Route::post('guardar-cambio-clave', 'RecuperarClaveController@guardarCambioClave')->name('guardar.cambio.clave');
-
 Route::get('clave', 'LoginController@actualizarContraseña')->name('actualizar');
 Route::post('modificar-clave', 'LoginController@modificarClave')->name('modificarClave');
 
@@ -77,6 +76,11 @@ Route::group(['as' => 'api-consulta.', 'prefix' => 'api-consulta'], function () 
 	Route::get('tipo_cambio_masivo/{desde}/{hasta}', 'ApiController@tipoCambioMasivo')->name('tipo_cambio_masivo');
 	Route::get('tipo_cambio_actual', 'ApiController@tipoCambioActual')->name('tipo_cambio_actual');
 });
+
+/**
+ * Rutas para Testing
+ */
+Route::get('test-descripcion-adicional', 'TestController@testDescripcionAdicionalOrden')->name('test-descripcion-adicional');
 
 Auth::routes();
 
