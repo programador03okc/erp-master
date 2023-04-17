@@ -1904,7 +1904,7 @@ class OrdenesPendientesController extends Controller
                             $msj = 'Se anuló el ingreso correctamente.';
                             $tipo = 'success';
                         } else {
-                            $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia.';
+                            $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia.'.$det->id_od;
                             $tipo = 'warning';
                         }
                     } else {
