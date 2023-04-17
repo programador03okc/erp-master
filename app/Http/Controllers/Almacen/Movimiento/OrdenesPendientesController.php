@@ -1773,7 +1773,7 @@ class OrdenesPendientesController extends Controller
 
                         $validado = true;
                         foreach ($detalle as $det) {
-                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14)) || $det->id_od != 7) {
+                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14)) || $det->id_od !== null) {
                                 $validado = false;
                             }
                         }
@@ -1904,7 +1904,7 @@ class OrdenesPendientesController extends Controller
                             $msj = 'Se anuló el ingreso correctamente.';
                             $tipo = 'success';
                         } else {
-                            $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia.'.$det->id_od;
+                            $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia.';
                             $tipo = 'warning';
                         }
                     } else {
