@@ -648,8 +648,9 @@ class PresupuestoInternoController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
+        // return 'ss';exit;
         $sedes = Sede::listarSedesPorEmpresa($presupuesto_interno->empresa_id);
-        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos','empresas'));
+        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos','empresas','sedes'));
     }
     public function actualizar(Request $request)
     {
