@@ -82,6 +82,9 @@ Presupuesto Interno
                                     <label for="sede_id">Sedes :</label>
                                     <select class="form-control" name="sede_id" id="sede_id" required>
                                         <option value="">Seleccione...</option>
+                                        @foreach ($sedes as $item)
+                                            <option value="{{ $item->id_sede }}" {{($item->id_sede===$presupuesto_interno->sede_id?'selected':'')}}>{{ $item->descripcion }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
