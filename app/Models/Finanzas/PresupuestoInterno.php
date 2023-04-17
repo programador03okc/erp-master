@@ -2,9 +2,11 @@
 
 namespace App\Models\Finanzas;
 
+use App\Models\administracion\AdmGrupo;
 use App\Models\Administracion\Periodo;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -464,5 +466,9 @@ class PresupuestoInterno extends Model
             $id_padre = $presupuesto_interno_destalle->id_padre;
         }
         return $partidas;
+    }
+    public function grupo(): BelongsTo
+    {
+        return $this->belongsTo(AdmGrupo::class,'id_grupo');
     }
 }

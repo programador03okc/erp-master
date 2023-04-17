@@ -8,9 +8,9 @@ class PresupuestoInternoView{
 
     eventos = ()=>{
 
-        $('body').on("change", "select.handleChangePresupuestoInterno", (e) => {
-            this.seleccionarPresupuestoInterno(e.currentTarget);
-        });
+        // $('body').on("change", "select.handleChangePresupuestoInterno", (e) => {
+        //     this.seleccionarPresupuestoInterno(e.currentTarget);
+        // });
 
         $('tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
             let id_presupuesto_interno = document.querySelector("select[name='id_presupuesto_interno']").value;
@@ -221,14 +221,28 @@ class PresupuestoInternoView{
         });
     }
 
-    seleccionarPresupuestoInterno(obj){
-        const codigoPresupuestoInterno=  obj.options[obj.selectedIndex].dataset.codigo;
-        $("input[name='codigo_presupuesto_interno']").val(codigoPresupuestoInterno);
-        this.ocultarOpcionCentroDeCosto();
-    }
+    // seleccionarPresupuestoInterno(obj){
+    //     if(obj.value >0){
+    //         const codigoPresupuestoInterno=  obj.options[obj.selectedIndex].dataset.codigo;
+    //         $("input[name='codigo_presupuesto_interno']").val(codigoPresupuestoInterno);
+    //         if( document.querySelector("select[name='division").options[document.querySelector("select[name='division").selectedIndex].dataset.idGrupo == 3){
+    //             this.ocultarOpcionCentroDeCosto();
+    //         }else{
+    //             this.mostrarOpcionCentroDeCosto();
+    //         }
+    //     }else{
+    //         this.mostrarOpcionCentroDeCosto();
 
-    ocultarOpcionCentroDeCosto(){
-        $("button[name=centroCostos]").addClass("oculto");
-        $("p[class=descripcion-centro-costo]").attr("hidden",true);
-    }
+    //     }
+
+    // }
+
+    // ocultarOpcionCentroDeCosto(){
+    //     $("button[name=centroCostos]").addClass("oculto");
+    //     $("p[class=descripcion-centro-costo]").attr("hidden",true);
+    // }
+    // mostrarOpcionCentroDeCosto(){
+    //     $("button[name=centroCostos]").removeClass("oculto");
+    //     $("p[class=descripcion-centro-costo]").removeAttr("hidden");
+    // }
 }

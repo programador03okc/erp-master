@@ -570,6 +570,15 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'ProyectosController@view_opciones_todo')->name('index');
 				Route::get('listar_opciones_todo', 'ProyectosController@listar_opciones_todo');
 			});
+
+			Route::group(['as' => 'cuadro-gastos.', 'prefix' => 'cuadro-gastos'], function () {
+				//Opciones y Relaciones
+				Route::get('index', 'ProyectosController@view_cuadro_gastos')->name('index');
+				Route::get('listar', 'ProyectosController@listar_cuadro_gastos');
+				Route::post('cuadroGastosExcel', 'Finanzas\Presupuesto\PresupuestoController@cuadroGastosExcel')->name('cuadroGastosExcel');
+				Route::get('mostrarGastosPorPresupuesto/{id}', 'Finanzas\Presupuesto\PresupuestoController@mostrarGastosPorPresupuesto')->name('mostrar-gastos-presupuesto');
+
+			});
 		});
 
 		Route::group(['as' => 'configuraciones.', 'prefix' => 'configuraciones'], function () {
@@ -731,7 +740,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('listar-categoria-adjunto', 'Logistica\RequerimientoController@mostrarCategoriaAdjunto');
 				Route::post('guardar-adjuntos-adicionales-requerimiento-compra', 'Logistica\RequerimientoController@guardarAdjuntosAdicionales');
-				
+
 				Route::get('listar-flujo/{idDocumento}', 'RevisarAprobarController@mostrarTodoFlujoAprobacionDeDocumento');
 				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
 
@@ -1420,7 +1429,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('index', 'Almacen\Movimiento\OrdenesPendientesController@view_ordenesPendientes')->name('index');
 				Route::post('listarOrdenesPendientes', 'Almacen\Movimiento\OrdenesPendientesController@listarOrdenesPendientes');
 				Route::post('listarIngresos', 'Almacen\Movimiento\OrdenesPendientesController@listarIngresos');
-				Route::get('detalleOrden/{id}', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrden');
+				Route::get('detalleOrden/{id}/{soloProductos}', 'Almacen\Movimiento\OrdenesPendientesController@detalleOrden');
 				Route::post('guardar_guia_com_oc', 'Almacen\Movimiento\OrdenesPendientesController@guardar_guia_com_oc');
 				Route::get('verGuiasOrden/{id}', 'Almacen\Movimiento\OrdenesPendientesController@verGuiasOrden');
 				// Route::post('guardar_guia_transferencia', 'Almacen\Movimiento\OrdenesPendientesController@guardar_guia_transferencia');
@@ -2078,6 +2087,12 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('buscar-partida-combo', 'Finanzas\Presupuesto\PresupuestoInternoController@buscarPartidaCombo');
                 // prueba de presupuestos
 				Route::get('cierre-mes', 'Finanzas\Presupuesto\PresupuestoInternoController@cierreMes');
+
+                Route::group(['as' => 'script.', 'prefix' => 'script'], function () {
+                    Route::get('generar-presupuesto-gastos', 'Finanzas\Presupuesto\ScriptController@generarPresupuestoGastos');
+                    Route::get('homologacion-partidas', 'Finanzas\Presupuesto\ScriptController@homologarPartida');
+                    Route::get('total-presupuesto', 'Finanzas\Presupuesto\ScriptController@totalPresupuesto');
+                });
             });
 		});
 
@@ -2922,6 +2937,11 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('guardar_area', 'AdministracionController@guardar_area');
 	Route::post('editar_area', 'AdministracionController@actualizar_area');
 	Route::get('anular_area/{id}', 'AdministracionController@anular_area');
+
+    Route::group(['as' => 'scripts.', 'prefix' => 'scripts'], function () {
+        Route::get('usuarios', 'ScriptController@usuarios');
+    });
+
 });
 
 Route::group(['as' => 'power-bi.', 'prefix' => 'power-bi'], function () {

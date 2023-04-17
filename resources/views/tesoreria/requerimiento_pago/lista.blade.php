@@ -132,7 +132,7 @@ Listado de requerimientos de pago
 
     $(document).ready(function() {
         seleccionarMenu(window.location);
-        console.log('initializeEventHandlerListaRequerimientoPago');
+        // console.log('initializeEventHandlerListaRequerimientoPago');
 
         const presupuestoInternoView = new PresupuestoInternoView(new PresupuestoInternoModel('{{csrf_token()}}'));
         presupuestoInternoView.eventos();

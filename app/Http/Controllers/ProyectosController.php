@@ -97,6 +97,16 @@ class ProyectosController extends Controller
         $sedes = $this->mostrar_sedes_cbo();
         return view('proyectos/presEstructura/presEstructura', compact('sedes'));
     }
+
+    function view_cuadro_gastos(){
+        $presupuestos = DB::table('finanzas.presup')
+        ->select('presup.id_presup','presup.descripcion')
+        ->where('tp_presup',4) //presupuestos ejecucion proyectos
+        ->whereNotNull('id_proyecto')
+        ->get();
+        return view('proyectos/reportes/cuadro_gastos', compact('presupuestos'));
+    }
+
     public function select_cargos(){
         $data = DB::table('proyectos.proy_res_cargo')
             ->select('proy_res_cargo.id_cargo','proy_res_cargo.descripcion')

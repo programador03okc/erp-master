@@ -15,4 +15,9 @@ class RequerimientoPagoAdjunto extends Model
     {
         return $this->belongsTo('App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto', 'id_categoria_adjunto','id_requerimiento_pago_categoria_adjunto');
     }
+
+    public function moneda()
+    {
+        return $this->belongsTo('App\Models\Configuracion\Moneda', 'id_moneda', 'id_moneda');
+    }
 }

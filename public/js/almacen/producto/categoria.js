@@ -8,6 +8,7 @@ $(function () {
         'language': vardataTables[0],
         'pageLength': 20,
         'ajax': 'listarCategorias',
+        'pageLength': 20,
         'columns': [
             { 'data': 'id_tipo_producto' },
             { 'data': 'clasificacion_descripcion' },

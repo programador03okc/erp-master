@@ -57,6 +57,10 @@ Presupuesto
                             <div class="col-md-2">
                                 <div class="form-control-static" name="codigo"></div>
                             </div>
+                        <label class="col-md-1 control-label">Empresa:</label>
+                            <div class="col-md-1">
+                                <div class="form-control-static" name="name_empresa"></div>
+                            </div>
                         <label class="col-md-1 control-label">Grupo:</label>
                             <div class="col-md-1">
                                 <div class="form-control-static" name="name_grupo"></div>
@@ -65,7 +69,7 @@ Presupuesto
                             <div class="col-md-2">
                                 <div class="form-control-static" name="fecha_emision"></div>
                             </div>
-                        <label class="col-md-1 control-label">Moneda:</label>
+                        <label class="col-md-2 control-label">Moneda:</label>
                             <div class="col-md-1">
                                 <div class="form-control-static" name="name_moneda"></div>
                             </div>

@@ -68,6 +68,25 @@ Presupuesto Interno
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
+                                    <label for="empresa_id">Empresas :</label>
+                                    <select class="form-control" name="empresa_id" id="empresa_id" required>
+                                        <option value="">Seleccione...</option>
+                                        @foreach ($empresas as $item)
+                                            <option value="{{ $item->id_empresa }}" {{($item->id_empresa===$presupuesto_interno->empresa_id?'selected':'')}}>{{ $item->codigo }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sede_id">Sedes :</label>
+                                    <select class="form-control" name="sede_id" id="sede_id" required>
+                                        <option value="">Seleccione...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
                                     {{-- <input type="hidden" name="id_tipo_presupuesto"value="{{$presupuesto_interno->id_tipo_presupuesto}}"> --}}
 
                                     <input type="hidden" name="tipo_ingresos"value="{{$presupuesto_interno->ingresos}}">

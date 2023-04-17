@@ -38,6 +38,8 @@ Lista de Presupuestos Interno
                                     <th scope="col">Fecha Emisión</th>
                                     <th scope="col">Grupo</th>
                                     <th scope="col">Estado</th>
+                                    <th scope="col">Sede</th>
+                                    <th scope="col">Total</th>
                                     <th scope="col">-</th>
                                 </tr>
                             </thead>

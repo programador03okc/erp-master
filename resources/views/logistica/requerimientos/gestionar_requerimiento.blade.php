@@ -312,8 +312,12 @@ Crear / editar requerimiento
                                 <input type="text" class="form-control oculto" name="id_cc">
                                 <input type="text" class="form-control" name="codigo_oportunidad" readonly>
 
-                                <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto activation" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP" disabled>
+                                <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto activation" title="Buscar cuadro de presupuesto" name="btnSearchCDP" disabled>
                                     <i class=" fas fa-search"></i>
+                                </button>
+
+                                <button type="button" class="btn-primary handleClickLimpiarSeleccionCuadroDePresupuesto activation" title="Limpiar selección" name="btnCleanCDP" disabled>
+                                    <i class="fas fa-broom"></i>
                                 </button>
                             </div>
                             </div>
@@ -785,31 +789,8 @@ Crear / editar requerimiento
 
 <script>
     var grupos = JSON.parse('{!!$grupos!!}');
-
     var id_grupo_usuario_sesion_list = [];
-    grupos.forEach(element => {
-        id_grupo_usuario_sesion_list.push(element.id_grupo);
-    });
 
-    if(id_grupo_usuario_sesion_list.includes(2)){
-        hiddeElement('mostrar','form-requerimiento',[
-        'input-group-cdp'
-        ]);
-    }else{
-        hiddeElement('ocultar','form-requerimiento',[
-        'input-group-cdp'
-        ]);
-    }
-
-    if(id_grupo_usuario_sesion_list.includes(3)){
-        hiddeElement('mostrar','form-requerimiento',[
-        'input-group-proyecto'
-        ]);
-    }else{
-        hiddeElement('ocultar','form-requerimiento',[
-        'input-group-proyecto'
-        ]);
-    }
     autoSelectTipoRequerimientoPorDefecto();
     // grupos.forEach(element => {
     //     if(element.id_grupo ==3){ // proyectos

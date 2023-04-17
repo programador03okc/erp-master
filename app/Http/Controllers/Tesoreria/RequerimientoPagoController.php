@@ -491,8 +491,12 @@ class RequerimientoPagoController extends Controller
                         'id_requerimiento_pago'     => $archivo->id_requerimiento_pago,
                         'archivo'                   => $newNameFile,
                         'id_estado'                 => 1,
+                        'nro_comprobante'           => $archivo->nro_comprobante,
+                        'id_moneda'                 => $archivo->id_moneda,
+                        'monto_total'               => $archivo->monto_total,
                         'fecha_emision'             => $archivo->fecha_emision,
                         'id_categoria_adjunto'      => $archivo->category,
+                        'id_usuario'                => Auth::user()->id_usuario,
                         'fecha_registro'            => $fechaHoy
                     ],
                     'id_requerimiento_pago_adjunto'
@@ -1337,7 +1341,7 @@ class RequerimientoPagoController extends Controller
         foreach ($detalleRequerimientoPagoList as $dr) {
             $idDetalleRequerimientoPagoList[] = $dr->id_requerimiento_pago_detalle;
         }
-        $ajuntosCabeceraList = RequerimientoPagoAdjunto::with("categoriaAdjunto")->where([["id_requerimiento_pago", $idRequerimientoPago], ["id_estado", "!=", 7]])->get();
+        $ajuntosCabeceraList = RequerimientoPagoAdjunto::with("categoriaAdjunto","moneda")->where([["id_requerimiento_pago", $idRequerimientoPago], ["id_estado", "!=", 7]])->get();
         if (count($idDetalleRequerimientoPagoList) > 0) {
             $adjuntoDetalleList = RequerimientoPagoAdjuntoDetalle::whereIn("id_requerimiento_pago_detalle", $idDetalleRequerimientoPagoList)->where("id_estado", "!=", 7)->get();
         }

@@ -52,23 +52,25 @@ function lista() {
             {data: 'descripcion', name:"descripcion" , class:"text-center"},
             {data: 'fecha_registro', name:"fecha_registro" , class:"text-center"},
             {data: 'grupo', name:"grupo" , class:"text-center"},
-            // {data: 'estado', name:"estado" , class:"text-center"},
-            {
-                render: function (data, type, row) {
-                    var estado = row['estado'],
-                        descripcion_estado='';
-                    switch (estado) {
-                        case 1:
-                            descripcion_estado='Elaborado'
-                        break;
-                        case 2:
-                            descripcion_estado='Aprobado'
-                        break;
-                    }
-                    return descripcion_estado
-                },
-                className: "text-center"
-            },
+            {data: 'estadopi', name:"estadopi" , class:"text-center"},
+            {data: 'sede', name:"sede" , class:"text-center"},
+            {data: 'total', name:"total" , class:"text-center"},
+            // {
+            //     render: function (data, type, row) {
+            //         var estado = row['estado'],
+            //             descripcion_estado='';
+            //         switch (estado) {
+            //             case 1:
+            //                 descripcion_estado='Elaborado'
+            //             break;
+            //             case 2:
+            //                 descripcion_estado='Aprobado'
+            //             break;
+            //         }
+            //         return descripcion_estado
+            //     },
+            //     className: "text-center"
+            // },
             {
                 render: function (data, type, row) {
                     html='';

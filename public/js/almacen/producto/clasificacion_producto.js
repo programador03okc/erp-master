@@ -8,6 +8,7 @@ $(function () {
         'language': vardataTables[0],
         'pageLength': 20,
         'ajax': 'listarClasificaciones',
+        'pageLength': 20,
         'columns': [
             { 'data': 'id_clasificacion' },
             { 'data': 'descripcion' },
