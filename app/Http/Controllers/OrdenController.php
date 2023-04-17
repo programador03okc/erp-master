@@ -2244,6 +2244,24 @@ class OrdenController extends Controller
         ';
 
         $html .= '<br>
+        <table width="100%" border=0>
+            <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Documents for dispatch' : 'Documentos para despacho') . ':</caption>
+
+            <tr>
+                <td nowrap  width="15%" class="verticalTop">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Invoice referencing the purchase order' : 'Factura referenciando la orden de compra.') . ' </td>
+            </tr>
+            <tr>
+                <td nowrap  width="15%" class="verticalTop">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Referral guide referencing the purchase order' : 'Guía de remisión referenciando la orden de compra') . ' </td>
+            </tr>
+            <tr>
+                <td nowrap  width="15%" class="verticalTop">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? '01 Copy of the purchase order' : '01 copia de la orden de compra.') . '</td>
+
+            </tr>
+        </table>
+        <br>
+    ';
+
+        $html .= '<br>
 
                     <footer>
                         <p style="font-size:9px; " class="pie_de_pagina"> ' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Document made by ' : 'Generado por ') . ucwords(strtolower($ordenArray['head']['nombre_usuario'])) .  '<br>'
