@@ -6,6 +6,7 @@ use App\Exports\ListadoItemsRequerimientoPagoExport;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Exports\ListadoRequerimientoPagoExport;
+use App\Http\Controllers\ContabilidadController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\ProyectosController;
@@ -17,6 +18,8 @@ use App\Models\Administracion\Periodo;
 use App\Models\Administracion\Prioridad;
 use App\Models\Administracion\Estado;
 use App\Models\Administracion\Sede;
+use App\Models\almacen\DocumentoCompra;
+use App\Models\almacen\DocumentoCompraDetalle;
 use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
 use App\models\Configuracion\AccesosUsuarios;
@@ -80,10 +83,11 @@ class RequerimientoPagoController extends Controller
         $idTrabajador = Auth::user()->id_trabajador;
         $idUsuario = Auth::user()->id_usuario;
         $nombreUsuario = Auth::user()->nombre_corto;
-
+        
         $estados = Estado::mostrar();
         $array_accesos = [];
         $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        $tipoDocumentos = (new ContabilidadController)->listaTipoDocumentos();
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos, $value->id_acceso);
         }
@@ -112,7 +116,8 @@ class RequerimientoPagoController extends Controller
                 'nombreUsuario',
                 'estados',
                 'array_accesos',
-                'presupuestoInternoList'
+                'presupuestoInternoList',
+                'tipoDocumentos'
             )
         );
     }
@@ -356,6 +361,55 @@ class RequerimientoPagoController extends Controller
 
             (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleArray);
 
+                        // guardar factura solo si existe vinculo 
+                        $documentoCompraArray=[];
+                        $ObjectoFactura = json_decode($request->facturaObject);
+                        foreach ($ObjectoFactura as $keyObj => $value){
+                            if(count($value->items)>0){
+                                $documentoCompra = new DocumentoCompra();
+                                $documentoCompra->serie = $value->serie;
+                                $documentoCompra->numero = $value->numero;
+                                $documentoCompra->id_tp_doc = $value->id_tp_doc;
+                                $documentoCompra->fecha_emision = $value->fecha_emision;
+                                $documentoCompra->fecha_vcmto =  $value->fecha_emision;
+                                $documentoCompra->id_condicion = $value->id_condicion;
+                                $documentoCompra->moneda = $value->id_moneda;
+                                $documentoCompra->sub_total = $value->subtotal;
+                                $documentoCompra->total_igv = $value->total_igv;
+                                $documentoCompra->total_a_pagar = $value->total_a_pagar;
+                                $documentoCompra->usuario = Auth::user()->id_usuario;
+                                $documentoCompra->estado = 1;
+                                $documentoCompra->fecha_registro =  new Carbon();
+                                $documentoCompra->registrado_por = Auth::user()->id_usuario;
+                                $documentoCompra->id_sede = $value->id_sede;
+                                $documentoCompra->save();
+                                $documentoCompra->id_adjunto=$value->id_adjunto;
+                                $documentoCompraArray[]=$documentoCompra;
+
+                                for ($i = 0; $i < $count; $i++) {
+                                    foreach ($detalleArray as $key => $det) {
+                                        for($j =0; $j < count($value->items); $j++){
+                                            if ($det->idRegister == $value->items[$j]) {
+                                                $documentoCompraDetalle = new DocumentoCompraDetalle();
+                                                $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
+                                                $documentoCompraDetalle->cantidad =$det->cantidad;
+                                                $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
+                                                $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
+                                                $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
+                                                $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
+                                                $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
+                                                $documentoCompraDetalle->estado =1;
+                                                $documentoCompraDetalle->fecha_registro =new Carbon();
+                                                $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
+                                                $documentoCompraDetalle->id_detalle_requerimiento_pago =$det->id_requerimiento_pago_detalle;
+                                                $documentoCompraDetalle->save();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
             // Adjuntos Cabecera
             if (isset($request->archivo_adjunto_list)) {
                 $ObjectoAdjunto = json_decode($request->archivoAdjuntoRequerimientoPagoObject);
@@ -366,6 +420,16 @@ class RequerimientoPagoController extends Controller
                     foreach ($ObjectoAdjunto as $keyObj => $value) {
                         $ObjectoAdjunto[$keyObj]->id_requerimiento_pago = $requerimientoPago->id_requerimiento_pago;
                         $ObjectoAdjunto[$keyObj]->codigo = $codigo;
+
+                        
+                        if(!empty($documentoCompraArray)){
+                            foreach ($documentoCompraArray as $keyDoc => $docCom) {
+                                if($ObjectoAdjunto[$keyObj]->id ==$docCom->id_adjunto){
+                                    $ObjectoAdjunto[$keyObj]->id_doc_com = $docCom->id_doc_com;
+                                }
+                            }
+                        }
+
                         if ($adjuntoOtrosAdjuntosLength > 0) {
                             foreach ($archivoAdjuntoList as $keyA => $archivo) {
                                 if (is_file($archivo)) {
@@ -377,6 +441,7 @@ class RequerimientoPagoController extends Controller
                             }
                         }
                     }
+
                     $idAdjunto[] = $this->subirYRegistrarArchivoCabecera($ObjectoAdjunto);
                 }
             }
@@ -491,13 +556,15 @@ class RequerimientoPagoController extends Controller
                         'id_requerimiento_pago'     => $archivo->id_requerimiento_pago,
                         'archivo'                   => $newNameFile,
                         'id_estado'                 => 1,
-                        'nro_comprobante'           => $archivo->nro_comprobante,
+                        'serie'                     => $archivo->serie,
+                        'numero'                    => $archivo->numero,
                         'id_moneda'                 => $archivo->id_moneda,
                         'monto_total'               => $archivo->monto_total,
                         'fecha_emision'             => $archivo->fecha_emision,
-                        'id_categoria_adjunto'      => $archivo->category,
+                        'id_tp_doc'                 => $archivo->category,
                         'id_usuario'                => Auth::user()->id_usuario,
-                        'fecha_registro'            => $fechaHoy
+                        'fecha_registro'            => $fechaHoy,
+                        'id_doc_com'                => isset($archivo->id_doc_com)?$archivo->id_doc_com:null
                     ],
                     'id_requerimiento_pago_adjunto'
                 );
@@ -508,7 +575,7 @@ class RequerimientoPagoController extends Controller
                     ->update(
                         [
                             'estado'                => 1,
-                            'categoria_adjunto_id'  => $archivo->category,
+                            'id_tp_doc'             => $archivo->category,
                             'fecha_emision'         => $archivo->fecha_emision
                         ]
                     );

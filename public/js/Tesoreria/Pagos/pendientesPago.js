@@ -242,7 +242,7 @@ class RequerimientoPago {
                 {
                     'render': function (data, type, row) {
                         if(JSON.parse(row['tiene_pago_en_cuotas'])==true){
-                            return ((parseFloat(row['ultima_monto_cuota'])>0? row['ultima_monto_cuota']:(row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00')) );
+                            return ((parseFloat(row['ultima_monto_cuota'])>0?formatNumber.decimal(( row['ultima_monto_cuota'],'',-2)):(row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00')) );
                         }else{
                             return '(No aplica)';
                         }

@@ -26,6 +26,8 @@ class ListarRequerimientoPagoView {
         this.ActualParametroFechaHasta = 'SIN_FILTRO';
         this.ActualParametroEstado = 'SIN_FILTRO';
 
+        this.factura ={};
+        this.facturaList =[];
     }
 
     limpiarTabla(idElement) {
@@ -221,6 +223,15 @@ class ListarRequerimientoPagoView {
         $('#modal-adjuntar-archivos-requerimiento-pago').on("change", "input.handleChangeFechaEmision", (e) => {
             this.actualizarFechaEmisionAdjunto(e.currentTarget);
         });
+        $('#modal-adjuntar-archivos-requerimiento-pago').on("change", "input.handleChangeSerieComprobante", (e) => {
+            this.actualizarSerieComprobanteDeAdjunto(e.currentTarget);
+        });
+        $('#modal-adjuntar-archivos-requerimiento-pago').on("change", "input.handleChangeNumeroComprobante", (e) => {
+            this.actualizarNumeroComprobanteDeAdjunto(e.currentTarget);
+        });
+        $('#modal-adjuntar-archivos-requerimiento-pago').on("change", "input.handleChangeMontoTotalComprobante", (e) => {
+            this.actualizarMontoTotalDeAdjunto(e.currentTarget);
+        });
         // $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeFechaEmision", (e) => {
         //     this.actualizarFechaEmisionAdjunto(e.currentTarget);
         // });
@@ -254,6 +265,21 @@ class ListarRequerimientoPagoView {
             document.querySelector("input[name='id_cc']").value ='';
             document.querySelector("input[name='codigo_oportunidad']").value = '';
         });
+
+        $('#modal-adjuntar-archivos-requerimiento-pago').on("click", "button.handleClickVincularFacturaRequerimientoPago", (e) => {
+            this.facturaRequerimientoPago(e.currentTarget);
+        });
+        $('#modal-factura-requerimiento-pago').on("click", "button.handleClickConfirmarCrearFactura", (e) => {
+            this.confirmarCrearFactura(e.currentTarget);
+        }); 
+
+        $('#modal-adjuntar-archivos-requerimiento-pago').on("click", "span.ver_doc", (e) => {
+            var id_doc =e.currentTarget.dataset.idDocCom;
+            if(id_doc > 0){
+                documentosVer(id_doc);
+            }
+        }); 
+ 
     }
 
 
@@ -516,8 +542,8 @@ class ListarRequerimientoPagoView {
 
     updateDivision(obj){
         let currentIdGrupo = obj.options[obj.selectedIndex].dataset.idGrupo;
-        console.log(currentIdGrupo);
-        console.log(obj.value);
+        // console.log(currentIdGrupo);
+        // console.log(obj.value);
         this.presupuestoInternoView.llenarComboPresupuestoInterno(currentIdGrupo,obj.value);
 
     }
@@ -733,6 +759,14 @@ class ListarRequerimientoPagoView {
                         }
                     }, targets: 12, className: 'text-center'
                 },
+                // {
+                //     'render': function (data, type, row) {
+                //         // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
+                //         let arreglo = ['F001-0010','F002-0012','F003-0013, F003-0014','Sin factura'];
+                //         let facturaRandom= arreglo[Math.floor(Math.random() * arreglo.length)];
+                //         return `<span class="label label-${facturaRandom=='Sin factura'?'default':'info'}" data-codigo="${row.codigo}">${facturaRandom}</span>`;
+                //     }, targets: 13
+                // },
                 {
                     'render': function (data, type, row) {
 
@@ -1714,6 +1748,12 @@ class ListarRequerimientoPagoView {
                 'error'
             );
         }
+
+        if(obj.value==2){ // factura
+            obj.closest('tr').querySelector("button[name='btnVincularFacturaRequerimientoPago']").removeAttribute('disabled');
+        }else{
+            obj.closest('tr').querySelector("button[name='btnVincularFacturaRequerimientoPago']").setAttribute('disabled',true);
+        }
     }
     actualizarFechaEmisionAdjunto(obj) {
         if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
@@ -1734,6 +1774,60 @@ class ListarRequerimientoPagoView {
             );
         }
     }
+    actualizarSerieComprobanteDeAdjunto(obj) {
+        if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+            let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].serie = obj.value;
+            var regExp = /[a-zA-Z]/g; //expresión regular
+            if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
+            }else{
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
+            }
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un error inesperado al intentar cambiar la serie del comprobante, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                'error'
+            );
+        }
+    }
+    actualizarNumeroComprobanteDeAdjunto(obj) {
+        if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+            let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].numero = obj.value;
+            var regExp = /[a-zA-Z]/g; //expresión regular
+            if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
+            }else{
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
+            }
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un error inesperado al intentar cambiar el número del comprobante, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                'error'
+            );
+        }
+    }
+    actualizarMontoTotalDeAdjunto(obj) {
+        if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+            let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].monto_total = obj.value;
+            var regExp = /[a-zA-Z]/g; //expresión regular
+            if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
+            }else{
+                tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
+            }
+        } else {
+            Swal.fire(
+                '',
+                'Hubo un error inesperado al intentar cambiar el monto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+                'error'
+            );
+        }
+    }
 
     guardarRequerimientoPago() {
 
@@ -1746,6 +1840,10 @@ class ListarRequerimientoPagoView {
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
                     formData.append(`archivo_adjunto_list[]`, element.file);
             });
+
+            if (this.facturaList.length > 0) { // agregar a formdata si existe lista facturas
+                formData.append(`facturaObject`, JSON.stringify(this.facturaList));
+            };
                 // tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
                 //     formData.append(`archivoAdjuntoRequerimientoPagoCabeceraFile${element.category}[]`, element.file);
                 //     formData.append(`id_adjunto[]`, element.id);
@@ -2152,7 +2250,7 @@ class ListarRequerimientoPagoView {
     }
 
     mostrarDataEnVistaRapidaRequerimientoPago(data) {
-        console.log(data);
+        // console.log(data);
         // ### ==================== cabecera ====================== ###
         var destinatario,nro_documento_destinatario,tipo_documento_destinatario, banco, tipo_cuenta, tipo_cuenta, moneda, nro_cuenta, nro_cci = '';
         if (data.id_tipo_destinatario == 1 || data.id_persona > 0) {
@@ -2228,7 +2326,7 @@ class ListarRequerimientoPagoView {
 
         this.limpiarTabla('listaDetalleRequerimientoPago');
         if (data.detalle.length > 0) {
-            console.log(data.detalle);
+            // console.log(data.detalle);
             for (let i = 0; i < data.detalle.length; i++) {
                 let cantidadAdjuntosItem = 0;
                 cantidadAdjuntosItem = (data.detalle[i].adjunto).filter((element, i) => element.id_estado != 7).length;
@@ -2507,9 +2605,13 @@ class ListarRequerimientoPagoView {
                     tempArchivoAdjuntoRequerimientoPagoCabeceraList.push(
                         {
                             'id': element.id_requerimiento_pago_adjunto,
+                            'serie': element.serie,
+                            'numero': element.numero,
+                            'id_moneda': element.id_moneda,
+                            'monto_total': element.monto_total,
                             'nameFile': element.archivo,
                             'fecha_emision':element.fecha_emision,
-                            'category': element.id_categoria_adjunto,
+                            'category': element.id_tp_doc,
                             'action': '',
                             'file': []
                         }
@@ -2534,9 +2636,14 @@ class ListarRequerimientoPagoView {
                     (adjuntoList).forEach(element => {
                         tempArchivoAdjuntoRequerimientoPagoCabeceraList.push({
                             id: element.id_requerimiento_pago_adjunto,
-                            category: element.id_categoria_adjunto,
+                            serie: element.serie,
+                            numero: element.numero,
+                            id_moneda: element.id_moneda,
+                            monto_total: element.monto_total,
+                            category: element.id_tp_doc,
                             fecha_emision:element.fecha_emision,
                             nameFile: element.archivo,
+                            id_doc_com: element.id_doc_com,
                             action:'',
                             file: []
                         });
@@ -2558,24 +2665,33 @@ class ListarRequerimientoPagoView {
         adjuntoList.forEach(element => {
             html += `<tr id="${element.id}" style="text-align:center">
         <td style="text-align:left;">${element.nameFile}</td>
-        <td style="text-align:left;">${element.fecha_emision}</td>
-        <td>
+        <td style="text-align:left;">${element.fecha_emision}</td>`;
+
+        if(element.id_doc_com>0){
+            html+=`<td style="text-align:left;"> ${element.serie??''}-${element.numero??''}</td>`;
+
+        }else{
+            html+=`<td style="text-align:left;">${element.serie??''}-${element.numero??''}</td>`;
+        }
+
+        html+=`<td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto" disabled>
         `;
             categoriaAdjuntoList.forEach(categoria => {
-                if (element.category == categoria.id_requerimiento_pago_categoria_adjunto) {
-                    html += `<option value="${categoria.id_requerimiento_pago_categoria_adjunto}" selected >${categoria.descripcion}</option>`
+                if (element.category == categoria.id_tp_doc) {
+                    html += `<option value="${categoria.id_tp_doc}" selected >${categoria.descripcion}</option>`
 
                 } else {
-                    html += `<option value="${categoria.id_requerimiento_pago_categoria_adjunto}">${categoria.descripcion}</option>`
+                    html += `<option value="${categoria.id_tp_doc}">${categoria.descripcion}</option>`
                 }
             });
             html += `</select>
         </td>
+        <td style="text-align:left;">${element.id_moneda!=null ? (element.id_moneda ==1?'S/':(element.id_moneda==2?'$':'')):''} ${element.monto_total!=null? ($.number(element.monto_total,2,".",",")):''}</td>
         <td style="text-align:center;">
             <div class="btn-group" role="group">`;
             if (Number.isInteger(element.id)) {
-                html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoCabeceraRequerimientoPago" name="btnDescargarArchivoCabeceraRequerimientoPago" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
+                html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoCabeceraRequerimientoPago" name="btnDescargarArchivoCabeceraRequerimientoPago" title="Descargar" data-id="${element.id}" ><i class="fas fa-file-download"></i></button>`;
             }
             html += `</div>
         </td>
@@ -2601,15 +2717,20 @@ class ListarRequerimientoPagoView {
                         (adjuntoList).forEach(element => {
                             tempArchivoAdjuntoRequerimientoPagoCabeceraList.push({
                                 id: element.id_requerimiento_pago_adjunto,
-                                category: element.id_categoria_adjunto,
+                                serie:element.serie,
+                                numero:element.numero,
+                                id_moneda: element.id_moneda,
+                                monto_total: element.monto_total,
+                                category: element.id_tp_doc,
                                 fecha_emision: element.fecha_emision,
                                 nameFile: element.archivo,
+                                id_doc_com: element.id_doc_com,
                                 action:'',
                                 file: []
                             });
 
                         });
-
+                        console.log(tempArchivoAdjuntoRequerimientoPagoCabeceraList);
                         this.construirTablaAdjuntosRequerimientoPagoCabecera(tempArchivoAdjuntoRequerimientoPagoCabeceraList, categoriaAdjuntoList);
                     }).catch(function (err) {
                         console.log(err)
@@ -2681,19 +2802,23 @@ class ListarRequerimientoPagoView {
             html += `<tr id="${element.id}" style="text-align:center">
         <td style="text-align:left;">${element.nameFile}</td>
         <td style="text-align:left;">${element.fecha_emision??''}</td>
+        <td style="text-align:center;"><span class="label label-info ver_doc"  data-id-doc-com="${element.id_doc_com}" style="cursor:pointer;">${element.serie??''}-${element.numero??''}</span></td> 
+        
         <td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto" ${hasDisabledSelectTipoArchivo}>
         `;
             categoriaAdjuntoList.forEach(categoria => {
-                if (element.category == categoria.id_requerimiento_pago_categoria_adjunto) {
-                    html += `<option value="${categoria.id_requerimiento_pago_categoria_adjunto}" selected >${categoria.descripcion}</option>`
+                if (element.category == categoria.id_tp_doc) {
+                    html += `<option value="${categoria.id_tp_doc}" selected >${categoria.descripcion}</option>`
 
                 } else {
-                    html += `<option value="${categoria.id_requerimiento_pago_categoria_adjunto}">${categoria.descripcion}</option>`
+                    html += `<option value="${categoria.id_tp_doc}">${categoria.descripcion}</option>`
                 }
             });
             html += `</select>
         </td>
+        <td style="text-align:right;">${element.id_moneda ==1 ?'S/':(element.id_moneda ==2?'$':'')} ${$.number(element.monto_total,2,'.',',')??''}</td>
+
         <td style="text-align:center;">
             <div class="btn-group" role="group">`;
             if (Number.isInteger(element.id)) {
@@ -2775,14 +2900,18 @@ class ListarRequerimientoPagoView {
 
     agregarAdjuntoRequerimientoPagoCabecera(obj) {
         if (obj.files != undefined && obj.files.length > 0) {
-            console.log(obj.files);
+            // console.log(obj.files);
 
             Array.prototype.forEach.call(obj.files, (file) => {
 
                 if (this.estaHabilitadoLaExtension(file) == true) {
                     let payload = {
                         id: this.makeId(),
-                        category: 1, //default: otros adjuntos
+                        serie:'',
+                        numero:'',
+                        id_moneda: document.querySelector("div[id='modal-requerimiento-pago'] select[name='moneda']").value,
+                        monto_total: document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total']").value,
+                        category: 2, //default: factura
                         fecha_emision: moment().format("YYYY-MM-DD"), //default: fecha hoy
                         nameFile: file.name,
                         action: 'GUARDAR',
@@ -2829,27 +2958,46 @@ class ListarRequerimientoPagoView {
         <td>
             <input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" value="${moment().format("YYYY-MM-DD")}" />
         </td>
+        <td style="text-align:left; display:flex;"> 
+            <input type="text" class="form-control handleChangeSerieComprobante" name="serie"  placeholder="Serie">
+            <input type="text" class="form-control handleChangeNumeroComprobante" name="numero"  placeholder="Número">
+        </td>
         <td>
-            <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
+            <select class="form-control handleChangeCategoriaAdjunto select2" name="categoriaAdjunto">
         `;
         categoriaAdjuntoList.forEach(element => {
-            if (element.id_requerimiento_pago_categoria_adjunto == payload.category) {
-                html += `<option value="${element.id_requerimiento_pago_categoria_adjunto}" selected>${element.descripcion}</option>`
+            if (element.id_tp_doc == payload.category) {
+                html += `<option value="${element.id_tp_doc}" selected>${element.descripcion}</option>`
             } else {
-                html += `<option value="${element.id_requerimiento_pago_categoria_adjunto}">${element.descripcion}</option>`
+                html += `<option value="${element.id_tp_doc}">${element.descripcion}</option>`
 
             }
         });
+
+        let selectMoneda = document.querySelector("div[id='modal-requerimiento-pago'] select[name='moneda']");
+        const simboloMonedaOrden = selectMoneda.options[selectMoneda.selectedIndex].dataset.simbolo;
+
         html += `</select>
+        </td>
+            </td>
+            <td style="text-align:left;">
+            <div class="input-group">
+            <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${simboloMonedaOrden}</div>
+            <input type="number" class="form-control handleChangeMontoTotalComprobante" name="monto_total" placeholder="Monto comprobante" value="${payload.monto_total != null ?payload.monto_total:''}">
+            </div>
         </td>
         <td style="text-align:center;">
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoCabeceraRequerimientoPago" name="btnEliminarArchivoRequerimientoPago" title="Eliminar" data-id="${payload.id}" ><i class="fas fa-trash-alt"></i></button>
+                <button type="button" class="btn btn-warning btn-xs handleClickVincularFacturaRequerimientoPago" name="btnVincularFacturaRequerimientoPago" title="Vincular" data-id="${payload.id}" ><i class="fas fa-link"></i></button>
+
             </div>
         </td>
         </tr>`;
 
         document.querySelector("tbody[id='body_archivos_requerimiento_pago_cabecera']").insertAdjacentHTML('beforeend', html);
+
+        $('.select2').select2();
     }
 
     modalVerAdjuntarArchivosDetalle(idRequerimientoPagoDetalle){
@@ -2920,6 +3068,7 @@ class ListarRequerimientoPagoView {
             }
         });
         document.querySelector("tbody[id='body_ver_adjuntos_requerimiento_pago_detalle']").insertAdjacentHTML('beforeend', html);
+        
     }
 
     modalAdjuntarArchivosDetalle(obj) {
@@ -3514,6 +3663,154 @@ class ListarRequerimientoPagoView {
         }
     }
 
+    facturaRequerimientoPago(obj){
+        let nroComprobanteCompletado=false;
+        let MontoComprobanteCompletado=false;
+        let tieneItems=false;
+        let mensajeList=[];
+
+        if(document.querySelector("tbody[id='body_detalle_requerimiento_pago']").childElementCount >0){
+            tieneItems =true;
+            
+        }else{
+            mensajeList.push('Primero debe agregar los items al requerimiento de pago');
+            tieneItems =false;
+            
+        }
+
+        if(obj.closest('tr').querySelector("input[name='serie']").value != '' && obj.closest('tr').querySelector("input[name='numero']").value !=''){
+        nroComprobanteCompletado =true;
+        }else{
+            nroComprobanteCompletado = false;
+            mensajeList.push('Debe llenar el campo serie y número');
+        }
+        if(obj.closest('tr').querySelector("input[name='monto_total']").value > 0){   
+        MontoComprobanteCompletado = true;
+        }else{
+            MontoComprobanteCompletado = false;
+            mensajeList.push('Debe llenar el campo monto total');
+        }
+
+
+         if(MontoComprobanteCompletado * nroComprobanteCompletado * tieneItems){
+            $('#modal-factura-requerimiento-pago').modal({
+                show: true
+            });
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] span[name='codigo']").textContent= obj.dataset.codigo;
+            this.limpiarTabla('ListaDetalleRequerimientoPagoYFactura');
+
+            // copiar data de modal adjuntos y de modal de requerimiento de pago
+
+            // si es una factura se obtiene el IGV y si es otro tipo Ejm boleta, el monto subtotal es el mismo al total_a_pagar
+            const tipoDoc = document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] select[name='categoriaAdjunto']").value;
+            let subtotal= 0;
+            let total_igv= 0;
+            let total_a_pagar= 0;
+            const monto_total_req = parseFloat(document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] input[name='monto_total']").value)
+            if(tipoDoc ==2){ //factura
+                subtotal = monto_total_req / 1.18;
+                total_igv = monto_total_req - subtotal;
+                total_a_pagar= monto_total_req;
+            }else{
+                subtotal= document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] input[name='monto_total']").value;
+                total_a_pagar= document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] input[name='monto_total']").value;
+            }
+
+            this.factura =
+                {
+                    'id_adjunto': obj.dataset.id,
+                    'fecha_emision': document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] input[name='fecha_emision']").value,
+                    'serie': document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] input[name='serie']").value,
+                    'numero': document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] input[name='numero']").value,
+                    'id_tp_doc': tipoDoc,
+                    'subtotal':subtotal ,
+                    'total_igv':total_igv,
+                    'total_a_pagar':total_a_pagar,
+                    'id_moneda': document.querySelector("div[id='modal-requerimiento-pago'] select[name='moneda']").value,
+                    'id_sede': document.querySelector("div[id='modal-requerimiento-pago'] select[name='empresa']").value,
+                    'id_condicion': 1,
+ 
+                };
+
+            let copyItemsDetalleReqPago =[];
+            (document.querySelectorAll("tbody[id='body_detalle_requerimiento_pago']")).forEach(element =>{
+                copyItemsDetalleReqPago.push(
+                    {
+                        'id': element.querySelector("input[name='idRegister[]']").value,
+                        'descripcion_partida':element.querySelector("p[class='descripcion-partida']").textContent,
+                        'descripcion_centro_costo':element.querySelector("p[class='descripcion-centro-costo']").textContent,
+                        'descripcion_item':element.querySelector("textarea[name='descripcion[]']").value,
+                        'unidad':element.querySelector("select[name='unidad[]']").options[element.querySelector("select[name='unidad[]']").selectedIndex].textContent,
+                        'cantidad':element.querySelector("input[name='cantidad[]']").value,
+                        'precio_unitario':element.querySelector("input[name='precioUnitario[]']").value,
+                        'subtotal':element.querySelector("span[name='subtotal[]']").textContent,
+                        'motivo':element.querySelector("textarea[name='motivo[]']").value
+                    }
+                )
+                // console.log(copyItemsDetalleReqPago);
+
+            });
+
+            // pasar a modal vincular items de requerimiento con factura
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] select[name='id_tp_doc']").value= this.factura.id_tp_doc;
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] input[name='serie_doc']").value= this.factura.serie;
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] input[name='numero_doc']").value=  this.factura.numero;
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] input[name='fecha_emision_doc']").value=  this.factura.fecha_emision;
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] select[name='moneda']").value=  this.factura.id_moneda;
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] input[name='simbolo']").value= ( this.factura.id_moneda ==1?'S/':( this.factura.id_moneda==2?'$':''));
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] input[name='importe']").value=  this.factura.monto_total;
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] select[name='id_sede']").value=  this.factura.id_sede;
+
+            let html = '';
+            copyItemsDetalleReqPago.forEach((data, index) => {
+                html += `<tr>
+                            <td><input type="checkbox" data-id="${data.id}" checked/></td>
+                            <td>${data.descripcion_partida}</td>
+                            <td>${data.descripcion_centro_costo}</td>
+                            <td>${data.descripcion_item}</td>
+                            <td>${data.unidad}</td>
+                            <td>${data.cantidad}</td>
+                            <td>${data.precio_unitario}</td>
+                            <td>${data.subtotal}</td>
+                            <td>${data.motivo}</td>
+                        </tr>`;
+            });
+
+            document.querySelector("table[id='ListaDetalleRequerimientoPagoYFactura'] tbody").innerHTML = html;
+
+
+        }else{
+            Swal.fire(
+                '',
+                mensajeList.toString(),
+                'warning'
+            );  
+        }
+    }
+
+    confirmarCrearFactura(obj){
+        this.factura.items=[];
+        (document.querySelectorAll("table[id='ListaDetalleRequerimientoPagoYFactura'] tbody")).forEach(element =>{
+            if(Boolean(element.querySelector("input[type='checkbox']").checked)=== true){
+                this.factura.items.push(element.querySelector("input[type='checkbox']").dataset.id);
+            }
+        });
+
+        
+ 
+        this.facturaList.push(this.factura);
+        this.factura=[];
+
+        Swal.fire(
+            '',
+            'Factura confirmada',
+            'success'
+        ); 
+
+        $('#modal-factura-requerimiento-pago').modal('hide');
+
+    }
+    
 
 
 }

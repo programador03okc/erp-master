@@ -459,7 +459,7 @@ class RevisarAprobarDocumentoView {
                         (adjuntoList).forEach(element => {
                             tempArchivoAdjuntoRequerimientoPagoCabeceraList.push({
                                 id: element.id_requerimiento_pago_adjunto,
-                                category: element.id_categoria_adjunto,
+                                category: element.id_tp_doc,
                                 nameFile: element.archivo,
                                 file: []
                             });
