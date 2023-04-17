@@ -121,16 +121,18 @@ class LoginController extends Controller{
     }
     public function actualizarContraseña()
     {
-        $usuario = Usuario::where('id_usuario',Auth::user()->id_usuario)->first();
+        $usuario = Usuario::where('id_usuario', Auth::user()->id_usuario)->first();
         $success = true;
         $hoy = date("Y-m-d");
-        if (date("Y-m-d",strtotime($usuario->fecha_registro."+ 45 days")) > $hoy) {
+
+        if ($usuario->renovar == true) {
+            if (date("Y-m-d", strtotime($usuario->fecha_registro."+ 45 days")) > $hoy) {
+                $success = false;
+            }
+        } else {
             $success = false;
         }
-        return response()->json([
-            "success"=>$success,
-            "status"=>200
-        ]);
+        return response()->json(["success"=>$success, "status"=>200]);
     }
     public function modificarClave(Request $request)
     {

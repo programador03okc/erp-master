@@ -24,14 +24,17 @@
 	@yield('estilos')
     <style>
         .modal-style{
-            width:30%;
+            width: 30%;
         }
         .modal-style-recuperar{
-            width: 17%;
+            width: 40%;
         }
+		#atualizar-contraseña .modal-content {
+			width: 500px;
+		}
         @media screen and (max-width: 775px) {
             .modal-style{
-                width:90%;
+                width: 90%;
             }
             .modal-style-recuperar{
                 width:90%;
@@ -109,14 +112,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="">Ingrese su nueva contraseña</label>
-                                    <input class="form-control contraseña-validar" type="password" id="clave" name="clave" minlength="8"  required>
+                                    <label for="">Nueva contraseña</label>
+                                    <input class="form-control contraseña-validar" type="password" placeholder="Escriba la nueva contraseña" id="clave" name="clave" minlength="8"  required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Repita su contraseña</label>
-                                    <input class="form-control contraseña-validar" type="password" name="repita_clave" minlength="8" required>
+                                    <input class="form-control contraseña-validar" type="password" placeholder="Repita la contraseña" name="repita_clave" minlength="8" required>
                                 </div>
                             </div>
                         </div>
@@ -124,10 +127,10 @@
                             <div class="col-md-12">
                                 <div class="alert alert-warning" role="alert">
                                     <p>Su nueva contraseña debe tener al menos 8 caracteres alfanuméricos.</p>
-                                    <p>Mínimo una Mayúscula</p>
-									<p>Mínimo una Minúscula</p>
-									<p>Mínimo un número</p>
-									<p>Mínimo un caracter especial (@#_%)</p>
+                                    <p>- Mínimo una Mayúscula</p>
+									<p>- Mínimo una Minúscula</p>
+									<p>- Mínimo un número</p>
+									<p>- Mínimo un caracter especial (@#_%)</p>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +159,6 @@
 	<script src="{{ asset('/js/publico/animation.js')}}"></script>
 
 	<script src="{{ asset('template/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
-
 	<script>
 		$(document).ready(function() {
 			notificacionesNoLeidas();
@@ -167,7 +169,7 @@
 				type: 'GET',
 				dataType: 'JSON',
 				success: function (data) {
-					if (data.success===true) {
+					if (data.success === true) {
                         $('#atualizar-contraseña').modal('show');
                     }
 				}
