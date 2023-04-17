@@ -1083,7 +1083,8 @@ Presupuesto Interno
                                             $id=rand();
                                             $id_padre=rand();
                                             $input_key=rand();
-                                            $array_excluidos = array('03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03');
+                                            // $array_excluidos = array('03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03');
+                                            $array_excluidos = array();
                                             $partida_hidden = in_array($item->partida, $array_excluidos);
                                         @endphp
                                     <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="gastos[{{$input_key}}][id_presupuesto_interno_detalle]" class="form-control input-sm">
