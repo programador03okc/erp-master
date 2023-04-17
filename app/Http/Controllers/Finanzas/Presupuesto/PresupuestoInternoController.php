@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\administracion\AdmGrupo;
 use App\Models\Administracion\Division;
+use App\Models\administracion\DivisionCodigo;
 use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Sede;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -59,9 +60,11 @@ class PresupuestoInternoController extends Controller
         ->get()
             ;
         return DataTables::of($data)
-        // ->addColumn('grupo', function ($data){
-        //     return $data->grupo->descripcion;
-        // })
+        ->addColumn('total', function ($data){
+            $total = ($data->gastos=='3'?PresupuestoInterno::calcularTotalPresupuestoAnual($data->id_presupuesto_interno,3):0);
+
+            return floatval(str_replace(",", "", $total));
+        })
         // ->toJson();
         ->make(true);
     }
@@ -143,9 +146,14 @@ class PresupuestoInternoController extends Controller
             $presupuesto_interno_count = $presupuesto_interno_count +1;
             $codigo = StringHelper::leftZero(2,$presupuesto_interno_count);
 
+            $division_codigo = DivisionCodigo::where('sede_id',$request->sede_id)->where('division_id',$request->id_area)->first();
+
+            $codigo = ($division_codigo?$division_codigo->codigo:$codigo);
+            $descripcion = ($division_codigo?$division_codigo->descripcion.' '.date('Y').'-'.$request->descripcion:$request->descripcion);
+
             $presupuesto_interno                        = new PresupuestoInterno();
-            $presupuesto_interno->codigo                = 'PI-'.$codigo;
-            $presupuesto_interno->descripcion           = $request->descripcion;
+            $presupuesto_interno->codigo                = $codigo;
+            $presupuesto_interno->descripcion           = $descripcion;
             $presupuesto_interno->id_grupo              = $request->id_grupo;
             $presupuesto_interno->id_area               = $request->id_area;
             $presupuesto_interno->fecha_registro        = date('Y-m-d H:i:s');
@@ -644,16 +652,30 @@ class PresupuestoInternoController extends Controller
     }
     public function actualizar(Request $request)
     {
+        $array_descripcion = explode('-',$request->descripcion);
 
+        // return $request->descripcion ;exit;
+        $division_codigo = DivisionCodigo::where('sede_id',$request->sede_id)->where('division_id',$request->id_area)->first();
+        $descripcion = ($division_codigo?$division_codigo->descripcion.' '.date('Y').'-'.(sizeof($array_descripcion)>1?$array_descripcion[1]:$array_descripcion[0]):$request->descripcion);
+
+        // return $descripcion ;exit;
+
+        //se actualiza la cabecera del presupuesto
         $presupuesto_interno                        = PresupuestoInterno::find($request->id_presupuesto_interno);
 
-        $presupuesto_interno->descripcion           = $request->descripcion;
+        $codigo = ($division_codigo?$division_codigo->codigo:$presupuesto_interno->codigo);
+
+        $presupuesto_interno->codigo                = $codigo;
+        $presupuesto_interno->descripcion           = $descripcion;
         $presupuesto_interno->id_grupo              = $request->id_grupo;
         $presupuesto_interno->id_area               = $request->id_area;
 
         $presupuesto_interno->id_moneda             = $request->id_moneda;
         $presupuesto_interno->gastos                = $request->tipo_gastos;
         $presupuesto_interno->ingresos              = $request->tipo_ingresos;
+
+        $presupuesto_interno->empresa_id            = $request->empresa_id;
+        $presupuesto_interno->sede_id               = $request->sede_id;
         $presupuesto_interno->save();
 
         if ($request->tipo_ingresos==='1') {
