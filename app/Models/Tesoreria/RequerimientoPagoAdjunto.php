@@ -20,4 +20,9 @@ class RequerimientoPagoAdjunto extends Model
     {
         return $this->belongsTo('App\Models\Configuracion\Moneda', 'id_moneda', 'id_moneda');
     }
+
+    public function tipoDocumento()
+    {
+        return $this->belongsTo('App\Models\Contabilidad\TipoDocumento', 'id_tp_doc','id_tp_doc');
+    }
 }

@@ -22,9 +22,14 @@ $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "select.handleC
 $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeFechaEmision", (e) => {
     actualizarFechaEmisionDeAdjunto(e.currentTarget);
 });
-$('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeNroComprobante", (e) => {
-    actualizarNroComprobanteDeAdjunto(e.currentTarget);
+
+$('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeSerieComprobante", (e) => {
+    this.actualizarSerieComprobanteDeAdjunto(e.currentTarget);
 });
+$('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeNumeroComprobante", (e) => {
+    this.actualizarNumeroComprobanteDeAdjunto(e.currentTarget);
+});
+
 $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeMontoTotalComprobante", (e) => {
     actualizarMontoTotalDeAdjunto(e.currentTarget);
 });
@@ -129,6 +134,7 @@ function verAgregarAdjuntosRequerimientoPago(obj) {
 
         obteneTodoAdjuntosRequerimientoPago(idRequerimientoPago).then((res) => {
             // llenar tabla cabecera
+            // console.log(res);
             let htmlCabecera = '';
             let tieneAccesoParaEliminarAdjuntos = false;
             if (res.id_usuario_propietario_requerimiento > 0 && res.id_usuario_propietario_requerimiento == auth_user.id_usuario) {
@@ -146,8 +152,8 @@ function verAgregarAdjuntosRequerimientoPago(obj) {
                         htmlCabecera += `<tr>
                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/pago/cabecera/${element.archivo}" target="_blank">${element.archivo}</a></td>
                         <td style="text-align:left;">${element.fecha_emision ?? ''}</td>
-                        <td style="text-align:left;">${element.nro_comprobante !=null ?element.nro_comprobante:''}</td>
-                        <td style="text-align:left;">${element.categoria_adjunto.descripcion}</td>
+                        <td style="text-align:left;">${element.serie !=null ?element.serie:''}-${element.numero !=null ?element.numero:''}</td>
+                        <td style="text-align:left;">${element.tipo_documento!=null?element.tipo_documento.descripcion:''}</td>
                         <td style="text-align:left;">${element.moneda != null?element.moneda.simbolo:''} ${element.monto_total !=null?element.monto_total:''}</td>
                         <td style="text-align:center;">
                             <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoCabecera handleClickAnularAdjuntoPagoCabecera" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos > 0 ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
@@ -239,7 +245,8 @@ function agregarAdjuntoRequerimientoPagoCabecera(obj) {
                 if (estaHabilitadoLaExtension(file) == true) {
                     let payload = {
                         id: makeId(),
-                        nro_comprobante:'',
+                        numero:'',
+                        serie:'',
                         id_moneda: document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='id_moneda']").value,
                         monto_total: document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='monto_a_pagar']").value,
                         category: 6, //default: factura
@@ -305,7 +312,10 @@ function addToTablaArchivosRequerimientoPagoCabecera(payload) {
         html = `<tr id="${payload.id}" style="text-align:center">
         <td style="text-align:left;">${payload.nameFile}</td>
         <td> <input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" value="${moment().format("YYYY-MM-DD")}" /></td>
-        <td style="text-align:left;"> <input type="text" class="form-control handleChangeNroComprobante" name="nro_comprobante"  placeholder="Nro comprobante"></td>
+        <td style="text-align:left; display:flex;"> 
+            <input type="text" class="form-control handleChangeSerieComprobante" name="serie"  placeholder="serie">
+            <input type="text" class="form-control handleChangeNumeroComprobante" name="numero"  placeholder="Número">
+        </td>
         <td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
         `;
@@ -375,11 +385,11 @@ function actualizarFechaEmisionDeAdjunto(obj) {
         );
     }
 }
-function actualizarNroComprobanteDeAdjunto(obj) {
+function actualizarSerieComprobanteDeAdjunto(obj) {
 
     if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
         let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
-        tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].nro_comprobante = obj.value;
+        tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].serie = obj.value;
         if (tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id > 0) {
 
         }
@@ -393,7 +403,30 @@ function actualizarNroComprobanteDeAdjunto(obj) {
     } else {
         Swal.fire(
             '',
-            'Hubo un error inesperado al intentar cambiar la serie y número del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+            'Hubo un error inesperado al intentar cambiar la serie del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+            'error'
+        );
+    }
+}
+function actualizarNumeroComprobanteDeAdjunto(obj) {
+
+    if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+        let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+        tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].numero = obj.value;
+        if (tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id > 0) {
+
+        }
+        var regExp = /[a-zA-Z]/g; //expresión regular
+        if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+        } else {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
+        }
+
+    } else {
+        Swal.fire(
+            '',
+            'Hubo un error inesperado al intentar cambiar el número del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
             'error'
         );
     }
