@@ -1773,7 +1773,7 @@ class OrdenesPendientesController extends Controller
 
                         $validado = true;
                         foreach ($detalle as $det) {
-                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14)) || $det->id_od !== null) {
+                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14)) || $det->id_od != 7) {
                                 $validado = false;
                             }
                         }
