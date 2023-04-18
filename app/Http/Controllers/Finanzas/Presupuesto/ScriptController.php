@@ -122,7 +122,7 @@ class ScriptController extends Controller
 
             $presupuesto_interno = new PresupuestoInterno();
             $presupuesto_interno->codigo                = $division_codigo->codigo;
-            $presupuesto_interno->descripcion           = $division_codigo->descripcion.'-'.$sede->codigo.' '.date('Y');
+            $presupuesto_interno->descripcion           = $division_codigo->descripcion.' '.date('Y');
             $presupuesto_interno->id_grupo              = $admDivision->grupo_id;
             $presupuesto_interno->id_area               = $admDivision->id_division;
             $presupuesto_interno->fecha_registro        = date('Y-m-d H:i:s');

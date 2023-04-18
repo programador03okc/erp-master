@@ -19,7 +19,7 @@ function lista() {
             window.location.href='crear';
             // window.open('crear');
         },
-        className: 'btn-default btn-sm'
+        className: 'btn-primary btn-sm'
     }:[])
     var tableRequerimientos = $("#lista-presupuesto-interno").DataTable({
         language: vardataTables[0],
@@ -82,7 +82,7 @@ function lista() {
                         :'');
                         if (row['estado']==2) {
                             (array_accesos.find(element => element === 302)?
-                            html+='<button type="button" class="btn btn-danger btn-flat botonList editar-registro-aprobado" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar Presupuest Interno Aprobado" data-original-title="Editar"><i class="fas fa-edit"></i></button>'
+                            html+='<button type="button" class="btn btn-danger btn-flat botonList editar-registro-aprobado" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar Presupuesto Interno Aprobado" data-original-title="Editar"><i class="fas fa-edit"></i></button>'
                             :'');
                         }
                         // html+='<button type="button" class="btn btn-info btn-flat botonList editar-monto-partida" data-id="'+row['id_presupuesto_interno']+'" data-toggle="tooltip" title="Editar monto por partida" data-original-title="Editar"><i class="fas fa-pencil-alt"></i></button>';
