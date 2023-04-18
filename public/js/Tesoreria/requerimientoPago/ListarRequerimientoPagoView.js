@@ -2667,12 +2667,7 @@ class ListarRequerimientoPagoView {
         <td style="text-align:left;">${element.nameFile}</td>
         <td style="text-align:left;">${element.fecha_emision}</td>`;
 
-        if(element.id_doc_com>0){
-            html+=`<td style="text-align:left;"> ${element.serie??''}-${element.numero??''}</td>`;
-
-        }else{
-            html+=`<td style="text-align:left;">${element.serie??''}-${element.numero??''}</td>`;
-        }
+        html+=`<td style="text-align:left;"> ${element.serie??''}-${element.numero??''}</td>`;
 
         html+=`<td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto" disabled>
