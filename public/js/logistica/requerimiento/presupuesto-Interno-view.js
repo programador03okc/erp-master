@@ -208,7 +208,7 @@ class PresupuestoInternoView{
 
             res.forEach(element => {
                 let option = document.createElement("option");
-                option.text = element.descripcion;
+                option.text = element.descripcion+(element.estado !=2?'(NO APROBADO)':'');
                 option.value = element.id_presupuesto_interno;
                 option.setAttribute('data-codigo', element.codigo);
                 option.setAttribute('data-id-grupo', element.id_grupo);
