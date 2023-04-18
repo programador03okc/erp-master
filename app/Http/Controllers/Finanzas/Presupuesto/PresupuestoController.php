@@ -100,16 +100,15 @@ class PresupuestoController extends Controller
                 DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
                 WHERE presup_titu.codigo = presup_par.cod_padre
                 and presup_titu.id_presup = presup_par.id_presup) AS titulo_descripcion"),
-                // DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
-                // WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
-                // limit 1) AS fecha_pago"),
+                DB::raw("(SELECT (select venta from contabilidad.cont_tp_cambio 
+                where cont_tp_cambio.fecha<=registro_pago.fecha_pago limit 1) tipo_cambio_venta
+                            FROM tesoreria.registro_pago
+                                WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra
+                                limit 1 ) AS tipo_cambio"),
                 'requerimiento_pago_estado.descripcion as estado_pago',
                 DB::raw("CONCAT(doc_com.serie,'-',doc_com.numero) AS serie_numero"),
                 'cont_tp_doc.descripcion as tipo_comprobante',
                 'doc_com.fecha_emision as fecha_emision_comprobante'
-                // 'adjuntos_logisticos.monto_total as monto_total_comprobante'
-                // DB::raw("(SELECT sum(registro_pago.total_pago) FROM tesoreria.registro_pago
-                // WHERE registro_pago.id_oc = log_ord_compra.id_orden_compra) AS suma_pago"),
             )
             ->leftjoin('logistica.log_det_ord_compra', function ($join) {
                 $join->on('log_det_ord_compra.id_detalle_requerimiento', '=', 'alm_det_req.id_detalle_requerimiento');
@@ -161,17 +160,13 @@ class PresupuestoController extends Controller
                 DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
                 WHERE presup_titu.codigo = presup_par.cod_padre
                 and presup_titu.id_presup = presup_par.id_presup limit 1) AS titulo_descripcion"),
-                // DB::raw("(SELECT registro_pago.fecha_pago FROM tesoreria.registro_pago
-                // WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
-                // limit 1) AS fecha_pago"),
+                DB::raw("(SELECT (select venta from contabilidad.cont_tp_cambio 
+                where cont_tp_cambio.fecha<=registro_pago.fecha_pago limit 1) tipo_cambio_venta
+                            FROM tesoreria.registro_pago
+                                WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
+                                limit 1 ) AS tipo_cambio"),
                 'rrhh_perso.apellido_paterno','rrhh_perso.apellido_materno','rrhh_perso.nombres',
                 'rrhh_perso.nro_documento as nro_documento_persona',
-                // 'requerimiento_pago_categoria_adjunto.descripcion as tipo_comprobante',
-                // 'requerimiento_pago_adjunto.nro_comprobante',
-                // 'requerimiento_pago_adjunto.fecha_emision as fecha_emision_comprobante'
-                // 'requerimiento_pago_adjunto.monto_total as monto_tota_comprobante'
-                // DB::raw("(SELECT sum(registro_pago.total_pago) FROM tesoreria.registro_pago
-                // WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago) AS suma_pago"),
             )
             // ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'registro_pago.id_requerimiento_pago')
             ->join('tesoreria.requerimiento_pago', 'requerimiento_pago.id_requerimiento_pago', '=', 'requerimiento_pago_detalle.id_requerimiento_pago')
