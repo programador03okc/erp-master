@@ -1353,6 +1353,8 @@ class RequerimientoView {
     // partidas
     cargarModalPartidas(obj) {
         // anterior modal
+        this.limpiarTabla('listaPartidas');
+
         tempObjectBtnPartida = obj.target;
         let id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
         let id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;

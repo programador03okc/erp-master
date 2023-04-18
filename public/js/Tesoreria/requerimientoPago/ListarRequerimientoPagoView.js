@@ -1178,6 +1178,8 @@ class ListarRequerimientoPagoView {
 
     // modal partidas
     cargarModalPartidas(obj) {
+        this.limpiarTabla('listaPartidas');
+
         tempObjectBtnPartida = obj.target;
         let id_grupo = document.querySelector("form[id='form-requerimiento-pago'] select[name='grupo']").value;
         let id_proyecto = document.querySelector("form[id='form-requerimiento-pago'] select[name='proyecto']").value;
@@ -1192,6 +1194,7 @@ class ListarRequerimientoPagoView {
             $('#modal-partidas').modal({
                 show: true
             });
+
             if (!$("select[name='id_presupuesto_interno']").val() > 0) { //* si presupuesto interno fue seleccionado, no cargar presupuesto antiguo.
 
                 this.listarPartidas(id_grupo, id_proyecto > 0 ? id_proyecto : '');
