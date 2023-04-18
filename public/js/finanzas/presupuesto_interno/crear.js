@@ -66,7 +66,8 @@ function generarModelo(data) {
             id=Math.random(),
             id_padre=Math.random(),
             input_key=Math.random(),
-            array_excluidos = ['03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03'],
+            // array_excluidos = ['03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03'],
+            array_excluidos = [],
             partida_hidden = array_excluidos.includes(element.partida);
 
         // console.log(partida_hidden);
@@ -1056,7 +1057,7 @@ $(document).on('change','[data-input="partida"]',function (e) {
                         servicios       = (total * PORCENTAJE_SERVICIOS).toFixed(2);
                         gratificaciones = (total / GRATIFICACIONES).toFixed(2);
                         vacacione       = (total / VACACIONES).toFixed(2);
-
+                        console.log(partida_padre);
                         var array_partida_padre = partida_padre.split('.'),
                             partida_ESSALUD = '.01',
                             partida_SCTR = '.02',
@@ -1077,33 +1078,33 @@ $(document).on('change','[data-input="partida"]',function (e) {
                         partida_PATRONALES = partida_abuelo+ partida_PATRONALES
                         partida_PROVISIONES = partida_abuelo + partida_PROVISIONES
 
-                        partida_ESSALUD         = partida_PATRONALES + partida_ESSALUD,
-                        partida_SCTR            = partida_PATRONALES + partida_SCTR,
-                        partida_ESSALUD_VIDA    = partida_PATRONALES + partida_ESSALUD_VIDA,
+                        partida_ESSALUD         = partida_PATRONALES + partida_ESSALUD;
+                        partida_SCTR            = partida_PATRONALES + partida_SCTR;
+                        partida_ESSALUD_VIDA    = partida_PATRONALES + partida_ESSALUD_VIDA;
 
-                        partida_SERVICIOS       = partida_PROVISIONES + partida_SERVICIOS,
-                        partida_GRATIFICACIONES = partida_PROVISIONES + partida_GRATIFICACIONES,
-                        partida_VACACIONES      = partida_PROVISIONES + partida_VACACIONES,
+                        partida_SERVICIOS       = partida_PROVISIONES + partida_SERVICIOS;
+                        partida_GRATIFICACIONES = partida_PROVISIONES + partida_GRATIFICACIONES;
+                        partida_VACACIONES      = partida_PROVISIONES + partida_VACACIONES;
 
                         // 03.01.02.01	ESSALUD
-                        $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud)
-                        $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                        // $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud)
+                        // $('input[value="'+partida_ESSALUD+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
                         // 03.01.02.02	SCTR
-                        $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(sctr)
-                        $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                        // $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(sctr)
+                        // $('input[value="'+partida_SCTR+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
                         // 03.01.02.03	ESSALUD VIDA
-                        $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud_vida)
-                        $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                        // $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(essalud_vida)
+                        // $('input[value="'+partida_ESSALUD_VIDA+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
 
                         // 03.01.03.01	COMPENSACION POR TIEMPO DE SERVICIOS
-                        $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(servicios)
-                        $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                        // $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(servicios)
+                        // $('input[value="'+partida_SERVICIOS+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
                         // 03.01.03.02	GRATIFICACIONES
-                        $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(gratificaciones)
-                        $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                        // $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(gratificaciones)
+                        // $('input[value="'+partida_GRATIFICACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
                         // 03.01.03.03	VACACIONES
-                        $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(vacacione)
-                        $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
+                        // $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').val(vacacione)
+                        // $('input[value="'+partida_VACACIONES+'"]').closest('tr').find('td[data-td="'+mes+'"]').find('input').trigger('change')
 
                     }
 
@@ -1482,3 +1483,33 @@ function modalPorcentaje(numero_partida, partida, concatener_partida, key, data_
         elemento.partida_privada = partida_privada;
     }
 }
+
+// sedes por empresa
+$('[name="empresa_id"]').change(function (e) {
+    var id = $(this).val(),
+        html = '';
+    console.log(id);
+    $.ajax({
+        type: 'GET',
+        url: '/necesidades/requerimiento/elaboracion/listar-sedes-por-empresa/'+id,
+        data: {},
+        // processData: false,
+        // contentType: false,
+        dataType: 'JSON',
+        beforeSend: (data) => {
+            // console.log(data);
+        }
+    }).done(function(response) {
+        html = '<option value="">Seleccione...</option>';
+        $.each(response, function (index, element) {
+            html += '<option value="'+element.id_sede+'">'+element.descripcion+'</option>';
+        });
+        $('[name="sede_id"]').html(html);
+        console.log(response);
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+
+});

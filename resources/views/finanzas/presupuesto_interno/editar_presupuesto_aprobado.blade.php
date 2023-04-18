@@ -79,6 +79,17 @@ Presupuesto Interno
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
+                                    <label for="sede_id">Sedes :</label>
+                                    <select class="form-control" name="sede_id" id="sede_id" required>
+                                        <option value="">Seleccione...</option>
+                                        @foreach ($sedes as $item)
+                                            <option value="{{ $item->id_sede }}" {{($item->id_sede===$presupuesto_interno->sede_id?'selected':'')}}>{{ $item->descripcion }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
                                     {{-- <input type="hidden" name="id_tipo_presupuesto"value="{{$presupuesto_interno->id_tipo_presupuesto}}"> --}}
 
                                     <input type="hidden" name="tipo_ingresos"value="{{$presupuesto_interno->ingresos}}">
@@ -1060,7 +1071,8 @@ Presupuesto Interno
                                             $id=rand();
                                             $id_padre=rand();
                                             $input_key=rand();
-                                            $array_excluidos = array('03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03');
+                                            // $array_excluidos = array('03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03');
+                                            $array_excluidos = array();
                                             $partida_hidden = in_array($item->partida, $array_excluidos);
                                         @endphp
                                     <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="gastos[{{$input_key}}][id_presupuesto_interno_detalle]" class="form-control input-sm">

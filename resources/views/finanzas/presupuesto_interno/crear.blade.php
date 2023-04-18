@@ -78,6 +78,14 @@ Presupuesto Interno
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
+                                    <label for="sede_id">Sedes :</label>
+                                    <select class="form-control" name="sede_id" id="sede_id" required>
+                                        <option value="">Seleccione...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
                                     {{-- <input type="hidden" name="id_tipo_presupuesto"value=""> --}}
                                     <input type="hidden" name="tipo_ingresos"value="">
                                     <input type="hidden" name="tipo_gastos"value="">
