@@ -46,7 +46,7 @@ class ListarRequerimientoPagoView {
             // console.log('dd');
         });
 
-        document.onkeydown = function(evt) {
+        document.onkeydown = function (evt) {
             evt = evt || window.event;
             var isEscape = false;
             if ("key" in evt) {
@@ -55,7 +55,7 @@ class ListarRequerimientoPagoView {
                 isEscape = (evt.keyCode === 27);
             }
             if (isEscape) {
-                if(document.querySelector("div[id='modal-requerimiento-pago']").classList.contains("in")){
+                if (document.querySelector("div[id='modal-requerimiento-pago']").classList.contains("in")) {
                     Swal.fire({
                         title: 'Esta seguro que desea cerrar el modal "Nuevo requerimiento de pago"?',
                         text: "Si acepta, se cerrará el modal",
@@ -90,7 +90,7 @@ class ListarRequerimientoPagoView {
         $('#modal-requerimiento-pago').on("click", "button.handleClickAgregarServicio", () => {
             this.agregarServicio();
             this.checkStatusBtnGuardar();
-            if($("select[name='id_presupuesto_interno']").val()>0){
+            if ($("select[name='id_presupuesto_interno']").val() > 0) {
                 this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
             }
         });
@@ -101,6 +101,8 @@ class ListarRequerimientoPagoView {
         });
 
         $('#ListaDetalleRequerimientoPago tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
+            document.querySelector("div[id='listaPartidas']").innerHTML='';
+            document.querySelector("div[id='listaPresupuesto']").innerHTML='';
             this.cargarModalPartidas(e);
         });
 
@@ -151,7 +153,7 @@ class ListarRequerimientoPagoView {
             this.modalListaCuadroDePresupuesto();
         });
         $('#modal-requerimiento-pago').on("click", "button.handleClickAdjuntarArchivoCabecera", (e) => {
-            let idRrequerimientoPAgo=e.currentTarget.dataset.idRequerimientoPago>0?e.currentTarget.dataset.idRequerimientoPago:parseInt(document.querySelector("form[id='form-requerimiento-pago'] input[name='id_requerimiento_pago']").value);
+            let idRrequerimientoPAgo = e.currentTarget.dataset.idRequerimientoPago > 0 ? e.currentTarget.dataset.idRequerimientoPago : parseInt(document.querySelector("form[id='form-requerimiento-pago'] input[name='id_requerimiento_pago']").value);
             this.modalAdjuntarArchivosCabecera(idRrequerimientoPAgo);
         });
         $('#modal-requerimiento-pago').on("click", "button.handleClickAdjuntarArchivoDetalle", (e) => {
@@ -250,19 +252,19 @@ class ListarRequerimientoPagoView {
         });
 
         $('#modal-requerimiento-pago').on("change", "select.handleChangeProyecto", (e) => {
-            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PROYECTOS',e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PROYECTOS', e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
         });
         $('#modal-requerimiento-pago').on("change", "select.handleChangePresupuestoInterno", (e) => {
-            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PRESUPUESTO_INTERNO',e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PRESUPUESTO_INTERNO', e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
         });
         $('#listaCuadroPresupuesto').on("click", "button.handleClickSeleccionarCDP", (e) => {
             console.log(e.currentTarget.dataset.idCc);
-            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP',e.currentTarget.dataset.idCc);  
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP', e.currentTarget.dataset.idCc);
         });
-        
+
         $('#modal-requerimiento-pago').on("click", "button.handleClickLimpiarSeleccionCuadroDePresupuesto", (e) => {
-            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP',0); 
-            document.querySelector("input[name='id_cc']").value ='';
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP', 0);
+            document.querySelector("input[name='id_cc']").value = '';
             document.querySelector("input[name='codigo_oportunidad']").value = '';
         });
 
@@ -283,36 +285,36 @@ class ListarRequerimientoPagoView {
     }
 
 
-    deshabilitarOtrosTiposDePresupuesto(origen, valor){
+    deshabilitarOtrosTiposDePresupuesto(origen, valor) {
         switch (origen) {
             case 'SELECCION_PRESUPUESTO_INTERNO':
-                if(valor >0){
-                    document.querySelector("select[name='proyecto']").setAttribute("disabled",true);
-                    document.querySelector("input[name='id_cc']").setAttribute("disabled",true);
-                }else{
+                if (valor > 0) {
+                    document.querySelector("select[name='proyecto']").setAttribute("disabled", true);
+                    document.querySelector("input[name='id_cc']").setAttribute("disabled", true);
+                } else {
                     document.querySelector("select[name='proyecto']").removeAttribute("disabled");
                     document.querySelector("input[name='id_cc']").removeAttribute("disabled");
                 }
                 break;
             case 'SELECCION_PROYECTOS':
-                if(valor >0){
-                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled",true);
-                    document.querySelector("input[name='id_cc']").setAttribute("disabled",true);
-                }else{
+                if (valor > 0) {
+                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled", true);
+                    document.querySelector("input[name='id_cc']").setAttribute("disabled", true);
+                } else {
                     document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
                     document.querySelector("input[name='id_cc']").removeAttribute("disabled");
                 }
                 break;
             case 'SELECCION_CDP':
-                if(valor >0){
-                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled",true);
-                    document.querySelector("select[name='proyecto']").setAttribute("disabled",true);
-                }else{
+                if (valor > 0) {
+                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled", true);
+                    document.querySelector("select[name='proyecto']").setAttribute("disabled", true);
+                } else {
                     document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
                     document.querySelector("select[name='proyecto']").removeAttribute("disabled");
                 }
                 break;
-        
+
             default:
                 break;
         }
@@ -527,8 +529,8 @@ class ListarRequerimientoPagoView {
             }
         }
         let optionDefault = document.createElement("option");
-        optionDefault.text= "Seleccione una opción";
-        optionDefault.value= "";
+        optionDefault.text = "Seleccione una opción";
+        optionDefault.value = "";
         selectElement.add(optionDefault);
 
         array.forEach(element => {
@@ -540,7 +542,7 @@ class ListarRequerimientoPagoView {
     }
 
 
-    updateDivision(obj){
+    updateDivision(obj) {
         let currentIdGrupo = obj.options[obj.selectedIndex].dataset.idGrupo;
         // console.log(currentIdGrupo);
         // console.log(obj.value);
@@ -615,19 +617,19 @@ class ListarRequerimientoPagoView {
         let that = this;
         vista_extendida();
         var vardataTables = funcDatatables();
-        const button_crear_nuevo_requerimiento = (array_accesos.find(element => element === 20)?{
-                text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
-                attr: {
-                    id: 'btnNuevoRequerimientoPago',
-                    title: 'Crear nuevo requerimiento de pago',
-                },
-                action: () => {
-                    this.nuevoRequerimientoPago();
+        const button_crear_nuevo_requerimiento = (array_accesos.find(element => element === 20) ? {
+            text: '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Nuevo',
+            attr: {
+                id: 'btnNuevoRequerimientoPago',
+                title: 'Crear nuevo requerimiento de pago',
+            },
+            action: () => {
+                this.nuevoRequerimientoPago();
 
-                },
-                className: 'btn-success btn-sm'
-            }:[]),
-            button_filtros = (array_accesos.find(element => element === 21)?{
+            },
+            className: 'btn-success btn-sm'
+        } : []),
+            button_filtros = (array_accesos.find(element => element === 21) ? {
                 text: '<span class="glyphicon glyphicon-filter" aria-hidden="true"></span> Filtros : 0',
                 attr: {
                     id: 'btnFiltrosListaRequerimientosElaborados',
@@ -638,8 +640,8 @@ class ListarRequerimientoPagoView {
 
                 },
                 className: 'btn-default btn-sm'
-            }:[]),
-            button_descargar_excel_cabecera = (array_accesos.find(element => element === 22)?{
+            } : []),
+            button_descargar_excel_cabecera = (array_accesos.find(element => element === 22) ? {
                 text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel cabecera',
                 attr: {
                     id: 'btnDescargarListaRequerimientosElaboradosExcel'
@@ -650,8 +652,8 @@ class ListarRequerimientoPagoView {
                 },
 
                 className: 'btn-default btn-sm'
-            }:[]),
-            button_descargar_excel_items = (array_accesos.find(element => element === 22)?{
+            } : []),
+            button_descargar_excel_items = (array_accesos.find(element => element === 22) ? {
                 text: '<span class="far fa-file-excel" aria-hidden="true"></span> Descargar a nivel item',
                 attr: {
                     id: 'btnDescargarListaRequerimientosElaboradosExcel'
@@ -662,7 +664,7 @@ class ListarRequerimientoPagoView {
                 },
 
                 className: 'btn-default btn-sm'
-            }:[]);
+            } : []);
         $tablaListaRequerimientoPago = $('#ListaRequerimientoPago').DataTable({
             'dom': vardataTables[1],
             'buttons': [button_crear_nuevo_requerimiento
@@ -679,7 +681,7 @@ class ListarRequerimientoPagoView {
                 //     },
                 //     className: 'btn-success btn-sm'
                 // }
-                ,button_filtros,button_descargar_excel_cabecera,button_descargar_excel_items
+                , button_filtros, button_descargar_excel_cabecera, button_descargar_excel_items
             ],
             'language': vardataTables[0],
             'order': [[0, 'desc']],
@@ -702,7 +704,7 @@ class ListarRequerimientoPagoView {
             },
             'columns': [
                 { 'data': 'id_requerimiento_pago', 'name': 'requerimiento_pago.id_requerimiento_pago', 'visible': false },
-                { 'data': 'prioridad', 'name': 'adm_prioridad.descripcion', 'className': 'text-center','visible': false },
+                { 'data': 'prioridad', 'name': 'adm_prioridad.descripcion', 'className': 'text-center', 'visible': false },
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'descripcion_requerimiento_pago_tipo', 'name': 'requerimiento_pago_tipo.descripcion' },
@@ -731,7 +733,7 @@ class ListarRequerimientoPagoView {
                 },
                 {
                     'render': function (data, type, row) {
-                        return row['simbolo_moneda'].concat(' ', $.number(row['monto_total'],2));
+                        return row['simbolo_moneda'].concat(' ', $.number(row['monto_total'], 2));
                     }, targets: 10
                 },
                 {
@@ -772,20 +774,20 @@ class ListarRequerimientoPagoView {
 
                         let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
                         let containerCloseBrackets = '</div></center>';
-                        let btnVerEnModal = (array_accesos.find(element => element === 13)?'<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>':'');
-                        let btnVerAdjuntosModal = (array_accesos.find(element => element === 31)?'<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '"  data-id-moneda="' + row.id_moneda + '" data-simbolo-moneda="' + row.simbolo_moneda +  '" data-monto-a-pagar="' + row.monto_total +'" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>':'');
+                        let btnVerEnModal = (array_accesos.find(element => element === 13) ? '<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>' : '');
+                        let btnVerAdjuntosModal = (array_accesos.find(element => element === 31) ? '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '"  data-id-moneda="' + row.id_moneda + '" data-simbolo-moneda="' + row.simbolo_moneda + '" data-monto-a-pagar="' + row.monto_total + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>' : '');
                         let btnEditar = '<button type="button" class="btn btn-xs btn-warning  handleClickEditarRequerimientoPago" name="btnEditarRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
                         let btnAnular = '<button type="button" class="btn btn-xs btn-danger  handleClickAnularRequerimientoPago" name="btnAnularRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Anular"><i class="fas fa-ban fa-xs"></i></button>';
-                        let btnImprimirEnPdf = (array_accesos.find(element => element === 30)?`<button type="button" class="btn btn-xs btn-default handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
+                        let btnImprimirEnPdf = (array_accesos.find(element => element === 30) ? `<button type="button" class="btn btn-xs btn-default handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
                         <i class="fas fa-print"></i>
-                        </button>`:'');
+                        </button>`: '');
 
                         let botonera = containerOpenBrackets + btnVerEnModal + btnImprimirEnPdf;
                         if (row.id_usuario == auth_user.id_usuario && (row.id_estado == 1 || row.id_estado == 3)) {
                             botonera += btnEditar + btnAnular;
                         }
                         // if (row.cantidad_adjuntos_pago > 0) {
-                            botonera += btnVerAdjuntosModal;
+                        botonera += btnVerAdjuntosModal;
                         // }
 
                         botonera += containerCloseBrackets;
@@ -896,7 +898,7 @@ class ListarRequerimientoPagoView {
         $('#modal-requerimiento-pago').modal({
             show: true,
             backdrop: 'static',
-            keyboard:false
+            keyboard: false
         });
         document.querySelector("div[id='modal-requerimiento-pago'] form[id='form-requerimiento-pago']").setAttribute("type", 'register');
         document.querySelector("div[id='modal-requerimiento-pago'] span[id='titulo-modal']").textContent = "Nuevo requerimiento de pago";
@@ -1047,10 +1049,10 @@ class ListarRequerimientoPagoView {
         }
 
         let optionDefault = document.createElement("option");
-        optionDefault.text= "Elija una opción";
-        optionDefault.value= "";
+        optionDefault.text = "Elija una opción";
+        optionDefault.value = "";
         selectElement.add(optionDefault);
-        
+
         array.forEach(element => {
             let option = document.createElement("option");
             option.text = element.descripcion;
@@ -1212,6 +1214,8 @@ class ListarRequerimientoPagoView {
 
     // modal partidas
     cargarModalPartidas(obj) {
+
+
         tempObjectBtnPartida = obj.target;
         let id_grupo = document.querySelector("form[id='form-requerimiento-pago'] select[name='grupo']").value;
         let id_proyecto = document.querySelector("form[id='form-requerimiento-pago'] select[name='proyecto']").value;
@@ -1226,7 +1230,11 @@ class ListarRequerimientoPagoView {
             $('#modal-partidas').modal({
                 show: true
             });
-            this.listarPartidas(id_grupo, id_proyecto > 0 ? id_proyecto : '');
+
+            if (!$("select[name='id_presupuesto_interno']").val() > 0) { //* si presupuesto interno fue seleccionado, no cargar presupuesto antiguo.
+
+                this.listarPartidas(id_grupo, id_proyecto > 0 ? id_proyecto : '');
+            }
         } else {
             Swal.fire(
                 '',
@@ -1239,7 +1247,6 @@ class ListarRequerimientoPagoView {
 
     listarPartidas(idGrupo, idProyecto) {
         this.limpiarTabla('listaPartidas');
-
         this.obtenerListaPartidas(idGrupo, idProyecto).then((res) => {
             this.construirListaPartidas(res);
 
@@ -1303,7 +1310,7 @@ class ListarRequerimientoPagoView {
             `;
 
             data['titulos'].forEach(titulo => {
-                if(titulo.id_presup ==presupuesto.id_presup){
+                if (titulo.id_presup == presupuesto.id_presup) {
                     html += `
                     <tr id="com-${titulo.id_titulo}">
                         <td><strong>${titulo.codigo}</strong></td>
@@ -1312,7 +1319,7 @@ class ListarRequerimientoPagoView {
                     </tr> `;
 
                     data['partidas'].forEach(partida => {
-                        if(partida.id_presup == presupuesto.id_presup){
+                        if (partida.id_presup == presupuesto.id_presup) {
                             if (titulo.codigo == partida.cod_padre) {
                                 html += `<tr id="par-${partida.id_partida}">
                                     <td style="width:15%; text-align:left;" name="codigo">${partida.codigo}</td>
@@ -1556,7 +1563,7 @@ class ListarRequerimientoPagoView {
         let total = 0;
         for (let index = 0; index < childrenTableTbody.length; index++) {
             // console.log(childrenTableTbody[index]);
-            if(parseInt(childrenTableTbody[index].querySelector("input[class='idEstado']").value) !=7){
+            if (parseInt(childrenTableTbody[index].querySelector("input[class='idEstado']").value) != 7) {
                 let cantidad = parseFloat(childrenTableTbody[index].querySelector("input[class~='cantidad']").value ? childrenTableTbody[index].querySelector("input[class~='cantidad']").value : 0);
                 let precioUnitario = parseFloat(childrenTableTbody[index].querySelector("input[class~='precio']").value ? childrenTableTbody[index].querySelector("input[class~='precio']").value : 0);
                 total += (cantidad * precioUnitario);
@@ -1738,7 +1745,7 @@ class ListarRequerimientoPagoView {
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
-            }else{
+            } else {
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
             }
         } else {
@@ -1759,11 +1766,11 @@ class ListarRequerimientoPagoView {
         if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
             let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
             tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].fecha_emision = obj.value;
-// console.log(tempArchivoAdjuntoRequerimientoPagoCabeceraList);
+            // console.log(tempArchivoAdjuntoRequerimientoPagoCabeceraList);
             var regExp = /[a-zA-Z]/g; //expresión regular
             if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'ACTUALIZAR';
-            }else{
+            } else {
                 tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action = 'GUARDAR';
             }
         } else {
@@ -1961,7 +1968,7 @@ class ListarRequerimientoPagoView {
                     formData.append(`archivoAdjuntoRequerimientoPagoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoCabeceraList));
 
                     tempArchivoAdjuntoRequerimientoPagoCabeceraList.forEach(element => {
-                            formData.append(`archivo_adjunto_list[]`, element.file);
+                        formData.append(`archivo_adjunto_list[]`, element.file);
                     });
                 }
 
@@ -1969,7 +1976,7 @@ class ListarRequerimientoPagoView {
                     formData.append(`archivoAdjuntoRequerimientoPagoDetalleObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoPagoDetalleList));
 
                     tempArchivoAdjuntoRequerimientoPagoDetalleList.forEach(element => {
-                            formData.append(`archivo_adjunto_detalle_list[]`, element.file);
+                        formData.append(`archivo_adjunto_detalle_list[]`, element.file);
                     });
                 }
 
@@ -2252,10 +2259,10 @@ class ListarRequerimientoPagoView {
     mostrarDataEnVistaRapidaRequerimientoPago(data) {
         // console.log(data);
         // ### ==================== cabecera ====================== ###
-        var destinatario,nro_documento_destinatario,tipo_documento_destinatario, banco, tipo_cuenta, tipo_cuenta, moneda, nro_cuenta, nro_cci = '';
+        var destinatario, nro_documento_destinatario, tipo_documento_destinatario, banco, tipo_cuenta, tipo_cuenta, moneda, nro_cuenta, nro_cci = '';
         if (data.id_tipo_destinatario == 1 || data.id_persona > 0) {
             destinatario = data.persona != null ? ((data.persona.nombres).concat(' ', data.persona.apellido_paterno).concat(' ', data.persona.apellido_materno)) : '';
-            tipo_documento_destinatario = data.persona != null ? (data.persona.tipo_documento_identidad !=null?data.persona.tipo_documento_identidad.descripcion:''): '';
+            tipo_documento_destinatario = data.persona != null ? (data.persona.tipo_documento_identidad != null ? data.persona.tipo_documento_identidad.descripcion : '') : '';
             nro_documento_destinatario = data.persona != null ? data.persona.nro_documento : '';
             banco = data.cuenta_persona != null ? (data.cuenta_persona.banco != null && data.cuenta_persona.banco.contribuyente != null ? data.cuenta_persona.banco.contribuyente.razon_social : '') : '';
             tipo_cuenta = data.cuenta_persona != null ? (data.cuenta_persona.tipo_cuenta != null ? data.cuenta_persona.tipo_cuenta.descripcion : '') : '';
@@ -2264,7 +2271,7 @@ class ListarRequerimientoPagoView {
             nro_cci = data.cuenta_persona != null ? data.cuenta_persona.nro_cci : '';
         } else if (data.id_tipo_destinatario == 2 || data.id_contribuyente > 0) {
             destinatario = data.contribuyente != null ? data.contribuyente.razon_social : '';
-            tipo_documento_destinatario = data.contribuyente != null ? (data.contribuyente.tipo_documento_identidad !=null?data.contribuyente.tipo_documento_identidad.descripcion:''): '';
+            tipo_documento_destinatario = data.contribuyente != null ? (data.contribuyente.tipo_documento_identidad != null ? data.contribuyente.tipo_documento_identidad.descripcion : '') : '';
             nro_documento_destinatario = data.contribuyente != null ? data.contribuyente.nro_documento : '';
             banco = data.cuenta_contribuyente != null ? (data.cuenta_contribuyente.banco != null && data.cuenta_contribuyente.banco.contribuyente != null ? data.cuenta_contribuyente.banco.contribuyente.razon_social : '') : '';
             tipo_cuenta = data.cuenta_contribuyente != null ? (data.cuenta_contribuyente.tipo_cuenta != null ? data.cuenta_contribuyente.tipo_cuenta.descripcion : '') : '';
@@ -2283,7 +2290,7 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='prioridad']").textContent = data.prioridad != null && data.prioridad.descripcion != undefined ? data.prioridad.descripcion : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='fecha_registro']").textContent = data.fecha_registro;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='creado_por']").textContent = data.creado_por != null && data.creado_por.nombre_corto != undefined ? data.creado_por.nombre_corto : '';
-        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='solicitado_por']").textContent = data.nombre_trabajador!= null && data.nombre_trabajador != undefined ? data.nombre_trabajador : '';
+        document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='solicitado_por']").textContent = data.nombre_trabajador != null && data.nombre_trabajador != undefined ? data.nombre_trabajador : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='periodo']").textContent = data.periodo != null && data.periodo.descripcion != undefined ? data.periodo.descripcion : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='comentario']").textContent = data.comentario;
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosDestinatario'] td[id='tipo_destinatario']").textContent = data.tipo_destinatario != null ? data.tipo_destinatario.descripcion : '';
@@ -2299,17 +2306,17 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] span[name='simbolo_moneda']").textContent = data.moneda != null && data.moneda.simbolo != undefined ? data.moneda.simbolo : '';
         document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='listaDetalleRequerimientoPago'] label[name='total']").textContent = $.number(data.monto_total, 2);
 
-        if(data.id_cc>0){
-            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='codigo_cdp']").textContent = data.cuadro_presupuesto.codigo_oportunidad??'';
+        if (data.id_cc > 0) {
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='codigo_cdp']").textContent = data.cuadro_presupuesto.codigo_oportunidad ?? '';
             document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.remove("oculto");
-        }else{
+        } else {
             document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_cdp']").classList.add("oculto");
 
         }
-        if(data.id_proyecto>0){
-            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='proyecto_presupuesto']").textContent = data.proyecto.descripcion??'';
+        if (data.id_proyecto > 0) {
+            document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] td[id='proyecto_presupuesto']").textContent = data.proyecto.descripcion ?? '';
             document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.remove("oculto");
-        }else{
+        } else {
             document.querySelector("div[id='modal-vista-rapida-requerimiento-pago'] table[id='tablaDatosGenerales'] tr[id='contenedor_proyecto']").classList.add("oculto");
 
         }
@@ -2335,7 +2342,7 @@ class ListarRequerimientoPagoView {
 
                 document.querySelector("tbody[id='body_requerimiento_pago_detalle']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data.detalle[i].id_estado == '7' ? '#f1d7d7' : ''}">
                 <td>${i + 1}</td>
-                <td>${data.id_presupuesto_interno > 0 ?data.detalle[i].presupuesto_interno_detalle.partida : (data.detalle[i].partida ? data.detalle[i].partida.codigo : '')}</td>
+                <td>${data.id_presupuesto_interno > 0 ? data.detalle[i].presupuesto_interno_detalle.partida : (data.detalle[i].partida ? data.detalle[i].partida.codigo : '')}</td>
                 <td>${data.detalle[i].centro_costo ? data.detalle[i].centro_costo.codigo : ''}</td>
                 <td name="descripcion_servicio">${data.detalle[i].descripcion != null ? data.detalle[i].descripcion : ''} </td>
                 <td>${data.detalle[i].unidad_medida != null ? data.detalle[i].unidad_medida.descripcion : ''}</td>
@@ -2511,7 +2518,7 @@ class ListarRequerimientoPagoView {
             this.construirOptSelectDivision(data.id_grupo, data.id_division);
         }
 
-        if(data.id_grupo ==2){
+        if (data.id_grupo == 2) {
             document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.remove("oculto");
 
         }
@@ -2528,13 +2535,13 @@ class ListarRequerimientoPagoView {
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo']").value = data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] span[name='codigo']").textContent = data.codigo;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cc']").value = data.id_cc;
-        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.cuadro_presupuesto != null ? data.cuadro_presupuesto.codigo_oportunidad:'';
+        document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.cuadro_presupuesto != null ? data.cuadro_presupuesto.codigo_oportunidad : '';
 
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value = data.concepto;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = data.id_proyecto;
-        if(data.id_proyecto>0){
+        if (data.id_proyecto > 0) {
             document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.remove("oculto");
-        }else{
+        } else {
             document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.add("oculto");
 
         }
@@ -2624,12 +2631,12 @@ class ListarRequerimientoPagoView {
 
     }
 
-    modalVerAdjuntarArchivosCabecera(idRequerimientoPago){
+    modalVerAdjuntarArchivosCabecera(idRequerimientoPago) {
         $('#modal-ver-adjuntos-requerimiento-pago-cabecera').modal({
             show: true
         });
 
-        if(idRequerimientoPago >0){
+        if (idRequerimientoPago > 0) {
             this.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
                 this.getAdjuntosRequerimientoPagoCabecera(idRequerimientoPago).then((adjuntoList) => {
                     tempArchivoAdjuntoRequerimientoPagoCabeceraList = [];
@@ -2995,7 +3002,7 @@ class ListarRequerimientoPagoView {
         $('.select2').select2();
     }
 
-    modalVerAdjuntarArchivosDetalle(idRequerimientoPagoDetalle){
+    modalVerAdjuntarArchivosDetalle(idRequerimientoPagoDetalle) {
         $('#modal-ver-adjuntos-requerimiento-pago-detalle').modal({
             show: true
         });
@@ -3007,18 +3014,18 @@ class ListarRequerimientoPagoView {
                 tempArchivoAdjuntoRequerimientoPagoDetalleList = [];
                 this.getAdjuntosRequerimientoPagoDetalle(idRequerimientoPagoDetalle).then((adjuntoList) => {
                     (adjuntoList).forEach(element => {
-                        if(element.id_estado !=7){ // omitir anulados
+                        if (element.id_estado != 7) { // omitir anulados
 
-                        tempArchivoAdjuntoRequerimientoPagoDetalleList.push({
-                            id: element.id_requerimiento_pago_detalle_adjunto,
-                            id_requerimiento_pago_detalle: element.id_requerimiento_pago_detalle,
-                            nameFile: element.archivo,
-                            action: '',
-                            file: []
-                        });
-                    }
+                            tempArchivoAdjuntoRequerimientoPagoDetalleList.push({
+                                id: element.id_requerimiento_pago_detalle_adjunto,
+                                id_requerimiento_pago_detalle: element.id_requerimiento_pago_detalle,
+                                nameFile: element.archivo,
+                                action: '',
+                                file: []
+                            });
+                        }
                     });
-            this.construirTablaVerAdjuntosRequerimientoPagoDetalle(tempArchivoAdjuntoRequerimientoPagoDetalleList, idRequerimientoPagoDetalle);
+                    this.construirTablaVerAdjuntosRequerimientoPagoDetalle(tempArchivoAdjuntoRequerimientoPagoDetalleList, idRequerimientoPagoDetalle);
                 }).catch(function (err) {
                     console.log(err)
                 })
@@ -3027,7 +3034,7 @@ class ListarRequerimientoPagoView {
 
     }
 
-    construirTablaVerAdjuntosRequerimientoPagoDetalle(adjuntoList,idRequerimientoPagoDetalle){
+    construirTablaVerAdjuntosRequerimientoPagoDetalle(adjuntoList, idRequerimientoPagoDetalle) {
         this.limpiarTabla('listaVerAdjuntosRequerimientoPagodetalle');
 
         let html = '';
@@ -3080,8 +3087,8 @@ class ListarRequerimientoPagoView {
 
         //     textoDescripcion = (obj.closest('tr').querySelector("td[name='descripcion_servicio']")) ? ((obj.closest('tr').querySelector("td[name='descripcion_servicio']").textContent).length > 0 ? obj.closest('tr').querySelector("td[name='descripcion_servicio']").textContent : '') : '';
         // } else {
-            // document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago-detalle'] div[id='group-action-upload-file']").classList.remove("oculto");
-            textoDescripcion = (obj.closest('tr').querySelector("textarea[name='descripcion[]']")) ? ((obj.closest('tr').querySelector("textarea[name='descripcion[]']").value).length > 0 ? obj.closest('tr').querySelector("textarea[name='descripcion[]']").value : '') : '';
+        // document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago-detalle'] div[id='group-action-upload-file']").classList.remove("oculto");
+        textoDescripcion = (obj.closest('tr').querySelector("textarea[name='descripcion[]']")) ? ((obj.closest('tr').querySelector("textarea[name='descripcion[]']").value).length > 0 ? obj.closest('tr').querySelector("textarea[name='descripcion[]']").value : '') : '';
         // }
         document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago-detalle'] span[id='descripcion']").textContent = textoDescripcion.length > 0 ? textoDescripcion : '';
         this.listarArchivosAdjuntosDetalle(obj.dataset.id);
@@ -3098,18 +3105,18 @@ class ListarRequerimientoPagoView {
                 this.getAdjuntosRequerimientoPagoDetalle(idRequerimientoPagoDetalle).then((adjuntoList) => {
                     // console.log(adjuntoList);
                     (adjuntoList).forEach(element => {
-                        if(element.id_estado !=7){ // omitir anulados
+                        if (element.id_estado != 7) { // omitir anulados
 
-                        tempArchivoAdjuntoRequerimientoPagoDetalleList.push({
-                            id: element.id_requerimiento_pago_detalle_adjunto,
-                            id_requerimiento_pago_detalle: element.id_requerimiento_pago_detalle,
-                            nameFile: element.archivo,
-                            action: '',
-                            file: []
-                        });
-                    }
+                            tempArchivoAdjuntoRequerimientoPagoDetalleList.push({
+                                id: element.id_requerimiento_pago_detalle_adjunto,
+                                id_requerimiento_pago_detalle: element.id_requerimiento_pago_detalle,
+                                nameFile: element.archivo,
+                                action: '',
+                                file: []
+                            });
+                        }
                     });
-            this.construirTablaAdjuntosRequerimientoPagoDetalle(tempArchivoAdjuntoRequerimientoPagoDetalleList, idRequerimientoPagoDetalle);
+                    this.construirTablaAdjuntosRequerimientoPagoDetalle(tempArchivoAdjuntoRequerimientoPagoDetalleList, idRequerimientoPagoDetalle);
                 }).catch(function (err) {
                     console.log(err)
                 })
@@ -3163,7 +3170,7 @@ class ListarRequerimientoPagoView {
                 }
 
 
-                    html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoRequerimientoPagoDetalle ${hasDisableBtnEliminarArchivo}" name="btnEliminarArchivoRequerimientoPagoDetalle" title="Eliminar" data-id="${element.id}"  ><i class="fas fa-trash-alt"></i></button>`;
+                html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoRequerimientoPagoDetalle ${hasDisableBtnEliminarArchivo}" name="btnEliminarArchivoRequerimientoPagoDetalle" title="Eliminar" data-id="${element.id}"  ><i class="fas fa-trash-alt"></i></button>`;
 
                 html += `
             </div>

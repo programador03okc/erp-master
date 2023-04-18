@@ -6,12 +6,12 @@ class PresupuestoInternoModel {
 
  
 
-    obtenerListaDetallePrespuestoInterno(idPresupuestoIterno,mensualOAnual){
+    obtenerListaDetallePrespuestoInterno(idPresupuestoIterno){
 
         return new Promise(function(resolve, reject) {
             $.ajax({
                 type: 'GET',
-                url:`obtener-detalle-presupuesto-interno/${idPresupuestoIterno}/${mensualOAnual}`,
+                url:`obtener-detalle-presupuesto-interno/${idPresupuestoIterno}`,
                 dataType: 'JSON',
                 
                 beforeSend: function (data) { 

@@ -13,9 +13,6 @@ class OrdenCompraDetalle extends Model
     protected $appends = ['codigo_requerimiento'];
     public $timestamps = false;
 
-
-
-
     public function producto(){
         return $this->hasone('App\Models\Almacen\Producto','id_producto','id_producto');
     }
@@ -59,8 +56,6 @@ class OrdenCompraDetalle extends Model
             ->Join('almacen.alm_req','alm_req.id_requerimiento','alm_det_req.id_requerimiento')
             ->where('log_det_ord_compra.id_detalle_orden',$this->attributes['id_detalle_orden'])
             ->select('alm_req.codigo')->first()->codigo??''; 
-            
-
         }
         return $codigoRequerimiento;
 

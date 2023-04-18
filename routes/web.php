@@ -63,7 +63,6 @@ Route::post('enviar-correo', 'RecuperarClaveController@enviarCorreo')->name('env
 Route::get('recueperar-clave/ingresar-nueva-clave', 'RecuperarClaveController@ingresarNuevaClave')->name('recuperar.clave.ingresar');
 Route::post('buscar-codigo', 'RecuperarClaveController@buscarCodigo')->name('buscar.codigo');
 Route::post('guardar-cambio-clave', 'RecuperarClaveController@guardarCambioClave')->name('guardar.cambio.clave');
-
 Route::get('clave', 'LoginController@actualizarContraseña')->name('actualizar');
 Route::post('modificar-clave', 'LoginController@modificarClave')->name('modificarClave');
 
@@ -77,6 +76,11 @@ Route::group(['as' => 'api-consulta.', 'prefix' => 'api-consulta'], function () 
 	Route::get('tipo_cambio_masivo/{desde}/{hasta}', 'ApiController@tipoCambioMasivo')->name('tipo_cambio_masivo');
 	Route::get('tipo_cambio_actual', 'ApiController@tipoCambioActual')->name('tipo_cambio_actual');
 });
+
+/**
+ * Rutas para Testing
+ */
+Route::get('test-descripcion-adicional', 'TestController@testDescripcionAdicionalOrden')->name('test-descripcion-adicional');
 
 Auth::routes();
 
@@ -695,7 +699,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('listarIncidencias', 'Cas\IncidenciaController@listarIncidencias');
 
 				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
-				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}/{mensualOAnual?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
+				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
 
 			});
 
@@ -816,7 +820,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_trabajadores', 'ProyectosController@listar_trabajadores');
 
 				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
-				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}/{mensualOAnual?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
+				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 			// 	Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');
@@ -2941,6 +2945,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::group(['as' => 'scripts.', 'prefix' => 'scripts'], function () {
         Route::get('usuarios', 'ScriptController@usuarios');
+        Route::get('empresas', 'ScriptController@empresas');
+        Route::get('sedes', 'ScriptController@sedes');
+        Route::get('grupos', 'ScriptController@grupos');
     });
 
 });

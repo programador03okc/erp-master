@@ -149,7 +149,7 @@ class PresupuestoInternoController extends Controller
             $division_codigo = DivisionCodigo::where('sede_id',$request->sede_id)->where('division_id',$request->id_area)->first();
 
             $codigo = ($division_codigo?$division_codigo->codigo:$codigo);
-            $descripcion = ($division_codigo?$division_codigo->descripcion.' '.date('Y').'-'.$request->descripcion:$request->descripcion);
+            $descripcion = $request->descripcion;
 
             $presupuesto_interno                        = new PresupuestoInterno();
             $presupuesto_interno->codigo                = $codigo;
@@ -648,7 +648,9 @@ class PresupuestoInternoController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos,$value->id_acceso);
         }
-        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos','empresas'));
+        // return 'ss';exit;
+        $sedes = Sede::listarSedesPorEmpresa($presupuesto_interno->empresa_id);
+        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos','empresas','sedes'));
     }
     public function actualizar(Request $request)
     {
@@ -656,7 +658,7 @@ class PresupuestoInternoController extends Controller
 
         // return $request->descripcion ;exit;
         $division_codigo = DivisionCodigo::where('sede_id',$request->sede_id)->where('division_id',$request->id_area)->first();
-        $descripcion = ($division_codigo?$division_codigo->descripcion.' '.date('Y').'-'.(sizeof($array_descripcion)>1?$array_descripcion[1]:$array_descripcion[0]):$request->descripcion);
+        $descripcion = $request->descripcion;
 
         // return $descripcion ;exit;
 
