@@ -1178,7 +1178,7 @@ class ListarRequerimientoPagoView {
 
     // modal partidas
     cargarModalPartidas(obj) {
-        this.limpiarTabla('listaPartidas');
+        document.querySelector("div[id='listaPartidas']").innerHTML='';
 
         tempObjectBtnPartida = obj.target;
         let id_grupo = document.querySelector("form[id='form-requerimiento-pago'] select[name='grupo']").value;

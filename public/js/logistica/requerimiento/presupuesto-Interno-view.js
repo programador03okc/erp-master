@@ -70,7 +70,8 @@ class PresupuestoInternoView{
     }
 
     cargarPresupuestoDetalle(idPresupuestoIterno){
-        this.limpiarTabla('listaPresupuesto');
+        document.querySelector("div[id='listaPresupuesto']").innerHTML='';
+
 
         this.model.obtenerListaDetallePrespuestoInterno(idPresupuestoIterno).then((res) => {
             this.construirListaDetallePrespuestoInterno(res);
