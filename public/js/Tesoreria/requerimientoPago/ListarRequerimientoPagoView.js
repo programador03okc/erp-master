@@ -99,6 +99,8 @@ class ListarRequerimientoPagoView {
         });
 
         $('#ListaDetalleRequerimientoPago tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
+            document.querySelector("div[id='listaPartidas']").innerHTML='';
+            document.querySelector("div[id='listaPresupuesto']").innerHTML='';
             this.cargarModalPartidas(e);
         });
 
@@ -1178,8 +1180,7 @@ class ListarRequerimientoPagoView {
 
     // modal partidas
     cargarModalPartidas(obj) {
-        document.querySelector("div[id='listaPartidas']").innerHTML='';
-        document.querySelector("div[id='listaPresupuesto']").innerHTML='';
+
 
         tempObjectBtnPartida = obj.target;
         let id_grupo = document.querySelector("form[id='form-requerimiento-pago'] select[name='grupo']").value;

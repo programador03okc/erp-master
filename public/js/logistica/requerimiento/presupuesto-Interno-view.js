@@ -13,10 +13,14 @@ class PresupuestoInternoView{
         // });
 
         $('tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
+            document.querySelector("div[id='listaPartidas']").innerHTML='';
+            document.querySelector("div[id='listaPresupuesto']").innerHTML='';
             let id_presupuesto_interno = document.querySelector("select[name='id_presupuesto_interno']").value;
             if(id_presupuesto_interno>0){
                 this.cargarPresupuestoDetalle(id_presupuesto_interno);
             }else{
+                document.querySelector("div[id='listaPartidas']").innerHTML='';
+                document.querySelector("div[id='listaPresupuesto']").innerHTML='';
                 // Swal.fire(
                 //     '',
                 //     'No se puedo seleccionar el id de presupuesto para obtener su detalle, vuelva a intentar seleccionar un presupuesto interno.',
@@ -70,8 +74,7 @@ class PresupuestoInternoView{
     }
 
     cargarPresupuestoDetalle(idPresupuestoIterno){
-        document.querySelector("div[id='listaPartidas']").innerHTML='';
-        document.querySelector("div[id='listaPresupuesto']").innerHTML='';
+
 
         this.model.obtenerListaDetallePrespuestoInterno(idPresupuestoIterno).then((res) => {
             this.construirListaDetallePrespuestoInterno(res);
