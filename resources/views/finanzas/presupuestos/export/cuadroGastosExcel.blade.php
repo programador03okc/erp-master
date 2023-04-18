@@ -29,6 +29,7 @@
                 <th style="background-color: #cccccc;" width="18"><b>SubTotal</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>IGV</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>P.Compra</b></th>
+                <th style="background-color: #cccccc;" width="18"><b>Tipo cambio</b></th>
                 <th style="background-color: #cccccc;" width="18"><b>Estado pago</b></th>
             </tr>
         </thead>
@@ -59,6 +60,7 @@
                 <td>{{($d->cantidad * ($d->precio!==null?$d->precio:$d->precio_requerimiento))}}</td>
                 <td>{{($d->cantidad * ($d->precio!==null?$d->precio:$d->precio_requerimiento)) * 0.18}}</td>
                 <td>{{($d->cantidad * ($d->precio!==null?$d->precio:$d->precio_requerimiento)) + (($d->cantidad * ($d->precio!==null?$d->precio:$d->precio_requerimiento))*0.18)}}</td>
+                <td>{{$d->tipo_cambio}}</td>
                 <td>{{$d->estado_pago}}</td>
             </tr>
             @endforeach
@@ -84,6 +86,7 @@
                 <td>{{$d->subtotal}}</td>
                 <td>0</td>
                 <td>{{$d->subtotal}}</td>
+                <td>{{$d->tipo_cambio}}</td>
                 <td>{{$d->estado_pago}}</td>
             </tr>
             @endforeach
