@@ -15,6 +15,7 @@ class TestController extends Controller
 
         foreach ($lista as $key) {
             $nombre = strtoupper(trim($this->quitar_tildes(str_replace(['•', '&#160', '&#162', 'A¢', 'A'], '', htmlspecialchars_decode($key->descripcion_adicional)))));
+            //$nombre = strtoupper(trim($this->quitar_tildes(htmlspecialchars_decode(strip_tags($key->descripcion_adicional))))); //controlador
 
             // $update = OrdenCompraDetalle::find($key->id_detalle_orden);
             //     $update->descripcion_adicional = $nombre;
