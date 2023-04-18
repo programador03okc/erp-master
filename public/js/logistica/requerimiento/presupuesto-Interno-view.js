@@ -222,6 +222,15 @@ class PresupuestoInternoView{
         });
     }
 
+    limpiarTabla(idElement) {
+        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+        if (nodeTbody != null) {
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
+
+        }
+    }
     // seleccionarPresupuestoInterno(obj){
     //     if(obj.value >0){
     //         const codigoPresupuestoInterno=  obj.options[obj.selectedIndex].dataset.codigo;
