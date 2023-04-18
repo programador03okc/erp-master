@@ -1679,7 +1679,7 @@ class RequerimientoView {
                                 }
                                 data.forEach(hijo4 => {
                                     if (hijo3.id_centro_costo == hijo4.id_padre) {
-                                        console.log(hijo4);
+                                        // console.log(hijo4);
                                         if ((hijo4.id_padre > 0) && (hijo4.estado == 1)) {
                                             if (hijo4.nivel == 4) {
                                                 html += `
