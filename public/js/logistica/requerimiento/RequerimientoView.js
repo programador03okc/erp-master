@@ -58,15 +58,15 @@ class RequerimientoView {
 
         $('#form-requerimiento').on("click", "button.handleClickAgregarProducto", () => {
             this.agregarFilaProducto();
-            if($("select[name='id_presupuesto_interno']").val()>0){
-                this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
-            }
+            // if($("select[name='id_presupuesto_interno']").val()>0){
+            //     this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
+            // }
         });
         $('#form-requerimiento').on("click", "button.handleClickAgregarServicio", () => {
             this.agregarFilaServicio();
-            if($("select[name='id_presupuesto_interno']").val()>0){
-                this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
-            }
+            // if($("select[name='id_presupuesto_interno']").val()>0){
+            //     this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
+            // }
         });
 
         $('#listaRequerimiento tbody').on("click", "button.handleClickCargarRequerimiento", (e) => {
