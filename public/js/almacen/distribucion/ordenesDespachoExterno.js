@@ -107,7 +107,7 @@ function listarRequerimientosPendientes(usuario) {
             {
                 data: 'codigo', name: 'alm_req.codigo', className: "text-center",
                 'render': function (data, type, row) {
-                    return (row['codigo'] !== null ? row['codigo'] : '') + (row['estado'] == 38
+                    return (row['codigo'] !== null ? `<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a>` : '') + (row['estado'] == 38
                         ? ' <i class="fas fa-exclamation-triangle red" data-toggle="tooltip" data-placement="bottom" title="Requerimiento por regularizar"></i> '
                         : (row['estado'] == 39 ?
                             ' <i class="fas fa-pause orange" data-toggle="tooltip" data-placement="bottom" title="Requerimiento en pausa"></i> ' : ''))

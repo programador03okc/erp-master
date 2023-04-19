@@ -2244,6 +2244,24 @@ class OrdenController extends Controller
         ';
 
         $html .= '<br>
+        <table width="100%" border=0>
+            <caption class="left subtitle" style="padding-bottom:10px; font-size:0.7rem">' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Documents for dispatch' : 'Documentos para despacho') . ':</caption>
+
+            <tr>
+                <td nowrap  width="15%" class="verticalTop">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Invoice referencing the purchase order' : 'Factura referenciando la orden de compra.') . ' </td>
+            </tr>
+            <tr>
+                <td nowrap  width="15%" class="verticalTop">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Referral guide referencing the purchase order' : 'Guía de remisión referenciando la orden de compra') . ' </td>
+            </tr>
+            <tr>
+                <td nowrap  width="15%" class="verticalTop">-' . ($ordenArray['head']['id_tp_documento'] == 12 ? '01 Copy of the purchase order' : '01 copia de la orden de compra.') . '</td>
+
+            </tr>
+        </table>
+        <br>
+    ';
+
+        $html .= '<br>
 
                     <footer>
                         <p style="font-size:9px; " class="pie_de_pagina"> ' . ($ordenArray['head']['id_tp_documento'] == 12 ? 'Document made by ' : 'Generado por ') . ucwords(strtolower($ordenArray['head']['nombre_usuario'])) .  '<br>'
@@ -3726,6 +3744,8 @@ class OrdenController extends Controller
         $notificacion = [];
         $detalleArray=[];
         
+        $orden = Orden::with('sede')->find($id_orden);
+
         $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
             ->where([
                 ['id_orden_compra', $id_orden]
@@ -3862,7 +3882,6 @@ class OrdenController extends Controller
 
                     }
 
-                    $orden = Orden::with('sede')->find($id_orden);
                     // Compras (Karla Quijano, Luis Alegre, Richard Dorado) //id_usuario (78,75,4)
                     // Despacho (Ricardo Visbal, Yennifer Chicata, Silvia Nashñate) //id_usuario (64,74,97)
                     // Almacen (Henry Lozano, Dora Casales, Leandro Somontes y Geraldine Capcha) //id_usuario (60,93,96,66)
@@ -3983,13 +4002,14 @@ class OrdenController extends Controller
                         if ($hasIngreso['status'] != 200) {
                             $status = $hasIngreso['status'];
                             $tipo_estado = $hasIngreso['tipo_estado'];
+                            $msj[] = $hasIngreso['mensaje'];
+
                         } elseif ($hasPagoAutorizado['status'] != 200) {
                             $status = $hasPagoAutorizado['status'];
                             $tipo_estado = $hasPagoAutorizado['tipo_estado'];
+                            $msj[] = $hasPagoAutorizado['mensaje'];
                         }
 
-                        $msj[] = $hasIngreso['mensaje'];
-                        $msj[] = $hasPagoAutorizado['mensaje'];
                     }
 
 

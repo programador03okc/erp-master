@@ -270,8 +270,10 @@ class RequerimientoController extends Controller
                 'sis_grupo.descripcion as grupo',
                 'division.descripcion as division',
                 'alm_req.monto_total',
+                'presup_par.descripcion as descripcion_partida',
                 'presup_par.codigo as partida',
                 'presup_par.id_partida',
+                'centro_costo.descripcion as descripcion_centro_costo',
                 'centro_costo.codigo as centro_costo',
                 'centro_costo.id_centro_costo',
                 'adm_estado_doc.estado_doc as estado_requerimiento'

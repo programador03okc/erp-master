@@ -65,7 +65,41 @@ Presupuesto Interno
                         </div>
                     </div>
                     <div class="box-body">
+                        @if ($presupuesto_interno->estado === 2)
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-warning" role="alert">
+                                        <strong><i class="fa fa-question-circle"></i></strong>
+                                        El presupuestato se encuentra aprobado.
+                                        Al editar tener en concideración que la suma de las partidas no puede pasar el monto ya aprobado del Presupuesto Interno.
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="empresa_id">Empresas :</label>
+                                    <select class="form-control" name="empresa_id" id="empresa_id" required>
+                                        <option value="">Seleccione...</option>
+                                        @foreach ($empresas as $item)
+                                            <option value="{{ $item->id_empresa }}" {{($item->id_empresa===$presupuesto_interno->empresa_id?'selected':'')}}>{{ $item->codigo }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="sede_id">Sedes :</label>
+                                    <select class="form-control" name="sede_id" id="sede_id" required>
+                                        <option value="">Seleccione...</option>
+                                        @foreach ($sedes as $item)
+                                            <option value="{{ $item->id_sede }}" {{($item->id_sede===$presupuesto_interno->sede_id?'selected':'')}}>{{ $item->descripcion }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {{-- <input type="hidden" name="id_tipo_presupuesto"value="{{$presupuesto_interno->id_tipo_presupuesto}}"> --}}
@@ -1049,7 +1083,8 @@ Presupuesto Interno
                                             $id=rand();
                                             $id_padre=rand();
                                             $input_key=rand();
-                                            $array_excluidos = array('03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03');
+                                            // $array_excluidos = array('03.01.02.01','03.01.02.02','03.01.02.03','03.01.03.01','03.01.03.02','03.01.03.03');
+                                            $array_excluidos = array();
                                             $partida_hidden = in_array($item->partida, $array_excluidos);
                                         @endphp
                                     <input type="hidden" value="{{$item->id_presupuesto_interno_detalle}}" name="gastos[{{$input_key}}][id_presupuesto_interno_detalle]" class="form-control input-sm">
@@ -1540,9 +1575,24 @@ Presupuesto Interno
         // $elemento_array
         $(document).ready(function () {
             $('select[name="mes"] option[value="'+"{{$presupuesto_interno->mes}}"+'"]').attr('selected',true);
+
+
         });
+
+        // window.onscroll = function() {
+        //     var y = window.scrollY;
+        //     var position = $('table#partida-ingresos').position();
+        //     var top = position.top;
+        //     var left = position.left;
+        //     // console.log(y);
+        //     console.log(top);
+
+
+
+        // };
+
     </script>
 
-    <script src="{{asset('js/finanzas/presupuesto_interno/crear.js') }}""></script>
+    <script src="{{asset('js/finanzas/presupuesto_interno/crear.js') }}"></script>
     @endif
 @endsection

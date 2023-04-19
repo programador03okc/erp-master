@@ -9,6 +9,7 @@ use App\Models\Presupuestos\Presupuesto;
 use App\Models\Presupuestos\Grupo;
 use App\Models\Presupuestos\Moneda;
 use App\Http\Controllers\Controller;
+use App\Models\Administracion\Empresa;
 use App\Models\Configuracion\Usuario;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -31,16 +32,18 @@ class PresupuestoController extends Controller
     {
         $presupuesto = new Presupuesto();
         $grupos = Grupo::all();
+        $empresas = Empresa::all();
         $monedas = Moneda::all();
         $presupuestos = Presupuesto::where('estado', 1)->get();
 
-        return view('finanzas.presupuestos.create', compact('presupuesto', 'grupos', 'monedas', 'presupuestos'));
+        return view('finanzas.presupuestos.create', compact('presupuesto','empresas', 'grupos', 'monedas', 'presupuestos'));
     }
 
     public function mostrarPartidas($id)
     {
         $presup = Presupuesto::findOrFail($id);
         $presup->grupo;
+        $presup->empresa;
         $presup->monedaSeleccionada;
         $presup->titulos;
         $presup->partidas;
@@ -195,7 +198,7 @@ class PresupuestoController extends Controller
         );
 
         $data = Presupuesto::create([
-            'id_empresa' => 4,
+            'id_empresa' =>  request('id_empresa'),
             'id_grupo' => request('id_grupo'),
             'fecha_emision' => request('fecha_emision'),
             'codigo' => $codigo,
