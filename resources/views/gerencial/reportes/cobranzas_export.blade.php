@@ -25,11 +25,12 @@
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Periodo</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Moneda</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Importe</th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="5">Plazo Crédito </th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="9">Plazo Crédito </th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="25">Estado</th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Fase</th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="10">Area Responsable</th>
-                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Vendedor</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="18">Trámite</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="18">Fase</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="18">Area Responsable</th>
+                <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="18">Vendedor</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="15">Categoría</th>
                 <th style="border: 6px solid #000 !important; background-color: #cccccc; font-weight: bold; text-align: center;" width="30">Observaciones</th>
 
@@ -58,22 +59,23 @@
                 <td style="border: 6px solid #000 !important;">{{ $item->fuente_financ }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->fecha_emision }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->fecha_recepcion }}</td>
-                <td style="border: 6px solid #000 !important;">{{ $item->periodo }}</td>
-                <td style="border: 6px solid #000 !important;">{{ $item->moneda }}</td>
+                <td style="border: 6px solid #000 !important;" align="center">{{ $item->periodo }}</td>
+                <td style="border: 6px solid #000 !important;" align="center">{{ $item->moneda }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->importe }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->plazo_credito }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->estado_cobranza }}</td>
+                <td style="border: 6px solid #000 !important;">{{ $item->tipo_tramite }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->fase }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->area }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->usuario_responsable }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->categoria }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->observacion }}</td>
 
-                <td style="border: 6px solid #000 !important;">{{ ($item->tiene_penalidad) ? 'SI' : 'NO' }}</td>
+                <td style="border: 6px solid #000 !important;" align="center">{{ ($item->tiene_penalidad) ? 'SI' : 'NO' }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->monto_penalidad }}</td>
-                <td style="border: 6px solid #000 !important;">{{ ($item->tiene_retencion) ? 'SI' : 'NO' }}</td>
+                <td style="border: 6px solid #000 !important;" align="center">{{ ($item->tiene_retencion) ? 'SI' : 'NO' }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->monto_retencion }}</td>
-                <td style="border: 6px solid #000 !important;">{{ ($item->tiene_detraccion) ? 'SI' : 'NO' }}</td>
+                <td style="border: 6px solid #000 !important;" align="center">{{ ($item->tiene_detraccion) ? 'SI' : 'NO' }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->monto_detraccion }}</td>
                 <td style="border: 6px solid #000 !important;">{{ $item->programacion_pago }}</td>
             </tr>

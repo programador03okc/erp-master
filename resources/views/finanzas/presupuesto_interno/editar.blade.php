@@ -71,7 +71,7 @@ Presupuesto Interno
                                     <div class="alert alert-warning" role="alert">
                                         <strong><i class="fa fa-question-circle"></i></strong>
                                         El presupuestato se encuentra aprobado.
-                                        Al editar tener en concideración que suma de las partidas no puede pasar el monot ya aprobado del Presupuesto Interno.
+                                        Al editar tener en concideración que la suma de las partidas no puede pasar el monto ya aprobado del Presupuesto Interno.
                                     </div>
                                 </div>
                             </div>
