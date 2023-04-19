@@ -104,18 +104,33 @@
                                                                 <th style="width: 10%">Unidad</th>
                                                                 <th style="width: 6%">Cantidad</th>
                                                                 <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span></th>
-                                                                <th style="width: 6%">Subtotal</th>
+                                                                <th style="width: 6%">Total</th>
                                                                 <th style="width: 10%">Motivo</th>
                                                                 <th style="width: 10%">Facturas Vinculadas</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody ></tbody>
                                                         <tfoot>
-                                                            <!-- <tr>
-                                                        <td colspan="6" class="text-right"><strong>Total:</strong></td>
-                                                        <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
-                                                        <td></td>
-                                                    </tr> -->
+                                                            <tr>
+                                                                <td colspan="7" class="text-right"><strong>SubTotal:</strong></td>
+                                                                <td class="text-right"><span name="simboloMoneda">S/</span><label name="subtotal"> 0.00</label></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="7" class="text-right"><strong>IGV:</strong></td>
+                                                                <td class="text-right"><span name="simboloMoneda">S/</span><label name="totalIgv"> 0.00</label></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="7" class="text-right"><strong>ICBPER:</strong></td>
+                                                                <td class="text-right"><span name="simboloMoneda">S/</span><label name="totalICBPER"> 0.00</label></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="7" class="text-right"><strong>Total:</strong></td>
+                                                                <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
+                                                                <td></td>
+                                                            </tr>
                                                         </tfoot>
                                                     </table>
                                                 </div>

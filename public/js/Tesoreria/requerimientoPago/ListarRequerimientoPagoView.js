@@ -2803,10 +2803,13 @@ class ListarRequerimientoPagoView {
         adjuntoList.forEach(element => {
             html += `<tr id="${element.id}" style="text-align:center">
         <td style="text-align:left;">${element.nameFile}</td>
-        <td style="text-align:left;">${element.fecha_emision??''}</td>
-        <td style="text-align:center;"><span class="label label-info ver_doc"  data-id-doc-com="${element.id_doc_com}" style="cursor:pointer;">${element.serie??''}-${element.numero??''}</span></td> 
-        
-        <td>
+        <td style="text-align:left;">${element.fecha_emision??''}</td>`;
+        if(element.id_doc_com>0){
+            html+=`<td style="text-align:center;"><span class="label label-info ver_doc"  data-id-doc-com="${element.id_doc_com}" style="cursor:pointer;">${element.serie??''}-${element.numero??''}</span></td>`; 
+        }else{
+            html+=`<td style="text-align:center;">${element.serie??''}-${element.numero??''}</td>`; 
+        }
+        html+=`<td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto" ${hasDisabledSelectTipoArchivo}>
         `;
             categoriaAdjuntoList.forEach(categoria => {
@@ -2823,8 +2826,11 @@ class ListarRequerimientoPagoView {
 
         <td style="text-align:center;">
             <div class="btn-group" role="group">`;
+            if(element.id_doc_com>0){
+                html += `<button type="button" class="btn btn-primary btn-xs handleClickVerVinculoConFactura" name="btnVerVinculoConFactura" title="Ver vínculo con factura" data-id="${element.id}" ><i class="fas fa-link"></i></button>`;
+            }
             if (Number.isInteger(element.id)) {
-                html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoCabeceraRequerimientoPago" name="btnDescargarArchivoCabeceraRequerimientoPago" title="Descargar" data-id="${element.id}" ><i class="fas fa-paperclip"></i></button>`;
+                html += `<button type="button" class="btn btn-info btn-xs handleClickDescargarArchivoCabeceraRequerimientoPago" name="btnDescargarArchivoCabeceraRequerimientoPago" title="Descargar" data-id="${element.id}" ><i class="fas fa-file-download"></i></button>`;
             }
             if (tipoModal != 'lectura') {
                 html += `<button type="button" class="btn btn-danger btn-xs handleClickEliminarArchivoCabeceraRequerimientoPago ${hasHiddenBtnEliminarArchivo}" name="btnEliminarArchivoRequerimientoPago" title="Eliminar" data-id="${element.id}" ><i class="fas fa-trash-alt"></i></button>`;
@@ -3760,7 +3766,7 @@ class ListarRequerimientoPagoView {
             document.querySelector("div[id='modal-factura-requerimiento-pago'] input[name='fecha_emision_doc']").value=  this.factura.fecha_emision;
             document.querySelector("div[id='modal-factura-requerimiento-pago'] select[name='moneda']").value=  this.factura.id_moneda;
             document.querySelector("div[id='modal-factura-requerimiento-pago'] input[name='simbolo']").value= ( this.factura.id_moneda ==1?'S/':( this.factura.id_moneda==2?'$':''));
-            document.querySelector("div[id='modal-factura-requerimiento-pago'] input[name='importe']").value=  this.factura.monto_total;
+            document.querySelector("div[id='modal-factura-requerimiento-pago'] input[name='importe']").value=  this.factura.total_a_pagar;
             document.querySelector("div[id='modal-factura-requerimiento-pago'] select[name='id_sede']").value=  this.factura.id_sede;
 
             let html = '';
@@ -3773,13 +3779,14 @@ class ListarRequerimientoPagoView {
                             <td>${data.unidad}</td>
                             <td>${data.cantidad}</td>
                             <td>${data.precio_unitario}</td>
-                            <td>${data.subtotal}</td>
+                            <td style="text-align:right;"><input class="hidden subtotal" value="${data.subtotal}" >${( this.factura.id_moneda ==1?'S/':( this.factura.id_moneda==2?'$':''))}${$.number(data.subtotal,2,'.',',')}</td>
                             <td>${data.motivo}</td>
                         </tr>`;
             });
-
+            
             document.querySelector("table[id='ListaDetalleRequerimientoPagoYFactura'] tbody").innerHTML = html;
 
+            this.calcularTotalVincularItemsRequerimientoPagoConFactura();
 
         }else{
             Swal.fire(
@@ -3813,6 +3820,31 @@ class ListarRequerimientoPagoView {
 
     }
     
+    calcularTotalVincularItemsRequerimientoPagoConFactura(){
+        let TableTBody = document.querySelector("table[id='ListaDetalleRequerimientoPagoYFactura'] tbody");
+        let sumatotalItem=0;
+        let childrenTableTbody = TableTBody.children;
+        for (let index = 0; index < childrenTableTbody.length; index++) {
+            sumatotalItem += parseFloat(childrenTableTbody[index].querySelector("input[class~='subtotal']").value ? childrenTableTbody[index].querySelector("input[class~='subtotal']").value : 0);
+        }
+
+        const tipoDoc = document.querySelector("div[id='modal-adjuntar-archivos-requerimiento-pago'] select[name='categoriaAdjunto']").value;
+        let subtotal= 0;
+        let total_igv= 0;
+        let total_a_pagar= 0;
+        if(tipoDoc ==2){ //factura
+            subtotal = sumatotalItem / 1.18;
+            total_igv = sumatotalItem - subtotal;
+            total_a_pagar= sumatotalItem;
+        }else{
+            total_a_pagar= subtotal;
+        }
+
+
+        document.querySelector("table[id='ListaDetalleRequerimientoPagoYFactura'] tfoot label[name='subtotal']").textContent=$.number(subtotal,2,'.',',');
+        document.querySelector("table[id='ListaDetalleRequerimientoPagoYFactura'] tfoot label[name='totalIgv']").textContent=$.number(total_igv,2,'.',',');
+        document.querySelector("table[id='ListaDetalleRequerimientoPagoYFactura'] tfoot label[name='total']").textContent=$.number(total_a_pagar,2,'.',',');
+    }
 
 
 }

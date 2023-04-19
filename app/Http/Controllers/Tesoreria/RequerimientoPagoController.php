@@ -364,45 +364,47 @@ class RequerimientoPagoController extends Controller
                         // guardar factura solo si existe vinculo 
                         $documentoCompraArray=[];
                         $ObjectoFactura = json_decode($request->facturaObject);
-                        foreach ($ObjectoFactura as $keyObj => $value){
-                            if(count($value->items)>0){
-                                $documentoCompra = new DocumentoCompra();
-                                $documentoCompra->serie = $value->serie;
-                                $documentoCompra->numero = $value->numero;
-                                $documentoCompra->id_tp_doc = $value->id_tp_doc;
-                                $documentoCompra->fecha_emision = $value->fecha_emision;
-                                $documentoCompra->fecha_vcmto =  $value->fecha_emision;
-                                $documentoCompra->id_condicion = $value->id_condicion;
-                                $documentoCompra->moneda = $value->id_moneda;
-                                $documentoCompra->sub_total = $value->subtotal;
-                                $documentoCompra->total_igv = $value->total_igv;
-                                $documentoCompra->total_a_pagar = $value->total_a_pagar;
-                                $documentoCompra->usuario = Auth::user()->id_usuario;
-                                $documentoCompra->estado = 1;
-                                $documentoCompra->fecha_registro =  new Carbon();
-                                $documentoCompra->registrado_por = Auth::user()->id_usuario;
-                                $documentoCompra->id_sede = $value->id_sede;
-                                $documentoCompra->save();
-                                $documentoCompra->id_adjunto=$value->id_adjunto;
-                                $documentoCompraArray[]=$documentoCompra;
-
-                                for ($i = 0; $i < $count; $i++) {
-                                    foreach ($detalleArray as $key => $det) {
-                                        for($j =0; $j < count($value->items); $j++){
-                                            if ($det->idRegister == $value->items[$j]) {
-                                                $documentoCompraDetalle = new DocumentoCompraDetalle();
-                                                $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
-                                                $documentoCompraDetalle->cantidad =$det->cantidad;
-                                                $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
-                                                $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
-                                                $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
-                                                $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
-                                                $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
-                                                $documentoCompraDetalle->estado =1;
-                                                $documentoCompraDetalle->fecha_registro =new Carbon();
-                                                $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
-                                                $documentoCompraDetalle->id_detalle_requerimiento_pago =$det->id_requerimiento_pago_detalle;
-                                                $documentoCompraDetalle->save();
+                        if(isset($ObjectoFactura)){
+                            foreach ($ObjectoFactura as $keyObj => $value){
+                                if(count($value->items)>0){
+                                    $documentoCompra = new DocumentoCompra();
+                                    $documentoCompra->serie = $value->serie;
+                                    $documentoCompra->numero = $value->numero;
+                                    $documentoCompra->id_tp_doc = $value->id_tp_doc;
+                                    $documentoCompra->fecha_emision = $value->fecha_emision;
+                                    $documentoCompra->fecha_vcmto =  $value->fecha_emision;
+                                    $documentoCompra->id_condicion = $value->id_condicion;
+                                    $documentoCompra->moneda = $value->id_moneda;
+                                    $documentoCompra->sub_total = $value->subtotal;
+                                    $documentoCompra->total_igv = $value->total_igv;
+                                    $documentoCompra->total_a_pagar = $value->total_a_pagar;
+                                    $documentoCompra->usuario = Auth::user()->id_usuario;
+                                    $documentoCompra->estado = 1;
+                                    $documentoCompra->fecha_registro =  new Carbon();
+                                    $documentoCompra->registrado_por = Auth::user()->id_usuario;
+                                    $documentoCompra->id_sede = $value->id_sede;
+                                    $documentoCompra->save();
+                                    $documentoCompra->id_adjunto=$value->id_adjunto;
+                                    $documentoCompraArray[]=$documentoCompra;
+    
+                                    for ($i = 0; $i < $count; $i++) {
+                                        foreach ($detalleArray as $key => $det) {
+                                            for($j =0; $j < count($value->items); $j++){
+                                                if ($det->idRegister == $value->items[$j]) {
+                                                    $documentoCompraDetalle = new DocumentoCompraDetalle();
+                                                    $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
+                                                    $documentoCompraDetalle->cantidad =$det->cantidad;
+                                                    $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
+                                                    $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
+                                                    $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
+                                                    $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
+                                                    $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
+                                                    $documentoCompraDetalle->estado =1;
+                                                    $documentoCompraDetalle->fecha_registro =new Carbon();
+                                                    $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
+                                                    $documentoCompraDetalle->id_detalle_requerimiento_pago =$det->id_requerimiento_pago_detalle;
+                                                    $documentoCompraDetalle->save();
+                                                }
                                             }
                                         }
                                     }
@@ -422,7 +424,7 @@ class RequerimientoPagoController extends Controller
                         $ObjectoAdjunto[$keyObj]->codigo = $codigo;
 
                         
-                        if(!empty($documentoCompraArray)){
+                        if(count($documentoCompraArray)>0){
                             foreach ($documentoCompraArray as $keyDoc => $docCom) {
                                 if($ObjectoAdjunto[$keyObj]->id ==$docCom->id_adjunto){
                                     $ObjectoAdjunto[$keyObj]->id_doc_com = $docCom->id_doc_com;
