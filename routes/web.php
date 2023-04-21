@@ -1678,7 +1678,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::post('obtenerArchivosOc', 'Tesoreria\Facturacion\PendientesFacturacionController@obtenerArchivosOc')->name('obtener-archivos-oc');
 				Route::get('mostrarTransportistas', 'Logistica\Distribucion\DistribucionController@mostrarTransportistas');
 
-				Route::get('autogenerarDocumentosCompra/{id}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
+				Route::get('autogenerarDocumentosCompra/{id}/{tr}', 'Tesoreria\Facturacion\VentasInternasController@autogenerarDocumentosCompra')->name('autogenerarDocumentosCompra');
 				Route::get('verDocumentosAutogenerados/{id}', 'Tesoreria\Facturacion\VentasInternasController@verDocumentosAutogenerados');
 				Route::get('verDetalleRequerimientoDI/{id}', 'Logistica\Distribucion\OrdenesTransformacionController@verDetalleRequerimientoDI');
 				Route::get('almacenesPorUsuario', 'Almacen\Movimiento\TransferenciaController@almacenesPorUsuario');

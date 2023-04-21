@@ -21,7 +21,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class VentasInternasController extends Controller
 {
-    public function autogenerarDocumentosCompra($id)
+    public function autogenerarDocumentosCompra($id, $id_transferencia)
     {
         try {
             DB::beginTransaction();
@@ -100,52 +100,59 @@ class VentasInternasController extends Controller
                 $periodo = Periodo::where('estado', 1)->orderBy('descripcion', 'desc')->first();
 
                 $docCompra = new DocumentoCompra();
-                    $docCompra->serie = strtoupper($doc_ven->serie);
-                    $docCompra->numero = $doc_ven->numero;
-                    $docCompra->id_sede = $detalle->first()->id_sede;
-                    $docCompra->id_tp_doc = $doc_ven->id_tp_doc;
-                    $docCompra->id_proveedor = $doc_ven->id_proveedor;
-                    $docCompra->fecha_emision = $doc_ven->fecha_emision;
-                    $docCompra->fecha_vcmto = $doc_ven->fecha_vcmto;
-                    $docCompra->id_condicion = $doc_ven->id_condicion;
-                    $docCompra->credito_dias = $doc_ven->credito_dias;
-                    $docCompra->moneda = $doc_ven->moneda;
-                    $docCompra->id_condicion_softlink = $id_condicion_softlink;
-                    $docCompra->sub_total = $doc_ven->sub_total;
-                    $docCompra->total_igv = $doc_ven->total_igv;
-                    $docCompra->total_icbper = 0;
-                    $docCompra->tipo_cambio = $tipo_cambio->venta;
-                    $docCompra->porcen_igv = $doc_ven->porcen_igv;
-                    $docCompra->total_a_pagar = $doc_ven->total_a_pagar;
-                    $docCompra->usuario = $doc_ven->usuario;
-                    $docCompra->registrado_por = $id_usuario;
-                    $docCompra->estado = 1;
-                    $docCompra->fecha_registro = $fecha;
+                $docCompra->serie = strtoupper($doc_ven->serie);
+                $docCompra->numero = $doc_ven->numero;
+                $docCompra->id_sede = $detalle->first()->id_sede;
+                $docCompra->id_tp_doc = $doc_ven->id_tp_doc;
+                $docCompra->id_proveedor = $doc_ven->id_proveedor;
+                $docCompra->fecha_emision = $doc_ven->fecha_emision;
+                $docCompra->fecha_vcmto = $doc_ven->fecha_vcmto;
+                $docCompra->id_condicion = $doc_ven->id_condicion;
+                $docCompra->credito_dias = $doc_ven->credito_dias;
+                $docCompra->moneda = $doc_ven->moneda;
+                $docCompra->id_condicion_softlink = $id_condicion_softlink;
+                $docCompra->sub_total = $doc_ven->sub_total;
+                $docCompra->total_igv = $doc_ven->total_igv;
+                $docCompra->total_icbper = 0;
+                $docCompra->tipo_cambio = $tipo_cambio->venta;
+                $docCompra->porcen_igv = $doc_ven->porcen_igv;
+                $docCompra->total_a_pagar = $doc_ven->total_a_pagar;
+                $docCompra->usuario = $doc_ven->usuario;
+                $docCompra->registrado_por = $id_usuario;
+                $docCompra->estado = 1;
+                $docCompra->fecha_registro = $fecha;
                 $docCompra->save();
 
+                $req_original = DB::table('almacen.trans')
+                ->select('alm_req.id_requerimiento','alm_req.id_grupo','alm_req.id_proyecto')
+                ->join('almacen.alm_req','alm_req.id_requerimiento','=','trans.id_requerimiento')
+                ->where('id_transferencia', $id_transferencia)
+                ->first();
+
                 $requerimiento = new Requerimiento();
-                    $requerimiento->codigo = '-';
-                    $requerimiento->id_tipo_requerimiento = 7;
-                    $requerimiento->id_usuario = $id_usuario;
-                    $requerimiento->fecha_requerimiento = $fecha;
-                    $requerimiento->concepto = ('Compra segun doc ' . $doc_ven->serie . '-' . $doc_ven->numero).' - V.Int.';
-                    $requerimiento->id_grupo = 1;
-                    $requerimiento->id_prioridad = 1;
-                    $requerimiento->observacion = 'Creado de forma automática por venta interna';
-                    $requerimiento->id_moneda = 1;
-                    $requerimiento->id_empresa = $doc_ven->id_empresa;
-                    $requerimiento->id_periodo = $periodo->id_periodo; // ! actualiza;
-                    $requerimiento->id_sede = $detalle->first()->id_sede;
-                    $requerimiento->id_cliente = $doc_ven->id_cliente;
-                    $requerimiento->tipo_cliente = 2;
-                    $requerimiento->id_almacen = $detalle->first()->id_almacen;
-                    $requerimiento->confirmacion_pago = true;
-                    $requerimiento->fecha_entrega = $doc_ven->fecha_emision;
-                    $requerimiento->tiene_transformacion = false;
-                    $requerimiento->para_stock_almacen = false;
-                    $requerimiento->enviar_facturacion = false;
-                    $requerimiento->estado = 9;
-                    $requerimiento->fecha_registro = $fecha;
+                $requerimiento->codigo = '-';
+                $requerimiento->id_tipo_requerimiento = 7;
+                $requerimiento->id_usuario = $id_usuario;
+                $requerimiento->fecha_requerimiento = $fecha;
+                $requerimiento->concepto = ('Compra segun doc ' . $doc_ven->serie . '-' . $doc_ven->numero).' - V.Int.';
+                $requerimiento->id_grupo = ($req_original!==null ? $req_original->id_grupo : 1);
+                $requerimiento->id_proyecto = (($req_original!==null && $req_original->id_proyecto!==null) ? $req_original->id_proyecto : null);
+                $requerimiento->id_prioridad = 1;
+                $requerimiento->observacion = 'Creado de forma automática por venta interna';
+                $requerimiento->id_moneda = 1;
+                $requerimiento->id_empresa = $doc_ven->id_empresa;
+                $requerimiento->id_periodo = $periodo->id_periodo; // ! actualiza;
+                $requerimiento->id_sede = $detalle->first()->id_sede;
+                $requerimiento->id_cliente = $doc_ven->id_cliente;
+                $requerimiento->tipo_cliente = 2;
+                $requerimiento->id_almacen = $detalle->first()->id_almacen;
+                $requerimiento->confirmacion_pago = true;
+                $requerimiento->fecha_entrega = $doc_ven->fecha_emision;
+                $requerimiento->tiene_transformacion = false;
+                $requerimiento->para_stock_almacen = false;
+                $requerimiento->enviar_facturacion = false;
+                $requerimiento->estado = 9;
+                $requerimiento->fecha_registro = $fecha;
                 $requerimiento->save();
                 
                 $codigo = Requerimiento::crearCodigo(7, 1, $requerimiento->id_requerimiento, $periodo->id_periodo); // ! actualiar periodo 
