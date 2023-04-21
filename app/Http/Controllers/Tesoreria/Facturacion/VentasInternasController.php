@@ -155,7 +155,7 @@ class VentasInternasController extends Controller
                 $requerimiento->fecha_registro = $fecha;
                 $requerimiento->save();
                 
-                $codigo = Requerimiento::crearCodigo(7, 1, $requerimiento->id_requerimiento, $periodo->id_periodo); // ! actualiar periodo 
+                $codigo = Requerimiento::crearCodigo(7, $requerimiento->id_grupo, $requerimiento->id_requerimiento, $periodo->id_periodo); // ! actualiar periodo 
 
                 $documento = new Documento();
                     $documento->id_tp_documento = 1;
