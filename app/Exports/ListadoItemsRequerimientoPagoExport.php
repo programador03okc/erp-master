@@ -46,6 +46,7 @@ class ListadoItemsRequerimientoPagoExport implements FromView
                     'prioridad'=>$value->prioridad,
                     'codigo'=> $value->codigo,
                     'descripcion_centro_costo'=> $value->descripcion_centro_costo,
+                    'descripcion_partida_padre'=> $value->descripcion_partida_padre,
                     'partida'=> $value->partida,
                     'descripcion_partida'=> $value->descripcion_partida,
                     'centro_costo'=> $value->centro_costo,

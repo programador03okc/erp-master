@@ -1760,7 +1760,10 @@ class RequerimientoPagoController extends Controller
                 'centro_costo.codigo as centro_costo',
                 'centro_costo.descripcion as descripcion_centro_costo',
                 'centro_costo.id_centro_costo',
-                'requerimiento_pago_estado.descripcion as estado_requerimiento'
+                'requerimiento_pago_estado.descripcion as estado_requerimiento',
+                DB::raw("(SELECT presup_titu.descripcion
+                FROM finanzas.presup_titu
+                WHERE presup_titu.codigo = presup_par.cod_padre and presup_titu.id_presup=presup_par.id_presup limit 1) AS descripcion_partida_padre")
             )
             ->when(($meOrAll === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;

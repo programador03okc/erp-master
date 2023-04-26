@@ -4,8 +4,9 @@
             <th>Prioridad</th>
             <th>Requerimiento</th>
             <th>CDP</th>
-            <th>Cod.Partida</th>
-            <th>Des.Partida</th>
+            <th>Partida</th>
+            <th>Cod.sub Partida</th>
+            <th>Des.sub Partida</th>
             <th>Cod.Centro Costo</th>
             <th>Des.Centro Costo</th>
             <th>Motivo</th>
@@ -32,6 +33,7 @@
                     <td>{{ $item['prioridad'] }}</td>
                     <td>{{ $item['codigo'] }}</td>
                     <td>{{ $item['codigo_oportunidad'] }}</td>
+                    <td>{{ strtoupper($item['descripcion_partida_padre']) }}</td>
                     <td>{{ $item['partida'] }}</td>
                     <td>{{ $item['descripcion_partida'] }}</td>
                     <td>{{ $item['centro_costo'] }}</td>
