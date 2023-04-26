@@ -57,9 +57,9 @@ class CobranzaExport implements FromView, WithStyles, WithColumnFormatting, With
     {
         $sheet->getStyle('D3:D' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
         $sheet->getStyle('F3:F' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
-        $sheet->getStyle('V3:V' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
         $sheet->getStyle('W3:W' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
-        $sheet->getStyle('A:AD')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('X3:X' . $sheet->getHighestRow())->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A:AE')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
         return [
             'A:AC' => [
@@ -72,8 +72,8 @@ class CobranzaExport implements FromView, WithStyles, WithColumnFormatting, With
     {
         return [
             "P" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            "Y" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            "AC" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            "Z" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            "AD" => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
     }
 }

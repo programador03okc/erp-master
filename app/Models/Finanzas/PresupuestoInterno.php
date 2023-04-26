@@ -471,4 +471,52 @@ class PresupuestoInterno extends Model
     {
         return $this->belongsTo(AdmGrupo::class,'id_grupo');
     }
+    public static function presupuestoEjecutado($id_presupuesto_interno, $id_tipo_presupuesto)
+    {
+        $presupuesto_interno_destalle=array();
+        switch ($id_tipo_presupuesto) {
+            case 1:
+                $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->where('registro',2)->get();
+            break;
+
+            case 2:
+                $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->where('registro',2)->get();
+            break;
+            case 3:
+                $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',3)->where('estado', 1)->where('registro',2)->orderBy('partida')->get();
+            break;
+        }
+        $array_nivel_partida = array();
+        foreach ($presupuesto_interno_destalle as $key => $value) {
+            $total=0;
+
+            $enero      = floatval(str_replace(",", "", $value->enero_aux));
+            $febrero    = floatval(str_replace(",", "", $value->febrero_aux));
+            $marzo      = floatval(str_replace(",", "", $value->marzo_aux ));
+            $abril      = floatval(str_replace(",", "", $value->abril_aux));
+            $mayo       = floatval(str_replace(",", "", $value->mayo_aux));
+            $junio      = floatval(str_replace(",", "", $value->junio_aux));
+            $julio      = floatval(str_replace(",", "", $value->julio_aux));
+            $agosto     = floatval(str_replace(",", "", $value->agosto_aux));
+            $setiembre  = floatval(str_replace(",", "", $value->setiembre_aux));
+            $octubre    = floatval(str_replace(",", "", $value->octubre_aux));
+            $noviembre  = floatval(str_replace(",", "", $value->noviembre_aux));
+            $diciembre  = floatval(str_replace(",", "", $value->diciembre_aux));
+            $total      = $enero + $febrero + $marzo + $abril + $mayo + $junio + $julio + $agosto + $setiembre + $octubre + $noviembre + $diciembre;
+            array_push($array_nivel_partida,array(
+                "partida"=>$value->partida,
+                "descripcion"=>$value->descripcion,
+                "total"=>round($total, 2),
+            ));
+        }
+        $total_ejecutado = 0;
+        foreach ($array_nivel_partida as $key => $value) {
+            $total_ejecutado = $total_ejecutado + $value['total'];
+        }
+        $presupuesto_total = PresupuestoInterno::calcularTotalPresupuestoAnual($id_presupuesto_interno, $id_tipo_presupuesto);
+        $total_ejecutado = $presupuesto_total - $total_ejecutado;
+        return $total_ejecutado;
+
+        // return 'ejecutado';
+    }
 }
