@@ -10,4 +10,5 @@ class HistorialPresupuestoInternoSaldo extends Model
     protected $table = 'finanzas.historial_presupuesto_interno_saldo';
     protected $primaryKey = 'id';
     public $timestamps = false;
+
 }

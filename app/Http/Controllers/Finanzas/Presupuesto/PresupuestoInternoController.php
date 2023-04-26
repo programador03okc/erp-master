@@ -65,6 +65,13 @@ class PresupuestoInternoController extends Controller
 
             return floatval(str_replace(",", "", $total));
         })
+        ->addColumn('total_ejecutado', function ($data){
+            $total_ejecutado = 0;
+            if ($data->estado==2) {
+                $total_ejecutado = PresupuestoInterno::presupuestoEjecutado($data->id_presupuesto_interno,3);
+            }
+            return floatval(str_replace(",", "", round($total_ejecutado, 2)));
+        })
         // ->toJson();
         ->make(true);
     }
