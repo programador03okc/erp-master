@@ -52,11 +52,11 @@
                                     <tbody id="body_archivos_requerimiento_pago_cabecera">
                                         <thead>
                                             <th style="width: 30%;">Nombre archivo</th>
-                                            <th>Fecha emisión</th>
-                                            <th>Número y serie</th>
-                                            <th>Categoría adjunto</th>
-                                            <th>Monto total</th>
-                                            <th>Acción</th>
+                                            <th style="width: 10%;">Fecha emisión</th>
+                                            <th style="width: 15%;">Número y serie</th>
+                                            <th style="width: 20%;">Categoría adjunto</th>
+                                            <th style="width: 20%;">Monto total</th>
+                                            <th style="width: 5%;">Acción</th>
                                         </thead>
                                     </tbody>
                                 </table>

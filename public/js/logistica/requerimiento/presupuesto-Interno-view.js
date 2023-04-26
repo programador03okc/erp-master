@@ -13,10 +13,14 @@ class PresupuestoInternoView{
         // });
 
         $('tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
+            document.querySelector("div[id='listaPartidas']").innerHTML='';
+            document.querySelector("div[id='listaPresupuesto']").innerHTML='';
             let id_presupuesto_interno = document.querySelector("select[name='id_presupuesto_interno']").value;
             if(id_presupuesto_interno>0){
                 this.cargarPresupuestoDetalle(id_presupuesto_interno);
             }else{
+                document.querySelector("div[id='listaPartidas']").innerHTML='';
+                document.querySelector("div[id='listaPresupuesto']").innerHTML='';
                 // Swal.fire(
                 //     '',
                 //     'No se puedo seleccionar el id de presupuesto para obtener su detalle, vuelva a intentar seleccionar un presupuesto interno.',
@@ -70,6 +74,7 @@ class PresupuestoInternoView{
     }
 
     cargarPresupuestoDetalle(idPresupuestoIterno){
+
 
         this.model.obtenerListaDetallePrespuestoInterno(idPresupuestoIterno).then((res) => {
             this.construirListaDetallePrespuestoInterno(res);
@@ -208,7 +213,7 @@ class PresupuestoInternoView{
 
             res.forEach(element => {
                 let option = document.createElement("option");
-                option.text = element.descripcion;
+                option.text = element.descripcion+(element.estado !=2?'(NO APROBADO)':'');
                 option.value = element.id_presupuesto_interno;
                 option.setAttribute('data-codigo', element.codigo);
                 option.setAttribute('data-id-grupo', element.id_grupo);
@@ -221,6 +226,15 @@ class PresupuestoInternoView{
         });
     }
 
+    limpiarTabla(idElement) {
+        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+        if (nodeTbody != null) {
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
+
+        }
+    }
     // seleccionarPresupuestoInterno(obj){
     //     if(obj.value >0){
     //         const codigoPresupuestoInterno=  obj.options[obj.selectedIndex].dataset.codigo;

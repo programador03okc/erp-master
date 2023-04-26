@@ -8,7 +8,7 @@ var tempArchivoAdjuntoRequerimientoCabeceraList = [];
 var tempArchivoAdjuntoRequerimientoDetalleList = [];
 var objBotonAdjuntoRequerimientoDetalleSeleccionado = '';
 class RequerimientoView {
-    constructor(requerimientoCtrl,presupuestoInternoView) {
+    constructor(requerimientoCtrl, presupuestoInternoView) {
         this.requerimientoCtrl = requerimientoCtrl;
         this.presupuestoInternoView = presupuestoInternoView;
     }
@@ -146,56 +146,56 @@ class RequerimientoView {
         });
 
         $('body').on("change", "select.handleChangePresupuestoInterno", (e) => {
-            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PRESUPUESTO_INTERNO',e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PRESUPUESTO_INTERNO', e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
         });
 
-        $('#form-requerimiento').on("change","select.handleChangeProyecto", (e)=>{
-            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PROYECTOS',e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
+        $('#form-requerimiento').on("change", "select.handleChangeProyecto", (e) => {
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PROYECTOS', e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
         });
 
         $('#listaCuadroPresupuesto').on("click", "button.handleClickSeleccionarCDP", (e) => {
             console.log(e.currentTarget.dataset.idCc);
-            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP',e.currentTarget.dataset.idCc);  
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP', e.currentTarget.dataset.idCc);
         });
 
         $('body').on("click", "button.handleClickLimpiarSeleccionCuadroDePresupuesto", (e) => {
-            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP',0); 
-            document.querySelector("input[name='id_cc']").value ='';
+            this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP', 0);
+            document.querySelector("input[name='id_cc']").value = '';
             document.querySelector("input[name='codigo_oportunidad']").value = '';
         });
 
     }
 
-    deshabilitarOtrosTiposDePresupuesto(origen, valor){
+    deshabilitarOtrosTiposDePresupuesto(origen, valor) {
         switch (origen) {
             case 'SELECCION_PRESUPUESTO_INTERNO':
-                if(valor >0){
-                    document.querySelector("select[name='id_proyecto']").setAttribute("disabled",true);
-                    document.querySelector("input[name='id_cc']").setAttribute("disabled",true);
-                }else{
+                if (valor > 0) {
+                    document.querySelector("select[name='id_proyecto']").setAttribute("disabled", true);
+                    document.querySelector("input[name='id_cc']").setAttribute("disabled", true);
+                } else {
                     document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
                     document.querySelector("input[name='id_cc']").removeAttribute("disabled");
                 }
                 break;
             case 'SELECCION_PROYECTOS':
-                if(valor >0){
-                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled",true);
-                    document.querySelector("input[name='id_cc']").setAttribute("disabled",true);
-                }else{
+                if (valor > 0) {
+                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled", true);
+                    document.querySelector("input[name='id_cc']").setAttribute("disabled", true);
+                } else {
                     document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
                     document.querySelector("input[name='id_cc']").removeAttribute("disabled");
                 }
                 break;
             case 'SELECCION_CDP':
-                if(valor >0){
-                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled",true);
-                    document.querySelector("select[name='id_proyecto']").setAttribute("disabled",true);
-                }else{
+                if (valor > 0) {
+                    document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled", true);
+                    document.querySelector("select[name='id_proyecto']").setAttribute("disabled", true);
+                } else {
                     document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
                     document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
                 }
                 break;
-        
+
             default:
                 break;
         }
@@ -251,13 +251,15 @@ class RequerimientoView {
             },
             'columns': [
                 { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center' },
-                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center','render':function(data, type, row){
-                    if(row.tiene_transformacion==true){
-                        return '<i class="fas fa-random"></i> '+row.codigo;
-                    }else{
-                        return row.codigo;
+                {
+                    'data': 'codigo', 'name': 'codigo', 'className': 'text-center', 'render': function (data, type, row) {
+                        if (row.tiene_transformacion == true) {
+                            return '<i class="fas fa-random"></i> ' + row.codigo;
+                        } else {
+                            return row.codigo;
+                        }
                     }
-                } },
+                },
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'fecha_entrega', 'name': 'fecha_entrega', 'className': 'text-center' },
                 { 'data': 'tipo_requerimiento', 'name': 'alm_tp_req.descripcion', 'className': 'text-center' },
@@ -422,19 +424,19 @@ class RequerimientoView {
                     this.mostrarHistorialRevisionAprobacion(data['historial_aprobacion']);
                     disabledControl(btnAdjuntosRequerimiento, true);
 
-                if (data['requerimiento'][0].id_usuario == auth_user.id_usuario) {
-                    hasDisabledInput = '';
-                    document.querySelector("form[id='form-requerimiento']").setAttribute('type', 'edition');
-                    changeStateButton('editar'); //init.js
-                    disabledControl(btnAdjuntosRequerimiento, false);
+                    if (data['requerimiento'][0].id_usuario == auth_user.id_usuario) {
+                        hasDisabledInput = '';
+                        document.querySelector("form[id='form-requerimiento']").setAttribute('type', 'edition');
+                        changeStateButton('editar'); //init.js
+                        disabledControl(btnAdjuntosRequerimiento, false);
 
-                    // allButtonAdjuntarNuevo.forEach(element => {
-                    //     element.removeAttribute("disabled");
-                    // });
+                        // allButtonAdjuntarNuevo.forEach(element => {
+                        //     element.removeAttribute("disabled");
+                        // });
 
-                    $("#form-requerimiento .activation").attr('disabled', false);
+                        $("#form-requerimiento .activation").attr('disabled', false);
 
-                }
+                    }
 
 
 
@@ -581,16 +583,16 @@ class RequerimientoView {
 
 
     mostrarDetalleRequerimiento(data, hasDisabledInput) {
-        let dataCabeceraRequerimiento =data['requerimiento'];
-        let dataDetalleRequerimiento=data['det_req'];
-        if(dataCabeceraRequerimiento[0].id_tipo_requerimiento==6){
+        let dataCabeceraRequerimiento = data['requerimiento'];
+        let dataDetalleRequerimiento = data['det_req'];
+        if (dataCabeceraRequerimiento[0].id_tipo_requerimiento == 6) {
             document.querySelector("div[id='input-group-incidencia']").removeAttribute("hidden");
-            document.querySelector("input[name='id_incidencia']").value=dataCabeceraRequerimiento[0].id_incidencia??'';
-            document.querySelector("input[name='codigo_incidencia']").value=dataCabeceraRequerimiento[0].codigo_incidencia??'';
-            document.querySelector("input[name='cliente_incidencia']").value=dataCabeceraRequerimiento[0].cliente_incidencia??'';
+            document.querySelector("input[name='id_incidencia']").value = dataCabeceraRequerimiento[0].id_incidencia ?? '';
+            document.querySelector("input[name='codigo_incidencia']").value = dataCabeceraRequerimiento[0].codigo_incidencia ?? '';
+            document.querySelector("input[name='cliente_incidencia']").value = dataCabeceraRequerimiento[0].cliente_incidencia ?? '';
 
-        }else{
-            document.querySelector("div[id='input-group-incidencia']").setAttribute("hidden",true);
+        } else {
+            document.querySelector("div[id='input-group-incidencia']").setAttribute("hidden", true);
         }
 
         this.limpiarTabla('ListaDetalleRequerimiento');
@@ -602,12 +604,12 @@ class RequerimientoView {
             // fix unidad medida que toma el html de un select oculto y debe tener por defecto seleccionado el option que viene de dataa
 
             let objOptionSelectUnidad = document.querySelector("select[id='selectUnidadMedida']").getElementsByTagName('option');
-            let newOptionUnidadMedida='';
+            let newOptionUnidadMedida = '';
             for (let j = 0; j < objOptionSelectUnidad.length; j++) {
                 if (objOptionSelectUnidad[j].value == dataDetalleRequerimiento[i].id_unidad_medida) {
-                    newOptionUnidadMedida+= `<option value="${objOptionSelectUnidad[j].value}" selected>${objOptionSelectUnidad[j].textContent}</option>`;
-                }else{
-                    newOptionUnidadMedida+= `<option value="${objOptionSelectUnidad[j].value}">${objOptionSelectUnidad[j].textContent}</option>`;
+                    newOptionUnidadMedida += `<option value="${objOptionSelectUnidad[j].value}" selected>${objOptionSelectUnidad[j].textContent}</option>`;
+                } else {
+                    newOptionUnidadMedida += `<option value="${objOptionSelectUnidad[j].value}">${objOptionSelectUnidad[j].textContent}</option>`;
 
                 }
 
@@ -634,7 +636,7 @@ class RequerimientoView {
                 <td>
                     <input class="form-control activation input-sm" type="text" name="partNumber[]" placeholder="Part number" value="${((dataDetalleRequerimiento[i].part_number != null && dataDetalleRequerimiento[i].part_number.length > 0) ? dataDetalleRequerimiento[i].part_number : (dataDetalleRequerimiento[i].producto_part_number != null ? dataDetalleRequerimiento[i].producto_part_number : ''))}" ${hasDisabledInput}> ${dataDetalleRequerimiento[i].tiene_transformacion == true ? '<br><span class="badge badge-secondary conSinTransformacionText">Transformado</span>' : '<span class="badge badge-secondary conSinTransformacionText"></span>'}
                     ${((dataDetalleRequerimiento[i].codigo_producto != null && dataDetalleRequerimiento[i].codigo_producto.length > 0) ? `<small> Código producto: ${dataDetalleRequerimiento[i].codigo_producto}</small>` : `<small> (Sin código de producto)</small>`)}
-                    <input type="number" class="conTransformacion" max="1" min="0" name="conTransformacion[]" value="${dataDetalleRequerimiento[i].tiene_transformacion==true?1:0}" hidden>
+                    <input type="number" class="conTransformacion" max="1" min="0" name="conTransformacion[]" value="${dataDetalleRequerimiento[i].tiene_transformacion == true ? 1 : 0}" hidden>
 
                     </td>
                 <td>
@@ -663,7 +665,7 @@ class RequerimientoView {
                             <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">${cantidadAdjuntos}</span>
                         </button>
                         <button type="button" class="btn btn-danger btn-xs activation handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar" ${hasDisabledInput}><i class="fas fa-trash-alt"></i></button>
-                        <button type="button" class="btn ${dataDetalleRequerimiento[i].tiene_transformacion ==true?'btn-success':'btn-default'} btn-xs handleClickAsignarComoProductoTransformado" name="btnAsignarComoProductoTransformado[]" title="sin transformación" style="display:${dataCabeceraRequerimiento[0]['id_tipo_requerimiento']==6?'block':'none'};"><i class="fas fa-random"></i></button>
+                        <button type="button" class="btn ${dataDetalleRequerimiento[i].tiene_transformacion == true ? 'btn-success' : 'btn-default'} btn-xs handleClickAsignarComoProductoTransformado" name="btnAsignarComoProductoTransformado[]" title="sin transformación" style="display:${dataCabeceraRequerimiento[0]['id_tipo_requerimiento'] == 6 ? 'block' : 'none'};"><i class="fas fa-random"></i></button>
                     </div>
                 </td>
                 </tr>`);
@@ -1002,42 +1004,42 @@ class RequerimientoView {
             obj.target.closest('div').classList.add("has-error");
         }
 
-        this.presupuestoInternoView.llenarComboPresupuestoInterno(currentIdGrupo,obj.target.value);
-        
+        this.presupuestoInternoView.llenarComboPresupuestoInterno(currentIdGrupo, obj.target.value);
+
         // mostrar sección segun el grupo de la división seleccionada y el grupo al que pertenece el usuario
 
         grupos.forEach(element => {
             id_grupo_usuario_sesion_list.push(element.id_grupo);
         });
 
-        if(currentIdGrupo ==2 && id_grupo_usuario_sesion_list.includes(2)){ // seleccion de una división que pertenece al grupo comercial y debe el usuario tener acceso al grupo comercial
-            document.querySelector("select[name='id_proyecto']").value="";
+        if (currentIdGrupo == 2 && id_grupo_usuario_sesion_list.includes(2)) { // seleccion de una división que pertenece al grupo comercial y debe el usuario tener acceso al grupo comercial
+            document.querySelector("select[name='id_proyecto']").value = "";
             document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
             document.querySelector("input[name='id_cc']").removeAttribute("disabled");
             document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
 
-            hiddeElement('mostrar','form-requerimiento',[
+            hiddeElement('mostrar', 'form-requerimiento', [
                 'input-group-cdp'
-                ]);
-        }else{
-            hiddeElement('ocultar','form-requerimiento',[
+            ]);
+        } else {
+            hiddeElement('ocultar', 'form-requerimiento', [
                 'input-group-cdp'
-                ]);
-        } 
-        if(currentIdGrupo ==3 && id_grupo_usuario_sesion_list.includes(3)){ // seleccion de una división que pertenece al grupo proyectos y debe el usuario tener acceso al grupo proyectos
-            document.querySelector("input[name='id_cc']").value="";
+            ]);
+        }
+        if (currentIdGrupo == 3 && id_grupo_usuario_sesion_list.includes(3)) { // seleccion de una división que pertenece al grupo proyectos y debe el usuario tener acceso al grupo proyectos
+            document.querySelector("input[name='id_cc']").value = "";
             document.querySelector("input[name='codigo_oportunidad']").value = '';
             document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
             document.querySelector("input[name='id_cc']").removeAttribute("disabled");
             document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
 
-            hiddeElement('mostrar','form-requerimiento',[
+            hiddeElement('mostrar', 'form-requerimiento', [
                 'input-group-proyecto'
-                ]);
-        }else{
-            hiddeElement('ocultar','form-requerimiento',[
+            ]);
+        } else {
+            hiddeElement('ocultar', 'form-requerimiento', [
                 'input-group-proyecto'
-                ]);
+            ]);
         }
 
     }
@@ -1056,7 +1058,7 @@ class RequerimientoView {
         if (obj.target.value == 6 || obj.target.value == 7) { // se seleccionó el tipo de requerimiento de "atención de garantías" o "Otros"
             document.querySelector("div[id='input-group-incidencia']").removeAttribute('hidden');
         } else {
-            document.querySelector("div[id='input-group-incidencia']").setAttribute('hidden',true);
+            document.querySelector("div[id='input-group-incidencia']").setAttribute('hidden', true);
         }
 
         if (obj.target.value != 4) { // se seleccionó el tipo de requerimiento diferente a compras para stock
@@ -1071,13 +1073,13 @@ class RequerimientoView {
         switch (opcion) {
             case 'ACTIVAR':
                 for (let i = 0; i < tbodyChildren.length; i++) {
-                    tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']")?tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']").style.display="block":false;
+                    tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']") ? tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']").style.display = "block" : false;
                 }
                 break;
 
             case 'DESACTIVAR':
                 for (let i = 0; i < tbodyChildren.length; i++) {
-                    tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']")?tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']").style.display="none":false;
+                    tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']") ? tbodyChildren[i].querySelector("button[name='btnAsignarComoProductoTransformado[]']").style.display = "none" : false;
                 }
                 break;
 
@@ -1158,7 +1160,7 @@ class RequerimientoView {
                     <span class="badge" name="cantidadAdjuntosItem" style="position:absolute; top:-10px; left:-10px; border: solid 0.1px;">0</span>
                 </button>
                 <button type="button" class="btn btn-danger btn-xs handleClickEliminarItem" name="btnEliminarItem[]" title="Eliminar"  ><i class="fas fa-trash-alt"></i></button>
-                <button type="button" class="btn btn-default btn-xs handleClickAsignarComoProductoTransformado" name="btnAsignarComoProductoTransformado[]" title="sin transformación" style="display:${document.querySelector("select[name='tipo_requerimiento']").value==6?"block":"none"};"><i class="fas fa-random"></i></button>
+                <button type="button" class="btn btn-default btn-xs handleClickAsignarComoProductoTransformado" name="btnAsignarComoProductoTransformado[]" title="sin transformación" style="display:${document.querySelector("select[name='tipo_requerimiento']").value == 6 ? "block" : "none"};"><i class="fas fa-random"></i></button>
             </div>
         </td>
         </tr>`);
@@ -1351,6 +1353,8 @@ class RequerimientoView {
     // partidas
     cargarModalPartidas(obj) {
         // anterior modal
+        this.limpiarTabla('listaPartidas');
+
         tempObjectBtnPartida = obj.target;
         let id_grupo = document.querySelector("form[id='form-requerimiento'] input[name='id_grupo']").value;
         let id_proyecto = document.querySelector("form[id='form-requerimiento'] select[name='id_proyecto']").value;
@@ -1365,7 +1369,11 @@ class RequerimientoView {
                 show: true,
                 backdrop: 'true'
             });
-            this.listarPartidas(id_grupo, id_proyecto > 0 ? id_proyecto : null);
+
+            if (!$("select[name='id_presupuesto_interno']").val() > 0) { //* si presupuesto interno fue seleccionado, no cargar presupuesto antiguo.
+
+                this.listarPartidas(id_grupo, id_proyecto > 0 ? id_proyecto : null);
+            }
         } else {
             Swal.fire(
                 '',
@@ -1377,7 +1385,6 @@ class RequerimientoView {
 
     listarPartidas(idGrupo, idProyecto) {
         this.limpiarTabla('listaPartidas');
-
         this.requerimientoCtrl.obtenerListaPartidas(idGrupo, idProyecto).then((res) => {
             this.construirListaPartidas(res);
 
@@ -1672,7 +1679,7 @@ class RequerimientoView {
                                 }
                                 data.forEach(hijo4 => {
                                     if (hijo3.id_centro_costo == hijo4.id_padre) {
-                                        console.log(hijo4);
+                                        // console.log(hijo4);
                                         if ((hijo4.id_padre > 0) && (hijo4.estado == 1)) {
                                             if (hijo4.nivel == 4) {
                                                 html += `
@@ -2465,8 +2472,8 @@ class RequerimientoView {
             }
             if (typeActionForm == 'edition') {
 
-                if(parseInt(document.querySelector("form[id='form-requerimiento'] input[name='estado']").value) == 3 
-                && parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_usuario_req']").value) == auth_user.id_usuario ){
+                if (parseInt(document.querySelector("form[id='form-requerimiento'] input[name='estado']").value) == 3
+                    && parseInt(document.querySelector("form[id='form-requerimiento'] input[name='id_usuario_req']").value) == auth_user.id_usuario) {
                     Swal.fire({
                         title: 'Sustente la observación',
                         input: 'textarea',
@@ -2481,22 +2488,22 @@ class RequerimientoView {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             sustento = (result.value).toString();
-                            if((sustento.trim()).length > 0){
+                            if ((sustento.trim()).length > 0) {
                                 formData.append(`sustento`, sustento);
 
                                 this.actualizarRequerimiento(formData);
-                                
-                            }else{
+
+                            } else {
                                 Swal.fire(
-                                '',
-                                'Debe escribir un sustento para actualizar y levantar la observación',
-                                'warning'
+                                    '',
+                                    'Debe escribir un sustento para actualizar y levantar la observación',
+                                    'warning'
                                 );
                             }
                         }
                     });
-                    
-                }else{
+
+                } else {
                     this.actualizarRequerimiento(formData);
 
                 }
@@ -2513,7 +2520,7 @@ class RequerimientoView {
         }
     }
 
-    actualizarRequerimiento(formData){
+    actualizarRequerimiento(formData) {
         $.ajax({
             type: 'POST',
             url: 'actualizar-requerimiento',
@@ -2619,7 +2626,7 @@ class RequerimientoView {
                         // location.reload();
                         this.RestablecerFormularioRequerimiento();
 
-                    }else{
+                    } else {
                         Lobibox.notify(response.tipo_mensaje, {
                             title: false,
                             size: 'mini',
@@ -2711,20 +2718,20 @@ class RequerimientoView {
         }
     }
 
-    asignarComoProductoTransformado(obj){
+    asignarComoProductoTransformado(obj) {
 
         let inputConTransformacion = obj.closest('tr').querySelector("input[name='conTransformacion[]']");
         let conSinTransformacionText = obj.closest('tr').querySelector("span[class~='conSinTransformacionText']");
-        if(inputConTransformacion !=null && (inputConTransformacion.value== 0 || inputConTransformacion.value== '') ){
-            inputConTransformacion.value=1;
-            obj.classList.replace('btn-default','btn-success');
-            obj.setAttribute("title","Con transformación");
-            conSinTransformacionText.textContent="Transformado";
-        }else{
-            inputConTransformacion.value=0;
-            obj.classList.replace('btn-success','btn-default');
-            obj.setAttribute("title","Sin transformación");
-            conSinTransformacionText.textContent="";
+        if (inputConTransformacion != null && (inputConTransformacion.value == 0 || inputConTransformacion.value == '')) {
+            inputConTransformacion.value = 1;
+            obj.classList.replace('btn-default', 'btn-success');
+            obj.setAttribute("title", "Con transformación");
+            conSinTransformacionText.textContent = "Transformado";
+        } else {
+            inputConTransformacion.value = 0;
+            obj.classList.replace('btn-success', 'btn-default');
+            obj.setAttribute("title", "Sin transformación");
+            conSinTransformacionText.textContent = "";
 
         }
 

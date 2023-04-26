@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contabilidad\TipoDocumento;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -1243,6 +1244,12 @@ class ContabilidadController extends Controller
 
     }
 
+    function listaTipoDocumentos()
+    {
+        $data = TipoDocumento::where("estado", '!=', 7)->get();
+        return $data;
+        // return response()->json($data);
+    }
 
 }
 

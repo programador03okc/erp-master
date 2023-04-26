@@ -10,6 +10,8 @@ Listado de requerimientos de pago
 
 @section('estilos')
 <link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
+<link rel="stylesheet" href="{{ asset('template/plugins/select2/select2.css') }}">
+
 @endsection
 
 @section('breadcrumb')
@@ -101,6 +103,9 @@ Listado de requerimientos de pago
 @include('tesoreria.requerimiento_pago.modal_ver_agregar_adjuntos_requerimiento_pago')
 @include('logistica.requerimientos.modal_lista_trabajadores')
 
+@include('tesoreria.requerimiento_pago.modal_factura_requerimiento_pago')
+@include('almacen.documentos.doc_com_ver')
+
 @endsection
 
 @section('scripts')
@@ -113,6 +118,7 @@ Listado de requerimientos de pago
 <script src="{{ asset('datatables/Buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('datatables/Buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
 <script src="{{ asset('js/tesoreria/requerimientoPago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/ListarRequerimientoPagoView.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/requerimientoPago/nuevoDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoDestinatario.js'))}}"></script>
@@ -121,7 +127,7 @@ Listado de requerimientos de pago
 <script src="{{ asset('js/logistica/requerimiento/modal_lista_trabajadores.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/modal_lista_trabajadores.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/presupuesto-interno-view.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/presupuesto-interno-view.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/presupuesto-interno-model.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/presupuesto-interno-model.js'))}}"></script>
-
+<script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}?v={{filemtime(public_path('js/almacen/documentos/doc_com_ver.js'))}}"></script>
 
 <script>
     var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
@@ -145,8 +151,7 @@ Listado de requerimientos de pago
         listarRequerimientoPagoView.initializeEventHandlerListaRequerimientoPago();
 
 
-
-
+ 
     });
 
     var tieneAccionCrearRequerimientoPago = '{{Auth::user()->tieneAccion(142) }}';
@@ -154,5 +159,8 @@ Listado de requerimientos de pago
     // window.onload = function() {
     //     listarRequerimientoView.mostrar('ALL');
     // };
+
+
+
 </script>
 @endsection
