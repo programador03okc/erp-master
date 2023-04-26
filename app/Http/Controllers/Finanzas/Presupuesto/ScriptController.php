@@ -490,4 +490,9 @@ class ScriptController extends Controller
         $total = $ingresos - $costos - $gastos;
         return response()->json(["ingresos"=>$ingresos,"costos"=>$costos,"gastos"=>$gastos,"total"=>$total],200);
     }
+    public function totalEjecutado()
+    {
+        $presupuesto_interno_aprobado = PresupuestoInterno::where('estado',2)->get();
+        return response()->json(["success"=>$presupuesto_interno_aprobado],200);
+    }
 }
