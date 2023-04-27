@@ -188,7 +188,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('listar_acus_sin_presup', 'Proyectos\Catalogos\AcuController@listar_acus_sin_presup');
 				Route::get('mostrar_acu/{id}', 'Proyectos\Catalogos\AcuController@mostrar_acu');
 				Route::get('listar_acu_detalle/{id}', 'Proyectos\Catalogos\AcuController@listar_acu_detalle');
-				Route::get('listar_insumo_precios/{id}', 'Proyectos\Variables\InsumoController@listar_insumo_precios');
+				Route::get('listar_insumo_precios/{id}', 'Proyectos\Catalogos\InsumoController@listar_insumo_precios');
 
 				// Route::post('guardar_precio', 'ProyectosController@guardar_precio');
 				Route::post('guardar_acu', 'Proyectos\Catalogos\AcuController@guardar_acu');
@@ -197,8 +197,8 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('valida_acu_editar/{id}', 'Proyectos\Catalogos\AcuController@valida_acu_editar');
 				// Route::get('insumos/{id}/{cu}', 'Proyectos\Catalogos\AcuController@insumos');
 				Route::get('partida_insumos_precio/{id}/{ins}', 'Proyectos\Catalogos\AcuController@partida_insumos_precio');
-				Route::post('guardar_insumo', 'Proyectos\Variables\InsumoController@guardar_insumo');
-				Route::get('listar_insumos', 'Proyectos\Variables\InsumoController@listar_insumos');
+				Route::post('guardar_insumo', 'Proyectos\Catalogos\InsumoController@guardar_insumo');
+				Route::get('listar_insumos', 'Proyectos\Catalogos\InsumoController@listar_insumos');
 
 				Route::post('guardar_cu', 'Proyectos\Catalogos\AcuController@guardar_cu');
 				Route::post('update_cu', 'Proyectos\Catalogos\AcuController@update_cu');
