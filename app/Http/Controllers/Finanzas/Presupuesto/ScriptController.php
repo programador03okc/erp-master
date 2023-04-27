@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Finanzas\Presupuesto;
 
-use App\Helpers\StringHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Helpers\StringHelper;
+
 use App\Models\Administracion\Division;
 use App\Models\administracion\DivisionCodigo;
 use App\Models\Administracion\Sede;
@@ -489,5 +490,22 @@ class ScriptController extends Controller
         $gastos = PresupuestoInterno::calcularTotalPresupuestoAnual(49,3);
         $total = $ingresos - $costos - $gastos;
         return response()->json(["ingresos"=>$ingresos,"costos"=>$costos,"gastos"=>$gastos,"total"=>$total],200);
+    }
+    public function totalEjecutado()
+    {
+        $presupuesto_interno_aprobado = PresupuestoInterno::where('estado',2)->get();
+        $array_total=array();
+        foreach ($presupuesto_interno_aprobado as $key => $value) {
+            $total_ejecutado = PresupuestoInterno::presupuestoEjecutado($value->id_presupuesto_interno,3);
+            $total_ppti = PresupuestoInterno::calcularTotalPresupuestoAnual($value->id_presupuesto_interno,3);
+            array_push($array_total,array(
+                "id"=>$value->id_presupuesto_interno,
+                "codigo"=>$value->codigo,
+                "total_ppti"=>round($total_ppti, 2),
+                "total_ejecutado"=>round($total_ejecutado, 2),
+            ));
+        }
+
+        return response()->json($array_total,200);
     }
 }

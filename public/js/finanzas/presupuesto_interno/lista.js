@@ -55,6 +55,7 @@ function lista() {
             {data: 'estadopi', name:"estadopi" , class:"text-center"},
             {data: 'sede', name:"sede" , class:"text-center"},
             {data: 'total', name:"total" , class:"text-center"},
+            {data: 'total_ejecutado', name:"total_ejecutado" , class:"text-center"},
             // {
             //     render: function (data, type, row) {
             //         var estado = row['estado'],
