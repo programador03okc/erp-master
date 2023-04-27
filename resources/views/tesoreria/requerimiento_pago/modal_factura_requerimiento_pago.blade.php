@@ -2,7 +2,9 @@
     <div class="modal-dialog modal-lg" style="width: 90%;">
         <div class="modal-content">
             <form id="form-factura-requerimiento-pago" method="post" type="register">
+                <input type="hidden" name="id_doc_com">
                 <input type="hidden" name="id_requerimiento_pago" primary="ids">
+                <input type="hidden" name="id_adjunto">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                     <h3 class="modal-title" id="modal-title">
@@ -98,36 +100,33 @@
                                                         <thead>
                                                             <tr>
                                                                 <th style="width: 1%">Selec.</th>
-                                                                <th style="width: 10%">Partida</th>
-                                                                <th style="width: 10%">C.Costo</th>
                                                                 <th>Descripción de item</th>
                                                                 <th style="width: 10%">Unidad</th>
                                                                 <th style="width: 6%">Cantidad</th>
-                                                                <th style="width: 8%">Precio Unit.<span name="simboloMoneda">S/</span></th>
+                                                                <th style="width: 8%">Precio Unit.<span name="simboloMoneda"></span></th>
                                                                 <th style="width: 6%">Total</th>
-                                                                <th style="width: 10%">Motivo</th>
                                                                 <th style="width: 10%">Facturas Vinculadas</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody ></tbody>
                                                         <tfoot>
                                                             <tr>
-                                                                <td colspan="7" class="text-right"><strong>SubTotal:</strong></td>
+                                                                <td colspan="5" class="text-right"><strong>SubTotal:</strong></td>
                                                                 <td class="text-right"><span name="simboloMoneda">S/</span><label name="subtotal"> 0.00</label></td>
                                                                 <td></td>
                                                             </tr>
                                                             <tr>
-                                                                <td colspan="7" class="text-right"><strong>IGV:</strong></td>
+                                                                <td colspan="5" class="text-right"><strong>IGV:</strong></td>
                                                                 <td class="text-right"><span name="simboloMoneda">S/</span><label name="totalIgv"> 0.00</label></td>
                                                                 <td></td>
                                                             </tr>
                                                             <tr>
-                                                                <td colspan="7" class="text-right"><strong>ICBPER:</strong></td>
+                                                                <td colspan="5" class="text-right"><strong>ICBPER:</strong></td>
                                                                 <td class="text-right"><span name="simboloMoneda">S/</span><label name="totalICBPER"> 0.00</label></td>
                                                                 <td></td>
                                                             </tr>
                                                             <tr>
-                                                                <td colspan="7" class="text-right"><strong>Total:</strong></td>
+                                                                <td colspan="5" class="text-right"><strong>Total:</strong></td>
                                                                 <td class="text-right"><span name="simboloMoneda">S/</span><label name="total"> 0.00</label></td>
                                                                 <td></td>
                                                             </tr>
@@ -148,8 +147,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-primary" class="close" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-sm btn-warning handleClickCopiarDataActualDeRequerimientoAFactura" id="btnCopiarDataActualDeRequerimientoAFactura" data-toggle="tooltip" data-placement="bottom" title="Copiar data actual de requerimiento a factura">Copiar data de Requerimiento a factura</button>
                     <button type="button" class="btn btn-sm btn-success handleClickConfirmarCrearFactura" id="btnConfirmarCrearFactura" data-toggle="tooltip" data-placement="bottom" title="Confirmar crear factura">Confirmar crear factura</button>
-
+ 
                 </div>
             </form>
         </div>

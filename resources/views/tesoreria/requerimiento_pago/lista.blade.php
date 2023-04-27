@@ -82,14 +82,14 @@ Listado de requerimientos de pago
 </div>
 
 @include('tesoreria.requerimiento_pago.modal_vista_rapida_requerimiento_pago')
-@include('tesoreria.requerimiento_pago.modal_requerimiento_pago')
+    @include('tesoreria.requerimiento_pago.modal_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_lista_cuadro_presupuesto')
 
 @include('logistica.requerimientos.modal_partidas')
 @include('logistica.requerimientos.modal_centro_costos')
 @include('logistica.requerimientos.modal_filtros_listado de requerimientos de pago')
 
-@include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago')
+    @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago')
 @include('tesoreria.requerimiento_pago.modal_adjuntar_archivos_requerimiento_pago_detalle')
 
 @include('tesoreria.requerimiento_pago.modal_ver_adjuntos_requerimiento_pago_cabecera')
@@ -104,7 +104,6 @@ Listado de requerimientos de pago
 @include('logistica.requerimientos.modal_lista_trabajadores')
 
 @include('tesoreria.requerimiento_pago.modal_factura_requerimiento_pago')
-@include('almacen.documentos.doc_com_ver')
 
 @endsection
 
@@ -121,13 +120,13 @@ Listado de requerimientos de pago
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 
 <script src="{{ asset('js/tesoreria/requerimientoPago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/ListarRequerimientoPagoView.js'))}}"></script>
+<script src="{{ asset('js/tesoreria/requerimientoPago/FacturaView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/FacturaView.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/requerimientoPago/nuevoDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevoDestinatario.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/nuevaCuentaBancariaDestinatario.js'))}}"></script>
 <script src="{{ asset('js/tesoreria/requerimientoPago/verTodoAdjuntosYAdicionalesRequerimientoPago.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/verTodoAdjuntosYAdicionalesRequerimientoPago.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modal_lista_trabajadores.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/modal_lista_trabajadores.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/presupuesto-interno-view.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/presupuesto-interno-view.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/presupuesto-interno-model.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/presupuesto-interno-model.js'))}}"></script>
-<script src="{{ asset('js/almacen/documentos/doc_com_ver.js')}}?v={{filemtime(public_path('js/almacen/documentos/doc_com_ver.js'))}}"></script>
 
 <script>
     var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
@@ -145,11 +144,13 @@ Listado de requerimientos de pago
 
 
         const listarRequerimientoPagoView = new ListarRequerimientoPagoView(presupuestoInternoView);
-
+        
         listarRequerimientoPagoView.mostrarListaRequerimientoPago('ALL');
-
+        
         listarRequerimientoPagoView.initializeEventHandlerListaRequerimientoPago();
-
+        
+        const facturaView = new FacturaView(presupuestoInternoView);
+        facturaView.eventos();
 
  
     });

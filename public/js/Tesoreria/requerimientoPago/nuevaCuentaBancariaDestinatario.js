@@ -159,7 +159,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
                         </option>`;
                         document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
                     });
-                    console.log(response);
+                    // console.log(response);
                     // document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', `<option value="" selected>Seleccione...</option>`);
                     // $('#form-requerimiento-pago .modal-body select[name="id_cuenta"]').append('<option value="" selected="true">Seleccione...</option>');
 

@@ -362,55 +362,8 @@ class RequerimientoPagoController extends Controller
             (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleArray);
 
                         // guardar factura solo si existe vinculo 
-                        $documentoCompraArray=[];
-                        $ObjectoFactura = json_decode($request->facturaObject);
-                        if(isset($ObjectoFactura)){
-                            foreach ($ObjectoFactura as $keyObj => $value){
-                                if(count($value->items)>0){
-                                    $documentoCompra = new DocumentoCompra();
-                                    $documentoCompra->serie = $value->serie;
-                                    $documentoCompra->numero = $value->numero;
-                                    $documentoCompra->id_tp_doc = $value->id_tp_doc;
-                                    $documentoCompra->fecha_emision = $value->fecha_emision;
-                                    $documentoCompra->fecha_vcmto =  $value->fecha_emision;
-                                    $documentoCompra->id_condicion = $value->id_condicion;
-                                    $documentoCompra->moneda = $value->id_moneda;
-                                    $documentoCompra->sub_total = $value->subtotal;
-                                    $documentoCompra->total_igv = $value->total_igv;
-                                    $documentoCompra->total_a_pagar = $value->total_a_pagar;
-                                    $documentoCompra->usuario = Auth::user()->id_usuario;
-                                    $documentoCompra->estado = 1;
-                                    $documentoCompra->fecha_registro =  new Carbon();
-                                    $documentoCompra->registrado_por = Auth::user()->id_usuario;
-                                    $documentoCompra->id_sede = $value->id_sede;
-                                    $documentoCompra->save();
-                                    $documentoCompra->id_adjunto=$value->id_adjunto;
-                                    $documentoCompraArray[]=$documentoCompra;
-    
-                                    for ($i = 0; $i < $count; $i++) {
-                                        foreach ($detalleArray as $key => $det) {
-                                            for($j =0; $j < count($value->items); $j++){
-                                                if ($det->idRegister == $value->items[$j]) {
-                                                    $documentoCompraDetalle = new DocumentoCompraDetalle();
-                                                    $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
-                                                    $documentoCompraDetalle->cantidad =$det->cantidad;
-                                                    $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
-                                                    $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
-                                                    $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
-                                                    $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
-                                                    $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
-                                                    $documentoCompraDetalle->estado =1;
-                                                    $documentoCompraDetalle->fecha_registro =new Carbon();
-                                                    $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
-                                                    $documentoCompraDetalle->id_detalle_requerimiento_pago =$det->id_requerimiento_pago_detalle;
-                                                    $documentoCompraDetalle->save();
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+            // $documentoCompraArray=[];
+            $documentoCompraArray = $this->VincularFacturaRequerimientoPago($request,$count,$detalleArray,$codigo);
 
             // Adjuntos Cabecera
             if (isset($request->archivo_adjunto_list)) {
@@ -485,6 +438,114 @@ class RequerimientoPagoController extends Controller
             DB::rollBack();
             return response()->json(['id_requerimiento_pago' => 0, 'mensaje' => 'Hubo un problema al guardar el requerimiento de pago. Por favor intentelo de nuevo. Mensaje de error: ' . $e->getMessage()]);
         }
+    }
+
+    function vincularFacturaRequerimientoPago($request,$count,$detalleArray,$codigo){
+        $documentoCompraArray=[];
+        $ObjectoFactura = json_decode($request->facturaObject);
+        if(isset($ObjectoFactura)){
+            foreach ($ObjectoFactura as $keyObj => $value){
+                if(count($value->items)>0){
+                    if ($value->id_doc_com =='' || $value->id_doc_com ==null){ // es un id_doc_com con numeros y letras => es nuevo, insertar
+                        $documentoCompra = new DocumentoCompra();
+                        $documentoCompra->serie = $value->serie;
+                        $documentoCompra->numero = $value->numero;
+                        $documentoCompra->id_tp_doc = $value->id_tp_doc;
+                        $documentoCompra->fecha_emision = $value->fecha_emision;
+                        $documentoCompra->fecha_vcmto =  $value->fecha_emision;
+                        $documentoCompra->id_condicion = $value->id_condicion;
+                        $documentoCompra->moneda = $value->id_moneda;
+                        $documentoCompra->sub_total = $value->subtotal;
+                        $documentoCompra->total_igv = $value->total_igv;
+                        $documentoCompra->total_a_pagar = $value->total_a_pagar;
+                        $documentoCompra->usuario = Auth::user()->id_usuario;
+                        $documentoCompra->estado = 1;
+                        $documentoCompra->fecha_registro =  new Carbon();
+                        $documentoCompra->registrado_por = Auth::user()->id_usuario;
+                        $documentoCompra->id_sede = $value->id_sede;
+                        $documentoCompra->save();
+                        $documentoCompra->id_adjunto=$value->id_adjunto;
+                        $documentoCompraArray[]=$documentoCompra;
+
+                        for ($i = 0; $i < $count; $i++) {
+                            foreach ($detalleArray as $key => $det) {
+                                for($j =0; $j < count($value->items); $j++){
+                                    if ($det->idRegister == $value->items[$j]) {
+                                        $documentoCompraDetalle = new DocumentoCompraDetalle();
+                                        $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
+                                        $documentoCompraDetalle->cantidad =$det->cantidad;
+                                        $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
+                                        $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
+                                        $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
+                                        $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
+                                        $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
+                                        $documentoCompraDetalle->estado =1;
+                                        $documentoCompraDetalle->fecha_registro =new Carbon();
+                                        $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
+                                        $documentoCompraDetalle->id_requerimiento_pago_detalle =$det->id_requerimiento_pago_detalle;
+                                        $documentoCompraDetalle->save();
+                                    }
+                                }
+                            }
+                        }
+
+                    }else{// actualizar
+
+
+                            $documentoCompra = DocumentoCompra::find($value->id_doc_com);
+                            $documentoCompra->id_tp_doc = $value->id_tp_doc;
+                            $documentoCompra->fecha_emision = $value->fecha_emision;
+                            $documentoCompra->fecha_vcmto =  $value->fecha_emision;
+                            $documentoCompra->id_condicion = $value->id_condicion;
+                            $documentoCompra->moneda = $value->id_moneda;
+                            $documentoCompra->sub_total = $value->subtotal;
+                            $documentoCompra->total_igv = $value->total_igv;
+                            $documentoCompra->total_a_pagar = $value->total_a_pagar;
+                            $documentoCompra->usuario = Auth::user()->id_usuario;
+                            $documentoCompra->estado = 1;
+                            $documentoCompra->id_sede = $value->id_sede;
+                            $documentoCompra->save();
+                            $documentoCompra->id_adjunto=$value->id_adjunto;
+                            $documentoCompraArray[]=$documentoCompra;
+    
+                            // anular todo los existente detalles para luego insertar el detalle actualizado
+                            $documentoCompraDetalleOld = DocumentoCompraDetalle::where('id_doc',$value->id_doc_com)->get();
+                            foreach ($documentoCompraDetalleOld as $detFac) {
+                                $eliminarDetFact = DocumentoCompraDetalle::find($detFac->id_doc_det);
+                                $eliminarDetFact->estado=7;
+                                $eliminarDetFact->save();
+                            }
+    
+                            for ($i = 0; $i < $count; $i++) {
+                                foreach ($detalleArray as $key => $det) {
+                                    for($j =0; $j < count($value->items); $j++){
+                                        if ($det->idRegister == $value->items[$j]) {
+                                            $documentoCompraDetalle = new DocumentoCompraDetalle();
+                                            $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
+                                            $documentoCompraDetalle->cantidad =$det->cantidad;
+                                            $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
+                                            $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
+                                            $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
+                                            $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
+                                            $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
+                                            $documentoCompraDetalle->estado =1;
+                                            $documentoCompraDetalle->fecha_registro =new Carbon();
+                                            $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
+                                            $documentoCompraDetalle->id_requerimiento_pago_detalle =$det->id_requerimiento_pago_detalle;
+                                            $documentoCompraDetalle->save();
+                                        }
+                                    }
+                                }
+                            }
+
+
+                    }
+
+                }
+            }
+        }
+
+        return $documentoCompraArray;
     }
 
     function guardarAdjuntosAdicionales(Request $request)
@@ -863,6 +924,7 @@ class RequerimientoPagoController extends Controller
             $afectaPresupuestoInternoSuma = (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoSumaArray);
             $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoRestaArray);
 
+            $documentoCompraArray = $this->VincularFacturaRequerimientoPago($request,$count,$detalleArray,$requerimientoPago->codigo);
 
             //adjuntos cabecera
             if (isset($request->archivo_adjunto_list)) {
@@ -923,6 +985,7 @@ class RequerimientoPagoController extends Controller
                 }
             }
             DB::commit();
+
             return response()->json(['id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago, 
             'mensaje' => 'Se actualizó el requerimiento de pago ' . $requerimientoPago->codigo,
             'afecta_presupuesto_interno_suma'=>$afectaPresupuestoInternoSuma??[],
@@ -1067,7 +1130,7 @@ class RequerimientoPagoController extends Controller
                 'cuentaContribuyente.tipoCuenta',
                 'cuadroCostos',
                 'proyecto',
-                'adjunto',
+                'adjunto.documentoCompra.DocumentoCompraDetalle',
                 'presupuestoInterno'
             )
             ->first();
@@ -1091,7 +1154,8 @@ class RequerimientoPagoController extends Controller
 
     function listaAdjuntosRequerimientoPagoCabecera($idRequerimientoPago)
     {
-        $data = RequerimientoPagoAdjunto::where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])->with('categoriaAdjunto')->get();
+        $data = RequerimientoPagoAdjunto::where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])
+        ->with('categoriaAdjunto','documentoCompra.DocumentoCompraDetalle.unidadMedida')->get();
         return response()->json($data);
     }
     function listaCategoriaAdjuntos()
@@ -1760,7 +1824,10 @@ class RequerimientoPagoController extends Controller
                 'centro_costo.codigo as centro_costo',
                 'centro_costo.descripcion as descripcion_centro_costo',
                 'centro_costo.id_centro_costo',
-                'requerimiento_pago_estado.descripcion as estado_requerimiento'
+                'requerimiento_pago_estado.descripcion as estado_requerimiento',
+                DB::raw("(SELECT presup_titu.descripcion
+                FROM finanzas.presup_titu
+                WHERE presup_titu.codigo = presup_par.cod_padre and presup_titu.id_presup=presup_par.id_presup limit 1) AS descripcion_partida_padre")
             )
             ->when(($meOrAll === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
