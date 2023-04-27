@@ -1,4 +1,4 @@
-<div class="modal fade" role="dialog" id="modal-adjuntar-archivos-requerimiento-pago" style="overflow-y: scroll;">
+<div class="modal fade" role="dialog" tabindex="-1" id="modal-adjuntar-archivos-requerimiento-pago" style="overflow-y: scroll;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -16,11 +16,10 @@
                 <table class="table table-striped table-condensed table-bordered" id="listaArchivosRequerimientoPagoCabecera" width="100%">
                     <thead>
                         <tr>
-                            <th width="20%">Descripción</th>
+                            <th width="30%">Descripción</th>
                             <th width="10%">Fecha emisión</th>
-                            <th width="20%">Serie y número</th>
+                            <th width="30%">Serie y número</th>
                             <th width="20%">Tipo</th>
-                            <th width="20%">Monto Total</th>
                             <th width="10%">Acción</th>
                         </tr>
                     </thead>

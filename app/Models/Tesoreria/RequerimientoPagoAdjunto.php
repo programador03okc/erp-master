@@ -25,4 +25,8 @@ class RequerimientoPagoAdjunto extends Model
     {
         return $this->belongsTo('App\Models\Contabilidad\TipoDocumento', 'id_tp_doc','id_tp_doc');
     }
+    public function documentoCompra()
+    {
+        return $this->belongsTo('App\Models\Almacen\DocumentoCompra', 'id_doc_com','id_doc_com');
+    }
 }

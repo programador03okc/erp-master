@@ -23,4 +23,9 @@ class DocumentoCompra extends Model
     public function proveedor(){
         return $this->hasOne('App\Models\Logistica\Proveedor','id_proveedor','id_proveedor');
     }
+
+    public function DocumentoCompraDetalle(){
+        return $this->hasMany('App\Models\Almacen\DocumentoCompraDetalle','id_doc','id_doc_com');
+    }
+
 }

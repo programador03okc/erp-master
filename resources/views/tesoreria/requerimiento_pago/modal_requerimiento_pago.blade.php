@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="modal-requerimiento-pago" style="overflow-y: scroll;">
+<div class="modal fade" role="dialog" id="modal-requerimiento-pago" style="overflow-y: scroll;">
     <div class="modal-dialog modal-lg" style="width: 90%;">
         <div class="modal-content">
             <form id="form-requerimiento-pago" method="post" type="register">
