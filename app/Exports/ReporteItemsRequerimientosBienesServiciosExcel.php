@@ -42,6 +42,7 @@ class reporteItemsRequerimientosBienesServiciosExcel implements FromView
                 'codigo_oportunidad'=> $element->codigo_oportunidad,
                 'centro_costo'=> $element->centro_costo,
                 'descripcion_centro_costo'=> $element->descripcion_centro_costo,
+                'descripcion_partida_padre'=> $element->descripcion_partida_padre,
                 'partida'=> $element->partida,
                 'descripcion_partida'=> $element->descripcion_partida,
                 'concepto'=> str_replace("'", "", str_replace("", "", $element->concepto)),
