@@ -20,7 +20,7 @@ class PresupuestoInternoExport implements FromView
     }
     public function view(): View
     {
-        // dd($this->presupuesto_interno_detalle);exit;
+        // dd($this->presupuesto_interno);exit;
         return view(
             'finanzas.export.presupuesto_interno',
             [

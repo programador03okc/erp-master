@@ -71,7 +71,6 @@ class PresupuestoInternoController extends Controller
     public function crear()
     {
         $empresas = Empresa::all();
-        // return $empresas[0]->contribuyente->razon_social;exit;
         $grupos = AdmGrupo::get();
         $area = FinanzasArea::where('estado',1)->get();
         $moneda = Moneda::where('estado',1)->get();
@@ -1144,12 +1143,18 @@ class PresupuestoInternoController extends Controller
     public function getPresupuestoInterno(Request $request)
     {
 
-        $data = PresupuestoInterno::select('presupuesto_interno.*', 'sis_grupo.descripcion as grupo', 'area.descripcion as area','sis_moneda.descripcion as moneda','sis_moneda.simbolo')
+        $data = PresupuestoInterno::select(
+            'presupuesto_interno.*',
+            'sis_grupo.descripcion as grupo',
+            'division.descripcion as area',
+            'sis_moneda.descripcion as moneda','sis_moneda.simbolo'
+            )
         ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'presupuesto_interno.id_grupo')
-        ->join('finanzas.area', 'area.id_area', '=', 'presupuesto_interno.id_area')
+        ->join('administracion.division', 'division.id_division', '=', 'presupuesto_interno.id_area')
         ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'presupuesto_interno.id_moneda')
-        ->where('id_presupuesto_interno',$request->id)
+        ->where('presupuesto_interno.id_presupuesto_interno',$request->id)
         ->first();
+        // return $data;exit;
         $array_presupuesto = [];
         $array_presupuesto['ingresos']=[];
         $array_presupuesto['costos']=[];
