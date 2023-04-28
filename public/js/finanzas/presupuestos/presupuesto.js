@@ -110,10 +110,10 @@ function mostrarPartidas(id) {
             $('[name=codigo]').text(response.codigo);
             $('[name=descripcion]').text(response.descripcion);
             $('[name=name_empresa]').text(response.empresa['codigo']);
-            $('[name=name_grupo]').text(response.grupo['descripcion']);
+            $('[name=name_grupo]').text(response.grupo !== null ? response.grupo['descripcion'] : '-');
             $('[name=fecha_emision]').text(response.fecha_emision);
             $('[name=name_moneda]').text(response.moneda_seleccionada['descripcion']);
-            $('[name=tipo]').text(response.tipo == 'INTERNO' ? 'Proyecto Interno' : 'Proyecto Externo');
+            $('[name=name_tipo]').text(response.tipo == 'INTERNO' ? 'Proyecto Interno' : 'Proyecto Externo');
 
             var html = '';
 

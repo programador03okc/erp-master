@@ -258,11 +258,18 @@ class PresupuestoController extends Controller
                 'id_proyecto'
             );
 
-        $codigo = $this->presupNextCodigo(
-            request('id_grupo'),
-            request('fecha_emision')
-        );
-    
+        if (request('id_grupo') == '0' || request('id_grupo') == null){
+            $codigo = $this->presupNextCodigoSinGrupo(
+                request('id_empresa'),
+                request('fecha_emision')
+            );
+        } else {
+            $codigo = $this->presupNextCodigo(
+                request('id_grupo'),
+                request('fecha_emision')
+            );
+        }
+        
         $id_presup = DB::table('finanzas.presup')->insertGetId([
             'id_empresa' =>  request('id_empresa'),
             'id_grupo' => request('id_grupo'),
@@ -313,6 +320,26 @@ class PresupuestoController extends Controller
         $next = $this->leftZero(3, $correlativo + 1);
 
         return 'P' . $grupo->abreviatura . '-' . $anio . '-' . $next;
+    }
+
+    public function presupNextCodigoSinGrupo($id_empresa, $fecha)
+    {
+        $yyyy = date('Y', strtotime($fecha));
+        $anio = date('y', strtotime($fecha));
+
+        $empresa = Empresa::findOrFail($id_empresa);
+
+        $correlativo = Presupuesto::where([
+                ['id_empresa', '=', $id_empresa],
+                ['tipo', '=', 'INTERNO'],
+                ['estado', '=', 1]
+            ])
+            ->whereYear('fecha_emision', '=', $yyyy)
+            ->count();
+
+        $next = $this->leftZero(3, $correlativo + 1);
+
+        return 'PI-' . $empresa->codigo . '-' . $anio . '-' . $next;
     }
 
     public function leftZero($lenght, $number)

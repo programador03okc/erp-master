@@ -13,9 +13,7 @@
                         <tr style="background: gainsboro;">
                             <th scope="col">Código</th>
                             <th scope="col">Descripción</th>
-                            <th scope="col">Grupo</th>
                             <th scope="col">Fecha</th>
-                            <!-- <th scope="col">Mnd</th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -23,7 +21,6 @@
                         <tr value="{{ $item->id_presup }}">
                             <td>{{ $item->codigo }}</td>
                             <td>{{ $item->descripcion }}</td>
-                            <td>{{ $item->grupo->descripcion }}</td>
                             <td>{{ $item->fecha_emision }}</td>
                         </tr>
                         @empty
