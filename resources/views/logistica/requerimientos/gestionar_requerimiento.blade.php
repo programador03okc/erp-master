@@ -385,9 +385,6 @@ Crear / editar requerimiento
                                 <div class="input-group-okc">
                                     <select class="form-control activation handleChangeProyecto" name="id_proyecto">
                                         <option value="0">Seleccione un Proyecto</option>
-                                        @foreach ($proyectos_activos as $proyecto)
-                                        <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
-                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -777,10 +774,10 @@ Crear / editar requerimiento
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/TrazabilidadRequerimientoView.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoView.js'))}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=4')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoController.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoModel.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modalCuadroPresupuesto.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/modalCuadroPresupuesto.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/incidenciasModal.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/incidenciasModal.js'))}}"></script>
 

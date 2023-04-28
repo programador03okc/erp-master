@@ -150,6 +150,12 @@ class RequerimientoView {
         });
 
         $('#form-requerimiento').on("change", "select.handleChangeProyecto", (e) => {
+            let codigoProyecto = document.querySelector("select[name='id_proyecto']").options[document.querySelector("select[name='id_proyecto']").selectedIndex].dataset.codigo;
+            if(e.currentTarget.value >0){
+                document.querySelector("div[id='input-group-proyecto'] input[name='codigo_proyecto']").value = codigoProyecto;
+            }else{
+                document.querySelector("div[id='input-group-proyecto'] input[name='codigo_proyecto']").value = '';
+            }
             this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PROYECTOS', e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
         });
 
@@ -560,6 +566,10 @@ class RequerimientoView {
                 element.textContent = simboloMonedaPresupuestoUtilizado;
             });
         }
+
+        this.llenarComboProyectos(data.id_grupo,data.id_proyecto); 
+
+        this.presupuestoInternoView.llenarComboPresupuestoInterno(data.id_grupo, data.division_id, data.id_presupuesto_interno);
 
     }
 
@@ -1006,6 +1016,8 @@ class RequerimientoView {
 
         this.presupuestoInternoView.llenarComboPresupuestoInterno(currentIdGrupo, obj.target.value);
 
+        this.llenarComboProyectos(currentIdGrupo); 
+
         // mostrar sección segun el grupo de la división seleccionada y el grupo al que pertenece el usuario
 
         grupos.forEach(element => {
@@ -1018,14 +1030,11 @@ class RequerimientoView {
             document.querySelector("input[name='id_cc']").removeAttribute("disabled");
             document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
 
-            hiddeElement('mostrar', 'form-requerimiento', [
-                'input-group-cdp'
-            ]);
-        } else {
-            hiddeElement('ocultar', 'form-requerimiento', [
-                'input-group-cdp'
-            ]);
+            // hiddeElement('mostrar', 'form-requerimiento', [
+            //     'input-group-cdp'
+            // ]);
         }
+
         if (currentIdGrupo == 3 && id_grupo_usuario_sesion_list.includes(3)) { // seleccion de una división que pertenece al grupo proyectos y debe el usuario tener acceso al grupo proyectos
             document.querySelector("input[name='id_cc']").value = "";
             document.querySelector("input[name='codigo_oportunidad']").value = '';
@@ -1033,15 +1042,40 @@ class RequerimientoView {
             document.querySelector("input[name='id_cc']").removeAttribute("disabled");
             document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
 
-            hiddeElement('mostrar', 'form-requerimiento', [
-                'input-group-proyecto'
-            ]);
-        } else {
-            hiddeElement('ocultar', 'form-requerimiento', [
-                'input-group-proyecto'
-            ]);
+            // hiddeElement('mostrar', 'form-requerimiento', [
+            //     'input-group-proyecto'
+            // ]);
         }
 
+    }
+
+    llenarComboProyectos(idGrupo,idProyecto=null){
+        this.requerimientoCtrl.obtenerListaProyectos(idGrupo).then((res) => {
+            this.construirListaProyecto(res,idProyecto=null);
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+
+    
+    construirListaProyecto(data,idProyecto=null){
+        // console.log(data);
+
+        let selectElement = document.querySelector("div[id='input-group-proyecto'] select[name='id_proyecto']");
+
+        data.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_proyecto;
+            option.setAttribute('data-codigo', element.codigo);
+            option.setAttribute('data-id-centro-costo', element.id_centro_costo);
+            option.setAttribute('data-codigo-centro-costo', element.codigo_centro_costo);
+            option.setAttribute('data-descripcion-centro-costo', element.descripcion_centro_costo);
+            if (element.id_proyecto == idProyecto) {
+                option.selected = true;
+            }
+            selectElement.add(option);
+        });
     }
 
 

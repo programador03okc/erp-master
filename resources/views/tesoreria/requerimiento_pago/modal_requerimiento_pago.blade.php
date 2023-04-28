@@ -102,16 +102,19 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 oculto" id="contenedor-proyecto">
+                                    <div class="col-md-12" id="contenedor-proyecto">
                                         <div class="form-group">
 
                                             <h5>Proyecto</h5>
-                                            <select class="form-control activation handleCheckStatusValue handleChangeProyecto" name="proyecto">
-                                                <option value="0">Seleccione un Proyecto</option>
-                                                @foreach ($proyectosActivos as $proyecto)
-                                                <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
-                                                @endforeach
-                                            </select>
+                                            <div style="display:flex;">
+                                                <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
+                                                <div class="input-group-okc">
+                                                    <select class="form-control activation handleCheckStatusValue handleChangeProyecto" name="proyecto">
+                                                        <option value="0">Seleccione un Proyecto</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="col-md-3 oculto" id="contenedor-cdp">

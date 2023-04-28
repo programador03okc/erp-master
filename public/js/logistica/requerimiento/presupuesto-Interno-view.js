@@ -189,7 +189,7 @@ class PresupuestoInternoView{
 
 
 
-    llenarComboPresupuestoInterno(idGrupo,idArea){
+    llenarComboPresupuestoInterno(idGrupo,idArea, idPresupuestoInterno=null){
         this.model.comboPresupuestoInterno(idGrupo, idArea).then((res) => {
             // console.log(res);
             let selectElement = document.querySelector("select[name='id_presupuesto_interno']");
@@ -205,19 +205,24 @@ class PresupuestoInternoView{
             
             let optionDefault = document.createElement("option");
             optionDefault.text = "selecciona un presupuesto interno";
+            
             optionDefault.value = "";
             optionDefault.setAttribute('data-codigo', "");
             optionDefault.setAttribute('data-id-grupo', "");
             optionDefault.setAttribute('data-id-area', "");
             selectElement.add(optionDefault);
 
-            res.forEach(element => {
+            res.forEach(element => {                
                 let option = document.createElement("option");
                 option.text = element.descripcion+(element.estado !=2?'(NO APROBADO)':'');
                 option.value = element.id_presupuesto_interno;
                 option.setAttribute('data-codigo', element.codigo);
                 option.setAttribute('data-id-grupo', element.id_grupo);
                 option.setAttribute('data-id-area', element.id_area);
+                if (element.id_presupuesto_interno == idPresupuestoInterno) {
+                    option.selected = true;
+                    document.querySelector("input[name='codigo_presupuesto_interno']").value=element.codigo;
+                }
                 selectElement.add(option);
             });
 

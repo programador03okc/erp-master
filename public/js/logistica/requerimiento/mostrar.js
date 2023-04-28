@@ -117,11 +117,9 @@ function mostrar_requerimiento(IdorCode){
                 $('#estado_doc').removeClass();
                 $('#estado_doc').addClass("label label-"+response['requerimiento'][0].bootstrap_color);
                 
-                if(response['requerimiento'][0].area_descripcion == 'PROYECTOS' || response['requerimiento'][0].area_descripcion == 'DPTO. FORMULACIÓN' || response['requerimiento'][0].area_descripcion == 'DPTO. EJECUCIÓN'){
-                    // document.getElementById('section-proyectos').setAttribute('class', 'col');
-                    document.querySelector("form[id='form-requerimiento'] div[id='input-group-proyecto']").removeAttribute('hidden');
-
-                }
+                // if(response['requerimiento'][0].area_descripcion == 'PROYECTOS' || response['requerimiento'][0].area_descripcion == 'DPTO. FORMULACIÓN' || response['requerimiento'][0].area_descripcion == 'DPTO. EJECUCIÓN'){
+                //     document.querySelector("form[id='form-requerimiento'] div[id='input-group-proyecto']").removeAttribute('hidden');
+                // }
                 $('[name=cantidad_aprobaciones]').val(response['aprobaciones']);
 
                 changeTipoCliente(event,response['requerimiento'][0].tipo_cliente); //cambiar input para tipo cliente

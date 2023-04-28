@@ -700,6 +700,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
 				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
+				Route::get('obtener-lista-proyectos/{idGrupo?}', 'Logistica\RequerimientoController@obtenerListaProyectos');
 
 			});
 
@@ -820,6 +821,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
 				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
+				Route::get('obtener-lista-proyectos/{idGrupo?}', 'Logistica\RequerimientoController@obtenerListaProyectos');
+
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {
 			// 	Route::get('index', 'Tesoreria\RequerimientoPagoController@viewRevisarAprobarRequerimientoPago')->name('index');

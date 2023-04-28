@@ -254,6 +254,12 @@ class ListarRequerimientoPagoView {
         });
 
         $('#modal-requerimiento-pago').on("change", "select.handleChangeProyecto", (e) => {
+            let codigoProyecto = document.querySelector("select[name='proyecto']").options[document.querySelector("select[name='proyecto']").selectedIndex].dataset.codigo;
+            if(e.currentTarget.value >0){
+                document.querySelector("div[id='contenedor-proyecto'] input[name='codigo_proyecto']").value = codigoProyecto;
+            }else{
+                document.querySelector("div[id='contenedor-proyecto'] input[name='codigo_proyecto']").value = '';
+            }
             this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PROYECTOS', e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
         });
         $('#modal-requerimiento-pago').on("change", "select.handleChangePresupuestoInterno", (e) => {
@@ -976,23 +982,21 @@ class ListarRequerimientoPagoView {
             document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").removeAttribute("disabled");
 
             this.construirOptSelectDivision(idGrupo);
+
+            this.llenarComboProyectos(idGrupo);
+
+
             if (idGrupo == 3 || descripcionGrupo == 'Proyectos') {
-                document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.remove("oculto");
                 document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cc']").value = '';
                 document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = '';
                 document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.add("oculto");
-            } else {
-                document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.add("oculto");
-
             }
             if (idGrupo == 2 || descripcionGrupo == 'Comercial') {
                 document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.remove("oculto");
-                document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.add("oculto");
                 document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = 0;
 
             } else {
                 document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.add("oculto");
-
             }
 
         } else {
@@ -1000,6 +1004,64 @@ class ListarRequerimientoPagoView {
             document.querySelector("div[id='modal-requerimiento-pago'] select[name='division']").setAttribute("disabled", true);
         }
         return false;
+    }
+
+    llenarComboProyectos(idGrupo,idProyecto=null){
+        this.obtenerListaProyectos(idGrupo).then((res) => {
+            this.construirListaProyecto(res,idProyecto=null);
+        }).catch(function (err) {
+            console.log(err)
+        })
+    }
+
+    obtenerListaProyectos(idGrupo){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`obtener-lista-proyectos/${idGrupo}`,
+                dataType: 'JSON',
+                beforeSend: function (data) { 
+
+                    $('select[name="id_proyecto"]').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                    },
+                success(response) {
+                    $('select[name="id_proyecto"]').LoadingOverlay("hide", true);
+                    resolve(response);
+
+                },
+                fail: function (jqXHR, textStatus, errorThrown) {
+                    $('select[name="id_proyecto"]').LoadingOverlay("hide", true);
+                    alert("Hubo un problema al cargar los proyectos. Por favor actualice la página e intente de nuevo");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+                });
+        });
+    }
+
+    
+    construirListaProyecto(data,idProyecto=null){
+
+        let selectElement = document.querySelector("div[id='contenedor-proyecto'] select[name='proyecto']");
+
+        data.forEach(element => {
+            let option = document.createElement("option");
+            option.text = element.descripcion;
+            option.value = element.id_proyecto;
+            option.setAttribute('data-codigo', element.codigo);
+            option.setAttribute('data-id-centro-costo', element.id_centro_costo);
+            option.setAttribute('data-codigo-centro-costo', element.codigo_centro_costo);
+            option.setAttribute('data-descripcion-centro-costo', element.descripcion_centro_costo);
+            if (element.id_proyecto == idProyecto) {
+                option.selected = true;
+            }
+            selectElement.add(option);
+        });
     }
 
     construirOptSelectDivision(idGrupo, idDivision = null) {
@@ -2551,12 +2613,12 @@ class ListarRequerimientoPagoView {
 
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value = data.concepto;
         document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = data.id_proyecto;
-        if (data.id_proyecto > 0) {
-            document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.remove("oculto");
-        } else {
-            document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.add("oculto");
+        // if (data.id_proyecto > 0) {
+        //     document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.remove("oculto");
+        // } else {
+        //     document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.add("oculto");
 
-        }
+        // }
 
         $("select[name='id_presupuesto_interno']").val(data.id_presupuesto_interno);
 
@@ -2606,6 +2668,10 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total']").value = data.monto_total;
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='monto_total_read_only']").value = $.number(data.monto_total, 2);
         document.querySelector("div[id='modal-requerimiento-pago'] table[id='ListaDetalleRequerimientoPago'] label[name='total']").textContent = $.number(data.monto_total, 2);
+
+        this.presupuestoInternoView.llenarComboPresupuestoInterno(data.id_grupo, data.id_division, data.id_presupuesto_interno);
+
+        this.llenarComboProyectos(data.id_grupo,data.id_proyecto); 
 
         this.limpiarTabla('ListaDetalleRequerimientoPago');
 

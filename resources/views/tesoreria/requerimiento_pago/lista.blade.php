@@ -152,7 +152,6 @@ Listado de requerimientos de pago
         const facturaView = new FacturaView(presupuestoInternoView);
         facturaView.eventos();
 
- 
     });
 
     var tieneAccionCrearRequerimientoPago = '{{Auth::user()->tieneAccion(142) }}';
