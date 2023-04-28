@@ -467,23 +467,29 @@ class RequerimientoPagoController extends Controller
                         $documentoCompra->id_adjunto=$value->id_adjunto;
                         $documentoCompraArray[]=$documentoCompra;
 
+                        $listaItemAtendido=[];
                         for ($i = 0; $i < $count; $i++) {
                             foreach ($detalleArray as $key => $det) {
                                 for($j =0; $j < count($value->items); $j++){
                                     if ($det->idRegister == $value->items[$j]) {
-                                        $documentoCompraDetalle = new DocumentoCompraDetalle();
-                                        $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
-                                        $documentoCompraDetalle->cantidad =$det->cantidad;
-                                        $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
-                                        $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
-                                        $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
-                                        $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
-                                        $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
-                                        $documentoCompraDetalle->estado =1;
-                                        $documentoCompraDetalle->fecha_registro =new Carbon();
-                                        $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
-                                        $documentoCompraDetalle->id_requerimiento_pago_detalle =$det->id_requerimiento_pago_detalle;
-                                        $documentoCompraDetalle->save();
+                                        if (!in_array($value->items[$j],$listaItemAtendido)){
+                                            $documentoCompraDetalle = new DocumentoCompraDetalle();
+                                            $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
+                                            $documentoCompraDetalle->cantidad =$det->cantidad;
+                                            $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
+                                            $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
+                                            $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
+                                            $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
+                                            $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
+                                            $documentoCompraDetalle->estado =1;
+                                            $documentoCompraDetalle->fecha_registro =new Carbon();
+                                            $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
+                                            $documentoCompraDetalle->id_requerimiento_pago_detalle =$det->id_requerimiento_pago_detalle;
+                                            $documentoCompraDetalle->save();
+                                            
+                                            $listaItemAtendido[]=$value->items[$j];
+
+                                        }
                                     }
                                 }
                             }

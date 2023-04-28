@@ -1575,7 +1575,7 @@ class OrdenesPendientesController extends Controller
 
         foreach ($array_padres as $padre) {
 
-            $codigo = TransferenciaController::transferencia_nextId($id_almacen_origen);
+            $codigo = TransferenciaController::transferencia_nextId($id_almacen_origen, new Carbon());
 
             if ($msj == '') {
                 $msj = 'Se generó transferencia. ' . $codigo;
@@ -1750,7 +1750,7 @@ class OrdenesPendientesController extends Controller
                             'trans_detalle.id_trans_detalle',
                             'trans.id_transferencia',
                             'trans.estado as estado_trans',
-                            'orden_despacho.id_od',
+                            'guia_ven.id_guia_ven',
                             'guia_com_det.id_transformado'
                         )
                         ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
@@ -1760,6 +1760,10 @@ class OrdenesPendientesController extends Controller
                         ->leftJoin('almacen.orden_despacho', function ($join) {
                             $join->on('orden_despacho.id_requerimiento','=','alm_req.id_requerimiento');
                             $join->where('orden_despacho.estado', '!=', 7);
+                        })
+                        ->leftJoin('almacen.guia_ven', function ($join) {
+                            $join->on('guia_ven.id_od','=','orden_despacho.id_od');
+                            $join->where('guia_ven.estado', '!=', 7);
                         })
                         ->leftJoin('almacen.trans_detalle', function ($join) {
                             $join->on('trans_detalle.id_requerimiento_detalle', '=', 'alm_det_req.id_detalle_requerimiento');
@@ -1773,8 +1777,13 @@ class OrdenesPendientesController extends Controller
 
                         $validado = true;
                         foreach ($detalle as $det) {
-                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14)) || $det->id_od !== null) {
+                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14))) {    //recepcionada y enviada
                                 $validado = false;
+                                $msj = 'El ingreso ya fue procesado con una Transferencia.';
+                            }
+                            else if ($det->id_guia_ven !== null) {    //salida almacen
+                                $validado = false;
+                                $msj = 'El ingreso ya fue procesado con una Guia de Salida.';
                             }
                         }
 
@@ -1904,7 +1913,7 @@ class OrdenesPendientesController extends Controller
                             $msj = 'Se anuló el ingreso correctamente.';
                             $tipo = 'success';
                         } else {
-                            $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia.';
+                            //$msj = 'El ingreso ya fue procesado con una Guia de Salida o una Transferencia.';
                             $tipo = 'warning';
                         }
                     } else {
