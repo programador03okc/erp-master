@@ -113,6 +113,7 @@ function mostrarPartidas(id) {
             $('[name=name_grupo]').text(response.grupo['descripcion']);
             $('[name=fecha_emision]').text(response.fecha_emision);
             $('[name=name_moneda]').text(response.moneda_seleccionada['descripcion']);
+            $('[name=tipo]').text(response.tipo == 'INTERNO' ? 'Proyecto Interno' : 'Proyecto Externo');
 
             var html = '';
 

@@ -13,6 +13,7 @@ use App\Models\Administracion\Empresa;
 use App\Models\Configuracion\Usuario;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\ProyectosController;
 
 class PresupuestoController extends Controller
 {
@@ -32,7 +33,10 @@ class PresupuestoController extends Controller
     {
         $presupuesto = new Presupuesto();
         $grupos = Grupo::all();
-        $empresas = Empresa::all();
+        $empresas = DB::table('administracion.adm_empresa')
+        ->select('adm_empresa.id_empresa','adm_contri.razon_social')
+        ->join('contabilidad.adm_contri','adm_contri.id_contribuyente','=','adm_empresa.id_contribuyente')
+        ->where('adm_empresa.estado',1)->get();
         $monedas = Moneda::all();
         $presupuestos = Presupuesto::where('estado', 1)->get();
 
@@ -43,6 +47,7 @@ class PresupuestoController extends Controller
     {
         $presup = Presupuesto::findOrFail($id);
         $presup->grupo;
+        $presup->tipo;
         $presup->empresa;
         $presup->monedaSeleccionada;
         $presup->titulos;
@@ -226,27 +231,55 @@ class PresupuestoController extends Controller
         ->get();
         return response()->json($lista);
     }
-
+    
     public function store()
     {
+        $id_usuario = Auth::user()->id_usuario;
+        $codigo_proy = (new ProyectosController)->nextProyecto(request('id_empresa'), request('fecha_emision'));
+
+        $id_proyecto = DB::table('proyectos.proy_proyecto')->insertGetId(
+            [
+                'tp_proyecto' => 2,
+                'empresa' => request('id_empresa'),
+                'descripcion' => strtoupper(request('descripcion')),
+                // 'cliente' => $request->id_cliente,
+                'fecha_inicio' => request('fecha_emision'),
+                'fecha_fin' => request('fecha_emision'),
+                'elaborado_por' => $id_usuario,
+                'codigo' => $codigo_proy,
+                'tipo' => request('tipo'),
+                'modalidad' => 1,
+                'sis_contrato' => 1,
+                'moneda' => request('moneda'),
+                // 'id_centro_costo' => $centro->id_centro_costo,
+                'estado' => 1,
+                'fecha_registro' => date('Y-m-d H:i:s')
+            ],
+                'id_proyecto'
+            );
+
         $codigo = $this->presupNextCodigo(
             request('id_grupo'),
             request('fecha_emision')
         );
-
-        $data = Presupuesto::create([
+    
+        $id_presup = DB::table('finanzas.presup')->insertGetId([
             'id_empresa' =>  request('id_empresa'),
             'id_grupo' => request('id_grupo'),
             'fecha_emision' => request('fecha_emision'),
             'codigo' => $codigo,
             'descripcion' => strtoupper(request('descripcion')),
             'moneda' => request('moneda'),
-            // 'responsable' => request('responsable'),
-            // 'unid_program' => request('unid_program'),
-            // 'cantidad' => request('cantidad'),
+            'tp_presup' => 4,
+            'tipo' => request('tipo'),
+            'id_proyecto' => $id_proyecto,
             'fecha_registro' => date('Y-m-d H:i:s'),
             'estado' => 1
-        ]);
+            ],
+            'id_presup'
+        );
+
+        $data = DB::table('finanzas.presup')->where('id_presup',$id_presup)->first();
 
         return response()->json($data);
     }

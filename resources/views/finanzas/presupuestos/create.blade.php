@@ -53,12 +53,12 @@ Presupuesto
                 <input style="display: none" name="id_presup"/> 
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-md-2 control-label">Código:</label>
-                            <div class="col-md-2">
+                        <label class="col-md-1 control-label">Código:</label>
+                            <div class="col-md-1">
                                 <div class="form-control-static" name="codigo"></div>
                             </div>
-                        <label class="col-md-1 control-label">Empresa:</label>
-                            <div class="col-md-1">
+                        <label class="col-md-2 control-label">Empresa:</label>
+                            <div class="col-md-2">
                                 <div class="form-control-static" name="name_empresa"></div>
                             </div>
                         <label class="col-md-1 control-label">Grupo:</label>
@@ -69,13 +69,17 @@ Presupuesto
                             <div class="col-md-2">
                                 <div class="form-control-static" name="fecha_emision"></div>
                             </div>
-                        <label class="col-md-2 control-label">Moneda:</label>
+                        <label class="col-md-1 control-label">Moneda:</label>
                             <div class="col-md-1">
                                 <div class="form-control-static" name="name_moneda"></div>
                             </div>
+                        <label class="col-md-2 control-label">Tipo:</label>
+                            <div class="col-md-2">
+                                <div class="form-control-static" name="tipo"></div>
+                            </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-2 control-label">Descripción:</label>
+                        <label class="col-md-1 control-label">Descripción:</label>
                             <div class="col-md-10">
                                 <div class="form-control-static" name="descripcion"></div>
                             </div>

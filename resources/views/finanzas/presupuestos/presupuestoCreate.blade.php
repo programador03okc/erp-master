@@ -16,7 +16,7 @@
                             <select class="form-control" name="id_empresa">
                                 <option value="0">Elija una opción</option>
                                 @foreach($empresas as $item)
-                                    <option value="{{$item->id_empresa}}">{{$item->codigo}}</option>
+                                    <option value="{{$item->id_empresa}}">{{$item->razon_social}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -40,6 +40,14 @@
                                 @foreach($monedas as $item)
                                     <option value="{{$item->id_moneda}}">{{$item->descripcion}}</option>
                                 @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Tipo</h5>
+                            <select class="form-control" name="tipo">
+                                <option value="0">Elija una opción</option>
+                                <option value="EXTERNO">Proyecto Externo</option>
+                                <option value="INTERNO">Proyecto Interno</option>
                             </select>
                         </div>
                     </div>
