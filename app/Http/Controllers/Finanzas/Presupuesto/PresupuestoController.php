@@ -10,6 +10,7 @@ use App\Models\Presupuestos\Grupo;
 use App\Models\Presupuestos\Moneda;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Empresa;
+use App\Models\Contabilidad\contribuyente;
 use App\Models\Configuracion\Usuario;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -49,6 +50,7 @@ class PresupuestoController extends Controller
         $presup->grupo;
         $presup->tipo;
         $presup->empresa;
+        $presup->empresa->contribuyente;
         $presup->monedaSeleccionada;
         $presup->titulos;
         $presup->partidas;
@@ -257,33 +259,27 @@ class PresupuestoController extends Controller
             ],
                 'id_proyecto'
             );
-
-        if (request('id_grupo') == '0' || request('id_grupo') == null){
-            $codigo = $this->presupNextCodigoSinGrupo(
-                request('id_empresa'),
-                request('fecha_emision')
-            );
-        } else {
-            $codigo = $this->presupNextCodigo(
-                request('id_grupo'),
-                request('fecha_emision')
-            );
-        }
+        
+        $codigo = $this->presupNextCodigoSinGrupo(
+            request('id_empresa'),
+            request('fecha_emision'),
+            request('tipo')
+        );
         
         $id_presup = DB::table('finanzas.presup')->insertGetId([
-            'id_empresa' =>  request('id_empresa'),
-            'id_grupo' => request('id_grupo'),
-            'fecha_emision' => request('fecha_emision'),
-            'codigo' => $codigo,
-            'descripcion' => strtoupper(request('descripcion')),
-            'moneda' => request('moneda'),
-            'tp_presup' => 4,
-            'tipo' => request('tipo'),
-            'id_proyecto' => $id_proyecto,
-            'fecha_registro' => date('Y-m-d H:i:s'),
-            'estado' => 1
+                'id_empresa' =>  request('id_empresa'),
+                // 'id_grupo' => request('id_grupo'),
+                'fecha_emision' => request('fecha_emision'),
+                'codigo' => $codigo,
+                'descripcion' => strtoupper(request('descripcion')),
+                'moneda' => request('moneda'),
+                'tp_presup' => 4,
+                'tipo' => request('tipo'),
+                'id_proyecto' => $id_proyecto,
+                'fecha_registro' => date('Y-m-d H:i:s'),
+                'estado' => 1
             ],
-            'id_presup'
+                'id_presup'
         );
 
         $data = DB::table('finanzas.presup')->where('id_presup',$id_presup)->first();
@@ -322,7 +318,7 @@ class PresupuestoController extends Controller
         return 'P' . $grupo->abreviatura . '-' . $anio . '-' . $next;
     }
 
-    public function presupNextCodigoSinGrupo($id_empresa, $fecha)
+    public function presupNextCodigoSinGrupo($id_empresa, $fecha, $tipo)
     {
         $yyyy = date('Y', strtotime($fecha));
         $anio = date('y', strtotime($fecha));
@@ -331,7 +327,7 @@ class PresupuestoController extends Controller
 
         $correlativo = Presupuesto::where([
                 ['id_empresa', '=', $id_empresa],
-                ['tipo', '=', 'INTERNO'],
+                ['tipo', '=', $tipo],
                 ['estado', '=', 1]
             ])
             ->whereYear('fecha_emision', '=', $yyyy)
@@ -339,7 +335,7 @@ class PresupuestoController extends Controller
 
         $next = $this->leftZero(3, $correlativo + 1);
 
-        return 'PI-' . $empresa->codigo . '-' . $anio . '-' . $next;
+        return 'P'.($tipo=='INTERNO'?'I':'E').'-' . $empresa->codigo . '-' . $anio . '-' . $next;
     }
 
     public function leftZero($lenght, $number)

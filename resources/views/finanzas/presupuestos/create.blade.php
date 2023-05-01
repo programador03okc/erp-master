@@ -57,34 +57,28 @@ Presupuesto
                         <div class="col-md-2">
                             <div class="form-control-static" name="codigo"></div>
                         </div>
+                        <label class="col-md-1 control-label">Tipo:</label>
+                        <div class="col-md-2">
+                            <div class="form-control-static" name="name_tipo"></div>
+                        </div>
                         <label class="col-md-1 control-label">Empresa:</label>
                         <div class="col-md-2">
                             <div class="form-control-static" name="name_empresa"></div>
                         </div>
-                        <label class="col-md-1 control-label">Grupo:</label>
-                        <div class="col-md-1">
-                            <div class="form-control-static" name="name_grupo"></div>
-                        </div>
-                        <label class="col-md-2 control-label">Fecha Emisión:</label>
+                        <label class="col-md-1 control-label">Fecha Em.:</label>
                         <div class="col-md-2">
                             <div class="form-control-static" name="fecha_emision"></div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-1 control-label">Moneda:</label>
-                            <div class="col-md-1">
-                                <div class="form-control-static" name="name_moneda"></div>
-                            </div>
-                        <label class="col-md-2 control-label">Tipo:</label>
-                            <div class="col-md-2">
-                                <div class="form-control-static" name="name_tipo"></div>
-                            </div>
-                    </div>
-                    <div class="form-group">
+                        <div class="col-md-2">
+                            <div class="form-control-static" name="name_moneda"></div>
+                        </div>
                         <label class="col-md-1 control-label">Descripción:</label>
-                            <div class="col-md-10">
-                                <div class="form-control-static" name="descripcion"></div>
-                            </div>
+                        <div class="col-md-8">
+                            <div class="form-control-static" name="descripcion"></div>
+                        </div>
                     </div>
                 </div>
 
