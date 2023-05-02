@@ -11,16 +11,24 @@
                 <div class="modal-body">
                     <div class="row">
                         <input style="display: none" name="id_presup"/> 
+                        <div class="col-md-4 ">
+                            <h5>Tipo</h5>
+                            <select class="form-control" name="tipo">
+                                <option value="0">Elija una opción</option>
+                                <option value="EXTERNO">Proyecto Externo</option>
+                                <option value="INTERNO">Proyecto Interno</option>
+                            </select>
+                        </div>
                         <div class="col-md-4">
                             <h5>Empresa</h5>
                             <select class="form-control" name="id_empresa">
                                 <option value="0">Elija una opción</option>
                                 @foreach($empresas as $item)
-                                    <option value="{{$item->id_empresa}}">{{$item->codigo}}</option>
+                                    <option value="{{$item->id_empresa}}">{{$item->razon_social}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        {{-- <div class="col-md-4 grupo">
                             <h5>Grupo</h5>
                             <select class="form-control" name="id_grupo">
                                 <option value="0">Elija una opción</option>
@@ -28,7 +36,7 @@
                                     <option value="{{$item->id_grupo}}">{{$item->cod_grupo}} - {{$item->descripcion}}</option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="col-md-4">
                             <h5>Fecha Emisión</h5>
                             <input type="date" name="fecha_emision" class="form-control" value="<?=date('Y-m-d');?>">
@@ -46,7 +54,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h5>Descripción</h5>
-                            <textarea name="descripcion" cols="77" rows="5"></textarea>
+                            <textarea class="form-control" name="descripcion" cols="77" rows="5"></textarea>
                         </div>
                     </div>
                 </div>

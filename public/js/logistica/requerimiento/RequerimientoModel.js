@@ -392,10 +392,36 @@ class RequerimientoModel {
             });
     }
 
+    obtenerListaProyectos(idGrupo){
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: 'GET',
+                url:`obtener-lista-proyectos/${idGrupo}`,
+                dataType: 'JSON',
+                beforeSend: function (data) { 
 
-   
-    
- 
+                    $('select[name="id_proyecto"]').LoadingOverlay("show", {
+                        imageAutoResize: true,
+                        progress: true,
+                        imageColor: "#3c8dbc"
+                    });
+                    },
+                success(response) {
+                    $('select[name="id_proyecto"]').LoadingOverlay("hide", true);
+                    resolve(response);
+
+                },
+                fail: function (jqXHR, textStatus, errorThrown) {
+                    $('select[name="id_proyecto"]').LoadingOverlay("hide", true);
+                    alert("Hubo un problema al cargar los proyectos. Por favor actualice la página e intente de nuevo");
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+                });
+        });
+    }
+
 }
 
 

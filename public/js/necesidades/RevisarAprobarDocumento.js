@@ -459,8 +459,13 @@ class RevisarAprobarDocumentoView {
                         (adjuntoList).forEach(element => {
                             tempArchivoAdjuntoRequerimientoPagoCabeceraList.push({
                                 id: element.id_requerimiento_pago_adjunto,
-                                category: element.id_categoria_adjunto,
+                                category: element.id_tp_doc,
                                 nameFile: element.archivo,
+                                serie: element.serie,
+                                numero: element.numero,
+                                fecha_emision: element.fecha_emision,
+                                id_moneda: element.id_moneda,
+                                monto_total: element.monto_total,
                                 file: []
                             });
 
@@ -531,6 +536,8 @@ class RevisarAprobarDocumentoView {
         adjuntoList.forEach(element => {
             html += `<tr id="${element.id}" style="text-align:center">
     <td style="text-align:left;">${element.nameFile}</td>
+    <td style="text-align:left;">${element.fecha_emision}</td>
+    <td style="text-align:left;"> ${element.serie??''}-${element.numero??''}</td>
     <td>
         <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto" ${hasDisabledSelectTipoArchivo}>
     `;
@@ -544,6 +551,8 @@ class RevisarAprobarDocumentoView {
             });
             html += `</select>
     </td>
+    <td style="text-align:left;">${element.id_moneda!=null ? (element.id_moneda ==1?'S/':(element.id_moneda==2?'$':'')):''} ${element.monto_total!=null? ($.number(element.monto_total,2,".",",")):''}</td>
+
     <td style="text-align:center;">
         <div class="btn-group" role="group">`;
             if (Number.isInteger(element.id)) {

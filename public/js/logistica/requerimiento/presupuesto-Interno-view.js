@@ -8,15 +8,19 @@ class PresupuestoInternoView{
 
     eventos = ()=>{
 
-        $('body').on("change", "select.handleChangePresupuestoInterno", (e) => {
-            this.seleccionarPresupuestoInterno(e.currentTarget);
-        });
+        // $('body').on("change", "select.handleChangePresupuestoInterno", (e) => {
+        //     this.seleccionarPresupuestoInterno(e.currentTarget);
+        // });
 
         $('tbody').on("click", "button.handleClickCargarModalPartidas", (e) => {
+            document.querySelector("div[id='listaPartidas']").innerHTML='';
+            document.querySelector("div[id='listaPresupuesto']").innerHTML='';
             let id_presupuesto_interno = document.querySelector("select[name='id_presupuesto_interno']").value;
             if(id_presupuesto_interno>0){
-                this.cargarPresupuestoDetalle(id_presupuesto_interno,'MENSUAL');
+                this.cargarPresupuestoDetalle(id_presupuesto_interno);
             }else{
+                document.querySelector("div[id='listaPartidas']").innerHTML='';
+                document.querySelector("div[id='listaPresupuesto']").innerHTML='';
                 // Swal.fire(
                 //     '',
                 //     'No se puedo seleccionar el id de presupuesto para obtener su detalle, vuelva a intentar seleccionar un presupuesto interno.',
@@ -69,9 +73,10 @@ class PresupuestoInternoView{
         }
     }
 
-    cargarPresupuestoDetalle(idPresupuestoIterno,anualMensual){
+    cargarPresupuestoDetalle(idPresupuestoIterno){
 
-        this.model.obtenerListaDetallePrespuestoInterno(idPresupuestoIterno,anualMensual).then((res) => {
+
+        this.model.obtenerListaDetallePrespuestoInterno(idPresupuestoIterno).then((res) => {
             this.construirListaDetallePrespuestoInterno(res);
 
         }).catch(function (err) {
@@ -184,10 +189,16 @@ class PresupuestoInternoView{
 
 
 
-    llenarComboPresupuestoInterno(idGrupo,idArea){
+    llenarComboPresupuestoInterno(idGrupo,idArea, idPresupuestoInterno=null){
+        let selectElement = document.querySelector("select[name='id_presupuesto_interno']");
+        selectElement.innerHTML='';
+        let option = document.createElement("option");
+        option.text = "Seleccionar un presupuesto interno";
+        option.value = '';
+        selectElement.add(option);
+
         this.model.comboPresupuestoInterno(idGrupo, idArea).then((res) => {
             // console.log(res);
-            let selectElement = document.querySelector("select[name='id_presupuesto_interno']");
             $("input[name='codigo_presupuesto_interno']").val("");
 
 
@@ -200,19 +211,24 @@ class PresupuestoInternoView{
             
             let optionDefault = document.createElement("option");
             optionDefault.text = "selecciona un presupuesto interno";
+            
             optionDefault.value = "";
             optionDefault.setAttribute('data-codigo', "");
             optionDefault.setAttribute('data-id-grupo', "");
             optionDefault.setAttribute('data-id-area', "");
             selectElement.add(optionDefault);
 
-            res.forEach(element => {
+            res.forEach(element => {                
                 let option = document.createElement("option");
-                option.text = element.descripcion;
+                option.text = element.descripcion+(element.estado !=2?'(NO APROBADO)':'');
                 option.value = element.id_presupuesto_interno;
                 option.setAttribute('data-codigo', element.codigo);
                 option.setAttribute('data-id-grupo', element.id_grupo);
                 option.setAttribute('data-id-area', element.id_area);
+                if (element.id_presupuesto_interno == idPresupuestoInterno) {
+                    option.selected = true;
+                    document.querySelector("input[name='codigo_presupuesto_interno']").value=element.codigo;
+                }
                 selectElement.add(option);
             });
 
@@ -221,14 +237,37 @@ class PresupuestoInternoView{
         });
     }
 
-    seleccionarPresupuestoInterno(obj){
-        const codigoPresupuestoInterno=  obj.options[obj.selectedIndex].dataset.codigo;
-        $("input[name='codigo_presupuesto_interno']").val(codigoPresupuestoInterno);
-        this.ocultarOpcionCentroDeCosto();
-    }
+    limpiarTabla(idElement) {
+        let nodeTbody = document.querySelector("table[id='" + idElement + "'] tbody");
+        if (nodeTbody != null) {
+            while (nodeTbody.children.length > 0) {
+                nodeTbody.removeChild(nodeTbody.lastChild);
+            }
 
-    ocultarOpcionCentroDeCosto(){
-        $("button[name=centroCostos]").addClass("oculto");
-        $("p[class=descripcion-centro-costo]").attr("hidden",true);
+        }
     }
+    // seleccionarPresupuestoInterno(obj){
+    //     if(obj.value >0){
+    //         const codigoPresupuestoInterno=  obj.options[obj.selectedIndex].dataset.codigo;
+    //         $("input[name='codigo_presupuesto_interno']").val(codigoPresupuestoInterno);
+    //         if( document.querySelector("select[name='division").options[document.querySelector("select[name='division").selectedIndex].dataset.idGrupo == 3){
+    //             this.ocultarOpcionCentroDeCosto();
+    //         }else{
+    //             this.mostrarOpcionCentroDeCosto();
+    //         }
+    //     }else{
+    //         this.mostrarOpcionCentroDeCosto();
+
+    //     }
+
+    // }
+
+    // ocultarOpcionCentroDeCosto(){
+    //     $("button[name=centroCostos]").addClass("oculto");
+    //     $("p[class=descripcion-centro-costo]").attr("hidden",true);
+    // }
+    // mostrarOpcionCentroDeCosto(){
+    //     $("button[name=centroCostos]").removeClass("oculto");
+    //     $("p[class=descripcion-centro-costo]").removeAttr("hidden");
+    // }
 }

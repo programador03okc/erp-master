@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Finanzas\Presupuesto;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Helpers\StringHelper;
 
 use App\Models\Administracion\Division;
 use App\Models\administracion\DivisionCodigo;
@@ -493,6 +494,18 @@ class ScriptController extends Controller
     public function totalEjecutado()
     {
         $presupuesto_interno_aprobado = PresupuestoInterno::where('estado',2)->get();
-        return response()->json(["success"=>$presupuesto_interno_aprobado],200);
+        $array_total=array();
+        foreach ($presupuesto_interno_aprobado as $key => $value) {
+            $total_ejecutado = PresupuestoInterno::presupuestoEjecutado($value->id_presupuesto_interno,3);
+            $total_ppti = PresupuestoInterno::calcularTotalPresupuestoAnual($value->id_presupuesto_interno,3);
+            array_push($array_total,array(
+                "id"=>$value->id_presupuesto_interno,
+                "codigo"=>$value->codigo,
+                "total_ppti"=>round($total_ppti, 2),
+                "total_ejecutado"=>round($total_ejecutado, 2),
+            ));
+        }
+
+        return response()->json($array_total,200);
     }
 }

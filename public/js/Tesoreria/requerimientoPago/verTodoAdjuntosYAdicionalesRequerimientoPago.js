@@ -1,7 +1,7 @@
 var tempArchivoAdjuntoRequerimientoPagoCabeceraList = [];
 
 $('#ListaRequerimientoPago').on("click", "button.handleClickVerAgregarAdjuntosRequerimiento", (e) => {
-    verAgregarAdjuntosRequerimientoPago(e.currentTarget.dataset.idRequerimientoPago);
+    verAgregarAdjuntosRequerimientoPago(e.currentTarget);
 });
 
 $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeAgregarAdjuntoRequerimientoPagoCabecera", (e) => {
@@ -21,6 +21,17 @@ $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "select.handleC
 });
 $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeFechaEmision", (e) => {
     actualizarFechaEmisionDeAdjunto(e.currentTarget);
+});
+
+$('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeSerieComprobante", (e) => {
+    this.actualizarSerieComprobanteDeAdjunto(e.currentTarget);
+});
+$('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeNumeroComprobante", (e) => {
+    this.actualizarNumeroComprobanteDeAdjunto(e.currentTarget);
+});
+
+$('#modal-ver-agregar-adjuntos-requerimiento-pago').on("change", "input.handleChangeMontoTotalComprobante", (e) => {
+    actualizarMontoTotalDeAdjunto(e.currentTarget);
 });
 $('#modal-ver-agregar-adjuntos-requerimiento-pago').on("click", "button.handleClickGuardarAdjuntosAdicionales", (e) => {
     guardarAdjuntos();
@@ -83,7 +94,11 @@ function obtenerListaAdjuntosPago(idRequerimientoPago) {
 }
 
 
-function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
+function verAgregarAdjuntosRequerimientoPago(obj) {
+    const idRequerimientoPago = obj.dataset.idRequerimientoPago;
+    const idMoneda = obj.dataset.idMoneda;
+    const simboloMoneda = obj.dataset.simboloMoneda;
+    const montoAPagar = obj.dataset.montoAPagar;
     $('#modal-ver-agregar-adjuntos-requerimiento-pago').modal({
         show: true,
         backdrop: 'static'
@@ -92,6 +107,9 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
     tempArchivoAdjuntoRequerimientoPagoCabeceraList = [];
     calcTamañoTotalAdjuntoPagoParaSubir();
     document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='id_requerimiento_pago']").value = idRequerimientoPago;
+    document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='id_moneda']").value = idMoneda;
+    document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='simbolo_moneda']").value = simboloMoneda;
+    document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='monto_a_pagar']").value = montoAPagar;
     if (idRequerimientoPago > 0) {
         limpiarTabla('adjuntosPago');
         limpiarTabla('adjuntosCabecera');
@@ -116,6 +134,7 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
 
         obteneTodoAdjuntosRequerimientoPago(idRequerimientoPago).then((res) => {
             // llenar tabla cabecera
+            // console.log(res);
             let htmlCabecera = '';
             let tieneAccesoParaEliminarAdjuntos = false;
             if (res.id_usuario_propietario_requerimiento > 0 && res.id_usuario_propietario_requerimiento == auth_user.id_usuario) {
@@ -124,13 +143,20 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
             if (res.adjuntos_cabecera.length > 0) {
                 (res.adjuntos_cabecera).forEach(element => {
 
+                    if(element.id_usuario  == auth_user.id_usuario ){ // usuario que subio el adjunto
+                        tieneAccesoParaEliminarAdjuntos+=true;
+                    }
+
                     if (element.id_estado != 7) {
+                    
                         htmlCabecera += `<tr>
                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/pago/cabecera/${element.archivo}" target="_blank">${element.archivo}</a></td>
                         <td style="text-align:left;">${element.fecha_emision ?? ''}</td>
-                        <td style="text-align:left;">${element.categoria_adjunto.descripcion}</td>
+                        <td style="text-align:left;">${element.serie !=null ?element.serie:''}-${element.numero !=null ?element.numero:''}</td>
+                        <td style="text-align:left;">${element.tipo_documento!=null?element.tipo_documento.descripcion:''}</td>
+                        <td style="text-align:left;">${element.moneda != null?element.moneda.simbolo:''} ${element.monto_total !=null?element.monto_total:''}</td>
                         <td style="text-align:center;">
-                            <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoCabecera handleClickAnularAdjuntoPagoCabecera" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos == true ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                            <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoCabecera handleClickAnularAdjuntoPagoCabecera" data-id-adjunto="${element.id_requerimiento_pago_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos > 0 ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
                         </td>
                         </tr>`;
 
@@ -147,7 +173,7 @@ function verAgregarAdjuntosRequerimientoPago(idRequerimientoPago) {
                         htmlDetalle += `<tr>
                                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/pago/detalle/${element.archivo}" target="_blank">${element.archivo}</a></td>
                                         <td style="text-align:center;">
-                                        <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoDetalle handleClickAnularAdjuntoPagoDetalle" data-id-adjunto="${element.id_requerimiento_pago_detalle_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos == true ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
+                                        <button type="button" class="btn btn-xs btn-danger btnAnularAdjuntoPagoDetalle handleClickAnularAdjuntoPagoDetalle" data-id-adjunto="${element.id_requerimiento_pago_detalle_adjunto}" title="Anular adjunto" ${tieneAccesoParaEliminarAdjuntos > 0 ? '' : 'disabled'}><i class="fas fa-times fa-xs"></i></button>
                                     </td>
                                         </tr>`;
 
@@ -219,7 +245,11 @@ function agregarAdjuntoRequerimientoPagoCabecera(obj) {
                 if (estaHabilitadoLaExtension(file) == true) {
                     let payload = {
                         id: makeId(),
-                        category: 1, //default: otros adjuntos
+                        numero:'',
+                        serie:'',
+                        id_moneda: document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='id_moneda']").value,
+                        monto_total: document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='monto_a_pagar']").value,
+                        category: 6, //default: factura
                         size: file.size,
                         nameFile: file.name,
                         fecha_emision: moment().format('YYYY-MM-DD'),
@@ -273,13 +303,18 @@ function getcategoriaAdjunto() {
 }
 
 function addToTablaArchivosRequerimientoPagoCabecera(payload) {
+
+    const simboloMonedaOrden = document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='simbolo_moneda']").value;
+
     getcategoriaAdjunto().then((categoriaAdjuntoList) => {
         // console.log(categoriaAdjuntoList);
         let html = '';
         html = `<tr id="${payload.id}" style="text-align:center">
         <td style="text-align:left;">${payload.nameFile}</td>
-        <td>
-            <input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" value="${moment().format("YYYY-MM-DD")}" />
+        <td> <input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" value="${moment().format("YYYY-MM-DD")}" /></td>
+        <td style="text-align:left; display:flex;"> 
+            <input type="text" class="form-control handleChangeSerieComprobante" name="serie"  placeholder="serie">
+            <input type="text" class="form-control handleChangeNumeroComprobante" name="numero"  placeholder="Número">
         </td>
         <td>
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
@@ -293,6 +328,12 @@ function addToTablaArchivosRequerimientoPagoCabecera(payload) {
             }
         });
         html += `</select>
+        </td>
+            <td style="text-align:left;">
+            <div class="input-group">
+            <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${simboloMonedaOrden}</div>
+            <input type="number" class="form-control handleChangeMontoTotalComprobante" placeholder="Monto comprobante" value="${payload.monto_total != null ?payload.monto_total:''}">
+            </div>
         </td>
         <td style="text-align:center;">
             <div class="btn-group" role="group">
@@ -340,6 +381,75 @@ function actualizarFechaEmisionDeAdjunto(obj) {
         Swal.fire(
             '',
             'Hubo un error inesperado al intentar cambiar la categoría del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+            'error'
+        );
+    }
+}
+function actualizarSerieComprobanteDeAdjunto(obj) {
+
+    if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+        let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+        tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].serie = obj.value;
+        if (tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id > 0) {
+
+        }
+        var regExp = /[a-zA-Z]/g; //expresión regular
+        if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+        } else {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
+        }
+
+    } else {
+        Swal.fire(
+            '',
+            'Hubo un error inesperado al intentar cambiar la serie del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+            'error'
+        );
+    }
+}
+function actualizarNumeroComprobanteDeAdjunto(obj) {
+
+    if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+        let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+        tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].numero = obj.value;
+        if (tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id > 0) {
+
+        }
+        var regExp = /[a-zA-Z]/g; //expresión regular
+        if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+        } else {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
+        }
+
+    } else {
+        Swal.fire(
+            '',
+            'Hubo un error inesperado al intentar cambiar el número del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
+            'error'
+        );
+    }
+}
+function actualizarMontoTotalDeAdjunto(obj) {
+
+    if (tempArchivoAdjuntoRequerimientoPagoCabeceraList.length > 0) {
+        let indice = tempArchivoAdjuntoRequerimientoPagoCabeceraList.findIndex(elemnt => elemnt.id == obj.closest('tr').id);
+        tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].monto_total = obj.value;
+        if (tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id > 0) {
+
+        }
+        var regExp = /[a-zA-Z]/g; //expresión regular
+        if (regExp.test(tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].id) == false) {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'ACTUALIZAR';
+        } else {
+            tempArchivoAdjuntoRequerimientoPagoCabeceraList[indice].action_adjunto = 'GUARDAR';
+        }
+
+    } else {
+        Swal.fire(
+            '',
+            'Hubo un error inesperado al intentar cambiar la monto total del adjunto, puede que no el objecto este vacio, elimine adjuntos y vuelva a seleccionar',
             'error'
         );
     }
@@ -587,7 +697,7 @@ function otrosAdjuntosTesoreria(idRequerimientoPago) {
             });
             $('#modal-ver-agregar-adjuntos-requerimiento-pago [data-table="adjuntos-tesoreria"]').html(html);
         }
-        console.log(response);
+        // console.log(response);
     }).fail(function (jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
         console.log(textStatus);

@@ -140,7 +140,7 @@ function cambiarTipoFormulario(tipo=null){
 
 
 function mostrarTipoForm(tipo){
-
+    // console.log(tipo);
     switch (tipo) {
         case 'MGCP': //Mgcp - comercial
             hiddeElement('ocultar','form-requerimiento',[
@@ -188,7 +188,6 @@ function mostrarTipoForm(tipo){
                 'seccion-contacto-cliente',
                 'input-group-rol-usuario',
                 'input-group-almacen',
-                'input-group-proyecto',    
                 'input-group-nombre-contacto',
                 'input-group-cargo-contacto',
                 'input-group-email-contacto',
@@ -232,7 +231,7 @@ function mostrarTipoForm(tipo){
                 'input-group-telefono-contacto',
                 'input-group-direccion-contacto',
                 'input-group-fuente',
-                'input-group-proyecto',
+                'input-group-cdp',
                 'seccion-cliente',
                 'seccion-contacto-cliente'
                 ]);

@@ -1102,7 +1102,8 @@ class RegistroPagoController extends Controller
                 $adjunto->archivo  = $newNameFile;
                 $adjunto->id_estado  = 1;
                 $adjunto->fecha_registro  = $fechaHoy;
-                $adjunto->id_categoria_adjunto = 5;
+                // $adjunto->id_categoria_adjunto = 5;
+                $adjunto->id_tp_doc = 1;
                 $adjunto->id_usuario = Auth::user()->id_usuario;
                 $adjunto->save();
                 $mensaje = 'Se guardo el adjunto';

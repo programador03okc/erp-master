@@ -36,7 +36,8 @@ $(".nuevo-presupuesto").on('click', function () {
     $('#cod_presup').text('');
     $('[name=moneda]').val('1');
     $('[name=descripcion]').val('');
-    $('[name=id_grupo]').val('0');
+    $('[name=id_empresa]').val('0');
+    $('[name=tipo]').val('0');
 });
 
 $(".editar-presupuesto").on('click', function () {
@@ -49,9 +50,10 @@ $(".editar-presupuesto").on('click', function () {
     if (presupuesto !== null) {
         $('[name=id_presup]').val(presupuesto.id_presup);
         $('#cod_presup').text(presupuesto.codigo);
+        $('[name=tipo]').val(presupuesto.tipo);
         $('[name=moneda]').val(presupuesto.moneda);
         $('[name=descripcion]').val(presupuesto.descripcion);
-        $('[name=id_grupo]').val(presupuesto.id_grupo);
+        $('[name=id_empresa]').val(presupuesto.empresa.id_empresa);
         $('[name=fecha_emision]').val(presupuesto.fecha_emision);
     }
 });
@@ -109,10 +111,11 @@ function mostrarPartidas(id) {
             $('[name=id_presup]').val(id);
             $('[name=codigo]').text(response.codigo);
             $('[name=descripcion]').text(response.descripcion);
-            $('[name=name_empresa]').text(response.empresa['codigo']);
-            $('[name=name_grupo]').text(response.grupo['descripcion']);
-            $('[name=fecha_emision]').text(response.fecha_emision);
+            $('[name=name_empresa]').text(response.empresa.contribuyente['razon_social']);
+            $('[name=name_grupo]').text(response.grupo !== null ? response.grupo['descripcion'] : '-');
+            $('[name=fecha_emision]').text(formatDate(response.fecha_emision));
             $('[name=name_moneda]').text(response.moneda_seleccionada['descripcion']);
+            $('[name=name_tipo]').text(response.tipo == 'INTERNO' ? 'Proyecto Interno' : 'Proyecto Externo');
 
             var html = '';
 

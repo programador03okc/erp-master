@@ -11,7 +11,8 @@
                         <tr>
                             <th width="200">Descripción</th>
                             <th width="80">Fecha emisión</th>
-                            <th width="100">Tipo</th>
+                            <th width="80">serie y número</th>
+                            <th width="90">Tipo</th>
                             <th width="20">Acción</th>
                         </tr>
                     </thead>

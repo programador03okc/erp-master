@@ -40,14 +40,14 @@ function listarTransferenciasRecibidas() {
             $("#btnBuscarRecibidas").on("click", e => {
                 tableTransferenciasRecibidas.search($input.val()).draw();
             });
-            (array_accesos.find(element => element === 282)?$('#listaTransferenciasRecibidas_wrapper .dt-buttons').append(
+            (array_accesos.find(element => element === 282) ? $('#listaTransferenciasRecibidas_wrapper .dt-buttons').append(
                 `<div class="col-md-5" style="text-align: center;margin-top: 7px;"><label>Almacén Destino:</label></div>
                     <div class="col-md-4" style="display:flex">
                         <select class="form-control" id="selectAlmacenDestinoRecibido" >
                             <option value="0" selected>Todos los almacenes</option>
                         </select>
                     </div>`
-            ):'')
+            ) : '')
 
             mostrarAlmacenes('recibido');
             $("#selectAlmacenDestinoRecibido").on("change", function (e) {
@@ -116,20 +116,20 @@ function listarTransferenciasRecibidas() {
                 orderable: false, searchable: false,
                 render: function (data, type, row) {
                     if (valor_permiso == "1") {
-                        return `<div style="display: flex;text-align:center;">`+
-                        (array_accesos.find(element => element === 135)?`<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
+                        return `<div style="display: flex;text-align:center;">` +
+                            (array_accesos.find(element => element === 135) ? `<button type="button" class="detalle btn btn-default btn-flat boton" data-toggle="tooltip"
                         data-placement="bottom" title="Ver Detalle" data-id="${row['id_requerimiento']}">
-                        <i class="fas fa-chevron-down"></i></button>`:``)+`
+                        <i class="fas fa-chevron-down"></i></button>`: ``) + `
 
                             ${(row['doc_ven'] == '-') ?
-                            (array_accesos.find(element => element === 137)?`<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip"
+                                (array_accesos.find(element => element === 137) ? `<button type="button" class="anular btn btn-danger boton btn-flat" data-toggle="tooltip"
                             data-placement="bottom" data-id="${row["id_transferencia"]}" data-guia="${row["id_guia_com"]}" data-ing="${row["id_ingreso"]}" title="Anular" >
-                            <i class="fas fa-trash"></i></button>`:``)
+                            <i class="fas fa-trash"></i></button>`: ``)
                                 : ''}
                             ${row['id_empresa_origen'] !== row['id_empresa_destino'] ?
-                            (array_accesos.find(element => element === 136)?`<button type="button" class="autogenerar btn btn-success boton btn-flat" data-toggle="tooltip"
-                            data-placement="bottom" data-id="${row["id_doc_ven"]}" data-dc="${row["doc_com"]}" title="Autogenerar Docs de Compra" >
-                            <i class="fas fa-sync-alt"></i></button>`:``)
+                                (array_accesos.find(element => element === 136) ? `<button type="button" class="autogenerar btn btn-success boton btn-flat" data-toggle="tooltip"
+                            data-placement="bottom" data-id="${row["id_doc_ven"]}" data-dc="${row["doc_com"]}" data-idtrans="${row["id_transferencia"]}" title="Autogenerar Docs de Compra" >
+                            <i class="fas fa-sync-alt"></i></button>`: ``)
                                 : ''}
 
                             </div>`;
@@ -261,9 +261,10 @@ $("#listaTransferenciasRecibidas tbody").on("click", "a.transferencia", function
 });
 
 $("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", function (e) {
-    (e.currentTarget).setAttribute("disabled",true);
+    (e.currentTarget).setAttribute("disabled", true);
     var id = $(this).data("id");
     var dc = $(this).data("dc");
+    var tr = $(this).data("idtrans");
     console.log(id);
     if (id !== null) {
         if (dc == '-') {
@@ -278,7 +279,7 @@ $("#listaTransferenciasRecibidas tbody").on("click", "button.autogenerar", funct
             }).then(result => {
                 if (result.isConfirmed) {
                     (e.currentTarget).removeAttribute("disabled");
-                    autogenerarDocsCompra(id);
+                    autogenerarDocsCompra(id, tr);
                 }
             });
         } else {
@@ -314,11 +315,11 @@ $("#listaTransferenciasRecibidas tbody").on("click", "i.verDocsAutogenerados", f
     verDocumentosAutogenerados(id);
 });
 
-function autogenerarDocsCompra(id_doc_ven) {
+function autogenerarDocsCompra(id_doc_ven, id_transferencia) {
 
     $.ajax({
         type: "GET",
-        url: "autogenerarDocumentosCompra/" + id_doc_ven,
+        url: "autogenerarDocumentosCompra/" + id_doc_ven + "/" + id_transferencia,
         dataType: "JSON",
         success: function (response) {
             console.log(response);

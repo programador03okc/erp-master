@@ -96,7 +96,7 @@ class RequerimientoController extends Controller
         $subcategorias = (new AlmacenController)->mostrar_subcategorias_cbo();
         $categorias = (new AlmacenController)->mostrar_categorias_cbo();
         $unidades = (new AlmacenController)->mostrar_unidades_cbo();
-        $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
+        // $proyectos_activos = (new ProyectosController)->listar_proyectos_activos();
         $fuentes = Fuente::mostrar();
         $divisiones = Division::mostrar();
         $categoria_adjunto = CategoriaAdjunto::mostrar();
@@ -124,8 +124,28 @@ class RequerimientoController extends Controller
 
         $presupuestoInternoList = (new PresupuestoInternoController)->comboPresupuestoInterno(0, 0);
 
-        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario', 'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'proyectos_activos', 'fuentes', 'divisiones', 'array_accesos', 'array_accesos_botonera', 'modulo', 'presupuestoInternoList'));
+        return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario',
+            'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 
+            'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'fuentes', 
+            'divisiones', 'array_accesos', 'array_accesos_botonera', 'modulo', 'presupuestoInternoList'));
     }
+
+    public function obtenerListaProyectos($idGrupo){
+        
+        $tipoProyecto= 'INTERNO';
+        if($idGrupo==3){
+            $tipoProyecto= 'EXTERNO';
+        }
+
+        $data = DB::table('proyectos.proy_proyecto')
+        ->select('proy_proyecto.*','centro_costo.descripcion as descripcion_centro_costo','centro_costo.codigo as codigo_centro_costo')
+        ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'proy_proyecto.id_centro_costo')
+        ->where([['proy_proyecto.estado', 1],['proy_proyecto.tipo', $tipoProyecto]])
+        ->orderBy('id_proyecto')
+        ->get();
+        return $data;
+    }
+
 
 
     public function mostrar($idRequerimiento)

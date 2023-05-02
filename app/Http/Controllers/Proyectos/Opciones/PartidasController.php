@@ -35,6 +35,7 @@ class PartidasController extends Controller
         $this->suma_partidas_cd($request->comp, $request->id_cd);
         return response()->json($rspta);
     }
+
     public function guardar_partida_ci(Request $request)
     {
         $data = DB::table('proyectos.proy_ci_detalle')
@@ -60,6 +61,7 @@ class PartidasController extends Controller
 
         return response()->json($data);
     }
+
     public function guardar_partida_gg(Request $request)
     {
         $data = DB::table('proyectos.proy_gg_detalle')
@@ -85,6 +87,7 @@ class PartidasController extends Controller
 
         return response()->json($data);
     }
+
     public function update_partida_cd(Request $request){
 
         $data = DB::table('proyectos.proy_cd_partida')
@@ -123,6 +126,7 @@ class PartidasController extends Controller
 
         return response()->json($data);
     }
+
     public function update_partida_gg(Request $request){
 
         $data = DB::table('proyectos.proy_gg_detalle')
@@ -144,6 +148,7 @@ class PartidasController extends Controller
 
         return response()->json($data);
     }
+
     public function anular_partida_cd(Request $request){
 
         $data = DB::table('proyectos.proy_cd_partida')
@@ -154,6 +159,7 @@ class PartidasController extends Controller
 
         return response()->json($data);
     }
+
     public function anular_partida_ci(Request $request){
 
         $data = DB::table('proyectos.proy_ci_detalle')
@@ -164,6 +170,7 @@ class PartidasController extends Controller
 
         return response()->json($data);
     }
+
     public function anular_partida_gg(Request $request){
 
         $data = DB::table('proyectos.proy_gg_detalle')
@@ -176,6 +183,93 @@ class PartidasController extends Controller
     }
 
     
+    public function crear_titulos_ci($id_presupuesto){
+        $pres = DB::table('finanzas.presup')
+        ->where([['tp_presup','=',1],['estado','=',1]])
+        ->orderBy('presup.fecha_emision','desc')
+        ->first();
+        $data = '';
+
+        if (isset($pres)){
+            $titulos = DB::table('finanzas.presup_par')
+            ->select('presup_par.*','presup_pardet.descripcion')
+            ->join('finanzas.presup_pardet','presup_pardet.id_pardet','=','presup_par.id_pardet')
+            ->where([['id_presup','=',$pres->id_presup],['relacionado','like','CI%']])
+            ->orderBy('relacionado','asc')
+            ->get();
+
+            // $data = DB::table('proyectos.proy_ci_compo')
+            // ->insertGetId([
+            //     'id_ci' => $id_presupuesto,
+            //     'codigo' => '01',
+            //     'descripcion' => 'Almacenes / Alojamiento / Alimentación',
+            //     'cod_padre' => '',
+            //     'total_comp' => 0,
+            //     'fecha_registro' => date('Y-m-d H:i:s'),
+            //     'estado' => 1
+            // ],
+            //     'id_ci_compo'
+            // );
+
+            foreach($titulos as $d){
+                $codigo = substr($d->relacionado, 2, (strlen($d->relacionado)-2));
+                $tiene = strstr($d->relacionado, '.', true);
+                $padre = (strlen($tiene) > 0 ? substr($tiene, 2, strlen($tiene)) : '');
+
+                $data = DB::table('proyectos.proy_ci_compo')
+                ->insertGetId([
+                    'id_ci' => $id_presupuesto,
+                    'codigo' => $codigo,
+                    'descripcion' => $d->descripcion,
+                    'cod_padre' => $padre,
+                    'total_comp' => 0,
+                    'fecha_registro' => date('Y-m-d H:i:s'),
+                    'estado' => 1
+                ],
+                    'id_ci_compo'
+                );
+            }
+        }
+        return response()->json($data);
+    }
+
+    public function crear_titulos_gg($id_presupuesto){
+        $pres = DB::table('finanzas.presup')
+        ->where([['tp_presup','=',1],['estado','=',1]])
+        ->orderBy('presup.fecha_emision','desc')
+        ->first();
+
+        $titulos = DB::table('finanzas.presup_par')
+        ->select('presup_par.*','presup_pardet.descripcion')
+        ->join('finanzas.presup_pardet','presup_pardet.id_pardet','=','presup_par.id_pardet')
+        ->where([['id_presup','=',$pres->id_presup],['relacionado','like','GG%']])
+        ->orderBy('relacionado','asc')
+        ->get();
+
+        foreach($titulos as $d){
+            $codigo = substr($d->relacionado, 2, (strlen($d->relacionado)-2));
+            // $padre = substr($d->relacionado, 2, (strlen($d->relacionado)-5));
+
+            $tiene = strstr($d->relacionado, '.', true);
+            $padre = (strlen($tiene) > 0 ? substr($tiene, 2, strlen($tiene)) : '');
+
+            $data = DB::table('proyectos.proy_gg_compo')
+            ->insertGetId([
+                'id_gg' => $id_presupuesto,
+                'codigo' => $codigo,
+                'descripcion' => $d->descripcion,
+                'cod_padre' => $padre,
+                'total_comp' => 0,
+                'fecha_registro' => date('Y-m-d H:i:s'),
+                'estado' => 1
+            ],
+                'id_gg_compo'
+            );
+        }
+        return response()->json($data);
+    }
+
+
     public function suma_partidas_cd($cod_padre, $id_cd)
     {
         $this->suma_padres_cd($cod_padre, $id_cd);

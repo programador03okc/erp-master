@@ -101,6 +101,10 @@ class RequerimientoCtrl{
     getSedesPorEmpresa(idEmpresa){
         return this.requerimientoModel.getSedesPorEmpresa(idEmpresa);
     }
+
+    obtenerListaProyectos(idGrupo){
+        return this.requerimientoModel.obtenerListaProyectos(idGrupo);
+    }
     
 }
 

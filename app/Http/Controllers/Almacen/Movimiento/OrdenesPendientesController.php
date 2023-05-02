@@ -1575,7 +1575,7 @@ class OrdenesPendientesController extends Controller
 
         foreach ($array_padres as $padre) {
 
-            $codigo = TransferenciaController::transferencia_nextId($id_almacen_origen);
+            $codigo = TransferenciaController::transferencia_nextId($id_almacen_origen, new Carbon());
 
             if ($msj == '') {
                 $msj = 'Se generó transferencia. ' . $codigo;
@@ -1750,7 +1750,7 @@ class OrdenesPendientesController extends Controller
                             'trans_detalle.id_trans_detalle',
                             'trans.id_transferencia',
                             'trans.estado as estado_trans',
-                            'orden_despacho.id_od',
+                            'guia_ven.id_guia_ven',
                             'guia_com_det.id_transformado'
                         )
                         ->leftjoin('almacen.guia_com_det', 'guia_com_det.id_guia_com_det', '=', 'mov_alm_det.id_guia_com_det')
@@ -1760,6 +1760,10 @@ class OrdenesPendientesController extends Controller
                         ->leftJoin('almacen.orden_despacho', function ($join) {
                             $join->on('orden_despacho.id_requerimiento','=','alm_req.id_requerimiento');
                             $join->where('orden_despacho.estado', '!=', 7);
+                        })
+                        ->leftJoin('almacen.guia_ven', function ($join) {
+                            $join->on('guia_ven.id_od','=','orden_despacho.id_od');
+                            $join->where('guia_ven.estado', '!=', 7);
                         })
                         ->leftJoin('almacen.trans_detalle', function ($join) {
                             $join->on('trans_detalle.id_requerimiento_detalle', '=', 'alm_det_req.id_detalle_requerimiento');
@@ -1773,8 +1777,13 @@ class OrdenesPendientesController extends Controller
 
                         $validado = true;
                         foreach ($detalle as $det) {
-                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14)) || $det->id_od !== null) {
+                            if (($det->id_trans_detalle !== null && ($det->estado_trans == 17 || $det->estado_trans == 14))) {    //recepcionada y enviada
                                 $validado = false;
+                                $msj = 'El ingreso ya fue procesado con una Transferencia.';
+                            }
+                            else if ($det->id_guia_ven !== null) {    //salida almacen
+                                $validado = false;
+                                $msj = 'El ingreso ya fue procesado con una Guia de Salida.';
                             }
                         }
 
@@ -1904,7 +1913,7 @@ class OrdenesPendientesController extends Controller
                             $msj = 'Se anuló el ingreso correctamente.';
                             $tipo = 'success';
                         } else {
-                            $msj = 'El ingreso ya fue procesado con una Orden de Despacho o una Transferencia.';
+                            //$msj = 'El ingreso ya fue procesado con una Guia de Salida o una Transferencia.';
                             $tipo = 'warning';
                         }
                     } else {
@@ -2168,6 +2177,7 @@ class OrdenesPendientesController extends Controller
                         'porcen_dscto' => $item->porcentaje_dscto,
                         'total_dscto' => $item->total_dscto,
                         'precio_total' => $item->total,
+                        'id_oc_det' => $item->id_oc_det,
                         'estado' => 1,
                         'fecha_registro' => $fecha,
                     ]);
@@ -2273,8 +2283,8 @@ class OrdenesPendientesController extends Controller
             // ->join('almacen.guia_com_det','guia_com_det.id_guia_com','=','guia_com.id_guia')
             // ->join('almacen.doc_com_det','doc_com_det.id_guia_com_det','=','guia_com_det.id_guia_com_det')
             // ->join('almacen.doc_com','doc_com.id_doc_com','=','doc_com_det.id_doc')
-            ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'doc_com.id_proveedor')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+            ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'doc_com.id_proveedor')
+            ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->join('contabilidad.cont_tp_doc', 'cont_tp_doc.id_tp_doc', '=', 'doc_com.id_tp_doc')
             ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'doc_com.moneda')
             ->leftJoin('logistica.log_cdn_pago', 'log_cdn_pago.id_condicion_pago', '=', 'doc_com.id_condicion')

@@ -159,7 +159,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
                         </option>`;
                         document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
                     });
-                    console.log(response);
+                    // console.log(response);
                     // document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', `<option value="" selected>Seleccione...</option>`);
                     // $('#form-requerimiento-pago .modal-body select[name="id_cuenta"]').append('<option value="" selected="true">Seleccione...</option>');
 
@@ -235,7 +235,7 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
             dataType: 'JSON',
         }).done(function (response) {
             // console.log(response);
-            console.log(response);//no este
+            // console.log(response);//no este
             if (response.tipo_estado == 'success') {
                 if (response.data.length > 0) {
                     // llenar cuenta bancaria

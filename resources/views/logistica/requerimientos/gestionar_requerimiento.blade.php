@@ -312,8 +312,12 @@ Crear / editar requerimiento
                                 <input type="text" class="form-control oculto" name="id_cc">
                                 <input type="text" class="form-control" name="codigo_oportunidad" readonly>
 
-                                <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto activation" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP" disabled>
+                                <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto activation" title="Buscar cuadro de presupuesto" name="btnSearchCDP" disabled>
                                     <i class=" fas fa-search"></i>
+                                </button>
+
+                                <button type="button" class="btn-primary handleClickLimpiarSeleccionCuadroDePresupuesto activation" title="Limpiar selección" name="btnCleanCDP" disabled>
+                                    <i class="fas fa-broom"></i>
                                 </button>
                             </div>
                             </div>
@@ -381,9 +385,6 @@ Crear / editar requerimiento
                                 <div class="input-group-okc">
                                     <select class="form-control activation handleChangeProyecto" name="id_proyecto">
                                         <option value="0">Seleccione un Proyecto</option>
-                                        @foreach ($proyectos_activos as $proyecto)
-                                        <option value="{{$proyecto->id_proyecto}}" data-id-centro-costo="{{$proyecto->id_centro_costo}}" data-codigo-centro-costo="{{$proyecto->codigo_centro_costo}}" data-descripcion-centro-costo="{{$proyecto->descripcion_centro_costo}}" data-codigo="{{$proyecto->codigo}}">{{$proyecto->descripcion}}</option>
-                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -773,10 +774,10 @@ Crear / editar requerimiento
 <script src="{{ asset('js/publico/consulta_sunat.js')}}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
 
-<script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/TrazabilidadRequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/TrazabilidadRequerimientoView.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/RequerimientoView.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoView.js'))}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js?v=4')}}"></script>
-<script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js?v=3')}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoController.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoController.js'))}}"></script>
+<script src="{{ asset('js/logistica/requerimiento/RequerimientoModel.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/RequerimientoModel.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/modalCuadroPresupuesto.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/modalCuadroPresupuesto.js'))}}"></script>
 <script src="{{ asset('js/logistica/requerimiento/incidenciasModal.js')}}?v={{filemtime(public_path('js/logistica/requerimiento/incidenciasModal.js'))}}"></script>
 
@@ -785,31 +786,8 @@ Crear / editar requerimiento
 
 <script>
     var grupos = JSON.parse('{!!$grupos!!}');
-
     var id_grupo_usuario_sesion_list = [];
-    grupos.forEach(element => {
-        id_grupo_usuario_sesion_list.push(element.id_grupo);
-    });
 
-    if(id_grupo_usuario_sesion_list.includes(2)){
-        hiddeElement('mostrar','form-requerimiento',[
-        'input-group-cdp'
-        ]);
-    }else{
-        hiddeElement('ocultar','form-requerimiento',[
-        'input-group-cdp'
-        ]);
-    }
-
-    if(id_grupo_usuario_sesion_list.includes(3)){
-        hiddeElement('mostrar','form-requerimiento',[
-        'input-group-proyecto'
-        ]);
-    }else{
-        hiddeElement('ocultar','form-requerimiento',[
-        'input-group-proyecto'
-        ]);
-    }
     autoSelectTipoRequerimientoPorDefecto();
     // grupos.forEach(element => {
     //     if(element.id_grupo ==3){ // proyectos
