@@ -190,9 +190,15 @@ class PresupuestoInternoView{
 
 
     llenarComboPresupuestoInterno(idGrupo,idArea, idPresupuestoInterno=null){
+        let selectElement = document.querySelector("select[name='id_presupuesto_interno']");
+        selectElement.innerHTML='';
+        let option = document.createElement("option");
+        option.text = "Seleccionar un presupuesto interno";
+        option.value = '';
+        selectElement.add(option);
+
         this.model.comboPresupuestoInterno(idGrupo, idArea).then((res) => {
             // console.log(res);
-            let selectElement = document.querySelector("select[name='id_presupuesto_interno']");
             $("input[name='codigo_presupuesto_interno']").val("");
 
 

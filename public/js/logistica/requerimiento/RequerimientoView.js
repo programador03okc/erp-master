@@ -177,25 +177,33 @@ class RequerimientoView {
             case 'SELECCION_PRESUPUESTO_INTERNO':
                 if (valor > 0) {
                     document.querySelector("select[name='id_proyecto']").setAttribute("disabled", true);
-                    document.querySelector("input[name='id_cc']").setAttribute("disabled", true);
+                    document.querySelector("select[name='id_proyecto']").value='';
+                    document.querySelector("button[name='btnSearchCDP']").setAttribute("disabled", true);
+                    document.querySelector("input[name='id_cc']").value='';
+
                 } else {
                     document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
-                    document.querySelector("input[name='id_cc']").removeAttribute("disabled");
+                    document.querySelector("button[name='btnSearchCDP']").removeAttribute("disabled");
+
                 }
                 break;
             case 'SELECCION_PROYECTOS':
                 if (valor > 0) {
                     document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled", true);
-                    document.querySelector("input[name='id_cc']").setAttribute("disabled", true);
+                    document.querySelector("select[name='id_presupuesto_interno']").value='';
+                    document.querySelector("input[name='id_cc']").value='';
+                    document.querySelector("button[name='btnSearchCDP']").setAttribute("disabled", true);
                 } else {
                     document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
-                    document.querySelector("input[name='id_cc']").removeAttribute("disabled");
+                    document.querySelector("button[name='btnSearchCDP']").removeAttribute("disabled");
                 }
                 break;
             case 'SELECCION_CDP':
                 if (valor > 0) {
                     document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled", true);
+                    document.querySelector("select[name='id_presupuesto_interno']").value='';
                     document.querySelector("select[name='id_proyecto']").setAttribute("disabled", true);
+                    document.querySelector("select[name='id_proyecto']").value='';
                 } else {
                     document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
                     document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
@@ -1027,7 +1035,7 @@ class RequerimientoView {
         if (currentIdGrupo == 2 && id_grupo_usuario_sesion_list.includes(2)) { // seleccion de una división que pertenece al grupo comercial y debe el usuario tener acceso al grupo comercial
             document.querySelector("select[name='id_proyecto']").value = "";
             document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
-            document.querySelector("input[name='id_cc']").removeAttribute("disabled");
+            document.querySelector("button[name='btnSearchCDP']").removeAttribute("disabled");
             document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
 
             hiddeElement('mostrar', 'form-requerimiento', [
@@ -1066,6 +1074,12 @@ class RequerimientoView {
         // console.log(data);
 
         let selectElement = document.querySelector("div[id='input-group-proyecto'] select[name='id_proyecto']");
+        selectElement.innerHTML='';
+        document.querySelector("div[id='input-group-proyecto'] input[name='codigo_proyecto']").value = '';
+        let option = document.createElement("option");
+        option.text = "Seleccionar un proyecto";
+        option.value = '';
+        selectElement.add(option);
 
         data.forEach(element => {
             let option = document.createElement("option");
