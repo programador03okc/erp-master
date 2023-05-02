@@ -283,25 +283,32 @@ class ListarRequerimientoPagoView {
             case 'SELECCION_PRESUPUESTO_INTERNO':
                 if (valor > 0) {
                     document.querySelector("select[name='proyecto']").setAttribute("disabled", true);
-                    document.querySelector("input[name='id_cc']").setAttribute("disabled", true);
+                    document.querySelector("select[name='proyecto']").value='';
+                    document.querySelector("button[name='btnSearchCDP']").setAttribute("disabled", true);
+                    document.querySelector("input[name='id_cc']").value='';
                 } else {
                     document.querySelector("select[name='proyecto']").removeAttribute("disabled");
-                    document.querySelector("input[name='id_cc']").removeAttribute("disabled");
+                    document.querySelector("button[name='btnSearchCDP']").removeAttribute("disabled");
                 }
                 break;
             case 'SELECCION_PROYECTOS':
                 if (valor > 0) {
                     document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled", true);
-                    document.querySelector("input[name='id_cc']").setAttribute("disabled", true);
+                    document.querySelector("select[name='id_presupuesto_interno']").value='';
+                    document.querySelector("input[name='id_cc']").value='';
+                    document.querySelector("button[name='btnSearchCDP']").setAttribute("disabled", true);
+
                 } else {
                     document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
-                    document.querySelector("input[name='id_cc']").removeAttribute("disabled");
+                    document.querySelector("button[name='btnSearchCDP']").removeAttribute("disabled");
                 }
                 break;
             case 'SELECCION_CDP':
                 if (valor > 0) {
                     document.querySelector("select[name='id_presupuesto_interno']").setAttribute("disabled", true);
+                    document.querySelector("select[name='id_presupuesto_interno']").value='';
                     document.querySelector("select[name='proyecto']").setAttribute("disabled", true);
+                    document.querySelector("select[name='proyecto']").value='';
                 } else {
                     document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
                     document.querySelector("select[name='proyecto']").removeAttribute("disabled");
@@ -985,15 +992,22 @@ class ListarRequerimientoPagoView {
 
             this.llenarComboProyectos(idGrupo);
 
+            document.querySelector("select[name='id_presupuesto_interno']").removeAttribute("disabled");
+            document.querySelector("select[name='proyecto']").removeAttribute("disabled");
+            document.querySelector("button[name='btnSearchCDP']").removeAttribute("disabled");
 
             if (idGrupo == 3 || descripcionGrupo == 'Proyectos') {
                 document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cc']").value = '';
                 document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = '';
                 document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.add("oculto");
+            }else{
+                document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = 0;
+                document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_proyecto']").value = '';
+
             }
+
             if (idGrupo == 2 || descripcionGrupo == 'Comercial') {
                 document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.remove("oculto");
-                document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = 0;
 
             } else {
                 document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.add("oculto");
@@ -1048,6 +1062,12 @@ class ListarRequerimientoPagoView {
     construirListaProyecto(data,idProyecto=null){
 
         let selectElement = document.querySelector("div[id='contenedor-proyecto'] select[name='proyecto']");
+        selectElement.innerHTML='';
+        document.querySelector("div[id='contenedor-proyecto'] input[name='codigo_proyecto']").value = '';
+        let option = document.createElement("option");
+        option.text = "Seleccionar un proyecto";
+        option.value = '';
+        selectElement.add(option);
 
         data.forEach(element => {
             let option = document.createElement("option");

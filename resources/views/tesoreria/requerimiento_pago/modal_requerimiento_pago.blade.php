@@ -127,7 +127,7 @@
                                                 <button type="button" class="btn-primary handleClickModalListaCuadroDePresupuesto" title="Buscar cuadro de presupuesto" placeholder="Código CDP" name="btnSearchCDP">
                                                     <i class="fas fa-search"></i>
                                                 </button>
-                                                <button type="button" class="btn-primary handleClickLimpiarSeleccionCuadroDePresupuesto" title="Limpiar selección" name="btnCleanCDP" disabled>
+                                                <button type="button" class="btn-primary handleClickLimpiarSeleccionCuadroDePresupuesto" title="Limpiar selección" name="btnCleanCDP">
                                                     <i class="fas fa-broom"></i>
                                                 </button>
                                             </div>
