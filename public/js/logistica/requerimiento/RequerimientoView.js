@@ -1030,9 +1030,9 @@ class RequerimientoView {
             document.querySelector("input[name='id_cc']").removeAttribute("disabled");
             document.querySelector("select[name='id_proyecto']").removeAttribute("disabled");
 
-            // hiddeElement('mostrar', 'form-requerimiento', [
-            //     'input-group-cdp'
-            // ]);
+            hiddeElement('mostrar', 'form-requerimiento', [
+                'input-group-cdp'
+            ]);
         }
 
         if (currentIdGrupo == 3 && id_grupo_usuario_sesion_list.includes(3)) { // seleccion de una división que pertenece al grupo proyectos y debe el usuario tener acceso al grupo proyectos
