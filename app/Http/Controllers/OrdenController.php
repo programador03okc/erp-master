@@ -4877,14 +4877,14 @@ class OrdenController extends Controller
                 // }
                 $idAdjunto = DB::table('logistica.adjuntos_logisticos')->insertGetId(
                     [
-                        'id_orden'              => $archivo->id_orden,
+                        'id_orden'              => intval($archivo->id_orden),
                         'archivo'               => $newNameFile,
                         'estado'                => 1,
-                        'categoria_adjunto_id'  => $archivo->category,
+                        'categoria_adjunto_id'  => intval($archivo->category),
                         'fecha_emision'         => $archivo->fecha_emision,
                         'nro_comprobante'       => $archivo->nro_comprobante,
-                        'id_moneda'             => $archivo->id_moneda,
-                        'monto_total'           => $archivo->monto_total,
+                        'id_moneda'             => intval($archivo->id_moneda),
+                        'monto_total'           => floatval($archivo->monto_total),
                         'id_pago_cuota_detalle' => (isset($archivo->id_pago_cuota_detalle) && $archivo->id_pago_cuota_detalle > 0 ? $archivo->id_pago_cuota_detalle : null),
                         'id_usuario'            => Auth::user()->id_usuario,
                         'fecha_registro'        => $fechaHoy

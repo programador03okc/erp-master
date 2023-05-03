@@ -174,8 +174,10 @@ class ListaOrdenView {
             $(":file").filestyle('clear');
             this.limpiarTabla('adjuntosCabecera');
             var data_id = e.currentTarget.dataset.id,
-                data_codigo = e.currentTarget.dataset.codigo;
+                data_codigo = e.currentTarget.dataset.codigo,
+                data_id_moneda = e.currentTarget.dataset.idMoneda;
             $('#modal-adjuntar-orden [name=id_orden]').val(data_id);
+            $('#modal-adjuntar-orden [name=id_moneda]').val(data_id_moneda);
             $('#modal-adjuntar-orden [name=codigo_orden]').val(e.currentTarget.dataset.codigo);
             $('#modal-adjuntar-orden .codigo').text(data_codigo);
             $('#modal-adjuntar-orden .codigo').css('color','cadetblue');
@@ -1821,7 +1823,7 @@ class ListaOrdenView {
                                     <i class="fas fa-money-check-alt fa-xs"></i>
                                 </button>`:'');
 
-                            let btnAdjuntar = (array_accesos.find(element => element === 249)?`<button type="button"  class="btn btn-default adjuntar-archivos" data-toggle="tooltip" title="Adjuntar archivos" data-codigo="${row.codigo}" data-id="${row.id}" data-codigo="${row.codigo}" ><i class="fas fa-paperclip fa-xs"></i></button>`:'');
+                            let btnAdjuntar = (array_accesos.find(element => element === 249)?`<button type="button"  class="btn btn-default adjuntar-archivos" data-toggle="tooltip" title="Adjuntar archivos" data-codigo="${row.codigo}" data-id="${row.id}" data-codigo="${row.codigo}" data-id-moneda="${row.id_moneda}" ><i class="fas fa-paperclip fa-xs"></i></button>`:'');
                             let containerCloseBrackets = '</div>';
                             return (containerOpenBrackets + btnVerDetalle + btnImprimirOrden + btnEnviarAPago + btnAnularOrden + btnAdjuntar + containerCloseBrackets);
 
@@ -2099,7 +2101,7 @@ class ListaOrdenView {
                             category: 2, //default: factura
                             fecha_emision: moment().format('YYYY-MM-DD'),
                             nro_comprobante: '',
-                            id_moneda: document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_moneda']").value,
+                            id_moneda: document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_moneda']").value >0?document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_moneda']").value: (document.querySelector("div[id='modal-adjuntar-orden'] input[name='id_moneda']").value>0?document.querySelector("div[id='modal-adjuntar-orden'] input[name='id_moneda']").value:''),
                             monto_total: document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value,
                             nameFile: file.name,
                             accion: 'GUARDAR',

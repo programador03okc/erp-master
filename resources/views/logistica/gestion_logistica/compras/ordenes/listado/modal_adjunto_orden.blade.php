@@ -1,9 +1,10 @@
 <!-- modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-adjuntar-orden" style="overflow-y: scroll;">
-    <div class="modal-dialog" style="width: 40%;">
+    <div class="modal-dialog" style="width: 50%;">
         <div class="modal-content">
             <form id="form-adjunto-orden" enctype="multipart/form-data">
                 <input type="hidden" name="id_orden" value="">
+                <input type="hidden" name="id_moneda" value="">
                 <input type="hidden" name="codigo_orden" value="">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
