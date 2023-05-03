@@ -249,7 +249,7 @@ function agregarAdjuntoRequerimientoPagoCabecera(obj) {
                         serie:'',
                         id_moneda: document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='id_moneda']").value,
                         monto_total: document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-pago'] input[name='monto_a_pagar']").value,
-                        category: 6, //default: factura
+                        category: 2, //default: factura
                         size: file.size,
                         nameFile: file.name,
                         fecha_emision: moment().format('YYYY-MM-DD'),
@@ -320,10 +320,10 @@ function addToTablaArchivosRequerimientoPagoCabecera(payload) {
             <select class="form-control handleChangeCategoriaAdjunto" name="categoriaAdjunto">
         `;
         categoriaAdjuntoList.forEach(element => {
-            if (element.id_requerimiento_pago_categoria_adjunto == payload.category) {
-                html += `<option value="${element.id_requerimiento_pago_categoria_adjunto}" selected>${element.descripcion}</option>`
+            if (element.id_tp_doc == payload.category) {
+                html += `<option value="${element.id_tp_doc}" selected>${element.descripcion}</option>`
             } else {
-                html += `<option value="${element.id_requerimiento_pago_categoria_adjunto}">${element.descripcion}</option>`
+                html += `<option value="${element.id_tp_doc}">${element.descripcion}</option>`
 
             }
         });
