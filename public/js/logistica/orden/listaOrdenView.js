@@ -2293,7 +2293,7 @@ class ListaOrdenView {
             <td style="text-align:left;">
                 <div class="input-group">
                 <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${simboloMonedaOrden}</div>
-                <input type="number" class="form-control handleChangeMontoTotalComprobante" placeholder="Monto comprobante" value="${payload.monto_total??''}">
+                <input type="number" class="form-control handleChangeMontoTotalComprobante" placeholder="Monto comprobante" value="${payload.monto_total??''}" step="any">
                 </div>
             </td>
             <td style="text-align:center;">
