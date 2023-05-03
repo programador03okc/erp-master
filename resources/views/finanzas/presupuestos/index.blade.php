@@ -45,7 +45,6 @@ Lista de Presupuestos
                                 <th scope="col">Código</th>
                                 <th scope="col">Descripción</th>
                                 <th scope="col">Fecha Emisión</th>
-                                <th scope="col">Grupo</th>
                                 <th scope="col">Empresa</th>
                             </tr>
                         </thead>
@@ -56,8 +55,7 @@ Lista de Presupuestos
                                 <td><label class="lbl-codigo" title="Abrir Presupuesto" onClick="abrirPresupuesto('{{ $presup->id_presup }}')">{{ $presup->codigo }}</label></td>
                                 <td>{{ $presup->descripcion }}</td>
                                 <td>{{ $presup->fecha_emision }}</td>
-                                <td>{{ $presup->grupo->descripcion }}</td>
-                                <td>{{ $presup->empresa->codigo }}</td>
+                                <td>{{ $presup->empresa->contribuyente->razon_social }}</td>
                             </tr>
                             @empty
                                 <tr><td colSpan="6">No hay registros para mostrar</td></tr>
