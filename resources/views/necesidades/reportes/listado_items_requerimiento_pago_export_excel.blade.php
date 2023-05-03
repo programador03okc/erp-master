@@ -7,6 +7,9 @@
             <th>Partida</th>
             <th>Cod.sub Partida</th>
             <th>Des.sub Partida</th>
+            <th>Partida(Ppto Interno)</th>
+            <th>Cod.sub Partida(Ppto Interno)</th>
+            <th>Des.sub Partida(Ppto Interno)</th>
             <th>Cod.Centro costo</th>
             <th>Des.Centro costo</th>
             <th>Motivo</th>
@@ -36,6 +39,9 @@
                     <td>{{ strtoupper($item['descripcion_partida_padre']) }}</td>
                     <td>{{ $item['partida'] }}</td>
                     <td>{{ $item['descripcion_partida'] }}</td>
+                    <td>{{ $item['descripcion_partida_presupuesto_interno'] }}</td>
+                    <td>{{ $item['codigo_sub_partida_presupuesto_interno'] }}</td>
+                    <td>{{ $item['descripcion_sub_partida_presupuesto_interno'] }}</td>
                     <td>{{ $item['centro_costo'] }}</td>
                     <td>{{ $item['descripcion_centro_costo'] }}</td>
                     <td>{{ $item['motivo'] }}</td>

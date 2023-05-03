@@ -1833,7 +1833,18 @@ class RequerimientoPagoController extends Controller
                 'requerimiento_pago_estado.descripcion as estado_requerimiento',
                 DB::raw("(SELECT presup_titu.descripcion
                 FROM finanzas.presup_titu
-                WHERE presup_titu.codigo = presup_par.cod_padre and presup_titu.id_presup=presup_par.id_presup limit 1) AS descripcion_partida_padre")
+                WHERE presup_titu.codigo = presup_par.cod_padre and presup_titu.id_presup=presup_par.id_presup limit 1) AS descripcion_partida_padre"),
+                DB::raw("(SELECT presupuesto_interno_detalle.partida
+                FROM finanzas.presupuesto_interno_detalle
+                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = requerimiento_pago_detalle.id_partida and requerimiento_pago.id_presupuesto_interno > 0 limit 1) AS codigo_sub_partida_presupuesto_interno"),
+                DB::raw("(SELECT presupuesto_interno_detalle.descripcion
+                FROM finanzas.presupuesto_interno_detalle
+                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = requerimiento_pago_detalle.id_partida and requerimiento_pago.id_presupuesto_interno > 0 limit 1) AS descripcion_sub_partida_presupuesto_interno"),
+                DB::raw("(SELECT presupuesto_interno_modelo.descripcion
+                FROM finanzas.presupuesto_interno_detalle
+                inner join finanzas.presupuesto_interno_modelo on presupuesto_interno_modelo.id_modelo_presupuesto_interno = presupuesto_interno_detalle.id_padre
+                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = requerimiento_pago_detalle.id_partida and requerimiento_pago.id_presupuesto_interno > 0 limit 1) AS descripcion_partida_presupuesto_interno")
+
             )
             ->when(($meOrAll === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
