@@ -1755,14 +1755,17 @@ class ListarRequerimientoPagoView {
                 //         tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
                 //     }
                 // }
-                if (!(tbodyChildren[index].querySelector("input[class~='partida']").value > 0)) {
-                    continuar = false;
-                    if (tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("span") == null) {
-                        let newSpanInfo = document.createElement("span");
-                        newSpanInfo.classList.add('text-danger');
-                        newSpanInfo.textContent = 'Ingrese una partida';
-                        tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("h5").appendChild(newSpanInfo);
-                        tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                if(document.querySelector("input[name='id_cc']").value =='' || document.querySelector("input[name='id_cc']").value ==null ){
+
+                    if (!(tbodyChildren[index].querySelector("input[class~='partida']").value > 0)) {
+                        continuar = false;
+                        if (tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("span") == null) {
+                            let newSpanInfo = document.createElement("span");
+                            newSpanInfo.classList.add('text-danger');
+                            newSpanInfo.textContent = 'Ingrese una partida';
+                            tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("h5").appendChild(newSpanInfo);
+                            tbodyChildren[index].querySelector("input[class~='partida']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                        }
                     }
                 }
 
