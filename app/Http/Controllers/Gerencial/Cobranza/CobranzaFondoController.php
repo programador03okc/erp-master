@@ -43,6 +43,7 @@ class CobranzaFondoController extends Controller
     {
         $data = CobranzaFondo::all();
         return DataTables::of($data)
+        ->editColumn('nro_documento', function ($data) { return ($data->nro_documento != null) ? $data->nro_documento : ''; })
         ->editColumn('fecha_solicitud', function ($data) { return date('d-m-Y', strtotime($data->fecha_solicitud)); })
         ->addColumn('tipo_gestion', function ($data) { return $data->tipo_gestion->descripcion; })
         ->addColumn('tipo_negocio', function ($data) { return $data->tipo_negocio->descripcion; })
@@ -56,10 +57,11 @@ class CobranzaFondoController extends Controller
         })
         ->addColumn('accion', function ($data) {
             $button = '' ;
+            $documento = "$data->nro_documento";
             if ($data->estado == 1) {
                 if (Auth::user()->id_usuario == 1 || Auth::user()->id_usuario == 20) {
                     $button .=
-                    '<button type="button" class="btn btn-success btn-xs cobrar" data-id="'.$data->id.'">
+                    '<button type="button" class="btn btn-success btn-xs cobrar" data-id="'.$data->id.'" data-documento="'.$documento.'">
                         <span class="fas fa-check"></span>
                     </button>
                     <button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
@@ -100,6 +102,7 @@ class CobranzaFondoController extends Controller
                 $data->fecha_inicio = $request->fecha_inicio;
                 $data->fecha_vencimiento = $request->fecha_vencimiento;
                 $data->periodo_id = $request->periodo_id;
+                $data->nro_documento = $request->nro_documento;
                 $data->responsable_id = $request->responsable_id;
                 $data->detalles = $request->detalles;
                 $data->claim = $request->claim;

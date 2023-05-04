@@ -34,15 +34,16 @@
                         <table class="table table-bordered table-condensed table-striped table-hover" id="tabla" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Fecha</th>
+                                    <th width="80">Fecha</th>
                                     <th>Tipo</th>
                                     <th>Negocio</th>
                                     <th>Nombre de la entidad</th>
                                     <th>CLAIM</th>
                                     <th>Moneda</th>
                                     <th>Importe</th>
+                                    <th>Documento</th>
                                     <th>Forma de pago</th>
-                                    <th>Plazos</th>
+                                    <th width="100">Plazos</th>
                                     <th>Responsable</th>
                                     <th>Estado</th>
                                     <th width="70"></th>
@@ -79,7 +80,7 @@
                             <select name="periodo_id" class="form-control input-sm" required>
                                 <option value="" selected disabled>Elija una opción</option>
                                 @foreach ($periodos as $periodo)
-                                    <option value="{{ $periodo->id_periodo }}">{{ $periodo->descripcion }}</option>
+                                    <option value="{{ $periodo->id_periodo }}" {{ $periodo->descripcion == date('Y') ? 'selected' : '' }}>{{ $periodo->descripcion }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -126,11 +127,11 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <h6>Importe</h6>
                                 <div class="group-okc-ini">
-                                    <select name="moneda_id" class="form-control input-sm" style="width: 40%;">
+                                    <select name="moneda_id" class="form-control input-sm" style="width: 50%;">
                                         @foreach ($monedas as $moneda)
                                             <option value="{{ $moneda->id_moneda }}">{{ $moneda->codigo_divisa }}</option>
                                         @endforeach
@@ -139,7 +140,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <h6>Nro documento</h6>
+                            <input type="text" name="nro_documento" class="form-control input-sm" placeholder="nro del documento" required>
+                        </div>
+                        <div class="col-md-3">
                             <h6>Responsable</h6>
                             <select name="responsable_id" class="selectpicker" title="Elija un responsable" data-live-search="true" data-width="100%" data-actions-box="true" data-size="5" required>
                                 @foreach ($responsables as $resp)
@@ -209,7 +214,7 @@
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <h6>Nro documento</h6>
-                            <input type="text" name="nro_documento" class="form-control input-sm" placeholder="nro del documento" required>
+                            <input type="text" name="nro_documento" class="form-control input-sm text-center" placeholder="nro del documento" required>
                         </div>
                     </div>
                     <div class="row mb-3">

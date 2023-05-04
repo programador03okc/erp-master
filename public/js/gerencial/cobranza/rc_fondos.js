@@ -44,7 +44,8 @@ $(function () {
     $('#tabla').on('click', 'button.cobrar', function (e) {
         e.preventDefault();
         $("#formulario-cobro")[0].reset();
-        $("[name=cobranza_fondo_id]").val($(e.currentTarget).data('id'));
+        $("#modalControl [name=cobranza_fondo_id]").val($(e.currentTarget).data('id'));
+        $("#modalControl [name=nro_documento]").val($(e.currentTarget).data('documento'));
         $("#modalControl").modal("show");
     });
 
@@ -155,6 +156,7 @@ function listar() {
             {data: 'claim'},
             {data: 'moneda'},
             {data: 'importe'},
+            {data: 'nro_documento'},
             {data: 'forma_pago'},
             {data: 'fechas'},
             {data: 'responsable'},
