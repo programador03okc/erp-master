@@ -427,7 +427,7 @@ class PresupuestoInterno extends Model
                             $historial->id_presupuesto_interno = $presupuesto_interno_detalle->id_presupuesto_interno;
                             $historial->id_partida = $presupuesto_interno_detalle->id_presupuesto_interno_detalle;
                             $historial->tipo = 'INGRESO';
-                            $historial->importe = floatval(str_replace(",", "", '0.00'));
+                            $historial->importe = floatval(str_replace(",", "", $saldo_mes_siguiente));
                             $historial->mes = $numero_mes_siguiente;
                             $historial->fecha_registro = date('Y-m-d H:i:s');
                             $historial->estado = 3;
