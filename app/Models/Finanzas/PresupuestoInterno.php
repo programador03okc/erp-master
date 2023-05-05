@@ -423,12 +423,21 @@ class PresupuestoInterno extends Model
                         $presupuesto_interno_detalle->save();
 
                         #historial de saldo
-                        // $historial = new HistorialPresupuestoInternoSaldo();
-                        $historial = HistorialPresupuestoInternoSaldo::firstOrNew([
-                            'id_presupuesto_interno' => $presupuesto_interno_detalle->id_presupuesto_interno,
-                            'id_partida' => $presupuesto_interno_detalle->id_presupuesto_interno_detalle,
-                            'descripcion' => 'saldo del mes anterior'
-                        ]);
+                        $historial = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$presupuesto_interno_detalle->id_presupuesto_interno)
+                        ->where('id_partida',$presupuesto_interno_detalle->id_presupuesto_interno_detalle)
+                        ->where('descripcion','saldo del mes anterior')->first();
+                        if ($historial) {
+                            $historial = new HistorialPresupuestoInternoSaldo();
+                        }
+                        // $historial = HistorialPresupuestoInternoSaldo::firstOrNew([
+                        //     'id_presupuesto_interno' => $presupuesto_interno_detalle->id_presupuesto_interno,
+                        //     'id_partida' => $presupuesto_interno_detalle->id_presupuesto_interno_detalle,
+                        //     'descripcion' => 'saldo del mes anterior'
+                        // ]
+                        //     ['id_presupuesto_interno' => 'Flight 10'],
+                        //     ['id_partida' => 1, 'arrival_time' => '11:30'],
+                        //     ['descripcion' => 1, 'arrival_time' => '11:30']
+                        // );
                             $historial->id_presupuesto_interno = $presupuesto_interno_detalle->id_presupuesto_interno;
                             $historial->id_partida = $presupuesto_interno_detalle->id_presupuesto_interno_detalle;
                             $historial->tipo = 'INGRESO';
