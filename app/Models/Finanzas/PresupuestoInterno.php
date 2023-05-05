@@ -424,11 +424,11 @@ class PresupuestoInterno extends Model
 
                         #historial de saldo
                         // $historial = new HistorialPresupuestoInternoSaldo();
-                        $historial = HistorialPresupuestoInternoSaldo::firstOrNew(
-                            ['id_presupuesto_interno' => $presupuesto_interno_detalle->id_presupuesto_interno],
-                            ['id_partida' => $presupuesto_interno_detalle->id_presupuesto_interno_detalle],
-                            ['descripcion' => 'saldo del mes anterior']
-                        );
+                        $historial = HistorialPresupuestoInternoSaldo::firstOrNew([
+                            'id_presupuesto_interno' => $presupuesto_interno_detalle->id_presupuesto_interno,
+                            'id_partida' => $presupuesto_interno_detalle->id_presupuesto_interno_detalle,
+                            'descripcion' => 'saldo del mes anterior'
+                        ]);
                             $historial->id_presupuesto_interno = $presupuesto_interno_detalle->id_presupuesto_interno;
                             $historial->id_partida = $presupuesto_interno_detalle->id_presupuesto_interno_detalle;
                             $historial->tipo = 'INGRESO';
