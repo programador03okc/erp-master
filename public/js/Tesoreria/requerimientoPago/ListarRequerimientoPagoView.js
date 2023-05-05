@@ -92,9 +92,9 @@ class ListarRequerimientoPagoView {
         $('#modal-requerimiento-pago').on("click", "button.handleClickAgregarServicio", () => {
             this.agregarServicio();
             this.checkStatusBtnGuardar();
-            if ($("select[name='id_presupuesto_interno']").val() > 0) {
-                this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
-            }
+            // if ($("select[name='id_presupuesto_interno']").val() > 0) {
+            //     this.presupuestoInternoView.ocultarOpcionCentroDeCosto();
+            // }
         });
 
         $('#ListaDetalleRequerimientoPago tbody').on("click", "button.handleClickEliminarItem", (e) => {
