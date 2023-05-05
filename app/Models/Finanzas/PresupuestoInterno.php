@@ -437,6 +437,7 @@ class PresupuestoInterno extends Model
                             $historial->fecha_registro = date('Y-m-d H:i:s');
                             $historial->estado = 3;
                             $historial->descripcion = 'saldo del mes anterior';
+                            $historial->operacion = 'S';
                         $historial->save();
                         #-----
                         PresupuestoInterno::calcularColumnaAuxMensual(
