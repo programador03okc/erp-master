@@ -468,7 +468,7 @@ class PresupuestoInterno extends Model
         // if ('03.01.03.01'===$partida) {
         //     return $presupuesto_interno_destalle;exit;
         // }
-        while ($id_padre!=='0') {
+        while ($id_padre!=='0' && $id_padre!==0) {
             $total = 0;
             $partidas = PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',$id_tipo_presupuesto)->where('estado', 1)->where('id_padre', $id_padre)->orderBy('partida')->get();
 
