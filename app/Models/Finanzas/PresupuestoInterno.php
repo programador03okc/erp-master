@@ -426,7 +426,7 @@ class PresupuestoInterno extends Model
                         $historial = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$presupuesto_interno_detalle->id_presupuesto_interno)
                         ->where('id_partida',$presupuesto_interno_detalle->id_presupuesto_interno_detalle)
                         ->where('descripcion','saldo del mes anterior')->first();
-                        if ($historial) {
+                        if (!$historial) {
                             $historial = new HistorialPresupuestoInternoSaldo();
                         }
                         // $historial = HistorialPresupuestoInternoSaldo::firstOrNew([
