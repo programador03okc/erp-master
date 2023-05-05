@@ -373,7 +373,7 @@ class PresupuestoInterno extends Model
 
         return $respuesta;
     }
-    public static function cierreMensual($id_tipo_presupuesto_interno,$numero_mes='01',$nombre_mes,$numero_mes_siguiente='02',$nombre_mes_siguiente)
+    public static function cierreMensual($id_tipo_presupuesto_interno,$numero_mes='01',$nombre_mes,$numero_mes_siguiente,$nombre_mes_siguiente)
     {
         $array_requerimiento_detalle = array();
         $array_id_presupuesto_interno = array();
@@ -422,12 +422,24 @@ class PresupuestoInterno extends Model
                         $presupuesto_interno_detalle->$mes_siguiente = $saldo_mes_siguiente;
                         $presupuesto_interno_detalle->save();
 
-                        // PresupuestoInterno::calcularColumnaAuxMensual(
-                        //     $presupuesto_interno_detalle->id_presupuesto_interno,
-                        //     $presupuesto_interno_detalle->id_tipo_presupuesto,
-                        //     $presupuesto_interno_detalle->id_presupuesto_interno_detalle,
-                        //     $nombre_mes_siguiente
-                        // );
+                        #historial de saldo
+                        $historial = new HistorialPresupuestoInternoSaldo();
+                            $historial->id_presupuesto_interno = $presupuesto_interno_detalle->id_presupuesto_interno;
+                            $historial->id_partida = $presupuesto_interno_detalle->id_presupuesto_interno_detalle;
+                            $historial->tipo = 'INGRESO';
+                            $historial->importe = floatval(str_replace(",", "", '0.00'));
+                            $historial->mes = $numero_mes_siguiente;
+                            $historial->fecha_registro = date('Y-m-d H:i:s');
+                            $historial->estado = 3;
+                            $historial->descripcion = 'saldo del mes anterior';
+                        $historial->save();
+                        #-----
+                        PresupuestoInterno::calcularColumnaAuxMensual(
+                            $presupuesto_interno_detalle->id_presupuesto_interno,
+                            $presupuesto_interno_detalle->id_tipo_presupuesto,
+                            $presupuesto_interno_detalle->id_presupuesto_interno_detalle,
+                            $nombre_mes_siguiente
+                        );
                         array_push($array_historia_presupuesto_interno,$presupuesto_interno_detalle);
                         array_push($array_historia_presupuesto_interno,$saldo_mes_siguiente);
                     }

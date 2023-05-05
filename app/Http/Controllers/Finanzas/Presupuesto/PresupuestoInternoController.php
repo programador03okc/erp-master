@@ -1340,17 +1340,18 @@ class PresupuestoInternoController extends Controller
     }
     public function cierreMes()
     {
-
+        // set_time_limit(0);
         $numero_mes = date("m");
         $numero_mes_siguiente = date('m', strtotime('+1 month'));
+
         // $nombre_mes = ConfiguracionHelper::mesNumero($numero_mes);
         // $nombre_mes_siguiente = ConfiguracionHelper::mesNumero($numero_mes_siguiente);
+        // return $numero_mes_siguiente;exit;
         $nombre_mes = $this->mes($numero_mes);
         $nombre_mes_siguiente = $this->mes($numero_mes_siguiente);
-
         $saldo = PresupuestoInterno::cierreMensual(3,$numero_mes,$nombre_mes,$numero_mes_siguiente, $nombre_mes_siguiente);
         // $saldo = PresupuestoInterno::cierreMensual(3,$numero_mes,$nombre_mes,$numero_mes_siguiente, $nombre_mes_siguiente);
-        // PresupuestoInterno::calcularColumnaAuxMensual(11, 3, 1165,'marzo');
+        // PresupuestoInterno::calcularColumnaAuxMensual(30, 3, 2960,'junio');
 
         // $año_actua = date('Y');
 
@@ -1359,28 +1360,23 @@ class PresupuestoInternoController extends Controller
         // ->get();
 
         // foreach ($presupuesto_interno as $key => $value) {
-        //     $detalle = PresupuestoInternoDetalle::where('id_presupuesto_interno',$value->id_presupuesto_interno)
-
-        //     ->where('estado','=',1)
-        //     ->where('id_tipo_presupuesto',3)
-        //     ->orderBy('partida', 'asc')
-        //     ->get();
-        //     foreach($detalle as $key_detalle =>$v_detalle){
+        //     foreach($value->detalle()->where('id_tipo_presupuesto',3)
+        //     ->orderBy('partida', 'asc')->get() as $key_detalle =>$v_detalle){
         //         if ($key_detalle!==0 && $v_detalle->registro==='2') {
-        //             return $v_detalle;exit;
-        //             // PresupuestoInterno::calcularColumnaAuxMensual(
-        //             //     $v_detalle->id_presupuesto_interno,
-        //             //     $v_detalle->id_tipo_presupuesto,
-        //             //     $v_detalle->id_presupuesto_interno_detalle,
-        //             //     $nombre_mes_siguiente
-        //             // );
+        //             // return $v_detalle;exit;
+        //             PresupuestoInterno::calcularColumnaAuxMensual(
+        //                 $v_detalle->id_presupuesto_interno,
+        //                 $v_detalle->id_tipo_presupuesto,
+        //                 $v_detalle->id_presupuesto_interno_detalle,
+        //                 $nombre_mes_siguiente
+        //             );
         //         }
         //     }
 
         // }
 
 
-        return response()->json($saldo,200);
+        return response()->json(["success"=>true],200);
     }
     public function mes($mes)
     {
