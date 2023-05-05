@@ -1430,7 +1430,7 @@ class PresupuestoInternoController extends Controller
                                     $TipoHistorial = 'RETORNO';
                                     $operacion = 'S';
                                 }
-                                PresupuestoInterno::calcularColumnaAuxMensual($requerimiento->id_presupuesto_interno, 3, $detalleRequerimiento->partida, $nombreMes);
+                                // PresupuestoInterno::calcularColumnaAuxMensual($requerimiento->id_presupuesto_interno, 3, $detalleRequerimiento->partida, $nombreMes);
                                 $historialPresupuestoInternoSaldo = new HistorialPresupuestoInternoSaldo();
                                 $historialPresupuestoInternoSaldo->id_presupuesto_interno = $requerimiento->id_presupuesto_interno;
                                 $historialPresupuestoInternoSaldo->id_partida = $detalleRequerimiento->partida;
@@ -1484,7 +1484,7 @@ class PresupuestoInternoController extends Controller
                                     $TipoHistorial = 'RETORNO';
                                     $operacion = 'S';
                                 }
-                                PresupuestoInterno::calcularColumnaAuxMensual($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida, $nombreMes);
+                                // PresupuestoInterno::calcularColumnaAuxMensual($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida, $nombreMes);
                                 $historialPresupuestoInternoSaldo = new HistorialPresupuestoInternoSaldo();
                                 $historialPresupuestoInternoSaldo->id_presupuesto_interno = $requerimientoPago->id_presupuesto_interno;
                                 $historialPresupuestoInternoSaldo->id_partida = $item->id_partida;
