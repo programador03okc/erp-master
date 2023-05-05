@@ -26,7 +26,7 @@ function lista() {
         {}
     );
     const button_cierrre_mes = (array_accesos.find(
-        element => element === 297)?
+        element => element === 314)?
             {
             text: '<i class="fas fa-calendar-times"></i> Cierre mensual',
             attr: {
