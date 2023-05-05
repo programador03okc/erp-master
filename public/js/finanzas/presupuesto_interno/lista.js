@@ -23,7 +23,7 @@ function lista() {
             },
             className: 'btn-primary btn-sm'
         }:
-        {}
+        null
     );
     const button_cierrre_mes = (array_accesos.find(
         element => element === 314)?
@@ -39,7 +39,7 @@ function lista() {
             },
             className: 'btn-danger btn-sm'
         }:
-        {}
+        null
     );
     const button =[button_nuevo,button_cierrre_mes]
     var tableRequerimientos = $("#lista-presupuesto-interno").DataTable({
