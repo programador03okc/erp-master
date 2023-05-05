@@ -310,21 +310,63 @@ $(document).on('submit','[data-form="editar-monto-partida"]',function (e) {
 });
 
 function cierreMesual() {
-    $.ajax({
-        type: 'GET',
-        url: 'cierre-mes',
-        data: {},
-        // processData: false,
-        // contentType: false,
-        dataType: 'JSON',
-        beforeSend: (data) => {
+    Swal.fire({
+        title: 'Cerrar el mes',
+        text: "¿Está seguro de cerra el mes?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        preConfirm: (login) => {
+            return $.ajax({
+                type: 'GET',
+                url: 'cierre-mes',
+                data: {},
+                // processData: false,
+                // contentType: false,
+                dataType: 'JSON',
+                beforeSend: (data) => {
 
+                }
+            }).done(function(response) {
+                return response
+            }).fail( function( jqXHR, textStatus, errorThrown ){
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            });
+
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value.success===true) {
+                Swal.fire(
+                    'Éxito',
+                    'Se cerror el mes con éxito',
+                    'success'
+                  )
+            }
         }
-    }).done(function(response) {
-        console.log(response);
-    }).fail( function( jqXHR, textStatus, errorThrown ){
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
     });
+
+    // $.ajax({
+    //     type: 'GET',
+    //     url: 'cierre-mes',
+    //     data: {},
+    //     // processData: false,
+    //     // contentType: false,
+    //     dataType: 'JSON',
+    //     beforeSend: (data) => {
+
+    //     }
+    // }).done(function(response) {
+    //     console.log(response);
+    // }).fail( function( jqXHR, textStatus, errorThrown ){
+    //     console.log(jqXHR);
+    //     console.log(textStatus);
+    //     console.log(errorThrown);
+    // });
  }
