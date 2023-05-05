@@ -384,6 +384,7 @@ class RevisarAprobarController extends Controller{
                 }
 
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList);
+                // Debugbar::info($operaciones);
                 // Debugbar::info($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList);
                 if(count($operaciones)>1){
                     $mensaje[]= "Se detecto que los criterios del requerimiento dan como resultado multibles operaciones :".$operaciones;
@@ -662,7 +663,7 @@ class RevisarAprobarController extends Controller{
                     $detalle->save();
                 }
                 
-                (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleRequerimientoPago);
+                // (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleRequerimientoPago);
 
                 break;
             case '3':
@@ -905,6 +906,7 @@ class RevisarAprobarController extends Controller{
                     }
                 }
 
+                
                 $this->actualizarEstadoRequerimientoPago($request->accion,$requerimientoPago,$request->aprobacionFinalOPendiente);
                 // $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$request->aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $request->accion);
 
@@ -918,7 +920,8 @@ class RevisarAprobarController extends Controller{
             $accionNext=0;
             $aprobacionFinalOPendiente='';
 
-            if($request->tieneRolConSiguienteAprobacion == true){ // si existe un siguiente flujo de aprobacion con el mismo rol
+            if(($request->tieneRolConSiguienteAprobacion) === true || ($request->tieneRolConSiguienteAprobacion) === 'true'){ // si existe un siguiente flujo de aprobacion con el mismo rol
+ 
                 if($request->accion==1 || $request->accion ==5){ // si accion es revisar/aprobar, buscar siguientes aprobaciones con mismo rol de usuario para auto aprobación
 
                     $allRol = Auth::user()->getAllRol();
@@ -978,6 +981,7 @@ class RevisarAprobarController extends Controller{
                 }
             }
             if ($request->accion > 0) {
+ 
                 // $seNotificaraporEmail = true;
                 // TO-DO NOTIFICAR AL USUARIO QUE SU REQUERIMIENTO FUE APROBADO
                 // $correoDestinatario = [];
@@ -990,10 +994,15 @@ class RevisarAprobarController extends Controller{
                     if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
                         $idUsuarioDestinatario[] = Auth::user()->id_usuario;
                         $codigoRequerimiento = $requerimiento->codigo??'';
+                        $documentoInternoId= 1;
+                        $documentoId=$requerimiento->id_requerimiento;
+
 
                     }elseif($request->idTipoDocumento ==11){//documento de tipo: requerimiento pago
                         $idUsuarioDestinatario[] = Auth::user()->id_usuario;
                         $codigoRequerimiento = $requerimientoPago->codigo??'';
+                        $documentoInternoId= 11;
+                        $documentoId=$requerimientoPago->id_requerimiento_pago;
 
                     }
 

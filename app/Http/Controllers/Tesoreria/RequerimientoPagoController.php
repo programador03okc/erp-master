@@ -83,7 +83,7 @@ class RequerimientoPagoController extends Controller
         $idTrabajador = Auth::user()->id_trabajador;
         $idUsuario = Auth::user()->id_usuario;
         $nombreUsuario = Auth::user()->nombre_corto;
-        
+
         $estados = Estado::mostrar();
         $array_accesos = [];
         $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
@@ -92,7 +92,7 @@ class RequerimientoPagoController extends Controller
             array_push($array_accesos, $value->id_acceso);
         }
 
-        $presupuestoInternoList=(new PresupuestoInternoController)->comboPresupuestoInterno(0,0);
+        $presupuestoInternoList = (new PresupuestoInternoController)->comboPresupuestoInterno(0, 0);
 
         return view(
             'tesoreria/requerimiento_pago/lista',
@@ -252,7 +252,7 @@ class RequerimientoPagoController extends Controller
                 }
             })
             ->editColumn('flujo_aprobacion', function ($data) {
-                return json_decode($data->flujo_aprobacion,true);
+                return json_decode($data->flujo_aprobacion, true);
             })
             ->rawColumns(['termometro'])->toJson();
     }
@@ -272,11 +272,11 @@ class RequerimientoPagoController extends Controller
 
             // evaluar si el estado del cierre periodo
 
-            $añoPeriodo= Periodo::find($request->periodo)->descripcion;
+            $añoPeriodo = Periodo::find($request->periodo)->descripcion;
             $idEmpresa = Sede::find($request->sede)->id_empresa;
             // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
-            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo,$idEmpresa);
-            if($estadoOperativo!=1){//1:abierto, 2:cerrado, 3:Declarado
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo, $idEmpresa);
+            if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
                 return response()->json(['id_requerimiento_pago' => 0, 'codigo' => '', 'mensaje' => 'No se puede generar el requerimiento cuando el periodo operativo está cerrado']);
             }
 
@@ -305,7 +305,7 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
             $requerimientoPago->id_estado = 1;
             $requerimientoPago->id_trabajador = $request->id_trabajador > 0 ? $request->id_trabajador : null;
-            $requerimientoPago->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno:null;
+            $requerimientoPago->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno : null;
 
             $requerimientoPago->save();
 
@@ -332,13 +332,13 @@ class RequerimientoPagoController extends Controller
                 $detalle->cantidad = $request->cantidad[$i];
                 $detalle->precio_unitario = floatval($request->precioUnitario[$i]);
                 $subtotalItem = floatval($request->cantidad[$i]) * floatval($request->precioUnitario[$i]);
-                $detalle->subtotal =$subtotalItem;
+                $detalle->subtotal = $subtotalItem;
                 $detalle->fecha_registro = new Carbon();
                 $detalle->id_estado = 1;
                 $detalle->motivo = $request->motivo[$i];
                 $detalle->save();
                 $detalle->idRegister = $request->idRegister[$i];
-                $detalle->importe_item_para_presupuesto=$subtotalItem;
+                $detalle->importe_item_para_presupuesto = $subtotalItem;
                 $detalleArray[] = $detalle;
                 $montoTotal += $detalle->cantidad * $detalle->precioUnitario;
             }
@@ -348,7 +348,7 @@ class RequerimientoPagoController extends Controller
 
             DB::commit();
 
-            $codigo = RequerimientoPago::crearCodigo($request->grupo, $requerimientoPago->id_requerimiento_pago,$request->periodo);
+            $codigo = RequerimientoPago::crearCodigo($request->grupo, $requerimientoPago->id_requerimiento_pago, $request->periodo);
             $rp = RequerimientoPago::find($requerimientoPago->id_requerimiento_pago);
             $rp->codigo = $codigo;
             $rp->save();
@@ -359,11 +359,9 @@ class RequerimientoPagoController extends Controller
             $documento->id_doc = $requerimientoPago->id_requerimiento_pago;
             $documento->save();
 
-            (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleArray);
-
-                        // guardar factura solo si existe vinculo 
+            // guardar factura solo si existe vinculo 
             // $documentoCompraArray=[];
-            $documentoCompraArray = $this->VincularFacturaRequerimientoPago($request,$count,$detalleArray,$codigo);
+            $documentoCompraArray = $this->VincularFacturaRequerimientoPago($request, $count, $detalleArray, $codigo);
 
             // Adjuntos Cabecera
             if (isset($request->archivo_adjunto_list)) {
@@ -376,10 +374,10 @@ class RequerimientoPagoController extends Controller
                         $ObjectoAdjunto[$keyObj]->id_requerimiento_pago = $requerimientoPago->id_requerimiento_pago;
                         $ObjectoAdjunto[$keyObj]->codigo = $codigo;
 
-                        
-                        if(count($documentoCompraArray)>0){
+
+                        if (count($documentoCompraArray) > 0) {
                             foreach ($documentoCompraArray as $keyDoc => $docCom) {
-                                if($ObjectoAdjunto[$keyObj]->id ==$docCom->id_adjunto){
+                                if ($ObjectoAdjunto[$keyObj]->id == $docCom->id_adjunto) {
                                     $ObjectoAdjunto[$keyObj]->id_doc_com = $docCom->id_doc_com;
                                 }
                             }
@@ -440,13 +438,14 @@ class RequerimientoPagoController extends Controller
         }
     }
 
-    function vincularFacturaRequerimientoPago($request,$count,$detalleArray,$codigo){
-        $documentoCompraArray=[];
+    function vincularFacturaRequerimientoPago($request, $count, $detalleArray, $codigo)
+    {
+        $documentoCompraArray = [];
         $ObjectoFactura = json_decode($request->facturaObject);
-        if(isset($ObjectoFactura)){
-            foreach ($ObjectoFactura as $keyObj => $value){
-                if(count($value->items)>0){
-                    if ($value->id_doc_com =='' || $value->id_doc_com ==null){ // es un id_doc_com con numeros y letras => es nuevo, insertar
+        if (isset($ObjectoFactura)) {
+            foreach ($ObjectoFactura as $keyObj => $value) {
+                if (count($value->items) > 0) {
+                    if ($value->id_doc_com == '' || $value->id_doc_com == null) { // es un id_doc_com con numeros y letras => es nuevo, insertar
                         $documentoCompra = new DocumentoCompra();
                         $documentoCompra->serie = $value->serie;
                         $documentoCompra->numero = $value->numero;
@@ -464,89 +463,84 @@ class RequerimientoPagoController extends Controller
                         $documentoCompra->registrado_por = Auth::user()->id_usuario;
                         $documentoCompra->id_sede = $value->id_sede;
                         $documentoCompra->save();
-                        $documentoCompra->id_adjunto=$value->id_adjunto;
-                        $documentoCompraArray[]=$documentoCompra;
+                        $documentoCompra->id_adjunto = $value->id_adjunto;
+                        $documentoCompraArray[] = $documentoCompra;
 
-                        $listaItemAtendido=[];
+                        $listaItemAtendido = [];
                         for ($i = 0; $i < $count; $i++) {
                             foreach ($detalleArray as $key => $det) {
-                                for($j =0; $j < count($value->items); $j++){
+                                for ($j = 0; $j < count($value->items); $j++) {
                                     if ($det->idRegister == $value->items[$j]) {
-                                        if (!in_array($value->items[$j],$listaItemAtendido)){
+                                        if (!in_array($value->items[$j], $listaItemAtendido)) {
                                             $documentoCompraDetalle = new DocumentoCompraDetalle();
                                             $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
-                                            $documentoCompraDetalle->cantidad =$det->cantidad;
-                                            $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
-                                            $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
-                                            $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
+                                            $documentoCompraDetalle->cantidad = $det->cantidad;
+                                            $documentoCompraDetalle->id_unid_med = $det->id_unidad_medida;
+                                            $documentoCompraDetalle->precio_unitario = $det->precio_unitario;
+                                            $documentoCompraDetalle->servicio_descripcion = $det->descripcion;
                                             $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
                                             $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
-                                            $documentoCompraDetalle->estado =1;
-                                            $documentoCompraDetalle->fecha_registro =new Carbon();
-                                            $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
-                                            $documentoCompraDetalle->id_requerimiento_pago_detalle =$det->id_requerimiento_pago_detalle;
+                                            $documentoCompraDetalle->estado = 1;
+                                            $documentoCompraDetalle->fecha_registro = new Carbon();
+                                            $documentoCompraDetalle->obs = "Creado a partir del requerimiento de pago " . $codigo;
+                                            $documentoCompraDetalle->id_requerimiento_pago_detalle = $det->id_requerimiento_pago_detalle;
                                             $documentoCompraDetalle->save();
-                                            
-                                            $listaItemAtendido[]=$value->items[$j];
 
+                                            $listaItemAtendido[] = $value->items[$j];
                                         }
                                     }
                                 }
                             }
                         }
+                    } else { // actualizar
 
-                    }else{// actualizar
 
+                        $documentoCompra = DocumentoCompra::find($value->id_doc_com);
+                        $documentoCompra->id_tp_doc = $value->id_tp_doc;
+                        $documentoCompra->fecha_emision = $value->fecha_emision;
+                        $documentoCompra->fecha_vcmto =  $value->fecha_emision;
+                        $documentoCompra->id_condicion = $value->id_condicion;
+                        $documentoCompra->moneda = $value->id_moneda;
+                        $documentoCompra->sub_total = $value->subtotal;
+                        $documentoCompra->total_igv = $value->total_igv;
+                        $documentoCompra->total_a_pagar = $value->total_a_pagar;
+                        $documentoCompra->usuario = Auth::user()->id_usuario;
+                        $documentoCompra->estado = 1;
+                        $documentoCompra->id_sede = $value->id_sede;
+                        $documentoCompra->save();
+                        $documentoCompra->id_adjunto = $value->id_adjunto;
+                        $documentoCompraArray[] = $documentoCompra;
 
-                            $documentoCompra = DocumentoCompra::find($value->id_doc_com);
-                            $documentoCompra->id_tp_doc = $value->id_tp_doc;
-                            $documentoCompra->fecha_emision = $value->fecha_emision;
-                            $documentoCompra->fecha_vcmto =  $value->fecha_emision;
-                            $documentoCompra->id_condicion = $value->id_condicion;
-                            $documentoCompra->moneda = $value->id_moneda;
-                            $documentoCompra->sub_total = $value->subtotal;
-                            $documentoCompra->total_igv = $value->total_igv;
-                            $documentoCompra->total_a_pagar = $value->total_a_pagar;
-                            $documentoCompra->usuario = Auth::user()->id_usuario;
-                            $documentoCompra->estado = 1;
-                            $documentoCompra->id_sede = $value->id_sede;
-                            $documentoCompra->save();
-                            $documentoCompra->id_adjunto=$value->id_adjunto;
-                            $documentoCompraArray[]=$documentoCompra;
-    
-                            // anular todo los existente detalles para luego insertar el detalle actualizado
-                            $documentoCompraDetalleOld = DocumentoCompraDetalle::where('id_doc',$value->id_doc_com)->get();
-                            foreach ($documentoCompraDetalleOld as $detFac) {
-                                $eliminarDetFact = DocumentoCompraDetalle::find($detFac->id_doc_det);
-                                $eliminarDetFact->estado=7;
-                                $eliminarDetFact->save();
-                            }
-    
-                            for ($i = 0; $i < $count; $i++) {
-                                foreach ($detalleArray as $key => $det) {
-                                    for($j =0; $j < count($value->items); $j++){
-                                        if ($det->idRegister == $value->items[$j]) {
-                                            $documentoCompraDetalle = new DocumentoCompraDetalle();
-                                            $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
-                                            $documentoCompraDetalle->cantidad =$det->cantidad;
-                                            $documentoCompraDetalle->id_unid_med =$det->id_unidad_medida;
-                                            $documentoCompraDetalle->precio_unitario =$det->precio_unitario;
-                                            $documentoCompraDetalle->servicio_descripcion =$det->descripcion;
-                                            $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
-                                            $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
-                                            $documentoCompraDetalle->estado =1;
-                                            $documentoCompraDetalle->fecha_registro =new Carbon();
-                                            $documentoCompraDetalle->obs ="Creado a partir del requerimiento de pago ".$codigo;
-                                            $documentoCompraDetalle->id_requerimiento_pago_detalle =$det->id_requerimiento_pago_detalle;
-                                            $documentoCompraDetalle->save();
-                                        }
+                        // anular todo los existente detalles para luego insertar el detalle actualizado
+                        $documentoCompraDetalleOld = DocumentoCompraDetalle::where('id_doc', $value->id_doc_com)->get();
+                        foreach ($documentoCompraDetalleOld as $detFac) {
+                            $eliminarDetFact = DocumentoCompraDetalle::find($detFac->id_doc_det);
+                            $eliminarDetFact->estado = 7;
+                            $eliminarDetFact->save();
+                        }
+
+                        for ($i = 0; $i < $count; $i++) {
+                            foreach ($detalleArray as $key => $det) {
+                                for ($j = 0; $j < count($value->items); $j++) {
+                                    if ($det->idRegister == $value->items[$j]) {
+                                        $documentoCompraDetalle = new DocumentoCompraDetalle();
+                                        $documentoCompraDetalle->id_doc = $documentoCompra->id_doc_com;
+                                        $documentoCompraDetalle->cantidad = $det->cantidad;
+                                        $documentoCompraDetalle->id_unid_med = $det->id_unidad_medida;
+                                        $documentoCompraDetalle->precio_unitario = $det->precio_unitario;
+                                        $documentoCompraDetalle->servicio_descripcion = $det->descripcion;
+                                        $documentoCompraDetalle->sub_total =  floatval($det->cantidad) * floatval($det->precio_unitario);
+                                        $documentoCompraDetalle->precio_total = floatval($det->cantidad) * floatval($det->precio_unitario);
+                                        $documentoCompraDetalle->estado = 1;
+                                        $documentoCompraDetalle->fecha_registro = new Carbon();
+                                        $documentoCompraDetalle->obs = "Creado a partir del requerimiento de pago " . $codigo;
+                                        $documentoCompraDetalle->id_requerimiento_pago_detalle = $det->id_requerimiento_pago_detalle;
+                                        $documentoCompraDetalle->save();
                                     }
                                 }
                             }
-
-
+                        }
                     }
-
                 }
             }
         }
@@ -633,7 +627,7 @@ class RequerimientoPagoController extends Controller
                         'id_tp_doc'                 => $archivo->category,
                         'id_usuario'                => Auth::user()->id_usuario,
                         'fecha_registro'            => $fechaHoy,
-                        'id_doc_com'                => isset($archivo->id_doc_com)?$archivo->id_doc_com:null
+                        'id_doc_com'                => isset($archivo->id_doc_com) ? $archivo->id_doc_com : null
                     ],
                     'id_requerimiento_pago_adjunto'
                 );
@@ -736,29 +730,27 @@ class RequerimientoPagoController extends Controller
         }
         return $idList;
     }
-    public function obtenerIdDocumento($tipoDocumento,$idReq){
+    public function obtenerIdDocumento($tipoDocumento, $idReq)
+    {
         $result = [];
 
-        $documento = Documento::where([['id_doc',$idReq],['id_tp_documento',$tipoDocumento]])->first();
+        $documento = Documento::where([['id_doc', $idReq], ['id_tp_documento', $tipoDocumento]])->first();
 
-        if( !empty($documento)){
-            $result =[
-                'id'=> $documento->id_doc_aprob,
-                'mensaje'=>'Id encontrado',
-                'estado'=>'success'
-        ];
-
-        }else{
-            $result =[
-            'id'=>0,
-            'mensaje'=>'No se encontro el id',
-            'estado'=>'error'
-        ];
-
+        if (!empty($documento)) {
+            $result = [
+                'id' => $documento->id_doc_aprob,
+                'mensaje' => 'Id encontrado',
+                'estado' => 'success'
+            ];
+        } else {
+            $result = [
+                'id' => 0,
+                'mensaje' => 'No se encontro el id',
+                'estado' => 'error'
+            ];
         }
 
         return $result;
-
     }
 
 
@@ -768,11 +760,11 @@ class RequerimientoPagoController extends Controller
         try {
 
             // evaluar si el estado del cierre periodo
-            $añoPeriodo= Periodo::find($request->periodo)->descripcion;
+            $añoPeriodo = Periodo::find($request->periodo)->descripcion;
             $idEmpresa = Sede::find($request->sede)->id_empresa;
             // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
-            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo,$idEmpresa);
-            if($estadoOperativo!=1){//1:abierto, 2:cerrado, 3:Declarado
+            $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo, $idEmpresa);
+            if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
                 return response()->json(['id_requerimiento_pago' => 0, 'mensaje' => 'No se puede actualizar el requerimiento cuando el periodo operativo está cerrado']);
             }
 
@@ -802,12 +794,12 @@ class RequerimientoPagoController extends Controller
                 // $trazabilidad->descripcion = 'Sustentado por ' . $nombreCompletoUsuario ? $nombreCompletoUsuario : '';
                 // $trazabilidad->fecha_registro = new Carbon();
                 // $trazabilidad->save();
-                if(intval($request->id_requerimiento_pago) >0){
-                    $documento = $this->obtenerIdDocumento(11,$request->id_requerimiento_pago);
+                if (intval($request->id_requerimiento_pago) > 0) {
+                    $documento = $this->obtenerIdDocumento(11, $request->id_requerimiento_pago);
                 }
                 $aprobacion = new Aprobacion();
                 $aprobacion->id_flujo = null;
-                $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
+                $aprobacion->id_doc_aprob = (isset($documento) == true) ? $documento['id'] : null;
                 $aprobacion->id_usuario = Auth::user()->id_usuario;
                 $aprobacion->id_vobo = 8; // sustentado
                 $aprobacion->fecha_vobo = new Carbon();
@@ -829,15 +821,15 @@ class RequerimientoPagoController extends Controller
             $requerimientoPago->id_proyecto = $request->proyecto > 0 ? $request->proyecto : null;
             $requerimientoPago->id_cc = $request->id_cc > 0 ? $request->id_cc : null;
             $requerimientoPago->id_trabajador = $request->id_trabajador > 0 ? $request->id_trabajador : null;
-            $requerimientoPago->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno:null;
+            $requerimientoPago->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno : null;
             $requerimientoPago->save();
 
             $count = count($request->descripcion);
 
-            $detalleArray=[];
+            $detalleArray = [];
 
-            $afectaPresupuestoInternoSuma =[];
-            $afectaPresupuestoInternoResta =[];
+            $afectaPresupuestoInternoSuma = [];
+            $afectaPresupuestoInternoResta = [];
 
             for ($i = 0; $i < $count; $i++) {
                 $id = $request->idRegister[$i];
@@ -870,9 +862,8 @@ class RequerimientoPagoController extends Controller
                             $detalle->idRegister = $request->idRegister[$i];
                             $detalleArray[] = $detalle;
                             // $detalleAnuladoArray[]= $detalle;
-                            $detalle->importe_item_para_presupuesto= (floatval($detalle->precio_unitario) * floatval($detalle->cantidad));
-                            $detalle->operacion_item_para_presupuesto= 'suma';
-
+                            $detalle->importe_item_para_presupuesto = (floatval($detalle->precio_unitario) * floatval($detalle->cantidad));
+                            $detalle->operacion_item_para_presupuesto = 'suma';
                         }
                     } else {
 
@@ -884,17 +875,16 @@ class RequerimientoPagoController extends Controller
                         $detalle->id_unidad_medida = $request->unidad[$i];
                         $detalle->cantidad = $request->cantidad[$i];
 
-                        $subtotalOrigen=floatval($detalle->precio_unitario) * floatval($detalle->cantidad);
-                        $subtotalNuevo=  floatval($request->precioUnitario[$i]) * floatval($request->cantidad[$i]);
+                        $subtotalOrigen = floatval($detalle->precio_unitario) * floatval($detalle->cantidad);
+                        $subtotalNuevo =  floatval($request->precioUnitario[$i]) * floatval($request->cantidad[$i]);
 
-                        if($subtotalOrigen != $subtotalNuevo){
-                            if($subtotalOrigen < $subtotalNuevo){
-                                $importeItemParaPresupuesto=$subtotalNuevo - $subtotalOrigen;
-                                $tipoOperacionItemParaPresupuesto= 'resta';
-                                
-                            }elseif($subtotalOrigen > $subtotalNuevo){
-                                $importeItemParaPresupuesto=$subtotalOrigen - $subtotalNuevo;
-                                $tipoOperacionItemParaPresupuesto= 'suma';
+                        if ($subtotalOrigen != $subtotalNuevo) {
+                            if ($subtotalOrigen < $subtotalNuevo) {
+                                $importeItemParaPresupuesto = $subtotalNuevo - $subtotalOrigen;
+                                $tipoOperacionItemParaPresupuesto = 'resta';
+                            } elseif ($subtotalOrigen > $subtotalNuevo) {
+                                $importeItemParaPresupuesto = $subtotalOrigen - $subtotalNuevo;
+                                $tipoOperacionItemParaPresupuesto = 'suma';
                                 // Debugbar::info($importeItemParaPresupuesto);
                             }
                         }
@@ -902,35 +892,18 @@ class RequerimientoPagoController extends Controller
                         $detalle->subtotal = $subtotalNuevo;
                         $detalle->motivo = $request->motivo[$i];
                         $detalle->save();
-                        $detalle->importe_item_para_presupuesto= $importeItemParaPresupuesto??0;
-                        $detalle->operacion_item_para_presupuesto= $tipoOperacionItemParaPresupuesto??'';
+                        $detalle->importe_item_para_presupuesto = $importeItemParaPresupuesto ?? 0;
+                        $detalle->operacion_item_para_presupuesto = $tipoOperacionItemParaPresupuesto ?? '';
                         $detalle->idRegister = $request->idRegister[$i];
                         $detalleArray[] = $detalle;
 
-                        $tipoOperacionItemParaPresupuesto='';
-                        $importeItemParaPresupuesto=0;
+                        $tipoOperacionItemParaPresupuesto = '';
+                        $importeItemParaPresupuesto = 0;
                     }
                 }
             }
 
-            $detalleParaPresupuestoSumaArray=[];
-            $detalleParaPresupuestoRestaArray=[];
-            // Debugbar::info($detalleArray);
-            foreach ($detalleArray as $key => $det) {
-                if(isset($det->operacion_item_para_presupuesto) && $det->operacion_item_para_presupuesto =='suma'){
-                    $detalleParaPresupuestoSumaArray[]=$det;
-                }
-                if(isset($det->operacion_item_para_presupuesto) && $det->operacion_item_para_presupuesto =='resta'){
-                    $detalleParaPresupuestoRestaArray[]=$det;
-                }
-            }
-            // Debugbar::info($detalleParaPresupuestoSumaArray);
-            // Debugbar::info($detalleParaPresupuestoRestaArray);
-            // Debugbar::info('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoSumaArray);
-            $afectaPresupuestoInternoSuma = (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoSumaArray);
-            $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleParaPresupuestoRestaArray);
-
-            $documentoCompraArray = $this->VincularFacturaRequerimientoPago($request,$count,$detalleArray,$requerimientoPago->codigo);
+            $documentoCompraArray = $this->VincularFacturaRequerimientoPago($request, $count, $detalleArray, $requerimientoPago->codigo);
 
             //adjuntos cabecera
             if (isset($request->archivo_adjunto_list)) {
@@ -992,10 +965,11 @@ class RequerimientoPagoController extends Controller
             }
             DB::commit();
 
-            return response()->json(['id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago, 
-            'mensaje' => 'Se actualizó el requerimiento de pago ' . $requerimientoPago->codigo,
-            'afecta_presupuesto_interno_suma'=>$afectaPresupuestoInternoSuma??[],
-            'afecta_presupuesto_interno_resta'=>$afectaPresupuestoInternoResta??[]
+            return response()->json([
+                'id_requerimiento_pago' => $requerimientoPago->id_requerimiento_pago,
+                'mensaje' => 'Se actualizó el requerimiento de pago ' . $requerimientoPago->codigo,
+                'afecta_presupuesto_interno_suma' => $afectaPresupuestoInternoSuma ?? [],
+                'afecta_presupuesto_interno_resta' => $afectaPresupuestoInternoResta ?? []
             ]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -1015,11 +989,11 @@ class RequerimientoPagoController extends Controller
                 $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
 
                 // evaluar si el estado del cierre periodo
-                $añoPeriodo= Periodo::find($requerimientoPago->id_periodo)->descripcion;
+                $añoPeriodo = Periodo::find($requerimientoPago->id_periodo)->descripcion;
                 $idEmpresa = Sede::find($requerimientoPago->id_sede)->id_empresa;
                 // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion.'-01-01'));
-                $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo,$idEmpresa);
-                if($estadoOperativo!=1){//1:abierto, 2:cerrado, 3:Declarado
+                $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo, $idEmpresa);
+                if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
                     return response()->json(['id_requerimiento_pago' => 0, 'tipo_estado' => 'warning',  'mensaje' => 'No se puede anular el requerimiento cuando el periodo operativo está cerrado']);
                 }
 
@@ -1031,37 +1005,33 @@ class RequerimientoPagoController extends Controller
                     $requerimientoPago->save();
 
                     // anular detalle requerimiento pago
-                    $detalleArray=[];
+                    $detalleArray = [];
 
                     foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
                         $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $detalleRequerimientoPago->id_requerimiento_pago_detalle)->first();
                         $detalle->id_estado = 7;
                         $detalle->save();
-                        $detalle->importe_item_para_presupuesto=$detalle->subtotal;
+                        $detalle->importe_item_para_presupuesto = $detalle->subtotal;
                         $detalleArray[] = $detalle;
-
                     }
-
-                    (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$requerimientoPago->id_requerimiento_pago,$detalleArray);
-
 
                     // anular adjunto cabecera
                     RequerimientoPagoAdjunto::where('id_requerimiento_pago', '=', $idRequerimientoPago)
                         ->update(['id_estado' => 7]);
 
-                        if(intval($idRequerimientoPago) >0){
-                            $documento = $this->obtenerIdDocumento(11,$idRequerimientoPago);
-                        }
-                        $aprobacion = new Aprobacion();
-                        $aprobacion->id_flujo = null;
-                        $aprobacion->id_doc_aprob = (isset($documento)==true)? $documento['id']:null;
-                        $aprobacion->id_usuario = Auth::user()->id_usuario;
-                        $aprobacion->id_vobo = 7; // Anulado
-                        $aprobacion->fecha_vobo = new Carbon();
-                        $aprobacion->detalle_observacion = null; // comentario
-                        $aprobacion->id_rol = null;
-                        $aprobacion->tiene_sustento = false;
-                        $aprobacion->save();
+                    if (intval($idRequerimientoPago) > 0) {
+                        $documento = $this->obtenerIdDocumento(11, $idRequerimientoPago);
+                    }
+                    $aprobacion = new Aprobacion();
+                    $aprobacion->id_flujo = null;
+                    $aprobacion->id_doc_aprob = (isset($documento) == true) ? $documento['id'] : null;
+                    $aprobacion->id_usuario = Auth::user()->id_usuario;
+                    $aprobacion->id_vobo = 7; // Anulado
+                    $aprobacion->fecha_vobo = new Carbon();
+                    $aprobacion->detalle_observacion = null; // comentario
+                    $aprobacion->id_rol = null;
+                    $aprobacion->tiene_sustento = false;
+                    $aprobacion->save();
 
                     $output = [
                         'id_requerimiento_pago' => $idRequerimientoPago,
@@ -1108,7 +1078,7 @@ class RequerimientoPagoController extends Controller
     function mostrarRequerimientoPago($idRequerimientoPago)
     {
 
-        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto','presupuestoInternoDetalle', 'centroCosto', 'adjunto', 'estado')
+        $detalleRequerimientoPagoList = RequerimientoPagoDetalle::with('unidadMedida', 'producto', 'partida.presupuesto', 'presupuestoInternoDetalle', 'centroCosto', 'adjunto', 'estado')
             ->where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])
             ->get();
 
@@ -1161,7 +1131,7 @@ class RequerimientoPagoController extends Controller
     function listaAdjuntosRequerimientoPagoCabecera($idRequerimientoPago)
     {
         $data = RequerimientoPagoAdjunto::where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])
-        ->with('categoriaAdjunto','documentoCompra.DocumentoCompraDetalle.unidadMedida')->get();
+            ->with('categoriaAdjunto', 'documentoCompra.DocumentoCompraDetalle.unidadMedida')->get();
         return response()->json($data);
     }
     function listaCategoriaAdjuntos()
@@ -1480,7 +1450,7 @@ class RequerimientoPagoController extends Controller
         foreach ($detalleRequerimientoPagoList as $dr) {
             $idDetalleRequerimientoPagoList[] = $dr->id_requerimiento_pago_detalle;
         }
-        $ajuntosCabeceraList = RequerimientoPagoAdjunto::with("tipoDocumento","moneda")->where([["id_requerimiento_pago", $idRequerimientoPago], ["id_estado", "!=", 7]])->get();
+        $ajuntosCabeceraList = RequerimientoPagoAdjunto::with("tipoDocumento", "moneda")->where([["id_requerimiento_pago", $idRequerimientoPago], ["id_estado", "!=", 7]])->get();
         if (count($idDetalleRequerimientoPagoList) > 0) {
             $adjuntoDetalleList = RequerimientoPagoAdjuntoDetalle::whereIn("id_requerimiento_pago_detalle", $idDetalleRequerimientoPagoList)->where("id_estado", "!=", 7)->get();
         }
@@ -1573,7 +1543,7 @@ class RequerimientoPagoController extends Controller
 
                 DB::commit();
 
-                $nuevoCodigo = RequerimientoPago::crearCodigo($requerimientoPago->id_grupo, $requerimientoPago->id_requerimiento_pago,$nuevoRequerimientoPago->periodo);
+                $nuevoCodigo = RequerimientoPago::crearCodigo($requerimientoPago->id_grupo, $requerimientoPago->id_requerimiento_pago, $nuevoRequerimientoPago->periodo);
                 $rp = RequerimientoPago::find($nuevoRequerimientoPago->id_requerimiento_pago);
                 $rp->codigo = $requerimientoPago->codigo;
                 $rp->save();
@@ -1925,10 +1895,10 @@ class RequerimientoPagoController extends Controller
             'otros_adjuntos.*',
             'requerimiento_pago_categoria_adjunto.descripcion'
         )
-        ->where('id_requerimiento_pago',$id_requerimiento_pago)
-        ->join('tesoreria.requerimiento_pago_categoria_adjunto','requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto','=','otros_adjuntos.id_categoria_adjunto')
-        ->where('otros_adjuntos.id_estado','!=',7)
-        ->get();
+            ->where('id_requerimiento_pago', $id_requerimiento_pago)
+            ->join('tesoreria.requerimiento_pago_categoria_adjunto', 'requerimiento_pago_categoria_adjunto.id_requerimiento_pago_categoria_adjunto', '=', 'otros_adjuntos.id_categoria_adjunto')
+            ->where('otros_adjuntos.id_estado', '!=', 7)
+            ->get();
 
         $adjuntos_pagos = RegistroPago::select('registro_pago_adjuntos.adjunto', 'registro_pago_adjuntos.id_adjunto')
             ->where('id_requerimiento_pago', $id_requerimiento_pago)

@@ -235,6 +235,7 @@ class MigrateOrdenSoftLinkController extends Controller
                 }
 
                 $fecha = date("Y-m-d", strtotime($oc->fecha));
+                $anho = date("y", strtotime($oc->fecha));
 
                 //obtiene el tipo de cambio
                 $tp_cambio = DB::connection('soft')->table('tcambio')
@@ -366,7 +367,7 @@ class MigrateOrdenSoftLinkController extends Controller
                     $hoy = date('Y-m-d'); //Carbon::now()
 
                     if ($oc->codvend_softlink == '000055' || $oc->codvend_softlink == '000022') { //si es deza o dorado
-                        $yy = 'P022';
+                        $yy = 'P0'.$anho;
                     } else {
                         //obtiene el año a 2 digitos y le aumenta 2 ceros adelante
                         $yy = $this->leftZero(4, intval(date('y', strtotime($hoy))));

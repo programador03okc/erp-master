@@ -7,8 +7,10 @@ use App\Exports\RegistroPagosExport;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Models\Almacen\AdjuntoDetalleRequerimiento;
 use App\Models\Almacen\AdjuntoRequerimiento;
+use App\Models\Almacen\Requerimiento;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\PagoCuota;
 use App\Models\Logistica\PagoCuotaDetalle;
@@ -20,6 +22,7 @@ use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPagoAdjunto;
 use App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle;
 use App\Models\Tesoreria\RequerimientoPagoCategoriaAdjunto;
+use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
@@ -523,6 +526,13 @@ class RegistroPagoController extends Controller
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
                         ->update(['id_estado' => 6]); //pagada
+
+                        // * aplicar afectación de presupuesto
+                        $requerimientoPago =  RequerimientoPago::find($request->id_requerimiento_pago);
+                        if($requerimientoPago->id_presupuesto_interno >0){
+                            $detalleArray = $this->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago,floatval($request->total_pago),'completo');
+                            (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->id_requerimiento_pago,$detalleArray);
+                        }
                 }
             } else {
                 if ($request->id_oc !== null) {
@@ -538,6 +548,14 @@ class RegistroPagoController extends Controller
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
                         ->update(['id_estado' => 9]); //con saldo
+
+                    // * aplicar afectación de presupuesto
+                    $requerimientoPago =  RequerimientoPago::find($request->id_requerimiento_pago);
+                    if($requerimientoPago->id_presupuesto_interno >0){
+                        $detalleArray = $this->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago,floatval($request->total_pago),'prorrateado');
+                        (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->id_requerimiento_pago,$detalleArray);
+                    }
+
                 }
             }
 
@@ -575,6 +593,33 @@ class RegistroPagoController extends Controller
             DB::rollBack();
         }
     }
+
+    function obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago,$totalPago,$tipoAfecto){
+        $detalleArray = [];
+        if($idRequerimientoPago>0){
+            $requerimientoPagoDetalle= RequerimientoPagoDetalle::where([['id_requerimiento_pago',$idRequerimientoPago],['id_estado','!=',7]])->get();
+            $detalleArray=$requerimientoPagoDetalle;
+ 
+            foreach ($detalleArray as $key => $item) {
+                $detalleArray[$key]['importe_item_para_presupuesto']=0;
+            }
+
+            if($tipoAfecto=='completo'){
+                foreach ($detalleArray as $key => $item) {
+                    $detalleArray[$key]['importe_item_para_presupuesto']=floatval($item['cantidad']) * floatval($item['precio_unitario']);
+                }
+            }elseif($tipoAfecto=='prorrateado'){
+                $prorrateo=floatval($totalPago)/count($detalleArray);
+                foreach ($detalleArray as $key => $item) {
+                    $item['importe_item_para_presupuesto']=$prorrateo;
+                }
+    
+            }
+        }
+
+        return $detalleArray;
+    }
+
 
     function actualizarEstadoPago()
     {
@@ -789,6 +834,7 @@ class RegistroPagoController extends Controller
                     'registro_pago.id_requerimiento_pago',
                     'registro_pago.id_oc',
                     'registro_pago.id_doc_com',
+                    'registro_pago.total_pago'
                 )
                 ->where('registro_pago.id_pago', $id_pago)
                 ->first();
@@ -797,6 +843,32 @@ class RegistroPagoController extends Controller
                 DB::table('tesoreria.requerimiento_pago')
                     ->where('id_requerimiento_pago', $pago->id_requerimiento_pago)
                     ->update(['id_estado' => 5]); //enviado a pago
+
+            $requerimientoPago = RequerimientoPago::find($pago->id_requerimiento_pago);
+            $detalleArray=[];
+            
+            if($requerimientoPago->id_presupuesto_interno >0){
+                $todoDetalleRequerimientoPago = RequerimientoPagoDetalle::where([["id_requerimiento_pago", $pago->id_requerimiento_pago],['id_estado','!=',7]])->get();
+                if(count($todoDetalleRequerimientoPago)==1){
+                    foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
+                        $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $detalleRequerimientoPago->id_requerimiento_pago_detalle)->first();
+                        $detalle->importe_item_para_presupuesto=$pago->total_pago;
+                        $detalleArray[] = $detalle;
+                    }
+                    
+                }elseif(count($todoDetalleRequerimientoPago)>1){
+                    $prorrateo = $pago->total_pago/count($todoDetalleRequerimientoPago);
+    
+                    foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
+                        $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $detalleRequerimientoPago->id_requerimiento_pago_detalle)->first();
+                        $detalle->importe_item_para_presupuesto=$prorrateo;
+                        $detalleArray[] = $detalle;
+                    }
+                }
+                
+                (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$pago->id_requerimiento_pago,$detalleArray);
+            }
+
 
             } else if ($pago->id_oc !== null) {
                 DB::table('logistica.log_ord_compra')
