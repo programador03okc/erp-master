@@ -391,6 +391,7 @@ class RequerimientoController extends Controller
             ->leftJoin('mgcp_cuadro_costos.cc_view', 'cc_view.id', '=', 'alm_req.id_cc')
             ->leftJoin('cas.incidencia', 'incidencia.id_incidencia', '=', 'alm_req.id_incidencia')
             ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
+            ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'alm_req.id_presupuesto')
 
 
             ->select(
@@ -430,7 +431,6 @@ class RequerimientoController extends Controller
                 'rrhh_rol.id_rol_concepto',
                 'alm_req.id_area',
                 'adm_area.descripcion AS area_descripcion',
-                'alm_req.id_presupuesto',
                 'alm_req.fecha_registro',
                 'alm_req.estado',
                 'alm_req.id_sede',
@@ -464,6 +464,9 @@ class RequerimientoController extends Controller
                 'division.descripcion as division',
                 'alm_req.trabajador_id',
                 'alm_req.id_incidencia',
+                'alm_req.id_presupuesto',
+                'presup.codigo as codigo_presupuesto_old',
+                'presup.descripcion as descripcion_presupuesto_old',
                 'alm_req.id_presupuesto_interno',
                 'presupuesto_interno.codigo as codigo_presupuesto_interno',
                 'presupuesto_interno.descripcion as descripcion_presupuesto_interno',

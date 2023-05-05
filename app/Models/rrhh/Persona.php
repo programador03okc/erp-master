@@ -24,7 +24,9 @@ class Persona extends Model
 
     public function getNombreCompletoAttribute()
     {
-        return ucwords(strtolower($this->nombres) . ' ' . strtolower($this->apellido_paterno) . ' ' . strtolower($this->apellido_materno));
+        return ucwords((str_replace("'", "", str_replace("", "", $this->nombres))) . ' ' . (str_replace("'", "", str_replace("", "", $this->apellido_paterno))) . ' ' . ($this->apellido_materno));
+        
+
     }
 
     public function cuentaPersona()

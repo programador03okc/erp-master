@@ -44,8 +44,8 @@ $(function () {
     $('#tabla').on('click', 'button.cobrar', function (e) {
         e.preventDefault();
         $("#formulario-cobro")[0].reset();
-        $("#modalControl [name=cobranza_fondo_id]").val($(e.currentTarget).data('id'));
-        $("#modalControl [name=nro_documento]").val($(e.currentTarget).data('documento'));
+        $("[name=cobranza_fondo_id]").val($(e.currentTarget).data('id'));
+        $("[name=nro_documento_cobro]").val($(e.currentTarget).data('documento'));
         $("#modalControl").modal("show");
     });
 
@@ -68,6 +68,7 @@ $(function () {
                 $("[name=forma_pago_id]").val(response.forma_pago_id);
                 $("[name=moneda_id]").val(response.moneda_id);
                 $("[name=importe]").val(response.importe);
+                $("[name=nro_documento]").val(response.nro_documento);
                 $("[name=responsable_id]").val(response.responsable_id).trigger('change');
                 $("[name=pagador]").val(response.pagador);
                 $("[name=claim]").val(response.claim);

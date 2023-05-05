@@ -137,7 +137,7 @@ class CobranzaFondoController extends Controller
         try {
             $data = CobranzaFondo::find($request->cobranza_fondo_id);
                 $data->fecha_cobranza = $request->fecha_cobranza;
-                $data->nro_documento = $request->nro_documento;
+                $data->nro_documento = $request->nro_documento_cobro;
                 $data->observaciones = $request->observaciones;
                 $data->estado = 2;
             $data->save();
