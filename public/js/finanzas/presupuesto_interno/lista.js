@@ -8,19 +8,40 @@ function vistaCrear() {
 }
 function lista() {
     var vardataTables = funcDatatables();
-    const button = (array_accesos.find(element => element === 297)?{
-        text: '<i class="fas fa-plus"></i> Nuevo presupuesto',
-        attr: {
-            id: 'btn-nuevo',
-            href:'crear',
-        },
-        action: () => {
-            // vistaCrear();
-            window.location.href='crear';
-            // window.open('crear');
-        },
-        className: 'btn-primary btn-sm'
-    }:[])
+    const button_nuevo = (array_accesos.find(
+        element => element === 297)?
+            {
+            text: '<i class="fas fa-plus"></i> Nuevo presupuesto',
+            attr: {
+                id: 'btn-nuevo',
+                href:'crear',
+            },
+            action: () => {
+                // vistaCrear();
+                window.location.href='crear';
+                // window.open('crear');
+            },
+            className: 'btn-primary btn-sm'
+        }:
+        {}
+    );
+    const button_cierrre_mes = (array_accesos.find(
+        element => element === 297)?
+            {
+            text: '<i class="fas fa-calendar-times"></i> Cierre mensual',
+            attr: {
+                id: 'btn-cierre-mensual',
+            },
+            action: () => {
+                // vistaCrear();
+                cierreMesual();
+                // window.open('crear');
+            },
+            className: 'btn-danger btn-sm'
+        }:
+        {}
+    );
+    const button =[button_nuevo,button_cierrre_mes]
     var tableRequerimientos = $("#lista-presupuesto-interno").DataTable({
         language: vardataTables[0],
         destroy: true,
@@ -28,10 +49,7 @@ function lista() {
         serverSide: true,
         lengthChange: false,
         dom: vardataTables[1],
-        buttons:[
-            button
-
-        ],
+        buttons:button,
         ajax: {
             url: "lista-presupuesto-interno",
             type: "POST",
@@ -290,3 +308,23 @@ $(document).on('submit','[data-form="editar-monto-partida"]',function (e) {
         console.log(errorThrown);
     });
 });
+
+function cierreMesual() {
+    $.ajax({
+        type: 'GET',
+        url: 'cierre-mes',
+        data: {},
+        // processData: false,
+        // contentType: false,
+        dataType: 'JSON',
+        beforeSend: (data) => {
+
+        }
+    }).done(function(response) {
+        console.log(response);
+    }).fail( function( jqXHR, textStatus, errorThrown ){
+        console.log(jqXHR);
+        console.log(textStatus);
+        console.log(errorThrown);
+    });
+ }

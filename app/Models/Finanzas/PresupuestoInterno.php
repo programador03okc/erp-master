@@ -383,10 +383,12 @@ class PresupuestoInterno extends Model
         $array_historia_presupuesto_interno=array();
         $array_id_presupuesto_interno = array();
         $año_actua = date('Y');
-        $presupuesto_interno = PresupuestoInterno::where('estado','!=',7)
-        ->where('estado','2')
+
+        // presupuesto aprobados
+        $presupuesto_interno = PresupuestoInterno::where('estado',2)
         ->whereYear('fecha_registro',$año_actua)
         ->get();
+
         foreach ($presupuesto_interno as $key => $value) {
             if (!in_array($value->id_presupuesto_interno, $array_id_presupuesto_interno)) {
                 array_push($array_id_presupuesto_interno,$value->id_presupuesto_interno);
@@ -400,6 +402,7 @@ class PresupuestoInterno extends Model
             ->where('id_tipo_presupuesto',3)
             ->orderBy('partida', 'asc')
             ->get();
+
             array_push($array_temporal,$historial);
 
             if (sizeof($historial)>0) {
@@ -419,11 +422,12 @@ class PresupuestoInterno extends Model
                         $presupuesto_interno_detalle->$mes_siguiente = $saldo_mes_siguiente;
                         $presupuesto_interno_detalle->save();
 
-                        PresupuestoInterno::calcularColumnaAuxMensual(
-                            $presupuesto_interno_detalle->id_presupuesto_interno, $presupuesto_interno_detalle->id_tipo_presupuesto, $presupuesto_interno_detalle->id_presupuesto_interno_detalle,
-                            $nombre_mes_siguiente
-                        );
-
+                        // PresupuestoInterno::calcularColumnaAuxMensual(
+                        //     $presupuesto_interno_detalle->id_presupuesto_interno,
+                        //     $presupuesto_interno_detalle->id_tipo_presupuesto,
+                        //     $presupuesto_interno_detalle->id_presupuesto_interno_detalle,
+                        //     $nombre_mes_siguiente
+                        // );
                         array_push($array_historia_presupuesto_interno,$presupuesto_interno_detalle);
                         array_push($array_historia_presupuesto_interno,$saldo_mes_siguiente);
                     }
@@ -437,8 +441,11 @@ class PresupuestoInterno extends Model
         return [$mes_siguiente];exit;
     }
 
-    public static function calcularColumnaAuxMensual($id_presupuesto_interno, $id_tipo_presupuesto, $id_partida,$mes='enero')
+
+    public static function calcularColumnaAuxMensual($id_presupuesto_interno, $id_tipo_presupuesto, $id_partida,$mes)
     {
+        // ini_set('max_execution_time', 50000);
+
         $mes= $mes.'_aux';
         $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',$id_tipo_presupuesto)->where('estado', 1)->where('id_presupuesto_interno_detalle', $id_partida)->orderBy('partida')->first();
 
@@ -459,13 +466,19 @@ class PresupuestoInterno extends Model
             }
 
             $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',$id_tipo_presupuesto)->where('estado', 1)->where('id_hijo', $id_padre)->orderBy('partida')->first();
-            $presupuesto_interno_destalle->$mes = $total;
-            $presupuesto_interno_destalle->save();
 
-            $id_hijo = $presupuesto_interno_destalle->id_hijo;
-            $id_padre = $presupuesto_interno_destalle->id_padre;
+            if ($presupuesto_interno_destalle) {
+
+                $presupuesto_interno_destalle->$mes = $total;
+                $presupuesto_interno_destalle->save();
+                $id_hijo = $presupuesto_interno_destalle->id_hijo;
+                $id_padre = $presupuesto_interno_destalle->id_padre;
+            }
+
+
+
         }
-        return $partidas;
+        // return $partidas;
     }
     public function grupo(): BelongsTo
     {
