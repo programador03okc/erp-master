@@ -45,6 +45,14 @@
                                             <td id='adjuntosRequerimiento'>-</td>
                                             <td></td>
                                         </tr>
+                                        <tr class="oculto" id="contenedor_presupuesto_old">
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Presupuesto <em>(Proy)</em></td>
+                                            <td id="presupuesto_old" style="width:5%;" colspan="7"></td>
+                                        </tr>
+                                        <tr class="oculto" id="contenedor_presupuesto_interno">
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Presupuesto <em>(Interno)</em></td>
+                                            <td id="presupuesto_interno" style="width:5%;" colspan="7"></td>
+                                        </tr>
                                         <tr class="oculto" id="contenedor_cdp">
                                             <td style="width:5%; font-weight:bold; text-align:right;">CDP</td>
                                             <td id="codigo_cdp" style="width:5%;"></td>
