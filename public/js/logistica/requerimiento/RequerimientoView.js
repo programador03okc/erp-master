@@ -8,8 +8,9 @@ var tempArchivoAdjuntoRequerimientoCabeceraList = [];
 var tempArchivoAdjuntoRequerimientoDetalleList = [];
 var objBotonAdjuntoRequerimientoDetalleSeleccionado = '';
 class RequerimientoView {
-    constructor(requerimientoCtrl, presupuestoInternoView) {
+    constructor(requerimientoCtrl) {
         this.requerimientoCtrl = requerimientoCtrl;
+        const presupuestoInternoView = new PresupuestoInternoView(new PresupuestoInternoModel('{{csrf_token()}}'));
         this.presupuestoInternoView = presupuestoInternoView;
     }
     init() {
@@ -160,7 +161,7 @@ class RequerimientoView {
         });
 
         $('#listaCuadroPresupuesto').on("click", "button.handleClickSeleccionarCDP", (e) => {
-            console.log(e.currentTarget.dataset.idCc);
+            // console.log(e.currentTarget.dataset.idCc);
             this.deshabilitarOtrosTiposDePresupuesto('SELECCION_CDP', e.currentTarget.dataset.idCc);
         });
 
@@ -477,7 +478,7 @@ class RequerimientoView {
         this.limpiarTabla('listaHistorialAprobacion');
         if (data.hasOwnProperty('historial_aprobacion')) {
             if (data['historial_aprobacion'].length > 0) {
-                console.log(data['historial_aprobacion']);
+                // console.log(data['historial_aprobacion']);
                 let html = '';
                 for (let i = 0; i < data['historial_aprobacion'].length; i++) {
                     html += `<tr>
@@ -576,7 +577,6 @@ class RequerimientoView {
         }
 
         this.llenarComboProyectos(data.id_grupo,data.id_proyecto); 
-
         this.presupuestoInternoView.llenarComboPresupuestoInterno(data.id_grupo, data.division_id, data.id_presupuesto_interno);
 
     }
@@ -615,7 +615,7 @@ class RequerimientoView {
 
         this.limpiarTabla('ListaDetalleRequerimiento');
         vista_extendida();
-        console.log(dataDetalleRequerimiento);
+        // console.log(dataDetalleRequerimiento);
         for (let i = 0; i < dataDetalleRequerimiento.length; i++) {
             // console.log(data);
             let cantidadAdjuntos = dataDetalleRequerimiento != null && dataDetalleRequerimiento[i].adjuntos ? (dataDetalleRequerimiento[i].adjuntos).filter((element, i) => element.estado != 7).length : 0;
@@ -637,11 +637,13 @@ class RequerimientoView {
             // console.log(objOptionSelectUnidad);
             //  fin fix unidad medida
             let idFila = dataDetalleRequerimiento[i].id_detalle_requerimiento > 0 ? dataDetalleRequerimiento[i].id_detalle_requerimiento : (this.makeId());
+            console.log(dataDetalleRequerimiento);
 
+            const codigoPartida = dataDetalleRequerimiento[i].codigo_partida != null ? dataDetalleRequerimiento[i].codigo_partida : (dataDetalleRequerimiento[i].codigo_partida_presupuesto_interno !=null ?dataDetalleRequerimiento[i].codigo_partida_presupuesto_interno:'(NO SELECCIONADO)') ;
             if (dataDetalleRequerimiento[i].id_tipo_item == 1) { // producto
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${dataDetalleRequerimiento[i].estado}" style="text-align:center; background-color:${dataDetalleRequerimiento[i].estado == 7 ? '#f5e4e4' : ''}; ">
                 <td></td>
-                <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${dataDetalleRequerimiento[i].descripcion_partida ?? '(NO SELECCIONADO)'}" >${dataDetalleRequerimiento[i].codigo_partida ?? ''}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button>
+                <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${codigoPartida}" >${codigoPartida}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button>
                     <div class="form-group">
                         <input type="text" class="partida" name="idPartida[]" value="${dataDetalleRequerimiento[i].id_partida}" hidden>
                     </div>
@@ -690,7 +692,7 @@ class RequerimientoView {
             } else { // servicio
                 document.querySelector("tbody[id='body_detalle_requerimiento']").insertAdjacentHTML('beforeend', `<tr data-estado="${dataDetalleRequerimiento[i].estado}" style="text-align:center;  background-color:${dataDetalleRequerimiento[i].estado == 7 ? '#f5e4e4' : ''};">
                     <td></td>
-                    <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${dataDetalleRequerimiento[i].descripcion_partida != null ? dataDetalleRequerimiento[i].descripcion_partida : '(NO SELECCIONADO)'}" >${dataDetalleRequerimiento[i].codigo_partida != null ? dataDetalleRequerimiento[i].codigo_partida : '(NO SELECCIONADO)'}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button>
+                    <td><p class="descripcion-partida" data-id-partida="${dataDetalleRequerimiento[i].id_partida}" data-presupuesto-total="${dataDetalleRequerimiento[i].presupuesto_total_partida}" title="${codigoPartida}" >${codigoPartida}</p><button type="button" class="btn btn-xs btn-info activation handleClickCargarModalPartidas" name="partida" ${hasDisabledInput}>Seleccionar</button>
                         <div class="form-group">
                             <input type="text" class="partida" name="idPartida[]" value="${dataDetalleRequerimiento[i].id_partida}" hidden>
                         </div>
@@ -1022,7 +1024,7 @@ class RequerimientoView {
             obj.target.closest('div').classList.add("has-error");
         }
 
-        this.presupuestoInternoView.llenarComboPresupuestoInterno(currentIdGrupo, obj.target.value);
+        this.presupuestoInternoView.llenarComboPresupuestoInterno(currentIdGrupo, obj.target.value,null);
 
         this.llenarComboProyectos(currentIdGrupo); 
 

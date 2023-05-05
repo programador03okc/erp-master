@@ -813,7 +813,7 @@ Crear / editar requerimiento
 
         const requerimientoModel = new RequerimientoModel();
         const requerimientoController = new RequerimientoCtrl(requerimientoModel);
-        const requerimientoView = new RequerimientoView(requerimientoController,presupuestoInternoView);
+        const requerimientoView = new RequerimientoView(requerimientoController);
         requerimientoView.init();
 
         
