@@ -1149,15 +1149,29 @@ class ListarRequerimientoPagoView {
         // console.log( data.adjunto);
         let idFila = data != null && data.id_requerimiento_pago_detalle > 0 ? data.id_requerimiento_pago_detalle : (this.makeId());
         let cantidadAdjuntos = data != null && data.adjunto ? (data.adjunto).filter((element, i) => element.id_estado != 7).length : 0;
+
+        let idPartida='';
+        let codigoPartida='';
+        let descripcionPartida='';
+        if(data.id_partida > 0){
+            idPartida= data.id_partida;
+            codigoPartida= data.partida!=null ? data.partida.codigo:'';
+            descripcionPartida= data.partida!=null ? data.partida.descripcion:'';
+        }else if(data.id_partida_pi>0){
+            idPartida= data.id_partida_pi;
+            codigoPartida= data.presupuesto_interno_detalle!=null ? data.presupuesto_interno_detalle.partida:'';
+            descripcionPartida= data.presupuesto_interno_detalle!=null ? data.presupuesto_interno_detalle.descripcion:'';
+        }
+
         // console.log(data);
         document.querySelector("tbody[id='body_detalle_requerimiento_pago']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data != null && data.id_estado == '7' ? '#f1d7d7' : ''}; text-align:center">
         <td>
             <input type="hidden"  class="idEstado" name="idEstado[]" value="${data != null && data.id_estado}">
-            <p class="descripcion-partida" title="${(data != null && data.partida != null ? data.partida.descripcion : '(NO SELECCIONADO)')}">${(data != null && data.partida != null ? data.partida.codigo : '(NO SELECCIONADO)')}</p>
+            <p class="descripcion-partida" title="${( descripcionPartida!=''?descripcionPartida:'(NO SELECCIONADO)')}">${(codigoPartida != null  ? codigoPartida : '(NO SELECCIONADO)')}</p>
             <button type="button" class="btn btn-xs btn-info handleClickCargarModalPartidas" name="partida">Seleccionar</button>
             <div class="form-group">
                 <h5></h5>
-                <input type="text" class="partida" name="idPartida[]" value="${(data != null && data.partida != null ? data.partida.id_partida : '')}" hidden>
+                <input type="text" class="partida" name="idPartida[]" value="${idPartida}" hidden>
             </div>
         </td>
         <td>
@@ -2448,8 +2462,8 @@ class ListarRequerimientoPagoView {
 
                 document.querySelector("tbody[id='body_requerimiento_pago_detalle']").insertAdjacentHTML('beforeend', `<tr style="background-color:${data.detalle[i].id_estado == '7' ? '#f1d7d7' : ''}">
                 <td>${i + 1}</td>
-                <td>${data.id_presupuesto_interno > 0 ? data.detalle[i].presupuesto_interno_detalle.partida : (data.detalle[i].partida ? data.detalle[i].partida.codigo : '')}</td>
-                <td>${data.detalle[i].centro_costo ? data.detalle[i].centro_costo.codigo : ''}</td>
+                <td title="${data.detalle[i].id_partida >0 ?(data.detalle[i].partida.descripcion).toUpperCase() :(data.detalle[i].id_partida_pi >0?(data.detalle[i].presupuesto_interno_detalle.descripcion).toUpperCase() : '')}" >${data.detalle[i].id_partida >0 ?data.detalle[i].partida.codigo :(data.detalle[i].id_partida_pi >0?data.detalle[i].presupuesto_interno_detalle.partida : '')}</td>
+                <td title="${data.detalle[i].id_centro_costo>0?(data.detalle[i].centro_costo.descripcion).toUpperCase():''}">${data.detalle[i].centro_costo !=null ? data.detalle[i].centro_costo.codigo : ''}</td>
                 <td name="descripcion_servicio">${data.detalle[i].descripcion != null ? data.detalle[i].descripcion : ''} </td>
                 <td>${data.detalle[i].unidad_medida != null ? data.detalle[i].unidad_medida.descripcion : ''}</td>
                 <td style="text-align:center;">${data.detalle[i].cantidad >= 0 ? data.detalle[i].cantidad : ''}</td>

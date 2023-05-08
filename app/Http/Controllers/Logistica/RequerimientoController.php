@@ -248,6 +248,7 @@ class RequerimientoController extends Controller
     {
         $detalleRequerimientoList = DB::table('almacen.alm_det_req')
             ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+            ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
             ->leftJoin('almacen.alm_prod', 'alm_prod.id_producto', '=', 'alm_det_req.id_producto')
             ->leftJoin('configuracion.sis_moneda', 'alm_req.id_moneda', '=', 'sis_moneda.id_moneda')
             ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
@@ -262,6 +263,8 @@ class RequerimientoController extends Controller
             ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
             ->leftJoin('almacen.alm_tp_req', 'alm_tp_req.id_tipo_requerimiento', '=', 'alm_req.id_tipo_requerimiento')
             ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
+            ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'presup_par.id_presup')
+
             ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
 
@@ -297,19 +300,24 @@ class RequerimientoController extends Controller
                 'centro_costo.codigo as centro_costo',
                 'centro_costo.id_centro_costo',
                 'adm_estado_doc.estado_doc as estado_requerimiento',
+                'presup.codigo as codigo_presupuesto_old',
+                'presup.descripcion as descripcion_presupuesto_old',
+                'presupuesto_interno.codigo as codigo_presupuesto_interno',
+                'presupuesto_interno.descripcion as descripcion_presupuesto_interno',
+
                 DB::raw("(SELECT presup_titu.descripcion
                 FROM finanzas.presup_titu
                 WHERE presup_titu.codigo = presup_par.cod_padre and presup_titu.id_presup=presup_par.id_presup limit 1) AS descripcion_partida_padre"),
                 DB::raw("(SELECT presupuesto_interno_detalle.partida
                 FROM finanzas.presupuesto_interno_detalle
-                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.partida and alm_req.id_presupuesto_interno > 0 limit 1) AS codigo_sub_partida_presupuesto_interno"),
+                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi and alm_req.id_presupuesto_interno > 0 limit 1) AS codigo_sub_partida_presupuesto_interno"),
                 DB::raw("(SELECT presupuesto_interno_detalle.descripcion
                 FROM finanzas.presupuesto_interno_detalle
-                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.partida and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_sub_partida_presupuesto_interno"),
+                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_sub_partida_presupuesto_interno"),
                 DB::raw("(SELECT presupuesto_interno_modelo.descripcion
                 FROM finanzas.presupuesto_interno_detalle
                 inner join finanzas.presupuesto_interno_modelo on presupuesto_interno_modelo.id_modelo_presupuesto_interno = presupuesto_interno_detalle.id_padre
-                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.partida and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_partida_presupuesto_interno")
+                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_partida_presupuesto_interno")
 
             )
             ->when(($meOrAll === 'ME'), function ($query) {
@@ -618,6 +626,9 @@ class RequerimientoController extends Controller
                 ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
                 ->leftJoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'alm_det_req.proveedor_id')
                 ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
+                ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
+                ->leftJoin('finanzas.presupuesto_interno_detalle', 'presupuesto_interno_detalle.id_presupuesto_interno_detalle', '=', 'alm_det_req.id_partida_pi')
+                
                 ->select(
                     'alm_det_req.id_detalle_requerimiento',
                     'alm_req.id_requerimiento',
@@ -643,6 +654,7 @@ class RequerimientoController extends Controller
                     'adm_estado_doc.estado_doc',
                     'adm_estado_doc.bootstrap_color',
                     'alm_det_req.partida',
+                    'alm_det_req.id_partida_pi',
                     // 'presup_par.codigo AS codigo_partida',
                     // 'presup_pardet.descripcion AS descripcion_partida',
                     // 'presup_par.importe_total AS presupuesto_total_partida',
@@ -676,25 +688,33 @@ class RequerimientoController extends Controller
                     FROM almacen.trans_detalle
                     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
                             trans_detalle.estado != 7) AS suma_transferencias"),
-                    DB::raw("(SELECT (presup_par.codigo)
-                    FROM finanzas.presup_par
-                    WHERE  presup_par.id_partida = alm_det_req.partida ) AS codigo_partida"),
-                    DB::raw("(SELECT (presup_par.descripcion)
-                    FROM finanzas.presup_par
-                    WHERE  presup_par.id_partida = alm_det_req.partida ) AS descripcion_partida"),
-
+                    
+                    'presup_par.codigo as codigo_partida',
+                    'presup_par.descripcion as descripcion_partida',
                     // partida presupuesto interno 
-                    DB::raw("(SELECT (presupuesto_interno_detalle.partida)
-                    FROM finanzas.presupuesto_interno_detalle
-                    WHERE  presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.partida ) AS codigo_partida_presupuesto_interno"),
-                    DB::raw("(SELECT (presupuesto_interno_detalle.descripcion)
-                    FROM finanzas.presupuesto_interno_detalle
-                    WHERE  presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.partida ) AS descripcion_partida_presupuesto_interno"),
+                    'presupuesto_interno_detalle.partida as codigo_partida_presupuesto_interno',
+                    'presupuesto_interno_detalle.descripcion as descripcion_partida_presupuesto_interno',
                     // 
 
                     DB::raw("(SELECT (presup_par.importe_total)
                     FROM finanzas.presup_par
-                    WHERE  presup_par.id_partida = alm_det_req.partida ) AS presupuesto_total_partida")
+                    WHERE  presup_par.id_partida = alm_det_req.partida ) AS presupuesto_old_total_partida"),
+
+                    DB::raw("(SELECT 
+                    (CAST (replace(presupuesto_interno_detalle.enero, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.febrero, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.marzo, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.abril, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.mayo, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.junio, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.julio, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.agosto, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.setiembre, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.octubre, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.noviembre, ',', '') AS NUMERIC(10,2))
+                    + CAST (replace(presupuesto_interno_detalle.diciembre, ',', '') AS NUMERIC(10,2)))
+                    FROM finanzas.presupuesto_interno_detalle
+                    WHERE  presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi ) AS presupuesto_interno_total_partida")
                 )
                 ->where([
                     ['alm_det_req.estado', '!=', 7],
@@ -754,9 +774,13 @@ class RequerimientoController extends Controller
                         'codigo_producto'            => $data->alm_prod_codigo,
                         'descripcion'                   => $data->descripcion,
                         'id_partida'                    => $data->partida,
+                        'id_partida_pi'                 => $data->id_partida_pi,
                         'codigo_partida'                => $data->codigo_partida,
+                        'descripcion_partida'                => $data->descripcion_partida,
                         'codigo_partida_presupuesto_interno' => $data->codigo_partida_presupuesto_interno,
-                        'presupuesto_total_partida'     => $data->presupuesto_total_partida,
+                        'descripcion_partida_presupuesto_interno' => $data->descripcion_partida_presupuesto_interno,
+                        'presupuesto_old_total_partida'     => $data->presupuesto_old_total_partida,
+                        'presupuesto_interno_total_partida'     => $data->presupuesto_interno_total_partida,
                         'id_centro_costo'                => $data->id_centro_costo,
                         'codigo_centro_costo'            => $data->codigo_centro_costo,
                         'descripcion_centro_costo'       => $data->descripcion_centro_costo,
@@ -961,7 +985,11 @@ class RequerimientoController extends Controller
                 $detalle = new DetalleRequerimiento();
                 $detalle->id_requerimiento = $requerimiento->id_requerimiento;
                 $detalle->id_tipo_item = $request->tipoItem[$i];
-                $detalle->partida = $request->idPartida[$i];
+                if(intval($request->id_presupuesto_interno) > 0){
+                    $detalle->id_partida_pi = $request->idPartida[$i]??null;
+                }else{
+                    $detalle->partida = $request->idPartida[$i]??null;
+                }
                 $detalle->centro_costo_id = $request->idCentroCosto[$i];
                 $detalle->part_number = $request->partNumber[$i];
                 $detalle->descripcion = $request->descripcion[$i];
@@ -1427,7 +1455,11 @@ class RequerimientoController extends Controller
                 $detalle = new DetalleRequerimiento();
                 $detalle->id_requerimiento = $requerimiento->id_requerimiento;
                 $detalle->id_tipo_item = $request->tipoItem[$i];
-                $detalle->partida = $request->idPartida[$i];
+                if(intval($request->id_presupuesto_interno) > 0){
+                    $detalle->id_partida_pi = $request->idPartida[$i]??null;
+                }else{
+                    $detalle->partida = $request->idPartida[$i]??null;
+                }
                 $detalle->centro_costo_id = $request->idCentroCosto[$i];
                 $detalle->part_number = $request->partNumber[$i];
                 $detalle->descripcion = $request->descripcion[$i];
@@ -1445,7 +1477,11 @@ class RequerimientoController extends Controller
             } else { // es un id solo de numerico => actualiza
                 $detalle = DetalleRequerimiento::where("id_detalle_requerimiento", $id)->first();
                 $detalle->id_tipo_item = $request->tipoItem[$i];
-                $detalle->partida = $request->idPartida[$i] > 0 ? $request->idPartida[$i] : null;
+                if(intval($request->id_presupuesto_interno) > 0){
+                    $detalle->id_partida_pi = $request->idPartida[$i] ??null;
+                }else{
+                    $detalle->partida = $request->idPartida[$i]??null;
+                }
                 $detalle->centro_costo_id = $request->idCentroCosto[$i] > 0 ? $request->idCentroCosto[$i] : null;
                 $detalle->part_number = $request->partNumber[$i];
                 $detalle->descripcion = $request->descripcion[$i];
@@ -1871,6 +1907,7 @@ class RequerimientoController extends Controller
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
             // ->leftJoin('administracion.adm_aprobacion', 'adm_aprobacion.id_doc_aprob', '=', 'adm_documentos_aprob.id_doc_aprob')
             ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
+            ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
 
             ->select(
                 'alm_req.id_requerimiento',
@@ -1905,6 +1942,7 @@ class RequerimientoController extends Controller
                 'adm_prioridad.descripcion AS priori',
                 'sis_grupo.descripcion AS grupo',
                 'proy_proyecto.descripcion AS descripcion_proyecto',
+                'presupuesto_interno.descripcion AS descripcion_presupuesto_interno',
                 'adm_area.descripcion AS area',
                 'sis_moneda.simbolo AS simbolo_moneda',
                 'alm_req.fecha_registro',

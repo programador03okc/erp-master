@@ -371,7 +371,10 @@ class ListarRequerimientoView {
             },
             'columns': [
                 { 'data': 'id_requerimiento', 'name': 'alm_req.id_requerimiento', 'visible': false },
-                { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center', 'visible': false },
+                { 'data': 'priori', 'name': 'adm_prioridad.descripcion', 'className': 'text-center', 'visible': false, 'render': function (data, type, row) {
+                    // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
+                    return `<div style="display:flex;">${row['termometro']} &nbsp;<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} </div>`;
+                }},
                 { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'fecha_registro', 'name': 'alm_req.fecha_registro', 'className': 'text-center' },
@@ -381,119 +384,85 @@ class ListarRequerimientoView {
                 { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center' },
                 { 'data': 'descripcion_proyecto', 'name': 'proy_proyecto.descripcion', 'className': 'text-center' },
-                { 'data': 'monto_subtotal', 'name': 'monto_subtotal', 'defaultContent': '', 'className': 'text-right' },
-                { 'data': 'monto_total', 'name': 'monto_total', 'defaultContent': '', 'className': 'text-right' },
+                { 'data': 'descripcion_presupuesto_interno', 'name': 'presupuesto_interno.descripcion', 'className': 'text-center' },
+                { 'data': 'monto_subtotal', 'name': 'monto_subtotal', 'defaultContent': '', 'className': 'text-right','render': function (data, type, row) {
+                    return (row['simbolo_moneda']) + ($.number(row.monto_subtotal, 2));
+                } },
+                { 'data': 'monto_total', 'name': 'monto_total', 'defaultContent': '', 'className': 'text-right','render': function (data, type, row) {
+                    return (row['simbolo_moneda']) + ($.number(row.monto_total, 2,'.',','));
+                }},
                 { 'data': 'nombre_usuario', 'name': 'nombre_usuario' },
-                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc' },
-                { 'data': 'id_requerimiento', 'visible': false }
+                { 'data': 'estado_doc', 'name': 'adm_estado_doc.estado_doc','render': function (data, type, row) {
+                    switch (row['estado']) {
+                        case 1:
+                            return '<span class="labelEstado label label-default">' + row['estado_doc'] + '</span>';
+                            break;
+                        case 2:
+                            return '<span class="labelEstado label label-success">' + row['estado_doc'] + '</span>';
+                            break;
+                        case 3:
+                            return '<span class="labelEstado label label-warning">' + row['estado_doc'] + '</span>';
+                            break;
+                        case 5:
+                            return '<span class="labelEstado label label-primary">' + row['estado_doc'] + '</span>';
+                            break;
+                        case 7:
+                            return '<span class="labelEstado label label-danger">' + row['estado_doc'] + '</span>';
+                            break;
+                        default:
+                            return '<span class="labelEstado label label-default">' + row['estado_doc'] + '</span>';
+                            break;
+
+                    }
+                } },
+                { 'data': 'id_requerimiento',  'render': function (data, type, row) {
+                    let containerOpenBrackets = '<div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                    let containerCloseBrackets = '</div>';
+                    let btnEditar = '';
+                    let btnAnular = '';
+                    // let btnMandarAPago = '';
+                    let btnVerAdjuntosModal = (array_accesos.find(element => element === 34)?'<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row['id_requerimiento'] + '" data-codigo-requerimiento="' + row['codigo'] + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>':'');
+                    let btnDetalleRapido = (array_accesos.find(element => element === 33)?'<button type="button" class="btn btn-xs btn-primary btnVerDetalle handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>':'');
+                    let btnImprimirEnPdf = (array_accesos.find(element => element === 36)?'<button type="button" class="btn btn-xs btn-default handleClickImprimirRequerimientoPdf" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Imprimir en PDF" ><i class="fas fa-print fa-xs"></i></button>':'');
+                    let btnTrazabilidad = (array_accesos.find(element => element === 35)?'<button type="button" class="btn btn-xs btn-default btnVerTrazabilidad handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>':'');
+                    // if(row.estado ==2){
+                    //         btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
+                    //     }
+                    if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
+                        btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimiento handleClickAbrirRequerimiento" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>';
+                        btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimiento handleClickAnularRequerimiento" title="Anular" ><i class="fas fa-times fa-xs"></i></button>';
+                    }
+                    // let btnVerDetalle= `<button type="button" class="btn btn-xs btn-default desplegar-detalle handleClickDesplegarDetalleRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_requerimiento}">
+                    // <i class="fas fa-chevron-down"></i>
+                    // </button>`;
+
+
+                    // return containerOpenBrackets + btnDetalleRapido + btnVerAdjuntosModal +btnTrazabilidad + btnEditar + btnAnular +btnImprimirEnPdf+ containerCloseBrackets;
+                    let botoneraPrimaria = containerOpenBrackets
+                        .concat(btnDetalleRapido)
+                        .concat(btnVerAdjuntosModal)
+                        .concat(btnTrazabilidad)
+                        .concat(btnImprimirEnPdf)
+                        .concat(containerCloseBrackets);
+
+                    let botoneraSecundaria = containerOpenBrackets
+                        .concat(btnEditar)
+                        .concat(btnAnular)
+                        .concat(containerCloseBrackets);
+
+                    return botoneraPrimaria + botoneraSecundaria
+                } }
             ],
             'columnDefs': [
-
                 // {
                 //     'render': function (data, type, row) {
-                //         return row['termometro'];
-                //     }, targets: 1
+                //         let labelOrdenes = '';
+                //         (row['ordenes_compra']).forEach(element => {
+                //             labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrdenPDF" data-id-orden-compra=${element.id_orden_compra} title="Abrir orden">${element.codigo}</label>`;
+                //         });
+                //         return labelOrdenes;
+                //     }, targets: 15, className: 'text-center'
                 // },
-                {
-                    'render': function (data, type, row) {
-                        // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
-                        return `<div style="display:flex;">${row['termometro']} &nbsp;<a href="/necesidades/requerimiento/elaboracion/index?id=${row.id_requerimiento}" target="_blank" title="Abrir Requerimiento">${row.codigo}</a> ${row.tiene_transformacion == true ? '<i class="fas fa-random text-danger" title="Con transformación"></i>' : ''} </div>`;
-                    }, targets: 2
-                },
-                {
-                    'render': function (data, type, row) {
-                        return (row['simbolo_moneda']) + ($.number(row.monto_subtotal, 2));
-                    }, targets: 11
-                },
-                {
-                    'render': function (data, type, row) {
-                        return (row['simbolo_moneda']) + ($.number(row.monto_total, 2,'.',','));
-                    }, targets: 12
-                },
-                // {
-                //     'render': function (data, type, row) {
-                //         let sumTotal = 0;
-                //         if (row.detalle != undefined && row.detalle.length > 0) {
-                //             (row.detalle).forEach(element => {
-                //                 sumTotal += (parseFloat(element.cantidad) * parseFloat(element.precio_unitario));
-                //             });
-                //             return (row['simbolo_moneda']) + (Util.formatoNumero(sumTotal, 2));
-                //         }
-                //     }, targets: 10, orderable: false, searchable: false
-                // },
-                {
-                    'render': function (data, type, row) {
-                        switch (row['estado']) {
-                            case 1:
-                                return '<span class="labelEstado label label-default">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 2:
-                                return '<span class="labelEstado label label-success">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 3:
-                                return '<span class="labelEstado label label-warning">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 5:
-                                return '<span class="labelEstado label label-primary">' + row['estado_doc'] + '</span>';
-                                break;
-                            case 7:
-                                return '<span class="labelEstado label label-danger">' + row['estado_doc'] + '</span>';
-                                break;
-                            default:
-                                return '<span class="labelEstado label label-default">' + row['estado_doc'] + '</span>';
-                                break;
-
-                        }
-                    }, targets: 14, className: 'text-center'
-                },
-                {
-                    'render': function (data, type, row) {
-                        let labelOrdenes = '';
-                        (row['ordenes_compra']).forEach(element => {
-                            labelOrdenes += `<label class="lbl-codigo handleClickAbrirOrdenPDF" data-id-orden-compra=${element.id_orden_compra} title="Abrir orden">${element.codigo}</label>`;
-                        });
-                        return labelOrdenes;
-                    }, targets: 15, className: 'text-center'
-                },
-                {
-                    'render': function (data, type, row) {
-                        let containerOpenBrackets = '<div class="btn-group" role="group" style="margin-bottom: 5px;">';
-                        let containerCloseBrackets = '</div>';
-                        let btnEditar = '';
-                        let btnAnular = '';
-                        // let btnMandarAPago = '';
-                        let btnVerAdjuntosModal = (array_accesos.find(element => element === 34)?'<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAgregarAdjuntosRequerimiento" data-id-requerimiento="' + row['id_requerimiento'] + '" data-codigo-requerimiento="' + row['codigo'] + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>':'');
-                        let btnDetalleRapido = (array_accesos.find(element => element === 33)?'<button type="button" class="btn btn-xs btn-primary btnVerDetalle handleClickVerDetalleRequerimientoSoloLectura" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Ver detalle" ><i class="fas fa-eye fa-xs"></i></button>':'');
-                        let btnImprimirEnPdf = (array_accesos.find(element => element === 36)?'<button type="button" class="btn btn-xs btn-default handleClickImprimirRequerimientoPdf" data-id-requerimiento="' + row['id_requerimiento'] + '" title="Imprimir en PDF" ><i class="fas fa-print fa-xs"></i></button>':'');
-                        let btnTrazabilidad = (array_accesos.find(element => element === 35)?'<button type="button" class="btn btn-xs btn-default btnVerTrazabilidad handleClickVerTrazabilidadRequerimiento" title="Trazabilidad"><i class="fas fa-route fa-xs"></i></button>':'');
-                        // if(row.estado ==2){
-                        //         btnMandarAPago = '<button type="button" class="btn btn-xs btn-success" title="Mandar a pago" onClick="listarRequerimientoView.requerimientoAPago(' + row['id_requerimiento'] + ');"><i class="fas fa-hand-holding-usd fa-xs"></i></button>';
-                        //     }
-                        if (row.id_usuario == auth_user.id_usuario && (row.estado == 1 || row.estado == 3)) {
-                            btnEditar = '<button type="button" class="btn btn-xs btn-warning btnEditarRequerimiento handleClickAbrirRequerimiento" title="Editar" ><i class="fas fa-edit fa-xs"></i></button>';
-                            btnAnular = '<button type="button" class="btn btn-xs btn-danger btnAnularRequerimiento handleClickAnularRequerimiento" title="Anular" ><i class="fas fa-times fa-xs"></i></button>';
-                        }
-                        // let btnVerDetalle= `<button type="button" class="btn btn-xs btn-default desplegar-detalle handleClickDesplegarDetalleRequerimiento" data-toggle="tooltip" data-placement="bottom" title="Ver Detalle" data-id="${row.id_requerimiento}">
-                        // <i class="fas fa-chevron-down"></i>
-                        // </button>`;
-
-
-                        // return containerOpenBrackets + btnDetalleRapido + btnVerAdjuntosModal +btnTrazabilidad + btnEditar + btnAnular +btnImprimirEnPdf+ containerCloseBrackets;
-                        let botoneraPrimaria = containerOpenBrackets
-                            .concat(btnDetalleRapido)
-                            .concat(btnVerAdjuntosModal)
-                            .concat(btnTrazabilidad)
-                            .concat(btnImprimirEnPdf)
-                            .concat(containerCloseBrackets);
-
-                        let botoneraSecundaria = containerOpenBrackets
-                            .concat(btnEditar)
-                            .concat(btnAnular)
-                            .concat(containerCloseBrackets);
-
-                        return botoneraPrimaria + botoneraSecundaria
-                    }, targets: 16
-                },
 
             ],
             'initComplete': function () {
@@ -819,9 +788,11 @@ class ListarRequerimientoView {
                         });
                     }
                     document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
+
+                    
                 <td>${i + 1}</td>
-                <td>${idPresupuestoInterno>0 ?data[i].codigo_partida_presupuesto_interno :(data[i].codigo_partida!=null?data[i].codigo_partida : '')}</td>
-                <td>${data[i].codigo_centro_costo ? data[i].codigo_centro_costo : ''}</td>
+                <td title="${data[i].id_partida >0 ?data[i].descripcion_partida.toUpperCase() :(data[i].id_partida_pi >0?data[i].descripcion_partida_presupuesto_interno.toUpperCase() : '')}" >${data[i].id_partida >0 ?data[i].codigo_partida :(data[i].id_partida_pi >0?data[i].codigo_partida_presupuesto_interno : '')}</td>
+                <td title="${data[i].id_centro_costo>0?data[i].descripcion_centro_costo.toUpperCase():''}">${data[i].codigo_centro_costo ? data[i].codigo_centro_costo : ''}</td>
                 <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion == true ? '<br><span class="label label-default">Transformado</span>' : ''} </td>
                 <td>${data[i].producto_descripcion != null ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                 <td>${data[i].unidad_medida != null ? data[i].unidad_medida : ''}</td>
