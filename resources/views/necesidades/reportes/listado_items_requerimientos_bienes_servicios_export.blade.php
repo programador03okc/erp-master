@@ -4,6 +4,10 @@
             <th>Prioridad</th>
             <th>Requerimiento</th>
             <th>CDP</th>
+            <th>Cod.Prespuesto (old)</th>
+            <th>Des.Prespuesto (old)</th>
+            <th>Cod.Prespuesto (Interno)</th>
+            <th>Des.Prespuesto (Interno)</th>
             <th>Partida</th>
             <th>Cod.sub Partida</th>
             <th>Des.sub Partida</th>
@@ -36,6 +40,10 @@
                     <td>{{ $item['prioridad'] }}</td>
                     <td>{{ $item['codigo'] }}</td>
                     <td>{{ $item['codigo_oportunidad'] }}</td>
+                    <td>{{ $item['codigo_presupuesto_old'] }}</td>
+                    <td>{{ $item['descripcion_presupuesto_old'] }}</td>
+                    <td>{{ $item['codigo_presupuesto_interno'] }}</td>
+                    <td>{{ $item['descripcion_presupuesto_interno'] }}</td>
                     <td>{{ strtoupper($item['descripcion_partida_padre']) }}</td>
                     <td>{{ $item['partida'] }}</td>
                     <td>{{ $item['descripcion_partida'] }}</td>

@@ -7,7 +7,7 @@ class AprobarRequerimientoView {
     constructor(requerimientoCtrl){
         this.requerimientoCtrl = requerimientoCtrl;
         this.$fila=null;
-        this.verDetallesEvent();
+        // this.verDetallesEvent();
     }
 
     limpiarTabla(idElement) {
@@ -317,61 +317,61 @@ class AprobarRequerimientoView {
     verDetallesEvent(){
         
 
-        $('#ListaReqPendienteAprobacion').on('click','.ver-detalles',(event)=>{
-            this.$fila=$(event.currentTarget).closest("tr");
+        // $('#ListaReqPendienteAprobacion').on('click','.ver-detalles',(event)=>{
+        //     this.$fila=$(event.currentTarget).closest("tr");
 
-            const $modalRequerimiento=$('#modal-requerimiento');
-                $modalRequerimiento.find("input[name='idRequerimiento']").val(event.currentTarget.dataset.idRequerimiento);
-                $modalRequerimiento.find("input[name='idDocumento']").val(event.currentTarget.dataset.idDocAprob);
-                $modalRequerimiento.find("input[name='idUsuario']").val(event.currentTarget.dataset.idUsuarioAprobante);
-                $modalRequerimiento.find("input[name='idRolAprobante']").val(event.currentTarget.dataset.idRolAprobante);
-                $modalRequerimiento.find("input[name='idFlujo']").val(event.currentTarget.dataset.idFlujo);
-                $modalRequerimiento.find("input[name='aprobacionFinalOPendiente']").val(event.currentTarget.dataset.aprobacionFinalOPendiente);
-                $modalRequerimiento.find("input[name='idOperacion']").val(event.currentTarget.dataset.idOperacion);
-                $modalRequerimiento.find("input[name='tieneRolConSiguienteAprobacion']").val(event.currentTarget.dataset.tieneRolConSiguienteAprobacion);
-                $modalRequerimiento.find("textarea[id='comentario']").val('');
-                $modalRequerimiento.find("select[id='accion']").val(0);
+        //     const $modalRequerimiento=$('#modal-requerimiento');
+        //         $modalRequerimiento.find("input[name='idRequerimiento']").val(event.currentTarget.dataset.idRequerimiento);
+        //         $modalRequerimiento.find("input[name='idDocumento']").val(event.currentTarget.dataset.idDocAprob);
+        //         $modalRequerimiento.find("input[name='idUsuario']").val(event.currentTarget.dataset.idUsuarioAprobante);
+        //         $modalRequerimiento.find("input[name='idRolAprobante']").val(event.currentTarget.dataset.idRolAprobante);
+        //         $modalRequerimiento.find("input[name='idFlujo']").val(event.currentTarget.dataset.idFlujo);
+        //         $modalRequerimiento.find("input[name='aprobacionFinalOPendiente']").val(event.currentTarget.dataset.aprobacionFinalOPendiente);
+        //         $modalRequerimiento.find("input[name='idOperacion']").val(event.currentTarget.dataset.idOperacion);
+        //         $modalRequerimiento.find("input[name='tieneRolConSiguienteAprobacion']").val(event.currentTarget.dataset.tieneRolConSiguienteAprobacion);
+        //         $modalRequerimiento.find("textarea[id='comentario']").val('');
+        //         $modalRequerimiento.find("select[id='accion']").val(0);
 
 
-                var customElement = $("<div>", {
-                    "css": {
-                        "font-size": "24px",
-                        "text-align": "center",
-                        "padding": "0px",
-                        "margin-top": "-400px"
-                    },
-                    "class": "your-custom-class"
-                });
+        //         var customElement = $("<div>", {
+        //             "css": {
+        //                 "font-size": "24px",
+        //                 "text-align": "center",
+        //                 "padding": "0px",
+        //                 "margin-top": "-400px"
+        //             },
+        //             "class": "your-custom-class"
+        //         });
     
-                $('#modal-requerimiento div.modal-body').LoadingOverlay("show", {
-                    imageAutoResize: true,
-                    progress: true,
-                    custom: customElement,
-                    imageColor: "#3c8dbc"
-                });
+        //         $('#modal-requerimiento div.modal-body').LoadingOverlay("show", {
+        //             imageAutoResize: true,
+        //             progress: true,
+        //             custom: customElement,
+        //             imageColor: "#3c8dbc"
+        //         });
 
-                this.requerimientoCtrl.getRequerimiento(event.currentTarget.dataset.idRequerimiento).done( (res)=> {
-                    this.construirSeccionDatosGenerales(res['requerimiento'][0]);
-                    this.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
-                    this.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
+        //         this.requerimientoCtrl.getRequerimiento(event.currentTarget.dataset.idRequerimiento).done( (res)=> {
+        //             this.construirSeccionDatosGenerales(res['requerimiento'][0]);
+        //             this.construirSeccionItemsDeRequerimiento(res['det_req'],res['requerimiento'][0]['simbolo_moneda']);
+        //             this.construirSeccionHistorialAprobacion(res['historial_aprobacion']);
 
 
-                    $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
+        //             $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
         
-                }).catch(function (err) {
-                    //mostrar notificacion de eeror
-                    console.log(err)
+        //         }).catch(function (err) {
+        //             //mostrar notificacion de eeror
+        //             console.log(err)
 
-                }).always(()=>{
-                    $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
+        //         }).always(()=>{
+        //             $('#modal-requerimiento div.modal-body').LoadingOverlay("hide", true);
 
-                    $('#modal-requerimiento').modal({
-                        show: true,
-                        backdrop: 'true'
-                    });    
-                });
+        //             $('#modal-requerimiento').modal({
+        //                 show: true,
+        //                 backdrop: 'true'
+        //             });    
+        //         });
 
-        });
+        // });
  
 
     }
@@ -466,7 +466,6 @@ class AprobarRequerimientoView {
     }
 
     construirSeccionItemsDeRequerimiento(data, simboloMoneda) {
-
         this.limpiarTabla('listaDetalleRequerimientoModal');
         tempArchivoAdjuntoItemList = [];
         let html = '';
@@ -492,8 +491,8 @@ class AprobarRequerimientoView {
                 }
             document.querySelector("tbody[id='body_item_requerimiento']").insertAdjacentHTML('beforeend', `<tr>
                 <td>${i + 1}</td>
-                <td>${data[i].descripcion_partida ? data[i].descripcion_partida : ''}</td>
-                <td>${data[i].descripcion_centro_costo ? data[i].descripcion_centro_costo : ''}</td>
+                <td title="${data[i].id_partida >0 ?data[i].descripcion_partida.toUpperCase() :(data[i].id_partida_pi >0?data[i].descripcion_partida_presupuesto_interno.toUpperCase() : '')}" >${data[i].id_partida >0 ?data[i].codigo_partida :(data[i].id_partida_pi >0?data[i].codigo_partida_presupuesto_interno : '')}</td>
+                <td title="${data[i].id_centro_costo>0?data[i].descripcion_centro_costo.toUpperCase():''}">${data[i].codigo_centro_costo ? data[i].codigo_centro_costo : ''}</td>
                 <td>${data[i].id_tipo_item == 1 ? (data[i].producto_part_number ? data[i].producto_part_number : data[i].part_number) : '(Servicio)'}${data[i].tiene_transformacion==true?'<br><span class="label label-default">Con Transformación</span>':''} </td>
                 <td>${data[i].producto_descripcion ? data[i].producto_descripcion : (data[i].descripcion ? data[i].descripcion : '')} </td>
                 <td>${data[i].unidad_medida !=null?data[i].unidad_medida:''}</td>

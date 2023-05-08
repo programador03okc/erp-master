@@ -105,13 +105,13 @@ Listado de requerimientos logísticos
                                         <th class="text-center" style="width:10%">Empresa - sede</th>
                                         <th class="text-center">Grupo</th>
                                         <th class="text-center">División</th>
-                                        <th class="text-center">Proyecto/presupuesto</th>
+                                        <th class="text-center">Proyecto</th>
+                                        <th class="text-center">Presupuesto Interno</th>
                                         <th class="text-center">Monto Subtotal</th>
                                         <th class="text-center">Monto Total</th>
                                         <th class="text-center">Creado por</th>
                                         <th class="text-center" style="width:5%;">Estado</th>
-                                        <th class="text-center" style="width:8%">Ordenes</th>
-                                        <th class="text-center" style="width:8%">Acción</th>
+                                        <th class="text-center" style="width:15%">Acción</th>
                                     </tr>
                                 </thead>
                             </table>

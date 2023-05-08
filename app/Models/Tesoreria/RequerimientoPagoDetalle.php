@@ -22,7 +22,7 @@ class RequerimientoPagoDetalle extends Model
         return $this->hasMany('App\Models\Tesoreria\RequerimientoPagoAdjuntoDetalle','id_requerimiento_pago_detalle','id_requerimiento_pago_detalle');
     }
     public function presupuestoInternoDetalle(){
-        return $this->hasone('App\Models\Finanzas\PresupuestoInternoDetalle','id_presupuesto_interno_detalle','id_partida');
+        return $this->hasone('App\Models\Finanzas\PresupuestoInternoDetalle','id_presupuesto_interno_detalle','id_partida_pi');
     }
     public function centroCosto(){
         return $this->hasone('App\Models\Presupuestos\CentroCosto','id_centro_costo','id_centro_costo');
