@@ -1153,14 +1153,18 @@ class ListarRequerimientoPagoView {
         let idPartida='';
         let codigoPartida='';
         let descripcionPartida='';
-        if(data.id_partida > 0){
-            idPartida= data.id_partida;
-            codigoPartida= data.partida!=null ? data.partida.codigo:'';
-            descripcionPartida= data.partida!=null ? data.partida.descripcion:'';
-        }else if(data.id_partida_pi>0){
-            idPartida= data.id_partida_pi;
-            codigoPartida= data.presupuesto_interno_detalle!=null ? data.presupuesto_interno_detalle.partida:'';
-            descripcionPartida= data.presupuesto_interno_detalle!=null ? data.presupuesto_interno_detalle.descripcion:'';
+        console.log(data);
+        if(data!=null){
+
+            if(data.id_partida > 0){
+                idPartida= data.id_partida;
+                codigoPartida= data.partida!=null ? data.partida.codigo:'';
+                descripcionPartida= data.partida!=null ? data.partida.descripcion:'';
+            }else if(data.id_partida_pi>0){
+                idPartida= data.id_partida_pi;
+                codigoPartida= data.presupuesto_interno_detalle!=null ? data.presupuesto_interno_detalle.partida:'';
+                descripcionPartida= data.presupuesto_interno_detalle!=null ? data.presupuesto_interno_detalle.descripcion:'';
+            }
         }
 
         // console.log(data);
