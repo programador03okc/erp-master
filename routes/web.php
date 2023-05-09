@@ -2101,6 +2101,7 @@ Route::group(['middleware' => ['auth']], function () {
                     Route::get('total-presupuesto', 'Finanzas\Presupuesto\ScriptController@totalPresupuesto');
                     Route::get('total-ejecutado', 'Finanzas\Presupuesto\ScriptController@totalEjecutado');
                 });
+				Route::get('actualizaEstadoHistorial/{id}/{est}', 'Finanzas\Presupuesto\PresupuestoInternoController@actualizaEstadoHistorial');
             });
 		});
 
