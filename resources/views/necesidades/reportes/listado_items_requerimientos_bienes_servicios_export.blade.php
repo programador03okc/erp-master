@@ -1,37 +1,44 @@
 <table>
     <thead>
         <tr>
-            <th>Prioridad</th>
-            <th>Requerimiento</th>
-            <th>CDP</th>
-            <th>Cod.Prespuesto (old)</th>
-            <th>Des.Prespuesto (old)</th>
-            <th>Cod.Prespuesto (Interno)</th>
-            <th>Des.Prespuesto (Interno)</th>
-            <th>Partida</th>
-            <th>Cod.sub Partida</th>
-            <th>Des.sub Partida</th>
-            <th>Partida(Ppto Interno)</th>
-            <th>Cod.sub Partida(Ppto Interno)</th>
-            <th>Des.sub Partida(Ppto Interno)</th>
-            <th>Cod.Centro Costo</th>
-            <th>Des.Centro Costo</th>
-            <th>Motivo</th>
-            <th>Concepto</th>
-            <th>Item</th>
-            <th>Fecha Registro</th>
-            <th>Tipo Requerimiento</th>
-            <th>Empresa</th>
-            <th>Sede</th>
-            <th>Grupo</th>
-            <th>División</th>
-            <th>Proyecto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario (Sin IGV)</th>
-            <th>Subtotal</th>
-            <th>Moneda</th>
-            <th>Observación</th>
-            <th>Estado Requerimiento</th>
+            <th rowspan="2" style="background-color:#cccccc;">Prioridad</th>
+            <th rowspan="2" style="background-color:#cccccc;">Requerimiento</th>
+            <th rowspan="2" style="background-color:#cccccc;">CDP</th>
+            <th colspan="2" style="background-color:#cccccc;">Presupuesto anterior</th>
+            <th colspan="3" style="background-color:#cccccc;">Partida (ppto. anterior) </th>
+            <th colspan="2" style="background-color:#cccccc;">Presupuesto interno</th>
+            <th colspan="3" style="background-color:#cccccc;">Partida (ppto, interno) </th>
+            <th rowspan="2" style="background-color:#cccccc;">Cod.Centro Costo</th>
+            <th rowspan="2" style="background-color:#cccccc;">Des.Centro Costo</th>
+            <th rowspan="2" style="background-color:#cccccc;" width="30">Motivo</th>
+            <th rowspan="2" style="background-color:#cccccc;" width="80">Concepto</th>
+            <th rowspan="2" style="background-color:#cccccc;">Item</th>
+            <th rowspan="2" style="background-color:#cccccc;">Fecha Registro</th>
+            <th rowspan="2" style="background-color:#cccccc;">Hora Registro</th>
+            <th rowspan="2" style="background-color:#cccccc;">Tipo Requerimiento</th>
+            <th rowspan="2" style="background-color:#cccccc;">Empresa</th>
+            <th rowspan="2" style="background-color:#cccccc;">Sede</th>
+            <th rowspan="2" style="background-color:#cccccc;">Grupo</th>
+            <th rowspan="2" style="background-color:#cccccc;">División</th>
+            <th rowspan="2" style="background-color:#cccccc;">Proyecto</th>
+            <th rowspan="2" style="background-color:#cccccc;">Cantidad</th>
+            <th rowspan="2" style="background-color:#cccccc;">Precio Unitario (Sin IGV)</th>
+            <th rowspan="2" style="background-color:#cccccc;">Subtotal</th>
+            <th rowspan="2" style="background-color:#cccccc;">Moneda</th>
+            <th rowspan="2" style="background-color:#cccccc;" width="80">Observación</th>
+            <th rowspan="2" style="background-color:#cccccc;">Estado Requerimiento</th>
+        </tr>
+        <tr>
+            <th style="background-color:#cccccc;" width="10">Cod.Prespuesto</th>
+            <th style="background-color:#cccccc;" width="30">Des.Prespuesto</th>
+            <th style="background-color:#cccccc;" width="30">Partida</th>
+            <th style="background-color:#cccccc;" width="10">Cod.sub Partida</th>
+            <th style="background-color:#cccccc;" width="20">Des.sub Partida</th>
+            <th style="background-color:#cccccc;" width="10">Cod.Prespuesto</th>
+            <th style="background-color:#cccccc;" width="30">Des.Prespuesto</th>
+            <th style="background-color:#cccccc;" width="20">Partida</th>
+            <th style="background-color:#cccccc;" width="10">Cod.sub Partida</th>
+            <th style="background-color:#cccccc;" width="20">Des.sub Partida</th>
         </tr>
     </thead>
     <tbody>
@@ -42,11 +49,11 @@
                     <td>{{ $item['codigo_oportunidad'] }}</td>
                     <td>{{ $item['codigo_presupuesto_old'] }}</td>
                     <td>{{ $item['descripcion_presupuesto_old'] }}</td>
-                    <td>{{ $item['codigo_presupuesto_interno'] }}</td>
-                    <td>{{ $item['descripcion_presupuesto_interno'] }}</td>
                     <td>{{ strtoupper($item['descripcion_partida_padre']) }}</td>
                     <td>{{ $item['partida'] }}</td>
                     <td>{{ $item['descripcion_partida'] }}</td>
+                    <td>{{ $item['codigo_presupuesto_interno'] }}</td>
+                    <td>{{ $item['descripcion_presupuesto_interno'] }}</td>
                     <td>{{ $item['descripcion_partida_presupuesto_interno'] }}</td>
                     <td>{{ $item['codigo_sub_partida_presupuesto_interno'] }}</td>
                     <td>{{ $item['descripcion_sub_partida_presupuesto_interno'] }}</td>
@@ -56,6 +63,7 @@
                     <td>{{ $item['concepto'] }}</td>
                     <td>{{ $item['descripcion'] }}</td>
                     <td>{{ $item['fecha_registro'] }}</td>
+                    <td>{{ $item['hora_registro'] }}</td>
                     <td>{{ $item['tipo_requerimiento'] }}</td>
                     <td>{{ $item['empresa_razon_social'] }}</td>
                     <td>{{ $item['sede'] }}</td>

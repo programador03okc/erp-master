@@ -6,8 +6,12 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Tesoreria\RequerimientoPagoController;
-
-class ListadoItemsRequerimientoPagoExport implements FromView
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+class ListadoItemsRequerimientoPagoExport implements FromView,WithColumnFormatting, WithStyles
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -61,7 +65,8 @@ class ListadoItemsRequerimientoPagoExport implements FromView
                     'motivo'=> str_replace("'", "", str_replace("", "" ,$value->motivo)),
                     'concepto'=> str_replace("'", "", str_replace("", "" ,$value->concepto)),
                     'descripcion'=>  str_replace("'", "", str_replace("", "" ,$value->descripcion)),
-                    'fecha_registro'=> $value->fecha_registro,
+                    'fecha_registro'=> date('d/m/Y', strtotime($value->fecha_registro)),
+                    'hora_registro'=> date('H:i:s', strtotime($value->fecha_registro)),
                     'tipo_requerimiento'=> $value->tipo_requerimiento,
                     'empresa_razon_social'=> $value->empresa_razon_social,
                     'sede'=> $value->sede,
@@ -81,5 +86,26 @@ class ListadoItemsRequerimientoPagoExport implements FromView
         return view('necesidades.reportes.listado_items_requerimiento_pago_export_excel', [
             'items'        =>  $data
         ]);
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        $sheet->getStyle('Q3:Q'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
+        $sheet->getStyle('AE3:AE'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A:AF')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        return [
+            1    => ['font' => ['bold' => true] ],
+            2    => ['font' => ['bold' => true] ],
+            'A:AF'  => ['font' => ['size' => 10]]
+        ];
+    }
+    
+    public function columnFormats(): array
+    {
+        return [
+            'AA' => NumberFormat::FORMAT_NUMBER,
+            'AB' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'AC' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1
+        ];
     }
 }

@@ -5,10 +5,9 @@ namespace App\Exports;
 use App\Http\Controllers\ComprasPendientesController;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 
-class ListRequerimientosPendientesExport implements FromView, ShouldAutoSize
+class ListRequerimientosPendientesExport implements FromView
 
 {
     /**
