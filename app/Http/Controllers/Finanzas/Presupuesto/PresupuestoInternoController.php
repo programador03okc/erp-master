@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Finanzas\Presupuesto;
 use App\Exports\PresupuestoInternoExport;
 use App\Helpers\ConfiguracionHelper;
 use App\Helpers\StringHelper;
+use App\Helpers\Finanzas\PresupuestoInternoHistorialHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\administracion\AdmGrupo;
@@ -1552,4 +1553,10 @@ class PresupuestoInternoController extends Controller
 
         return $historial;
     }
+
+    public function actualizaEstadoHistorial($idDetalleRequerimiento,$estado){
+        $historial = PresupuestoInternoHistorialHelper::actualizaEstadoHistorial($idDetalleRequerimiento,$estado);
+        return $historial;
+    } 
+
 }
