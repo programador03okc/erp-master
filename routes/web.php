@@ -2113,6 +2113,21 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::post('actualizar-centro-costo', 'Finanzas\CentroCosto\CentroCostoController@actualizarCentroCosto')->name('actualizar-centro-costo');
 			Route::get('anular-centro-costo/{id}', 'Finanzas\CentroCosto\CentroCostoController@anularCentroCosto')->name('anular-centro-costo');
 		});
+
+		
+		Route::group(['as' => 'reportes.', 'prefix' => 'reportes'], function () {
+			Route::group(['as' => 'gastos.', 'prefix' => 'gastos'], function () {
+				Route::get('index-requerimiento-logistico', 'Finanzas\Reportes\ReporteGastoController@indexReporteGastoRequerimientoLogistico')->name('index-requerimiento-logistico');
+				Route::get('index-requerimiento-pago', 'Finanzas\Reportes\ReporteGastoController@indexReporteGastoRequerimientoPago')->name('index-requerimiento-pago');
+				
+				Route::post('lista-requerimiento-logistico', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimientoLogistico')->name('lista-requerimiento-logistico');
+				Route::post('lista-requerimiento-pago', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimientoPago')->name('lista-requerimiento-pago');
+
+				Route::get('exportar-requerimiento-logistico-excel', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimientoLogisticoExcel');
+				Route::get('exportar-requerimiento-pago-excel', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimienoPagoExcel');
+
+			});
+		});
 	});
 
 	/**Tesoreria */

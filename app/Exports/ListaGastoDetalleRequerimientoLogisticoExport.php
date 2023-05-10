@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Http\Controllers\Logistica\RequerimientoController;
+use App\Http\Controllers\Finanzas\Reportes\ReporteGastoController;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Carbon\Carbon;
@@ -12,32 +12,17 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class reporteItemsRequerimientosBienesServiciosExcel implements FromView, WithColumnFormatting, WithStyles
+class ListaGastoDetalleRequerimientoLogisticoExport implements FromView, WithColumnFormatting, WithStyles
 {
 
 
-    public function __construct(string $meOrAll, string $idEmpresa,string $idSede,string $idGrupo,string $idDivision, string $fechaRegistroDesde, string $fechaRegistroHasta, string $idEstado)
+    public function __construct()
     {
-        $this->meOrAll = $meOrAll;
-        $this->idEmpresa = $idEmpresa;
-        $this->idSede = $idSede;
-        $this->idGrupo = $idGrupo;
-        $this->idDivision = $idDivision;
-        $this->fechaRegistroDesde = $fechaRegistroDesde;
-        $this->fechaRegistroHasta = $fechaRegistroHasta;
-        $this->idEstado = $idEstado;
     }
 
     public function view(): View{
-        $meOrAll= $this->meOrAll;
-        $idEmpresa= $this->idEmpresa;
-        $idSede = $this->idSede;
-        $idGrupo = $this->idGrupo;
-        $idDivision = $this->idDivision;
-        $fechaRegistroDesde = $this->fechaRegistroDesde;
-        $fechaRegistroHasta = $this->fechaRegistroHasta;
-        $idEstado = $this->idEstado;
-        $requerimientos = (new RequerimientoController)->listaDetalleRequerimiento($meOrAll,$idEmpresa,$idSede,$idGrupo,$idDivision,$fechaRegistroDesde,$fechaRegistroHasta,$idEstado);
+    
+        $requerimientos = (new ReporteGastoController)->dataGastoDetalleRequerimientoLogistico();
         $data=[];
         foreach($requerimientos as $element){
 
@@ -65,6 +50,11 @@ class reporteItemsRequerimientosBienesServiciosExcel implements FromView, WithCo
                 'precio_unitario'=> $element->precio_unitario,
                 'subtotal'=> $element->subtotal,
                 'simbolo_moneda'=> $element->simbolo_moneda,
+                'cantidad_orden'=> $element->cantidad_orden,
+                'precio_orden'=> $element->precio_orden,
+                'subtotal_orden'=> $element->subtotal_orden,
+                'simbolo_moneda_orden'=> $element->simbolo_moneda_orden,
+                'subtotal_orden_considera_igv'=> $element->subtotal_orden_considera_igv,
                 'fecha_requerimiento'=> date('d/m/Y', strtotime($element->fecha_requerimiento)),
                 'tipo_cambio'=> $element->tipo_cambio,
                 'tipo_requerimiento'=> $element->tipo_requerimiento,
@@ -81,7 +71,7 @@ class reporteItemsRequerimientosBienesServiciosExcel implements FromView, WithCo
 
             ];
         }
-        return view('necesidades.reportes.listado_items_requerimientos_bienes_servicios_export', [
+        return view('finanzas.export.lista_gasto_detalle_requerimiento_logistico_export', [
             'items' => $data
         ]);
     }

@@ -22,7 +22,19 @@
         <a href="{{route('finanzas.centro-costos.index')}}"><i class="fas fa-file-invoice-dollar"></i>
             <span>Centro de Costos </span>
         </a>
+    </li>
 
+    <li class=" treeview ">
+        <a href="#">
+            <i class="fas fa-chart-bar"></i> <span>Reportes</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="{{ route('finanzas.reportes.gastos.index-requerimiento-logistico') }}"><i class="far fa-circle fa-xs"></i> Gastos req. logístico</a></li>
+            <li><a href="{{ route('finanzas.reportes.gastos.index-requerimiento-pago') }}"><i class="far fa-circle fa-xs"></i> Gastos req. pago</a></li>
+        </ul>
     </li>
 
 </ul>
