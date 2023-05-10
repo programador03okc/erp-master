@@ -1783,6 +1783,8 @@ class RequerimientoPagoController extends Controller
             ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'requerimiento_pago_detalle.id_partida')
             ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'presup_par.id_presup')
             ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'requerimiento_pago_detalle.id_centro_costo')
+            ->leftJoin('finanzas.centro_costo as padre_centro_costo', 'padre_centro_costo.id_centro_costo', '=', 'centro_costo.id_padre')
+
             ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago.id_estado', '=', 'requerimiento_pago_estado.id_requerimiento_pago_estado')
 
             ->select(
@@ -1811,6 +1813,8 @@ class RequerimientoPagoController extends Controller
                 'presup_par.codigo as partida',
                 'presup_par.descripcion as descripcion_partida',
                 'presup_par.id_partida',
+                'padre_centro_costo.codigo as padre_centro_costo',
+                'padre_centro_costo.descripcion as padre_descripcion_centro_costo',
                 'centro_costo.codigo as centro_costo',
                 'centro_costo.descripcion as descripcion_centro_costo',
                 'centro_costo.id_centro_costo',

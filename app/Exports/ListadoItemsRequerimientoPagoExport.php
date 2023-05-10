@@ -60,6 +60,8 @@ class ListadoItemsRequerimientoPagoExport implements FromView,WithColumnFormatti
                     'descripcion_partida_presupuesto_interno'=> $value->descripcion_partida_presupuesto_interno,
                     'codigo_sub_partida_presupuesto_interno'=> $value->codigo_sub_partida_presupuesto_interno,
                     'descripcion_sub_partida_presupuesto_interno'=> $value->descripcion_sub_partida_presupuesto_interno,
+                    'padre_centro_costo'=> $value->padre_centro_costo,
+                    'padre_descripcion_centro_costo'=> $value->padre_descripcion_centro_costo,
                     'centro_costo'=> $value->centro_costo,
                     'codigo_oportunidad'=> str_replace("'", "", str_replace("", "" ,$value->codigo_oportunidad)),
                     'motivo'=> str_replace("'", "", str_replace("", "" ,$value->motivo)),

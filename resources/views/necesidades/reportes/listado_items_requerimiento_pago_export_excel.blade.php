@@ -8,8 +8,11 @@
             <th colspan="3" style="background-color:#cccccc;">Partida (ppto. anterior) </th>
             <th colspan="2" style="background-color:#cccccc;">Presupuesto interno</th>
             <th colspan="3" style="background-color:#cccccc;">Partida (ppto. interno) </th>
+            <th rowspan="2" style="background-color:#cccccc;">Cod. Padre Centro Costo</th>
+            <th rowspan="2" style="background-color:#cccccc;">Des. Padre Centro Costo</th>
             <th rowspan="2" style="background-color:#cccccc;">Cod.Centro costo</th>
             <th rowspan="2" style="background-color:#cccccc;">Des.Centro costo</th>
+            <th rowspan="2" style="background-color:#cccccc;">Proyecto</th>
             <th rowspan="2" style="background-color:#cccccc;"  width="30">Motivo</th>
             <th rowspan="2" style="background-color:#cccccc;"  width="80">Concepto</th>
             <th rowspan="2" style="background-color:#cccccc;">Item</th>
@@ -20,7 +23,6 @@
             <th rowspan="2" style="background-color:#cccccc;">Sede</th>
             <th rowspan="2" style="background-color:#cccccc;">Grupo</th>
             <th rowspan="2" style="background-color:#cccccc;">División</th>
-            <th rowspan="2" style="background-color:#cccccc;">Proyecto</th>
             <th rowspan="2" style="background-color:#cccccc;">Cantidad</th>
             <th rowspan="2" style="background-color:#cccccc;">Precio Unitario</th>
             <th rowspan="2" style="background-color:#cccccc;">Subtotal</th>
@@ -57,8 +59,11 @@
                     <td>{{ $item['descripcion_partida_presupuesto_interno'] }}</td>
                     <td>{{ $item['codigo_sub_partida_presupuesto_interno'] }}</td>
                     <td>{{ $item['descripcion_sub_partida_presupuesto_interno'] }}</td>
+                    <td>{{ $item['padre_centro_costo'] }}</td>
+                    <td>{{ $item['padre_descripcion_centro_costo'] }}</td>
                     <td>{{ $item['centro_costo'] }}</td>
                     <td>{{ $item['descripcion_centro_costo'] }}</td>
+                    <td>{{ $item['descripcion_proyecto'] }}</td>
                     <td>{{ $item['motivo'] }}</td>
                     <td>{{ $item['concepto'] }}</td>
                     <td>{{ $item['descripcion'] }}</td>
@@ -69,7 +74,6 @@
                     <td>{{ $item['sede'] }}</td>
                     <td>{{ $item['grupo'] }}</td>
                     <td>{{ $item['division'] }}</td>
-                    <td>{{ $item['descripcion_proyecto'] }}</td>
                     <td>{{ $item['cantidad'] }}</td>
                     <td>{{ $item['precio_unitario'] }}</td>
                     <td>{{ $item['subtotal'] }}</td>
