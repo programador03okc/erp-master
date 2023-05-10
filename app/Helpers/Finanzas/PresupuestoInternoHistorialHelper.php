@@ -12,7 +12,7 @@ class PresupuestoInternoHistorialHelper
     public static function actualizaReqLogisticoEstadoHistorial($idDetalleRequerimiento,$estado)
     {
         $detalleRequerimiento = DB::table('almacen.alm_det_req')->select('alm_req.id_presupuesto_interno',
-        'alm_det_req.partida','alm_req.id_requerimiento','alm_req.id_presupuesto_interno','alm_req.fecha_requerimiento',
+        'alm_det_req.id_partida_pi','alm_req.id_requerimiento','alm_req.id_presupuesto_interno','alm_req.fecha_requerimiento',
         'alm_det_req.id_detalle_requerimiento','alm_det_req.precio_unitario','alm_det_req.cantidad',
         'log_det_ord_compra.id_detalle_orden','log_det_ord_compra.id_orden_compra','log_det_ord_compra.precio')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
@@ -29,7 +29,7 @@ class PresupuestoInternoHistorialHelper
             if ($estado == 1){
                 $historial = new HistorialPresupuestoInternoSaldo();
                 $historial->id_presupuesto_interno = $detalleRequerimiento->id_presupuesto_interno;
-                $historial->id_partida = $detalleRequerimiento->partida;
+                $historial->id_partida = $detalleRequerimiento->id_partida_pi;
                 $historial->id_requerimiento = $detalleRequerimiento->id_requerimiento;
                 $historial->id_requerimiento_detalle = $detalleRequerimiento->id_detalle_requerimiento;
                 $historial->tipo = 'SALIDA';
