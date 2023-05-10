@@ -7,26 +7,28 @@
             <th colspan="2" style="background-color:#cccccc;">Presupuesto anterior</th>
             <th colspan="3" style="background-color:#cccccc;">Partida (ppto. anterior) </th>
             <th colspan="2" style="background-color:#cccccc;">Presupuesto interno</th>
-            <th colspan="3" style="background-color:#cccccc;">Partida (ppto, interno) </th>
+            <th colspan="3" style="background-color:#cccccc;">Partida (ppto. interno) </th>
             <th rowspan="2" style="background-color:#cccccc;">Cod. Padre Centro Costo</th>
             <th rowspan="2" style="background-color:#cccccc;">Des. Padre Centro Costo</th>
-            <th rowspan="2" style="background-color:#cccccc;">Cod.Centro Costo</th>
-            <th rowspan="2" style="background-color:#cccccc;">Des.Centro Costo</th>
+            <th rowspan="2" style="background-color:#cccccc;">Cod.Centro costo</th>
+            <th rowspan="2" style="background-color:#cccccc;">Des.Centro costo</th>
             <th rowspan="2" style="background-color:#cccccc;">Proyecto</th>
-            <th rowspan="2" style="background-color:#cccccc;" width="30">Motivo</th>
-            <th rowspan="2" style="background-color:#cccccc;" width="80">Concepto</th>
+            <th rowspan="2" style="background-color:#cccccc;"  width="30">Motivo</th>
+            <th rowspan="2" style="background-color:#cccccc;"  width="80">Concepto</th>
             <th rowspan="2" style="background-color:#cccccc;">Item</th>
+            <th rowspan="2" style="background-color:#cccccc;">Fecha Registro</th>
+            <th rowspan="2" style="background-color:#cccccc;">Hora Registro</th>
             <th rowspan="2" style="background-color:#cccccc;">Tipo Requerimiento</th>
             <th rowspan="2" style="background-color:#cccccc;">Empresa</th>
             <th rowspan="2" style="background-color:#cccccc;">Sede</th>
             <th rowspan="2" style="background-color:#cccccc;">Grupo</th>
             <th rowspan="2" style="background-color:#cccccc;">División</th>
-            <th colspan="4" style="background-color:#cccccc;">Totales Item Requerimiento</th>
-            <th rowspan="2" style="background-color:#cccccc;">Tipo Cambio</th>
-            <th rowspan="2" style="background-color:#cccccc;" width="80">Observación</th>
-            <th rowspan="2" style="background-color:#cccccc;">Fecha Emisión Req.</th>
-            <th rowspan="2" style="background-color:#cccccc;">Fecha Registro</th>
-            <th rowspan="2" style="background-color:#cccccc;">Hora Registro</th>
+            <th rowspan="2" style="background-color:#cccccc;">Cantidad</th>
+            <th rowspan="2" style="background-color:#cccccc;">Precio Unitario</th>
+            <th rowspan="2" style="background-color:#cccccc;">Subtotal</th>
+            <th rowspan="2" style="background-color:#cccccc;">Moneda</th>
+            <th rowspan="2" style="background-color:#cccccc;">subtotal soles (a tipo cambio)</th>
+            <th rowspan="2" style="background-color:#cccccc;"  width="80">Observación</th>
             <th rowspan="2" style="background-color:#cccccc;">Estado Requerimiento</th>
         </tr>
         <tr>
@@ -40,12 +42,6 @@
             <th style="background-color:#cccccc;" width="20">Partida</th>
             <th style="background-color:#cccccc;" width="10">Cod.sub Partida</th>
             <th style="background-color:#cccccc;" width="20">Des.sub Partida</th>
-
-            <th style="background-color:#cccccc;">Cantidad</th>
-            <th style="background-color:#cccccc;">Precio Unitario (Sin IGV)</th>
-            <th style="background-color:#cccccc;">Subtotal</th>
-            <th style="background-color:#cccccc;">Moneda</th>
-
         </tr>
     </thead>
     <tbody>
@@ -72,6 +68,8 @@
                     <td>{{ $item['motivo'] }}</td>
                     <td>{{ $item['concepto'] }}</td>
                     <td>{{ $item['descripcion'] }}</td>
+                    <td>{{ $item['fecha_registro'] }}</td>
+                    <td>{{ $item['hora_registro'] }}</td>
                     <td>{{ $item['tipo_requerimiento'] }}</td>
                     <td>{{ $item['empresa_razon_social'] }}</td>
                     <td>{{ $item['sede'] }}</td>
@@ -81,12 +79,10 @@
                     <td>{{ $item['precio_unitario'] }}</td>
                     <td>{{ $item['subtotal'] }}</td>
                     <td>{{ $item['simbolo_moneda'] }}</td>
-                    <td>{{ $item['tipo_cambio'] }}</td>
-                    <td>{{ $item['observacion'] }}</td>
-                    <td>{{ $item['fecha_requerimiento'] }}</td>
-                    <td>{{ $item['fecha_registro'] }}</td>
-                    <td>{{ $item['hora_registro'] }}</td>
+                    <td>{{ $item['subtotal_soles'] }}</td>
+                    <td>{{ $item['comentario'] }}</td>
                     <td>{{ $item['estado_requerimiento'] }}</td>
+
                 </tr>
         @endforeach
     </tbody>

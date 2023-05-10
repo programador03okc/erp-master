@@ -268,10 +268,6 @@ class RequerimientoController extends Controller
             ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
             ->leftJoin('finanzas.centro_costo as padre_centro_costo', 'padre_centro_costo.id_centro_costo', '=', 'centro_costo.id_padre')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
-            ->leftJoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
-            ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
-            ->leftJoin('configuracion.sis_moneda as moneda_orden', 'moneda_orden.id_moneda', '=', 'log_ord_compra.id_moneda')
- 
 
             ->select(
 
@@ -326,19 +322,6 @@ class RequerimientoController extends Controller
                 inner join finanzas.presupuesto_interno_modelo on presupuesto_interno_modelo.id_modelo_presupuesto_interno = presupuesto_interno_detalle.id_padre
                 WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_partida_presupuesto_interno"),
                 
-                'moneda_orden.simbolo as simbolo_moneda_orden',
-                'log_det_ord_compra.cantidad as cantidad_orden',
-                'log_det_ord_compra.precio as precio_orden',
-                DB::raw("(SELECT log_det_ord_compra.subtotal  
-                FROM logistica.log_ord_compra
-                WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra 
-                and log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento limit 1) AS subtotal_orden"),
-                DB::raw("(SELECT CASE WHEN 
-                log_ord_compra.incluye_igv =true THEN (log_det_ord_compra.subtotal * 1.18 ) ELSE log_det_ord_compra.subtotal END  
-                FROM logistica.log_ord_compra
-                WHERE log_det_ord_compra.id_orden_compra = log_ord_compra.id_orden_compra 
-                and log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento limit 1) AS subtotal_orden_considera_igv"),
-
                 'alm_req.fecha_requerimiento',
                 DB::raw("(SELECT cont_tp_cambio.venta  
                 FROM contabilidad.cont_tp_cambio
