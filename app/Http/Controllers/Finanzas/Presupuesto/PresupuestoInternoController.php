@@ -1573,25 +1573,21 @@ class PresupuestoInternoController extends Controller
 
     public function presupuestoEjecutadoExcel(Request $request){
 
-        // $numero_1 = floatval(str_replace(",", "", "1,111,111.02"));
-        // $numero_2 = 2222.03;
-        // return response()->json([
-        //     "numero_1"=>$numero_1,
-        //     "numero_2"=>$numero_2,
-        //     "total"=>($numero_1+$numero_2),
-        // ],200);exit;
-
         $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$request->id)
         ->whereNotNull('id_requerimiento')
         ->orderBy('id','ASC')
         ->get();
+
         foreach($historial_saldo as $key => $value) {
             $requerimiento=array();
             $requerimiento = Orden::find($value->id_orden);
             $requerimiento_detalle = OrdenCompraDetalle::where('id_detalle_orden',$value->id_orden_detalle)->get();
+            $value->cuadro = 1;
             if (!$requerimiento) {
+
                 $requerimiento = RequerimientoPago::find($value->id_requerimiento);
                 $requerimiento_detalle = RequerimientoPagoDetalle::where('id_requerimiento_pago_detalle',$value->id_requerimiento_detalle)->get();
+                $value->cuadro = 2;
             }
             $value->cabecera = $requerimiento;
             $value->detalle = $requerimiento_detalle;
