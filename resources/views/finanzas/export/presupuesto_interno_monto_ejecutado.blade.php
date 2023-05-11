@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <style>
-        .text-center-booton{
-            vertical-align: text-bottom ;
-            text-align: center;
-        }
-    </style>
     <h2>Reporte de Presupuesto de Interno </h2>
     <br>
     <br>
