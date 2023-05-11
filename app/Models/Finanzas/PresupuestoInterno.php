@@ -618,4 +618,5 @@ class PresupuestoInterno extends Model
         }
         return $total;
     }
+
 }

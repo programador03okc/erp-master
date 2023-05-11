@@ -530,13 +530,14 @@ class ScriptController extends Controller
 
         // $ejecucion = $this->presupuestoEjecutadoMonto($meses_numero,$id_presupuesto_interno);
         $ejecucion = PresupuestoInterno::totalEjecutatoMonto($meses_numero,$id_presupuesto_interno);
-        return $ejecucion;exit;
+        // return $ejecucion;exit;
 
 
         foreach ($saldo as $key => $value) {
             $detalle_presupuesto_interno = PresupuestoInternoDetalle::find($value->id_partida);
             $index = array_search($detalle_presupuesto_interno->partida, array_column($total_presupuesto_interno, 'partida'));
 
+            return [$detalle_presupuesto_interno->float_enero,$detalle_presupuesto_interno->enero];exit;
             if ($total_presupuesto_interno[$index]['total'] > $value->importe) {
 
                 if ($value->operacion==='R') {
