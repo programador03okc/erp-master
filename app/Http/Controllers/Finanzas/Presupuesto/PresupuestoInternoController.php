@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Finanzas\Presupuesto;
 
+use App\Exports\PresupuestoInternoEjecutadoExport;
 use App\Exports\PresupuestoInternoExport;
 use App\Helpers\ConfiguracionHelper;
 use App\Helpers\StringHelper;
@@ -31,6 +32,8 @@ use Yajra\DataTables\Facades\DataTables;
 use App\models\Configuracion\AccesosUsuarios;
 use App\models\Configuracion\UsuarioGrupo;
 use App\Models\Finanzas\PresupuestoInternoDetalleHistorial;
+use App\Models\Logistica\OrdenCompraDetalle;
+use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use Illuminate\Support\Facades\Auth;
 use Debugbar;
 
@@ -66,13 +69,15 @@ class PresupuestoInternoController extends Controller
         return DataTables::of($data)
         ->addColumn('total', function ($data){
             $total = ($data->gastos=='3'?PresupuestoInterno::calcularTotalPresupuestoAnual($data->id_presupuesto_interno,3):0);
-
             return floatval(str_replace(",", "", $total));
         })
         ->addColumn('total_ejecutado', function ($data){
             $total_ejecutado = 0;
             if ($data->estado==2) {
                 $total_ejecutado = PresupuestoInterno::presupuestoEjecutado($data->id_presupuesto_interno,3);
+
+                $meses_numero = date('m');
+                $total_ejecutado =  PresupuestoInterno::totalEjecutatoMonto($meses_numero,$data->id_presupuesto_interno);
             }
             return floatval(str_replace(",", "", round($total_ejecutado, 2)));
         })
@@ -432,6 +437,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['enero']));
                         $historial->mes = '01';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -441,6 +447,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['febrero']));
                         $historial->mes = '02';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -450,6 +457,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['marzo']));
                         $historial->mes = '03';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -459,6 +467,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['abril']));
                         $historial->mes = '04';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -468,6 +477,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['mayo']));
                         $historial->mes = '05';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -477,6 +487,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['junio']));
                         $historial->mes = '06';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -486,6 +497,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['julio']));
                         $historial->mes = '07';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -495,6 +507,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['agosto']));
                         $historial->mes = '08';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -504,6 +517,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['setiembre']));
                         $historial->mes = '09';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -513,6 +527,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['octubre']));
                         $historial->mes = '10';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -522,6 +537,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['noviembre']));
                         $historial->mes = '11';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
                     $historial = new HistorialPresupuestoInternoSaldo();
@@ -531,6 +547,7 @@ class PresupuestoInternoController extends Controller
                         $historial->importe = floatval(str_replace(",", "", $value['diciembre']));
                         $historial->mes = '12';
                         $historial->fecha_registro = date('Y-m-d H:i:s');
+                        $historial->operacion = 'S';
                         $historial->estado = 3;
                     $historial->save();
 
@@ -1182,12 +1199,7 @@ class PresupuestoInternoController extends Controller
         $array_presupuesto['gastos']=$gastos;
 
         return Excel::download(new PresupuestoInternoExport($data, $array_presupuesto), 'presupuesto_interno.xlsx');
-        // return response()->json([
-        //     "success"=>true,
-        //     "status"=>200,
-        //     "data"=>$data,
-        //     "presupuesto"=>$array_presupuesto
-        // ]);
+
     }
     public function aprobar(Request $request)
     {
@@ -1439,7 +1451,7 @@ class PresupuestoInternoController extends Controller
                     if ($item->id_detalle_requerimiento > 0) {
                         $detalleRequerimiento = DetalleRequerimiento::find($item->id_detalle_requerimiento);
                         $requerimiento = Requerimiento::find($detalleRequerimiento->id_requerimiento);
-                        
+
                         $mes = intval(date('m', strtotime($requerimiento->fecha_registro)));
                         $nombreMes = $mesLista[$mes];
                         $nombreMesAux = $nombreMes . '_aux';
@@ -1557,6 +1569,31 @@ class PresupuestoInternoController extends Controller
     public function actualizaEstadoHistorial($idDetalleRequerimiento,$estado){
         $historial = PresupuestoInternoHistorialHelper::actualizaEstadoHistorial($idDetalleRequerimiento,$estado);
         return $historial;
-    } 
+    }
+
+    public function presupuestoEjecutadoExcel(Request $request){
+        $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',31)
+        ->whereNotNull('id_requerimiento')
+        ->orderBy('id','ASC')
+        ->get();
+        foreach($historial_saldo as $key => $value) {
+            $requerimiento=array();
+            $requerimiento = Orden::find($value->id_orden);
+            $requerimiento_detalle = OrdenCompraDetalle::where('id_detalle_orden',$value->id_orden_detalle)->get();
+            if (!$requerimiento) {
+                $requerimiento = RequerimientoPago::find($value->id_requerimiento);
+                $requerimiento_detalle = RequerimientoPagoDetalle::where('id_requerimiento_pago_detalle',$value->id_requerimiento_detalle)->get();
+            }
+            $value->cabecera = $requerimiento;
+            $value->detalle = $requerimiento_detalle;
+
+            // $value->partida =
+        }
+
+        return response()->json($historial_saldo,200);
+        return Excel::download(new PresupuestoInternoEjecutadoExport($historial_saldo), 'presupuesto_interno_monto_ejecutado.xlsx');
+
+        return response()->json($historial_saldo,200);
+    }
 
 }

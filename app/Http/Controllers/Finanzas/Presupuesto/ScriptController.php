@@ -494,6 +494,8 @@ class ScriptController extends Controller
     }
     public function totalEjecutado()
     {
+        // $valor= PresupuestoInterno::calcularColumnaAuxMensual(31,3,);
+        // return ;exit;
         $presupuesto_interno_aprobado = PresupuestoInterno::where('estado',2)->get();
         $array_total=array();
         foreach ($presupuesto_interno_aprobado as $key => $value) {
@@ -509,4 +511,89 @@ class ScriptController extends Controller
 
         return response()->json($array_total,200);
     }
+
+    public function montosRegular()
+    {
+        $meses_numero='04';
+        $id_presupuesto_interno=31;
+        $excluir = array(); //almacenare los id que tengan como monto mayor 0 y no se pueda restar para mantenerlos intacto
+
+        $total_presupuesto_interno = $this->primerosMeses($id_presupuesto_interno,intval($meses_numero));
+        $array_total = $total_presupuesto_interno;
+
+
+
+        $saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$id_presupuesto_interno)
+        // ->whereNotNull('id_requerimiento')
+        ->orderBy('id','ASC')
+        ->get();
+
+        // $ejecucion = $this->presupuestoEjecutadoMonto($meses_numero,$id_presupuesto_interno);
+        $ejecucion = PresupuestoInterno::totalEjecutatoMonto($meses_numero,$id_presupuesto_interno);
+        return $ejecucion;exit;
+
+
+        foreach ($saldo as $key => $value) {
+            $detalle_presupuesto_interno = PresupuestoInternoDetalle::find($value->id_partida);
+            $index = array_search($detalle_presupuesto_interno->partida, array_column($total_presupuesto_interno, 'partida'));
+
+            if ($total_presupuesto_interno[$index]['total'] > $value->importe) {
+
+                if ($value->operacion==='R') {
+                    $total_presupuesto_interno[$index]['total'] = floatval($total_presupuesto_interno[$index]['total']) - floatval($value->importe);
+                }
+                if ($value->operacion==='S'){
+                    $total_presupuesto_interno[$index]['total'] = floatval($total_presupuesto_interno[$index]['total']) + floatval($value->importe);
+                }
+
+            }else{
+                array_push($excluir,$value->id_partida);
+            }
+
+
+        }
+
+        foreach ($total_presupuesto_interno as $key => $value) {
+            $detalle = PresupuestoInternoDetalle::find($value['id']);
+            $detalle->enero_aux = 0;
+            $detalle->febrero_aux = 0;
+            $detalle->marzo_aux = 0;
+            $detalle->abril_aux = $value['total'];
+            $detalle->save();
+        }
+        return [
+            "id_partidas"=>$excluir,
+            // "index"=>$total_presupuesto_interno[$index],
+            "historial_saldo"=>$saldo,
+            // "ppti"=>$detalle_presupuesto_interno,
+            "saldos"=>$total_presupuesto_interno,
+            "suma_meses"=>$array_total
+        ];exit;
+
+        return response()->json($saldo,200);
+    }
+    public function primerosMeses($id_presupuesto_interno, $meses_numero)
+    {
+        $total_presupuesto_interno=array();
+        $excluir = array();
+        for ($i=1; $i <= $meses_numero ; $i++) {
+            if ($i===1) {
+                $total_presupuesto_interno = PresupuestoInterno::obtenerPresupuestoFilasMesRegistro($id_presupuesto_interno,3,$i);
+            }else
+            {
+                $presupuesto_interno_mensual = PresupuestoInterno::obtenerPresupuestoFilasMesRegistro($id_presupuesto_interno,3,$i);
+
+                foreach ($presupuesto_interno_mensual as $key => $value) {
+                    $index = array_search($value['partida'], array_column($total_presupuesto_interno, 'partida'));
+
+                    $total_presupuesto_interno[$index]['total'] = round(($total_presupuesto_interno[$index]['total'] + $value['total']), 2);
+                }
+            }
+        }
+
+
+        return $total_presupuesto_interno;
+    }
+
+
 }

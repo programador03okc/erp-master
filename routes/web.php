@@ -2088,6 +2088,9 @@ Route::group(['middleware' => ['auth']], function () {
                 // exportable de presupiesto interno
                 Route::post('get-presupuesto-interno', 'Finanzas\Presupuesto\PresupuestoInternoController@getPresupuestoInterno');
 
+                //exportable de excel total ejecutado
+                Route::post('presupuesto-ejecutado-excel', 'Finanzas\Presupuesto\PresupuestoInternoController@presupuestoEjecutadoExcel');
+
                 Route::post('aprobar', 'Finanzas\Presupuesto\PresupuestoInternoController@aprobar');
                 Route::post('editar-monto-partida', 'Finanzas\Presupuesto\PresupuestoInternoController@editarMontoPartida');
                 // buscar partidas
@@ -2100,6 +2103,7 @@ Route::group(['middleware' => ['auth']], function () {
                     Route::get('homologacion-partidas', 'Finanzas\Presupuesto\ScriptController@homologarPartida');
                     Route::get('total-presupuesto', 'Finanzas\Presupuesto\ScriptController@totalPresupuesto');
                     Route::get('total-ejecutado', 'Finanzas\Presupuesto\ScriptController@totalEjecutado');
+                    Route::get('regularizar-montos', 'Finanzas\Presupuesto\ScriptController@montosRegular');
                 });
 				Route::get('actualizaEstadoHistorial/{id}/{est}', 'Finanzas\Presupuesto\PresupuestoInternoController@actualizaEstadoHistorial');
             });

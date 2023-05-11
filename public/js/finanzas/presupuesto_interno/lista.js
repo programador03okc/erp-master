@@ -73,7 +73,13 @@ function lista() {
             {data: 'estadopi', name:"estadopi" , class:"text-center"},
             {data: 'sede', name:"sede" , class:"text-center"},
             {data: 'total', name:"total" , class:"text-center"},
-            {data: 'total_ejecutado', name:"total_ejecutado" , class:"text-center"},
+            {
+                class:"text-center",
+                render: function (data, type, row) {
+                    return '<a href="#" data-action="exportar-ejecutado" data-id="'+row['id_presupuesto_interno']+'">'+row['total_ejecutado']+'</a>';
+                }
+            },
+            // {data: 'total_ejecutado', name:"total_ejecutado" , class:"text-center"},
             // {
             //     render: function (data, type, row) {
             //         var estado = row['estado'],
@@ -369,4 +375,15 @@ function cierreMesual() {
     //     console.log(textStatus);
     //     console.log(errorThrown);
     // });
- }
+}
+$(document).on('click','[data-action="exportar-ejecutado"]',function (e) {
+    e.preventDefault();
+    let id = $(this).attr('data-id'),
+        token = $('meta[name="csrf-token"]').attr('content'),
+        form = $('<form action="presupuesto-ejecutado-excel" method="POST" target="_blank">'+
+            '<input type="hidden" name="_token" value="'+token+'">'+
+            '<input type="hidden" name="id" value="'+id+'">'+
+        '</form>');
+        $('body').append(form);
+    form.submit();
+});

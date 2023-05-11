@@ -2,6 +2,7 @@
 
 namespace App\Models\Finanzas;
 
+use App\Helpers\ConfiguracionHelper;
 use App\Models\administracion\AdmGrupo;
 use App\Models\Administracion\Periodo;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -72,6 +73,38 @@ class PresupuestoInterno extends Model
         }
         foreach ($presupuesto_interno_destalle as $key => $value) {
             array_push($array_nivel_partida,array(
+                "id"=>$value->id_presupuesto_interno_detalle,
+                "partida"=>$value->partida,
+                "descripcion"=>$value->descripcion,
+                "total"=>floatval(str_replace(",", "", $value[$nombreMes])),
+            ));
+        }
+
+        return $array_nivel_partida;
+
+    }
+    // obtener el total en filas de un mes registro numero 2
+    public static function obtenerPresupuestoFilasMesRegistro($id_presupuesto_interno, $id_tipo_presupuesto ,$mes=0){
+        $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)
+        ->where('id_tipo_presupuesto',$id_tipo_presupuesto)
+        ->where('estado', 1)
+        ->where('registro', 2)
+        ->orderBy('partida')->get();
+
+        $array_nivel_partida = array();
+        $mesLista = ['1'=>'enero','2'=>'febrero','3'=>'marzo','4'=>'abril','5'=>'mayo','6'=>'junio','7'=>'julio','8'=>'agosto','9'=>'setiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
+
+        if($mes > 0){
+            $nombreMes= $mesLista[$mes];
+        }else{
+            $fechaHoy = date("Y-m-d");
+            $mes = intval(date('m', strtotime($fechaHoy)));
+            $nombreMes= $mesLista[$mes];
+
+        }
+        foreach ($presupuesto_interno_destalle as $key => $value) {
+            array_push($array_nivel_partida,array(
+                "id"=>$value->id_presupuesto_interno_detalle,
                 "partida"=>$value->partida,
                 "descripcion"=>$value->descripcion,
                 "total"=>floatval(str_replace(",", "", $value[$nombreMes])),
@@ -555,8 +588,34 @@ class PresupuestoInterno extends Model
         }
         $presupuesto_total = PresupuestoInterno::calcularTotalPresupuestoAnual($id_presupuesto_interno, $id_tipo_presupuesto);
         $total_ejecutado = $presupuesto_total - $total_ejecutado;
+        // $total_ejecutado = $total_ejecutado;
         return $total_ejecutado;
 
         // return 'ejecutado';
+    }
+    public static function totalEjecutatoMonto($mes, $id_presupuesto_interno)
+    {
+        $mes = intval($mes);
+
+        $total = 0;
+
+        for ($i=1; $i <= $mes ; $i++) {
+            $saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$id_presupuesto_interno)
+            ->where('mes',ConfiguracionHelper::leftZero(2,$i))
+            ->whereNotNull('id_requerimiento')
+            ->orderBy('id','ASC')
+            ->get();
+
+            if (sizeof($saldo)>0) {
+                foreach ($saldo as $key => $value) {
+
+                    if ($value->operacion==='R') {
+                        $total = $total + floatval($value->importe);
+                    }
+                }
+            }
+
+        }
+        return $total;
     }
 }
