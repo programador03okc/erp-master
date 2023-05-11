@@ -1572,7 +1572,7 @@ class PresupuestoInternoController extends Controller
     }
 
     public function presupuestoEjecutadoExcel(Request $request){
-        $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',31)
+        $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$request->id)
         ->whereNotNull('id_requerimiento')
         ->orderBy('id','ASC')
         ->get();
@@ -1587,13 +1587,38 @@ class PresupuestoInternoController extends Controller
             $value->cabecera = $requerimiento;
             $value->detalle = $requerimiento_detalle;
 
-            // $value->partida =
+            $partida_detalle = PresupuestoInternoDetalle::find($value->id_partida);
+            $value->partida = $partida_detalle->partida;
+            $value->partida_descripcion = $partida_detalle->descripcion;
+
+            $tipo='';
+            switch ($partida_detalle->id_tipo_presupuesto) {
+                case 1:
+                    $tipo='INGRESOS';
+                break;
+
+                case 2:
+                    $tipo='COSTOS';
+                break;
+                case 3:
+                    $tipo='GASTOS';
+                break;
+            }
+            $value->tipo = $tipo;
+
+            $presupuesto_interno = PresupuestoInterno::find($value->id_presupuesto_interno);
+            $value->codigo_ppt = $presupuesto_interno->codigo;
+            $value->codigo_nombre = $presupuesto_interno->descripcion;
+
+            $partid_padre = PresupuestoInternoDetalle::where('id_hijo',$partida_detalle->id_padre)->where('id_presupuesto_interno',$value->id_presupuesto_interno)->first();
+            $value->partida_padre = $partid_padre->partida;
+            $value->partida_padre_descripcion = $partid_padre->descripcion;
         }
 
-        return response()->json($historial_saldo,200);
+        // return response()->json($historial_saldo,200);
         return Excel::download(new PresupuestoInternoEjecutadoExport($historial_saldo), 'presupuesto_interno_monto_ejecutado.xlsx');
 
-        return response()->json($historial_saldo,200);
+        // return response()->json($historial_saldo,200);
     }
 
 }
