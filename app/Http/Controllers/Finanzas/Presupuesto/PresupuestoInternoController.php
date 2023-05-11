@@ -1572,6 +1572,15 @@ class PresupuestoInternoController extends Controller
     }
 
     public function presupuestoEjecutadoExcel(Request $request){
+
+        // $numero_1 = floatval(str_replace(",", "", "1,111,111.02"));
+        // $numero_2 = 2222.03;
+        // return response()->json([
+        //     "numero_1"=>$numero_1,
+        //     "numero_2"=>$numero_2,
+        //     "total"=>($numero_1+$numero_2),
+        // ],200);exit;
+
         $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$request->id)
         ->whereNotNull('id_requerimiento')
         ->orderBy('id','ASC')
