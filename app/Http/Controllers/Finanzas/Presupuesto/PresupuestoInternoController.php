@@ -1567,7 +1567,7 @@ class PresupuestoInternoController extends Controller
     }
 
     public function actualizaEstadoHistorial($idDetalleRequerimiento,$estado){
-        $historial = PresupuestoInternoHistorialHelper::actualizaEstadoHistorial($idDetalleRequerimiento,$estado);
+        $historial = PresupuestoInternoHistorialHelper::actualizaReqLogisticoEstadoHistorial($idDetalleRequerimiento,$estado);
         return $historial;
     }
 

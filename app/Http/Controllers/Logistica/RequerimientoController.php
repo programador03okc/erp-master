@@ -266,6 +266,7 @@ class RequerimientoController extends Controller
             ->leftJoin('finanzas.presup', 'presup.id_presup', '=', 'presup_par.id_presup')
 
             ->leftJoin('finanzas.centro_costo', 'centro_costo.id_centro_costo', '=', 'alm_det_req.centro_costo_id')
+            ->leftJoin('finanzas.centro_costo as padre_centro_costo', 'padre_centro_costo.id_centro_costo', '=', 'centro_costo.id_padre')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
 
             ->select(
@@ -296,6 +297,8 @@ class RequerimientoController extends Controller
                 'presup_par.descripcion as descripcion_partida',
                 'presup_par.codigo as partida',
                 'presup_par.id_partida',
+                'padre_centro_costo.codigo as padre_centro_costo',
+                'padre_centro_costo.descripcion as padre_descripcion_centro_costo',
                 'centro_costo.descripcion as descripcion_centro_costo',
                 'centro_costo.codigo as centro_costo',
                 'centro_costo.id_centro_costo',
@@ -317,8 +320,13 @@ class RequerimientoController extends Controller
                 DB::raw("(SELECT presupuesto_interno_modelo.descripcion
                 FROM finanzas.presupuesto_interno_detalle
                 inner join finanzas.presupuesto_interno_modelo on presupuesto_interno_modelo.id_modelo_presupuesto_interno = presupuesto_interno_detalle.id_padre
-                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_partida_presupuesto_interno")
-
+                WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_partida_presupuesto_interno"),
+                
+                'alm_req.fecha_requerimiento',
+                DB::raw("(SELECT cont_tp_cambio.venta  
+                FROM contabilidad.cont_tp_cambio
+                WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(alm_req.fecha_requerimiento,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+                
             )
             ->when(($meOrAll === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;

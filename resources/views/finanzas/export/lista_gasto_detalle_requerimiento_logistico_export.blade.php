@@ -22,6 +22,7 @@
             <th rowspan="2" style="background-color:#cccccc;">Grupo</th>
             <th rowspan="2" style="background-color:#cccccc;">División</th>
             <th colspan="4" style="background-color:#cccccc;">Totales Item Requerimiento</th>
+            <th colspan="5" style="background-color:#cccccc;">Totales Item Orden</th>
             <th rowspan="2" style="background-color:#cccccc;">Tipo Cambio</th>
             <th rowspan="2" style="background-color:#cccccc;" width="80">Observación</th>
             <th rowspan="2" style="background-color:#cccccc;">Fecha Emisión Req.</th>
@@ -45,6 +46,13 @@
             <th style="background-color:#cccccc;">Precio Unitario (Sin IGV)</th>
             <th style="background-color:#cccccc;">Subtotal</th>
             <th style="background-color:#cccccc;">Moneda</th>
+
+
+            <th style="background-color:#cccccc;">Cantidad</th>
+            <th style="background-color:#cccccc;">Precio Unitario (sin IGV)</th>
+            <th style="background-color:#cccccc;">Subtotal</th>
+            <th style="background-color:#cccccc;">Moneda</th>
+            <th style="background-color:#cccccc;">Subtotal (considera IGV)</th>
 
         </tr>
     </thead>
@@ -81,6 +89,11 @@
                     <td>{{ $item['precio_unitario'] }}</td>
                     <td>{{ $item['subtotal'] }}</td>
                     <td>{{ $item['simbolo_moneda'] }}</td>
+                    <td>{{ $item['cantidad_orden'] }}</td>
+                    <td>{{ $item['precio_orden'] }}</td>
+                    <td>{{ $item['subtotal_orden'] }}</td>
+                    <td>{{ $item['simbolo_moneda_orden'] }}</td>
+                    <td>{{ $item['subtotal_orden_considera_igv'] }}</td>
                     <td>{{ $item['tipo_cambio'] }}</td>
                     <td>{{ $item['observacion'] }}</td>
                     <td>{{ $item['fecha_requerimiento'] }}</td>

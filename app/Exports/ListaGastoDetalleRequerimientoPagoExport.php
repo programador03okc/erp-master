@@ -2,47 +2,29 @@
 
 namespace App\Exports;
 
+use App\Http\Controllers\Finanzas\Reportes\ReporteGastoController;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 use Illuminate\Contracts\View\View;
-use App\Http\Controllers\Tesoreria\RequerimientoPagoController;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-class ListadoItemsRequerimientoPagoExport implements FromView,WithColumnFormatting, WithStyles
+
+class ListaGastoDetalleRequerimientoPagoExport implements FromView,WithColumnFormatting, WithStyles
 {
     /**
     * @return \Illuminate\Support\Collection
     */
-    // public function collection()
-    // {
-    //     //
-    // }
-    public function __construct(string $meOrAll, string $idEmpresa,string $idSede,string $idGrupo,string $idDivision, string $fechaRegistroDesde, string $fechaRegistroHasta, string $idEstado)
+
+    public function __construct()
     {
-        $this->meOrAll = $meOrAll;
-        $this->idEmpresa = $idEmpresa;
-        $this->idSede = $idSede;
-        $this->idGrupo = $idGrupo;
-        $this->idDivision = $idDivision;
-        $this->fechaRegistroDesde = $fechaRegistroDesde;
-        $this->fechaRegistroHasta = $fechaRegistroHasta;
-        $this->idEstado = $idEstado;
+
     }
     public function view(): View{
-        $meOrAll= $this->meOrAll;
-        $idEmpresa= $this->idEmpresa;
-        $idSede = $this->idSede;
-        $idGrupo = $this->idGrupo;
-        $idDivision = $this->idDivision;
-        $fechaRegistroDesde = $this->fechaRegistroDesde;
-        $fechaRegistroHasta = $this->fechaRegistroHasta;
-        $idEstado = $this->idEstado;
-
         $data=[];
-            $requerimientosDetalle = (new RequerimientoPagoController)->obtenerItemsRequerimientoPagoElaborados($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado);   
+            $requerimientosDetalle = (new ReporteGastoController)->dataGastoDetalleRequerimientoPago();   
 
             foreach ($requerimientosDetalle as $key => $value) {
 
@@ -68,6 +50,7 @@ class ListadoItemsRequerimientoPagoExport implements FromView,WithColumnFormatti
                     'concepto'=> str_replace("'", "", str_replace("", "" ,$value->concepto)),
                     'descripcion'=>  str_replace("'", "", str_replace("", "" ,$value->descripcion)),
                     'fecha_registro'=> date('d/m/Y', strtotime($value->fecha_registro)),
+                    'tipo_cambio'=> $value->tipo_cambio,
                     'hora_registro'=> date('H:i:s', strtotime($value->fecha_registro)),
                     'tipo_requerimiento'=> $value->tipo_requerimiento,
                     'empresa_razon_social'=> $value->empresa_razon_social,
@@ -79,21 +62,22 @@ class ListadoItemsRequerimientoPagoExport implements FromView,WithColumnFormatti
                     'cantidad'=> $value->cantidad,
                     'precio_unitario'=> $value->precio_unitario,
                     'subtotal'=> $value->subtotal,
+                    'subtotal_soles'=> $value->subtotal_soles,
                     'estado_requerimiento'=> $value->estado_requerimiento,
                     'comentario'=> str_replace("'", "", str_replace("", "" ,$value->comentario))
                 ];
             }
 
 
-        return view('necesidades.reportes.listado_items_requerimiento_pago_export_excel', [
+        return view('finanzas.export.lista_gasto_detalle_requerimiento_pago_export', [
             'items'        =>  $data
         ]);
     }
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('Q3:Q'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
-        $sheet->getStyle('AE3:AE'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
+        $sheet->getStyle('U3:U'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
+        $sheet->getStyle('AG3:AG'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
         $sheet->getStyle('A:AF')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
         return [
             1    => ['font' => ['bold' => true] ],
@@ -105,9 +89,9 @@ class ListadoItemsRequerimientoPagoExport implements FromView,WithColumnFormatti
     public function columnFormats(): array
     {
         return [
-            'AA' => NumberFormat::FORMAT_NUMBER,
-            'AB' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            'AC' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1
+            'AC' => NumberFormat::FORMAT_NUMBER,
+            'AD' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'AE' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1
         ];
     }
 }
