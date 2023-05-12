@@ -1231,13 +1231,7 @@ class PresupuestoInternoController extends Controller
             $q->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado','!=',7]])->orderBy('partida','asc');
         }])->where([['id_presupuesto_interno',$idPresupuestoIterno],['estado',2]])->get();
 
-        $totalFilas = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,3); // para requerimiento enviar 3= gastos
-        $detalleRequerimiento = PresupuestoInterno::calcularConsumidoPresupuestoFilas($idPresupuestoIterno,3); // para requerimiento enviar 3= gastos
-
-        $numero_mes = date("m");
-        $nombre_mes = $this->mes($numero_mes);
-
-        // inicializar 
+        // agregar campo totales e inicializar en 0
         foreach ($presupuestoInterno as $key => $Presup) {
             foreach ($Presup['detalle'] as $keyd => $detPresup) {
                 $detPresup['total_presupuesto_año'] = 0;
@@ -1248,6 +1242,13 @@ class PresupuestoInternoController extends Controller
                 
             }
         }
+
+        $totalFilas = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,3); // para requerimiento enviar 3= gastos
+        $detalleRequerimiento = PresupuestoInterno::calcularConsumidoPresupuestoFilas($idPresupuestoIterno,3); // para requerimiento enviar 3= gastos
+
+        $numero_mes = date("m");
+        $nombre_mes = $this->mes($numero_mes);
+
         
         // llenar totales
         foreach ($presupuestoInterno as $key => $Presup) {
@@ -1255,12 +1256,12 @@ class PresupuestoInternoController extends Controller
 
             if($detPresup['registro'] ==1){
 
- 
-                $detPresup['total_presupuesto_año'] = $this->obtenerTotalPrespuestoAñoDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
+
+                $detPresup['total_presupuesto_año'] = $this->obtenerTotalPrespuestoAñoDelPadrePartida($idPresupuestoIterno,3,$presupuestoInterno,$detPresup['id_hijo']);
                 $detPresup['total_presupuesto_mes'] = $this->obtenerTotalPrespuestoMesDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
                 $detPresup['total_consumido_mes'] =   $this->obtenerConsumidoPrespuestoMesDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
                 $detPresup['total_saldo_mes'] =   $this->obtenerSaldoPrespuestoMesDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
-                $detPresup['total_saldo_año'] =   $this->obtenerSaldoPrespuestoAñoDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
+                $detPresup['total_saldo_año'] =   $this->obtenerSaldoPrespuestoAñoDelPadrePartida($idPresupuestoIterno,3,$presupuestoInterno,$detPresup['id_hijo']);
 
             }
                 
@@ -1303,56 +1304,28 @@ class PresupuestoInternoController extends Controller
             }
         }
 
-
- 
-    
-        //  completar monto consumido;
-        // foreach ($presupuestoInterno as $key => $Presup) {
-        //     foreach ($Presup['detalle'] as $key => $detPresup) {
-        //         foreach ($detalleRequerimiento as $key => $detalleReq) {
-        //             if($detalleReq['partida'] == $detPresup['partida'] ){
-        //                 $detPresup['monto_consumido'] += $detalleReq['subtotal'];
-        //             }
-        //         }
-        //     }
-        // }
-
-        //  completar monto saldo;
-        // foreach ($presupuestoInterno as $key => $Presup) {
-        //     foreach ($Presup['detalle'] as $key => $detPresup) {
-        //         $detPresup['monto_saldo'] = (floatval($detPresup['total_presupuesto_año']) - floatval($detPresup['monto_consumido']));
-        //         }
-        // }
-
-
-
         return $presupuestoInterno;
     }
 
-    public function obtenerTotalPrespuestoAñoDelPadrePartida($presupuestoInterno, $idHijo){
+    public function obtenerTotalPrespuestoAñoDelPadrePartida($idPresupuestoIterno,$tipo,$presupuestoInterno, $idHijo){
+
+        $totalPresupuestoFilaList = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,$tipo);
         $totalPresupuestoAño=0;
-        foreach ($presupuestoInterno as $key => $Presup) {
-            foreach ($Presup['detalle'] as $keyd => $detPresup) {
+
+        foreach ($presupuestoInterno as $keyPi => $Presup) {
+            foreach ($Presup['detalle'] as $keyD => $detPresup) {
                 if($detPresup['id_padre'] == $idHijo){
-                $totalPresupuestoAño  +=               
-                floatval(preg_replace("/[^-0-9\.]/","",$detPresup['enero']))
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['febrero'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['marzo'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['abril'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['mayo'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['junio'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['julio'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['agosto'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['setiembre'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['octubre'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['noviembre'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['diciembre'])); 
- 
+
+                    foreach ($totalPresupuestoFilaList as $keyTf => $fila) {
+                        if($fila['partida'] == $detPresup['partida']){
+                            $totalPresupuestoAño+= $fila['total'];
+                        }
+                    }
 
                 }
             }
         }
-
+        
         return $totalPresupuestoAño;
     }
 
@@ -1403,27 +1376,23 @@ class PresupuestoInternoController extends Controller
         }
         return ( $totalSaldoMes);
     }
-    public function obtenerSaldoPrespuestoAñoDelPadrePartida($presupuestoInterno, $idHijo){
+    public function obtenerSaldoPrespuestoAñoDelPadrePartida($idPresupuestoIterno,$tipo,$presupuestoInterno, $idHijo){
+
+        $totalPresupuestoFilaList = PresupuestoInterno::calcularTotalPresupuestoFilas($idPresupuestoIterno,$tipo,2);
+
         $totalSaldoAño=0;
         foreach ($presupuestoInterno as $key => $Presup) {
             foreach ($Presup['detalle'] as $keyd => $detPresup) {
-                if($detPresup['id_padre'] == $idHijo){
-                    $totalSaldoAño  += floatval(preg_replace("/[^-0-9\.]/","",$detPresup['enero_aux']))
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['febrero_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['marzo_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['abril_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['mayo_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['junio_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['julio_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['agosto_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['setiembre_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['octubre_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['noviembre_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['diciembre_aux'])); 
+                if($detPresup['id_padre'] == $idHijo){                    
+                    foreach ($totalPresupuestoFilaList as $keyTf => $fila) {
+                        if($fila['partida'] == $detPresup['partida']){
+                            $totalSaldoAño+= $fila['total'];
+                        }
+                    }
                 }
             }
         }
-        return ( $totalSaldoAño);
+        return $totalSaldoAño;
     }
 
 
