@@ -599,6 +599,16 @@ class ScriptController extends Controller
 
         return $total_presupuesto_interno;
     }
+    public function totalPresupuestoAnualPartidasNiveles($presupuesto_interno_id, $tipo, $nivel, $tipoCampo)
+    {
+        $array = PresupuestoInterno::totalPartidasAnualFilasNivel(
+            $presupuesto_interno_id,
+            $tipo,
+            $nivel,
+            $tipoCampo
+        );
+        return response()->json($array,200);
+    }
 
 
 }

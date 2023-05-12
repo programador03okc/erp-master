@@ -2104,6 +2104,8 @@ Route::group(['middleware' => ['auth']], function () {
                     Route::get('total-presupuesto/{presup}/{tipo}', 'Finanzas\Presupuesto\ScriptController@totalPresupuesto');
                     Route::get('total-ejecutado', 'Finanzas\Presupuesto\ScriptController@totalEjecutado');
                     Route::get('regularizar-montos', 'Finanzas\Presupuesto\ScriptController@montosRegular');
+
+                    Route::get('total-presupuesto-anual-niveles/{presupuesto_intero_id}/{tipo}/{nivel}/{tipo_campo}', 'Finanzas\Presupuesto\ScriptController@totalPresupuestoAnualPartidasNiveles');
                 });
 				Route::get('actualizaEstadoHistorial/{id}/{est}', 'Finanzas\Presupuesto\PresupuestoInternoController@actualizaEstadoHistorial');
             });
@@ -2118,12 +2120,12 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::get('anular-centro-costo/{id}', 'Finanzas\CentroCosto\CentroCostoController@anularCentroCosto')->name('anular-centro-costo');
 		});
 
-		
+
 		Route::group(['as' => 'reportes.', 'prefix' => 'reportes'], function () {
 			Route::group(['as' => 'gastos.', 'prefix' => 'gastos'], function () {
 				Route::get('index-requerimiento-logistico', 'Finanzas\Reportes\ReporteGastoController@indexReporteGastoRequerimientoLogistico')->name('index-requerimiento-logistico');
 				Route::get('index-requerimiento-pago', 'Finanzas\Reportes\ReporteGastoController@indexReporteGastoRequerimientoPago')->name('index-requerimiento-pago');
-				
+
 				Route::post('lista-requerimiento-logistico', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimientoLogistico')->name('lista-requerimiento-logistico');
 				Route::post('lista-requerimiento-pago', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimientoPago')->name('lista-requerimiento-pago');
 
