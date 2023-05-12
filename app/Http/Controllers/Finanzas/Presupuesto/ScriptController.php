@@ -486,10 +486,16 @@ class ScriptController extends Controller
     }
     public function totalPresupuesto($presup,$tipo)
     {
+<<<<<<< HEAD
         $total = PresupuestoInterno::calcularTotalPresupuestoFilas($presup, $tipo);
         return $total;
         exit;
 
+=======
+        $total = PresupuestoInterno::calcularTotalPresupuestoFilas(31,3);
+        return $total;exit;
+        // -------------------
+>>>>>>> f8177c44d9c1bf9e479d213d8bd5f7d07be9e254
         $ingresos = 0;
         $costos = $gastos = PresupuestoInterno::calcularTotalPresupuestoAnual($presup,2);
         $gastos = PresupuestoInterno::calcularTotalPresupuestoAnual($presup,3);
