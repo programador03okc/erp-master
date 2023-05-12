@@ -2101,7 +2101,7 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::group(['as' => 'script.', 'prefix' => 'script'], function () {
                     Route::get('generar-presupuesto-gastos', 'Finanzas\Presupuesto\ScriptController@generarPresupuestoGastos');
                     Route::get('homologacion-partidas', 'Finanzas\Presupuesto\ScriptController@homologarPartida');
-                    Route::get('total-presupuesto', 'Finanzas\Presupuesto\ScriptController@totalPresupuesto');
+                    Route::get('total-presupuesto/{presup}/{tipo}', 'Finanzas\Presupuesto\ScriptController@totalPresupuesto');
                     Route::get('total-ejecutado', 'Finanzas\Presupuesto\ScriptController@totalEjecutado');
                     Route::get('regularizar-montos', 'Finanzas\Presupuesto\ScriptController@montosRegular');
                 });
