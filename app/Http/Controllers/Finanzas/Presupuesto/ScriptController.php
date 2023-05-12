@@ -484,14 +484,15 @@ class ScriptController extends Controller
         }
         return response()->json(["success"=>$array_modificados],200);
     }
-    public function totalPresupuesto()
+    public function totalPresupuesto($presup,$tipo)
     {
-        $total = PresupuestoInterno::calcularTotalPresupuestoFilas(31,3);
-        return $total;exit;
-        // -------------------
+        $total = PresupuestoInterno::calcularTotalPresupuestoFilas($presup, $tipo);
+        return $total;
+        exit;
+
         $ingresos = 0;
-        $costos = $gastos = PresupuestoInterno::calcularTotalPresupuestoAnual(49,2);
-        $gastos = PresupuestoInterno::calcularTotalPresupuestoAnual(49,3);
+        $costos = $gastos = PresupuestoInterno::calcularTotalPresupuestoAnual($presup,2);
+        $gastos = PresupuestoInterno::calcularTotalPresupuestoAnual($presup,3);
         $total = $ingresos - $costos - $gastos;
         return response()->json(["ingresos"=>$ingresos,"costos"=>$costos,"gastos"=>$gastos,"total"=>$total],200);
     }

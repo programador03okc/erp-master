@@ -23,7 +23,7 @@ $(function () {
                 'id_incidencia': data.id_incidencia,
                 'codigo': data.codigo,
                 'fecha_reporte': data.fecha_reporte,
-                'razon_social': data.razon_social,
+                'razon_social': encodeURIComponent(data.razon_social),
                 'nombre_corto': data.nombre_corto,
                 'estado_descripcion': data.estado_descripcion,
                 'estado': 1,

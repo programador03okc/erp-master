@@ -85,7 +85,7 @@ class PresupuestoInternoView{
     }
 
     construirListaDetallePrespuestoInterno(data){
-        console.log(data);
+        // console.log(data);
 
         let html='';
 
@@ -106,44 +106,54 @@ class PresupuestoInternoView{
             <tr>
             <td><strong>PARTIDA</strong></td>
             <td><strong>DESCRIPCIÓN</strong></td>
-            <td style="background-color: #ddeafb;"><strong>INICIAL</strong></td>
-            <td style="background-color: #fbdddd;"><strong>CONSUMIDO</strong></td>
-            <td style="background-color: #e5fbdd;"><strong>SALDO</strong></td>
+            <td style="background-color: #ddeafb;"><strong>Total ppto (anual)</strong></td>
+            <td style="background-color: #ddeafb;"><strong>Total ppto (mes)</strong></td>
+            <td style="background-color: #fbdddd;"><strong>Consumido (mes)</strong></td>
+            <td style="background-color: #e5fbdd;"><strong>Saldo (mes)</strong></td>
+            <td style="background-color: #e5fbdd;"><strong>Saldo (anual)</strong></td>
             </tr> `;
-            let montoInicial = 0; 
-            let montoConsumido = 0; 
-            let montoSaldo = 0; 
+            let totalPresupuestoAño = 0; 
+            let totalPresupuestoMes = 0; 
+            let totalConsumidoMes = 0; 
+            let totalSaldoMes = 0; 
+            let totalSaldoAño = 0; 
             presupuesto['detalle'].forEach(detalle => {
                 // if (detalle.id_presupuesto_interno == presupuesto.id_presupuesto_interno) {
-                    montoInicial=$.number((parseFloat(detalle.monto_inicial)),2,".",",");
-                    montoConsumido=$.number((parseFloat(detalle.monto_consumido)),2,".",",");
-                    montoSaldo=$.number((parseFloat(detalle.monto_saldo)),2,".",",");
+                    totalPresupuestoAño=$.number((parseFloat(detalle.total_presupuesto_año)),2,".",",");
+                    totalPresupuestoMes=$.number((parseFloat(detalle.total_presupuesto_mes)),2,".",",");
+                    totalConsumidoMes=$.number((parseFloat(detalle.total_consumido_mes)),2,".",",");
+                    totalSaldoMes=$.number((parseFloat(detalle.total_saldo_mes)),2,".",",");
+                    totalSaldoAño=$.number((parseFloat(detalle.total_saldo_año)),2,".",",");
 
                     if(detalle.registro==1){
-
-
                         html += `
                         <tr id="com-${detalle.id_presupuesto_interno_detalle}">
                         <td><strong>${detalle.partida}</strong></td>
                         <td><strong>${detalle.descripcion}</strong></td>
-                        <td class="right" style="text-align:right; background-color: #ddeafb;" ><strong>S/${montoInicial}</strong></td>
-                        <td class="right" style="text-align:right; background-color: #fbdddd;" ><strong>S/${montoConsumido}</strong></td>
-                        <td class="right" style="text-align:right; background-color: #e5fbdd;" ><strong>S/${montoSaldo}</strong></td>
+                        <td class="right" style="text-align:right; background-color: #ddeafb;" ><strong>S/${totalPresupuestoAño}</strong></td>
+                        <td class="right" style="text-align:right; background-color: #ddeafb;" ><strong>S/${totalPresupuestoMes}</strong></td>
+                        <td class="right" style="text-align:right; background-color: #fbdddd;" ><strong>S/${totalConsumidoMes}</strong></td>
+                        <td class="right" style="text-align:right; background-color: #e5fbdd;" ><strong>S/${totalSaldoMes}</strong></td>
+                        <td class="right" style="text-align:right; background-color: #e5fbdd;" ><strong>S/${totalSaldoAño}</strong></td>
                         </tr> `;
                     }else{
                         html += `<tr id="par-${detalle.id_presupuesto_interno_detalle}">
                         <td style="width:15%; text-align:left;" name="partida">${detalle.partida}</td>
                         <td style="width:75%; text-align:left;" name="descripcion">${detalle.descripcion}</td>
-                        <td style="width:15%; text-align:right; background-color: #ddeafb;" name="monto_total" class="right" >S/${montoInicial}</td>
-                        <td style="width:15%; text-align:right; background-color: #fbdddd;" name="monto_consumido" class="right" >S/${montoConsumido}</td>
-                        <td style="width:15%; text-align:right; background-color: #e5fbdd;" name="monto_saldo" class="right" >S/${montoSaldo}</td>
+                        <td style="width:15%; text-align:right; background-color: #ddeafb;" name="total_presupuesto_año" class="right" >S/${totalPresupuestoAño}</td>
+                        <td style="width:15%; text-align:right; background-color: #ddeafb;" name="total_presupuesto_mes" class="right" >S/${totalPresupuestoMes}</td>
+                        <td style="width:15%; text-align:right; background-color: #fbdddd;" name="total_consumido_mes" class="right" >S/${totalConsumidoMes}</td>
+                        <td style="width:15%; text-align:right; background-color: #e5fbdd;" name="total_saldo_mes" class="right" >S/${totalSaldoMes}</td>
+                        <td style="width:15%; text-align:right; background-color: #e5fbdd;" name="total_saldo_año" class="right" >S/${totalSaldoAño}</td>
                         <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs handleClickSelectDetallePresupuesto" 
                             data-id-presupuesto-interno-detalle="${detalle.id_presupuesto_interno_detalle}"
                             data-partida="${detalle.partida}"
                             data-descripcion="${detalle.descripcion}"
-                            data-monto-total="${montoInicial}"
-                            data-monto-consumido="${montoConsumido}"
-                            data-monto-saldo="${montoSaldo}"
+                            data-total-presupuesto-año="${totalPresupuestoAño}"
+                            data-total-presupuesto-mes="${totalPresupuestoMes}"
+                            data-total-consumido-mes="${totalConsumidoMes}"
+                            data-total-saldo-mes="${totalSaldoMes}"
+                            data-total-saldo-año="${totalSaldoAño}"
                             ><i class="fas fa-check"></i></button></td>
                     </tr>`;
 
