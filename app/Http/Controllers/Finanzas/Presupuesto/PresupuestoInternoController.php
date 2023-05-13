@@ -1259,7 +1259,7 @@ class PresupuestoInternoController extends Controller
 
                 $detPresup['total_presupuesto_año'] = $this->obtenerTotalPrespuestoAñoDelPadrePartida($idPresupuestoIterno,3,$presupuestoInterno,$detPresup['id_hijo']);
                 $detPresup['total_presupuesto_mes'] = $this->obtenerTotalPrespuestoMesDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
-                $detPresup['total_consumido_mes'] =   $this->obtenerConsumidoPrespuestoMesDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
+                $detPresup['total_consumido_mes'] =   $this->obtenerConsumidoPrespuestoMesDelPadrePartida($idPresupuestoIterno,3,$presupuestoInterno,$detPresup['id_hijo']);
                 $detPresup['total_saldo_mes'] =   $this->obtenerSaldoPrespuestoMesDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
                 $detPresup['total_saldo_año'] =   $this->obtenerSaldoPrespuestoAñoDelPadrePartida($idPresupuestoIterno,3,$presupuestoInterno,$detPresup['id_hijo']);
 
@@ -1344,23 +1344,24 @@ class PresupuestoInternoController extends Controller
         return $totalPresupuestoMes;
     }
 
-    public function obtenerConsumidoPrespuestoMesDelPadrePartida($presupuestoInterno, $idHijo){
+    public function obtenerConsumidoPrespuestoMesDelPadrePartida($idPresupuestoIterno,$tipo,$presupuestoInterno, $idHijo){
+
         $numero_mes = date("m");
-        $nombre_mes = $this->mes($numero_mes);
-        $totalMes=0;
-        $consumidoMes=0;
+        $totalConsumidoMesFilaList = PresupuestoInterno::calcularTotalConsumidoMesFilas($idPresupuestoIterno,$tipo,$numero_mes);
+        
         $totalConsumidoMes=0;
         foreach ($presupuestoInterno as $key => $Presup) {
             foreach ($Presup['detalle'] as $keyd => $detPresup) {
                 if($detPresup['id_padre'] == $idHijo){
-                    $totalConsumidoMes  +=    (floatval(preg_replace("/[^-0-9\.]/","",$detPresup[$nombre_mes]))) -  (floatval(preg_replace("/[^-0-9\.]/","",$detPresup[$nombre_mes.'_aux'])));
-                    // Debugbar::info($detPresup[$nombre_mes].' - '.$detPresup[$nombre_mes.'_aux'].' = '.$totalConsumidoMes);
+                    foreach ($totalConsumidoMesFilaList as $keyTf => $fila) {
+                        if($fila['partida'] == $detPresup['partida']){
+                            $totalConsumidoMes+= $fila['total'];
+                        }
+                    }
                 }
             }
-
-            
         }
-        return ( $totalConsumidoMes);
+        return $totalConsumidoMes;
     }
 
     public function obtenerSaldoPrespuestoMesDelPadrePartida($presupuestoInterno, $idHijo){
