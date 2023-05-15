@@ -69,7 +69,8 @@ class PresupuestoInternoController extends Controller
         return DataTables::of($data)
         ->addColumn('total', function ($data){
             $total = ($data->gastos=='3'?PresupuestoInterno::calcularTotalPresupuestoAnual($data->id_presupuesto_interno,3):0);
-            return floatval(str_replace(",", "", $total));
+            // return floatval(str_replace(",", "", $total));
+            return round($total,2);
         })
         ->addColumn('total_ejecutado', function ($data){
             $total_ejecutado = 0;
@@ -79,7 +80,8 @@ class PresupuestoInternoController extends Controller
                 $meses_numero = date('m');
                 $total_ejecutado =  PresupuestoInterno::totalEjecutatoMonto($meses_numero,$data->id_presupuesto_interno);
             }
-            return floatval(str_replace(",", "", round($total_ejecutado, 2)));
+            // return floatval(str_replace(",", "", round($total_ejecutado, 2)));
+            return round($total_ejecutado, 2);
         })
         // ->toJson();
         ->make(true);
@@ -1237,7 +1239,7 @@ class PresupuestoInternoController extends Controller
         $numero_mes = date("m");
         $nombre_mes = $this->mes($numero_mes);
 
-        // inicializar 
+        // inicializar
         foreach ($presupuestoInterno as $key => $Presup) {
             foreach ($Presup['detalle'] as $keyd => $detPresup) {
                 $detPresup['total_presupuesto_año'] = 0;
@@ -1245,17 +1247,17 @@ class PresupuestoInternoController extends Controller
                 $detPresup['total_consumido_mes'] = 0;
                 $detPresup['total_saldo_mes'] = 0;
                 $detPresup['total_saldo_año'] = 0;
-                
+
             }
         }
-        
+
         // llenar totales
         foreach ($presupuestoInterno as $key => $Presup) {
             foreach ($Presup['detalle'] as $keyd => $detPresup) {
 
             if($detPresup['registro'] ==1){
 
- 
+
                 $detPresup['total_presupuesto_año'] = $this->obtenerTotalPrespuestoAñoDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
                 $detPresup['total_presupuesto_mes'] = $this->obtenerTotalPrespuestoMesDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
                 $detPresup['total_consumido_mes'] =   $this->obtenerConsumidoPrespuestoMesDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
@@ -1263,15 +1265,15 @@ class PresupuestoInternoController extends Controller
                 $detPresup['total_saldo_año'] =   $this->obtenerSaldoPrespuestoAñoDelPadrePartida($presupuestoInterno,$detPresup['id_hijo']);
 
             }
-                
+
             if($detPresup['registro'] ==2){
                 $detPresup['total_presupuesto_año'] = 0;
                 $detPresup['total_presupuesto_mes'] = floatval(preg_replace("/[^-0-9\.]/","",$detPresup[$nombre_mes]));
                 $detPresup['total_consumido_mes'] = floatval(preg_replace("/[^-0-9\.]/","",$detPresup[$nombre_mes])) - floatval(preg_replace("/[^-0-9\.]/","",$detPresup[$nombre_mes.'_aux']));
                 $detPresup['total_saldo_mes'] = floatval(preg_replace("/[^-0-9\.]/","",$detPresup[$nombre_mes.'_aux']));
                 $detPresup['total_saldo_año'] = 0;
-                
-            
+
+
 
             //  completar total presupuesto año;
             foreach ($totalFilas as $key => $totFila) {
@@ -1284,17 +1286,17 @@ class PresupuestoInternoController extends Controller
             foreach ($totalFilas as $key => $totFila) {
                 if($totFila['partida'] == $detPresup['partida'] ){
                     $detPresup['total_saldo_año'] =  floatval(preg_replace("/[^-0-9\.]/","",$detPresup['enero_aux']))
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['febrero_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['marzo_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['abril_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['mayo_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['junio_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['julio_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['agosto_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['setiembre_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['octubre_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['noviembre_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['diciembre_aux'])); 
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['febrero_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['marzo_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['abril_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['mayo_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['junio_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['julio_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['agosto_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['setiembre_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['octubre_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['noviembre_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['diciembre_aux']));
                 }
             }
         }
@@ -1304,8 +1306,8 @@ class PresupuestoInternoController extends Controller
         }
 
 
- 
-    
+
+
         //  completar monto consumido;
         // foreach ($presupuestoInterno as $key => $Presup) {
         //     foreach ($Presup['detalle'] as $key => $detPresup) {
@@ -1334,20 +1336,20 @@ class PresupuestoInternoController extends Controller
         foreach ($presupuestoInterno as $key => $Presup) {
             foreach ($Presup['detalle'] as $keyd => $detPresup) {
                 if($detPresup['id_padre'] == $idHijo){
-                $totalPresupuestoAño  +=               
+                $totalPresupuestoAño  +=
                 floatval(preg_replace("/[^-0-9\.]/","",$detPresup['enero']))
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['febrero'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['marzo'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['abril'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['mayo'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['junio'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['julio'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['agosto'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['setiembre'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['octubre'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['noviembre'])) 
-                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['diciembre'])); 
- 
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['febrero']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['marzo']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['abril']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['mayo']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['junio']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['julio']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['agosto']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['setiembre']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['octubre']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['noviembre']))
+                + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['diciembre']));
+
 
                 }
             }
@@ -1385,7 +1387,7 @@ class PresupuestoInternoController extends Controller
                 }
             }
 
-            
+
         }
         return ( $totalConsumidoMes);
     }
@@ -1409,17 +1411,17 @@ class PresupuestoInternoController extends Controller
             foreach ($Presup['detalle'] as $keyd => $detPresup) {
                 if($detPresup['id_padre'] == $idHijo){
                     $totalSaldoAño  += floatval(preg_replace("/[^-0-9\.]/","",$detPresup['enero_aux']))
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['febrero_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['marzo_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['abril_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['mayo_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['junio_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['julio_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['agosto_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['setiembre_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['octubre_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['noviembre_aux'])) 
-                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['diciembre_aux'])); 
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['febrero_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['marzo_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['abril_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['mayo_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['junio_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['julio_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['agosto_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['setiembre_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['octubre_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['noviembre_aux']))
+                    + floatval(preg_replace("/[^-0-9\.]/","",$detPresup['diciembre_aux']));
                 }
             }
         }
