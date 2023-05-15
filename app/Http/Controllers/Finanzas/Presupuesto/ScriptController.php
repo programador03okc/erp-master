@@ -496,6 +496,11 @@ class ScriptController extends Controller
         $total = $ingresos - $costos - $gastos;
         return response()->json(["ingresos"=>$ingresos,"costos"=>$costos,"gastos"=>$gastos,"total"=>$total],200);
     }
+    public function totalConsumidoMes($presup,$tipo,$mes)
+    {
+        $total = PresupuestoInterno::calcularTotalConsumidoMesFilas($presup, $tipo,$mes);
+        return $total;
+    }
     public function totalEjecutado()
     {
         // $valor= PresupuestoInterno::calcularColumnaAuxMensual(31,3,);

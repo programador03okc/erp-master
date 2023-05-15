@@ -38,6 +38,11 @@ class PresupuestoInternoView{
 
         });
 
+        $('#modal-partidas').on("click", "tr.handleClickaperturaDetalle", (e) => {
+            this.aperturaDetalle(e.currentTarget.dataset.idPadre);
+            this.changeBtnIcon(e);
+        });
+
     }
 
     selectPresupuestoInternoDetalle(obj) {
@@ -97,7 +102,7 @@ class PresupuestoInternoView{
                     &nbsp; ${presupuesto.descripcion}
                 </h5>
                 <div id="presupuesto-interno-${presupuesto.id_presupuesto_interno}" class="oculto" style="width:100%;">
-                    <table class="table table-bordered table-condensed partidas" id="listaPartidas" width="100%" style="font-size:0.9em">
+                    <table class="table table-bordered table-condensed table-hover partidas" id="listaPartidas" width="100%" style="font-size:0.9em">
                         <tbody>
             `;
 
@@ -127,7 +132,7 @@ class PresupuestoInternoView{
 
                     if(detalle.registro==1){
                         html += `
-                        <tr id="com-${detalle.id_presupuesto_interno_detalle}">
+                        <tr id="com-${detalle.id_presupuesto_interno_detalle}" class="handleClickaperturaDetalle" data-id-padre="${detalle.id_hijo}" style="margin: 0; cursor: pointer;">
                         <td><strong>${detalle.partida}</strong></td>
                         <td><strong>${detalle.descripcion}</strong></td>
                         <td class="right" style="text-align:right; background-color: #ddeafb;" ><strong>S/${totalPresupuestoAño}</strong></td>
@@ -137,7 +142,7 @@ class PresupuestoInternoView{
                         <td class="right" style="text-align:right; background-color: #e5fbdd;" ><strong>S/${totalSaldoAño}</strong></td>
                         </tr> `;
                     }else{
-                        html += `<tr id="par-${detalle.id_presupuesto_interno_detalle}">
+                        html += `<tr id="hijo-${detalle.id_padre}" class="oculto" style="width:100%;">
                         <td style="width:15%; text-align:left;" name="partida">${detalle.partida}</td>
                         <td style="width:75%; text-align:left;" name="descripcion">${detalle.descripcion}</td>
                         <td style="width:15%; text-align:right; background-color: #ddeafb;" name="total_presupuesto_año" class="right" >S/${totalPresupuestoAño}</td>
@@ -145,7 +150,10 @@ class PresupuestoInternoView{
                         <td style="width:15%; text-align:right; background-color: #fbdddd;" name="total_consumido_mes" class="right" >S/${totalConsumidoMes}</td>
                         <td style="width:15%; text-align:right; background-color: #e5fbdd;" name="total_saldo_mes" class="right" >S/${totalSaldoMes}</td>
                         <td style="width:15%; text-align:right; background-color: #e5fbdd;" name="total_saldo_año" class="right" >S/${totalSaldoAño}</td>
-                        <td style="width:5%; text-align:center;"><button class="btn btn-success btn-xs handleClickSelectDetallePresupuesto" 
+                        <td style="width:5%; text-align:center;">`;
+                        
+                        if(parseFloat(totalPresupuestoMes)>0){
+                            html+=`<button class="btn btn-success btn-xs handleClickSelectDetallePresupuesto" 
                             data-id-presupuesto-interno-detalle="${detalle.id_presupuesto_interno_detalle}"
                             data-partida="${detalle.partida}"
                             data-descripcion="${detalle.descripcion}"
@@ -154,7 +162,14 @@ class PresupuestoInternoView{
                             data-total-consumido-mes="${totalConsumidoMes}"
                             data-total-saldo-mes="${totalSaldoMes}"
                             data-total-saldo-año="${totalSaldoAño}"
-                            ><i class="fas fa-check"></i></button></td>
+                            title="Seleccionar partida">
+                            <i class="fas fa-check"></button>`;
+                        }else{
+
+                            html+=`<i class="fas fa-info-circle"  style="color: #FF9800; cursor:help" title="El presupuesto mensual es insuficiente" >`;
+                        }
+                        
+                            html +=`</td>
                     </tr>`;
 
                     }
@@ -175,16 +190,23 @@ class PresupuestoInternoView{
     }
 
     
-    apertura(idPresupuestoInterno) {
-        if ($("#presupuesto-interno-" + idPresupuestoInterno + " ").hasClass('oculto')) {
-            $("#presupuesto-interno-" + idPresupuestoInterno + " ").removeClass('oculto');
-            $("#presupuesto-interno-" + idPresupuestoInterno + " ").addClass('visible');
+    apertura(id) {
+        if ($("#presupuesto-interno-" + id + " ").hasClass('oculto')) {
+            $("#presupuesto-interno-" + id + " ").removeClass('oculto');
+            $("#presupuesto-interno-" + id + " ").addClass('visible');
         } else {
-            $("#presupuesto-interno-" + idPresupuestoInterno + " ").removeClass('visible');
-            $("#presupuesto-interno-" + idPresupuestoInterno + " ").addClass('oculto');
+            $("#presupuesto-interno-" + id + " ").removeClass('visible');
+            $("#presupuesto-interno-" + id + " ").addClass('oculto');
         }
-
-
+    }
+    aperturaDetalle(id) {
+        if ($("#hijo-" + id + " ").hasClass('oculto')) {
+            $("#hijo-" + id + " ").removeClass('oculto');
+            $("#hijo-" + id + " ").addClass('');
+        } else {
+            $("#hijo-" + id + " ").removeClass('');
+            $("#hijo-" + id + " ").addClass('oculto');
+        }
     }
 
     changeBtnIcon(obj) {

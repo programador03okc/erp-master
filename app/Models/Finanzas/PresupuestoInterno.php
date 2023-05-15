@@ -3,6 +3,7 @@
 namespace App\Models\Finanzas;
 
 use App\Helpers\ConfiguracionHelper;
+use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Models\administracion\AdmGrupo;
 use App\Models\Administracion\Periodo;
 use App\Models\Almacen\DetalleRequerimiento;
@@ -147,6 +148,37 @@ class PresupuestoInterno extends Model
             $noviembre  = ($tipoCampo == 1) ? $value->float_noviembre : floatval(str_replace(",", "", $value->noviembre_aux));
             $diciembre  = ($tipoCampo == 1) ? $value->float_diciembre : floatval(str_replace(",", "", $value->diciembre_aux));
             $total      = $enero + $febrero + $marzo + $abril + $mayo + $junio + $julio + $agosto + $setiembre + $octubre + $noviembre + $diciembre;
+            array_push($array_nivel_partida,array(
+                "partida"=>$value->partida,
+                "descripcion"=>$value->descripcion,
+                "total"=>round($total, 2),
+            ));
+        }
+
+        return $array_nivel_partida;
+    }
+
+    public static function calcularTotalConsumidoMesFilas($id_presupuesto_interno, $id_tipo_presupuesto, $numeroMes)
+    {
+        $nombre_mes= (new PresupuestoInternoController)->mes($numeroMes);
+        $nombreCampoFijo= 'float_'.$nombre_mes;
+        $nombreCampoVariable= 'float_'.$nombre_mes.'_aux';
+        $presupuesto_interno_destalle=array();
+        switch ($id_tipo_presupuesto) {
+            case 1:
+                $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
+            break;
+
+            case 2:
+                $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
+            break;
+            case 3:
+                $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
+            break;
+        }
+        $array_nivel_partida = array();
+        foreach ($presupuesto_interno_destalle as $key => $value) {
+            $total = $value->$nombreCampoFijo - $value->$nombreCampoVariable;
             array_push($array_nivel_partida,array(
                 "partida"=>$value->partida,
                 "descripcion"=>$value->descripcion,
