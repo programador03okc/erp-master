@@ -72,6 +72,8 @@ function lista() {
             { 'data': 'subtotal', 'name': 'requerimiento_pago_detalle.subtotal', 'className': 'text-center' ,'searchable':false},
             { 'data': 'simbolo_moneda', 'name': 'sis_moneda.simbolo', 'className': 'text-center' ,'searchable':false},
             { 'data': 'tipo_cambio', 'name': 'tipo_cambio', 'className': 'text-center' ,'searchable':false},
+            { 'data': 'fecha_aprobacion', 'name': 'fecha_aprobacion', 'className': 'text-center' ,'searchable':false},
+            { 'data': 'usuario_aprobador', 'name': 'usuario_aprobador', 'className': 'text-center' ,'searchable':false},
             { 'data': 'subtotal_soles', 'name': 'subtotal_soles', 'className': 'text-center' ,'searchable':false},
             { 'data': 'comentario', 'name': 'requerimiento_pago.comentario', 'className': 'text-left' ,'searchable':false},
             { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' ,'searchable':false},

@@ -22,7 +22,8 @@
             <th rowspan="2" style="background-color:#cccccc;">Grupo</th>
             <th rowspan="2" style="background-color:#cccccc;">División</th>
             <th colspan="4" style="background-color:#cccccc;">Totales Item Requerimiento</th>
-            <th colspan="5" style="background-color:#cccccc;">Totales Item Orden</th>
+            <th colspan="9" style="background-color:#cccccc;">Totales Item Orden</th>
+            <th colspan="10" style="background-color:#cccccc;">Salida de Almacén</th>
             <th rowspan="2" style="background-color:#cccccc;">Tipo Cambio</th>
             <th rowspan="2" style="background-color:#cccccc;" width="80">Observación</th>
             <th rowspan="2" style="background-color:#cccccc;">Fecha Emisión Req.</th>
@@ -48,11 +49,26 @@
             <th style="background-color:#cccccc;">Moneda</th>
 
 
+            <th style="background-color:#cccccc;">Nro OC</th>
+            <th style="background-color:#cccccc;">Cod. O/C</th>
             <th style="background-color:#cccccc;">Cantidad</th>
             <th style="background-color:#cccccc;">Precio Unitario (sin IGV)</th>
             <th style="background-color:#cccccc;">Subtotal</th>
             <th style="background-color:#cccccc;">Moneda</th>
             <th style="background-color:#cccccc;">Subtotal (considera IGV)</th>
+            <th style="background-color:#cccccc;">Estado Orden</th>
+            <th style="background-color:#cccccc;">Estado Pago</th>
+
+            <th style="background-color:#cccccc;">Estado Despacho</th>
+            <th style="background-color:#cccccc;">Nro Salida int (ODI)</th>
+            <th style="background-color:#cccccc;">Nro Salida Ext (ODE)</th>
+            <th style="background-color:#cccccc;">Almacén</th>
+            <th style="background-color:#cccccc;">Fecha Salida</th>
+            <th style="background-color:#cccccc;">Código Salida</th>
+            <th style="background-color:#cccccc;">Cant.</th>
+            <th style="background-color:#cccccc;">Moneda</th>
+            <th style="background-color:#cccccc;">Costo. Unit.</th>
+            <th style="background-color:#cccccc;">Costo Total</th>
 
         </tr>
     </thead>
@@ -89,11 +105,27 @@
                     <td>{{ $item['precio_unitario'] }}</td>
                     <td>{{ $item['subtotal'] }}</td>
                     <td>{{ $item['simbolo_moneda'] }}</td>
+                    <td>{{ $item['nro_orden'] }}</td>
+                    <td>{{ $item['codigo_producto'] }}</td>
                     <td>{{ $item['cantidad_orden'] }}</td>
                     <td>{{ $item['precio_orden'] }}</td>
                     <td>{{ $item['subtotal_orden'] }}</td>
                     <td>{{ $item['simbolo_moneda_orden'] }}</td>
                     <td>{{ $item['subtotal_orden_considera_igv'] }}</td>
+                    <td>{{ $item['estado_orden'] }}</td>
+                    <td>{{ $item['estado_pago'] }}</td>
+
+                    <td>{{ $item['estado_despacho'] }}</td>
+                    <td>{{ $item['nro_salida_int'] }}</td>
+                    <td>{{ $item['nro_salida_ext'] }}</td>
+                    <td>{{ $item['almacen_salida'] }}</td>
+                    <td>{{ $item['fecha_salida'] }}</td>
+                    <td>{{ $item['codigo_producto_salida'] }}</td>
+                    <td>{{ $item['cantidad_salida'] }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+
                     <td>{{ $item['tipo_cambio'] }}</td>
                     <td>{{ $item['observacion'] }}</td>
                     <td>{{ $item['fecha_requerimiento'] }}</td>

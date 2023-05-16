@@ -50,6 +50,10 @@ class ListaGastoDetalleRequerimientoLogisticoExport implements FromView, WithCol
                 'precio_unitario'=> $element->precio_unitario,
                 'subtotal'=> $element->subtotal,
                 'simbolo_moneda'=> $element->simbolo_moneda,
+                'nro_orden'=> $element->nro_orden,
+                'estado_orden'=> $element->estado_orden,
+                'estado_pago'=> $element->estado_pago,
+                'codigo_producto'=> $element->codigo_producto,
                 'cantidad_orden'=> $element->cantidad_orden,
                 'precio_orden'=> $element->precio_orden,
                 'subtotal_orden'=> $element->subtotal_orden,
@@ -67,7 +71,14 @@ class ListaGastoDetalleRequerimientoLogisticoExport implements FromView, WithCol
                 'motivo'=> $element->motivo,
                 'fecha_registro'=> date('d/m/Y', strtotime($element->fecha_registro)),
                 'hora_registro'=> date('H:i:s', strtotime($element->fecha_registro)),
-                'estado_requerimiento'=> $element->estado_requerimiento
+                'estado_requerimiento'=> $element->estado_requerimiento,
+                'estado_despacho'=>$element->estado_despacho,
+                'nro_salida_int'=>$element->nro_salida_int,
+                'nro_salida_ext'=>$element->nro_salida_ext,
+                'almacen_salida'=>$element->almacen_salida,
+                'fecha_salida'=>$element->fecha_salida,
+                'codigo_producto_salida'=>$element->codigo_producto_salida,
+                'cantidad_salida'=>$element->cantidad_salida,
 
             ];
         }

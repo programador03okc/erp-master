@@ -53,7 +53,8 @@ Lista de gastos requerimiento logístico
                                         <th rowspan="2" style="background-color:#787878;">Grupo</th>
                                         <th rowspan="2" style="background-color:#787878;">División</th>
                                         <th colspan="4" style="background-color:#787878;">Totales Item Requerimiento</th>
-                                        <th colspan="5" style="background-color:#787878;">Totales Item Orden</th>
+                                        <th colspan="9" style="background-color:#787878;">Totales Item Orden</th>
+                                        <th colspan="10" style="background-color:#787878;">Salida de Almacén</th>
                                         <th rowspan="2" style="background-color:#787878;">Tipo Cambio</th>
                                         <th rowspan="2" style="background-color:#787878;" width="80">Observación</th>
                                         <th rowspan="2" style="background-color:#787878;">Fecha Emisión Req.</th>
@@ -79,12 +80,26 @@ Lista de gastos requerimiento logístico
                                         <th style="background-color:#787878;">Moneda</th>
 
 
+                                        <th style="background-color:#787878;">Nro OC</th>
+                                        <th style="background-color:#787878;">Cod. O/C</th>
                                         <th style="background-color:#787878;">Cantidad</th>
                                         <th style="background-color:#787878;">Precio Unitario (sin IGV)</th>
                                         <th style="background-color:#787878;">Subtotal</th>
                                         <th style="background-color:#787878;">Moneda</th>
                                         <th style="background-color:#787878;">Subtotal (considera incluir IGV)</th>
-
+                                        <th style="background-color:#787878;">Estado Orden</th>
+                                        <th style="background-color:#787878;">Estado Pago</th>
+                                        
+                                        <th style="background-color:#787878;">Estado Despacho</th>
+                                        <th style="background-color:#787878;">Nro Salida int (ODI)</th>
+                                        <th style="background-color:#787878;">Nro Salida Ext (ODE)</th>
+                                        <th style="background-color:#787878;">Almacén</th>
+                                        <th style="background-color:#787878;">Fecha Salida</th>
+                                        <th style="background-color:#787878;">Código Salida</th>
+                                        <th style="background-color:#787878;">Cant.</th>
+                                        <th style="background-color:#787878;">Moneda</th>
+                                        <th style="background-color:#787878;">Costo. Unit.</th>
+                                        <th style="background-color:#787878;">Costo Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>

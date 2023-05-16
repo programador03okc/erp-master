@@ -60,10 +60,14 @@ class ReporteGastoController extends Controller
             ->leftJoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
             ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
             ->leftJoin('configuracion.sis_moneda as moneda_orden', 'moneda_orden.id_moneda', '=', 'log_ord_compra.id_moneda')
- 
+            ->leftJoin('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
+            ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
+            ->leftJoin('almacen.orden_despacho', 'orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            ->leftJoin('administracion.adm_estado_doc as estado_despacho', 'estado_despacho.id_estado_doc', '=', 'orden_despacho.estado')
+
 
             ->select(
-
+                'alm_prod.codigo as codigo_producto',
                 'alm_prod.descripcion as descripcion_producto',
                 'alm_det_req.descripcion as descripcion_detalle_requerimiento',
                 'alm_det_req.motivo',
@@ -115,6 +119,9 @@ class ReporteGastoController extends Controller
                 inner join finanzas.presupuesto_interno_modelo on presupuesto_interno_modelo.id_modelo_presupuesto_interno = presupuesto_interno_detalle.id_padre
                 WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_partida_presupuesto_interno"),
                 
+                'log_ord_compra.codigo as nro_orden',
+                'estados_compra.descripcion as estado_orden',
+                'requerimiento_pago_estado.descripcion as estado_pago',
                 'moneda_orden.simbolo as simbolo_moneda_orden',
                 'log_det_ord_compra.cantidad as cantidad_orden',
                 'log_det_ord_compra.precio as precio_orden',
@@ -129,10 +136,54 @@ class ReporteGastoController extends Controller
                 and log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento limit 1) AS subtotal_orden_considera_igv"),
 
                 'alm_req.fecha_requerimiento',
+
                 DB::raw("(SELECT cont_tp_cambio.venta  
                 FROM contabilidad.cont_tp_cambio
                 WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(alm_req.fecha_requerimiento,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
-                
+ 
+                'estado_despacho.estado_doc as estado_despacho',
+
+                DB::raw("(SELECT string_agg(DISTINCT mov_alm.codigo::text, ', '::text) AS string_agg
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.mov_alm on mov_alm.id_mov_alm = mov_alm_det.id_mov_alm 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                and orden_despacho.aplica_cambios = true ) AS nro_salida_int"),
+                DB::raw("(SELECT string_agg(DISTINCT mov_alm.codigo::text, ', '::text) AS string_agg
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.mov_alm on mov_alm.id_mov_alm = mov_alm_det.id_mov_alm 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                and orden_despacho.aplica_cambios = false ) AS nro_salida_ext"),
+                DB::raw("(SELECT alm_almacen.descripcion  
+                FROM almacen.alm_almacen
+                WHERE  alm_almacen.id_almacen = orden_despacho.id_almacen order by orden_despacho.fecha_registro desc limit 1) AS almacen_salida"),
+
+                DB::raw("(SELECT guia_ven_det.fecha_registro
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS fecha_salida"),
+
+                DB::raw("(SELECT alm_prod.codigo
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.alm_prod on alm_prod.id_producto = guia_ven_det.id_producto 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS codigo_producto_salida"),
+
+                DB::raw("(SELECT guia_ven_det.cantidad
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS cantidad_salida"),
             )
             ->where([['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]])
             ->orderBy('alm_det_req.fecha_registro', 'desc')
@@ -168,10 +219,15 @@ class ReporteGastoController extends Controller
             ->leftJoin('logistica.log_det_ord_compra','log_det_ord_compra.id_detalle_requerimiento','=','alm_det_req.id_detalle_requerimiento')
             ->leftJoin('logistica.log_ord_compra','log_ord_compra.id_orden_compra','=','log_det_ord_compra.id_orden_compra')
             ->leftJoin('configuracion.sis_moneda as moneda_orden', 'moneda_orden.id_moneda', '=', 'log_ord_compra.id_moneda')
- 
+            ->leftJoin('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
+            ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
+            ->leftJoin('almacen.orden_despacho', 'orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento')
+            ->leftJoin('administracion.adm_estado_doc as estado_despacho', 'estado_despacho.id_estado_doc', '=', 'orden_despacho.estado')
+
 
             ->select(
 
+                'alm_prod.codigo as codigo_producto',
                 'alm_prod.descripcion as descripcion_producto',
                 'alm_det_req.descripcion as descripcion_detalle_requerimiento',
                 'alm_det_req.motivo',
@@ -223,6 +279,9 @@ class ReporteGastoController extends Controller
                 inner join finanzas.presupuesto_interno_modelo on presupuesto_interno_modelo.id_modelo_presupuesto_interno = presupuesto_interno_detalle.id_padre
                 WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_partida_presupuesto_interno"),
                 
+                'log_ord_compra.codigo as nro_orden',
+                'estados_compra.descripcion as estado_orden',
+                'requerimiento_pago_estado.descripcion as estado_pago',
                 'moneda_orden.simbolo as simbolo_moneda_orden',
                 'log_det_ord_compra.cantidad as cantidad_orden',
                 'log_det_ord_compra.precio as precio_orden',
@@ -240,6 +299,51 @@ class ReporteGastoController extends Controller
                 DB::raw("(SELECT cont_tp_cambio.venta  
                 FROM contabilidad.cont_tp_cambio
                 WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(alm_req.fecha_requerimiento,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+
+                'estado_despacho.estado_doc as estado_despacho',
+
+                DB::raw("(SELECT string_agg(DISTINCT mov_alm.codigo::text, ', '::text) AS string_agg
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.mov_alm on mov_alm.id_mov_alm = mov_alm_det.id_mov_alm 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                and orden_despacho.aplica_cambios = true ) AS nro_salida_int"),
+                DB::raw("(SELECT string_agg(DISTINCT mov_alm.codigo::text, ', '::text) AS string_agg
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.mov_alm on mov_alm.id_mov_alm = mov_alm_det.id_mov_alm 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                and orden_despacho.aplica_cambios = false ) AS nro_salida_ext"),
+                
+                DB::raw("(SELECT alm_almacen.descripcion  
+                FROM almacen.alm_almacen
+                WHERE  alm_almacen.id_almacen = orden_despacho.id_almacen order by orden_despacho.fecha_registro desc limit 1) AS almacen_salida"),
+
+                DB::raw("(SELECT guia_ven_det.fecha_registro
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS fecha_salida"),
+
+                DB::raw("(SELECT alm_prod.codigo
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.alm_prod on alm_prod.id_producto = guia_ven_det.id_producto 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS codigo_producto_salida"),
+                
+                DB::raw("(SELECT guia_ven_det.cantidad
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS cantidad_salida"),
                 
             )
             ->where([['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]]);
@@ -346,12 +450,25 @@ class ReporteGastoController extends Controller
                 FROM contabilidad.cont_tp_cambio
                 WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS subtotal_soles"),
 
-                DB::raw("(SELECT cont_tp_cambio.venta  
+                DB::raw("(SELECT cont_tp_cambio.venta
                 FROM contabilidad.cont_tp_cambio
-                WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
-                
+                WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(((SELECT adm_aprobacion.fecha_vobo FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC LIMIT 1)),'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+
+                DB::raw("(SELECT adm_aprobacion.fecha_vobo 
+                FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS fecha_aprobacion"),
+    
+                DB::raw("(SELECT sis_usua.nombre_corto 
+                FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                inner join configuracion.sis_usua on sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS usuario_aprobador"),
+
             )
- 
+
             ->where([['requerimiento_pago_detalle.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 7]])
             ->orderBy('requerimiento_pago_detalle.fecha_registro', 'desc')
             ->get();
@@ -442,9 +559,25 @@ class ReporteGastoController extends Controller
                 WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS subtotal_soles"),
 
                 
-                DB::raw("(SELECT cont_tp_cambio.venta  
+                // DB::raw("(SELECT cont_tp_cambio.venta  
+                // FROM contabilidad.cont_tp_cambio
+                // WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+                DB::raw("(SELECT cont_tp_cambio.venta
                 FROM contabilidad.cont_tp_cambio
-                WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+                WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(((SELECT adm_aprobacion.fecha_vobo FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11 and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC LIMIT 1)),'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+                
+                DB::raw("(SELECT adm_aprobacion.fecha_vobo 
+                FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS fecha_aprobacion"),
+
+                DB::raw("(SELECT sis_usua.nombre_corto 
+                FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                inner join configuracion.sis_usua on sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS usuario_aprobador"),
                 
 
             )
@@ -453,6 +586,13 @@ class ReporteGastoController extends Controller
             return datatables($listado)
             ->editColumn('fecha_registro', function ($data) {
                 return date('d-m-Y', strtotime($data->fecha_registro));
+            })
+            ->editColumn('fecha_aprobacion', function ($data) {
+                if(isset($data->fecha_aprobacion) && $data->fecha_aprobacion != null){
+                    return date('d-m-Y', strtotime($data->fecha_aprobacion));
+                }else{
+                    return '';
+                }
             })
             ->addColumn('hora_registro', function ($data) { return  date('h:m:s', strtotime($data->fecha_registro)); })
             ->filterColumn('codigo', function ($query, $keyword) {
