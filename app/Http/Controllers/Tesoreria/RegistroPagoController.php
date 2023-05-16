@@ -943,7 +943,7 @@ class RegistroPagoController extends Controller
             }
         }
         if(count($idRequerimientoList)>0){
-            $adjuntoPadre= AdjuntoRequerimiento::whereIn('id_requerimiento',$idRequerimientoList)->where('alm_req_adjuntos.estado','!=',7)->get();
+            $adjuntoPadre= AdjuntoRequerimiento::with('categoriaAdjunto')->whereIn('id_requerimiento',$idRequerimientoList)->where('alm_req_adjuntos.estado','!=',7)->get();
         }
         if(count($idDetalleRequerimientoList)>0){
             $adjuntoDetalle= AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->where('alm_det_req_adjuntos.estado','!=',7)->get();

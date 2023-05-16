@@ -764,7 +764,7 @@ function verAdjuntosOrden(id, codigo) {
                 response.adjuntoPadre.forEach(function (element) {
                     html += `<tr>
                         <td><a target="_blank" href="/files/necesidades/requerimientos/bienes_servicios/cabecera/${element.archivo}">${element.archivo}</a></td>
-                        <td>${element.categoria_adjunto !== null ? element.categoria_adjunto.descripcion : ''}</td>
+                        <td>${element.categoria_adjunto != null ? element.categoria_adjunto.descripcion : ''}</td>
                     </tr>`;
                 });
                 $('#adjuntosCabecera tbody').html(html);
