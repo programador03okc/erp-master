@@ -30,9 +30,8 @@
             <th rowspan="2" style="background-color:#cccccc;">Tipo cambio (según la fecha de aprobación)</th>
             <th rowspan="2" style="background-color:#cccccc;">Fecha de aprobación</th>
             <th rowspan="2" style="background-color:#cccccc;">Usuario aprobador</th>
-            <th rowspan="2" style="background-color:#cccccc;">Nombre Destinatario</th>
-            <th rowspan="2" style="background-color:#cccccc;">Tipo Documento Destinatario</th>
-            <th rowspan="2" style="background-color:#cccccc;">Nro Documento Destinatario</th>
+            <th colspan="3" style="background-color:#cccccc;">Destinatario</th>
+            
             <th rowspan="2" style="background-color:#cccccc;">subtotal soles (a tipo cambio)</th>
             <th rowspan="2" style="background-color:#cccccc;"  width="80">Observación</th>
             <th rowspan="2" style="background-color:#cccccc;">Estado Requerimiento</th>
@@ -48,6 +47,10 @@
             <th style="background-color:#cccccc;" width="20">Partida</th>
             <th style="background-color:#cccccc;" width="10">Cod.sub Partida</th>
             <th style="background-color:#cccccc;" width="20">Des.sub Partida</th>
+
+            <th style="background-color:#cccccc;">Nombre Destinatario</th>
+            <th style="background-color:#cccccc;">Tipo Documento Destinatario</th>
+            <th style="background-color:#cccccc;">Nro Documento Destinatario</th>
         </tr>
     </thead>
     <tbody>

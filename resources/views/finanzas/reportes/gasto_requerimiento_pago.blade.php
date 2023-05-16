@@ -59,9 +59,7 @@ Lista de gastos requerimiento pago
                                         <th rowspan="2" style="background-color:#787878;">Tipo Cambio (según la fecha de aprobación)</th>
                                         <th rowspan="2" style="background-color:#787878;">Fecha aprobación</th>
                                         <th rowspan="2" style="background-color:#787878;">Usuario Aprobador</th>
-                                        <th rowspan="2" style="background-color:#787878;">Nombre Destinatario</th>
-                                        <th rowspan="2" style="background-color:#787878;">Tipo Documento Destinatario</th>
-                                        <th rowspan="2" style="background-color:#787878;">Nro Documento Destinatario</th>
+                                        <th colspan="3" style="background-color:#787878;">Destinatario</th>
                                         <th rowspan="2" style="background-color:#787878;">Subtotal (soles)</th>
                                         <th rowspan="2" style="background-color:#787878;" width="80">Observación</th>
                                         <th rowspan="2" style="background-color:#787878;">Fecha Registro</th>
@@ -80,6 +78,10 @@ Lista de gastos requerimiento pago
                                         <th style="background-color:#787878;" width="20">Partida</th>
                                         <th style="background-color:#787878;" width="10">Cod.sub Partida</th>
                                         <th style="background-color:#787878;" width="20">Des.sub Partida</th>
+
+                                        <th style="background-color:#787878;">Nombre Destinatario</th>
+                                        <th style="background-color:#787878;">Tipo Documento Destinatario</th>
+                                        <th style="background-color:#787878;">Nro Documento Destinatario</th>
                                     </tr>
                                 </thead>
                                 <tbody>
