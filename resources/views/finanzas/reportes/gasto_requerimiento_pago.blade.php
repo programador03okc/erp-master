@@ -56,7 +56,9 @@ Lista de gastos requerimiento pago
                                         <th rowspan="2" style="background-color:#787878;">Precio Unitario</th>
                                         <th rowspan="2" style="background-color:#787878;">Subtotal</th>
                                         <th rowspan="2" style="background-color:#787878;">Moneda</th>
-                                        <th rowspan="2" style="background-color:#787878;">Tipo Cambio</th>
+                                        <th rowspan="2" style="background-color:#787878;">Tipo Cambio (según la fecha de aprobación)</th>
+                                        <th rowspan="2" style="background-color:#787878;">Fecha aprobación</th>
+                                        <th rowspan="2" style="background-color:#787878;">Usuario Aprobador</th>
                                         <th rowspan="2" style="background-color:#787878;">Subtotal (soles)</th>
                                         <th rowspan="2" style="background-color:#787878;" width="80">Observación</th>
                                         <th rowspan="2" style="background-color:#787878;">Fecha Registro</th>

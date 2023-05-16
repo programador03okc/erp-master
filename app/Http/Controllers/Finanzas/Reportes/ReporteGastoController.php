@@ -136,6 +136,7 @@ class ReporteGastoController extends Controller
                 and log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento limit 1) AS subtotal_orden_considera_igv"),
 
                 'alm_req.fecha_requerimiento',
+
                 DB::raw("(SELECT cont_tp_cambio.venta  
                 FROM contabilidad.cont_tp_cambio
                 WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(alm_req.fecha_requerimiento,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
@@ -449,12 +450,25 @@ class ReporteGastoController extends Controller
                 FROM contabilidad.cont_tp_cambio
                 WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS subtotal_soles"),
 
-                DB::raw("(SELECT cont_tp_cambio.venta  
+                DB::raw("(SELECT cont_tp_cambio.venta
                 FROM contabilidad.cont_tp_cambio
-                WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
-                
+                WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(((SELECT adm_aprobacion.fecha_vobo FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC LIMIT 1)),'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+
+                DB::raw("(SELECT adm_aprobacion.fecha_vobo 
+                FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS fecha_aprobacion"),
+    
+                DB::raw("(SELECT sis_usua.nombre_corto 
+                FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                inner join configuracion.sis_usua on sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS usuario_aprobador"),
+
             )
- 
+
             ->where([['requerimiento_pago_detalle.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 7]])
             ->orderBy('requerimiento_pago_detalle.fecha_registro', 'desc')
             ->get();
@@ -545,9 +559,25 @@ class ReporteGastoController extends Controller
                 WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS subtotal_soles"),
 
                 
-                DB::raw("(SELECT cont_tp_cambio.venta  
+                // DB::raw("(SELECT cont_tp_cambio.venta  
+                // FROM contabilidad.cont_tp_cambio
+                // WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+                DB::raw("(SELECT cont_tp_cambio.venta
                 FROM contabilidad.cont_tp_cambio
-                WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(requerimiento_pago.fecha_registro,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+                WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(((SELECT adm_aprobacion.fecha_vobo FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11 and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC LIMIT 1)),'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
+                
+                DB::raw("(SELECT adm_aprobacion.fecha_vobo 
+                FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS fecha_aprobacion"),
+
+                DB::raw("(SELECT sis_usua.nombre_corto 
+                FROM administracion.adm_documentos_aprob 
+                inner join administracion.adm_aprobacion on adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
+                inner join configuracion.sis_usua on sis_usua.id_usuario = adm_aprobacion.id_usuario
+                WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS usuario_aprobador"),
                 
 
             )
@@ -556,6 +586,13 @@ class ReporteGastoController extends Controller
             return datatables($listado)
             ->editColumn('fecha_registro', function ($data) {
                 return date('d-m-Y', strtotime($data->fecha_registro));
+            })
+            ->editColumn('fecha_aprobacion', function ($data) {
+                if(isset($data->fecha_aprobacion) && $data->fecha_aprobacion != null){
+                    return date('d-m-Y', strtotime($data->fecha_aprobacion));
+                }else{
+                    return '';
+                }
             })
             ->addColumn('hora_registro', function ($data) { return  date('h:m:s', strtotime($data->fecha_registro)); })
             ->filterColumn('codigo', function ($query, $keyword) {

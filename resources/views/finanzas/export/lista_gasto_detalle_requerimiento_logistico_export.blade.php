@@ -114,6 +114,7 @@
                     <td>{{ $item['subtotal_orden_considera_igv'] }}</td>
                     <td>{{ $item['estado_orden'] }}</td>
                     <td>{{ $item['estado_pago'] }}</td>
+
                     <td>{{ $item['estado_despacho'] }}</td>
                     <td>{{ $item['nro_salida_int'] }}</td>
                     <td>{{ $item['nro_salida_ext'] }}</td>
@@ -121,6 +122,9 @@
                     <td>{{ $item['fecha_salida'] }}</td>
                     <td>{{ $item['codigo_producto_salida'] }}</td>
                     <td>{{ $item['cantidad_salida'] }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
 
                     <td>{{ $item['tipo_cambio'] }}</td>
                     <td>{{ $item['observacion'] }}</td>

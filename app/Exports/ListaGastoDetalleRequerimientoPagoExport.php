@@ -51,6 +51,8 @@ class ListaGastoDetalleRequerimientoPagoExport implements FromView,WithColumnFor
                     'descripcion'=>  str_replace("'", "", str_replace("", "" ,$value->descripcion)),
                     'fecha_registro'=> date('d/m/Y', strtotime($value->fecha_registro)),
                     'tipo_cambio'=> $value->tipo_cambio,
+                    'fecha_aprobacion'=> date('d/m/Y', strtotime($value->fecha_aprobacion)),
+                    'usuario_aprobador'=> $value->usuario_aprobador,
                     'hora_registro'=> date('H:i:s', strtotime($value->fecha_registro)),
                     'tipo_requerimiento'=> $value->tipo_requerimiento,
                     'empresa_razon_social'=> $value->empresa_razon_social,

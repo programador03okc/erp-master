@@ -27,6 +27,9 @@
             <th rowspan="2" style="background-color:#cccccc;">Precio Unitario</th>
             <th rowspan="2" style="background-color:#cccccc;">Subtotal</th>
             <th rowspan="2" style="background-color:#cccccc;">Moneda</th>
+            <th rowspan="2" style="background-color:#cccccc;">Tipo cambio (según la fecha de aprobación)</th>
+            <th rowspan="2" style="background-color:#cccccc;">Fecha de aprobación</th>
+            <th rowspan="2" style="background-color:#cccccc;">Usuario aprobador</th>
             <th rowspan="2" style="background-color:#cccccc;">subtotal soles (a tipo cambio)</th>
             <th rowspan="2" style="background-color:#cccccc;"  width="80">Observación</th>
             <th rowspan="2" style="background-color:#cccccc;">Estado Requerimiento</th>
@@ -79,6 +82,9 @@
                     <td>{{ $item['precio_unitario'] }}</td>
                     <td>{{ $item['subtotal'] }}</td>
                     <td>{{ $item['simbolo_moneda'] }}</td>
+                    <td>{{ $item['tipo_cambio'] }}</td>
+                    <td>{{ $item['fecha_aprobacion'] }}</td>
+                    <td>{{ $item['usuario_aprobador'] }}</td>
                     <td>{{ $item['subtotal_soles'] }}</td>
                     <td>{{ $item['comentario'] }}</td>
                     <td>{{ $item['estado_requerimiento'] }}</td>
