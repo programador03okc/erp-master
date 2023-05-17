@@ -257,6 +257,7 @@ class ComprasPendientesController extends Controller
 
 
         $alm_req = Requerimiento::join('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
+            ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
             ->leftJoin('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'alm_req.id_almacen')
             ->leftJoin('almacen.tipo_cliente', 'tipo_cliente.id_tipo_cliente', '=', 'alm_req.tipo_cliente')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
@@ -282,6 +283,7 @@ class ComprasPendientesController extends Controller
             ->select(
                 'alm_req.id_requerimiento',
                 'alm_req.codigo',
+                'adm_prioridad.descripcion as descripcion_prioridad',
                 'alm_req.concepto',
                 'alm_req.observacion',
                 'alm_req.id_moneda',
@@ -434,7 +436,7 @@ class ComprasPendientesController extends Controller
                 } catch (\Throwable $th) {
                 }
             })
-            ->toJson();
+            ->rawColumns(['termometro'])->toJson();
     }
 
     public function listarRequerimientosAtendidos(Request $request)

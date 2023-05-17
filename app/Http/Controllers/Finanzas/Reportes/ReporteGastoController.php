@@ -394,6 +394,11 @@ class ReporteGastoController extends Controller
 
             ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago.id_estado', '=', 'requerimiento_pago_estado.id_requerimiento_pago_estado')
 
+            ->leftJoin('contabilidad.adm_contri as adm_contri_destinatario', 'requerimiento_pago.id_contribuyente', '=', 'adm_contri_destinatario.id_contribuyente')
+            ->leftJoin('contabilidad.sis_identi as tipo_doc_contrib', 'tipo_doc_contrib.id_doc_identidad', '=', 'adm_contri_destinatario.id_doc_identidad')
+            ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'requerimiento_pago.id_persona')
+            ->leftJoin('contabilidad.sis_identi as tipo_doc_perso', 'tipo_doc_perso.id_doc_identidad', '=', 'rrhh_perso.id_documento_identidad')
+
             ->select(
                 'requerimiento_pago_detalle.descripcion',
                 'requerimiento_pago_detalle.motivo',
@@ -467,6 +472,14 @@ class ReporteGastoController extends Controller
                 inner join configuracion.sis_usua on sis_usua.id_usuario = adm_aprobacion.id_usuario
                 WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS usuario_aprobador"),
 
+                DB::raw("(SELECT CASE WHEN requerimiento_pago.id_persona > 0 THEN CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno)
+                WHEN requerimiento_pago.id_contribuyente >0 THEN adm_contri_destinatario.razon_social ELSE '' END) AS nombre_destinatario"),
+
+                DB::raw("(SELECT CASE WHEN requerimiento_pago.id_persona > 0 THEN tipo_doc_perso.descripcion
+                WHEN requerimiento_pago.id_contribuyente >0 THEN tipo_doc_contrib.descripcion ELSE '' END) AS tipo_documento_destinatario"),
+                
+                DB::raw("(SELECT CASE WHEN requerimiento_pago.id_persona > 0 THEN rrhh_perso.nro_documento
+                WHEN requerimiento_pago.id_contribuyente >0 THEN adm_contri_destinatario.nro_documento ELSE '' END) AS nro_documento_destinatario")
             )
 
             ->where([['requerimiento_pago_detalle.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 7]])
@@ -502,6 +515,12 @@ class ReporteGastoController extends Controller
             ->leftJoin('finanzas.centro_costo as padre_centro_costo', 'padre_centro_costo.id_centro_costo', '=', 'centro_costo.id_padre')
 
             ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago.id_estado', '=', 'requerimiento_pago_estado.id_requerimiento_pago_estado')
+            
+            ->leftJoin('contabilidad.adm_contri as adm_contri_destinatario', 'requerimiento_pago.id_contribuyente', '=', 'adm_contri_destinatario.id_contribuyente')
+            ->leftJoin('contabilidad.sis_identi as tipo_doc_contrib', 'tipo_doc_contrib.id_doc_identidad', '=', 'adm_contri_destinatario.id_doc_identidad')
+            ->leftJoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'requerimiento_pago.id_persona')
+            ->leftJoin('contabilidad.sis_identi as tipo_doc_perso', 'tipo_doc_perso.id_doc_identidad', '=', 'rrhh_perso.id_documento_identidad')
+
 
             ->select(
                 'requerimiento_pago_detalle.descripcion',
@@ -579,6 +598,14 @@ class ReporteGastoController extends Controller
                 inner join configuracion.sis_usua on sis_usua.id_usuario = adm_aprobacion.id_usuario
                 WHERE adm_documentos_aprob.id_doc = requerimiento_pago.id_requerimiento_pago and adm_documentos_aprob.id_tp_documento = 11  and adm_aprobacion.id_vobo =1 ORDER BY adm_aprobacion.fecha_vobo DESC limit 1) AS usuario_aprobador"),
                 
+                DB::raw("(SELECT CASE WHEN requerimiento_pago.id_persona > 0 THEN CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno)
+                WHEN requerimiento_pago.id_contribuyente >0 THEN adm_contri_destinatario.razon_social ELSE '' END) AS nombre_destinatario"),
+
+                DB::raw("(SELECT CASE WHEN requerimiento_pago.id_persona > 0 THEN tipo_doc_perso.descripcion
+                WHEN requerimiento_pago.id_contribuyente >0 THEN tipo_doc_contrib.descripcion ELSE '' END) AS tipo_documento_destinatario"),
+                
+                DB::raw("(SELECT CASE WHEN requerimiento_pago.id_persona > 0 THEN rrhh_perso.nro_documento
+                WHEN requerimiento_pago.id_contribuyente >0 THEN adm_contri_destinatario.nro_documento ELSE '' END) AS nro_documento_destinatario")
 
             )
             ->where([['requerimiento_pago_detalle.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 7]]);
