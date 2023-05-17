@@ -570,7 +570,7 @@ class RequerimientoPendienteView {
             'order': [[4, 'desc'],[1, 'desc']],
             'serverSide': true,
             'destroy': true,
-            // 'stateSave': true,
+            'stateSave': true,
             'bLengthChange': false,
             "pageLength": 20,
             'ajax': {
@@ -593,7 +593,7 @@ class RequerimientoPendienteView {
                 }},
                 { 'data': 'descripcion_prioridad', 'name': 'adm_prioridad.descripcion', 'render': function (data, type, row) {
 
-                    return `${row['descripcion_prioridad']}`;
+                    return `${row['termometro']}`;
                 }},
                 { 'data': 'empresa_sede', 'name': 'sis_sede.descripcion', 'className': 'text-center' },
                 { 'data': 'codigo', 'name': 'alm_req.codigo', 'className': 'text-center',  'render': function (data, type, row) {
