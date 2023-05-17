@@ -209,7 +209,7 @@ class RequerimientoPago {
             'columnDefs': [{ 'aTargets': [0], 'sClass': 'invisible' }],
             'order': [[11, "asc"], [0, "desc"]]
         });
-
+        $('#btn-filtro').find('span.numero-filtros-pagos').text($('input[data-action="click"]:checked').length);
     }
 
     listarOrdenes() {
@@ -473,7 +473,7 @@ class RequerimientoPago {
             ],
             'order': [[11, "asc"], [6, "asc"]]
         });
-
+        $('#btn-filtro-ordenes').find('span.numero-filtros-ordenes').text($('input[data-action="click-ordenes"]:checked').length);
     }
 
     listarComprobantes() {

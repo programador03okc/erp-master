@@ -234,10 +234,10 @@ class RegistroPagoController extends Controller
             $data= $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
         }
         if (!empty($request->fecha_inicio)) {
-            $data= $data->whereDate('requerimiento_pago.fecha_registro','>=', $request->fecha_inicio);
+            $data= $data->whereDate('log_ord_compra.fecha_solicitud_pago','>=', $request->fecha_inicio);
         }
         if (!empty($request->fecha_final)) {
-            $data= $data->whereDate('requerimiento_pago.fecha_registro','<=', $request->fecha_final);
+            $data= $data->whereDate('log_ord_compra.fecha_solicitud_pago','<=', $request->fecha_final);
         }
         return DataTables::eloquent($data)
             ->filterColumn('requerimientos', function ($query, $keyword) {
@@ -1400,10 +1400,10 @@ class RegistroPagoController extends Controller
             $data= $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
         }
         if (!empty($request->fecha_inicio)) {
-            $data= $data->whereDate('requerimiento_pago.fecha_registro','>=', $request->fecha_inicio);
+            $data= $data->whereDate('log_ord_compra.fecha_solicitud_pago','>=', $request->fecha_inicio);
         }
         if (!empty($request->fecha_final)) {
-            $data= $data->whereDate('requerimiento_pago.fecha_registro','<=', $request->fecha_final);
+            $data= $data->whereDate('log_ord_compra.fecha_solicitud_pago','<=', $request->fecha_final);
         }
 
         $data = $data->orderBy('id_orden_compra', 'DESC')->get();
