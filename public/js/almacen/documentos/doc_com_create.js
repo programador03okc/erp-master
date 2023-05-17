@@ -448,6 +448,7 @@ function agregarServicio() {
         'porcentaje_dscto': 0,
         'precio': 0,
         'sub_total': 0,
+        'id_oc_det':null,
         'total': 0,
         'total_dscto': 0
     }
