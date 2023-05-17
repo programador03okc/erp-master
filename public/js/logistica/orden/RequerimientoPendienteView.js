@@ -848,7 +848,7 @@ class RequerimientoPendienteView {
                         color = '#ffffff';
                         break;
                 }
-                $(row.childNodes[11]).css('background-color', color);
+                $(row.childNodes[12]).css('background-color', color);
             }
 
         });
