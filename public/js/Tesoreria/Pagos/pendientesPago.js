@@ -15,16 +15,62 @@ class RequerimientoPago {
         const permisoRegistrar = this.permisoRegistrar;
 
         var vardataTables = funcDatatables();
-
+        let button_excel = {
+            text: '<i class="fas fa-file-excel"></i> Exportar Excel',
+            attr: {
+                id: 'btn-excel',
+                href:'#',
+            },
+            action: () => {
+                window.open('reistro-pagos-exportar-excel', '_blank');
+            },
+            className: 'btn-default btn-sm'
+        };
+        let button_filtro = {
+            text: '<i class="fas fa-filter"></i> Filtros <span class="badge badge-secondary right numero-filtros-pagos" style="padding: 2px 5px !important;">0</span>',
+            attr: {
+                id: 'btn-filtro',
+                href:'#',
+            },
+            action: () => {
+                $('#modal-filtros').modal('show');
+            },
+            className: 'btn-default btn-sm'
+        };
+        let button_excel_filtros = {
+            text: '<i class="fas fa-file-export"></i> Reporte',
+            attr: {
+                id: 'btn-excel-filtro',
+                href:'#',
+                // target:"_blank"
+            },
+            action: () => {
+                let form = $('<form action="exportar-requerimientos-pagos" method="POST" target="_blank">'+
+                    '<input type="hidden" name="_token" value="'+csrf_token+'" >'+
+                    '<input type="hidden" name="prioridad" value="'+$data.prioridad+'" >'+
+                    '<input type="hidden" name="empresa" value="'+$data.empresa+'" >'+
+                    '<input type="hidden" name="estado" value="'+$data.estado+'" >'+
+                    '<input type="hidden" name="fecha_inicio" value="'+$data.fecha_inicio+'" >'+
+                    '<input type="hidden" name="fecha_final" value="'+$data.fecha_final+'" >'+
+                    '<input type="hidden" name="simbolo" value="'+$data.simbolo+'" >'+
+                    '<input type="hidden" name="total" value="'+$data.total+'" >'+
+                '</form>');
+                $('body').append(form);
+                form.submit();
+            },
+            className: 'btn-default btn-sm'
+        };
         tableRequerimientos = $('#listaRequerimientos').DataTable({
             'dom': vardataTables[1],
-            'buttons': vardataTables[2],
+            'buttons': [button_filtro,button_excel_filtros,button_excel],
             'language': vardataTables[0],
             'destroy': true,
+
             'serverSide': true,
             'ajax': {
                 url: 'listarRequerimientosPago',
                 type: 'POST',
+                data:$data,
             },
             'columns': [
                 { 'data': 'id_requerimiento_pago', 'name': 'requerimiento_pago.id_requerimiento_pago' },
@@ -172,16 +218,64 @@ class RequerimientoPago {
         const permisoRegistrar = this.permisoRegistrar;
 
         var vardataTables = funcDatatables();
+        let button_excel = {
+            text: '<i class="fas fa-file-excel"></i> Exportar Excel',
+            attr: {
+                id: 'btn-excel-filtro',
+                href:'#',
+                // target:"_blank"
+            },
+            action: () => {
+                window.open('ordenes-compra-servicio-exportar-excel','_blank');
+            },
+            className: 'btn-default btn-sm'
+        };
+
+        let button_filtro = {
+            text: '<i class="fas fa-filter"></i> Filtros <span class="badge badge-secondary right numero-filtros-ordenes" style="padding: 2px 5px !important;">0</span>',
+            attr: {
+                id: 'btn-filtro-ordenes',
+                href:'#',
+            },
+            action: () => {
+                $('#modal-filtros-ordenes-compra-servicio').modal('show');
+            },
+            className: 'btn-default btn-sm'
+        };
+        let button_excel_filtros = {
+            text: '<i class="fas fa-file-export"></i> Reporte ',
+            attr: {
+                id: 'btn-excel-filtro',
+                href:'#',
+                // target:"_blank"
+            },
+            action: () => {
+                let form = $('<form action="exportar-ordeners-compras-servicios" method="POST" target="_blank">'+
+                    '<input type="hidden" name="_token" value="'+csrf_token+'" >'+
+                    '<input type="hidden" name="prioridad" value="'+$data_orden.prioridad+'" >'+
+                    '<input type="hidden" name="empresa" value="'+$data_orden.empresa+'" >'+
+                    '<input type="hidden" name="estado" value="'+$data_orden.estado+'" >'+
+                    '<input type="hidden" name="fecha_inicio" value="'+$data_orden.fecha_inicio+'" >'+
+                    '<input type="hidden" name="fecha_final" value="'+$data_orden.fecha_final+'" >'+
+                    '<input type="hidden" name="simbolo" value="'+$data_orden.simbolo+'" >'+
+                    '<input type="hidden" name="total" value="'+$data_orden.total+'" >'+
+                '</form>');
+                $('body').append(form);
+                form.submit();
+            },
+            className: 'btn-default btn-sm'
+        };
         tableOrdenes = $('#listaOrdenes').DataTable({
             'dom': vardataTables[1],
-            'buttons': vardataTables[2],
+            'buttons': [button_filtro,button_excel_filtros,button_excel],
             'language': vardataTables[0],
             'pageLength': 10,
             'destroy': true,
             'serverSide': true,
             'ajax': {
                 url: 'listarOrdenesCompra',
-                type: 'POST'
+                type: 'POST',
+                data:$data_orden
             },
             'columns': [
                 { 'data': 'id_orden_compra' },
@@ -305,7 +399,7 @@ class RequerimientoPago {
                                 default:
                                     break;
                             }
-                            console.log(row['id_estado'] == 10  );
+                            // console.log(row['id_estado'] == 10  );
                             return `<div class="btn-group" role="group">
                 ${(row['estado_pago'] == 8 && permisoEnviar == '1' && row['tiene_pago_en_cuotas']===false) ?
                                     `<button type="button" class="autorizar btn btn-info boton" data-toggle="tooltip"
@@ -619,7 +713,7 @@ function verAdjuntos(id, codigo) {
         url: 'verAdjuntos/' + id,
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
+            // console.log(response);
 
             if (response.adjuntoPadre.length > 0) {
                 var html = '';
@@ -684,7 +778,7 @@ function verAdjuntos(id, codigo) {
     });
 
 
-    
+
     obteneAdjuntosPago(id).then((res) => {
         // console.log(res.data);
         let htmlPago = '';
@@ -727,7 +821,7 @@ function verAdjuntosOrden(id, codigo) {
         url: 'verAdjuntosRegistroPagoOrden/' + id,
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             var html = '';
             if (response.adjuntos_pagos_complementarios.length > 0) {
                 // var html = '';
@@ -769,7 +863,7 @@ function verAdjuntosOrden(id, codigo) {
                 });
                 $('#adjuntosCabecera tbody').html(html);
             }
-        
+
             if (response.adjuntoDetalle.length > 0) {
                 var html = '';
                 response.adjuntoDetalle.forEach(function (element) {
@@ -792,7 +886,7 @@ function verAdjuntosOrden(id, codigo) {
     obteneAdjuntosOrden(id).then((res) => {
 
         let htmlAdjunto = '';
-        console.log(res);
+        // console.log(res);
         if (res.length > 0) {
             (res).forEach(element => {
 
@@ -826,7 +920,7 @@ function verAdjuntosOrden(id, codigo) {
     }).catch(function (err) {
         console.log(err)
     })
-    
+
     obteneAdjuntosPago(id).then((res) => {
         // console.log(res.data);
         let htmlPago = '';
@@ -987,7 +1081,7 @@ function formatPagos(table_id, id, row, tipo) {
         url: 'listarPagos/' + tipo + '/' + id,
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             var html = '';
             var i = 1;
 
@@ -1062,7 +1156,7 @@ function verAdjuntosPago(id_pago) {
             url: 'verAdjuntosPago/' + id_pago,
             dataType: 'JSON',
             success: function (response) {
-                console.log(response);
+                // console.log(response);
                 if (response.length > 0) {
                     var html = '';
                     response.forEach(function (element) {
@@ -1088,7 +1182,7 @@ function actualizarEstadoPago() {
         url: 'actualizarEstadoPago',
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             Lobibox.notify('success', {
                 size: "mini",
                 rounded: true,
@@ -1175,10 +1269,10 @@ $(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
                 contentType: false,
                 dataType: 'JSON',
                 beforeSend: (data) => {
-                    console.log(data);
+                    // console.log(data);
                 }
             }).done(function(response) {
-                console.log(response);
+                // console.log(response);
                 return response
             }).fail( function( jqXHR, textStatus, errorThrown ){
                 console.log(jqXHR);
@@ -1189,7 +1283,7 @@ $(document).on('submit','[data-form="guardar-adjuntos"]',function (e) {
           },
       }).then((result) => {
         if (result.isConfirmed) {
-            console.log(result.value.status);
+            // console.log(result.value.status);
             if (result.value.status=='success') {
                 $('#modal-verAdjuntos').modal('hide');
             }
@@ -1234,7 +1328,7 @@ function formatPagosEnCuotas(table_id, id, row, tipo) {
         url: 'listarPagosEnCuotas/' + tipo + '/' + id,
         dataType: 'JSON',
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             var html = '';
             var i = 1;
 
@@ -1337,3 +1431,166 @@ function obteneAdjuntosPago(idRequerimiento) {
         });
     });
 }
+
+let $data = {
+    prioridad:'',
+    empresa:'',
+    estado:'',
+    fecha_inicio:'',
+    fecha_final:'',
+    simbolo:'',
+    total:''
+};
+let $data_orden = {
+    prioridad:'',
+    empresa:'',
+    estado:'',
+    fecha_inicio:'',
+    fecha_final:'',
+    simbolo:'',
+    total:''
+};
+// #filtro para requerimientos de pago
+$('[data-action="click"]').change(function (e) {
+    e.preventDefault();
+    let data_contenido = $(this).val();
+    let from_control = $(this).closest('[data-section="'+data_contenido+'"]').find('.form-control');
+
+    // console.log($(this).prop('checked'));
+    if( $(this).prop('checked') ) {
+        from_control.removeAttr('disabled');
+        llenarDataJson(data_contenido, $(this));
+    }else{
+        from_control.attr('disabled','true');
+        llenarDataJson(data_contenido, $(this));
+    }
+});
+
+$('[data-action="select"]').change(function (e) {
+    e.preventDefault();
+    let this_click = $(this).closest('div.row').find('[data-action="click"]');
+    let key = $(this).closest('div.row').attr('data-section');
+    llenarDataJson(key, this_click);
+});
+
+function llenarDataJson(key, this_click) {
+    let section = this_click.closest('[data-section="'+key+'"]');
+
+    switch (key) {
+        case "prioridad":
+            if (this_click.prop('checked')) {
+                $data.prioridad = section.find('select[name="prioridad"]').val();
+
+            }else{
+                $data.prioridad = '';
+            }
+
+        break;
+        case "empresa":
+            if (this_click.prop('checked')) {
+                $data.empresa = section.find('select[name="empresa"]').val();
+            }else{
+                $data.empresa = '';
+            }
+        break;
+        case "estado":
+            if (this_click.prop('checked')) {
+                $data.estado = section.find('select[name="estado"]').val();
+            }else{
+                $data.estado = '';
+            }
+        break;
+        case "fechas":
+            if (this_click.prop('checked')) {
+                $data.fecha_inicio = section.find('[name="fecha_inicio"]').val();
+                $data.fecha_final = section.find('[name="fecha_final"]').val();
+            }else{
+                $data.fecha_inicio = '';
+                $data.fecha_final = '';
+            }
+        break;
+        case "monto":
+            if (this_click.prop('checked')) {
+                $data.simbolo = section.find('select[name="simbolo"]').val();
+                $data.total = section.find('input[name="total"]').val();
+            }else{
+                $data.simbolo = '';
+                $data.total = '';
+            }
+        break;
+    }
+    // console.log($data);
+ }
+
+
+$('#modal-filtros').on('hidden.bs.modal', () => {
+    let clase = new RequerimientoPago();
+    clase.listarRequerimientos();
+    $('#btn-filtro').find('span.numero-filtros-pagos').text($('input[data-action="click"]:checked').length);
+});
+// ----------------------------------------------------
+
+$('[data-action="click-ordenes"]').change(function (e) {
+    e.preventDefault();
+    let data_contenido = $(this).val();
+    let from_control = $(this).closest('[data-section="'+data_contenido+'"]').find('.form-control');
+
+    // console.log($(this).prop('checked'));
+    if( $(this).prop('checked') ) {
+        from_control.removeAttr('disabled');
+        llenarDataJsonOrdenes(data_contenido, $(this));
+    }else{
+        from_control.attr('disabled','true');
+        llenarDataJsonOrdenes(data_contenido, $(this));
+    }
+});
+$('[data-action="select-orden"]').change(function (e) {
+    e.preventDefault();
+    let this_click = $(this).closest('div.row').find('[data-action="click-ordenes"]');
+    let key = $(this).closest('div.row').attr('data-section');
+    llenarDataJsonOrdenes(key, this_click);
+});
+function llenarDataJsonOrdenes(key, this_click) {
+    let section = this_click.closest('[data-section="'+key+'"]');
+
+    switch (key) {
+        case "prioridad":
+            if (this_click.prop('checked')) {
+                $data_orden.prioridad = section.find('select[name="prioridad"]').val();
+
+            }else{
+                $data_orden.prioridad = '';
+            }
+
+        break;
+        case "empresa":
+            if (this_click.prop('checked')) {
+                $data_orden.empresa = section.find('select[name="empresa"]').val();
+            }else{
+                $data_orden.empresa = '';
+            }
+        break;
+        case "estado":
+            if (this_click.prop('checked')) {
+                $data_orden.estado = section.find('select[name="estado"]').val();
+            }else{
+                $data_orden.estado = '';
+            }
+        break;
+        case "fechas":
+            if (this_click.prop('checked')) {
+                $data_orden.fecha_inicio = section.find('[name="fecha_inicio"]').val();
+                $data_orden.fecha_final = section.find('[name="fecha_final"]').val();
+            }else{
+                $data_orden.fecha_inicio = '';
+                $data_orden.fecha_final = '';
+            }
+        break;
+    }
+}
+
+$('#modal-filtros-ordenes-compra-servicio').on('hidden.bs.modal', () => {
+    let clase = new RequerimientoPago();
+    clase.listarOrdenes();
+    $('#btn-filtro-ordenes').find('span.numero-filtros-ordenes').text($('input[data-action="click-ordenes"]:checked').length);
+});

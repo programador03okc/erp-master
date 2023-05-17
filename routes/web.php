@@ -2176,6 +2176,10 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('ordenes-compra-servicio-exportar-excel', 'Tesoreria\RegistroPagoController@ordenesCompraServicioExportarExcel');
 				Route::get('listar-archivos-adjuntos-orden/{id_order}', 'OrdenController@listarArchivosOrder');
 
+                #exportar excel con los fltros aplicados
+                Route::post('exportar-requerimientos-pagos', 'Tesoreria\RegistroPagoController@exportarRequerimientosPagos')->name('exportar-requerimientos-pagos');
+                #exportar excel con los fltros aplicados
+                Route::post('exportar-ordeners-compras-servicios', 'Tesoreria\RegistroPagoController@exportarOrdenesComprasServicios')->name('exportar-ordeners-compras-servicios');
 				// lista adjuntos pago
 				// Route::get('adjuntos-pago/{id}', 'OrdenController@listarArchivosOrder');
 			});
