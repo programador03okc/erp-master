@@ -79,6 +79,9 @@ class ListaGastoDetalleRequerimientoLogisticoExport implements FromView, WithCol
                 'fecha_salida'=>$element->fecha_salida,
                 'codigo_producto_salida'=>$element->codigo_producto_salida,
                 'cantidad_salida'=>$element->cantidad_salida,
+                'moneda_producto_salida'=>$element->moneda_producto_salida,
+                'costo_unitario_salida'=>$element->costo_unitario_salida,
+                'costo_total_salida'=>$element->costo_total_salida
 
             ];
         }

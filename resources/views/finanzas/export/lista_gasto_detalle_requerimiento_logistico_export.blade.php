@@ -122,9 +122,9 @@
                     <td>{{ $item['fecha_salida'] }}</td>
                     <td>{{ $item['codigo_producto_salida'] }}</td>
                     <td>{{ $item['cantidad_salida'] }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ $item['moneda_producto_salida'] }}</td>
+                    <td>{{ $item['costo_unitario_salida'] }}</td>
+                    <td>{{ $item['costo_total_salida'] }}</td>
 
                     <td>{{ $item['tipo_cambio'] }}</td>
                     <td>{{ $item['observacion'] }}</td>

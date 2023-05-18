@@ -173,17 +173,47 @@ class ReporteGastoController extends Controller
                 DB::raw("(SELECT alm_prod.codigo
                 FROM almacen.orden_despacho_det
                 left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
-                left join almacen.alm_prod on alm_prod.id_producto = guia_ven_det.id_producto 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.alm_prod on alm_prod.id_producto = mov_alm_det.id_producto 
                 WHERE orden_despacho_det.id_od = orden_despacho.id_od 
                 and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                 order by orden_despacho.fecha_registro desc limit 1) AS codigo_producto_salida"),
-
-                DB::raw("(SELECT guia_ven_det.cantidad
+                
+                DB::raw("(SELECT mov_alm_det.cantidad
                 FROM almacen.orden_despacho_det
                 left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
                 WHERE orden_despacho_det.id_od = orden_despacho.id_od 
                 and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                 order by orden_despacho.fecha_registro desc limit 1) AS cantidad_salida"),
+
+                DB::raw("(SELECT alm_und_medida.abreviatura
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.alm_prod on alm_prod.id_producto = mov_alm_det.id_producto 
+                left join almacen.alm_und_medida on alm_und_medida.id_unidad_medida = alm_prod.id_unidad_medida 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS moneda_producto_salida"),
+
+                DB::raw("(SELECT round((mov_alm_det.valorizacion::numeric / mov_alm_det.cantidad::numeric),2)
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det                 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS costo_unitario_salida"),
+                
+                DB::raw("(SELECT round(mov_alm_det.valorizacion::numeric ,2)
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det                 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS costo_total_salida"),
+
+                
             )
             ->where([['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]])
             ->orderBy('alm_det_req.fecha_registro', 'desc')
@@ -333,17 +363,45 @@ class ReporteGastoController extends Controller
                 DB::raw("(SELECT alm_prod.codigo
                 FROM almacen.orden_despacho_det
                 left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
-                left join almacen.alm_prod on alm_prod.id_producto = guia_ven_det.id_producto 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.alm_prod on alm_prod.id_producto = mov_alm_det.id_producto 
                 WHERE orden_despacho_det.id_od = orden_despacho.id_od 
                 and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                 order by orden_despacho.fecha_registro desc limit 1) AS codigo_producto_salida"),
                 
-                DB::raw("(SELECT guia_ven_det.cantidad
+                DB::raw("(SELECT mov_alm_det.cantidad
                 FROM almacen.orden_despacho_det
                 left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
                 WHERE orden_despacho_det.id_od = orden_despacho.id_od 
                 and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                 order by orden_despacho.fecha_registro desc limit 1) AS cantidad_salida"),
+
+                DB::raw("(SELECT alm_und_medida.abreviatura
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.alm_prod on alm_prod.id_producto = mov_alm_det.id_producto 
+                left join almacen.alm_und_medida on alm_und_medida.id_unidad_medida = alm_prod.id_unidad_medida 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS moneda_producto_salida"),
+
+                DB::raw("(SELECT round((mov_alm_det.valorizacion::numeric / mov_alm_det.cantidad::numeric),2)
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det                 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS costo_unitario_salida"),
+                
+                DB::raw("(SELECT round(mov_alm_det.valorizacion::numeric ,2)
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det                 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS costo_total_salida"),
                 
             )
             ->where([['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]]);
