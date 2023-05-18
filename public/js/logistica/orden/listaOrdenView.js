@@ -860,6 +860,7 @@ class ListaOrdenView {
                 document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
 
                 obtenerContribuyente(obj.dataset.idContribuyentePago);
+
                 obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyentePago);
             }
         } else {

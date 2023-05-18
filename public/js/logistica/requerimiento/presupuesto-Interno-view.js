@@ -160,16 +160,16 @@ class PresupuestoInternoView{
                     let hasCursor='';
                     let btnStatus='';
                     
-                    if(idDivision !=10 && detalle.partida.startsWith(partidaRemuneraciones)==true){
-                        hasOpacity= '0.4';
-                        hasCursor= 'not-allowed;';
-                        btnStatus = 'disabled';
-                    }else{
+                    // if(idDivision !=10 && detalle.partida.startsWith(partidaRemuneraciones)==true){
+                    //     hasOpacity= '0.4';
+                    //     hasCursor= 'not-allowed;';
+                    //     btnStatus = 'disabled';
+                    // }else{
                         hasOpacity='1';
                         hasCursor='pointer';
                         btnStatus = '';
                         
-                    }
+                    // }
 
                     if(detalle.registro==1){
                         html += `
