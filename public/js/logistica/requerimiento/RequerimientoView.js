@@ -2395,19 +2395,19 @@ class RequerimientoView {
     
                 }
             }
-            // if (tbodyChildren[index].querySelector("input[class~='centroCosto']").value == '') {
-            //     continuar = false;
-            //     if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
-            //         let newSpanInfo = document.createElement("span");
-            //         newSpanInfo.classList.add('text-danger');
-            //         newSpanInfo.textContent = 'Ingrese un centro de costo';
-            //         tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').appendChild(newSpanInfo);
-            //         tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
-            //     }
+                if (tbodyChildren[index].querySelector("input[class~='centroCosto']").value == '') {
+                    continuar = false;
+                    if (tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("span") == null) {
+                        let newSpanInfo = document.createElement("span");
+                        newSpanInfo.classList.add('text-danger');
+                        newSpanInfo.textContent = 'Ingrese un centro de costo';
+                        tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').appendChild(newSpanInfo);
+                        tbodyChildren[index].querySelector("input[class~='centroCosto']").closest('td').querySelector("div[class~='form-group']").classList.add('has-error');
+                    }
 
-            // }
+                }
 
-            if (tbodyChildren[index].querySelector("input[class~='cantidad']").value == '') {
+            if (tbodyChildren[index].querySelector("input[class~='cantidad']").value == '' || tbodyChildren[index].querySelector("input[class~='cantidad']").value <= 0) {
                 continuar = false;
                 if (tbodyChildren[index].querySelector("input[class~='cantidad']").closest('td').querySelector("span") == null) {
                     let newSpanInfo = document.createElement("span");
@@ -2419,7 +2419,7 @@ class RequerimientoView {
 
             }
 
-            if (tbodyChildren[index].querySelector("input[class~='precio']").value == '') {
+            if (tbodyChildren[index].querySelector("input[class~='precio']").value == '' || tbodyChildren[index].querySelector("input[class~='precio']").value <= 0) {
                 continuar = false;
                 if (tbodyChildren[index].querySelector("input[class~='precio']").closest('td').querySelector("span") == null) {
                     let newSpanInfo = document.createElement("span");

@@ -63,7 +63,7 @@ class ReporteGastoController extends Controller
             ->leftJoin('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
             ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
             ->leftJoin('almacen.orden_despacho', 'orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento')
-            ->leftJoin('administracion.adm_estado_doc as estado_despacho', 'estado_despacho.id_estado_doc', '=', 'orden_despacho.estado')
+            ->leftJoin('administracion.adm_estado_doc as estado_despacho', 'estado_despacho.id_estado_doc', '=', 'alm_req.estado_despacho')
 
 
             ->select(

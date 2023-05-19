@@ -49,14 +49,14 @@ class ListaGastoDetalleRequerimientoPagoExport implements FromView,WithColumnFor
                     'motivo'=> str_replace("'", "", str_replace("", "" ,$value->motivo)),
                     'concepto'=> str_replace("'", "", str_replace("", "" ,$value->concepto)),
                     'descripcion'=>  str_replace("'", "", str_replace("", "" ,$value->descripcion)),
-                    'fecha_registro'=> date('d/m/Y', strtotime($value->fecha_registro)),
+                    'fecha_registro'=> $value->fecha_registro !=null ? date('d/m/Y', strtotime($value->fecha_registro)):'',
                     'tipo_cambio'=> $value->tipo_cambio,
-                    'fecha_aprobacion'=> date('d/m/Y', strtotime($value->fecha_aprobacion)),
+                    'fecha_aprobacion'=> $value->fecha_aprobacion !=null ? date('d/m/Y', strtotime($value->fecha_aprobacion)):'',
                     'usuario_aprobador'=> $value->usuario_aprobador,
                     'nombre_destinatario'=> $value->nombre_destinatario,
                     'tipo_documento_destinatario'=> $value->tipo_documento_destinatario,
                     'nro_documento_destinatario'=> $value->nro_documento_destinatario,
-                    'hora_registro'=> date('H:i:s', strtotime($value->fecha_registro)),
+                    'hora_registro'=> $value->fecha_registro!=null ? date('H:i:s', strtotime($value->fecha_registro)):'',
                     'tipo_requerimiento'=> $value->tipo_requerimiento,
                     'empresa_razon_social'=> $value->empresa_razon_social,
                     'sede'=> $value->sede,
@@ -96,7 +96,10 @@ class ListaGastoDetalleRequerimientoPagoExport implements FromView,WithColumnFor
         return [
             'AC' => NumberFormat::FORMAT_NUMBER,
             'AD' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            'AE' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1
+            'AE' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'AG' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
+            'V' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AH' => NumberFormat::FORMAT_DATE_DDMMYYYY
         ];
     }
 }
