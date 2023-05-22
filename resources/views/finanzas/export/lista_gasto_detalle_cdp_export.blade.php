@@ -28,6 +28,10 @@
             <th style="background-color:#787878;">Costo compra + flete</th>
             <th style="background-color:#787878;">Creado por</th>
             <th style="background-color:#787878;">Fecha creación</th>
+            <th style="background-color:#787878;">Monto adjudicado en Soles</th>
+            <th style="background-color:#787878;">Ganancia</th>
+            <th style="background-color:#787878;">T.C</th>
+            <th style="background-color:#787878;">Estado de aprobación</th>
         </tr>
     </thead>
     <tbody>
@@ -60,7 +64,10 @@
                     <td>{{ $item['costo_compra_mas_flete_proveedor'] }}</td>
                     <td>{{ $item['nombre_autor'] }}</td>
                     <td>{{ $item['created_at'] }}</td>
- 
+                    <td>{{ $item['monto_adjudicado_soles'] }}</td>
+                    <td>{{ $item['ganancia'] }}</td>
+                    <td>{{ $item['tipo_cambio'] }}</td>
+                    <td>{{ $item['estado_aprobacion'] }}</td>
 
                 </tr>
         @endforeach

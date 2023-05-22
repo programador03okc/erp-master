@@ -706,6 +706,7 @@ class ReporteGastoController extends Controller
         
         $listado = CcAmFila::select(
             'oportunidades.codigo_oportunidad',
+            'estados_aprobacion.estado as estado_aprobacion',
             'oportunidades.oportunidad',
             'oportunidades.moneda as moneda_oportunidad',
             'oportunidades.importe as importe_oportunidad',
@@ -758,6 +759,7 @@ class ReporteGastoController extends Controller
     public function listaGastoCDP(){
         $listado = CcAmFila::select(
             'oportunidades.codigo_oportunidad',
+            'estados_aprobacion.estado as estado_aprobacion',
             'oportunidades.oportunidad',
             'oportunidades.moneda as moneda_oportunidad',
             'oportunidades.importe as importe_oportunidad',
