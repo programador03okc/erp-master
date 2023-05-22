@@ -2110,6 +2110,16 @@ Route::group(['middleware' => ['auth']], function () {
                 });
 				Route::get('actualizaEstadoHistorial/{id}/{est}', 'Finanzas\Presupuesto\PresupuestoInternoController@actualizaEstadoHistorial');
             });
+
+            Route::group(['as' => 'normalizar.', 'prefix' => 'normalizar'], function () {
+                Route::get('presupuesto', 'Finanzas\Normalizar\NormalizarController@lista')->name('presupuesto');
+                Route::get('listar', 'Finanzas\Normalizar\NormalizarController@listar')->name('listar');
+                Route::post('listar-requerimientos-pagos', 'Finanzas\Normalizar\NormalizarController@listarRequerimientosPagos')->name('listar-requerimientos-pagos');
+                Route::post('listar-ordenes', 'Finanzas\Normalizar\NormalizarController@listarOrdenes')->name('listar-ordenes');
+                Route::post('obtener-presupuesto', 'Finanzas\Normalizar\NormalizarController@obtenerPresupuesto')->name('obtener-presupuesto');
+                Route::post('vincular-partida', 'Finanzas\Normalizar\NormalizarController@vincularPartida')->name('vincular-partida');
+
+            });
 		});
 
 		Route::group(['as' => 'centro-costos.', 'prefix' => 'centro-costos'], function () {
