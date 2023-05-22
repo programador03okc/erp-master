@@ -10,11 +10,17 @@ function restablecerDefaultModalCuentaDestinatario(){
 
 }
 
-function modalNuevaCuentaDestinatario() {
-    restablecerDefaultModalCuentaDestinatario();
+function obtenerNombreModalPadre(){
+
     if(document.querySelector("div[class='modal fade in']").getAttribute("id")){
         nombreModalPadre="div[id='"+document.querySelector("div[class='modal fade in']").getAttribute("id")+"']";
     }
+}
+
+function modalNuevaCuentaDestinatario() {
+    restablecerDefaultModalCuentaDestinatario();
+
+    obtenerNombreModalPadre();
 
     let idTipoDestinatario = document.querySelector(nombreModalPadre+" select[name='id_tipo_destinatario']").value;
     let idPersona = document.querySelector(nombreModalPadre+" input[name='id_persona']").value;
@@ -226,8 +232,12 @@ function obtenerCuentasBancariasPersona(id_persona) {
 }
 
 function obtenerCuentasBancariasContribuyente(id_contribuyente) {
+
+    obtenerNombreModalPadre();
+
     let option = ``;
-    // console.log(id_contribuyente);
+    // let idMonedaDocumento = document.querySelector(nombreModalPadre+" input[name='id_moneda']").value;
+    // console.log(idMonedaDocumento);
     if (id_contribuyente > 0) {
         $.ajax({
             type: 'GET',
@@ -259,9 +269,10 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
                             data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
                             value="${element.id_cuenta_contribuyente}" ${element.id_cuenta_contribuyente == idCuentePorDefecto ? 'selected' : ''}>
                             ${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}
+                            ${element.moneda != null ? ' ('+element.moneda.descripcion+')' : ''}
                         </option>`;
-                        document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
                     });
+                    document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
 
                     if(idCuentePorDefecto==null || idCuentePorDefecto==''){
                         document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value=document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value;

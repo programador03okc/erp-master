@@ -93,6 +93,9 @@ class PresupuestoInternoView{
         // console.log(data);
 
         let html='';
+        let maximoNivel=0;
+        let idDivision = document.querySelector("select[name='division']").value;
+        let partidaRemuneraciones = '';
 
         data.forEach(presupuesto => {
             html += `
@@ -122,6 +125,28 @@ class PresupuestoInternoView{
             let totalConsumidoMes = 0; 
             let totalSaldoMes = 0; 
             let totalSaldoAño = 0; 
+
+            presupuesto['detalle'].forEach(detalle => { 
+                
+
+                if(detalle.descripcion =='REMUNERACIONES' || detalle.descripcion =='remuneraciones'){
+                    partidaRemuneraciones = detalle.partida;
+                }
+                
+                // * obtener el maximo nivel de partida solo si todo los presup tiene un nivel regular
+                let tam = detalle.partida.split('.').length;
+                if(tam >0){
+                    let aux=tam;
+                    if(tam >= aux){
+                        maximoNivel=tam;
+                    }
+                }
+            });
+
+            
+            
+            
+            
             presupuesto['detalle'].forEach(detalle => {
                 // if (detalle.id_presupuesto_interno == presupuesto.id_presupuesto_interno) {
                     totalPresupuestoAño=$.number((parseFloat(detalle.total_presupuesto_año)),2,".",",");
@@ -129,11 +154,27 @@ class PresupuestoInternoView{
                     totalConsumidoMes=$.number((parseFloat(detalle.total_consumido_mes)),2,".",",");
                     totalSaldoMes=$.number((parseFloat(detalle.total_saldo_mes)),2,".",",");
                     totalSaldoAño=$.number((parseFloat(detalle.total_saldo_año)),2,".",",");
+                    
+                    //* buscar la divsión si es RRHH la familia de remuneraciones debe estar habilitada de lo contrario quedara bloqueada
+                    let hasOpacity='';
+                    let hasCursor='';
+                    let btnStatus='';
+                    
+                    // if(idDivision !=10 && detalle.partida.startsWith(partidaRemuneraciones)==true){
+                    //     hasOpacity= '0.4';
+                    //     hasCursor= 'not-allowed;';
+                    //     btnStatus = 'disabled';
+                    // }else{
+                        hasOpacity='1';
+                        hasCursor='pointer';
+                        btnStatus = '';
+                        
+                    // }
 
                     if(detalle.registro==1){
                         html += `
-                        <tr id="com-${detalle.id_presupuesto_interno_detalle}" class="handleClickaperturaDetalle" data-id-padre="${detalle.id_hijo}" style="margin: 0; cursor: pointer;">
-                        <td><strong>${detalle.partida}</strong></td>
+                        <tr id="com-${detalle.id_presupuesto_interno_detalle}" class="handleClickaperturaDetalle" data-id-padre="${detalle.id_hijo}" style="margin: 0; cursor: ${hasCursor}; opacity:${hasOpacity};">
+                        <td>${detalle.partida.split('.').length == (maximoNivel-1) ?'<i class="fas fa-plus-square" style="color: #3F51B5;padding: 4px;font-size: 14px;"></i>&nbsp;':''} <strong></i>${detalle.partida}</strong></td>
                         <td><strong>${detalle.descripcion}</strong></td>
                         <td class="right" style="text-align:right; background-color: #ddeafb;" ><strong>S/${totalPresupuestoAño}</strong></td>
                         <td class="right" style="text-align:right; background-color: #ddeafb;" ><strong>S/${totalPresupuestoMes}</strong></td>
@@ -142,7 +183,7 @@ class PresupuestoInternoView{
                         <td class="right" style="text-align:right; background-color: #e5fbdd;" ><strong>S/${totalSaldoAño}</strong></td>
                         </tr> `;
                     }else{
-                        html += `<tr id="hijo-${detalle.id_padre}" class="oculto" style="width:100%;">
+                        html += `<tr id="hijo-${detalle.id_padre}" class="oculto" style="width:100%; cursor: ${hasCursor}; opacity:${hasOpacity};"">
                         <td style="width:15%; text-align:left;" name="partida">${detalle.partida}</td>
                         <td style="width:75%; text-align:left;" name="descripcion">${detalle.descripcion}</td>
                         <td style="width:15%; text-align:right; background-color: #ddeafb;" name="total_presupuesto_año" class="right" >S/${totalPresupuestoAño}</td>
@@ -153,7 +194,7 @@ class PresupuestoInternoView{
                         <td style="width:5%; text-align:center;">`;
                         
                         if(parseFloat(totalPresupuestoMes)>0){
-                            html+=`<button class="btn btn-success btn-xs handleClickSelectDetallePresupuesto" 
+                            html+=`<button class="btn btn-success btn-xs handleClickSelectDetallePresupuesto" ${btnStatus}
                             data-id-presupuesto-interno-detalle="${detalle.id_presupuesto_interno_detalle}"
                             data-partida="${detalle.partida}"
                             data-descripcion="${detalle.descripcion}"

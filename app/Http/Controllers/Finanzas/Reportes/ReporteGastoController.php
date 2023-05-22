@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Finanzas\Reportes;
 
+use App\Exports\ListaGastoDetalleCDPExport;
 use App\Exports\ListaGastoDetalleRequerimientoLogisticoExport;
 use App\Exports\ListaGastoDetalleRequerimientoPagoExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Comercial\CuadroCosto\CcAmFila;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
@@ -30,6 +32,11 @@ class ReporteGastoController extends Controller
     public function indexReporteGastoRequerimientoPago()
     {
         return view('finanzas/reportes/gasto_requerimiento_pago');
+    }
+
+    public function indexReporteGastoCDP()
+    {
+        return view('finanzas/reportes/gasto_cdp');
     }
 
 
@@ -63,7 +70,7 @@ class ReporteGastoController extends Controller
             ->leftJoin('logistica.estados_compra', 'estados_compra.id_estado', '=', 'log_ord_compra.estado')
             ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
             ->leftJoin('almacen.orden_despacho', 'orden_despacho.id_requerimiento', '=', 'alm_req.id_requerimiento')
-            ->leftJoin('administracion.adm_estado_doc as estado_despacho', 'estado_despacho.id_estado_doc', '=', 'orden_despacho.estado')
+            ->leftJoin('administracion.adm_estado_doc as estado_despacho', 'estado_despacho.id_estado_doc', '=', 'alm_req.estado_despacho')
 
 
             ->select(
@@ -173,17 +180,47 @@ class ReporteGastoController extends Controller
                 DB::raw("(SELECT alm_prod.codigo
                 FROM almacen.orden_despacho_det
                 left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
-                left join almacen.alm_prod on alm_prod.id_producto = guia_ven_det.id_producto 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.alm_prod on alm_prod.id_producto = mov_alm_det.id_producto 
                 WHERE orden_despacho_det.id_od = orden_despacho.id_od 
                 and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                 order by orden_despacho.fecha_registro desc limit 1) AS codigo_producto_salida"),
-
-                DB::raw("(SELECT guia_ven_det.cantidad
+                
+                DB::raw("(SELECT mov_alm_det.cantidad
                 FROM almacen.orden_despacho_det
                 left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
                 WHERE orden_despacho_det.id_od = orden_despacho.id_od 
                 and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                 order by orden_despacho.fecha_registro desc limit 1) AS cantidad_salida"),
+
+                DB::raw("(SELECT alm_und_medida.abreviatura
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.alm_prod on alm_prod.id_producto = mov_alm_det.id_producto 
+                left join almacen.alm_und_medida on alm_und_medida.id_unidad_medida = alm_prod.id_unidad_medida 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS moneda_producto_salida"),
+
+                DB::raw("(SELECT round((mov_alm_det.valorizacion::numeric / mov_alm_det.cantidad::numeric),2)
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det                 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS costo_unitario_salida"),
+                
+                DB::raw("(SELECT round(mov_alm_det.valorizacion::numeric ,2)
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det                 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS costo_total_salida"),
+
+                
             )
             ->where([['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]])
             ->orderBy('alm_det_req.fecha_registro', 'desc')
@@ -333,17 +370,45 @@ class ReporteGastoController extends Controller
                 DB::raw("(SELECT alm_prod.codigo
                 FROM almacen.orden_despacho_det
                 left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
-                left join almacen.alm_prod on alm_prod.id_producto = guia_ven_det.id_producto 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.alm_prod on alm_prod.id_producto = mov_alm_det.id_producto 
                 WHERE orden_despacho_det.id_od = orden_despacho.id_od 
                 and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                 order by orden_despacho.fecha_registro desc limit 1) AS codigo_producto_salida"),
                 
-                DB::raw("(SELECT guia_ven_det.cantidad
+                DB::raw("(SELECT mov_alm_det.cantidad
                 FROM almacen.orden_despacho_det
                 left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
                 WHERE orden_despacho_det.id_od = orden_despacho.id_od 
                 and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
                 order by orden_despacho.fecha_registro desc limit 1) AS cantidad_salida"),
+
+                DB::raw("(SELECT alm_und_medida.abreviatura
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det 
+                left join almacen.alm_prod on alm_prod.id_producto = mov_alm_det.id_producto 
+                left join almacen.alm_und_medida on alm_und_medida.id_unidad_medida = alm_prod.id_unidad_medida 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS moneda_producto_salida"),
+
+                DB::raw("(SELECT round((mov_alm_det.valorizacion::numeric / mov_alm_det.cantidad::numeric),2)
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det                 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS costo_unitario_salida"),
+                
+                DB::raw("(SELECT round(mov_alm_det.valorizacion::numeric ,2)
+                FROM almacen.orden_despacho_det
+                left join almacen.guia_ven_det on guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle 
+                left join almacen.mov_alm_det on mov_alm_det.id_guia_ven_det = guia_ven_det.id_guia_ven_det                 
+                WHERE orden_despacho_det.id_od = orden_despacho.id_od 
+                and alm_det_req.id_detalle_requerimiento = orden_despacho_det.id_detalle_requerimiento
+                order by orden_despacho.fecha_registro desc limit 1) AS costo_total_salida"),
                 
             )
             ->where([['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]]);
@@ -635,6 +700,122 @@ class ReporteGastoController extends Controller
     {
         return Excel::download(new ListaGastoDetalleRequerimientoPagoExport(), 'reporte_gastos_requerimiento_pago.xlsx');;
     }
+
+    public function dataGastoCDP(){
+
+        
+        $listado = CcAmFila::select(
+            'oportunidades.codigo_oportunidad',
+            'oportunidades.oportunidad',
+            'oportunidades.moneda as moneda_oportunidad',
+            'oportunidades.importe as importe_oportunidad',
+            'oportunidades.created_at as fecha_registro_oportunidad',
+            'estados.estado as estado_oportunidad',
+            'cc.tipo_cambio',
+            'cc.igv',
+            'cc_am_filas.id',
+            'cc_am_filas.id as id_cc_am_filas',
+            'cc_am_filas.id_cc_am',
+            'cc_am_filas.part_no',
+            'cc_am_filas.descripcion',
+            'cc_am_filas.cantidad',
+            'cc_am_filas.pvu_oc',
+            'cc_am_filas.flete_oc',
+            'cc_am_filas.proveedor_seleccionado',
+            'proveedores.razon_social as razon_social_proveedor',
+            'proveedores.ruc as ruc_proveedor',
+            'cc_am_filas.garantia',
+            'tipos_negocio.tipo as tipo_negocio',
+            'origenes_costeo.origen as origen_costo',
+            'cc_am_proveedores.precio as costo_unitario_proveedor',
+            'cc_am_proveedores.moneda as moneda_costo_unitario_proveedor',
+            'cc_am_proveedores.plazo as plazo_proveedor',
+            'cc_am_proveedores.flete as flete_proveedor',
+            'fondos_proveedores.descripcion as fondo_proveedor',
+            'cc_am_filas.id_ultimo_usuario as id_autor',
+            'users.name as nombre_autor',
+            'cc_am_filas.created_at',
+            'cc_am_filas.part_no_producto_transformado',
+            'cc_am_filas.descripcion_producto_transformado',
+            'cc_am_filas.comentario_producto_transformado'
+            )
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'cc_am_filas.id_cc_am')
+        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('mgcp_oportunidades.tipos_negocio', 'tipos_negocio.id', '=', 'oportunidades.id_tipo_negocio')
+        ->leftJoin('mgcp_oportunidades.estados', 'estados.id', '=', 'oportunidades.id_estado')
+        ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id', '=', 'cc_am_filas.proveedor_seleccionado')
+        ->leftJoin('mgcp_cuadro_costos.proveedores', 'proveedores.id', '=', 'cc_am_proveedores.id_proveedor')
+        ->leftJoin('mgcp_cuadro_costos.fondos_proveedores', 'fondos_proveedores.id', '=', 'cc_am_proveedores.id_fondo_proveedor')
+        ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.id_ultimo_usuario')
+        ->leftJoin('mgcp_cuadro_costos.origenes_costeo', 'origenes_costeo.id', '=', 'cc_am_filas.id_origen_costeo')  
+        ->orderBy('oportunidades.codigo_oportunidad', 'desc')
+        ->get();
+
+        return $listado;
+
+    }
+    public function listaGastoCDP(){
+        $listado = CcAmFila::select(
+            'oportunidades.codigo_oportunidad',
+            'oportunidades.oportunidad',
+            'oportunidades.moneda as moneda_oportunidad',
+            'oportunidades.importe as importe_oportunidad',
+            'oportunidades.created_at as fecha_registro_oportunidad',
+            'estados.estado as estado_oportunidad',
+            'cc.tipo_cambio',
+            'cc.igv',
+            'cc_am_filas.id',
+            'cc_am_filas.id as id_cc_am_filas',
+            'cc_am_filas.id_cc_am',
+            'cc_am_filas.part_no',
+            'cc_am_filas.descripcion',
+            'cc_am_filas.cantidad',
+            'cc_am_filas.pvu_oc',
+            'cc_am_filas.flete_oc',
+            'cc_am_filas.proveedor_seleccionado',
+            'proveedores.razon_social as razon_social_proveedor',
+            'proveedores.ruc as ruc_proveedor',
+            'cc_am_filas.garantia',
+            'tipos_negocio.tipo as tipo_negocio',
+            'origenes_costeo.origen as origen_costo',
+            'cc_am_proveedores.precio as costo_unitario_proveedor',
+            'cc_am_proveedores.moneda as moneda_costo_unitario_proveedor',
+            'cc_am_proveedores.plazo as plazo_proveedor',
+            'cc_am_proveedores.flete as flete_proveedor',
+            'fondos_proveedores.descripcion as fondo_proveedor',
+            'cc_am_filas.id_ultimo_usuario as id_autor',
+            'users.name as nombre_autor',
+            'cc_am_filas.created_at',
+            'cc_am_filas.part_no_producto_transformado',
+            'cc_am_filas.descripcion_producto_transformado',
+            'cc_am_filas.comentario_producto_transformado'
+            )
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'cc_am_filas.id_cc_am')
+        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('mgcp_oportunidades.tipos_negocio', 'tipos_negocio.id', '=', 'oportunidades.id_tipo_negocio')
+        ->leftJoin('mgcp_oportunidades.estados', 'estados.id', '=', 'oportunidades.id_estado')
+        ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id', '=', 'cc_am_filas.proveedor_seleccionado')
+        ->leftJoin('mgcp_cuadro_costos.proveedores', 'proveedores.id', '=', 'cc_am_proveedores.id_proveedor')
+        ->leftJoin('mgcp_cuadro_costos.fondos_proveedores', 'fondos_proveedores.id', '=', 'cc_am_proveedores.id_fondo_proveedor')
+        ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.id_ultimo_usuario')
+        ->leftJoin('mgcp_cuadro_costos.origenes_costeo', 'origenes_costeo.id', '=', 'cc_am_filas.id_origen_costeo');
+        
+        return datatables($listado)
+        ->editColumn('created_at', function ($data) {
+            return date('d-m-Y', strtotime($data->created_at));
+        })
+     
+        ->toJson();
+
+        return $listado;
+    }
+
+    public function listaGastoCDPExcel(){
+        return Excel::download(new ListaGastoDetalleCDPExport(), 'reporte_gastos_cdp_pago.xlsx');;
+    }
+
 
 
 }
