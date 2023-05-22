@@ -23,7 +23,7 @@ function lista() {
         'dom': vardataTables[1],
         'buttons': [btnDescargar],
         'language': vardataTables[0],
-        'order': [[4, 'desc']],
+        'order': [[0, 'desc']],
         'bLengthChange': false,
         'serverSide': true,
         'destroy': true,

@@ -1590,7 +1590,7 @@ class PresupuestoInternoController extends Controller
                         if ($requerimiento->id_presupuesto_interno > 0) {
                             $presupuestoInternoDetalle = PresupuestoInternoDetalle::where([
                                 ['id_presupuesto_interno', $requerimiento->id_presupuesto_interno],
-                                ['estado', 1], ['id_presupuesto_interno_detalle', $detalleRequerimiento->partida]
+                                ['estado', 1], ['id_presupuesto_interno_detalle', $detalleRequerimiento->id_partida_pi]
                             ])->first();
                             if ($presupuestoInternoDetalle) {
                                 if ($sumaResta == 'resta') {
@@ -1609,7 +1609,7 @@ class PresupuestoInternoController extends Controller
                                 // PresupuestoInterno::calcularColumnaAuxMensual($requerimiento->id_presupuesto_interno, 3, $detalleRequerimiento->partida, $nombreMes);
                                 $historialPresupuestoInternoSaldo = new HistorialPresupuestoInternoSaldo();
                                 $historialPresupuestoInternoSaldo->id_presupuesto_interno = $requerimiento->id_presupuesto_interno;
-                                $historialPresupuestoInternoSaldo->id_partida = $detalleRequerimiento->partida;
+                                $historialPresupuestoInternoSaldo->id_partida = $detalleRequerimiento->id_partida_pi;
                                 $historialPresupuestoInternoSaldo->tipo = $TipoHistorial;
                                 $historialPresupuestoInternoSaldo->importe = $item->importe_item_para_presupuesto??0;
                                 $historialPresupuestoInternoSaldo->mes = $mesEnDosDigitos;
@@ -1644,11 +1644,11 @@ class PresupuestoInternoController extends Controller
 
                 if($requerimientoPago->id_presupuesto_interno >0){
                     foreach ($detalle as $item) {
-                        if ($item->id_partida > 0) {
+                        if ($item->id_partida_pi > 0) {
 
                             $presupuestoInternoDetalle = PresupuestoInternoDetalle::where([
                                 ['id_presupuesto_interno', $requerimientoPago->id_presupuesto_interno],
-                                ['estado', 1], ['id_presupuesto_interno_detalle', $item->id_partida]
+                                ['estado', 1], ['id_presupuesto_interno_detalle', $item->id_partida_pi]
                             ])->first();
 
                             if ($presupuestoInternoDetalle) {
@@ -1671,7 +1671,7 @@ class PresupuestoInternoController extends Controller
                                 PresupuestoInterno::calcularColumnaAuxMensual($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida, $nombreMes);
                                 $historialPresupuestoInternoSaldo = new HistorialPresupuestoInternoSaldo();
                                 $historialPresupuestoInternoSaldo->id_presupuesto_interno = $requerimientoPago->id_presupuesto_interno;
-                                $historialPresupuestoInternoSaldo->id_partida = $item->id_partida;
+                                $historialPresupuestoInternoSaldo->id_partida = $item->id_partida_pi;
                                 $historialPresupuestoInternoSaldo->tipo = $TipoHistorial;
                                 $historialPresupuestoInternoSaldo->importe = $item->importe_item_para_presupuesto??0;
                                 $historialPresupuestoInternoSaldo->mes = $mesEnDosDigitos;

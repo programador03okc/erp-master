@@ -749,6 +749,7 @@ class ReporteGastoController extends Controller
         ->leftJoin('mgcp_cuadro_costos.fondos_proveedores', 'fondos_proveedores.id', '=', 'cc_am_proveedores.id_fondo_proveedor')
         ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.id_ultimo_usuario')
         ->leftJoin('mgcp_cuadro_costos.origenes_costeo', 'origenes_costeo.id', '=', 'cc_am_filas.id_origen_costeo')  
+        ->orderBy('oportunidades.codigo_oportunidad', 'desc')
         ->get();
 
         return $listado;
