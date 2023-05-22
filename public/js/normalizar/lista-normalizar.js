@@ -113,7 +113,7 @@ function listarRequerimientosPagos() {
             {
                 render: function (data, type, row) {
                     html='';
-                    html+='<button type="button" class="btn text-black btn-flat botonList" data-id="'+row['id_requerimiento_pago']+'" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida"><i class="fas fa-share-square"></i></button>'
+                    html+='<button type="button" class="btn text-black btn-flat botonList" data-id="'+row['id_requerimiento_pago']+'" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida" data-tap="requerimiento de pago"><i class="fas fa-share-square"></i></button>'
 
 
                     html+='';
@@ -296,6 +296,7 @@ function construirDetalleOrdenElaboradas(table_id, row, response) {
 $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partida"]', (e) => {
     e.preventDefault();
     let id = $(e.currentTarget).attr('data-id');
+    let tap = $(e.currentTarget).attr('data-tap');
     let html = ``;
     $('#normalizar-partida').modal('show');
     $.ajax({
@@ -342,6 +343,7 @@ $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partid
                                             <button class="btn btn-default btn-sm"
                                             data-id-presupuesto-interno="`+element.id_presupuesto_interno+`" data-id-presupuesto-interno-detalle="`+element.id_presupuesto_interno_detalle+`"
                                             data-id-requerimiento-pago="`+id+`"
+                                            data-tap="`+tap+`"
                                             data-click="seleccionar-partida">Asignar</button>
                                         </td>
                                     </tr>`;
@@ -367,6 +369,7 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
     let presupuesto_interno_id = $(this).attr('data-id-presupuesto-interno');
     let presupuesto_interno_detalle_id = $(this).attr('data-id-presupuesto-interno-detalle');
     let requerimiento_pago_id = $(this).attr('data-id-requerimiento-pago')
+    let tap = $(this).attr('data-tap')
     let this_button = $(this);
     console.log('ss');
     $.ajax({
@@ -375,7 +378,8 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
         data: {
             presupuesto_interno_id:presupuesto_interno_id,
             presupuesto_interno_detalle_id:presupuesto_interno_detalle_id,
-            requerimiento_pago_id:requerimiento_pago_id
+            requerimiento_pago_id:requerimiento_pago_id,
+            tap:tap
 
         },
         // processData: false,
@@ -396,7 +400,3 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
     });
 });
 
-$('[data-table="lista-partidas"]').on("click", 'button[data-click="seleccionar-partida"]', (e) => {
-    e.preventDefault();
-
-});

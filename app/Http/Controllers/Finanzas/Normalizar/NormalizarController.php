@@ -14,6 +14,7 @@ use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\OrdenesView;
 use App\Models\Tesoreria\RequerimientoPago;
+use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use Yajra\DataTables\Facades\DataTables;
 
 class NormalizarController extends Controller
@@ -97,26 +98,32 @@ class NormalizarController extends Controller
     }
     public function vincularPartida(Request $request)
     {
-        return response()->json($request->all(),200);
-        $variable = $request->tipo;
+        // return response()->json($request->all(),200);exit;
+        $variable = $request->tap;
 
         $afectaPresupuestoInternoResta = null;
         switch ($variable) {
             case 'orden':
+                // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($request->total_pago),'completo');
                 // $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra, $detalleParaPresupuestoRestaArray);
             break;
 
             case 'requerimiento de pago':
-                $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($request->total_pago),'completo');
+                $requerimiento_pago = RequerimientoPago::find($request->requerimiento_pago_id);
+                $requerimiento_pago->id_presupuesto_interno=$request->presupuesto_interno_id;
+                $requerimiento_pago->save();
 
-                // $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
+                $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($requerimiento_pago->monto_total),'completo');
+
+                $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
+                return $afectaPresupuestoInternoResta;exit;
             break;
         }
 
         return response()->json(["success"=>$request->all()],200);
     }
-    public function FunctionName(Type $var = null)
-    {
-        # code...
-    }
+    // public function FunctionName(Type $var = null)
+    // {
+
+    // }
 }
