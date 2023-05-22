@@ -135,13 +135,14 @@ class VentasInternasController extends Controller
                 $requerimiento->id_usuario = $id_usuario;
                 $requerimiento->fecha_requerimiento = $fecha;
                 $requerimiento->concepto = ('Compra segun doc ' . $doc_ven->serie . '-' . $doc_ven->numero).' - V.Int.';
-                $requerimiento->id_grupo = ($req_original!==null ? $req_original->id_grupo : 1);
+                // $requerimiento->id_grupo = ($req_original!==null ? $req_original->id_grupo : 1);
+                $requerimiento->id_grupo = 1;
                 $requerimiento->id_proyecto = (($req_original!==null && $req_original->id_proyecto!==null) ? $req_original->id_proyecto : null);
                 $requerimiento->id_prioridad = 1;
                 $requerimiento->observacion = 'Creado de forma automática por venta interna';
                 $requerimiento->id_moneda = 1;
                 $requerimiento->id_empresa = $doc_ven->id_empresa;
-                $requerimiento->id_periodo = $periodo->id_periodo; // ! actualiza;
+                $requerimiento->id_periodo = $periodo->id_periodo; 
                 $requerimiento->id_sede = $detalle->first()->id_sede;
                 $requerimiento->id_cliente = $doc_ven->id_cliente;
                 $requerimiento->tipo_cliente = 2;
@@ -156,7 +157,7 @@ class VentasInternasController extends Controller
                 $requerimiento->save();
                 
                 // $codigo = Requerimiento::crearCodigo(7, $requerimiento->id_grupo, $requerimiento->id_requerimiento, $periodo->id_periodo); 
-                $codigo = Requerimiento::crearCodigo(7, 1, $requerimiento->id_requerimiento, $periodo->id_periodo); // ! actualiar periodo 
+                $codigo = Requerimiento::crearCodigo(7, 1, $requerimiento->id_requerimiento, $periodo->id_periodo);
 
                 $documento = new Documento();
                     $documento->id_tp_documento = 1;
