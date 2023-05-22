@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Finanzas\Reportes;
 
+use App\Exports\ListaGastoDetalleCDPExport;
 use App\Exports\ListaGastoDetalleRequerimientoLogisticoExport;
 use App\Exports\ListaGastoDetalleRequerimientoPagoExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Comercial\CuadroCosto\CcAmFila;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
@@ -30,6 +32,11 @@ class ReporteGastoController extends Controller
     public function indexReporteGastoRequerimientoPago()
     {
         return view('finanzas/reportes/gasto_requerimiento_pago');
+    }
+
+    public function indexReporteGastoCDP()
+    {
+        return view('finanzas/reportes/gasto_cdp');
     }
 
 
@@ -693,6 +700,121 @@ class ReporteGastoController extends Controller
     {
         return Excel::download(new ListaGastoDetalleRequerimientoPagoExport(), 'reporte_gastos_requerimiento_pago.xlsx');;
     }
+
+    public function dataGastoCDP(){
+
+        
+        $listado = CcAmFila::select(
+            'oportunidades.codigo_oportunidad',
+            'oportunidades.oportunidad',
+            'oportunidades.moneda as moneda_oportunidad',
+            'oportunidades.importe as importe_oportunidad',
+            'oportunidades.created_at as fecha_registro_oportunidad',
+            'estados.estado as estado_oportunidad',
+            'cc.tipo_cambio',
+            'cc.igv',
+            'cc_am_filas.id',
+            'cc_am_filas.id as id_cc_am_filas',
+            'cc_am_filas.id_cc_am',
+            'cc_am_filas.part_no',
+            'cc_am_filas.descripcion',
+            'cc_am_filas.cantidad',
+            'cc_am_filas.pvu_oc',
+            'cc_am_filas.flete_oc',
+            'cc_am_filas.proveedor_seleccionado',
+            'proveedores.razon_social as razon_social_proveedor',
+            'proveedores.ruc as ruc_proveedor',
+            'cc_am_filas.garantia',
+            'tipos_negocio.tipo as tipo_negocio',
+            'origenes_costeo.origen as origen_costo',
+            'cc_am_proveedores.precio as costo_unitario_proveedor',
+            'cc_am_proveedores.moneda as moneda_costo_unitario_proveedor',
+            'cc_am_proveedores.plazo as plazo_proveedor',
+            'cc_am_proveedores.flete as flete_proveedor',
+            'fondos_proveedores.descripcion as fondo_proveedor',
+            'cc_am_filas.id_ultimo_usuario as id_autor',
+            'users.name as nombre_autor',
+            'cc_am_filas.created_at',
+            'cc_am_filas.part_no_producto_transformado',
+            'cc_am_filas.descripcion_producto_transformado',
+            'cc_am_filas.comentario_producto_transformado'
+            )
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'cc_am_filas.id_cc_am')
+        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('mgcp_oportunidades.tipos_negocio', 'tipos_negocio.id', '=', 'oportunidades.id_tipo_negocio')
+        ->leftJoin('mgcp_oportunidades.estados', 'estados.id', '=', 'oportunidades.id_estado')
+        ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id', '=', 'cc_am_filas.proveedor_seleccionado')
+        ->leftJoin('mgcp_cuadro_costos.proveedores', 'proveedores.id', '=', 'cc_am_proveedores.id_proveedor')
+        ->leftJoin('mgcp_cuadro_costos.fondos_proveedores', 'fondos_proveedores.id', '=', 'cc_am_proveedores.id_fondo_proveedor')
+        ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.id_ultimo_usuario')
+        ->leftJoin('mgcp_cuadro_costos.origenes_costeo', 'origenes_costeo.id', '=', 'cc_am_filas.id_origen_costeo')  
+        ->get();
+
+        return $listado;
+
+    }
+    public function listaGastoCDP(){
+        $listado = CcAmFila::select(
+            'oportunidades.codigo_oportunidad',
+            'oportunidades.oportunidad',
+            'oportunidades.moneda as moneda_oportunidad',
+            'oportunidades.importe as importe_oportunidad',
+            'oportunidades.created_at as fecha_registro_oportunidad',
+            'estados.estado as estado_oportunidad',
+            'cc.tipo_cambio',
+            'cc.igv',
+            'cc_am_filas.id',
+            'cc_am_filas.id as id_cc_am_filas',
+            'cc_am_filas.id_cc_am',
+            'cc_am_filas.part_no',
+            'cc_am_filas.descripcion',
+            'cc_am_filas.cantidad',
+            'cc_am_filas.pvu_oc',
+            'cc_am_filas.flete_oc',
+            'cc_am_filas.proveedor_seleccionado',
+            'proveedores.razon_social as razon_social_proveedor',
+            'proveedores.ruc as ruc_proveedor',
+            'cc_am_filas.garantia',
+            'tipos_negocio.tipo as tipo_negocio',
+            'origenes_costeo.origen as origen_costo',
+            'cc_am_proveedores.precio as costo_unitario_proveedor',
+            'cc_am_proveedores.moneda as moneda_costo_unitario_proveedor',
+            'cc_am_proveedores.plazo as plazo_proveedor',
+            'cc_am_proveedores.flete as flete_proveedor',
+            'fondos_proveedores.descripcion as fondo_proveedor',
+            'cc_am_filas.id_ultimo_usuario as id_autor',
+            'users.name as nombre_autor',
+            'cc_am_filas.created_at',
+            'cc_am_filas.part_no_producto_transformado',
+            'cc_am_filas.descripcion_producto_transformado',
+            'cc_am_filas.comentario_producto_transformado'
+            )
+        ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'cc_am_filas.id_cc_am')
+        ->leftJoin('mgcp_cuadro_costos.estados_aprobacion', 'estados_aprobacion.id', '=', 'cc.estado_aprobacion')
+        ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
+        ->leftJoin('mgcp_oportunidades.tipos_negocio', 'tipos_negocio.id', '=', 'oportunidades.id_tipo_negocio')
+        ->leftJoin('mgcp_oportunidades.estados', 'estados.id', '=', 'oportunidades.id_estado')
+        ->leftJoin('mgcp_cuadro_costos.cc_am_proveedores', 'cc_am_proveedores.id', '=', 'cc_am_filas.proveedor_seleccionado')
+        ->leftJoin('mgcp_cuadro_costos.proveedores', 'proveedores.id', '=', 'cc_am_proveedores.id_proveedor')
+        ->leftJoin('mgcp_cuadro_costos.fondos_proveedores', 'fondos_proveedores.id', '=', 'cc_am_proveedores.id_fondo_proveedor')
+        ->leftJoin('mgcp_usuarios.users', 'users.id', '=', 'cc_am_filas.id_ultimo_usuario')
+        ->leftJoin('mgcp_cuadro_costos.origenes_costeo', 'origenes_costeo.id', '=', 'cc_am_filas.id_origen_costeo');
+        
+        return datatables($listado)
+        ->editColumn('created_at', function ($data) {
+            return date('d-m-Y', strtotime($data->created_at));
+        })
+     
+        ->toJson();
+
+        return $listado;
+    }
+
+    public function listaGastoCDPExcel(){
+        return Excel::download(new ListaGastoDetalleCDPExport(), 'reporte_gastos_cdp_pago.xlsx');;
+    }
+
 
 
 }

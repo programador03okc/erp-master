@@ -34,6 +34,7 @@
         <ul class="treeview-menu">
             <li><a href="{{ route('finanzas.reportes.gastos.index-requerimiento-logistico') }}"><i class="far fa-circle fa-xs"></i> Gastos req. logístico</a></li>
             <li><a href="{{ route('finanzas.reportes.gastos.index-requerimiento-pago') }}"><i class="far fa-circle fa-xs"></i> Gastos req. pago</a></li>
+            <li><a href="{{ route('finanzas.reportes.gastos.index-cdp') }}"><i class="far fa-circle fa-xs"></i> Gastos CDP</a></li>
         </ul>
     </li>
 

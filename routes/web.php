@@ -2126,12 +2126,15 @@ Route::group(['middleware' => ['auth']], function () {
 			Route::group(['as' => 'gastos.', 'prefix' => 'gastos'], function () {
 				Route::get('index-requerimiento-logistico', 'Finanzas\Reportes\ReporteGastoController@indexReporteGastoRequerimientoLogistico')->name('index-requerimiento-logistico');
 				Route::get('index-requerimiento-pago', 'Finanzas\Reportes\ReporteGastoController@indexReporteGastoRequerimientoPago')->name('index-requerimiento-pago');
+				Route::get('index-cdp', 'Finanzas\Reportes\ReporteGastoController@indexReporteGastoCDP')->name('index-cdp');
 
 				Route::post('lista-requerimiento-logistico', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimientoLogistico')->name('lista-requerimiento-logistico');
 				Route::post('lista-requerimiento-pago', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimientoPago')->name('lista-requerimiento-pago');
+				Route::post('lista-cdp', 'Finanzas\Reportes\ReporteGastoController@listaGastoCDP')->name('lista-cdp');
 
 				Route::get('exportar-requerimiento-logistico-excel', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimientoLogisticoExcel');
 				Route::get('exportar-requerimiento-pago-excel', 'Finanzas\Reportes\ReporteGastoController@listaGastoDetalleRequerimienoPagoExcel');
+				Route::get('exportar-cdp-excel', 'Finanzas\Reportes\ReporteGastoController@listaGastoCDPExcel');
 
 			});
 		});
