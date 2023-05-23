@@ -87,12 +87,12 @@ Normalizar
                                     <thead>
                                         <tr>
                                             <th hidden></th>
-                                            <th scope="col">Código</th>
-                                            <th scope="col">Concepto</th>
-                                            <th scope="col">Fecha Emisión</th>
-                                            <th scope="col">Creado por</th>
-                                            <th scope="col">Monto total</th>
-                                            <th scope="col">-</th>
+                                            <th >Código</th>
+                                            <th>Concepto</th>
+                                            <th >Fecha Emisión</th>
+                                            <th>Creado por</th>
+                                            <th>Monto total</th>
+                                            <th>-</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -107,16 +107,16 @@ Normalizar
                     <div class="tab-pane" id="tab_2-2">
                         <div class="row">
                             <div class="col-md-12">
-                                <table class="table table-bordered table-hover dataTable"
+                                <table class="table table-hover"
                                     id="lista-ordenes">
                                     <thead>
                                         <tr>
                                             <th hidden></th>
-                                            <th scope="col">Código</th>
-                                            <th scope="col">Fecha de emisión</th>
-                                            <th scope="col">Estado del Pago</th>
-                                            <th scope="col">Importe total orden</th>
-                                            <th scope="col">-</th>
+                                            <th >Código</th>
+                                            <th >Fecha de emisión</th>
+                                            <th >Estado del Pago</th>
+                                            <th >Importe total orden</th>
+                                            <th >-</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -24,7 +24,7 @@ $('[data-form="buscar"]').on("submit", (e) => {
 // en lista las ordenes
 function listarOrdenes() {
     var vardataTables = funcDatatables();
-    table_requerimientos_pagados = $("#lista-ordenes").DataTable({
+    table_ordenes = $("#lista-ordenes").DataTable({
         language: vardataTables[0],
         destroy: true,
         pageLength: 10,
@@ -113,8 +113,7 @@ function listarRequerimientosPagos() {
             {
                 render: function (data, type, row) {
                     html='';
-                    html+='<button type="button" class="btn text-black btn-flat botonList" data-id="'+row['id_requerimiento_pago']+'" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida" data-tap="requerimiento de pago"><i class="fas fa-share-square"></i></button>'
-
+                    html+='<button type="button" class="btn text-black btn-default botonList detalle-requerimiento-pago" data-id="'+row['id_requerimiento_pago']+'" title="Ver detalle"><i class="fas fa-chevron-down"></i></button>'
 
                     html+='';
                     return html;
@@ -131,55 +130,14 @@ function listarRequerimientosPagos() {
     });
 }
 var iTableCounter = 1;
+var iTableCounterPago = 1;
 $(document).on('click','.detalle-orden',function (e) {
     e.preventDefault();
 
     var counter = 1;
-    let html = `
-    <tr>
-        <td colspan="16"><table class="table table-sm" style="border: none; font-size:x-small;" id="detalle_3">
-        </table>
-            <thead style="color: black;background-color: #c7cacc;">
-                        <tr>
-                            <th style="border: none;">O/C</th>
-                            <th style="border: none;">Cod.CDP</th>
-                            <th style="border: none;">Cliente</th>
-                            <th style="border: none;">Responsable</th>
-                            <th style="border: none;">Cod.Req.</th>
-                            <th style="border: none;">Código</th>
-                            <th style="border: none;">Part number</th>
-                            <th style="border: none;">Descripción</th>
-                            <th style="border: none;">Cantidad</th>
-                            <th style="border: none;">Und.Med</th>
-                            <th style="border: none;">Prec.Unit.</th>
-                            <th style="border: none;">Total</th>
-                            <th style="border: none;">Reserva almacén</th>
-                        </tr>
-                </thead>
-                <tbody style="background: #e7e8ea;"><tr>
-                        <td style="border: none;"><a style="cursor:pointer;" class="handleClickObtenerArchivos" data-id="1846146" data-tipo="am">OCAM-2022-109-146-0</a></td>
-                        <td style="border: none;">OKC2211017</td>
-                        <td style="border: none;">UNIVERSIDAD NACIONAL JORGE BASADRE G.</td>
-                        <td style="border: none;">J. Alfaro</td>
-                        <td style="border: none;"><a href="/necesidades/requerimiento/elaboracion/index?id=6412" target="_blank" title="Abrir Requerimiento">RC-230075</a></td>
-                        <td style="border: none;">0016750</td>
-                        <td style="border: none;"></td>
-                        <td style="border: none;">UPS CDP R-SMART 1010I, INTERACTIVO, 1000VA, 500W, 220V, 10 TOMACORRIENTES. 5 TOMAS UPS/AVR, 5 TOMAS DE SUPRES</td>
-                        <td style="border: none;">1</td>
-                        <td style="border: none;">UND</td>
-                        <td style="border: none;">S/100,000.00</td>
-                        <td style="border: none;">S/100,000.00</td>
-                        <td style="border: none; text-align:center;">0</td>
-
-                        </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    `;
 
     let tr = (e.currentTarget).closest('tr');
-    var row = table_requerimientos_pagados.row(tr);
+    var row = table_ordenes.row(tr);
     var id = $(e.currentTarget).attr('data-id');
     if (row.child.isShown()) {
         //  This row is already open - close it
@@ -189,10 +147,10 @@ $(document).on('click','.detalle-orden',function (e) {
     else {
         // Open this row
         //    row.child( format(iTableCounter, id) ).show();
-        buildFormat((e.currentTarget), iTableCounter, id, row);
+        buildFormat((e.currentTarget), iTableCounter, id, row, 'orden');
         tr.classList.add('shown');
         // try datatable stuff
-        oInnerTable = $('#listaOrdenes_' + iTableCounter).dataTable({
+        oInnerTable = $('#lista-ordenes_' + iTableCounter).dataTable({
             //    data: sections,
             autoWidth: true,
             deferRender: true,
@@ -210,28 +168,77 @@ $(document).on('click','.detalle-orden',function (e) {
     }
 
 });
-function buildFormat(obj, table_id, id, row) {
-    obj.setAttribute('disabled', true);
-    $.ajax({
-        type: 'GET',
-        url:`/logistica/gestion-logistica/compras/ordenes/listado/detalle-orden/${id}`,
-        dataType: 'JSON',
-        success(response) {
-            obj.removeAttribute('disabled');
-            construirDetalleOrdenElaboradas(table_id, row, response);
-        },
-        error: function(err) {
-        reject(err) // Reject the promise and go to catch()
-        }
-    });
+$(document).on('click','.detalle-requerimiento-pago',function (e) {
+    e.preventDefault();
 
-    // this.listaOrdenCtrl.obtenerDetalleOrdenElaboradas(id).then((res) => {
-    //     // console.log(res);
-    //     obj.removeAttribute('disabled');
-    //     this.construirDetalleOrdenElaboradas(table_id, row, res);
-    // }).catch((err) => {
-    //     console.log(err)
-    // })
+    var counter = 1;
+
+    let tr = (e.currentTarget).closest('tr');
+    var row = table_requerimientos_pagados.row(tr);
+    var id = $(e.currentTarget).attr('data-id');
+    if (row.child.isShown()) {
+        //  This row is already open - close it
+        row.child.hide();
+        tr.classList.remove('shown');
+    }
+    else {
+        // Open this row
+        //    row.child( format(iTableCounter, id) ).show();
+        buildFormat((e.currentTarget), iTableCounterPago, id, row, 'pago');
+        tr.classList.add('shown');
+        // try datatable stuff
+        oInnerTable = $('#lista-requerimientos-pagos_' + iTableCounterPago).dataTable({
+            //    data: sections,
+            autoWidth: true,
+            deferRender: true,
+            info: false,
+            lengthChange: false,
+            ordering: false,
+            paging: false,
+            scrollX: false,
+            scrollY: false,
+            searching: false,
+            columns: [
+            ]
+        });
+        iTableCounterPago = iTableCounterPago + 1;
+    }
+
+});
+function buildFormat(obj, table_id, id, row, key) {
+    obj.setAttribute('disabled', true);
+    switch (key) {
+        case 'orden':
+            $.ajax({
+                type: 'GET',
+                url:`/logistica/gestion-logistica/compras/ordenes/listado/detalle-orden/${id}`,
+                dataType: 'JSON',
+                success(response) {
+                    obj.removeAttribute('disabled');
+                    construirDetalleOrdenElaboradas(table_id, row, response);
+                },
+                error: function(err) {
+                reject(err) // Reject the promise and go to catch()
+                }
+            });
+        break;
+
+        case 'pago':
+            $.ajax({
+                type: 'GET',
+                url:`detalle-requerimiento-pago/${id}`,
+                dataType: 'JSON',
+                success(response) {
+                    obj.removeAttribute('disabled');
+                    construirDetalleRequerimientosPagos(table_id, row, response);
+                },
+                error: function(err) {
+                reject(err) // Reject the promise and go to catch()
+                }
+            });
+        break;
+    }
+
 }
 
 function construirDetalleOrdenElaboradas(table_id, row, response) {
@@ -293,9 +300,51 @@ function construirDetalleOrdenElaboradas(table_id, row, response) {
     }
     row.child(tabla).show();
 }
+function construirDetalleRequerimientosPagos(table_id, row, response) {
+    var html = '';
+    if (response.length > 0) {
+
+        var tabla = `<table class="table table-sm" style="border: none; font-size:x-small;"
+            id="detalle_${table_id}">
+            <thead style="color: black;background-color: #c7cacc;">
+                <tr>
+                    <th style="border: none;">Descripción</th>
+                    <th style="border: none;">Cantidad</th>
+                    <th style="border: none;">Precio Unitario</th>
+                    <th style="border: none;">Sub total</th>
+                    <th style="border: none;"> - </th>
+                </tr>
+            </thead>
+            <tbody style="background: #e7e8ea;">`;
+                $.each(response, function (index, element) {
+                    tabla+=`<tr>
+                        <td class="text-center">`+element.descripcion+`</td>
+                        <td class="text-center">`+element.cantidad+`</td>
+                        <td class="text-center">`+element.precio_unitario+`</td>
+                        <td class="text-center">`+element.subtotal+`</td>
+                        <td class="text-center">
+                            <button type="button" class="btn text-black btn-flat botonList"
+                            data-id-requerimiento-pago="`+element.id_requerimiento_pago+`"
+                            data-id-requerimiento-pago-detalle="`+element.id_requerimiento_pago_detalle+`" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida" data-tap="requerimiento de pago"><i class="fas fa-share-square"></i></button>
+                        </td>
+                    </tr>`;
+                });
+            tabla+=`</tbody>
+            </table>`;
+    } else {
+        var tabla = `<table class="table table-sm" style="border: none;"
+            id="detalle_${table_id}">
+            <tbody>
+                <tr><td>No hay registros para mostrar</td></tr>
+            </tbody>
+            </table>`;
+    }
+    row.child(tabla).show();
+}
 $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partida"]', (e) => {
     e.preventDefault();
-    let id = $(e.currentTarget).attr('data-id');
+    let id = $(e.currentTarget).attr('data-id-requerimiento-pago');
+    let id_detalle = $(e.currentTarget).attr('data-id-requerimiento-pago-detalle');
     let tap = $(e.currentTarget).attr('data-tap');
     let html = ``;
     $('#normalizar-partida').modal('show');
@@ -343,6 +392,7 @@ $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partid
                                             <button class="btn btn-default btn-sm"
                                             data-id-presupuesto-interno="`+element.id_presupuesto_interno+`" data-id-presupuesto-interno-detalle="`+element.id_presupuesto_interno_detalle+`"
                                             data-id-requerimiento-pago="`+id+`"
+                                            data-id-requerimiento-pago-detalle="`+id_detalle+`"
                                             data-tap="`+tap+`"
                                             data-click="seleccionar-partida">Asignar</button>
                                         </td>
@@ -369,6 +419,7 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
     let presupuesto_interno_id = $(this).attr('data-id-presupuesto-interno');
     let presupuesto_interno_detalle_id = $(this).attr('data-id-presupuesto-interno-detalle');
     let requerimiento_pago_id = $(this).attr('data-id-requerimiento-pago')
+    let requerimiento_pago_detalle_id = $(this).attr('data-id-requerimiento-pago-detalle')
     let tap = $(this).attr('data-tap')
     let this_button = $(this);
     console.log('ss');
@@ -379,6 +430,7 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
             presupuesto_interno_id:presupuesto_interno_id,
             presupuesto_interno_detalle_id:presupuesto_interno_detalle_id,
             requerimiento_pago_id:requerimiento_pago_id,
+            requerimiento_pago_detalle_id:requerimiento_pago_detalle_id,
             tap:tap
 
         },

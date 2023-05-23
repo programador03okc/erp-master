@@ -2118,6 +2118,7 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('listar-ordenes', 'Finanzas\Normalizar\NormalizarController@listarOrdenes')->name('listar-ordenes');
                 Route::post('obtener-presupuesto', 'Finanzas\Normalizar\NormalizarController@obtenerPresupuesto')->name('obtener-presupuesto');
                 Route::post('vincular-partida', 'Finanzas\Normalizar\NormalizarController@vincularPartida')->name('vincular-partida');
+                Route::get('detalle-requerimiento-pago/{id}', 'Finanzas\Normalizar\NormalizarController@detalleRequerimientoPago')->name('detalle-requerimiento-pago');
 
             });
 		});
