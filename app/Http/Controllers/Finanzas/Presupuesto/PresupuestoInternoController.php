@@ -1671,7 +1671,7 @@ class PresupuestoInternoController extends Controller
 
                                 // Debugbar::info($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida_pi, $nombreMes);
 
-                                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_detalle',$item->id_requerimiento_pago_detalle)->where('id_requerimiento',$requerimientoPago->id_requerimiento_pago)->first();
+                                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_detalle',$item->id_requerimiento_pago_detalle)->where('id_requerimiento_pago',$requerimientoPago->id_requerimiento_pago)->first();
 
                                 if(!$historial_saldo) {
                                     PresupuestoInterno::calcularColumnaAuxMensual($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida_pi, $nombreMes);
@@ -1689,20 +1689,6 @@ class PresupuestoInternoController extends Controller
                                     $historial = $historialPresupuestoInternoSaldo;
                                     $historialPresupuestoInternoSaldo->save();
                                 }
-                                // PresupuestoInterno::calcularColumnaAuxMensual($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida_pi, $nombreMes);
-                                // $historialPresupuestoInternoSaldo = new HistorialPresupuestoInternoSaldo();
-                                // $historialPresupuestoInternoSaldo->id_presupuesto_interno = $requerimientoPago->id_presupuesto_interno;
-                                // $historialPresupuestoInternoSaldo->id_partida = $item->id_partida_pi;
-                                // $historialPresupuestoInternoSaldo->tipo = $TipoHistorial;
-                                // $historialPresupuestoInternoSaldo->importe = $item->importe_item_para_presupuesto??0;
-                                // $historialPresupuestoInternoSaldo->mes = $mesEnDosDigitos;
-                                // $historialPresupuestoInternoSaldo->id_requerimiento = $requerimientoPago->id_requerimiento_pago;
-                                // $historialPresupuestoInternoSaldo->id_requerimiento_detalle = $item->id_requerimiento_pago_detalle;
-                                // $historialPresupuestoInternoSaldo->operacion = $operacion;
-                                // $historialPresupuestoInternoSaldo->estado = 1;
-                                // $historialPresupuestoInternoSaldo->fecha_registro = new Carbon();
-                                // $historial = $historialPresupuestoInternoSaldo;
-                                // $historialPresupuestoInternoSaldo->save();
                             }
                         }
                     }
