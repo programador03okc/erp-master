@@ -1681,8 +1681,8 @@ class PresupuestoInternoController extends Controller
                                     $historialPresupuestoInternoSaldo->tipo = $TipoHistorial;
                                     $historialPresupuestoInternoSaldo->importe = $item->importe_item_para_presupuesto??0;
                                     $historialPresupuestoInternoSaldo->mes = $mesEnDosDigitos;
-                                    $historialPresupuestoInternoSaldo->id_requerimiento = $requerimientoPago->id_requerimiento_pago;
-                                    $historialPresupuestoInternoSaldo->id_requerimiento_detalle = $item->id_requerimiento_pago_detalle;
+                                    $historialPresupuestoInternoSaldo->id_requerimiento_pago = $requerimientoPago->id_requerimiento_pago;
+                                    $historialPresupuestoInternoSaldo->id_requerimiento_pago_detalle = $item->id_requerimiento_pago_detalle;
                                     $historialPresupuestoInternoSaldo->operacion = $operacion;
                                     $historialPresupuestoInternoSaldo->estado = 1;
                                     $historialPresupuestoInternoSaldo->fecha_registro = new Carbon();
