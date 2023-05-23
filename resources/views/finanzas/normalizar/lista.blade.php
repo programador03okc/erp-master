@@ -8,6 +8,12 @@ Normalizar
 @section('estilos')
 <link rel="stylesheet" href="{{asset('template/plugins/select2/select2.min.css')}}">
 <link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
+<style>
+    .contenido-detalle{
+        height: 0;
+        transition: .3s height;
+    }
+</style>
 @endsection
 
 @section('breadcrumb')

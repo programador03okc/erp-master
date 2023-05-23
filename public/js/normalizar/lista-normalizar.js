@@ -304,7 +304,8 @@ function construirDetalleRequerimientosPagos(table_id, row, response) {
     var html = '';
     if (response.length > 0) {
 
-        var tabla = `<table class="table table-sm" style="border: none; font-size:x-small;"
+        var tabla = `<table class="table table-sm contenido-detalle" style="border: none; font-size:x-small;height: 0;
+        transition: .3s height;"
             id="detalle_${table_id}">
             <thead style="color: black;background-color: #c7cacc;">
                 <tr>
@@ -360,6 +361,10 @@ $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partid
         }
     }).done(function(response) {
         html = `
+            <div class="row">
+                <div class="col-md-12" data-mensaje="respuesta">
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <p>Código :`+response.presupuesto.codigo+`</p>
@@ -422,7 +427,8 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
     let requerimiento_pago_detalle_id = $(this).attr('data-id-requerimiento-pago-detalle')
     let tap = $(this).attr('data-tap')
     let this_button = $(this);
-    console.log('ss');
+    let html='';
+
     $.ajax({
         type: 'POST',
         url: 'vincular-partida',
@@ -431,8 +437,8 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
             presupuesto_interno_detalle_id:presupuesto_interno_detalle_id,
             requerimiento_pago_id:requerimiento_pago_id,
             requerimiento_pago_detalle_id:requerimiento_pago_detalle_id,
-            tap:tap
-
+            tap:tap,
+            mes:$data.mes
         },
         // processData: false,
         // contentType: false,
@@ -444,6 +450,14 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
     }).done(function(response) {
         this_button.html(`Asignar`);
         this_button.removeAttr('disabled');
+        html = `
+        <div class="alert alert-`+response.tipo+`" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">`+response.titulo+` :</span>
+            `+response.mensaje+`
+        </div>
+        `;
+        $('[data-mensaje="respuesta"]').html(html);
         console.log(response);
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);

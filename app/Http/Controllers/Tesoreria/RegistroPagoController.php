@@ -620,7 +620,7 @@ class RegistroPagoController extends Controller
         if($idRequerimientoPago>0){
             $requerimientoPagoDetalle= RequerimientoPagoDetalle::where([['id_requerimiento_pago',$idRequerimientoPago],['id_estado','!=',7]])->get();
             $detalleArray=$requerimientoPagoDetalle;
-
+            // return $idRequerimientoPago;exit;
             foreach ($detalleArray as $key => $item) {
                 $detalleArray[$key]['importe_item_para_presupuesto']=0;
             }

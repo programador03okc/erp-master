@@ -119,7 +119,7 @@ class ConfiguracionHelper
 	// 	$periodos = Periodo::orderBy('descripcion', 'desc')->first();
 	// 	return ($tipo == 1) ? $periodos->id : $periodos->descripcion;
 	// }
-    public static function mesNumero($numero=1)
+    public static function mesNumero($numero='01')
     {
         $nombre_mes='enero';
         switch ($numero) {

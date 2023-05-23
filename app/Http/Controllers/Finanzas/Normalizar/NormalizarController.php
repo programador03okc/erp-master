@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Finanzas\Normalizar;
 
+use App\Helpers\ConfiguracionHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
@@ -54,7 +55,7 @@ class NormalizarController extends Controller
         if (!empty($request->division)) {
             $req_pago = $req_pago->where('requerimiento_pago.id_division',$request->division);
         }
-        $req_pago = $req_pago->groupBy('requerimiento_pago.id_requerimiento_pago')->get();
+        $req_pago = $req_pago->groupBy('requerimiento_pago.id_requerimiento_pago')->where('requerimiento_pago_detalle.id_estado','!=',7)->get();
         return DataTables::of($req_pago)
         // ->toJson();
         ->make(true);
@@ -94,6 +95,10 @@ class NormalizarController extends Controller
         $variable = $request->tap;
 
         $afectaPresupuestoInternoResta = null;
+
+        $tipo='success';
+        $mensaje='Se asigno a la partida con exito';
+        $titulo='Éxito';
         switch ($variable) {
             case 'orden':
                 // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($request->total_pago),'completo');
@@ -101,27 +106,46 @@ class NormalizarController extends Controller
             break;
 
             case 'requerimiento de pago':
-                $requerimiento_pago = RequerimientoPago::find($request->requerimiento_pago_id);
-                $requerimiento_pago->id_presupuesto_interno=$request->presupuesto_interno_id;
-                $requerimiento_pago->save();
+                $mes_string = ConfiguracionHelper::mesNumero($request->mes);
+                $mes_text = ConfiguracionHelper::mesNumero($request->mes).'_aux';
+                $saldo_presupuesto_detalle = PresupuestoInternoDetalle::where('id_presupuesto_interno_detalle',$request->presupuesto_interno_detalle_id)->first();
 
-                $requerimiento_pago = RequerimientoPagoDetalle::find($request->requerimiento_pago_detalle_id);
-                $requerimiento_pago->id_partida_pi = $request->presupuesto_interno_detalle_id;
-                $requerimiento_pago->save();
+                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_detalle',$request->requerimiento_pago_detalle_id)->where('id_requerimiento',$request->requerimiento_pago_id)->first();
 
-                $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($requerimiento_pago->monto_total),'completo');
+                if (!$historial_saldo) {
+                    $requerimiento_pago = RequerimientoPago::find($request->requerimiento_pago_id);
 
-                (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
+                    if (floatval($saldo_presupuesto_detalle->$mes_text)>=floatval($requerimiento_pago->monto_total)) {
+                        $requerimiento_pago->id_presupuesto_interno=$request->presupuesto_interno_id;
+                        $requerimiento_pago->save();
 
-                // return 'REQ_PAGO';exit;
+                        $requerimiento_pago = RequerimientoPagoDetalle::find($request->requerimiento_pago_detalle_id);
+                        $requerimiento_pago->id_partida_pi = $request->presupuesto_interno_detalle_id;
+                        $requerimiento_pago->save();
+
+                        #agrega un campo al detalle del requerimiento de pago
+                        $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($requerimiento_pago->monto_total),'completo');
+                        #registra en la tabla saldo para su descuento
+                        (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
+                    }else{
+                        $tipo='warning';
+                        $mensaje='El saldo del mes de '.$mes_string.' es menor que el monto del Requerimiento de Pago.';
+                        $titulo='Éxito';
+                    }
+
+                }else{
+                    $tipo='warning';
+                    $mensaje='El requerimiento ya se asigno a una partida';
+                    $titulo='Información';
+                }
             break;
         }
 
-        return response()->json(["success"=>$request->all()],200);
+        return response()->json(["tipo"=>$tipo,"mensaje"=>$mensaje,"titulo"=>$titulo],200);
     }
     public function detalleRequerimientoPago($id)
     {
-        $requerimiento_pago = RequerimientoPagoDetalle::where('id_requerimiento_pago',$id)->whereNull('id_partida')->get();
+        $requerimiento_pago = RequerimientoPagoDetalle::where('id_requerimiento_pago',$id)->whereNull('id_partida')->where('id_estado','!=',7)->get();
         return response()->json($requerimiento_pago,200);
     }
 }
