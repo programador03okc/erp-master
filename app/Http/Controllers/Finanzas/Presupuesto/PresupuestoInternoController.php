@@ -1666,9 +1666,9 @@ class PresupuestoInternoController extends Controller
                                     $operacion = 'S';
                                 }
 
-                                // Debugbar::info($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida, $nombreMes);
+                                // Debugbar::info($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida_pi, $nombreMes);
 
-                                PresupuestoInterno::calcularColumnaAuxMensual($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida, $nombreMes);
+                                PresupuestoInterno::calcularColumnaAuxMensual($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida_pi, $nombreMes);
                                 $historialPresupuestoInternoSaldo = new HistorialPresupuestoInternoSaldo();
                                 $historialPresupuestoInternoSaldo->id_presupuesto_interno = $requerimientoPago->id_presupuesto_interno;
                                 $historialPresupuestoInternoSaldo->id_partida = $item->id_partida_pi;
