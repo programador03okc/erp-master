@@ -53,9 +53,13 @@ class ListaGastoDetalleCDPExport implements FromView,WithColumnFormatting, WithS
                     'importe_costo_compra'=>$value->cantidad * $value->costo_unitario_proveedor,
                     'importe_costo_compra_soles'=> ($value->cantidad * $value->costo_unitario_proveedor) * $value->tipo_cambio,
                     'total_flete_proveedor'=>$value->cantidad * $value->flete_proveedor,
-                    'costo_compra_mas_flete_proveedor'=>($value->cantidad * $value->flete_proveedor)+ ( $value->cantidad * $value->costo_unitario_proveedo * $value->tipo_cambio ),
+                    'costo_compra_mas_flete_proveedor'=>($value->cantidad * $value->flete_proveedor) + ( $value->cantidad * $value->costo_unitario_proveedo * $value->tipo_cambio ),
                     'nombre_autor'=>$value->nombre_autor,
-                    'created_at'=> $value->created_at !=null ? date('d/m/Y', strtotime($value->created_at)):''
+                    'created_at'=> $value->created_at !=null ? date('d/m/Y', strtotime($value->created_at)):'',
+                    'monto_adjudicado_soles'=> $value->pvu_oc * $value->cantidad,
+                    'ganancia'=> ($value->pvu_oc * $value->cantidad) - (($value->cantidad * $value->flete_proveedor) + ( $value->cantidad * $value->costo_unitario_proveedo * $value->tipo_cambio )),
+                    'tipo_cambio'=> $value->tipo_cambio,
+                    'estado_aprobacion'=> $value->estado_aprobacion,
                 ];
             }
 
@@ -69,11 +73,10 @@ class ListaGastoDetalleCDPExport implements FromView,WithColumnFormatting, WithS
     {
         $sheet->getStyle('I2:I'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
         $sheet->getStyle('O2:O'.$sheet->getHighestRow())->getAlignment()->setWrapText(true);
-        $sheet->getStyle('A:Z')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A:AE')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
         return [
             1    => ['font' => ['bold' => true] ],
-            2    => ['font' => ['bold' => true] ],
-            'A:AF'  => ['font' => ['size' => 10]]
+            'A:AE'  => ['font' => ['size' => 10]]
         ];
     }
     
@@ -85,7 +88,8 @@ class ListaGastoDetalleCDPExport implements FromView,WithColumnFormatting, WithS
             'W' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
             'L' => NumberFormat::FORMAT_NUMBER,
             'F' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'AA' => NumberFormat::FORMAT_DATE_DDMMYYYY
+            'AA' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'AB' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1
         ];
     }
 }

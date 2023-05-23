@@ -76,11 +76,11 @@ function lista() {
                 return `S/${$.number(costoUnitarioSoles, 2)}`;
             } },
             { 'data': 'flete_proveedor', 'name': 'flete_proveedor', 'className': 'text-center','searchable':false,'render': function (data, type, row) {
-                let totalFleteProveedor = $.number((row.cantidad * row.flete_proveedor), 2);
+                let totalFleteProveedor = $.number((row.cantidad * parseFloat(row.flete_proveedor)), 2);
                 return `S/${(totalFleteProveedor)}`;
             } },
             { 'data': 'costo_unitario_proveedor', 'name': 'costo_unitario_proveedor', 'className': 'text-center','searchable':false, 'render': function (data, type, row) {
-                let totalFleteProveedor = row.cantidad * row.flete_proveedor;
+                let totalFleteProveedor = row.cantidad * parseFloat(row.flete_proveedor);
                 let costoUnitario = row.cantidad * row.costo_unitario_proveedor;
                 let tipoCambio = row.tipo_cambio;
                 let costoUnitarioSoles = costoUnitario * tipoCambio;
@@ -88,7 +88,23 @@ function lista() {
                 return `S/${$.number(costoCompraMasFlete, 2)}`;
             } },
             { 'data': 'nombre_autor', 'name': 'nombre_autor', 'className': 'text-center','searchable':false },
-            { 'data': 'created_at', 'name': 'created_at', 'className': 'text-center','searchable':false }
+            { 'data': 'created_at', 'name': 'created_at', 'className': 'text-center','searchable':false },
+            { 'data': 'pvu_oc', 'name': 'pvu_oc', 'className': 'text-center','searchable':false, 'render': function (data, type, row) {
+                let montoAdjudicadoSoles = row.cantidad * parseFloat(row.pvu_oc);
+                return `S/${$.number(montoAdjudicadoSoles, 2)}`;
+            } },
+            { 'data': 'tipo_cambio', 'name': 'tipo_cambio', 'className': 'text-center','searchable':false,'render': function (data, type, row) {
+                let totalFleteProveedor = row.cantidad * parseFloat(row.flete_proveedor);
+                let costoUnitario = row.cantidad * row.costo_unitario_proveedor;
+                let tipoCambio = row.tipo_cambio;
+                let costoUnitarioSoles = costoUnitario * tipoCambio;
+                let costoCompraMasFlete = costoUnitarioSoles + totalFleteProveedor;
+
+                let ganancia = (row.cantidad * parseFloat(row.pvu_oc) - costoCompraMasFlete);
+                return `S/${$.number(ganancia, 2)}`;
+            } },
+            { 'data': 'tipo_cambio', 'name': 'tipo_cambio', 'className': 'text-center','searchable':false },
+            { 'data': 'estado_aprobacion', 'name': 'estado_aprobacion', 'className': 'text-center','searchable':false }
         ],
         'initComplete': function () {
             //Boton de busqueda

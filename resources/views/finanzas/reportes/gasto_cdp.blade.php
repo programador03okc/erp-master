@@ -56,6 +56,11 @@ Lista de gastos CDP
                                         <th style="background-color:#787878;">Costo compra + flete</th>
                                         <th style="background-color:#787878;">Creado por</th>
                                         <th style="background-color:#787878;">Fecha creación</th>
+                                        <th style="background-color:#787878;">Monto adjudicado en Soles</th>
+                                        <th style="background-color:#787878;">Ganancia</th>
+                                        <th style="background-color:#787878;">T.C</th>
+                                        <th style="background-color:#787878;">Estado de aprobación</th>
+
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
