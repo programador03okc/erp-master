@@ -75,7 +75,7 @@ class PresupuestoInternoController extends Controller
         ->addColumn('total_ejecutado', function ($data){
             $total_ejecutado = 0;
             if ($data->estado==2) {
-                $total_ejecutado = PresupuestoInterno::presupuestoEjecutado($data->id_presupuesto_interno,3);
+                // $total_ejecutado = PresupuestoInterno::presupuestoEjecutado($data->id_presupuesto_interno,3);
 
                 $meses_numero = date('m');
                 $total_ejecutado =  PresupuestoInterno::totalEjecutatoMonto($meses_numero,$data->id_presupuesto_interno);
@@ -1710,9 +1710,14 @@ class PresupuestoInternoController extends Controller
 
     public function presupuestoEjecutadoExcel(Request $request){
 
+        $mesEnFormatoFechaList=[];
+        foreach (range(0, intval(date('m'))) as $number) {
+            $mesEnFormatoFechaList[] = ConfiguracionHelper::leftZero(2,$number);
+        }
+
         $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$request->id)
-        ->whereNotNull('id_requerimiento')
-        ->orWhereNotNull('id_requerimiento_pago')
+        ->where('tipo','SALIDA')
+        ->whereIn('mes',$mesEnFormatoFechaList)
         ->orderBy('id','ASC')->get();
 
         foreach($historial_saldo as $key => $value) {
@@ -1723,7 +1728,7 @@ class PresupuestoInternoController extends Controller
             if (!$requerimiento) {
 
                 $requerimiento = RequerimientoPago::find($value->id_requerimiento_pago);
-                $requerimiento_detalle = RequerimientoPagoDetalle::where('id_requerimiento_pago_detalle',$value->id_requerimiento_detalle)->get();
+                $requerimiento_detalle = RequerimientoPagoDetalle::where('id_requerimiento_pago_detalle',$value->id_requerimiento_pago_detalle)->get();
                 $value->cuadro = 2;
             }
             $value->cabecera = $requerimiento;

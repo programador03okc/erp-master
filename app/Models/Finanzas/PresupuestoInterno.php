@@ -11,6 +11,7 @@ use App\Models\Almacen\Requerimiento;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class PresupuestoInterno extends Model
 {
@@ -634,9 +635,7 @@ class PresupuestoInterno extends Model
 
         for ($i=1; $i <= $mes ; $i++) {
             $saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$id_presupuesto_interno)
-            ->where('mes',ConfiguracionHelper::leftZero(2,$i))
-            ->whereNotNull('id_requerimiento')
-            ->orWhereNotNull('id_requerimiento_pago')
+            ->where([['mes',ConfiguracionHelper::leftZero(2,$i)], ['tipo','SALIDA']])
             ->orderBy('id','ASC')
             ->get();
 
