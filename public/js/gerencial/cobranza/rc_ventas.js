@@ -628,6 +628,7 @@ function listaClientes() {
 
 function buscarRegistro(tipo, valor) {
     $('#lista-procesadas').modal('show');
+    // console.log(csrf_token);
     const $tablaVenta = $("#tablaVentasProcesadas").DataTable({
         language: idioma,
         pageLength: 15,
