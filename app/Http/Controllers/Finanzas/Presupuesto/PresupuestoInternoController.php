@@ -1671,7 +1671,7 @@ class PresupuestoInternoController extends Controller
 
                                 // Debugbar::info($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida_pi, $nombreMes);
 
-                                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_detalle',$item->id_requerimiento_pago_detalle)->where('id_requerimiento_pago',$requerimientoPago->id_requerimiento_pago)->first();
+                                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_pago_detalle',$item->id_requerimiento_pago_detalle)->where('id_requerimiento_pago',$requerimientoPago->id_requerimiento_pago)->first();
 
                                 if(!$historial_saldo) {
                                     PresupuestoInterno::calcularColumnaAuxMensual($requerimientoPago->id_presupuesto_interno, 3, $item->id_partida_pi, $nombreMes);
