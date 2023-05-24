@@ -78,6 +78,57 @@ Normalizar
     <div class="row">
         <div class="col-md-12">
             <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Requerimientos de Pagos</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Ordenes</a></li>
+                    <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <table class="table table-bordered table-hover dataTable" id="lista-requerimientos-pagos">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <th >Código</th>
+                                    <th>Concepto</th>
+                                    <th >Fecha Emisión</th>
+                                    <th>Creado por</th>
+                                    <th>Monto total</th>
+                                    <th>-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_2">
+                        <table class="table table-hover"  id="lista-ordenes">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <th >Código</th>
+                                    <th >Fecha de emisión</th>
+                                    <th >Estado del Pago</th>
+                                    <th >Importe total orden</th>
+                                    <th >-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs pull-right">
                     <li><a href="#tab_2-2" data-toggle="tab">Ordenes</a></li>
                     <li class="active"><a href="#tab_1-1" data-toggle="tab">Requerimeintos de pagos</a></li>
@@ -88,7 +139,7 @@ Normalizar
                     <div class="tab-pane active" id="tab_1-1">
                         <div class="row">
                             <div class="col-md-12">
-                                <table class="table table-bordered table-hover dataTable"
+                                {{-- <table class="table table-bordered table-hover dataTable"
                                     id="lista-requerimientos-pagos">
                                     <thead>
                                         <tr>
@@ -104,7 +155,7 @@ Normalizar
                                     <tbody>
 
                                     </tbody>
-                                </table>
+                                </table> --}}
                             </div>
                         </div>
 
@@ -113,7 +164,7 @@ Normalizar
                     <div class="tab-pane" id="tab_2-2">
                         <div class="row">
                             <div class="col-md-12">
-                                <table class="table table-hover"
+                                {{-- <table class="table table-hover"
                                     id="lista-ordenes">
                                     <thead>
                                         <tr>
@@ -128,7 +179,7 @@ Normalizar
                                     <tbody>
 
                                     </tbody>
-                                </table>
+                                </table> --}}
                             </div>
                         </div>
                     </div>
