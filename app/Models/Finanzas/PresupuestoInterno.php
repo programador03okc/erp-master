@@ -636,6 +636,7 @@ class PresupuestoInterno extends Model
             $saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$id_presupuesto_interno)
             ->where('mes',ConfiguracionHelper::leftZero(2,$i))
             ->whereNotNull('id_requerimiento')
+            ->orWhereNotNull('id_requerimiento_pago')
             ->orderBy('id','ASC')
             ->get();
 
