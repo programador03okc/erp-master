@@ -116,7 +116,15 @@ class RequerimientoPago {
                 {
                     'data': 'monto_total', 'name': 'requerimiento_pago.monto_total',
                     'render': function (data, type, row) {
-                        return formatNumber.decimal(row['monto_total'], '', -2);
+                        if(row['monto_total'] !== null){
+                            if(row['monto_total'] > 5000){
+                                return '<mark>'+formatNumber.decimal(row['monto_total'], '', -2)+'</mark>';
+                            }else{
+                                return formatNumber.decimal(row['monto_total'], '', -2);
+                            }
+                        }else{
+                            return '0.00';
+                        }                            
                     }, 'className': 'text-right'
                 },
                 {
@@ -322,7 +330,15 @@ class RequerimientoPago {
                 { 'data': 'simbolo', 'name': 'sis_moneda.simbolo', 'className': 'text-center' },
                 {
                     'render': function (data, type, row) {
-                        return (row['monto_total'] !== null ? formatNumber.decimal(row['monto_total'], '', -2) : '0.00');
+                        if(row['monto_total'] !== null){
+                            if(row['monto_total'] > 5000){
+                                return '<mark>'+formatNumber.decimal(row['monto_total'], '', -2)+'</mark>';
+                            }else{
+                                return formatNumber.decimal(row['monto_total'], '', -2);
+                            }
+                        }else{
+                            return '0.00';
+                        }
                     }, 'className': 'text-right'
                 },
                 {
