@@ -14,7 +14,7 @@
             <li><a href="{{ route('finanzas.lista-presupuestos.index') }}"><i class="far fa-circle fa-xs"></i> Lista de Presupuestos</a></li>
             <li><a href="{{ route('finanzas.presupuesto.index') }}"><i class="far fa-circle fa-xs"></i> Presupuesto</a></li>
             <li><a href="{{ route('finanzas.presupuesto.presupuesto-interno.lista') }}"><i class="far fa-circle fa-xs"></i> Presupuesto Interno</a></li>
-            <li><a href="{{ route('finanzas.presupuesto.normalizar.presupuesto') }}"><i class="far fa-circle fa-xs"></i> Normalizar Presupuestos</a></li>
+            {{-- <li><a href="{{ route('finanzas.presupuesto.normalizar.presupuesto') }}"><i class="far fa-circle fa-xs"></i> Normalizar Presupuestos</a></li> --}}
             {{-- <li><a href="{{ route('finanzas.centro-costos.index') }}"><i class="far fa-circle fa-xs"></i> Centro de Costos</a></li> --}}
 
         </ul>
