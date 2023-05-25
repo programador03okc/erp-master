@@ -12,7 +12,7 @@ function restablecerDefaultModalCuentaDestinatario(){
 
 function obtenerNombreModalPadre(){
 
-    if(document.querySelector("div[class='modal fade in']").getAttribute("id")){
+    if(document.querySelector("div[class='modal fade in']") !=null && document.querySelector("div[class='modal fade in']").getAttribute("id")){
         nombreModalPadre="div[id='"+document.querySelector("div[class='modal fade in']").getAttribute("id")+"']";
     }
 }

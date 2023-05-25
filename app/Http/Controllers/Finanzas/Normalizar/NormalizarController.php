@@ -110,7 +110,7 @@ class NormalizarController extends Controller
                 $mes_text = ConfiguracionHelper::mesNumero($request->mes).'_aux';
                 $saldo_presupuesto_detalle = PresupuestoInternoDetalle::where('id_presupuesto_interno_detalle',$request->presupuesto_interno_detalle_id)->first();
 
-                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_detalle',$request->requerimiento_pago_detalle_id)->where('id_requerimiento',$request->requerimiento_pago_id)->first();
+                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_pago_detalle',$request->requerimiento_pago_detalle_id)->where('id_requerimiento_pago',$request->requerimiento_pago_id)->first();
 
                 if (!$historial_saldo) {
                     $requerimiento_pago = RequerimientoPago::find($request->requerimiento_pago_id);

@@ -1927,6 +1927,10 @@ class OrdenesPendientesController extends Controller
                                 'comentario_anulacion' => $request->observacion,
                                 'id_motivo_anulacion' => $request->id_motivo_obs,
                             ]);
+                        //Anula el detalle
+                        DB::table('almacen.mov_alm_det')
+                            ->where('id_mov_alm', $request->id_mov_alm)
+                            ->update(['estado' => 7]);
 
                         //Anula la Guia
                         DB::table('almacen.guia_com')

@@ -64,7 +64,7 @@ class CobranzaController extends Controller
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos, $value->id_acceso);
         }
-
+        // return $array_accesos;exit;
         return view('gerencial.cobranza.registro', get_defined_vars());
     }
 

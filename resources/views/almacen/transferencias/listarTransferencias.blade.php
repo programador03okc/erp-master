@@ -265,7 +265,7 @@ Transferencias
 <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
 <script>
-    let csrf_token = "{{ csrf_token() }}";
+    // let csrf_token = "{{ csrf_token() }}";
     var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
     $(document).ready(function() {
         seleccionarMenu(window.location);

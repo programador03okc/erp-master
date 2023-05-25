@@ -770,8 +770,11 @@
     <script src="{{ asset('js/util.js') }}"></script>
 
     <script>
+
     var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
-    let csrf_token = '{{ csrf_token() }}';
+
+    // let csrf_token = '{{ csrf_token() }}';
+
     let carga_ini = 1;
     let tempClienteSelected = {};
     let tempoNombreCliente = '';

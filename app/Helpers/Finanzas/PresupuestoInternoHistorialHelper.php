@@ -74,8 +74,8 @@ class PresupuestoInternoHistorialHelper
                 $historial = new HistorialPresupuestoInternoSaldo();
                 $historial->id_presupuesto_interno = $detalleRequerimiento->id_presupuesto_interno;
                 $historial->id_partida = $detalleRequerimiento->id_partida_pi;
-                $historial->id_requerimiento = $detalleRequerimiento->id_requerimiento_pago;
-                $historial->id_requerimiento_detalle = $detalleRequerimiento->id_requerimiento_pago_detalle;
+                $historial->id_requerimiento_pago = $detalleRequerimiento->id_requerimiento_pago;
+                $historial->id_requerimiento_pago_detalle = $detalleRequerimiento->id_requerimiento_pago_detalle;
                 $historial->tipo = 'SALIDA';
                 $historial->importe = ($detalleRequerimiento->subtotal);
                 $historial->mes = date('m', strtotime($detalleRequerimiento->fecha_registro) );

@@ -251,7 +251,7 @@
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
     <script>
-        let csrf_token = '{{ csrf_token() }}';
+        // let csrf_token = '{{ csrf_token() }}';
         const idioma = {
             sProcessing: "<div class='spinner'></div>",
             sLengthMenu: "Mostrar _MENU_ registros",
@@ -278,7 +278,7 @@
                     ": Activar para ordenar la columna de manera descendente"
             }
         };
-        
+
         $(document).ready(function() {
             $('.main-header nav.navbar.navbar-static-top').find('a.sidebar-toggle').click()
             seleccionarMenu(window.location);
