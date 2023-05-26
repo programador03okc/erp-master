@@ -1022,7 +1022,7 @@ class ListarRequerimientoPagoView {
 
     llenarComboProyectos(idGrupo,idProyecto=null){
         this.obtenerListaProyectos(idGrupo).then((res) => {
-            this.construirListaProyecto(res,idProyecto=null);
+            this.construirListaProyecto(res,idProyecto);
         }).catch(function (err) {
             console.log(err)
         })
@@ -2662,7 +2662,6 @@ class ListarRequerimientoPagoView {
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_oportunidad']").value = data.cuadro_presupuesto != null ? data.cuadro_presupuesto.codigo_oportunidad : '';
 
         document.querySelector("div[id='modal-requerimiento-pago'] input[name='concepto']").value = data.concepto;
-        document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = data.id_proyecto;
         // if (data.id_proyecto > 0) {
         //     document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-proyecto']").classList.remove("oculto");
         // } else {
@@ -2722,6 +2721,7 @@ class ListarRequerimientoPagoView {
         this.presupuestoInternoView.llenarComboPresupuestoInterno(data.id_grupo, data.id_division, data.id_presupuesto_interno);
 
         this.llenarComboProyectos(data.id_grupo,data.id_proyecto); 
+        document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = data.id_proyecto;
 
         this.limpiarTabla('ListaDetalleRequerimientoPago');
 
