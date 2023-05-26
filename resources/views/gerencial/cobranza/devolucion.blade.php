@@ -169,7 +169,7 @@
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
     <script>
-        let csrf_token = '{{ csrf_token() }}';
+        // let csrf_token = '{{ csrf_token() }}';
         const idioma = {
             sProcessing: "<div class='spinner'></div>",
             sLengthMenu: "Mostrar _MENU_ registros",

@@ -4,7 +4,7 @@
 @section('option')
 @endsection
 
-@section('cabecera') Reporte de compras @endsection
+@section('cabecera') Reporte de compras locales @endsection
 
 @section('estilos')
     <link rel="stylesheet" href="{{ asset('template/plugins/iCheck/all.css') }}">
@@ -20,7 +20,7 @@
 <ol class="breadcrumb">
     <li><a href="{{route('logistica.index')}}"><i class="fas fa-tachometer-alt"></i> Logística</a></li>
     <li>Reportes</li>
-    <li class="active">Compras</li>
+    <li class="active">Compras locales</li>
 </ol>
 @endsection
 
@@ -258,7 +258,7 @@
     <script src="{{ ('/js/logistica/reportes/compras.js') }}?v={{ filemtime(public_path('/js/logistica/reportes/compras.js')) }}"></script>
 
     <script>
-        let csrf_token = '{{ csrf_token() }}';
+        //let csrf_token = '{{ csrf_token() }}';
         let array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
         const idioma = {
             "sProcessing":     "Procesando...",

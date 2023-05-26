@@ -130,7 +130,7 @@
                                     <p>- Mínimo una Mayúscula</p>
 									<p>- Mínimo una Minúscula</p>
 									<p>- Mínimo un número</p>
-									<p>- Mínimo un caracter especial (@#_%)</p>
+									<p>- Mínimo un caracter especial ("'@#_%")</p>
                                 </div>
                             </div>
                         </div>
@@ -145,7 +145,7 @@
 
 	<script type="text/javascript">
 		var auth_user = {!! $auth_user !!};
-        let csrf_token = '{{ csrf_token() }}';
+        const csrf_token = '{{ csrf_token() }}';
 	</script>
 	<script src="{{ asset('template/plugins/jQuery/jquery.min.js') }}"></script>
 	<script src="{{ asset('template/bootstrap/js/bootstrap.min.js') }}"></script>

@@ -107,7 +107,7 @@
     <script src="{{ asset('js/tesoreria/cierreApertura/listarPeriodos.js')}}"></script>
     <script src="{{ asset('js/tesoreria/cierreApertura/nuevoCierreApertura.js')}}"></script>
     <script>
-        let csrf_token = '{{ csrf_token() }}';
+        // let csrf_token = '{{ csrf_token() }}';
         let vardataTables = funcDatatables();
         $(document).ready(function () {
             listar();
