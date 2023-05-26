@@ -152,7 +152,7 @@ Saldos Actuales
     <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
     <script src="{{ asset('js/util.js')}}"></script>
     <script>
-        let csrf_token = '{{ csrf_token() }}';
+        // let csrf_token = '{{ csrf_token() }}';
         let vardataTables = funcDatatables();
         $(document).ready(function() {
             seleccionarMenu(window.location);

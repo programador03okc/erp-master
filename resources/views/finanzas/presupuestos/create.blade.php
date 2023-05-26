@@ -210,7 +210,7 @@ Presupuesto
     <script src="{{ asset('template/plugins/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
     <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
     <script>
-        let csrf_token = "{{ csrf_token() }}";
+        // let csrf_token = "{{ csrf_token() }}";
         $(document).ready(function () {
             seleccionarMenu(window.location);
         });

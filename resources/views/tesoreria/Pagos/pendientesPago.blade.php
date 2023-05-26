@@ -409,7 +409,7 @@ Registro de pagos
     <script src="{{ asset('template/plugins/loadingoverlay.min.js') }}"></script>
 
     <script>
-        let csrf_token = '{{ csrf_token() }}';
+        // let csrf_token = '{{ csrf_token() }}';
     </script>
     <script src="{{ asset('js/tesoreria/pagos/pendientesPago.js')}}?v={{filemtime(public_path('js/tesoreria/pagos/pendientesPago.js'))}}"></script>
     <script src="{{ asset('js/tesoreria/pagos/procesarPago.js')}}?v={{filemtime(public_path('js/tesoreria/pagos/procesarPago.js'))}}"></script>

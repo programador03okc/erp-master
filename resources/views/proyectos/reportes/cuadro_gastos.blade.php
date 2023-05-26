@@ -87,7 +87,7 @@ Cuadro de gastos
 
 <script src="{{ asset('js/proyectos/reportes/cuadro_gastos.js')}}"></script>
 <script>
-    let csrf_token = "{{ csrf_token() }}";
+    // let csrf_token = "{{ csrf_token() }}";
     $(document).ready(function() {
         seleccionarMenu(window.location);
         
