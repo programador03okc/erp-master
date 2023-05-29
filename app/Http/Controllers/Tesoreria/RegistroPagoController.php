@@ -10,10 +10,12 @@ use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
+use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Prioridad;
 use App\Models\Almacen\AdjuntoDetalleRequerimiento;
 use App\Models\Almacen\AdjuntoRequerimiento;
 use App\Models\Almacen\Requerimiento;
+use App\Models\Configuracion\Moneda;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\PagoCuota;
 use App\Models\Logistica\PagoCuotaDetalle;
@@ -61,7 +63,8 @@ class RegistroPagoController extends Controller
     {
         $prioridad = Prioridad::all();
         $empresas = AlmacenController::select_empresa();
-        $estados = RequerimientoPagoEstados::all();
+        $estados = RequerimientoPagoEstados::whereIn('id_requerimiento_pago_estado', [8, 5, 6, 9,10])->get();
+        $moneda = Moneda::all();
         // return view('tesoreria/pagos/pendientesPago', compact('empresas'));
         return view('tesoreria.Pagos.pendientesPago', get_defined_vars());
     }
@@ -1443,5 +1446,112 @@ class RegistroPagoController extends Controller
         }
 
         return Excel::download(new OrdenCompraServicioExport(json_encode($json_excel)), 'requerimiento_pagados.xlsx');
+    }
+    public function cuadroComparativoPagos()
+    {
+
+        $empresa = Empresa::all();
+        $estados = RequerimientoPagoEstados::whereIn('id_requerimiento_pago_estado', [6, 2, 5, 8, 9])->get();
+        $monedas = Moneda::all();
+
+        $grupo_estado=array();
+        foreach ($estados as $key => $value) {
+            $grupo_estado=array();
+            foreach ($empresa as $key_empresa => $value_empresa) {
+                $cantidad = RequerimientoPago::where('id_estado',$value->id_requerimiento_pago_estado)
+                ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9])
+                ->where('id_empresa',$value_empresa->id_empresa)
+                ->count();
+                // return $cantidad;exit;
+                array_push($grupo_estado,array(
+                    "empresa_id"=>$value_empresa->id_empresa,
+                    "estado_id"=>$value->id_requerimiento_pago_estado,
+                    "cantidad"=>$cantidad,
+                ));
+            }
+            $value->grupo = $grupo_estado;
+        }
+        $grupo_moneda = array();
+        foreach ($monedas as $key => $value) {
+            $grupo_moneda = array();
+            foreach ($empresa as $key_empresa => $value_empresa) {
+                $cantidad = RequerimientoPago::where('id_moneda',$value->id_moneda)
+                ->where('id_empresa',$value_empresa->id_empresa)
+                ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9])
+                ->whereNotIn('id_estado',[7,6])
+                ->get();
+                $total=0;
+
+                foreach ($cantidad as $key_cantidad => $value_cantidad) {
+                    $total=$value_cantidad->monto_total+$total;
+                }
+                // return $cantidad;exit;
+                array_push($grupo_moneda,array(
+                    "empresa_id"=>$value_empresa->id_empresa,
+                    "moneda_id"=>$value->id_moneda,
+                    "total"=>round($total,2),
+                ));
+            }
+            $value->grupo = $grupo_moneda;
+        }
+        return response()->json(["empresas"=>$empresa,"estados"=>$estados,"monedas"=>$monedas],200);
+    }
+    public function cuadroComparativoOrdenes()
+    {
+        $empresa = Empresa::all();
+        $estados = RequerimientoPagoEstados::whereIn('id_requerimiento_pago_estado', [8, 5, 6, 9,10])->get();
+        $monedas = Moneda::all();
+
+        $grupo_estado = array();
+        foreach ($estados as $key => $value) {
+            $grupo_estado = array();
+            foreach ($empresa as $key_empresa => $value_empresa) {
+                $cantidad = Orden::select('log_ord_compra.*')
+                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                ->where('log_ord_compra.estado_pago',$value->id_requerimiento_pago_estado)
+                ->where('adm_empresa.id_empresa',$value_empresa->id_empresa)
+                ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9,10])
+                ->where('log_ord_compra.estado','!=',7)
+                ->count();
+                // return $cantidad;exit;
+                array_push($grupo_estado,array(
+                    "empresa_id"=>$value_empresa->id_empresa,
+                    "estado_id"=>$value->id_requerimiento_pago_estado,
+                    "cantidad"=>$cantidad,
+                ));
+            }
+            $value->grupo = $grupo_estado;
+        }
+
+        $grupo_moneda = array();
+        foreach ($monedas as $key => $value) {
+            $grupo_moneda = array();
+            foreach ($empresa as $key_empresa => $value_empresa) {
+                $cantidad = Orden::select('log_ord_compra.*')
+                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+
+                ->where('adm_empresa.id_empresa',$value_empresa->id_empresa)
+                ->where('log_ord_compra.id_moneda',$value->id_moneda)
+                ->whereIn('log_ord_compra.estado_pago', [8, 5, 9,10])
+                ->where('log_ord_compra.estado','!=',7)
+                ->whereNotIn('log_ord_compra.estado_pago',[7,6])
+                ->get();
+                $total=0;
+
+                foreach ($cantidad as $key_cantidad => $value_cantidad) {
+                    $total=$value_cantidad->monto_total+$total;
+                }
+                // return $cantidad;exit;
+                array_push($grupo_moneda,array(
+                    "empresa_id"=>$value_empresa->id_empresa,
+                    "moneda_id"=>$value->id_moneda,
+                    "total"=>round($total,2),
+                ));
+            }
+            $value->grupo = $grupo_moneda;
+        }
+        return response()->json(["empresas"=>$empresa,"estados"=>$estados,"monedas"=>$monedas],200);
     }
 }

@@ -60,6 +60,31 @@ Registro de pagos
                                     </table>
                                 </div>
                             </div>
+                            <div class="row">
+                                <h3>Cuadro Informativo de los Requerimientos Pagados</h3>
+                                <div class="col-md-12">
+                                    <table class="mytable table table-condensed table-bordered table-okc-view table-hover text-center"
+                                        id="cuadro-pagos">
+                                        <thead>
+                                            <tr>
+                                                <th rowspan="2">Empresas</th>
+                                                <th colspan="{{sizeof($estados)}}">Estados</th>
+                                                <th colspan="{{sizeof($moneda)}}">Monedas</th>
+                                            </tr>
+                                            <tr>
+                                                @foreach ($estados as $item)
+                                                <th data-th="{{$item->id_requerimiento_pago_estado}}">{{$item->descripcion}}</th>
+                                                @endforeach
+                                                @foreach ($moneda as $item)
+                                                <th data-th="{{$item->id_moneda}}">{{$item->descripcion}} ({{$item->simbolo}})</th>
+                                                @endforeach
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </form>
                     </div>
 
@@ -98,6 +123,31 @@ Registro de pagos
                             </div>
 
                         </form>
+                        <div class="row">
+                            <h3>Cuadro Informativo de Ordenes Compra/Servicio</h3>
+                            <div class="col-md-12">
+                                <table class="mytable table table-condensed table-bordered table-okc-view table-hover text-center"
+                                    id="cuadro-ordenes">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2">Empresas</th>
+                                            <th colspan="{{sizeof($estados)}}">Estados</th>
+                                            <th colspan="{{sizeof($moneda)}}">Monedas</th>
+                                        </tr>
+                                        <tr>
+                                            @foreach ($estados as $item)
+                                            <th data-th="{{$item->id_requerimiento_pago_estado}}">{{$item->descripcion}}</th>
+                                            @endforeach
+                                            @foreach ($moneda as $item)
+                                            <th data-th="{{$item->id_moneda}}">{{$item->descripcion}} ({{$item->simbolo}})</th>
+                                            @endforeach
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
 
                     {{-- <div id="comprobantes" class="tab-pane fade ">
@@ -417,7 +467,9 @@ Registro de pagos
     {{-- <script src="{{ asset('js/tesoreria/requerimientoPago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/ListarRequerimientoPagoView.js'))}}"></script> --}}
 
     <script src="{{ asset('js/tesoreria/pagos/modalVistaRapidaRequerimiento.js')}}"></script>
-    <script>
+    <script src="{{ asset('js/Tesoreria/Pagos/cuadro-comparativo.js')}}"></script>
+
+<script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
         vista_extendida();
