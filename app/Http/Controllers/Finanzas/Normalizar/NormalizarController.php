@@ -50,8 +50,8 @@ class NormalizarController extends Controller
         // $req_pago = $req_pago->get();
 
         $req_pago = RequerimientoPago::select('requerimiento_pago.*')
-        ->whereDate('requerimiento_pago.fecha_registro','>=','2023-01-01 00:00:00')
-        ->whereDate('requerimiento_pago.fecha_registro','<=','2023-04-30 23:59:59')
+        ->whereDate('requerimiento_pago.fecha_autorizacion','>=','2023-01-01 00:00:00')
+        ->whereDate('requerimiento_pago.fecha_autorizacion','<=','2023-04-30 23:59:59')
         ->where('requerimiento_pago.id_estado','=',6)
         ->join('tesoreria.requerimiento_pago_detalle','requerimiento_pago_detalle.id_requerimiento_pago','=','requerimiento_pago.id_requerimiento_pago')->whereNull('requerimiento_pago_detalle.id_partida')->whereNull('requerimiento_pago_detalle.id_partida_pi');
         if (!empty($request->division)) {
@@ -75,8 +75,9 @@ class NormalizarController extends Controller
     {
 
 
-        $ordenes = OrdenesView::select('ordenes_view.*')
-        ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_orden_compra','=','ordenes_view.id')
+        // $ordenes = OrdenesView::select('ordenes_view.*')
+        $ordenes = Orden::select('log_ord_compra.*')
+        ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_orden_compra','=','log_ord_compra.id_orden_compra')
         ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_det_ord_compra.id_detalle_requerimiento')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento');
         ;
@@ -87,11 +88,11 @@ class NormalizarController extends Controller
         // if (!empty($request->mes)) {
         //     $ordenes = $ordenes->whereMonth('ordenes_view.fecha_emision',$request->mes);
         // }
-        $ordenes = $ordenes->whereDate('ordenes_view.fecha_emision','>=','2023-01-01 00:00:00');
-        $ordenes = $ordenes->whereDate('ordenes_view.fecha_emision','<=','2023-04-30 23:59:59');
-        // $ordenes = $ordenes->groupBy('ordenes_view.id');
-        $ordenes = $ordenes->where('ordenes_view.estado_pago',6)->get();
+        $ordenes = $ordenes->whereDate('log_ord_compra.fecha_autorizacion','>=','2023-01-01 00:00:00');
+        $ordenes = $ordenes->whereDate('log_ord_compra.fecha_autorizacion','<=','2023-04-30 23:59:59');
 
+        $ordenes = $ordenes->where('log_ord_compra.estado_pago',6)->groupBy('log_ord_compra.id_orden_compra')->get();
+        // $ordenes = $ordenes->groupBy('log_det_ord_compra.id_orden_compra');
         return DataTables::of($ordenes)
         // ->toJson();
         ->make(true);

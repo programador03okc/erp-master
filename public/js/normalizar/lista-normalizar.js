@@ -45,24 +45,24 @@ function listarOrdenes() {
             }
         },
         columns: [
-            {data: 'id', name:"id" },
+            {data: 'id_orden_compra', name:"id_orden_compra" },
 
             {data: 'codigo', name:"codigo" , class:"text-center"},
-            {data: 'fecha_emision', name:"fecha_emision" , class:"text-center"},
-            {data: 'descripcion_estado_pago', name:"descripcion_estado_pago" , class:"text-center"},
+            {data: 'fecha_autorizacion', name:"fecha_autorizacion" , class:"text-center"},
+            {data: 'comentario_pago', name:"comentario_pago" , class:"text-center"},
             {
                 data: 'monto_total', name:"monto_total",
                 render : function(data, type, row){
-                    let total = (row['simbolo_moneda']===1?'S/.':'$')+row['monto_total']
+                    let total = (row['id_moneda']===1?'S/.':'$')+row['monto_total']
                     return total
                 }
                 , class:"text-center"},
             {
                 render: function (data, type, row) {
                     html='';
-                    html+='<button type="button" class="btn text-black btn-default botonList detalle-orden" data-id="'+row['id']+'" title="Ver detalle"><i class="fas fa-chevron-down"></i></button>'
+                    html+='<button type="button" class="btn text-black btn-default botonList detalle-orden" data-id="'+row['id_orden_compra']+'" title="Ver detalle"><i class="fas fa-chevron-down"></i></button>'
 
-                    html+='<button type="button" class="btn text-black btn-flat botonList ver-presupuesto-interno" data-id="'+row['id']+'" title="Asignar Partida" ><i class="fas fa-file-excel"></i></button>'
+                    html+='<button type="button" class="btn text-black btn-flat botonList ver-presupuesto-interno" data-id="'+row['id_orden_compra']+'" title="Asignar Partida" ><i class="fas fa-file-excel"></i></button>'
 
 
 
