@@ -787,11 +787,11 @@ class RevisarAprobarController extends Controller{
         if($accion ==1){
             $mensaje='Documento aprobado';
 
-            if($idTipoDocumento == 1){
-            PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimiento,$idTipoDocumento);
-            }else if($idTipoDocumento == 11){
-                PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimientoPago,$idTipoDocumento);
-            }
+            // if($idTipoDocumento == 1){
+            // PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimiento,$idTipoDocumento);
+            // }else if($idTipoDocumento == 11){
+            //     PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimientoPago,$idTipoDocumento);
+            // }
 
         }elseif($accion ==2){
             $mensaje='Documento rechazado';
