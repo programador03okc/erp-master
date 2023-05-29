@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Finanzas\PresupuestoInternoHistorialHelper;
 use App\Helpers\NotificacionHelper;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Mail\EmailNotificarUsuarioPropietarioDeDocumento;
@@ -74,7 +75,6 @@ class RevisarAprobarController extends Controller{
             }
         }
 
-
         $operacionesCoincidenciaPorTipoRequerimiento=[];
         if(count($operacionesCoincidenciaTipoDocumentoGrupo)!=1){
             foreach ($operacionesCoincidenciaTipoDocumentoGrupo as $k => $o) {
@@ -142,6 +142,9 @@ class RevisarAprobarController extends Controller{
                     return $operacionPropuestaPorMonto2;
                 }elseif($elMontoEsIgual == 'SI'){
                     return $operacionPropuestaPorMonto3;
+                }else{
+                    return $operacionesCoincidenciaPorDivision;
+
                 }
             }
             
@@ -181,9 +184,9 @@ class RevisarAprobarController extends Controller{
             if($obtenerMontoTotal['estado']=='success'){
                 $montoTotal=$obtenerMontoTotal['monto'];
             }
-
+            
             $operaciones = $idDivision>0? $this->getOperacionSinConsiderarRol($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago):[];
-
+            // return $operaciones;
             if(isset($operaciones)){
                 $flujo = Flujo::with('rol')->where([['id_operacion',$operaciones[0]->id_operacion],['estado',1]])->get();
 
@@ -768,7 +771,7 @@ class RevisarAprobarController extends Controller{
         }
     }
 
-    public function registrarRespuesta($accion, $idFlujo, $idDocumento, $idUsuario,$comentario, $idRolAprobante){
+    public function registrarRespuesta($accion, $idFlujo, $idDocumento, $idTipoDocumento, $idRequerimiento, $idRequerimientoPago, $idUsuario,$comentario, $idRolAprobante){
         $aprobacion = new Aprobacion();
         $aprobacion->id_flujo = $idFlujo;
         $aprobacion->id_doc_aprob = $idDocumento;
@@ -783,6 +786,13 @@ class RevisarAprobarController extends Controller{
         $mensaje='';
         if($accion ==1){
             $mensaje='Documento aprobado';
+
+            if($idTipoDocumento == 1){
+            PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimiento,$idTipoDocumento);
+            }else if($idTipoDocumento == 11){
+                PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimientoPago,$idTipoDocumento);
+            }
+
         }elseif($accion ==2){
             $mensaje='Documento rechazado';
             $this->limpiarMapeoDeDocumento($idDocumento);
@@ -822,7 +832,7 @@ class RevisarAprobarController extends Controller{
         try {
             // $accion = $request->accion;
             // $sustento = $request->sustento;
-            // $idTipoDocumento = $request->tipoDocumento;
+            // $idTipoDocumento = $request->idTipoDocumento;
             // $tipoDocumento = $request->tipoDocumento;
             // $idDocumento = $request->idDocumento;
             // $idRequerimiento = $request->idRequerimiento;
@@ -853,7 +863,7 @@ class RevisarAprobarController extends Controller{
                 }
             }
             // agregar vobo (1= aprobado, 2= rechazado, 3=observado, 5=Revisado)
-            $aprobacion= $this->registrarRespuesta($request->accion, $request->idFlujo, $request->idDocumento,$request->idUsuarioAprobante,$request->sustento, $request->idRolAprobante);
+            $aprobacion= $this->registrarRespuesta($request->accion, $request->idFlujo, $request->idDocumento, $request->idTipoDocumento, $request->idRequerimiento, $request->idRequerimientoPago, $request->idUsuarioAprobante,$request->sustento, $request->idRolAprobante);
 
 
             $montoTotal= 0;
@@ -958,7 +968,7 @@ class RevisarAprobarController extends Controller{
                                             $nombreAccion='Pendiente Aprobación';
 
                                         }
-                                        $aprobacion= $this->registrarRespuesta($accionNext, $flujo->id_flujo, $request->idDocumento,$request->idUsuarioAprobante,$request->sustento, $flujo->id_rol);
+                                        $aprobacion= $this->registrarRespuesta($accionNext, $flujo->id_flujo, $request->idDocumento, $request->idTipoDocumento,$request->idRequerimiento, $request->idRequerimientoPago,$request->idUsuarioAprobante,$request->sustento, $flujo->id_rol);
 
                                         if($request->idTipoDocumento ==1){ //documento de tipo: requerimiento b/s
                                             $trazabilidad= $this->registrarTrazabilidad($request->idRequerimiento,$aprobacionFinalOPendiente,$request->idUsuarioAprobante, $nombreCompletoUsuarioRevisaAprueba, $accionNext);

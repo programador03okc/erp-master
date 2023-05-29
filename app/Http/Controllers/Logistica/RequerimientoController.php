@@ -869,8 +869,9 @@ class RequerimientoController extends Controller
             $historialAprobacionList[] = $value;
         }
 
-
+        
         $flujoDeAprobacion = (new RevisarAprobarController)->mostrarTodoFlujoAprobacionDeDocumento($num_doc);
+        // Debugbar::info($flujoDeAprobacion);
 
 
         $data = [
@@ -878,8 +879,8 @@ class RequerimientoController extends Controller
             "det_req" => $detalle_requerimiento ? $detalle_requerimiento : [],
             "observacion_requerimiento" => $req_observacion ? $req_observacion : [],
             "aprobaciones" => $cantidad_aprobados ? $cantidad_aprobados : 0,
-            "historial_aprobacion" => $flujoDeAprobacion ? $historialAprobacionList : [],
-            "flujo_aprobacion" => $historialAprobacionList ? $flujoDeAprobacion : []
+            "historial_aprobacion" => $historialAprobacionList ? $historialAprobacionList : [],
+            "flujo_aprobacion" => $flujoDeAprobacion ? $flujoDeAprobacion : []
         ];
 
         return $data;
