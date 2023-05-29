@@ -285,32 +285,6 @@ Registro de pagos
                     </div>
                 </div>
             </div>
-            {{-- <div class="row" data-section="monto">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" data-action="click" name="monto" value="monto"> Monto
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <select class="form-control" data-action="select" name="simbolo" disabled>
-                            <option value="" hidden>Seleccione...</option>
-                            <option value="<"><=</option>
-                            <option value="=">=</option>
-                            <option value=">=">>=</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <input type="number" class="form-control" data-action="select" step="0.01" name="total" value="0.00" disabled>
-                    </div>
-                </div>
-            </div> --}}
         </div>
         <div class="modal-footer">
           {{-- <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button> --}}

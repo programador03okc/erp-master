@@ -51,9 +51,33 @@ function ordenes() {
 
 function renderizarCuadro(empresas, estados, monedas, tabla) {
     let html = ``;
+    let html_head = ``;
     let count_estados = estados.length;
     let count_monedas = monedas.length;
 
+    html_head+=`
+            <tr>
+                <th rowspan="2">Empresas</th>
+                <th colspan="`+count_estados+`">Estados</th>
+                <th colspan="`+count_monedas+`">Monedas</th>
+            </tr>
+            <tr>`;
+                // @foreach ($estados as $item)
+                // <th data-th="{{$item->id_requerimiento_pago_estado}}">{{$item->descripcion}}</th>
+                // @endforeach
+                // @foreach ($moneda as $item)
+                // <th data-th="{{$item->id_moneda}}">{{$item->descripcion}} ({{$item->simbolo}})</th>
+                // @endforeach
+
+                $.each(estados, function (index, element) {
+                    html_head+=`<th data-th="`+element.id_requerimiento_pago_estado+`">`+element.descripcion+`</th>`;
+                });
+                $.each(monedas, function (index, element) {
+                    html_head+=`<th data-th="`+element.id_moneda+`">`+element.descripcion+` (`+element.simbolo+`)</th>`;
+                });
+        html_head+=`</tr>
+    `;
+    $('#'+tabla).find('thead').html(html_head);
     $.each(empresas, function (index, element) {
         html += `<tr data-empresa="${element.id_empresa}">
             <td>${element.codigo}</td>`;

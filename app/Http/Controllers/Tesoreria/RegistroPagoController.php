@@ -63,7 +63,7 @@ class RegistroPagoController extends Controller
     {
         $prioridad = Prioridad::all();
         $empresas = AlmacenController::select_empresa();
-        $estados = RequerimientoPagoEstados::whereIn('id_requerimiento_pago_estado', [8, 5, 6, 9,10])->get();
+        $estados = RequerimientoPagoEstados::all();
         $moneda = Moneda::all();
         // return view('tesoreria/pagos/pendientesPago', compact('empresas'));
         return view('tesoreria.Pagos.pendientesPago', get_defined_vars());
