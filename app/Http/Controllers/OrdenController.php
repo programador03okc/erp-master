@@ -4734,6 +4734,8 @@ class OrdenController extends Controller
                 'tiempo_atencion_logistica' => $d['data_atencion_logistica'] ?? '',
                 'fecha_ultimo_ingreso_almacen' => $d['fecha_ultimo_ingreso_almacen'] ?? '',
                 'razon_social_proveedor' => $d['razon_social_proveedor'] ?? '',
+                'condicion_compra'=>$d['condicion_compra'] ?? '',
+                'credito_dias'=>$d['credito_dias'] ?? '',
                 'estado_orden' => $d['descripcion_estado'] ?? '',
                 'estado_pago' => $d['descripcion_estado_pago'] ?? '-',
                 'monto_total' => $d['monto_total'] ?? '',

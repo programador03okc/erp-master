@@ -38,6 +38,8 @@ class ListOrdenesHeadExport implements FromCollection, WithHeadings
             "Tiempo atención logística",
             "Fecha último ingreso almacén",
             "Proveedor",
+            "Condición compra",
+            "Crédito días",
             "Estado de orden",
             "Estado de pago",
             "Importe total orden",
