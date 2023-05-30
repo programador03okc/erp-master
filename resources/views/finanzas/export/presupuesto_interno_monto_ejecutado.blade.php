@@ -96,8 +96,8 @@
                         $total_2 = $total_2 + $item_detalle->subtotal;
                     @endphp
                 <tr>
-                    <td style="vertical-align: baseline;text-align: center;">{{$item->cabecera->fecha_registro}}</td>
-                    <td style="vertical-align: text-bottom;text-align: center;">{{$item->fecha_registro}}</td>
+                    <td style="vertical-align: baseline;text-align: center;">{{ date("d/m/Y H:i:s", strtotime($item->cabecera->fecha_registro))  }}</td>
+                    <td style="vertical-align: text-bottom;text-align: center;">{{($item->cabecera->fecha_autorizacion? date("d/m/Y H:i:s", strtotime($item->cabecera->fecha_autorizacion)):'-')}}</td>
                     <td style="vertical-align: text-bottom;text-align: center;">{{$item->cabecera->codigo}}</td>
                     <td style="vertical-align: text-bottom;text-align: center;">{{$item_detalle->descripcion}}</td>
                     <td style="vertical-align: text-bottom;text-align: center;">S/.{{$item_detalle->subtotal}}</td>

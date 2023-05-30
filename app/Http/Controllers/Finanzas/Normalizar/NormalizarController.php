@@ -50,13 +50,24 @@ class NormalizarController extends Controller
         // $req_pago = $req_pago->get();
 
         $req_pago = RequerimientoPago::select('requerimiento_pago.*')
-        ->whereMonth('requerimiento_pago.fecha_registro',$request->mes)
-        ->join('tesoreria.requerimiento_pago_detalle','requerimiento_pago_detalle.id_requerimiento_pago','=','requerimiento_pago.id_requerimiento_pago')->whereNull('requerimiento_pago_detalle.id_partida');
+        ->whereDate('requerimiento_pago.fecha_autorizacion','>=','2023-01-01 00:00:00')
+        ->whereDate('requerimiento_pago.fecha_autorizacion','<=','2023-04-30 23:59:59')
+        ->where('requerimiento_pago.id_estado','=',6)
+        ->join('tesoreria.requerimiento_pago_detalle','requerimiento_pago_detalle.id_requerimiento_pago','=','requerimiento_pago.id_requerimiento_pago')->whereNull('requerimiento_pago_detalle.id_partida')->whereNull('requerimiento_pago_detalle.id_partida_pi');
         if (!empty($request->division)) {
             $req_pago = $req_pago->where('requerimiento_pago.id_division',$request->division);
         }
-        $req_pago = $req_pago->groupBy('requerimiento_pago.id_requerimiento_pago')->where('requerimiento_pago_detalle.id_estado','!=',7)->get();
+        $req_pago = $req_pago
+        ->groupBy('requerimiento_pago.id_requerimiento_pago')
+        // ->where('requerimiento_pago_detalle.id_estado','!=',7)
+        ->get();
         return DataTables::of($req_pago)
+        ->addColumn('mes', function ($data){
+            $fecha_como_entero = strtotime($data->fecha_autorizacion);
+            $mes = date("m", $fecha_como_entero);
+
+            return $mes;
+        })
         // ->toJson();
         ->make(true);
     }
@@ -64,8 +75,9 @@ class NormalizarController extends Controller
     {
 
 
-        $ordenes = OrdenesView::select('ordenes_view.*')
-        ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_orden_compra','=','ordenes_view.id')
+        // $ordenes = OrdenesView::select('ordenes_view.*')
+        $ordenes = Orden::select('log_ord_compra.*')
+        ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_orden_compra','=','log_ord_compra.id_orden_compra')
         ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_det_ord_compra.id_detalle_requerimiento')
         ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento');
         ;
@@ -73,21 +85,32 @@ class NormalizarController extends Controller
         if (!empty($request->division)) {
             $ordenes = $ordenes->where('alm_req.division_id',$request->division);
         }
-        if (!empty($request->mes)) {
-            $ordenes = $ordenes->whereMonth('ordenes_view.fecha_emision',$request->mes);
-        }
-        // $ordenes = $ordenes->groupBy('ordenes_view.id');
-        $ordenes = $ordenes->get();
+        // if (!empty($request->mes)) {
+        //     $ordenes = $ordenes->whereMonth('ordenes_view.fecha_emision',$request->mes);
+        // }
+        $ordenes = $ordenes->whereDate('log_ord_compra.fecha_autorizacion','>=','2023-01-01 00:00:00');
+        $ordenes = $ordenes->whereDate('log_ord_compra.fecha_autorizacion','<=','2023-04-30 23:59:59');
 
+        $ordenes = $ordenes->where('log_ord_compra.estado_pago',6)->groupBy('log_ord_compra.id_orden_compra')->get();
+        // $ordenes = $ordenes->groupBy('log_det_ord_compra.id_orden_compra');
         return DataTables::of($ordenes)
         // ->toJson();
         ->make(true);
     }
     public function obtenerPresupuesto(Request $request)
     {
-        $presupuesto_interno = PresupuestoInterno::where('id_area',$request->division)->where('estado','!=',7)->whereYear('fecha_registro',date('Y'))->first();
-        $presupuesto_interno_detalle = PresupuestoInternoDetalle::where('id_presupuesto_interno',$presupuesto_interno->id_presupuesto_interno)->where('estado',1)->orderBy('partida')->get();
-        return response()->json(["presupuesto"=>$presupuesto_interno,"presupuesto_detalle"=>$presupuesto_interno_detalle],200);
+        $presupuesto_interno = PresupuestoInterno::where('id_area',$request->division)->where('estado','=',2)->first();
+
+        if ($presupuesto_interno) {
+            $presupuesto_interno_detalle = PresupuestoInternoDetalle::where('id_presupuesto_interno',$presupuesto_interno->id_presupuesto_interno)->where('estado',1)->orderBy('partida')->get();
+
+            if ($presupuesto_interno_detalle) {
+                return response()->json(["presupuesto"=>$presupuesto_interno,"presupuesto_detalle"=>$presupuesto_interno_detalle,"status"=>200],200);
+            }
+            return response()->json(["tipo"=>"warning","mensaje"=>"No cuenta con partidas asignadas", "titulo"=>"Alerta","status"=>400],200);
+        }
+        return response()->json(["tipo"=>"warning","mensaje"=>"No cuenta con un presupuesto", "titulo"=>"Alerta","status"=>400],200);
+
     }
     public function vincularPartida(Request $request)
     {
@@ -106,16 +129,27 @@ class NormalizarController extends Controller
             break;
 
             case 'requerimiento de pago':
-                $mes_string = ConfiguracionHelper::mesNumero($request->mes);
-                $mes_text = ConfiguracionHelper::mesNumero($request->mes).'_aux';
+
+
+                $requerimiento_pago = RequerimientoPago::find($request->requerimiento_pago_id);
+                $fecha_como_entero = strtotime($requerimiento_pago->fecha_autorizacion);
+                $mes = date("m", $fecha_como_entero);
+
+
+                $mes_string = ConfiguracionHelper::mesNumero($mes);
+                $mes_text = ConfiguracionHelper::mesNumero($mes).'_aux';
+
                 $saldo_presupuesto_detalle = PresupuestoInternoDetalle::where('id_presupuesto_interno_detalle',$request->presupuesto_interno_detalle_id)->first();
 
-                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_pago_detalle',$request->requerimiento_pago_detalle_id)->where('id_requerimiento_pago',$request->requerimiento_pago_id)->first();
+                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_pago_detalle',$request->requerimiento_pago_detalle_id)
+                ->where('id_requerimiento_pago',$request->requerimiento_pago_id)
+                ->first();
 
                 if (!$historial_saldo) {
-                    $requerimiento_pago = RequerimientoPago::find($request->requerimiento_pago_id);
+
 
                     if (floatval($saldo_presupuesto_detalle->$mes_text)>=floatval($requerimiento_pago->monto_total)) {
+
                         $requerimiento_pago->id_presupuesto_interno=$request->presupuesto_interno_id;
                         $requerimiento_pago->save();
 
@@ -145,7 +179,11 @@ class NormalizarController extends Controller
     }
     public function detalleRequerimientoPago($id)
     {
-        $requerimiento_pago = RequerimientoPagoDetalle::where('id_requerimiento_pago',$id)->whereNull('id_partida')->where('id_estado','!=',7)->get();
+        $requerimiento_pago = RequerimientoPagoDetalle::where('id_requerimiento_pago',$id)
+        ->whereNull('id_partida')
+        ->whereNull('id_partida_pi')
+        ->where('id_estado','!=',7)
+        ->get();
         return response()->json($requerimiento_pago,200);
     }
 }

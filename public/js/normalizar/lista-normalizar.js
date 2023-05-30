@@ -45,24 +45,24 @@ function listarOrdenes() {
             }
         },
         columns: [
-            {data: 'id', name:"id" },
+            {data: 'id_orden_compra', name:"id_orden_compra" },
 
             {data: 'codigo', name:"codigo" , class:"text-center"},
-            {data: 'fecha_emision', name:"fecha_emision" , class:"text-center"},
-            {data: 'descripcion_estado_pago', name:"descripcion_estado_pago" , class:"text-center"},
+            {data: 'fecha_autorizacion', name:"fecha_autorizacion" , class:"text-center"},
+            {data: 'comentario_pago', name:"comentario_pago" , class:"text-center"},
             {
                 data: 'monto_total', name:"monto_total",
                 render : function(data, type, row){
-                    let total = (row['simbolo_moneda']===1?'S/.':'$')+row['monto_total']
+                    let total = (row['id_moneda']===1?'S/.':'$')+row['monto_total']
                     return total
                 }
                 , class:"text-center"},
             {
                 render: function (data, type, row) {
                     html='';
-                    html+='<button type="button" class="btn text-black btn-default botonList detalle-orden" data-id="'+row['id']+'" title="Ver detalle"><i class="fas fa-chevron-down"></i></button>'
+                    html+='<button type="button" class="btn text-black btn-default botonList detalle-orden" data-id="'+row['id_orden_compra']+'" title="Ver detalle"><i class="fas fa-chevron-down"></i></button>'
 
-                    html+='<button type="button" class="btn text-black btn-flat botonList ver-presupuesto-interno" data-id="'+row['id']+'" title="Asignar Partida" ><i class="fas fa-file-excel"></i></button>'
+                    html+='<button type="button" class="btn text-black btn-flat botonList ver-presupuesto-interno" data-id="'+row['id_orden_compra']+'" title="Asignar Partida" ><i class="fas fa-file-excel"></i></button>'
 
 
 
@@ -107,13 +107,14 @@ function listarRequerimientosPagos() {
             {data: 'id_requerimiento_pago', name:"id_requerimiento_pago" },
             {data: 'codigo', name:"codigo" , class:"text-center"},
             {data: 'concepto', name:"concepto" , class:"text-center"},
-            {data: 'fecha_registro', name:"fecha_registro" , class:"text-center"},
+            // {data: 'fecha_registro', name:"fecha_registro" , class:"text-center"},
+            {data: 'fecha_autorizacion', name:"fecha_autorizacion" , class:"text-center"},
             {data: 'nombre_trabajador', name:"nombre_trabajador" , class:"text-center"},
             {data: 'monto_total', name:"monto_total" , class:"text-center"},
             {
                 render: function (data, type, row) {
                     html='';
-                    html+='<button type="button" class="btn text-black btn-default botonList detalle-requerimiento-pago" data-id="'+row['id_requerimiento_pago']+'" title="Ver detalle"><i class="fas fa-chevron-down"></i></button>'
+                    html+='<button type="button" class="btn text-black btn-default botonList detalle-requerimiento-pago" data-id="'+row['id_requerimiento_pago']+'" title="Ver detalle" data-mes="'+row['mes']+'"><i class="fas fa-chevron-down"></i></button>'
 
                     html+='';
                     return html;
@@ -176,6 +177,7 @@ $(document).on('click','.detalle-requerimiento-pago',function (e) {
     let tr = (e.currentTarget).closest('tr');
     var row = table_requerimientos_pagados.row(tr);
     var id = $(e.currentTarget).attr('data-id');
+    var mes = $(e.currentTarget).attr('data-mes');
     if (row.child.isShown()) {
         //  This row is already open - close it
         row.child.hide();
@@ -184,7 +186,7 @@ $(document).on('click','.detalle-requerimiento-pago',function (e) {
     else {
         // Open this row
         //    row.child( format(iTableCounter, id) ).show();
-        buildFormat((e.currentTarget), iTableCounterPago, id, row, 'pago');
+        buildFormat((e.currentTarget), iTableCounterPago, id, row, 'pago', mes);
         tr.classList.add('shown');
         // try datatable stuff
         oInnerTable = $('#lista-requerimientos-pagos_' + iTableCounterPago).dataTable({
@@ -205,7 +207,7 @@ $(document).on('click','.detalle-requerimiento-pago',function (e) {
     }
 
 });
-function buildFormat(obj, table_id, id, row, key) {
+function buildFormat(obj, table_id, id, row, key, mes) {
     obj.setAttribute('disabled', true);
     switch (key) {
         case 'orden':
@@ -230,7 +232,7 @@ function buildFormat(obj, table_id, id, row, key) {
                 dataType: 'JSON',
                 success(response) {
                     obj.removeAttribute('disabled');
-                    construirDetalleRequerimientosPagos(table_id, row, response);
+                    construirDetalleRequerimientosPagos(table_id, row, response, mes);
                 },
                 error: function(err) {
                 reject(err) // Reject the promise and go to catch()
@@ -300,7 +302,7 @@ function construirDetalleOrdenElaboradas(table_id, row, response) {
     }
     row.child(tabla).show();
 }
-function construirDetalleRequerimientosPagos(table_id, row, response) {
+function construirDetalleRequerimientosPagos(table_id, row, response, mes) {
     var html = '';
     if (response.length > 0) {
 
@@ -326,7 +328,7 @@ function construirDetalleRequerimientosPagos(table_id, row, response) {
                         <td class="text-center">
                             <button type="button" class="btn text-black btn-flat botonList"
                             data-id-requerimiento-pago="`+element.id_requerimiento_pago+`"
-                            data-id-requerimiento-pago-detalle="`+element.id_requerimiento_pago_detalle+`" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida" data-tap="requerimiento de pago"><i class="fas fa-share-square"></i></button>
+                            data-id-requerimiento-pago-detalle="`+element.id_requerimiento_pago_detalle+`" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida" data-tap="requerimiento de pago" data-mes="`+mes+`"><i class="fas fa-share-square"></i></button>
                         </td>
                     </tr>`;
                 });
@@ -347,6 +349,7 @@ $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partid
     let id = $(e.currentTarget).attr('data-id-requerimiento-pago');
     let id_detalle = $(e.currentTarget).attr('data-id-requerimiento-pago-detalle');
     let tap = $(e.currentTarget).attr('data-tap');
+    let mes = $(e.currentTarget).attr('data-mes');
     let html = ``;
     $('#normalizar-partida').modal('show');
     $.ajax({
@@ -360,57 +363,68 @@ $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partid
             $('#normalizar-partida').find('div.modal-body').html(`<div class="text-center"> <i class="fa fa-spinner fa-pulse fa-lg" style="font-size: 80px;"></i></div>`);
         }
     }).done(function(response) {
-        html = `
-            <div class="row">
-                <div class="col-md-12" data-mensaje="respuesta">
+        if (response.status===200) {
+            html = `
+                <div class="row">
+                    <div class="col-md-12" data-mensaje="respuesta">
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <p>Código :`+response.presupuesto.codigo+`</p>
-                    <p>Descripción :`+response.presupuesto.descripcion+`</p>
-                    <table class="table table-bordered table-hover dataTable"
-                    id="lista-partidas" data-table="lista-partidas">
-                        <thead>
-                            <tr>
-                                <th scope="col">Partida</th>
-                                <th scope="col">Descripcion</th>
-                                <th scope="col">Enero</th>
-                                <th scope="col">Febrero</th>
-                                <th scope="col">Marzo</th>
-                                <th scope="col">Abril</th>
-                                <th scope="col"> - </th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>Código :`+response.presupuesto.codigo+`</p>
+                        <p>Descripción :`+response.presupuesto.descripcion+`</p>
+                        <table class="table table-bordered table-hover dataTable"
+                        id="lista-partidas" data-table="lista-partidas">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Partida</th>
+                                    <th scope="col">Descripcion</th>
+                                    <th scope="col" style="`+(mes==='01'?'background-color: #bb24249c;':'')+`">Enero</th>
+                                    <th scope="col" style="`+(mes==='02'?'background-color: #bb24249c;':'')+`">Febrero</th>
+                                    <th scope="col" style="`+(mes==='03'?'background-color: #bb24249c;':'')+`">Marzo</th>
+                                    <th scope="col" style="`+(mes==='04'?'background-color: #bb24249c;':'')+`">Abril</th>
+                                    <th scope="col"> - </th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
 
-                            $.each(response.presupuesto_detalle, function (idnex, element) {
-                                if (element.registro==='2') {
-                                    html+=`<tr>
-                                        <td>`+element.partida+`</td>
-                                        <td>`+element.descripcion+`</td>
-                                        <td>`+element.enero+`</td>
-                                        <td>`+element.febrero+`</td>
-                                        <td>`+element.marzo+`</td>
-                                        <td>`+element.abril+`</td>
-                                        <td>
-                                            <button class="btn btn-default btn-sm"
-                                            data-id-presupuesto-interno="`+element.id_presupuesto_interno+`" data-id-presupuesto-interno-detalle="`+element.id_presupuesto_interno_detalle+`"
-                                            data-id-requerimiento-pago="`+id+`"
-                                            data-id-requerimiento-pago-detalle="`+id_detalle+`"
-                                            data-tap="`+tap+`"
-                                            data-click="seleccionar-partida">Asignar</button>
-                                        </td>
-                                    </tr>`;
-                                }
+                                $.each(response.presupuesto_detalle, function (idnex, element) {
+                                    if (element.registro==='2') {
+                                        html+=`<tr>
+                                            <td>`+element.partida+`</td>
+                                            <td>`+element.descripcion+`</td>
+                                            <td style="`+(mes==='01'?'background-color: #bb24249c;':'')+`">`+element.enero+`</td>
+                                            <td style="`+(mes==='02'?'background-color: #bb24249c;':'')+`">`+element.febrero+`</td>
+                                            <td style="`+(mes==='03'?'background-color: #bb24249c;':'')+`">`+element.marzo+`</td>
+                                            <td style="`+(mes==='04'?'background-color: #bb24249c;':'')+`">`+element.abril+`</td>
+                                            <td>
+                                                <button class="btn btn-default btn-sm"
+                                                data-id-presupuesto-interno="`+element.id_presupuesto_interno+`" data-id-presupuesto-interno-detalle="`+element.id_presupuesto_interno_detalle+`"
+                                                data-id-requerimiento-pago="`+id+`"
+                                                data-id-requerimiento-pago-detalle="`+id_detalle+`"
+                                                data-tap="`+tap+`"
+                                                data-click="seleccionar-partida">Asignar</button>
+                                            </td>
+                                        </tr>`;
+                                    }
 
-                            });
+                                });
 
-                        html+=`</tbody>
-                    </table>
+                            html+=`</tbody>
+                        </table>
+                    </div>
                 </div>
+            `;
+        }else{
+            html=`
+            <div class="alert alert-`+response.tipo+`" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">`+response.titulo+` :</span>
+                `+response.mensaje+`
             </div>
-        `;
+            `;
+        }
+
         $('#normalizar-partida').find('div.modal-body').html(html);
 
     }).fail( function( jqXHR, textStatus, errorThrown ){

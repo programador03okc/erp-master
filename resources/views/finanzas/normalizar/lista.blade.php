@@ -38,7 +38,7 @@ Normalizar
                     <div class="row">
                         <form action="" data-form="buscar">
                             @csrf
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Meses</label>
                                     <select class="form-control" name="mes" required>
@@ -48,7 +48,7 @@ Normalizar
                                         <option value="04">Abril</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Divisiones</label>
@@ -78,61 +78,49 @@ Normalizar
     <div class="row">
         <div class="col-md-12">
             <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs pull-right">
-                    <li><a href="#tab_2-2" data-toggle="tab">Ordenes</a></li>
-                    <li class="active"><a href="#tab_1-1" data-toggle="tab">Requerimeintos de pagos</a></li>
-
-                    <li class="pull-left header"><i class="fa fa-th"></i> </li>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Requerimientos de Pagos</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Ordenes</a></li>
+                    <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="tab_1-1">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table table-bordered table-hover dataTable"
-                                    id="lista-requerimientos-pagos">
-                                    <thead>
-                                        <tr>
-                                            <th hidden></th>
-                                            <th >Código</th>
-                                            <th>Concepto</th>
-                                            <th >Fecha Emisión</th>
-                                            <th>Creado por</th>
-                                            <th>Monto total</th>
-                                            <th>-</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                    <div class="tab-pane active" id="tab_1">
+                        <table width="100%" class="table table-bordered table-hover dataTable" id="lista-requerimientos-pagos" >
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <th>Código</th>
+                                    <th>Concepto</th>
+                                    <th >Fecha Aprovación</th>
+                                    <th>Creado por</th>
+                                    <th>Monto total</th>
+                                    <th>-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
+                            </tbody>
+                        </table>
                     </div>
-                  <!-- /.tab-pane -->
-                    <div class="tab-pane" id="tab_2-2">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table table-hover"
-                                    id="lista-ordenes">
-                                    <thead>
-                                        <tr>
-                                            <th hidden></th>
-                                            <th >Código</th>
-                                            <th >Fecha de emisión</th>
-                                            <th >Estado del Pago</th>
-                                            <th >Importe total orden</th>
-                                            <th >-</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_2">
+                        <table class="table table-bordered table-hover dataTable"  id="lista-ordenes" width="100%">
+                            <thead>
+                                <tr>
+                                    <th hidden></th>
+                                    <th >Código</th>
+                                    <th >Fecha de emisión</th>
+                                    <th >Estado del Pago</th>
+                                    <th >Importe total orden</th>
+                                    <th >-</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
-                  <!-- /.tab-pane -->
+                    <!-- /.tab-pane -->
                 </div>
                 <!-- /.tab-content -->
             </div>

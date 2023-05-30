@@ -2196,6 +2196,9 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::post('exportar-ordeners-compras-servicios', 'Tesoreria\RegistroPagoController@exportarOrdenesComprasServicios')->name('exportar-ordeners-compras-servicios');
 				// lista adjuntos pago
 				// Route::get('adjuntos-pago/{id}', 'OrdenController@listarArchivosOrder');
+
+                Route::get('cuadro-comparativo-pagos', 'Tesoreria\RegistroPagoController@cuadroComparativoPagos')->name('cuadro-comparativo-pagos');
+                Route::get('cuadro-comparativo-ordenes', 'Tesoreria\RegistroPagoController@cuadroComparativoOrdenes')->name('cuadro-comparativo-ordenes');
 			});
 
 			Route::group(['as' => 'confirmacion-pagos.', 'prefix' => 'confirmacion-pagos'], function () {
