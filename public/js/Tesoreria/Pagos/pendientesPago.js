@@ -124,7 +124,7 @@ class RequerimientoPago {
                             }
                         }else{
                             return '0.00';
-                        }                            
+                        }
                     }, 'className': 'text-right'
                 },
                 {
@@ -1540,8 +1540,10 @@ function llenarDataJson(key, this_click) {
 
 
 $('#modal-filtros').on('hidden.bs.modal', () => {
-    let clase = new RequerimientoPago();
+    let clase = new RequerimientoPago(auth_137,auth_138,auth_139);
     clase.listarRequerimientos();
+    // $('#listaRequerimientos').DataTable().ajax.reload(null, false);
+    // tableRequerimientos.ajax.reload(null, false);
     $('#btn-filtro').find('span.numero-filtros-pagos').text($('input[data-action="click"]:checked').length);
 });
 // ----------------------------------------------------
@@ -1606,7 +1608,7 @@ function llenarDataJsonOrdenes(key, this_click) {
 }
 
 $('#modal-filtros-ordenes-compra-servicio').on('hidden.bs.modal', () => {
-    let clase = new RequerimientoPago();
+    let clase = new RequerimientoPago(auth_137,auth_138,auth_139);
     clase.listarOrdenes();
     $('#btn-filtro-ordenes').find('span.numero-filtros-ordenes').text($('input[data-action="click-ordenes"]:checked').length);
 });
