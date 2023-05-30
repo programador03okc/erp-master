@@ -1483,13 +1483,25 @@ class RegistroPagoController extends Controller
                 $total=0;
 
                 foreach ($cantidad as $key_cantidad => $value_cantidad) {
-                    $total=$value_cantidad->monto_total+$total;
+                    $monto_total = $value_cantidad->monto_total;
+
+                    $registro_pagados = RegistroPago::where('id_requerimiento_pago',$value_cantidad->id_requerimiento_pago)->where('estado','!=',7)->get();
+
+                    $total_registro_pagado=0;
+                    if (sizeof($registro_pagados)>0) {
+                        foreach ($registro_pagados as $flight) {
+                            $total_registro_pagado=$total_registro_pagado + $flight->total_pago;
+                        }
+                    }
+
+                    $total= $total + ($monto_total - $total_registro_pagado);
                 }
+                // $total= $monto_total - $total_registro_pagado;
                 // return $cantidad;exit;
                 array_push($grupo_moneda,array(
                     "empresa_id"=>$value_empresa->id_empresa,
                     "moneda_id"=>$value->id_moneda,
-                    "total"=>round($total,2),
+                    "total"=> number_format($total, 2, '.', ','),
                 ));
             }
             $value->grupo = $grupo_moneda;
@@ -1541,13 +1553,25 @@ class RegistroPagoController extends Controller
                 $total=0;
 
                 foreach ($cantidad as $key_cantidad => $value_cantidad) {
-                    $total=$value_cantidad->monto_total+$total;
+
+                    $monto_total = $value_cantidad->monto_total;
+
+                    $registro_pagados = RegistroPago::where('id_oc',$value_cantidad->id_orden_compra)->where('estado','!=',7)->get();
+
+                    $total_registro_pagado=0;
+                    if (sizeof($registro_pagados)>0) {
+                        foreach ($registro_pagados as $flight) {
+                            $total_registro_pagado=$total_registro_pagado + $flight->total_pago;
+                        }
+                    }
+                    $total= $total + ($monto_total - $total_registro_pagado);
+                    // $total=$value_cantidad->monto_total + $total;
                 }
                 // return $cantidad;exit;
                 array_push($grupo_moneda,array(
                     "empresa_id"=>$value_empresa->id_empresa,
                     "moneda_id"=>$value->id_moneda,
-                    "total"=>round($total,2),
+                    "total"=>number_format($total, 2, '.', ','),
                 ));
             }
             $value->grupo = $grupo_moneda;
