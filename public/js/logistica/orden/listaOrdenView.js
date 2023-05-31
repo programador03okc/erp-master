@@ -801,6 +801,7 @@ class ListaOrdenView {
     }
 
     modalEnviarOrdenAPago(obj) {
+
             document.querySelector("select[name='numero_de_cuotas']").removeAttribute("disabled");
             document.querySelector("input[name='pagoEnCuotasCheckbox']").removeAttribute("disabled");
         tempArchivoAdjuntoRequerimientoCabeceraList=[];
@@ -817,9 +818,26 @@ class ListaOrdenView {
         this.restablecerValoresPorDefectoFormEnviarOrdenAPago();
 
         document.querySelector("div[id='modal-enviar-solicitud-pago'] span[id='codigo_orden']").textContent = obj.dataset.codigoOrden;
+
+        $.ajax({
+            type: 'GET',
+            url: `calcular-prioridad/${obj.dataset.idOrdenCompra}`,
+            dataType: 'JSON',
+            beforeSend: (data) => {
+        },
+            success(response) {
+                console.log(response);
+            },
+            error: function (err) {
+                reject(err)
+            }
+        });
+
+
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = 1;
 
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
+
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").setAttribute("data-monto-total-orden",obj.dataset.montoTotalOrden);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").value = $.number(obj.dataset.montoTotalOrden,2,".",",");
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value =parseFloat(obj.dataset.montoTotalOrden)>0 ?(parseFloat(obj.dataset.montoTotalOrden)).toFixed(2):0;

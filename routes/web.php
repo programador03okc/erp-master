@@ -1016,6 +1016,7 @@ Route::group(['middleware' => ['auth']], function () {
 						// Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden');
 						// Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');
 						// Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago');
+                        Route::get('calcular-prioridad/{id?}', 'OrdenController@calcularPrioridad')->name('calcular-prioridad');
 					});
 				});
 			});

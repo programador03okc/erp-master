@@ -1040,7 +1040,7 @@ class OrdenController extends Controller
                 case 'ORDENES_AUTORIZADAS_PARA_PAGO':
                     return $query->whereIn('ordenes_view.estado_pago', [5]);
                     break;
-                
+
                 default:
                     break;
             }
@@ -1053,6 +1053,10 @@ class OrdenController extends Controller
         //     });
         // })
         return datatables($ordenes)
+        // ->addColumn('estado_prioridad', function ($data) {
+        //     $orden_detalle
+        //     return $data;
+        // })
             // ->editColumn('codigo_requerimiento', function($ordenes){
             //     $payload='';
             //     foreach ($ordenes->data_requerimiento as $key) {
@@ -2115,7 +2119,7 @@ class OrdenController extends Controller
 
         if ($ordenArray['head']['incluye_icbper'] == true) {
             $icbper = 0.5;
-        }  
+        }
 
         foreach ($ordenArray['detalle'] as $key => $data) {
 
@@ -2649,13 +2653,13 @@ class OrdenController extends Controller
             DB::beginTransaction();
 
             // evaluar si el estado del cierre periodo
- 
+
             $añoPeriodo= Periodo::find($request->id_periodo)->descripcion;
             $idEmpresa = Sede::find($request->id_sede)->id_empresa;
             // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
             $estadoOperativo = (new CierreAperturaController)->consultarPeriodoOperativo($añoPeriodo, $idEmpresa);
             if ($estadoOperativo != 1) { //1:abierto, 2:cerrado, 3:Declarado
-                return response()->json(['id_orden_compra' => 0, 'codigo' => '','id_tp_documento' => '', 'tipo_estado' => 'warning', 
+                return response()->json(['id_orden_compra' => 0, 'codigo' => '','id_tp_documento' => '', 'tipo_estado' => 'warning',
                 'lista_estado_requerimiento' => null,
                 'lista_finalizados' => null,
                 'historial_presupuesto_interno' => [],
@@ -3264,7 +3268,7 @@ class OrdenController extends Controller
                                     if($subtotalOrigen < $subtotalNuevo){
                                         $importeItemParaPresupuesto=$subtotalNuevo - $subtotalOrigen;
                                         $tipoOperacionItemParaPresupuesto= 'resta';
-                                        
+
                                     }elseif($subtotalOrigen > $subtotalNuevo){
                                         $importeItemParaPresupuesto=$subtotalOrigen - $subtotalNuevo;
                                         $tipoOperacionItemParaPresupuesto= 'suma';
@@ -3285,12 +3289,12 @@ class OrdenController extends Controller
 
                                 $tipoOperacionItemParaPresupuesto='';
                                 $importeItemParaPresupuesto=0;
-                                
+
                                 $idDetalleProcesado[] = $detalle->id_detalle_orden;
                             }
                         }
                     }
-                    
+
                 }
 
 
@@ -3743,7 +3747,7 @@ class OrdenController extends Controller
         $idUsuariosAlAnularOrden = [];
         $notificacion = [];
         $detalleArray=[];
-        
+
         $orden = Orden::with('sede')->find($id_orden);
 
         $revertirOrden = DB::table('logistica.log_ord_compra') //revertir orden
@@ -3901,7 +3905,7 @@ class OrdenController extends Controller
                 $msj[] = 'no se encontro requerimientos';
             }
 
-            // retornar presupuesto si existe de orden 
+            // retornar presupuesto si existe de orden
             (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','orden',$orden->id_orden_compra,$detalleArray);
 
         } // -> si no tiene detalle la orden
@@ -4699,7 +4703,7 @@ class OrdenController extends Controller
 
     public static function reporteListaOrdenes($filtro='SIN_FILTRO')
     {
-      
+
 
         $data = [];
         $ord_compra = OrdenesView::where('id_estado', '>=', 1)
@@ -4991,5 +4995,14 @@ class OrdenController extends Controller
         // }
 
         return ["data" => $output, "mensaje" => $mensaje];
+    }
+    public function calcularPrioridad($id_orden)
+    {
+        $detalle_orden = OrdenCompraDetalle::where('estado','!=',7)->get();
+        $detalle_requerimiento = DetalleRequerimiento::where('estado','!=',7)->get();
+        return response()->json([
+            "success"=>true,
+            "prioridad_id"=>$id_orden
+        ],200);
     }
 }
