@@ -4998,11 +4998,26 @@ class OrdenController extends Controller
     }
     public function calcularPrioridad($id_orden)
     {
-        $detalle_orden = OrdenCompraDetalle::where('estado','!=',7)->get();
-        $detalle_requerimiento = DetalleRequerimiento::where('estado','!=',7)->get();
+        $detalle_orden = OrdenCompraDetalle::select('alm_req.*')
+        ->where('log_det_ord_compra.estado','!=',7)
+        ->join('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'log_det_ord_compra.id_detalle_requerimiento')
+        ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
+        ->where('log_det_ord_compra.id_orden_compra',$id_orden)
+        ->get();
+
+        $prioridad_mayor=0;
+        $prioridad_menor=0;
+        foreach($detalle_orden as $key => $value) {
+
+            if($value->id_prioridad > $prioridad_mayor){
+                $prioridad_mayor = $value->id_prioridad;
+                $prioridad_menor = $prioridad_mayor;
+            }
+        }
         return response()->json([
             "success"=>true,
-            "prioridad_id"=>$id_orden
+            "prioridad_id"=>$prioridad_mayor,
+            // "requerimientos"=>$detalle_orden,
         ],200);
     }
 }

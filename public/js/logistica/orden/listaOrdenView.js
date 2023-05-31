@@ -826,7 +826,7 @@ class ListaOrdenView {
             beforeSend: (data) => {
         },
             success(response) {
-                console.log(response);
+                document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = response.prioridad_id;
             },
             error: function (err) {
                 reject(err)
@@ -834,7 +834,7 @@ class ListaOrdenView {
         });
 
 
-        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = 1;
+
 
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_orden_compra']").value = obj.dataset.idOrdenCompra;
 
