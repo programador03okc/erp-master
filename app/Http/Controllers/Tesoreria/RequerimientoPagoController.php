@@ -363,7 +363,7 @@ class RequerimientoPagoController extends Controller
             $documento->id_doc = $requerimientoPago->id_requerimiento_pago;
             $documento->save();
 
-            // guardar factura solo si existe vinculo 
+            // guardar factura solo si existe vinculo
             // $documentoCompraArray=[];
             $documentoCompraArray = $this->VincularFacturaRequerimientoPago($request, $count, $detalleArray, $codigo);
 

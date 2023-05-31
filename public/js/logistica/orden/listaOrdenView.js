@@ -859,6 +859,7 @@ class ListaOrdenView {
                 document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_persona']").value = '';
                 document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_persona']").value = '';
 
+                console.log(obj.dataset);
                 obtenerContribuyente(obj.dataset.idContribuyentePago);
 
                 obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyentePago);
@@ -906,7 +907,7 @@ class ListaOrdenView {
                             htmlAdjunto+='<td>'
                                 htmlAdjunto+=''+element.descripcion_categoria_adjunto+''
                             htmlAdjunto+='</td>'
-                        
+
                             htmlAdjunto+='<td>'
                             htmlAdjunto+=''+(element.simbolo_moneda!=null ? element.simbolo_moneda:'') + (element.monto_total !=null ? element.monto_total:'')
                             htmlAdjunto+='</td>'
@@ -968,8 +969,8 @@ class ListaOrdenView {
                                         enlaceAdjunto.push( `<a data-toggle="collapse" href="#collapse${adjunto.id_adjunto}" aria-expanded="false" aria-controls="collapse${adjunto.id_adjunto}">
                                         ${adjunto.archivo}</a>
                                         <i class="fas fa-caret-left"></i>
-                                        <div class="collapse" id="collapse${adjunto.id_adjunto}">            
-                                        
+                                        <div class="collapse" id="collapse${adjunto.id_adjunto}">
+
                                         <dl>
                                         <dt>Archivo</dt>
                                         <dd><a href="/files/logistica/comporbantes_proveedor/${adjunto.archivo}" target="_blank">Descargar</a></dd>
@@ -1176,10 +1177,10 @@ class ListaOrdenView {
             continuar = false;
 
         }
-        if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value ==1) 
+        if (( document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='numero_de_cuotas']").value ==1)
         && (
             parseFloat((document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").value).replace(',','')) +
-            parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[name='sumaMontoTotalPagado']").textContent) 
+            parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] span[name='sumaMontoTotalPagado']").textContent)
             > parseFloat(document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_total_orden']").dataset.montoTotalOrden))){
             menseje.push('El "monto a enviar" más(+) "la suma de las cutas" supera el monto total de la orden');
             continuar = false;
@@ -1199,92 +1200,105 @@ class ListaOrdenView {
     registrarSolicitudDePago() {
         // console.log('enviar a pago');
 
-        if (this.validarFormularioEnvioOrdenAPago()) {
+        let selec_cuenta = $('#form-enviar_solicitud_pago').find('select[name="id_cuenta"]').val();
 
-            let formData = new FormData($('#form-enviar_solicitud_pago')[0]);
-            if(tempArchivoAdjuntoRequerimientoCabeceraList.length>0){
-                formData.append(`archivoAdjuntoRequerimientoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoCabeceraList));
-                formData.append(`pagoEnCuotasCheckbox`, document.querySelector("input[name='pagoEnCuotasCheckbox']").checked);
-                tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
-                    formData.append(`archivo_adjunto_list[]`, element.file);
-            });
-            }
-            $.ajax({
-                type: 'POST',
-                url: 'registrar-solicitud-de-pago',
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: 'JSON',
-                beforeSend: (data) => {
+        if (parseInt(selec_cuenta)>0) {
 
-                    var customElement = $("<div>", {
-                        "css": {
-                            "font-size": "20px",
-                            "text-align": "center",
-                            "position": "absolute",
-                            "overflow": "auto",
-                            "top": "50%"
-                        },
-                        "class": "your-custom-class",
-                        "text": "Enviando Solicitud de pago"
-                    });
+            if (this.validarFormularioEnvioOrdenAPago() && selec_cuenta) {
 
-                    $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("show", {
-                        imageAutoResize: true,
-                        progress: true,
-                        custom: customElement,
-                        imageColor: "#3c8dbc"
-                    });
-                },
-                success: (response) => {
-                    $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
-                    console.log(response);
-                    if (response.tipo_estado == 'success') {
+                let formData = new FormData($('#form-enviar_solicitud_pago')[0]);
+                if(tempArchivoAdjuntoRequerimientoCabeceraList.length>0){
+                    formData.append(`archivoAdjuntoRequerimientoObject`, JSON.stringify(tempArchivoAdjuntoRequerimientoCabeceraList));
+                    formData.append(`pagoEnCuotasCheckbox`, document.querySelector("input[name='pagoEnCuotasCheckbox']").checked);
+                    tempArchivoAdjuntoRequerimientoCabeceraList.forEach(element => {
+                        formData.append(`archivo_adjunto_list[]`, element.file);
+                });
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: 'registrar-solicitud-de-pago',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'JSON',
+                    beforeSend: (data) => {
 
-                        Lobibox.notify('success', {
-                            title: false,
-                            size: 'mini',
-                            rounded: true,
-                            sound: false,
-                            delayIndicator: false,
-                            msg: response.mensaje
+                        var customElement = $("<div>", {
+                            "css": {
+                                "font-size": "20px",
+                                "text-align": "center",
+                                "position": "absolute",
+                                "overflow": "auto",
+                                "top": "50%"
+                            },
+                            "class": "your-custom-class",
+                            "text": "Enviando Solicitud de pago"
                         });
-                        $('#modal-enviar-solicitud-pago').modal('hide');
 
-                        this.tipoVistaPorCabecera();
+                        $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("show", {
+                            imageAutoResize: true,
+                            progress: true,
+                            custom: customElement,
+                            imageColor: "#3c8dbc"
+                        });
+                    },
+                    success: (response) => {
+                        $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
+                        console.log(response);
+                        if (response.tipo_estado == 'success') {
 
-                    } else {
+                            Lobibox.notify('success', {
+                                title: false,
+                                size: 'mini',
+                                rounded: true,
+                                sound: false,
+                                delayIndicator: false,
+                                msg: response.mensaje
+                            });
+                            $('#modal-enviar-solicitud-pago').modal('hide');
+
+                            this.tipoVistaPorCabecera();
+
+                        } else {
+                            Swal.fire(
+                                '',
+                                response.mensaje,
+                                'error'
+                            );
+                        }
+                    },
+                    // statusCode: {
+                    //     404: function () {
+                    //         $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
+                    //         Swal.fire(
+                    //             'Error 404',
+                    //             'Lo sentimos hubo un problema con el servidor, la ruta a la que se quiere acceder para guardar no esta disponible, por favor vuelva a intentarlo más tarde.',
+                    //             'error'
+                    //         );
+                    //     }
+                    // },
+                    fail: (jqXHR, textStatus, errorThrown) => {
+                        $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
                         Swal.fire(
                             '',
-                            response.mensaje,
+                            'Lo sentimos hubo un error en el servidor al intentar enviar la orden a pago, por favor vuelva a intentarlo',
                             'error'
                         );
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        console.log(errorThrown);
                     }
-                },
-                // statusCode: {
-                //     404: function () {
-                //         $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
-                //         Swal.fire(
-                //             'Error 404',
-                //             'Lo sentimos hubo un problema con el servidor, la ruta a la que se quiere acceder para guardar no esta disponible, por favor vuelva a intentarlo más tarde.',
-                //             'error'
-                //         );
-                //     }
-                // },
-                fail: (jqXHR, textStatus, errorThrown) => {
-                    $('#modal-enviar-solicitud-pago .modal-content').LoadingOverlay("hide", true);
-                    Swal.fire(
-                        '',
-                        'Lo sentimos hubo un error en el servidor al intentar enviar la orden a pago, por favor vuelva a intentarlo',
-                        'error'
-                    );
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                }
-            });
+                });
+            }
+
+        }else{
+            Swal.fire(
+                'Informativo',
+                'Debe seleccionar una cuanta bancaria',
+                'warning'
+            )
         }
+
     }
 
     mostrarInfoAdicionalCuentaSeleccionada() {
@@ -1842,11 +1856,11 @@ class ListaOrdenView {
                 //Boton de busqueda
                 const $filter = $('#listaOrdenes_filter');
                 const $input = $filter.find('input');
-                
-                const selectFiltro= `<select class="form-control input-sm ml-4 handleChangeFiltroListaOrdenes" id="selectFiltroListaOrden" style="margin-left: 1rem;"> 
+
+                const selectFiltro= `<select class="form-control input-sm ml-4 handleChangeFiltroListaOrdenes" id="selectFiltroListaOrden" style="margin-left: 1rem;">
                     <option value="SIN_FILTRO" >Todo</option>
-                    <option value="ORDENES_SIN_ENVIAR_A_PAGO">Ordenes sin envío a pago</option> 
-                    <option value="ORDENES_AUTORIZADAS_PARA_PAGO">Ordenes autorizadas para pago</option> 
+                    <option value="ORDENES_SIN_ENVIAR_A_PAGO">Ordenes sin envío a pago</option>
+                    <option value="ORDENES_AUTORIZADAS_PARA_PAGO">Ordenes autorizadas para pago</option>
                     </select>`;
                 document.querySelector("div[id='listaOrdenes_wrapper'] div[class='dt-buttons btn-group']").insertAdjacentHTML('afterbegin', selectFiltro);
                 document.querySelector("select[id='selectFiltroListaOrden']").value=that.filtro;
@@ -2273,7 +2287,7 @@ class ListaOrdenView {
         this.getcategoriaAdjunto().then((categoriaAdjuntoList) => {
             // console.log(payload);
             let html = '';
-            html = `    
+            html = `
             <tr id="${payload.id}" style="text-align:center">
             <td style="text-align:left;">${payload.nameFile}</td>
             <td style="text-align:left;"><input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" placeholder="Fecha emisión"  value="${moment().format("YYYY-MM-DD")}"></td>

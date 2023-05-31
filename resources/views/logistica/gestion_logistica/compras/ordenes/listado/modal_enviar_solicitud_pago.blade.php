@@ -78,7 +78,7 @@
                                     <div style="display:flex;">
                                         <input class="oculto" name="id_cuenta_persona">
                                         <input class="oculto" name="id_cuenta_contribuyente">
-                                        <select class="form-control activation handleCheckStatusValue handleChangeCuenta" name="id_cuenta">
+                                        <select class="form-control activation handleCheckStatusValue handleChangeCuenta" name="id_cuenta" required>
                                         </select>
                                         <button type="button" class="btn btn-sm btn-flat btn-primary" title="Agregar cuenta bancaria" onClick="modalNuevaCuentaDestinatario();">
                                             <i class="fas fa-plus"></i>

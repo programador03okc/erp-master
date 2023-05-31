@@ -244,7 +244,7 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
             url: 'obtener-cuenta-contribuyente/' + id_contribuyente,
             dataType: 'JSON',
         }).done(function (response) {
-            // console.log(response);
+            console.log(response);
             // console.log(response);//no este
             if (response.tipo_estado == 'success') {
                 if (response.data.length > 0) {
