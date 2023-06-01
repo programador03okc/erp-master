@@ -261,8 +261,8 @@ function listarRequerimientosPendientes(usuario) {
 
                         ${row['id_requerimiento'] !== null ?
                         (array_accesos.find(element => element === 262)?`<button type="button" class="envio_od btn btn-${row['id_od'] !== null ? 'warning' : 'default'} btn-flat btn-xs " data-toggle="tooltip"
-                            data-placement="bottom" title="Orden de Despacho" data-id="${row['id_requerimiento']}" data-tipo="${row['id_tipo_requerimiento']}"
-                            data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}">
+                            data-placement="bottom" title="Orden de Despacho. ${row['productos_no_mapeados']>0?"Faltan "+row['productos_no_mapeados']+ " items por mapear":""}" data-id="${row['id_requerimiento']}" data-tipo="${row['id_tipo_requerimiento']}"
+                            data-fentrega="${row['fecha_entrega']}" data-cdp="${row['codigo_oportunidad']}" data-cantidad-productos-no-mapeados="${row['productos_no_mapeados']}" ${row['productos_no_mapeados'] >0 ?"disabled":""}>
                             <strong>ODE</strong></button>
                             `:''): ''}
                         `+
@@ -427,27 +427,41 @@ $("#requerimientosEnProceso tbody").on("click", "a.archivos", function (e) {
 
 $('#requerimientosEnProceso tbody').on("click", "button.envio_od", function (e) {
     $(e.preventDefault());
-    var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
-    console.log(data);
 
-    if (data.tiene_transformacion) {
-
-        if (data.codigo_despacho_interno !== null) {
+    if(e.currentTarget.dataset.cantidadProductosNoMapeados == 0){
+        var data = $('#requerimientosEnProceso').DataTable().row($(this).parents("tr")).data();
+        console.log(data);
+    
+        if (data.tiene_transformacion) {
+    
+            if (data.codigo_despacho_interno !== null) {
+                $('[name=envio]').val('envio');
+                openOrdenDespachoEnviar(data);
+            } else {
+                Lobibox.notify('warning', {
+                    title: false,
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Aún le falta emitir el Despacho Interno.'
+                });
+            }
+        } else {
             $('[name=envio]').val('envio');
             openOrdenDespachoEnviar(data);
-        } else {
-            Lobibox.notify('warning', {
-                title: false,
-                size: "mini",
-                rounded: true,
-                sound: false,
-                delayIndicator: false,
-                msg: 'Aún le falta emitir el Despacho Interno.'
-            });
         }
-    } else {
-        $('[name=envio]').val('envio');
-        openOrdenDespachoEnviar(data);
+
+    }else{
+        Lobibox.notify('warning', {
+            title: false,
+            size: "mini",
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: 'Aún le falta mapear '+e.currentTarget.dataset.cantidadProductosNoMapeados+' productos'
+        });
+
     }
 });
 $('#requerimientosEnProceso tbody').on("click", "button.adjuntos-despacho", function (e) {
