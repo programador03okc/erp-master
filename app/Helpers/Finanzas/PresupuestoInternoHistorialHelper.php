@@ -176,8 +176,11 @@ class PresupuestoInternoHistorialHelper
     }
 
 
-    public static function obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($idOrden, $totalPago, $tipoAfecto)
+    public static function obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($idOrden, $totalPago, $totalDocumento)
     {
+
+        $porcentajeParaProrrateo =  (floatval($totalPago) * 100) / floatval($totalDocumento);
+
         $detalleArray = [];
         if ($idOrden > 0) {
             $ordenDetalle = OrdenCompraDetalle::with('detalleRequerimiento.requerimiento')
@@ -193,23 +196,27 @@ class PresupuestoInternoHistorialHelper
             }
         }
 
-        if($tipoAfecto =='completo'){
+        // if($tipoAfecto =='completo'){
             foreach ($detalleArray as $key => $item) {
-                $detalleArray[$key]['importe_item_para_presupuesto'] = floatval($item['cantidad']) * floatval($item['precio']);
+                $detalleArray[$key]['importe_item_para_presupuesto'] = ((floatval($item['cantidad']) * floatval($item['precio'])) * $porcentajeParaProrrateo) / 100;
+
             }
 
-        }elseif ($tipoAfecto =='prorrateado'){
-                $prorrateo = floatval($totalPago) / count($detalleArray);
-            foreach ($detalleArray as $key => $item) {
-                $item['importe_item_para_presupuesto'] = $prorrateo;
-            }
-        }
+        // }elseif ($tipoAfecto =='prorrateado'){
+            //     $prorrateo = floatval($totalPago) / count($detalleArray);
+            // foreach ($detalleArray as $key => $item) {
+            //     $item['importe_item_para_presupuesto'] = $prorrateo;
+            // }
+        // }
 
         return $detalleArray;
 
     }
-    public static function obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, $totalPago, $tipoAfecto)
+    public static function obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, $totalPago, $totalDocumento)
     {
+        $porcentajeParaProrrateo =  (floatval($totalPago) * 100) / floatval($totalDocumento);
+
+
         $detalleArray = [];
         if ($idRequerimientoPago > 0) {
             $requerimientoPagoDetalle = RequerimientoPagoDetalle::where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])->get();
@@ -219,16 +226,17 @@ class PresupuestoInternoHistorialHelper
                 $detalleArray[$key]['importe_item_para_presupuesto'] = 0;
             }
 
-            if ($tipoAfecto == 'completo') {
-                foreach ($detalleArray as $key => $item) {
-                    $detalleArray[$key]['importe_item_para_presupuesto'] = floatval($item['cantidad']) * floatval($item['precio_unitario']);
-                }
-            } elseif ($tipoAfecto == 'prorrateado') {
-                $prorrateo = floatval($totalPago) / count($detalleArray);
-                foreach ($detalleArray as $key => $item) {
-                    $item['importe_item_para_presupuesto'] = $prorrateo;
-                }
+            // if ($tipoAfecto == 'completo') {
+
+            foreach ($detalleArray as $key => $item) {
+                $detalleArray[$key]['importe_item_para_presupuesto'] = ((floatval($item['cantidad']) * floatval($item['precio_unitario'])) * $porcentajeParaProrrateo) / 100;
             }
+            // } elseif ($tipoAfecto == 'prorrateado') {
+            //     $prorrateo = floatval($totalPago) / count($detalleArray);
+            //     foreach ($detalleArray as $key => $item) {
+            //         $item['importe_item_para_presupuesto'] = $prorrateo;
+            //     }
+            // }
         }
 
         return $detalleArray;
