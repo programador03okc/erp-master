@@ -25,6 +25,7 @@ use App\Exports\ReporteOrdenesCompraExcel;
 use App\Exports\ReporteOrdenesServicioExcel;
 use App\Exports\ReporteTransitoOrdenesCompraExcel;
 use App\Helpers\CuadroPresupuestoHelper;
+use App\Helpers\Finanzas\PresupuestoInternoHistorialHelper;
 use App\Helpers\Necesidad\RequerimientoHelper;
 use App\Helpers\NotificacionHelper;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
@@ -53,6 +54,7 @@ use App\Models\Contabilidad\Contribuyente;
 use App\Models\Contabilidad\CuentaContribuyente;
 use App\Models\Contabilidad\Identidad;
 use App\Models\Contabilidad\TipoCuenta;
+use App\Models\Finanzas\HistorialPresupuestoInternoSaldo;
 use App\Models\Logistica\CondicionSoftlink;
 use App\Models\Logistica\EstadoCompra;
 use App\Models\Logistica\ItemsOrdenesView;
@@ -65,6 +67,7 @@ use App\Models\Logistica\Proveedor;
 use App\Models\mgcp\CuadroCosto\CuadroCosto;
 use App\Models\mgcp\CuadroCosto\CuadroCostoView;
 use App\Models\Rrhh\Persona;
+use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RequerimientoPagoTipoDestinatario;
 use Carbon\Carbon;
 use Exception;
@@ -2653,7 +2656,6 @@ class OrdenController extends Controller
             DB::beginTransaction();
 
             // evaluar si el estado del cierre periodo
-
             $añoPeriodo= Periodo::find($request->id_periodo)->descripcion;
             $idEmpresa = Sede::find($request->id_sede)->id_empresa;
             // $fechaPeriodo = Carbon::createFromFormat('Y-m-d', ($periodo->descripcion . '-01-01'));
@@ -2763,7 +2765,34 @@ class OrdenController extends Controller
                 if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento('CREAR', $orden->id_orden_compra, $orden->codigo);
                 }
-                $historialPresupuestoInterno = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra,$detalleOrden);
+                // $historialPresupuestoInterno = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra,$detalleOrden);
+
+                //actualizar estado gasto
+                foreach ($detalleOrden as $item) { 
+                    if($item->id_detalle_requerimiento >0 ){
+
+                        $detalleRequerimientoLogistico = DetalleRequerimiento::where([['id_detalle_requerimiento',$item->id_detalle_requerimiento],['estado','!=',7]])->first();
+
+                        if ($detalleRequerimientoLogistico) {
+                            $requerimientoLogistico = Requerimiento::find($detalleRequerimientoLogistico->id_requerimiento);
+                            $idPartida= $detalleRequerimientoLogistico->id_partida_pi;
+                            $idRequerimiento=$detalleRequerimientoLogistico->id_requerimiento;
+                            $fecha =$requerimientoLogistico->fecha_requerimiento;
+                            $idPresupuesto= $requerimientoLogistico->id_presupuesto_interno;
+                            $idDetalleRequerimiento= $item->id_detalle_requerimiento;
+                            $idOrden= $item->id_orden_compra;
+                            $idDetalleOrden= $item->id_detalle_orden;
+                            $importe= floatval($item->cantidad) * floatval($item->precio);
+                            $estado= 2;
+                            $operacion= 'R';
+                            if($idPresupuesto > 0 && $idPartida > 0){
+                                PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoLogisticoConOrden($idPresupuesto, $idPartida, $idRequerimiento, $idDetalleRequerimiento, $fecha, $idOrden, $idDetalleOrden,$importe, $estado,$operacion);
+                            }
+                        }
+
+                    }
+                }
+
                 // if ($request->migrar_oc_softlink == true) {
                 //     $statusMigracionSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($idOrden)->original ?? null; //tipo : success , warning, error, mensaje : ""
                 // }
@@ -3905,8 +3934,8 @@ class OrdenController extends Controller
                 $msj[] = 'no se encontro requerimientos';
             }
 
-            // retornar presupuesto si existe de orden
-            (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','orden',$orden->id_orden_compra,$detalleArray);
+            // actualizar campo estado 7 del registro si la orden fue anulada
+            PresupuestoInternoHistorialHelper::actualizarRegistroPorDocumentoAnuladoEnHistorialSaldo(null,$orden->id_orden_compra,null);
 
         } // -> si no tiene detalle la orden
         else {
