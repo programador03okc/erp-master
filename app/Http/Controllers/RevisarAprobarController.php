@@ -787,15 +787,23 @@ class RevisarAprobarController extends Controller{
         if($accion ==1){
             $mensaje='Documento aprobado';
 
-            // if($idTipoDocumento == 1){
-            // PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimiento,$idTipoDocumento);
-            // }else if($idTipoDocumento == 11){
-            //     PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimientoPago,$idTipoDocumento);
-            // }
+            if($idTipoDocumento == 1){
+            PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimiento,$idTipoDocumento);
+            }else if($idTipoDocumento == 11){
+                PresupuestoInternoHistorialHelper::registrarEstadoGastoAprobadoDeRequerimiento($idRequerimientoPago,$idTipoDocumento);
+            }
 
         }elseif($accion ==2){
             $mensaje='Documento rechazado';
             $this->limpiarMapeoDeDocumento($idDocumento);
+
+            // actualizar a true el campo de "documento_anulado" en la tabla historial_presupuesto_interno_saldo para determinar que registros ya no se atenderán
+            if($idTipoDocumento == 11){
+                PresupuestoInternoHistorialHelper::actualizarRegistroPorDocumentoAnuladoEnHistorialSaldo(null,null,$idRequerimientoPago);
+            }elseif($idTipoDocumento == 1){
+                PresupuestoInternoHistorialHelper::actualizarRegistroPorDocumentoAnuladoEnHistorialSaldo($idRequerimiento,null,null);
+            }
+
         }elseif($accion ==3){
             $mensaje='Documento observado';
             $this->limpiarMapeoDeDocumento($idDocumento);

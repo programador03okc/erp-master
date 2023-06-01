@@ -6,6 +6,7 @@ use App\Exports\OrdenCompraServicioExport;
 use App\Exports\OrdenesCompraServicioExport;
 use App\Exports\RegistroPagosExport;
 use App\Exports\RequerimientoPagosExport;
+use App\Helpers\Finanzas\PresupuestoInternoHistorialHelper;
 use App\Http\Controllers\AlmacenController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,9 +15,11 @@ use App\Models\Administracion\Empresa;
 use App\Models\Administracion\Prioridad;
 use App\Models\Almacen\AdjuntoDetalleRequerimiento;
 use App\Models\Almacen\AdjuntoRequerimiento;
+use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Almacen\Requerimiento;
 use App\Models\Configuracion\Moneda;
 use App\Models\Logistica\Orden;
+use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\PagoCuota;
 use App\Models\Logistica\PagoCuotaDetalle;
 use App\Models\Rrhh\Persona;
@@ -136,22 +139,22 @@ class RegistroPagoController extends Controller
 
 
 
-        $data= $data->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9]);
+        $data = $data->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9]);
         // ->where([['requerimiento_pago.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 1]]);
         if (!empty($request->prioridad)) {
-            $data= $data->where('adm_prioridad.id_prioridad', $request->prioridad);
+            $data = $data->where('adm_prioridad.id_prioridad', $request->prioridad);
         }
         if (!empty($request->empresa)) {
-            $data= $data->where('adm_empresa.id_empresa', $request->empresa);
+            $data = $data->where('adm_empresa.id_empresa', $request->empresa);
         }
         if (!empty($request->estado)) {
-            $data= $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
+            $data = $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
         }
         if (!empty($request->fecha_inicio)) {
-            $data= $data->whereDate('requerimiento_pago.fecha_registro','>=', $request->fecha_inicio);
+            $data = $data->whereDate('requerimiento_pago.fecha_registro', '>=', $request->fecha_inicio);
         }
         if (!empty($request->fecha_final)) {
-            $data= $data->whereDate('requerimiento_pago.fecha_registro','<=', $request->fecha_final);
+            $data = $data->whereDate('requerimiento_pago.fecha_registro', '<=', $request->fecha_final);
         }
         // return $request->prioridad;exit;
         return datatables($data)->filterColumn('persona', function ($query, $keyword) {
@@ -224,23 +227,23 @@ class RegistroPagoController extends Controller
             ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
             ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'log_ord_compra.usuario_autorizacion')
             ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'log_ord_compra.id_prioridad_pago')
-            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9,10])
-            ->where('log_ord_compra.estado','!=',7);
+            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9, 10])
+            ->where('log_ord_compra.estado', '!=', 7);
 
         if (!empty($request->prioridad)) {
-            $data= $data->where('adm_prioridad.id_prioridad', $request->prioridad);
+            $data = $data->where('adm_prioridad.id_prioridad', $request->prioridad);
         }
         if (!empty($request->empresa)) {
-            $data= $data->where('adm_empresa.id_empresa', $request->empresa);
+            $data = $data->where('adm_empresa.id_empresa', $request->empresa);
         }
         if (!empty($request->estado)) {
-            $data= $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
+            $data = $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
         }
         if (!empty($request->fecha_inicio)) {
-            $data= $data->whereDate('log_ord_compra.fecha_solicitud_pago','>=', $request->fecha_inicio);
+            $data = $data->whereDate('log_ord_compra.fecha_solicitud_pago', '>=', $request->fecha_inicio);
         }
         if (!empty($request->fecha_final)) {
-            $data= $data->whereDate('log_ord_compra.fecha_solicitud_pago','<=', $request->fecha_final);
+            $data = $data->whereDate('log_ord_compra.fecha_solicitud_pago', '<=', $request->fecha_final);
         }
         return DataTables::eloquent($data)
             ->filterColumn('requerimientos', function ($query, $keyword) {
@@ -351,11 +354,11 @@ class RegistroPagoController extends Controller
     }
     public function listarPagosEnCuotas($tipo, $id)
     {
-        $query=[];
+        $query = [];
         if ($tipo == "orden") {
-            $query= PagoCuota::with(['orden','detalle'=> function($query) {
+            $query = PagoCuota::with(['orden', 'detalle' => function ($query) {
                 $query->orderBy('fecha_registro', 'asc');
-            },'detalle.creadoPor','detalle.adjuntos','detalle.estado'])->where('id_orden',$id)->first();
+            }, 'detalle.creadoPor', 'detalle.adjuntos', 'detalle.estado'])->where('id_orden', $id)->first();
         }
 
         return response()->json($query);
@@ -501,14 +504,14 @@ class RegistroPagoController extends Controller
                     'fecha_registro' => date('Y-m-d H:i:s')
                 ], 'id_pago');
 
-                if(isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago)>0){
-                    foreach ($request->vincularCuotaARegistroDePago as $key => $value) {
-                            $pagoCuotaDetalle = PagoCuotaDetalle::where('id_pago_cuota_detalle',$value)->first();
-                            $pagoCuotaDetalle->id_pago = $id_pago;
-                            $pagoCuotaDetalle->id_estado = 6; // pagado
-                            $pagoCuotaDetalle->save();
-                    }
+            if (isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago) > 0) {
+                foreach ($request->vincularCuotaARegistroDePago as $key => $value) {
+                    $pagoCuotaDetalle = PagoCuotaDetalle::where('id_pago_cuota_detalle', $value)->first();
+                    $pagoCuotaDetalle->id_pago = $id_pago;
+                    $pagoCuotaDetalle->id_estado = 6; // pagado
+                    $pagoCuotaDetalle->save();
                 }
+            }
 
             //Guardar archivos subidos
             if ($request->hasFile('archivos')) {
@@ -542,32 +545,36 @@ class RegistroPagoController extends Controller
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $request->id_oc)
                         ->update(['estado_pago' => 6]); //pagada
-                    // } else if ($request->id_doc_com !== null) {
-                    //     DB::table('almacen.doc_com')
-                    //         ->where('id_doc_com', $request->id_doc_com)
-                    //         ->update(['estado' => 9]); //procesado
+
+                    $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($request->id_oc, floatval($request->total_pago), 'completo');
+                    // Debugbar::info($detalleArray);
+
+                    PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoLogistico($request->id_oc, $id_pago, $detalleArray, 'R');
                 } else if ($request->id_requerimiento_pago !== null) {
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
                         ->update(['id_estado' => 6]); //pagada
 
-                        // * aplicar afectación de presupuesto
-                        $requerimientoPago =  RequerimientoPago::find($request->id_requerimiento_pago);
-                        if($requerimientoPago->id_presupuesto_interno >0){
-                            $detalleArray = $this->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago,floatval($request->total_pago),'completo');
-                            (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->id_requerimiento_pago,$detalleArray);
-                        }
+                    // * aplicar afectación de presupuesto
+                    $requerimientoPago =  RequerimientoPago::find($request->id_requerimiento_pago);
+                    if ($requerimientoPago->id_presupuesto_interno > 0) {
+                        $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($request->total_pago), 'completo');
+                        PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->id_requerimiento_pago, $id_pago, $detalleArray, 'R');
+                    }
                 }
             } else {
                 if ($request->id_oc !== null) {
-                    if(isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago)>0){
-                        $nuevoEstado=10;
-                    }else{
-                        $nuevoEstado=9;
+                    if (isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago) > 0) {
+                        $nuevoEstado = 10;
+                    } else {
+                        $nuevoEstado = 9;
                     }
                     DB::table('logistica.log_ord_compra')
                         ->where('id_orden_compra', $request->id_oc)
                         ->update(['estado_pago' => $nuevoEstado]); //con saldo
+
+                    $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($request->id_oc, floatval($request->total_pago), 'prorrateado');
+                    PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoLogistico($request->id_oc, $id_pago, $detalleArray, 'R');
                 } else if ($request->id_requerimiento_pago !== null) {
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
@@ -575,36 +582,36 @@ class RegistroPagoController extends Controller
 
                     // * aplicar afectación de presupuesto
                     $requerimientoPago =  RequerimientoPago::find($request->id_requerimiento_pago);
-                    if($requerimientoPago->id_presupuesto_interno >0){
-                        $detalleArray = $this->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago,floatval($request->total_pago),'prorrateado');
-                        (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->id_requerimiento_pago,$detalleArray);
+                    if ($requerimientoPago->id_presupuesto_interno > 0) {
+                        $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($request->total_pago), 'prorrateado');
+                        // (new PresupuestoInternoController)->afectarPresupuestoInterno('resta', 'requerimiento de pago', $request->id_requerimiento_pago, $detalleArray);
+                        PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->id_requerimiento_pago, $id_pago, $detalleArray, 'R');
                     }
-
                 }
             }
 
             DB::commit();
 
             // determinar el estado de la estadopago en la orden si todo los pagoDetalle con estad 6 (pagado) es igual al monto e la orden, el estado podria ser "pagado" o "pagado con saldo"
-            if(isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago)>0){
+            if (isset($request->vincularCuotaARegistroDePago) && count($request->vincularCuotaARegistroDePago) > 0) {
                 if ($request->id_oc !== null) {
-                    $ord = Orden::where('id_orden_compra',$request->id_oc)->first();
-                    $lastPagoCuota= PagoCuota::where([['id_orden',$request->id_oc]])->first();
-                    $lastPagoCuotaDetallePagadas = PagoCuotaDetalle::where([['id_pago_cuota',$lastPagoCuota->id_pago_cuota],['id_estado','=',6]])->get();
-                    $sumaPagos=0;
+                    $ord = Orden::where('id_orden_compra', $request->id_oc)->first();
+                    $lastPagoCuota = PagoCuota::where([['id_orden', $request->id_oc]])->first();
+                    $lastPagoCuotaDetallePagadas = PagoCuotaDetalle::where([['id_pago_cuota', $lastPagoCuota->id_pago_cuota], ['id_estado', '=', 6]])->get();
+                    $sumaPagos = 0;
                     foreach ($lastPagoCuotaDetallePagadas as $key => $detCuota) {
-                    $sumaPagos+=$detCuota->monto_cuota;
+                        $sumaPagos += $detCuota->monto_cuota;
                     }
 
                     // Debugbar::info($ord->monto_total);
                     // Debugbar::info($sumaPagos);
 
-                    if(floatval($ord->monto_total) > floatval($sumaPagos)){
-                    DB::table('logistica.log_ord_compra')
-                        ->where('id_orden_compra', $ord->id_orden_compra)
-                        ->update(['estado_pago' => 10]); //pagada con saldo
-                    }else{
-                        $pagoc = PagoCuota::where('id_orden',$ord->id_orden_compra)->first();
+                    if (floatval($ord->monto_total) > floatval($sumaPagos)) {
+                        DB::table('logistica.log_ord_compra')
+                            ->where('id_orden_compra', $ord->id_orden_compra)
+                            ->update(['estado_pago' => 10]); //pagada con saldo
+                    } else {
+                        $pagoc = PagoCuota::where('id_orden', $ord->id_orden_compra)->first();
                         $pagoc->id_estado = 6; // pagado
                         $pagoc->save();
                     }
@@ -618,31 +625,7 @@ class RegistroPagoController extends Controller
         }
     }
 
-    function obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago,$totalPago,$tipoAfecto){
-        $detalleArray = [];
-        if($idRequerimientoPago>0){
-            $requerimientoPagoDetalle= RequerimientoPagoDetalle::where([['id_requerimiento_pago',$idRequerimientoPago],['id_estado','!=',7]])->get();
-            $detalleArray=$requerimientoPagoDetalle;
-            // return $idRequerimientoPago;exit;
-            foreach ($detalleArray as $key => $item) {
-                $detalleArray[$key]['importe_item_para_presupuesto']=0;
-            }
 
-            if($tipoAfecto=='completo'){
-                foreach ($detalleArray as $key => $item) {
-                    $detalleArray[$key]['importe_item_para_presupuesto']=floatval($item['cantidad']) * floatval($item['precio_unitario']);
-                }
-            }elseif($tipoAfecto=='prorrateado'){
-                $prorrateo=floatval($totalPago)/count($detalleArray);
-                foreach ($detalleArray as $key => $item) {
-                    $item['importe_item_para_presupuesto']=$prorrateo;
-                }
-
-            }
-        }
-
-        return $detalleArray;
-    }
 
 
     function actualizarEstadoPago()
@@ -740,17 +723,16 @@ class RegistroPagoController extends Controller
                                 'usuario_autorizacion' => $id_usuario
                             ]); //enviado a pago
 
-                            $msj = 'Se autorizó el pago de la orden exitosamente';
+                        $msj = 'Se autorizó el pago de la orden exitosamente';
 
-                            if(isset($request->idPagoCuotaDetalle) && ($request->idPagoCuotaDetalle >0)){
-                                $pagoCuotaDetalle = PagoCuotaDetalle::where('id_pago_cuota_detalle',$request->idPagoCuotaDetalle)->first();
-                                $pagoCuotaDetalle->fecha_autorizacion= new Carbon();
-                                $pagoCuotaDetalle->id_estado= 5;
-                                $pagoCuotaDetalle->save();
+                        if (isset($request->idPagoCuotaDetalle) && ($request->idPagoCuotaDetalle > 0)) {
+                            $pagoCuotaDetalle = PagoCuotaDetalle::where('id_pago_cuota_detalle', $request->idPagoCuotaDetalle)->first();
+                            $pagoCuotaDetalle->fecha_autorizacion = new Carbon();
+                            $pagoCuotaDetalle->id_estado = 5;
+                            $pagoCuotaDetalle->save();
 
-                                $msj = 'Se autorizó el pago de la cuota exitosamente';
-
-                            }
+                            $msj = 'Se autorizó el pago de la cuota exitosamente';
+                        }
 
                         $tipo = 'success';
                     } else {
@@ -807,17 +789,16 @@ class RegistroPagoController extends Controller
 
                 if ($oc->estado_pago !== 6) {
                     if ($oc->estado !== 7) {
-                        $orden=Orden::find($request->id);
-                        if($orden->tiene_pago_en_cuotas ==true){
-                            $pagoCuota = PagoCuota::where('id_orden',$request->id)->first();
-                            if(isset($pagoCuota->id_pago_cuota)){
-                                $pagoCuotaDetalle = PagoCuotaDetalle::where([['id_pago_cuota',$pagoCuota->id_pago_cuota],['id_estado',5]])->get();
+                        $orden = Orden::find($request->id);
+                        if ($orden->tiene_pago_en_cuotas == true) {
+                            $pagoCuota = PagoCuota::where('id_orden', $request->id)->first();
+                            if (isset($pagoCuota->id_pago_cuota)) {
+                                $pagoCuotaDetalle = PagoCuotaDetalle::where([['id_pago_cuota', $pagoCuota->id_pago_cuota], ['id_estado', 5]])->get();
                                 foreach ($pagoCuotaDetalle as $keyPcd => $pcd) {
-                                    $updatePagoCuotaDetalle= PagoCuotaDetalle::find($pcd->id_pago_cuota_detalle);
-                                    $updatePagoCuotaDetalle->id_estado= 7;
-                                    $updatePagoCuotaDetalle->fecha_autorizacion= null;
+                                    $updatePagoCuotaDetalle = PagoCuotaDetalle::find($pcd->id_pago_cuota_detalle);
+                                    $updatePagoCuotaDetalle->id_estado = 7;
+                                    $updatePagoCuotaDetalle->fecha_autorizacion = null;
                                     $updatePagoCuotaDetalle->save();
-
                                 }
                             }
                         }
@@ -868,32 +849,28 @@ class RegistroPagoController extends Controller
                     ->where('id_requerimiento_pago', $pago->id_requerimiento_pago)
                     ->update(['id_estado' => 5]); //enviado a pago
 
-            $requerimientoPago = RequerimientoPago::find($pago->id_requerimiento_pago);
-            $detalleArray=[];
+                $requerimientoPago = RequerimientoPago::find($pago->id_requerimiento_pago);
+                $detalleArray = [];
 
-            if($requerimientoPago->id_presupuesto_interno >0){
-                $todoDetalleRequerimientoPago = RequerimientoPagoDetalle::where([["id_requerimiento_pago", $pago->id_requerimiento_pago],['id_estado','!=',7]])->get();
-                if(count($todoDetalleRequerimientoPago)==1){
-                    foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
-                        $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $detalleRequerimientoPago->id_requerimiento_pago_detalle)->first();
-                        $detalle->importe_item_para_presupuesto=$pago->total_pago;
-                        $detalleArray[] = $detalle;
+                if ($requerimientoPago->id_presupuesto_interno > 0) {
+                    $todoDetalleRequerimientoPago = RequerimientoPagoDetalle::where([["id_requerimiento_pago", $pago->id_requerimiento_pago], ['id_estado', '!=', 7]])->get();
+                    if (count($todoDetalleRequerimientoPago) == 1) {
+                        foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
+                            $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $detalleRequerimientoPago->id_requerimiento_pago_detalle)->first();
+                            $detalle->importe_item_para_presupuesto = $pago->total_pago;
+                            $detalleArray[] = $detalle;
+                        }
+                    } elseif (count($todoDetalleRequerimientoPago) > 1) {
+                        $prorrateo = $pago->total_pago / count($todoDetalleRequerimientoPago);
+
+                        foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
+                            $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $detalleRequerimientoPago->id_requerimiento_pago_detalle)->first();
+                            $detalle->importe_item_para_presupuesto = $prorrateo;
+                            $detalleArray[] = $detalle;
+                        }
                     }
 
-                }elseif(count($todoDetalleRequerimientoPago)>1){
-                    $prorrateo = $pago->total_pago/count($todoDetalleRequerimientoPago);
-
-                    foreach ($todoDetalleRequerimientoPago as $detalleRequerimientoPago) {
-                        $detalle = RequerimientoPagoDetalle::where("id_requerimiento_pago_detalle", $detalleRequerimientoPago->id_requerimiento_pago_detalle)->first();
-                        $detalle->importe_item_para_presupuesto=$prorrateo;
-                        $detalleArray[] = $detalle;
-                    }
                 }
-
-                (new PresupuestoInternoController)->afectarPresupuestoInterno('suma','requerimiento de pago',$pago->id_requerimiento_pago,$detalleArray);
-            }
-
-
             } else if ($pago->id_oc !== null) {
                 DB::table('logistica.log_ord_compra')
                     ->where('id_orden_compra', $pago->id_oc)
@@ -904,8 +881,15 @@ class RegistroPagoController extends Controller
                 ->where('id_pago', $id_pago)
                 ->update(['estado' => 7]);
 
+            $retornoDePresupuesto= PresupuestoInternoHistorialHelper::registrarRetornoDePresupuesto($id_pago);
+            if($retornoDePresupuesto!=null){
+                $mensaje = 'Se anulo correctamente y retorno presupuesto';
+            }else{
+                $mensaje = 'Se anulo correctamente';
+            }
+
             DB::commit();
-            return response()->json("Se anulo correctamente");
+            return response()->json($mensaje);
         } catch (\PDOException $e) {
             DB::rollBack();
         }
@@ -919,58 +903,58 @@ class RegistroPagoController extends Controller
             ->where([['requerimiento_pago_detalle.id_requerimiento_pago', $id_requerimiento_pago], ['requerimiento_pago_detalle_adjunto.id_estado', '!=', 7]])->get();
 
         $adjuntos_pagos = RegistroPago::select('registro_pago_adjuntos.adjunto', 'registro_pago_adjuntos.id_adjunto')
-            ->where('id_requerimiento_pago',$id_requerimiento_pago)
-            ->join('tesoreria.registro_pago_adjuntos','registro_pago_adjuntos.id_pago', '=','registro_pago.id_pago')
+            ->where('id_requerimiento_pago', $id_requerimiento_pago)
+            ->join('tesoreria.registro_pago_adjuntos', 'registro_pago_adjuntos.id_pago', '=', 'registro_pago.id_pago')
             ->get();
-        $adjuntos_pagos_complementarios = OtrosAdjuntosTesoreria::where('id_requerimiento_pago',$id_requerimiento_pago)
-        ->where('id_estado','!=',7)
-        ->get();
-        return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle, 'adjuntos_pago'=>$adjuntos_pagos,'adjuntos_pagos_complementarios'=>$adjuntos_pagos_complementarios]);
+        $adjuntos_pagos_complementarios = OtrosAdjuntosTesoreria::where('id_requerimiento_pago', $id_requerimiento_pago)
+            ->where('id_estado', '!=', 7)
+            ->get();
+        return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle, 'adjuntos_pago' => $adjuntos_pagos, 'adjuntos_pagos_complementarios' => $adjuntos_pagos_complementarios]);
     }
 
     function verAdjuntosRegistroPagoOrden($id_orden)
     {
 
-        $registro_pago= RegistroPago::where([['id_oc',$id_orden],['estado','!=',7]])->first();
-        $adjuntos_pagos=[];
-        if($registro_pago !=null && $registro_pago->id_pago>0){
-            $adjuntos_pagos = RegistroPagoAdjuntos::where([['id_pago',$registro_pago->id_pago],['estado','!=',7]])->get();
+        $registro_pago = RegistroPago::where([['id_oc', $id_orden], ['estado', '!=', 7]])->first();
+        $adjuntos_pagos = [];
+        if ($registro_pago != null && $registro_pago->id_pago > 0) {
+            $adjuntos_pagos = RegistroPagoAdjuntos::where([['id_pago', $registro_pago->id_pago], ['estado', '!=', 7]])->get();
         }
 
-        $adjuntos_pagos_complementarios = OtrosAdjuntosTesoreria::where('id_orden',$id_orden)
-        ->where('id_estado','!=',7)
-        ->get();
+        $adjuntos_pagos_complementarios = OtrosAdjuntosTesoreria::where('id_orden', $id_orden)
+            ->where('id_estado', '!=', 7)
+            ->get();
 
-        return response()->json(['adjuntos_pago'=>$adjuntos_pagos,'adjuntos_pagos_complementarios'=>$adjuntos_pagos_complementarios]);
+        return response()->json(['adjuntos_pago' => $adjuntos_pagos, 'adjuntos_pagos_complementarios' => $adjuntos_pagos_complementarios]);
     }
     function verAdjuntosRequerimientoDeOrden($id_orden)
     {
 
         $orden = Orden::with(['detalle' => function ($q) {
-            $q->where('log_det_ord_compra.estado', '!=',7);
+            $q->where('log_det_ord_compra.estado', '!=', 7);
         }])->find($id_orden);
 
-        $idRequerimientoList=[];
-        $idDetalleRequerimientoList=[];
-        $adjuntoPadre=[];
-        $adjuntoDetalle=[];
-        if($orden){
-            if(isset($orden->requerimientos)){
+        $idRequerimientoList = [];
+        $idDetalleRequerimientoList = [];
+        $adjuntoPadre = [];
+        $adjuntoDetalle = [];
+        if ($orden) {
+            if (isset($orden->requerimientos)) {
                 foreach (($orden->requerimientos) as $key => $value) {
-                    $idRequerimientoList[]=$value->id_requerimiento;
+                    $idRequerimientoList[] = $value->id_requerimiento;
                 }
             }
-            if(isset($orden->detalle)){
+            if (isset($orden->detalle)) {
                 foreach (($orden->detalle) as $key => $value) {
-                    $idDetalleRequerimientoList[]=$value->id_detalle_requerimiento;
+                    $idDetalleRequerimientoList[] = $value->id_detalle_requerimiento;
                 }
             }
         }
-        if(count($idRequerimientoList)>0){
-            $adjuntoPadre= AdjuntoRequerimiento::with('categoriaAdjunto')->whereIn('id_requerimiento',$idRequerimientoList)->where('alm_req_adjuntos.estado','!=',7)->get();
+        if (count($idRequerimientoList) > 0) {
+            $adjuntoPadre = AdjuntoRequerimiento::with('categoriaAdjunto')->whereIn('id_requerimiento', $idRequerimientoList)->where('alm_req_adjuntos.estado', '!=', 7)->get();
         }
-        if(count($idDetalleRequerimientoList)>0){
-            $adjuntoDetalle= AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento',$idDetalleRequerimientoList)->where('alm_det_req_adjuntos.estado','!=',7)->get();
+        if (count($idDetalleRequerimientoList) > 0) {
+            $adjuntoDetalle = AdjuntoDetalleRequerimiento::whereIn('id_detalle_requerimiento', $idDetalleRequerimientoList)->where('alm_det_req_adjuntos.estado', '!=', 7)->get();
         }
 
         return response()->json(['adjuntoPadre' => $adjuntoPadre, 'adjuntoDetalle' => $adjuntoDetalle]);
@@ -993,66 +977,66 @@ class RegistroPagoController extends Controller
     public function obtenerRegistroPagos()
     {
         return DB::table('tesoreria.requerimiento_pago')
-        ->select(
-            'requerimiento_pago.*',
-            'adm_prioridad.descripcion as prioridad',
-            'adm_contri.nro_documento',
-            'adm_contri.razon_social',
-            'empresa.razon_social as razon_social_empresa',
-            'adm_empresa.codigo as codigo_empresa',
-            'sis_moneda.simbolo',
-            'sis_grupo.descripcion as grupo_descripcion',
-            'requerimiento_pago_estado.descripcion as estado_doc',
-            'requerimiento_pago_estado.bootstrap_color',
-            'sis_sede.descripcion as sede_descripcion',
-            'adm_cta_contri.nro_cuenta',
-            'adm_cta_contri.nro_cuenta_interbancaria',
-            'adm_tp_cta.descripcion as tipo_cuenta',
-            'banco_contribuyente.razon_social as banco_contribuyente',
-            'rrhh_cta_banc.nro_cuenta as nro_cuenta_persona',
-            'rrhh_cta_banc.nro_cci as nro_cci_persona',
-            'tp_cta_persona.descripcion as tipo_cuenta_persona',
-            'banco_persona.razon_social as banco_persona',
-            'sis_usua.nombre_corto',
-            'autorizado.nombre_corto as nombre_autorizado',
-            'rrhh_perso.nro_documento as dni_persona',
-            DB::raw("concat(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno, ' ' ,rrhh_perso.apellido_materno) AS persona"),
-            DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_adjunto
+            ->select(
+                'requerimiento_pago.*',
+                'adm_prioridad.descripcion as prioridad',
+                'adm_contri.nro_documento',
+                'adm_contri.razon_social',
+                'empresa.razon_social as razon_social_empresa',
+                'adm_empresa.codigo as codigo_empresa',
+                'sis_moneda.simbolo',
+                'sis_grupo.descripcion as grupo_descripcion',
+                'requerimiento_pago_estado.descripcion as estado_doc',
+                'requerimiento_pago_estado.bootstrap_color',
+                'sis_sede.descripcion as sede_descripcion',
+                'adm_cta_contri.nro_cuenta',
+                'adm_cta_contri.nro_cuenta_interbancaria',
+                'adm_tp_cta.descripcion as tipo_cuenta',
+                'banco_contribuyente.razon_social as banco_contribuyente',
+                'rrhh_cta_banc.nro_cuenta as nro_cuenta_persona',
+                'rrhh_cta_banc.nro_cci as nro_cci_persona',
+                'tp_cta_persona.descripcion as tipo_cuenta_persona',
+                'banco_persona.razon_social as banco_persona',
+                'sis_usua.nombre_corto',
+                'autorizado.nombre_corto as nombre_autorizado',
+                'rrhh_perso.nro_documento as dni_persona',
+                DB::raw("concat(rrhh_perso.nombres, ' ' ,rrhh_perso.apellido_paterno, ' ' ,rrhh_perso.apellido_materno) AS persona"),
+                DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_adjunto
                     WHERE requerimiento_pago_adjunto.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                     and requerimiento_pago_adjunto.id_estado != 7) AS count_adjunto_cabecera"),
 
-            DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_detalle_adjunto
+                DB::raw("(SELECT count(archivo) FROM tesoreria.requerimiento_pago_detalle_adjunto
                     INNER JOIN tesoreria.requerimiento_pago_detalle as detalle on(
                         detalle.id_requerimiento_pago_detalle = requerimiento_pago_detalle_adjunto.id_requerimiento_pago_detalle
                     )
                     WHERE detalle.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                     and requerimiento_pago_detalle_adjunto.id_estado != 7) AS count_adjunto_detalle"),
 
-            DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
+                DB::raw("(SELECT sum(total_pago) FROM tesoreria.registro_pago
                     WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
                     and registro_pago.estado != 7) AS suma_pagado")
-        )
-        // ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'requerimiento_pago.id_proveedor')
-        ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'requerimiento_pago.id_contribuyente')
-        ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'requerimiento_pago.id_persona')
-        ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
-        ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'requerimiento_pago.id_estado')
-        ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'requerimiento_pago.id_prioridad')
-        ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
-        ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
-        ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-        ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'requerimiento_pago.id_cuenta_contribuyente')
-        ->leftJoin('contabilidad.adm_tp_cta', 'adm_tp_cta.id_tipo_cuenta', '=', 'adm_cta_contri.id_tipo_cuenta')
-        ->leftJoin('contabilidad.cont_banco as bco_contribuyente', 'bco_contribuyente.id_banco', '=', 'adm_cta_contri.id_banco')
-        ->leftJoin('contabilidad.adm_contri as banco_contribuyente', 'banco_contribuyente.id_contribuyente', '=', 'bco_contribuyente.id_contribuyente')
-        ->leftJoin('rrhh.rrhh_cta_banc', 'rrhh_cta_banc.id_cuenta_bancaria', '=', 'requerimiento_pago.id_cuenta_persona')
-        ->leftJoin('contabilidad.cont_banco as bco_persona', 'bco_persona.id_banco', '=', 'rrhh_cta_banc.id_banco')
-        ->leftJoin('contabilidad.adm_contri as banco_persona', 'banco_persona.id_contribuyente', '=', 'bco_persona.id_contribuyente')
-        ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
-        ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
-        ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'requerimiento_pago.id_usuario')
-        ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'requerimiento_pago.usuario_autorizacion')
-        ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9]);
+            )
+            // ->join('logistica.log_prove', 'log_prove.id_proveedor', '=', 'requerimiento_pago.id_proveedor')
+            ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'requerimiento_pago.id_contribuyente')
+            ->leftjoin('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'requerimiento_pago.id_persona')
+            ->leftJoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
+            ->leftJoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'requerimiento_pago.id_estado')
+            ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'requerimiento_pago.id_prioridad')
+            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'requerimiento_pago.id_sede')
+            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
+            ->join('contabilidad.adm_contri as empresa', 'empresa.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
+            ->leftJoin('contabilidad.adm_cta_contri', 'adm_cta_contri.id_cuenta_contribuyente', '=', 'requerimiento_pago.id_cuenta_contribuyente')
+            ->leftJoin('contabilidad.adm_tp_cta', 'adm_tp_cta.id_tipo_cuenta', '=', 'adm_cta_contri.id_tipo_cuenta')
+            ->leftJoin('contabilidad.cont_banco as bco_contribuyente', 'bco_contribuyente.id_banco', '=', 'adm_cta_contri.id_banco')
+            ->leftJoin('contabilidad.adm_contri as banco_contribuyente', 'banco_contribuyente.id_contribuyente', '=', 'bco_contribuyente.id_contribuyente')
+            ->leftJoin('rrhh.rrhh_cta_banc', 'rrhh_cta_banc.id_cuenta_bancaria', '=', 'requerimiento_pago.id_cuenta_persona')
+            ->leftJoin('contabilidad.cont_banco as bco_persona', 'bco_persona.id_banco', '=', 'rrhh_cta_banc.id_banco')
+            ->leftJoin('contabilidad.adm_contri as banco_persona', 'banco_persona.id_contribuyente', '=', 'bco_persona.id_contribuyente')
+            ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
+            ->join('configuracion.sis_grupo', 'sis_grupo.id_grupo', '=', 'requerimiento_pago.id_grupo')
+            ->join('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'requerimiento_pago.id_usuario')
+            ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'requerimiento_pago.usuario_autorizacion')
+            ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9]);
     }
     public function ordenesCompraServicioExportarExcel()
     {
@@ -1164,9 +1148,9 @@ class RegistroPagoController extends Controller
     }
     public function guardarAdjuntosTesoreria(Request $request)
     {
-        $mensaje='';
-        $status='warning';
-        if(count($request->adjuntos)>0){
+        $mensaje = '';
+        $status = 'warning';
+        if (count($request->adjuntos) > 0) {
             foreach ($request->adjuntos as $key => $archivo) {
 
                 $fechaHoy = new Carbon();
@@ -1175,7 +1159,7 @@ class RegistroPagoController extends Controller
                 // $codigo = $codigoRequerimiento;
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
                 // $newNameFile = $codigo . '_' . $key . $idCategoria . $sufijo . '.' . $extension;
-                $newNameFile = $request->codigo_requerimiento.$key  . $sufijo . '.' . $extension;
+                $newNameFile = $request->codigo_requerimiento . $key  . $sufijo . '.' . $extension;
                 // Storage::disk('archivos')->put("tesoreria/pagos/" . $newNameFile, File::get($archivo));
                 Storage::disk('archivos')->put("tesoreria/otros_adjuntos/" . $newNameFile, File::get($archivo));
 
@@ -1189,9 +1173,9 @@ class RegistroPagoController extends Controller
                 // $adjunto->save();
 
                 $adjunto = new OtrosAdjuntosTesoreria();
-                if($request->id_requerimiento_pago > 0 && ($request->id_orden ==null || $request->id_orden =='') ){
+                if ($request->id_requerimiento_pago > 0 && ($request->id_orden == null || $request->id_orden == '')) {
                     $adjunto->id_requerimiento_pago = $request->id_requerimiento_pago;
-                }else if($request->id_orden > 0 && ($request->id_requerimiento_pago ==null || $request->id_requerimiento_pago =='') ){
+                } else if ($request->id_orden > 0 && ($request->id_requerimiento_pago == null || $request->id_requerimiento_pago == '')) {
 
                     $adjunto->id_orden = $request->id_orden;
                 }
@@ -1203,19 +1187,18 @@ class RegistroPagoController extends Controller
                 $adjunto->id_usuario = Auth::user()->id_usuario;
                 $adjunto->save();
                 $mensaje = 'Se guardo el adjunto';
-                $status= 'success';
-
+                $status = 'success';
             }
-        }else{
+        } else {
             $mensaje = 'Hubo un problema al intentar guardo el adjunto.';
-            $status= 'error';
+            $status = 'error';
         }
 
 
         return response()->json([
-            "mensaje"=>$mensaje,
-            "status"=>$status,
-            "data"=>$request
+            "mensaje" => $mensaje,
+            "status" => $status,
+            "data" => $request
         ]);
     }
     public function exportarRequerimientosPagos(Request $request)
@@ -1284,19 +1267,19 @@ class RegistroPagoController extends Controller
             ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9]);
         // ->where([['requerimiento_pago.id_estado', '!=', 7], ['requerimiento_pago.id_estado', '!=', 1]]);
         if (!empty($request->prioridad)) {
-            $data= $data->where('adm_prioridad.id_prioridad', $request->prioridad);
+            $data = $data->where('adm_prioridad.id_prioridad', $request->prioridad);
         }
         if (!empty($request->empresa)) {
-            $data= $data->where('adm_empresa.id_empresa', $request->empresa);
+            $data = $data->where('adm_empresa.id_empresa', $request->empresa);
         }
         if (!empty($request->estado)) {
-            $data= $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
+            $data = $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
         }
         if (!empty($request->fecha_inicio)) {
-            $data= $data->whereDate('requerimiento_pago.fecha_registro','>=', $request->fecha_inicio);
+            $data = $data->whereDate('requerimiento_pago.fecha_registro', '>=', $request->fecha_inicio);
         }
         if (!empty($request->fecha_final)) {
-            $data= $data->whereDate('requerimiento_pago.fecha_registro','<=', $request->fecha_final);
+            $data = $data->whereDate('requerimiento_pago.fecha_registro', '<=', $request->fecha_final);
         }
 
         $data = $data->orderBy('id_requerimiento_pago', 'DESC')->get();
@@ -1306,19 +1289,19 @@ class RegistroPagoController extends Controller
             $total = floatval($value->monto_total);
             $por_pagar = ($total - $pagado);
 
-            array_push($json_excel,array(
-                "prioridad"=>$value->prioridad,
-                "codigo_empresa"=>$value->codigo_empresa,
-                "codigo"=>$value->codigo,
-                "concepto"=>$value->concepto,
-                "nombre_corto"=>$value->nombre_corto,
-                "persona"=>$value->persona,
-                "fecha_registro"=>$value->fecha_registro,
-                "simbolo"=>$value->simbolo,
-                "monto_total"=>$value->monto_total,
-                "saldo"=>$por_pagar,
-                "estado_doc"=>$value->estado_doc,
-                "nombre_autorizado"=>($value->nombre_autorizado !==''?$value->nombre_autorizado.' el '.$value->fecha_autorizacion:''),
+            array_push($json_excel, array(
+                "prioridad" => $value->prioridad,
+                "codigo_empresa" => $value->codigo_empresa,
+                "codigo" => $value->codigo,
+                "concepto" => $value->concepto,
+                "nombre_corto" => $value->nombre_corto,
+                "persona" => $value->persona,
+                "fecha_registro" => $value->fecha_registro,
+                "simbolo" => $value->simbolo,
+                "monto_total" => $value->monto_total,
+                "saldo" => $por_pagar,
+                "estado_doc" => $value->estado_doc,
+                "nombre_autorizado" => ($value->nombre_autorizado !== '' ? $value->nombre_autorizado . ' el ' . $value->fecha_autorizacion : ''),
 
             ));
         }
@@ -1370,7 +1353,7 @@ class RegistroPagoController extends Controller
             WHERE pago_cuota.id_pago_cuota = pago_cuota_detalle.id_pago_cuota
             and pago_cuota_detalle.id_estado =5) AS suma_cuotas_con_autorizacion"),
 
-            )
+        )
             ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftjoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
@@ -1390,23 +1373,23 @@ class RegistroPagoController extends Controller
             ->leftJoin('contabilidad.adm_tp_cta as tp_cta_persona', 'tp_cta_persona.id_tipo_cuenta', '=', 'rrhh_cta_banc.id_tipo_cuenta')
             ->leftJoin('configuracion.sis_usua as autorizado', 'autorizado.id_usuario', '=', 'log_ord_compra.usuario_autorizacion')
             ->join('administracion.adm_prioridad', 'adm_prioridad.id_prioridad', '=', 'log_ord_compra.id_prioridad_pago')
-            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9,10])
-        ->where('log_ord_compra.estado','!=',7);
+            ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9, 10])
+            ->where('log_ord_compra.estado', '!=', 7);
 
         if (!empty($request->prioridad)) {
-            $data= $data->where('adm_prioridad.id_prioridad', $request->prioridad);
+            $data = $data->where('adm_prioridad.id_prioridad', $request->prioridad);
         }
         if (!empty($request->empresa)) {
-            $data= $data->where('adm_empresa.id_empresa', $request->empresa);
+            $data = $data->where('adm_empresa.id_empresa', $request->empresa);
         }
         if (!empty($request->estado)) {
-            $data= $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
+            $data = $data->where('requerimiento_pago_estado.id_requerimiento_pago_estado', $request->estado);
         }
         if (!empty($request->fecha_inicio)) {
-            $data= $data->whereDate('log_ord_compra.fecha_solicitud_pago','>=', $request->fecha_inicio);
+            $data = $data->whereDate('log_ord_compra.fecha_solicitud_pago', '>=', $request->fecha_inicio);
         }
         if (!empty($request->fecha_final)) {
-            $data= $data->whereDate('log_ord_compra.fecha_solicitud_pago','<=', $request->fecha_final);
+            $data = $data->whereDate('log_ord_compra.fecha_solicitud_pago', '<=', $request->fecha_final);
         }
 
         $data = $data->orderBy('id_orden_compra', 'DESC')->get();
@@ -1418,29 +1401,29 @@ class RegistroPagoController extends Controller
             $total = floatval($value->monto_total);
             $por_pagar = ($total - $pagado);
 
-            $tiene_pago_en_cuotas='';
-            if($value->tiene_pago_en_cuotas===true){
-                $tiene_pago_en_cuotas= ((floatval($value->ultima_monto_cuota)>0?(floatval( $value->ultima_monto_cuota)):($value->monto_total !== null ? floatval($value->monto_total) : '0.00')) );
-            }else{
-                $tiene_pago_en_cuotas= '(No aplica)';
+            $tiene_pago_en_cuotas = '';
+            if ($value->tiene_pago_en_cuotas === true) {
+                $tiene_pago_en_cuotas = ((floatval($value->ultima_monto_cuota) > 0 ? (floatval($value->ultima_monto_cuota)) : ($value->monto_total !== null ? floatval($value->monto_total) : '0.00')));
+            } else {
+                $tiene_pago_en_cuotas = '(No aplica)';
             }
 
-            array_push($json_excel,array(
-                "prioridad"=>$value->prioridad,
-                "requerimientos"=>$value->requerimientos,
-                "codigo_empresa"=>$value->codigo_empresa,
-                "codigo"=>$value->codigo,
-                "razon_social"=>$value->razon_social,
-                "fecha_solicitud_pago"=>($value->fecha_solicitud_pago !== null ? $value->fecha_solicitud_pago: ''),
-                "simbolo"=>$value->simbolo,
+            array_push($json_excel, array(
+                "prioridad" => $value->prioridad,
+                "requerimientos" => $value->requerimientos,
+                "codigo_empresa" => $value->codigo_empresa,
+                "codigo" => $value->codigo,
+                "razon_social" => $value->razon_social,
+                "fecha_solicitud_pago" => ($value->fecha_solicitud_pago !== null ? $value->fecha_solicitud_pago : ''),
+                "simbolo" => $value->simbolo,
 
-                "monto_total"=>($value->monto_total!== null ? round($value->monto_total,2) : '0.00'),
+                "monto_total" => ($value->monto_total !== null ? round($value->monto_total, 2) : '0.00'),
 
-                "saldo"=>$por_pagar,
-                "tiene_pago_en_cuotas"=>$tiene_pago_en_cuotas,
+                "saldo" => $por_pagar,
+                "tiene_pago_en_cuotas" => $tiene_pago_en_cuotas,
 
-                "estado_doc"=>$value->estado_doc,
-                "nombre_autorizado"=>($value->nombre_autorizado?$value->nombre_autorizado.' el '.$value->fecha_autorizacion:''),
+                "estado_doc" => $value->estado_doc,
+                "nombre_autorizado" => ($value->nombre_autorizado ? $value->nombre_autorizado . ' el ' . $value->fecha_autorizacion : ''),
 
             ));
         }
@@ -1454,19 +1437,19 @@ class RegistroPagoController extends Controller
         $estados = RequerimientoPagoEstados::whereIn('id_requerimiento_pago_estado', [6, 2, 5, 8, 9])->get();
         $monedas = Moneda::all();
 
-        $grupo_estado=array();
+        $grupo_estado = array();
         foreach ($estados as $key => $value) {
-            $grupo_estado=array();
+            $grupo_estado = array();
             foreach ($empresa as $key_empresa => $value_empresa) {
-                $cantidad = RequerimientoPago::where('id_estado',$value->id_requerimiento_pago_estado)
-                ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9])
-                ->where('id_empresa',$value_empresa->id_empresa)
-                ->count();
+                $cantidad = RequerimientoPago::where('id_estado', $value->id_requerimiento_pago_estado)
+                    ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9])
+                    ->where('id_empresa', $value_empresa->id_empresa)
+                    ->count();
                 // return $cantidad;exit;
-                array_push($grupo_estado,array(
-                    "empresa_id"=>$value_empresa->id_empresa,
-                    "estado_id"=>$value->id_requerimiento_pago_estado,
-                    "cantidad"=>$cantidad,
+                array_push($grupo_estado, array(
+                    "empresa_id" => $value_empresa->id_empresa,
+                    "estado_id" => $value->id_requerimiento_pago_estado,
+                    "cantidad" => $cantidad,
                 ));
             }
             $value->grupo = $grupo_estado;
@@ -1475,31 +1458,31 @@ class RegistroPagoController extends Controller
         foreach ($monedas as $key => $value) {
             $grupo_moneda = array();
             foreach ($empresa as $key_empresa => $value_empresa) {
-                $cantidad = RequerimientoPago::where('id_moneda',$value->id_moneda)
-                ->where('id_empresa',$value_empresa->id_empresa)
-                ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9])
-                ->whereNotIn('id_estado',[7,6])
-                ->get();
-                $total=0;
+                $cantidad = RequerimientoPago::where('id_moneda', $value->id_moneda)
+                    ->where('id_empresa', $value_empresa->id_empresa)
+                    ->whereIn('requerimiento_pago.id_estado', [6, 2, 5, 8, 9])
+                    ->whereNotIn('id_estado', [7, 6])
+                    ->get();
+                $total = 0;
 
                 foreach ($cantidad as $key_cantidad => $value_cantidad) {
-                    $total=$value_cantidad->monto_total+$total;
+                    $total = $value_cantidad->monto_total + $total;
                 }
                 // return $cantidad;exit;
-                array_push($grupo_moneda,array(
-                    "empresa_id"=>$value_empresa->id_empresa,
-                    "moneda_id"=>$value->id_moneda,
-                    "total"=>round($total,2),
+                array_push($grupo_moneda, array(
+                    "empresa_id" => $value_empresa->id_empresa,
+                    "moneda_id" => $value->id_moneda,
+                    "total" => round($total, 2),
                 ));
             }
             $value->grupo = $grupo_moneda;
         }
-        return response()->json(["empresas"=>$empresa,"estados"=>$estados,"monedas"=>$monedas],200);
+        return response()->json(["empresas" => $empresa, "estados" => $estados, "monedas" => $monedas], 200);
     }
     public function cuadroComparativoOrdenes()
     {
         $empresa = Empresa::all();
-        $estados = RequerimientoPagoEstados::whereIn('id_requerimiento_pago_estado', [8, 5, 6, 9,10])->get();
+        $estados = RequerimientoPagoEstados::whereIn('id_requerimiento_pago_estado', [8, 5, 6, 9, 10])->get();
         $monedas = Moneda::all();
 
         $grupo_estado = array();
@@ -1507,18 +1490,18 @@ class RegistroPagoController extends Controller
             $grupo_estado = array();
             foreach ($empresa as $key_empresa => $value_empresa) {
                 $cantidad = Orden::select('log_ord_compra.*')
-                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-                ->where('log_ord_compra.estado_pago',$value->id_requerimiento_pago_estado)
-                ->where('adm_empresa.id_empresa',$value_empresa->id_empresa)
-                ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9,10])
-                ->where('log_ord_compra.estado','!=',7)
-                ->count();
+                    ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+                    ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                    ->where('log_ord_compra.estado_pago', $value->id_requerimiento_pago_estado)
+                    ->where('adm_empresa.id_empresa', $value_empresa->id_empresa)
+                    ->whereIn('log_ord_compra.estado_pago', [8, 5, 6, 9, 10])
+                    ->where('log_ord_compra.estado', '!=', 7)
+                    ->count();
                 // return $cantidad;exit;
-                array_push($grupo_estado,array(
-                    "empresa_id"=>$value_empresa->id_empresa,
-                    "estado_id"=>$value->id_requerimiento_pago_estado,
-                    "cantidad"=>$cantidad,
+                array_push($grupo_estado, array(
+                    "empresa_id" => $value_empresa->id_empresa,
+                    "estado_id" => $value->id_requerimiento_pago_estado,
+                    "cantidad" => $cantidad,
                 ));
             }
             $value->grupo = $grupo_estado;
@@ -1529,29 +1512,29 @@ class RegistroPagoController extends Controller
             $grupo_moneda = array();
             foreach ($empresa as $key_empresa => $value_empresa) {
                 $cantidad = Orden::select('log_ord_compra.*')
-                ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
-                ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
+                    ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'log_ord_compra.id_sede')
+                    ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
 
-                ->where('adm_empresa.id_empresa',$value_empresa->id_empresa)
-                ->where('log_ord_compra.id_moneda',$value->id_moneda)
-                ->whereIn('log_ord_compra.estado_pago', [8, 5, 9,10])
-                ->where('log_ord_compra.estado','!=',7)
-                ->whereNotIn('log_ord_compra.estado_pago',[7,6])
-                ->get();
-                $total=0;
+                    ->where('adm_empresa.id_empresa', $value_empresa->id_empresa)
+                    ->where('log_ord_compra.id_moneda', $value->id_moneda)
+                    ->whereIn('log_ord_compra.estado_pago', [8, 5, 9, 10])
+                    ->where('log_ord_compra.estado', '!=', 7)
+                    ->whereNotIn('log_ord_compra.estado_pago', [7, 6])
+                    ->get();
+                $total = 0;
 
                 foreach ($cantidad as $key_cantidad => $value_cantidad) {
-                    $total=$value_cantidad->monto_total+$total;
+                    $total = $value_cantidad->monto_total + $total;
                 }
                 // return $cantidad;exit;
-                array_push($grupo_moneda,array(
-                    "empresa_id"=>$value_empresa->id_empresa,
-                    "moneda_id"=>$value->id_moneda,
-                    "total"=>round($total,2),
+                array_push($grupo_moneda, array(
+                    "empresa_id" => $value_empresa->id_empresa,
+                    "moneda_id" => $value->id_moneda,
+                    "total" => round($total, 2),
                 ));
             }
             $value->grupo = $grupo_moneda;
         }
-        return response()->json(["empresas"=>$empresa,"estados"=>$estados,"monedas"=>$monedas],200);
+        return response()->json(["empresas" => $empresa, "estados" => $estados, "monedas" => $monedas], 200);
     }
 }
