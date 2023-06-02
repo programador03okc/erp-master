@@ -21,78 +21,82 @@ class PresupuestoInternoHistorialHelper
 {
 
 
-    public static function registrarEstadoGastoAprobadoDeRequerimiento($idRequerimiento,$idTipoDocumento){
-        if($idTipoDocumento == 1){
+    public static function registrarEstadoGastoAprobadoDeRequerimiento($idRequerimiento, $idTipoDocumento)
+    {
+        if ($idTipoDocumento == 1) {
             $requerimientoLogistico = Requerimiento::find($idRequerimiento);
-            if($requerimientoLogistico->id_presupuesto_interno >0){
-                $detalle = DetalleRequerimiento::where([['id_requerimiento','=',$idRequerimiento],['estado','!=',7]])->get();
+            if ($requerimientoLogistico->id_presupuesto_interno > 0) {
+                $detalle = DetalleRequerimiento::where([['id_requerimiento', '=', $idRequerimiento], ['estado', '!=', 7]])->get();
                 foreach ($detalle as $key => $item) {
-                    $importe= $item->cantidad * $item->precio_unitario;
-                    $registroExistente = HistorialPresupuestoInternoSaldo::where([['id_requerimiento',$idRequerimiento],['id_detalle_requerimiento',$item->id_detalle_requerimiento],['estado',1]])->get();
-                    if(count($registroExistente)>0){ // actualizar
-                        PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoLogistico($requerimientoLogistico->id_presupuesto_interno,$item->id_partida_pi,$importe,1, $item->id_requerimiento,$item->id_detalle_requerimiento,$requerimientoLogistico->fecha_requerimiento);
-
-                    }else{ //crear 
-                        PresupuestoInternoHistorialHelper::registrarHistorialSaldoParaDetalleRequerimientoLogistico($requerimientoLogistico->id_presupuesto_interno,$item->id_partida_pi,$importe,1, $item->id_requerimiento,$item->id_detalle_requerimiento,$requerimientoLogistico->fecha_requerimiento);
+                    $importe = $item->cantidad * $item->precio_unitario;
+                    $registroExistente = HistorialPresupuestoInternoSaldo::where([['id_requerimiento', $idRequerimiento], ['id_detalle_requerimiento', $item->id_detalle_requerimiento], ['estado', 1]])->get();
+                    if (count($registroExistente) > 0) { // actualizar
+                        PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoLogistico($requerimientoLogistico->id_presupuesto_interno, $item->id_partida_pi, $importe, 1, $item->id_requerimiento, $item->id_detalle_requerimiento, $requerimientoLogistico->fecha_requerimiento);
+                    } else { //crear 
+                        PresupuestoInternoHistorialHelper::registrarHistorialSaldoParaDetalleRequerimientoLogistico($requerimientoLogistico->id_presupuesto_interno, $item->id_partida_pi, $importe, 1, $item->id_requerimiento, $item->id_detalle_requerimiento, $requerimientoLogistico->fecha_requerimiento);
                     }
                 }
             }
-        }else if($idTipoDocumento == 11){
+        } else if ($idTipoDocumento == 11) {
             $requerimientoPago = RequerimientoPago::find($idRequerimiento);
-            if($requerimientoPago->id_presupuesto_interno >0){
-                $detalle = RequerimientoPagoDetalle::where([['id_requerimiento_pago','=',$idRequerimiento],['id_estado','!=',7]])->get();
+            if ($requerimientoPago->id_presupuesto_interno > 0) {
+                $detalle = RequerimientoPagoDetalle::where([['id_requerimiento_pago', '=', $idRequerimiento], ['id_estado', '!=', 7]])->get();
                 foreach ($detalle as $key => $item) {
-                    $importe= $item->cantidad * $item->precio_unitario;
-                    $registroExistente = HistorialPresupuestoInternoSaldo::where([['id_requerimiento_pago',$idRequerimiento],['id_requerimiento_pago_detalle',$item->id_requerimiento_pago_detalle],['estado',1]])->get();
+                    $importe = $item->cantidad * $item->precio_unitario;
+                    $registroExistente = HistorialPresupuestoInternoSaldo::where([['id_requerimiento_pago', $idRequerimiento], ['id_requerimiento_pago_detalle', $item->id_requerimiento_pago_detalle], ['estado', 1]])->get();
 
-                    if(count($registroExistente)>0){ // actualizar
-                    PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoPago($requerimientoPago->id_presupuesto_interno,$item->id_partida_pi,$importe,1, $item->id_requerimiento_pago,$item->id_requerimiento_pago_detalle,$requerimientoPago->fecha_registro);
-                    }else{ // crear
-                        PresupuestoInternoHistorialHelper::registrarHistorialSaldoParaDetalleRequerimientoPago($requerimientoPago->id_presupuesto_interno,$item->id_partida_pi,$importe,1, $item->id_requerimiento_pago,$item->id_requerimiento_pago_detalle,$requerimientoPago->fecha_registro);
+                    if (count($registroExistente) > 0) { // actualizar
+                        PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoPago($requerimientoPago->id_presupuesto_interno, $item->id_partida_pi, $importe, 1, $item->id_requerimiento_pago, $item->id_requerimiento_pago_detalle, $requerimientoPago->fecha_registro);
+                    } else { // crear
+                        PresupuestoInternoHistorialHelper::registrarHistorialSaldoParaDetalleRequerimientoPago($requerimientoPago->id_presupuesto_interno, $item->id_partida_pi, $importe, 1, $item->id_requerimiento_pago, $item->id_requerimiento_pago_detalle, $requerimientoPago->fecha_registro);
                     }
                 }
             }
         }
     }
 
-    public static function registrarEstadoGastoAfectadoDeRequerimientoLogistico($idOrden,$idPago, $detalleItemList,$operacion){
+    public static function registrarEstadoGastoAfectadoDeRequerimientoLogistico($idOrden, $idPago, $detalleItemList, $operacion)
+    {
         // $orden = Orden::find($idOrden);
         // $detalleOrden = OrdenCompraDetalle::where([['id_orden_compra',$idOrden],['estado','!=',7]])->get();
 
         foreach ($detalleItemList as $detOrd) {
-            if($detOrd->id_detalle_requerimiento >0  ){
-                if($detOrd->detalleRequerimiento->id_partida_pi > 0){
+            if ($detOrd->id_detalle_requerimiento > 0) {
+                if ($detOrd->detalleRequerimiento->id_partida_pi > 0) {
                     PresupuestoInternoHistorialHelper::registrarHistorialSaldoParaDetalleRequerimientoLogistico(
-                    $detOrd->detalleRequerimiento->requerimiento->id_presupuesto_interno
-                    ,$detOrd->detalleRequerimiento->id_partida_pi
-                    ,$detOrd->importe_item_para_presupuesto
-                    ,3
-                    , $detOrd->detalleRequerimiento->requerimiento->id_requerimiento
-                    , $detOrd->id_detalle_requerimiento
-                    , $detOrd->detalleRequerimiento->requerimiento->fecha_requerimiento
-                    , $idOrden
-                    , $detOrd->id_detalle_orden
-                    , $idPago);
+                        $detOrd->detalleRequerimiento->requerimiento->id_presupuesto_interno,
+                        $detOrd->detalleRequerimiento->id_partida_pi,
+                        $detOrd->importe_item_para_presupuesto,
+                        3,
+                        $detOrd->detalleRequerimiento->requerimiento->id_requerimiento,
+                        $detOrd->id_detalle_requerimiento,
+                        $detOrd->detalleRequerimiento->requerimiento->fecha_requerimiento,
+                        $idOrden,
+                        $detOrd->id_detalle_orden,
+                        $idPago
+                    );
 
-                    PresupuestoInternoHistorialHelper::afectarPresupuesto($detOrd->detalleRequerimiento->requerimiento->id_presupuesto_interno
-                    , $detOrd->detalleRequerimiento->id_partida_pi
-                    , $detOrd->detalleRequerimiento->requerimiento->fecha_requerimiento
-                    ,$detOrd->importe_item_para_presupuesto
-                    , $operacion);
+                    PresupuestoInternoHistorialHelper::afectarPresupuesto(
+                        $detOrd->detalleRequerimiento->requerimiento->id_presupuesto_interno,
+                        $detOrd->detalleRequerimiento->id_partida_pi,
+                        $detOrd->detalleRequerimiento->requerimiento->fecha_requerimiento,
+                        $detOrd->importe_item_para_presupuesto,
+                        $operacion
+                    );
                 }
             }
-
         }
     }
 
- 
 
-    
 
-    public static function registrarHistorialSaldoParaDetalleRequerimientoLogistico($idPresupuesto,$idPartida,$importe,$estado, $idRequerimiento,$idDetalleRequerimiento,$fecha, $idOrden=null, $idDetalleOrden =null, $idPago =null){
-        
+
+
+    public static function registrarHistorialSaldoParaDetalleRequerimientoLogistico($idPresupuesto, $idPartida, $importe, $estado, $idRequerimiento, $idDetalleRequerimiento, $fecha, $idOrden = null, $idDetalleOrden = null, $idPago = null)
+    {
+
         $historial = null;
-        if($idPresupuesto >0 && $idPartida>0 ){
+        if ($idPresupuesto > 0 && $idPartida > 0) {
             $historial = new HistorialPresupuestoInternoSaldo();
             $historial->id_presupuesto_interno = $idPresupuesto;
             $historial->id_partida = $idPartida;
@@ -101,23 +105,22 @@ class PresupuestoInternoHistorialHelper
             $historial->tipo = 'SALIDA';
             $historial->operacion = 'R';
             $historial->importe = $importe;
-            $historial->mes = str_pad(date('m', strtotime($fecha) ), 2, "0", STR_PAD_LEFT);
+            $historial->mes = str_pad(date('m', strtotime($fecha)), 2, "0", STR_PAD_LEFT);
             $historial->fecha_registro = new Carbon();
             $historial->estado = $estado;
             $historial->id_orden = $idOrden;
             $historial->id_orden_detalle = $idDetalleOrden;
             $historial->id_pago = $idPago;
             $historial->save();
-
         }
         return $historial;
-
     }
-    public static function actualizarHistorialSaldoParaDetalleRequerimientoLogistico($idPresupuesto,$idPartida,$importe,$estado, $idRequerimiento,$idDetalleRequerimiento,$fecha, $idOrden=null, $idDetalleOrden =null, $idPago =null){
-        
+    public static function actualizarHistorialSaldoParaDetalleRequerimientoLogistico($idPresupuesto, $idPartida, $importe, $estado, $idRequerimiento, $idDetalleRequerimiento, $fecha, $idOrden = null, $idDetalleOrden = null, $idPago = null)
+    {
+
         $historial = null;
-        if($idDetalleRequerimiento >0 && $idPartida>0 ){
-            $historial = HistorialPresupuestoInternoSaldo::where([['id_requerimiento',$idRequerimiento],['id_detalle_requerimiento',$idDetalleRequerimiento],['estado',1]])->first();
+        if ($idDetalleRequerimiento > 0 && $idPartida > 0) {
+            $historial = HistorialPresupuestoInternoSaldo::where([['id_requerimiento', $idRequerimiento], ['id_detalle_requerimiento', $idDetalleRequerimiento], ['estado', 1]])->first();
             $historial->id_presupuesto_interno = $idPresupuesto;
             $historial->id_partida = $idPartida;
             $historial->id_requerimiento = $idRequerimiento;
@@ -125,45 +128,46 @@ class PresupuestoInternoHistorialHelper
             $historial->tipo = 'SALIDA';
             $historial->operacion = 'R';
             $historial->importe = $importe;
-            $historial->mes = str_pad(date('m', strtotime($fecha) ), 2, "0", STR_PAD_LEFT);
+            $historial->mes = str_pad(date('m', strtotime($fecha)), 2, "0", STR_PAD_LEFT);
             $historial->fecha_registro = new Carbon();
             $historial->estado = $estado;
             $historial->id_orden = $idOrden;
             $historial->id_orden_detalle = $idDetalleOrden;
             $historial->id_pago = $idPago;
             $historial->save();
-
         }
         return $historial;
-
     }
-    public static function actualizarHistorialSaldoParaDetalleRequerimientoLogisticoConOrden($idPresupuesto, $idPartida, $idRequerimiento, $idDetalleRequerimiento, $fecha, $idOrden, $idDetalleOrden,$importe, $estado,$operacion){
+    public static function actualizarHistorialSaldoParaDetalleRequerimientoLogisticoConOrden($idPresupuesto, $idPartida, $idRequerimiento, $idDetalleRequerimiento, $fecha, $idOrden, $idDetalleOrden, $importe, $estado, $operacion)
+    {
 
         $historial = null;
-        if($idPresupuesto >0 && $idPartida>0 ){
-                $historial = HistorialPresupuestoInternoSaldo::where(
-                    [['id_presupuesto_interno','=',$idPresupuesto],
-                        ['id_partida','=',$idPartida],
-                        ['id_requerimiento','=',$idRequerimiento],
-                        ['id_requerimiento_detalle','=',$idDetalleRequerimiento],
-                        ['tipo','=','SALIDA'],
-                        ['mes','=',str_pad(date('m', strtotime($fecha) ), 2, "0", STR_PAD_LEFT)]
-                        ])
-                    ->first();
-                    $historial->importe = $importe;
-                    $historial->id_orden = $idOrden;
-                    $historial->id_orden_detalle = $idDetalleOrden;
-                    $historial->estado = $estado;
-                    $historial->operacion = $operacion;
-                    $historial->save();
+        if ($idPresupuesto > 0 && $idPartida > 0) {
+            $historial = HistorialPresupuestoInternoSaldo::where(
+                [
+                    ['id_presupuesto_interno', '=', $idPresupuesto],
+                    ['id_partida', '=', $idPartida],
+                    ['id_requerimiento', '=', $idRequerimiento],
+                    ['id_requerimiento_detalle', '=', $idDetalleRequerimiento],
+                    ['tipo', '=', 'SALIDA'],
+                    ['mes', '=', str_pad(date('m', strtotime($fecha)), 2, "0", STR_PAD_LEFT)]
+                ]
+            )
+                ->first();
+            $historial->importe = $importe;
+            $historial->id_orden = $idOrden;
+            $historial->id_orden_detalle = $idDetalleOrden;
+            $historial->estado = $estado;
+            $historial->operacion = $operacion;
+            $historial->save();
         }
         return $historial;
-
     }
 
-    public static function registrarHistorialSaldoParaDetalleRequerimientoPago($idPresupuesto,$idPartida,$importe,$estado,$idRequerimientoPago,$idDetalleRequerimientoPago,$fecha, $idPago =null){
+    public static function registrarHistorialSaldoParaDetalleRequerimientoPago($idPresupuesto, $idPartida, $importe, $estado, $idRequerimientoPago, $idDetalleRequerimientoPago, $fecha, $idPago = null)
+    {
         $historial = null;
-        if($idPresupuesto >0 && $idPartida>0 ){
+        if ($idPresupuesto > 0 && $idPartida > 0) {
             $historial = new HistorialPresupuestoInternoSaldo();
             $historial->id_presupuesto_interno = $idPresupuesto;
             $historial->id_partida = $idPartida;
@@ -172,20 +176,20 @@ class PresupuestoInternoHistorialHelper
             $historial->tipo = 'SALIDA';
             $historial->operacion = 'R';
             $historial->importe = $importe;
-            $historial->mes = str_pad(date('m', strtotime($fecha) ), 2, "0", STR_PAD_LEFT);
+            $historial->mes = str_pad(date('m', strtotime($fecha)), 2, "0", STR_PAD_LEFT);
             $historial->fecha_registro = new Carbon();
             $historial->estado = $estado;
             $historial->id_pago = $idPago;
             $historial->save();
-
         }
         return $historial;
     }
 
-    public static function actualizarHistorialSaldoParaDetalleRequerimientoPago($idPresupuesto,$idPartida,$importe,$estado,$idRequerimientoPago,$idDetalleRequerimientoPago,$fecha, $idPago =null){
+    public static function actualizarHistorialSaldoParaDetalleRequerimientoPago($idPresupuesto, $idPartida, $importe, $estado, $idRequerimientoPago, $idDetalleRequerimientoPago, $fecha, $idPago = null)
+    {
         $historial = null;
-        if($idPresupuesto >0 && $idPartida>0 ){
-            $historial =  HistorialPresupuestoInternoSaldo::where([['id_requerimiento_pago',$idRequerimientoPago],['id_requerimiento_pago_detalle',$idDetalleRequerimientoPago],['estado',1]])->first();
+        if ($idPresupuesto > 0 && $idPartida > 0) {
+            $historial =  HistorialPresupuestoInternoSaldo::where([['id_requerimiento_pago', $idRequerimientoPago], ['id_requerimiento_pago_detalle', $idDetalleRequerimientoPago], ['estado', 1]])->first();
             $historial->id_presupuesto_interno = $idPresupuesto;
             $historial->id_partida = $idPartida;
             $historial->id_requerimiento_pago = $idRequerimientoPago;
@@ -193,24 +197,24 @@ class PresupuestoInternoHistorialHelper
             $historial->tipo = 'SALIDA';
             $historial->operacion = 'R';
             $historial->importe = $importe;
-            $historial->mes = str_pad(date('m', strtotime($fecha) ), 2, "0", STR_PAD_LEFT);
+            $historial->mes = str_pad(date('m', strtotime($fecha)), 2, "0", STR_PAD_LEFT);
             $historial->fecha_registro = new Carbon();
             $historial->estado = $estado;
             $historial->id_pago = $idPago;
             $historial->save();
-
         }
         return $historial;
     }
 
-    
-    public static function afectarPresupuesto($idPresupuesto, $idPartida, $fechaOMes, $importe, $operacion){
+
+    public static function afectarPresupuesto($idPresupuesto, $idPartida, $fechaOMes, $importe, $operacion)
+    {
 
         $mesLista = ['1' => 'enero', '2' => 'febrero', '3' => 'marzo', '4' => 'abril', '5' => 'mayo', '6' => 'junio', '7' => 'julio', '8' => 'agosto', '9' => 'setiembre', '10' => 'octubre', '11' => 'noviembre', '12' => 'diciembre'];
-        $mes = strlen($fechaOMes) ==2 ? intval($fechaOMes) :intval(date('m', strtotime($fechaOMes)));
+        $mes = strlen($fechaOMes) == 2 ? intval($fechaOMes) : intval(date('m', strtotime($fechaOMes)));
         $nombreMes = $mesLista[$mes];
         $nombreMesAux = $nombreMes . '_aux';
-        $mesEnDosDigitos =str_pad($mes, 2, "0", STR_PAD_LEFT);
+        // $mesEnDosDigitos =str_pad($mes, 2, "0", STR_PAD_LEFT);
 
         $presupuestoInternoDetalle = PresupuestoInternoDetalle::where([
             ['id_presupuesto_interno', $idPresupuesto],
@@ -219,11 +223,11 @@ class PresupuestoInternoHistorialHelper
 
         if ($presupuestoInternoDetalle) {
             if ($operacion == 'R') { // SALIDA
-                $nuevoImporte = floatval($presupuestoInternoDetalle->$nombreMesAux) -  (isset($importe) && ($importe>0)?floatval($importe):0) ;
+                $nuevoImporte = floatval($presupuestoInternoDetalle->$nombreMesAux) -  (isset($importe) && ($importe > 0) ? floatval($importe) : 0);
                 $presupuestoInternoDetalle->$nombreMesAux = $nuevoImporte;
                 $presupuestoInternoDetalle->save();
             } elseif ($operacion == 'S') { // RETORNO
-                $nuevoImporte = floatval($presupuestoInternoDetalle->$nombreMesAux) +  (isset($importe) && ($importe>0)?floatval($importe):0);
+                $nuevoImporte = floatval($presupuestoInternoDetalle->$nombreMesAux) +  (isset($importe) && ($importe > 0) ? floatval($importe) : 0);
                 $presupuestoInternoDetalle->$nombreMesAux = $nuevoImporte;
                 $presupuestoInternoDetalle->save();
             }
@@ -233,45 +237,42 @@ class PresupuestoInternoHistorialHelper
     }
 
 
-    public static function obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($idOrden, $totalPago, $totalDocumento)
+    public static function obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($idOrden, $totalPago)
     {
 
-        $porcentajeParaProrrateo =  (floatval($totalPago) * 100) / floatval($totalDocumento);
+        $orden = Orden::find($idOrden);
+        $porcentajeParaProrrateo =  (floatval($totalPago) * 100) / floatval($orden->monto_total);
 
         $detalleArray = [];
         if ($idOrden > 0) {
             $ordenDetalle = OrdenCompraDetalle::with('detalleRequerimiento.requerimiento')
-            ->where([['id_orden_compra', $idOrden], ['estado', '!=', 7]])->get();
+                ->where([['id_orden_compra', $idOrden], ['estado', '!=', 7]])->get();
 
             foreach ($ordenDetalle as $detOrd) {
-                if($detOrd->id_detalle_requerimiento >0  ){
+                if ($detOrd->id_detalle_requerimiento > 0) {
 
-                    if($detOrd->detalleRequerimiento->id_partida_pi > 0){
-                        $detalleArray[]= $detOrd;
+                    if ($detOrd->detalleRequerimiento->id_partida_pi > 0) {
+                        $detalleArray[] = $detOrd;
                     }
                 }
             }
         }
-
-        // if($tipoAfecto =='completo'){
+        if ($orden->incluye_igv == true) {
+            foreach ($detalleArray as $key => $item) {
+                $detalleArray[$key]['importe_item_para_presupuesto'] = ((floatval($item['cantidad']) * floatval($item['precio']) * 1.18) * $porcentajeParaProrrateo) / 100;
+            }
+        } else {
             foreach ($detalleArray as $key => $item) {
                 $detalleArray[$key]['importe_item_para_presupuesto'] = ((floatval($item['cantidad']) * floatval($item['precio'])) * $porcentajeParaProrrateo) / 100;
-
             }
-
-        // }elseif ($tipoAfecto =='prorrateado'){
-            //     $prorrateo = floatval($totalPago) / count($detalleArray);
-            // foreach ($detalleArray as $key => $item) {
-            //     $item['importe_item_para_presupuesto'] = $prorrateo;
-            // }
-        // }
-
+        }
         return $detalleArray;
-
     }
-    public static function obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, $totalPago, $totalDocumento)
+    public static function obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, $totalPago)
     {
-        $porcentajeParaProrrateo =  (floatval($totalPago) * 100) / floatval($totalDocumento);
+
+        $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
+        $porcentajeParaProrrateo =  (floatval($totalPago) * 100) / floatval($requerimientoPago->monto_total);
 
 
         $detalleArray = [];
@@ -283,159 +284,155 @@ class PresupuestoInternoHistorialHelper
                 $detalleArray[$key]['importe_item_para_presupuesto'] = 0;
             }
 
-            // if ($tipoAfecto == 'completo') {
-
             foreach ($detalleArray as $key => $item) {
                 $detalleArray[$key]['importe_item_para_presupuesto'] = ((floatval($item['cantidad']) * floatval($item['precio_unitario'])) * $porcentajeParaProrrateo) / 100;
             }
-            // } elseif ($tipoAfecto == 'prorrateado') {
-            //     $prorrateo = floatval($totalPago) / count($detalleArray);
-            //     foreach ($detalleArray as $key => $item) {
-            //         $item['importe_item_para_presupuesto'] = $prorrateo;
-            //     }
-            // }
         }
 
         return $detalleArray;
     }
 
-    public static function registrarEstadoGastoAfectadoDeRequerimientoPago($idRequerimientoPago, $idPago, $detalleItemList, $operacion){
+    public static function registrarEstadoGastoAfectadoDeRequerimientoPago($idRequerimientoPago, $idPago, $detalleItemList, $operacion)
+    {
 
         foreach ($detalleItemList as $item) {
-            if($item->id_requerimiento_pago_detalle >0){
-                if($item->id_partida_pi > 0){
+            if ($item->id_requerimiento_pago_detalle > 0) {
+                if ($item->id_partida_pi > 0) {
                     $requerimientoPago = RequerimientoPago::find($item->id_requerimiento_pago);
                     PresupuestoInternoHistorialHelper::registrarHistorialSaldoParaDetalleRequerimientoPago(
-                    $requerimientoPago->id_presupuesto_interno
-                    ,$item->id_partida_pi
-                    ,$item->importe_item_para_presupuesto
-                    ,3
-                    , $idRequerimientoPago
-                    , $item->id_requerimiento_pago_detalle
-                    , $requerimientoPago->fecha_registro
-                    , $idPago);
+                        $requerimientoPago->id_presupuesto_interno,
+                        $item->id_partida_pi,
+                        $item->importe_item_para_presupuesto,
+                        3,
+                        $idRequerimientoPago,
+                        $item->id_requerimiento_pago_detalle,
+                        $requerimientoPago->fecha_registro,
+                        $idPago
+                    );
 
-                    PresupuestoInternoHistorialHelper::afectarPresupuesto($requerimientoPago->id_presupuesto_interno
-                    , $item->id_partida_pi
-                    ,$requerimientoPago->fecha_registro
-                    ,$item->importe_item_para_presupuesto
-                    , $operacion);
+                    PresupuestoInternoHistorialHelper::afectarPresupuesto(
+                        $requerimientoPago->id_presupuesto_interno,
+                        $item->id_partida_pi,
+                        $requerimientoPago->fecha_registro,
+                        $item->importe_item_para_presupuesto,
+                        $operacion
+                    );
                 }
             }
-
         }
     }
 
-    public static function actualizarRegistroPorDocumentoAnuladoEnHistorialSaldo($idrequerimiento=null, $idOrden=null,$idRequerimientoPago=null){
-        $historialList=[];
-        $tienePresupuestoInterno=false;
-        if($idrequerimiento >0 ){
+    public static function actualizarRegistroPorDocumentoAnuladoEnHistorialSaldo($idrequerimiento = null, $idOrden = null, $idRequerimientoPago = null)
+    {
+        $historialList = [];
+        $tienePresupuestoInterno = false;
+        if ($idrequerimiento > 0) {
             $requerimiento = Requerimiento::find($idrequerimiento);
 
-            if($requerimiento->id_presupuesto_interno >0){
+            if ($requerimiento->id_presupuesto_interno > 0) {
                 $tienePresupuestoInterno = true;
             }
 
-            if($tienePresupuestoInterno == true){
+            if ($tienePresupuestoInterno == true) {
                 $historialList = HistorialPresupuestoInternoSaldo::where(
-                [['id_requerimiento','=',$idrequerimiento]])
-                ->get();    
-                
+                    [['id_requerimiento', '=', $idrequerimiento]]
+                )
+                    ->get();
+
                 foreach ($historialList as $value) {
                     $historial = HistorialPresupuestoInternoSaldo::find($value->id);
                     $historial->documento_anulado = true;
                     $historial->save();
                 }
-                
             }
         }
-        if($idOrden >0 ){
+        if ($idOrden > 0) {
 
-            $detalleOrden = OrdenCompraDetalle::where([['id_orden_compra',$idOrden],['estado','!=',7]])->get();
+            $detalleOrden = OrdenCompraDetalle::where([['id_orden_compra', $idOrden], ['estado', '!=', 7]])->get();
             foreach ($detalleOrden as $itemOrden) {
-                if($itemOrden->id_detalle_requerimiento >0){
+                if ($itemOrden->id_detalle_requerimiento > 0) {
                     $detalleRequerimiento = DetalleRequerimiento::with('requerimiento')->find($itemOrden->id_detalle_requerimiento);
 
                     foreach ($detalleRequerimiento as $detReq) {
-                        if($detReq->requerimiento->id_presupuesto_interno >0){
+                        if ($detReq->requerimiento->id_presupuesto_interno > 0) {
                             $tienePresupuestoInterno = true;
                         }
                     }
                 }
             }
 
-            if($tienePresupuestoInterno == true){
+            if ($tienePresupuestoInterno == true) {
                 $historialList = HistorialPresupuestoInternoSaldo::where(
-                [['id_orden','=',$idOrden]])
-                ->get();
-                }
-
-                foreach ($historialList as $value) {
-                    $historial = HistorialPresupuestoInternoSaldo::find($value->id);
-                    $historial->documento_anulado = true;
-                    $historial->save();
-                }
-
+                    [['id_orden', '=', $idOrden]]
+                )
+                    ->get();
             }
 
-        if($idRequerimientoPago){
+            foreach ($historialList as $value) {
+                $historial = HistorialPresupuestoInternoSaldo::find($value->id);
+                $historial->documento_anulado = true;
+                $historial->save();
+            }
+        }
+
+        if ($idRequerimientoPago) {
             $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
 
-            if($requerimientoPago->id_presupuesto_interno >0){
+            if ($requerimientoPago->id_presupuesto_interno > 0) {
                 $tienePresupuestoInterno = true;
             }
 
-            if($tienePresupuestoInterno == true){
+            if ($tienePresupuestoInterno == true) {
                 $historialList = HistorialPresupuestoInternoSaldo::where(
-                [['id_requerimiento_pago','=',$idRequerimientoPago]])
-                ->get();    
-                
+                    [['id_requerimiento_pago', '=', $idRequerimientoPago]]
+                )
+                    ->get();
+
                 foreach ($historialList as $value) {
                     $historial = HistorialPresupuestoInternoSaldo::find($value->id);
                     $historial->documento_anulado = true;
                     $historial->save();
                 }
-                
             }
-
-        } 
+        }
     }
 
-    public static function registrarRetornoDePresupuesto($idPago){
-        $historialList = HistorialPresupuestoInternoSaldo::where([['id_pago','=',$idPago],['estado',3]])->get();
+    public static function registrarRetornoDePresupuesto($idPago)
+    {
+        $historialList = HistorialPresupuestoInternoSaldo::where([['id_pago', '=', $idPago], ['estado', 3]])->get();
 
-            foreach ($historialList as $fila) {
-                if($fila->tipo == 'SALIDA'){
-                    $nuevoHistorial = new HistorialPresupuestoInternoSaldo();
-                    $nuevoHistorial->id_presupuesto_interno = $fila->id_presupuesto_interno;
-                    $nuevoHistorial->id_partida = $fila->id_partida;
-                    $nuevoHistorial->id_requerimiento = $fila->id_requerimiento;
-                    $nuevoHistorial->id_requerimiento_detalle = $fila->id_requerimiento_detalle;
-                    $nuevoHistorial->id_orden = $fila->id_orden;
-                    $nuevoHistorial->id_orden_detalle = $fila->id_orden_detalle;
-                    $nuevoHistorial->id_requerimiento_pago = $fila->id_requerimiento_pago;
-                    $nuevoHistorial->id_requerimiento_pago_detalle = $fila->id_requerimiento_pago_detalle;
-                    $nuevoHistorial->tipo='RETORNO';
-                    $nuevoHistorial->operacion='S';
-                    $nuevoHistorial->importe= $fila->importe;
-                    $nuevoHistorial->mes = $fila->mes;
-                    $nuevoHistorial->fecha_registro= new Carbon();
-                    $nuevoHistorial->estado = 3;
-                    $nuevoHistorial->id_pago = $fila->id_pago;
-                    $nuevoHistorial->save();
+        foreach ($historialList as $fila) {
+            if ($fila->tipo == 'SALIDA') {
+                $nuevoHistorial = new HistorialPresupuestoInternoSaldo();
+                $nuevoHistorial->id_presupuesto_interno = $fila->id_presupuesto_interno;
+                $nuevoHistorial->id_partida = $fila->id_partida;
+                $nuevoHistorial->id_requerimiento = $fila->id_requerimiento;
+                $nuevoHistorial->id_requerimiento_detalle = $fila->id_requerimiento_detalle;
+                $nuevoHistorial->id_orden = $fila->id_orden;
+                $nuevoHistorial->id_orden_detalle = $fila->id_orden_detalle;
+                $nuevoHistorial->id_requerimiento_pago = $fila->id_requerimiento_pago;
+                $nuevoHistorial->id_requerimiento_pago_detalle = $fila->id_requerimiento_pago_detalle;
+                $nuevoHistorial->tipo = 'RETORNO';
+                $nuevoHistorial->operacion = 'S';
+                $nuevoHistorial->importe = $fila->importe;
+                $nuevoHistorial->mes = $fila->mes;
+                $nuevoHistorial->fecha_registro = new Carbon();
+                $nuevoHistorial->estado = 3;
+                $nuevoHistorial->id_pago = $fila->id_pago;
+                $nuevoHistorial->save();
 
-                    PresupuestoInternoHistorialHelper::afectarPresupuesto($fila->id_presupuesto_interno
-                    , $fila->id_partida
-                    , $fila->mes
-                    ,$fila->importe
-                    , 'S');
-
-                }
+                PresupuestoInternoHistorialHelper::afectarPresupuesto(
+                    $fila->id_presupuesto_interno,
+                    $fila->id_partida,
+                    $fila->mes,
+                    $fila->importe,
+                    'S'
+                );
             }
+        }
 
-            return $historialList;
-
-    } 
+        return $historialList;
+    }
 
     // public static function actualizaReqLogisticoEstadoHistorial($idDetalleRequerimiento,$estado,  $importe = null, $operacion=null)
     // {
@@ -454,7 +451,7 @@ class PresupuestoInternoHistorialHelper
     //     ->first();
 
     //     $historial = null;
-        
+
     //     if ($detalleRequerimiento !== null && $detalleRequerimiento->id_presupuesto_interno !== null){
     //         $importe =  $importe !=null ? $importe:  (floatval($detalleRequerimiento->cantidad) * floatval($detalleRequerimiento->precio_unitario));
 
@@ -506,7 +503,7 @@ class PresupuestoInternoHistorialHelper
     //                 (new PresupuestoInternoController)->afectarPresupuestoPorFila($detalleRequerimiento->id_presupuesto_interno, $detalleRequerimiento->id_partida_pi, $importe, $detalleRequerimiento->fecha_requerimiento, $operacion);
     //             }
     //         }
-        
+
     //     return $historial;
     // }
 
@@ -523,7 +520,7 @@ class PresupuestoInternoHistorialHelper
 
     //     // $operacion ='R';
     //     $historial = null;
-        
+
     //     if ($detalleRequerimiento !== null && $detalleRequerimiento->id_presupuesto_interno !== null){
 
     //         $importe =  $importe !=null ? $importe: (floatval($detalleRequerimiento->subtotal));
@@ -549,7 +546,7 @@ class PresupuestoInternoHistorialHelper
     //                 ['mes','=',str_pad(date('m', strtotime($detalleRequerimiento->fecha_registro) ), 2, "0", STR_PAD_LEFT)],
     //                 ['id_presupuesto_interno','=',$detalleRequerimiento->id_presupuesto_interno])
     //             ->first();
-            
+
     //             $historial->importe = $importe;
     //             $historial->estado = $estado;
     //             $historial->save();
@@ -560,7 +557,7 @@ class PresupuestoInternoHistorialHelper
     //             }
     //         }
     //     }
-        
+
     //     return $historial;
     // }
 
