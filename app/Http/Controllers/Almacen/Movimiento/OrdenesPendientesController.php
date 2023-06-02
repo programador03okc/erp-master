@@ -1143,7 +1143,7 @@ class OrdenesPendientesController extends Controller
                         $this->actualizaEstadoPadres($padres_oc, $padres_req);
                     }
                     //Ingreso por devolucion de cliente o proveedor
-                    else if ($request->id_operacion == '24' || $request->id_operacion == '5') {
+                    else if ($request->id_operacion == '24' || $request->id_operacion == '5' || $request->id_operacion=='28' ) {
     
                         $tipo_cambio = TipoCambio::where([['moneda', '=', 2], ['fecha', '<=', $request->fecha_almacen]])
                             ->orderBy('fecha', 'DESC')->first();
