@@ -44,7 +44,8 @@ Listado de requerimientos de pago
                                             <th class="text-center" style="width:10%">Empresa - sede</th>
                                             <th class="text-center">Grupo</th>
                                             <th class="text-center">División</th>
-                                            <th class="text-center">Proyecto/presupuesto</th>
+                                            <th class="text-center">Proyecto</th>
+                                            <th class="text-center">Presupuesto Interno</th>
                                             <th class="text-center">Monto Total</th>
                                             <th class="text-center">Creado por</th>
                                             <th class="text-center" style="width:5%;">Estado</th>
