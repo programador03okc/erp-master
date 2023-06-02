@@ -705,7 +705,10 @@ class ListarRequerimientoPagoView {
             'columns': [
                 { 'data': 'id_requerimiento_pago', 'name': 'requerimiento_pago.id_requerimiento_pago', 'visible': false },
                 { 'data': 'prioridad', 'name': 'adm_prioridad.descripcion', 'className': 'text-center', 'visible': false },
-                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center' },
+                { 'data': 'codigo', 'name': 'codigo', 'className': 'text-center', 'render': function (data, type, row) {
+                    // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
+                    return `<div style="display:flex;">${row['termometro']} &nbsp; ${row.codigo} </div>`;
+                }},
                 { 'data': 'concepto', 'name': 'concepto' },
                 { 'data': 'descripcion_requerimiento_pago_tipo', 'name': 'requerimiento_pago_tipo.descripcion' },
                 { 'data': 'fecha_registro', 'name': 'requerimiento_pago.fecha_registro', 'className': 'text-center' },
@@ -713,54 +716,62 @@ class ListarRequerimientoPagoView {
                 { 'data': 'grupo', 'name': 'sis_grupo.descripcion', 'className': 'text-center' },
                 { 'data': 'division', 'name': 'division.descripcion', 'className': 'text-center' },
                 { 'data': 'descripcion_proyecto', 'name': 'proy_proyecto.descripcion', 'className': 'text-center' },
-                { 'data': 'monto_total', 'name': 'requerimiento_pago.monto_total', 'defaultContent': '', 'className': 'text-right' },
+                { 'data': 'descripcion_presupuesto_interno', 'name': 'presupuesto_interno.descripcion', 'className': 'text-center' },
+                { 'data': 'monto_total', 'name': 'requerimiento_pago.monto_total', 'defaultContent': '', 'className': 'text-right', 'render': function (data, type, row) {
+                    return row['simbolo_moneda'].concat(' ', $.number(row['monto_total'], 2));
+                }},
                 { 'data': 'usuario_nombre_corto', 'name': 'sis_usua.nombre_corto' },
-                { 'data': 'nombre_estado', 'name': 'adm_estado_doc.estado_doc' },
-                { 'data': 'id_requerimiento_pago', 'name': 'requerimiento_pago.id_requerimiento_pago' }
+                { 'data': 'nombre_estado', 'name': 'adm_estado_doc.estado_doc', 'className': 'text-center', 'render': function (data, type, row) {
+                    switch (row['id_estado']) {
+                        case 1:
+                            return '<span class="labelEstado label label-default">' + row['nombre_estado'] + '</span>';
+                            break;
+                        case 2:
+                            return '<span class="labelEstado label label-success">' + row['nombre_estado'] + '</span>';
+                            break;
+                        case 3:
+                            return '<span class="labelEstado label label-warning">' + row['nombre_estado'] + '</span>';
+                            break;
+                        case 5:
+                            return '<span class="labelEstado label label-primary">' + row['nombre_estado'] + '</span>';
+                            break;
+                        case 7:
+                            return '<span class="labelEstado label label-danger">' + row['nombre_estado'] + '</span>';
+                            break;
+                        default:
+                            return '<span class="labelEstado label label-default">' + row['nombre_estado'] + '</span>';
+                            break;
+
+                    }
+                }, },
+                { 'data': 'id_requerimiento_pago', 'name': 'requerimiento_pago.id_requerimiento_pago','render': function (data, type, row) {
+
+                    let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
+                    let containerCloseBrackets = '</div></center>';
+                    let btnVerEnModal = (array_accesos.find(element => element === 13) ? '<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>' : '');
+                    let btnVerAdjuntosModal = (array_accesos.find(element => element === 31) ? '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '"  data-id-moneda="' + row.id_moneda + '" data-simbolo-moneda="' + row.simbolo_moneda + '" data-monto-a-pagar="' + row.monto_total + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>' : '');
+                    let btnEditar = '<button type="button" class="btn btn-xs btn-warning  handleClickEditarRequerimientoPago" name="btnEditarRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
+                    let btnAnular = '<button type="button" class="btn btn-xs btn-danger  handleClickAnularRequerimientoPago" name="btnAnularRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Anular"><i class="fas fa-ban fa-xs"></i></button>';
+                    let btnImprimirEnPdf = (array_accesos.find(element => element === 30) ? `<button type="button" class="btn btn-xs btn-default handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
+                    <i class="fas fa-print"></i>
+                    </button>`: '');
+
+                    let botonera = containerOpenBrackets + btnVerEnModal + btnImprimirEnPdf;
+                    if (row.id_usuario == auth_user.id_usuario && (row.id_estado == 1 || row.id_estado == 3)) {
+                        botonera += btnEditar + btnAnular;
+                    }
+                    // if (row.cantidad_adjuntos_pago > 0) {
+                    botonera += btnVerAdjuntosModal;
+                    // }
+
+                    botonera += containerCloseBrackets;
+
+                    return botonera;
+
+
+                }}
             ],
             'columnDefs': [
-
-                // {
-                //     'render': function (data, type, row) {
-                //         return row['termometro'];
-                //     }, targets: 1
-                // },
-                {
-                    'render': function (data, type, row) {
-                        // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
-                        return `<div style="display:flex;">${row['termometro']} &nbsp; ${row.codigo} </div>`;
-                    }, targets: 2
-                },
-                {
-                    'render': function (data, type, row) {
-                        return row['simbolo_moneda'].concat(' ', $.number(row['monto_total'], 2));
-                    }, targets: 10
-                },
-                {
-                    'render': function (data, type, row) {
-                        switch (row['id_estado']) {
-                            case 1:
-                                return '<span class="labelEstado label label-default">' + row['nombre_estado'] + '</span>';
-                                break;
-                            case 2:
-                                return '<span class="labelEstado label label-success">' + row['nombre_estado'] + '</span>';
-                                break;
-                            case 3:
-                                return '<span class="labelEstado label label-warning">' + row['nombre_estado'] + '</span>';
-                                break;
-                            case 5:
-                                return '<span class="labelEstado label label-primary">' + row['nombre_estado'] + '</span>';
-                                break;
-                            case 7:
-                                return '<span class="labelEstado label label-danger">' + row['nombre_estado'] + '</span>';
-                                break;
-                            default:
-                                return '<span class="labelEstado label label-default">' + row['nombre_estado'] + '</span>';
-                                break;
-
-                        }
-                    }, targets: 12, className: 'text-center'
-                },
                 // {
                 //     'render': function (data, type, row) {
                 //         // return `<label class="lbl-codigo handleClickAbrirRequerimiento" title="Abrir Requerimiento">${row.codigo}</label>`;
@@ -769,34 +780,6 @@ class ListarRequerimientoPagoView {
                 //         return `<span class="label label-${facturaRandom=='Sin factura'?'default':'info'}" data-codigo="${row.codigo}">${facturaRandom}</span>`;
                 //     }, targets: 13
                 // },
-                {
-                    'render': function (data, type, row) {
-
-                        let containerOpenBrackets = '<center><div class="btn-group" role="group" style="margin-bottom: 5px;">';
-                        let containerCloseBrackets = '</div></center>';
-                        let btnVerEnModal = (array_accesos.find(element => element === 13) ? '<button type="button" class="btn btn-xs btn-primary  handleClickVerEnVistaRapidaRequerimientoPago" name="btnVerEnVistaRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Vista rápida"><i class="fas fa-eye fa-xs"></i></button>' : '');
-                        let btnVerAdjuntosModal = (array_accesos.find(element => element === 31) ? '<button type="button" class="btn btn-xs btn-default  handleClickVerAgregarAdjuntosRequerimiento" name="btnVerAdjuntosRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '"  data-id-moneda="' + row.id_moneda + '" data-simbolo-moneda="' + row.simbolo_moneda + '" data-monto-a-pagar="' + row.monto_total + '" title="Ver archivos adjuntos"><i class="fas fa-paperclip fa-xs"></i></button>' : '');
-                        let btnEditar = '<button type="button" class="btn btn-xs btn-warning  handleClickEditarRequerimientoPago" name="btnEditarRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Editar"><i class="fas fa-edit fa-xs"></i></button>';
-                        let btnAnular = '<button type="button" class="btn btn-xs btn-danger  handleClickAnularRequerimientoPago" name="btnAnularRapidaRequerimientoPago" data-id-requerimiento-pago="' + row.id_requerimiento_pago + '" data-codigo-requerimiento-pago="' + row.codigo + '" title="Anular"><i class="fas fa-ban fa-xs"></i></button>';
-                        let btnImprimirEnPdf = (array_accesos.find(element => element === 30) ? `<button type="button" class="btn btn-xs btn-default handleClickimprimirRequerimientoPagoEnPdf" name="btnImprimirRequerimientoPagoEnPdf" data-toggle="tooltip" data-placement="bottom" title="Imprimir en PDF" data-id-requerimiento-pago="${row.id_requerimiento_pago}">
-                        <i class="fas fa-print"></i>
-                        </button>`: '');
-
-                        let botonera = containerOpenBrackets + btnVerEnModal + btnImprimirEnPdf;
-                        if (row.id_usuario == auth_user.id_usuario && (row.id_estado == 1 || row.id_estado == 3)) {
-                            botonera += btnEditar + btnAnular;
-                        }
-                        // if (row.cantidad_adjuntos_pago > 0) {
-                        botonera += btnVerAdjuntosModal;
-                        // }
-
-                        botonera += containerCloseBrackets;
-
-                        return botonera;
-
-
-                    }, targets: 13
-                },
 
             ],
             'initComplete': function () {
