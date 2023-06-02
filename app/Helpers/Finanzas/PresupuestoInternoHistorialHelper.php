@@ -28,7 +28,7 @@ class PresupuestoInternoHistorialHelper
                 $detalle = DetalleRequerimiento::where([['id_requerimiento','=',$idRequerimiento],['estado','!=',7]])->get();
                 foreach ($detalle as $key => $item) {
                     $importe= $item->cantidad * $item->precio_unitario;
-                    $registroExistente = HistorialPresupuestoInternoSaldo::where(['id_requerimiento',$idRequerimiento],['id_detalle_requerimiento',$item->id_detalle_requerimiento],['estado',1])->get();
+                    $registroExistente = HistorialPresupuestoInternoSaldo::where([['id_requerimiento',$idRequerimiento],['id_detalle_requerimiento',$item->id_detalle_requerimiento],['estado',1]])->get();
                     if(count($registroExistente)>0){ // actualizar
                         PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoLogistico($requerimientoLogistico->id_presupuesto_interno,$item->id_partida_pi,$importe,1, $item->id_requerimiento,$item->id_detalle_requerimiento,$requerimientoLogistico->fecha_requerimiento);
 
@@ -43,7 +43,7 @@ class PresupuestoInternoHistorialHelper
                 $detalle = RequerimientoPagoDetalle::where([['id_requerimiento_pago','=',$idRequerimiento],['id_estado','!=',7]])->get();
                 foreach ($detalle as $key => $item) {
                     $importe= $item->cantidad * $item->precio_unitario;
-                    $registroExistente = HistorialPresupuestoInternoSaldo::where(['id_requerimiento_pago',$idRequerimiento],['id_requerimiento_pago_detalle',$item->id_requerimiento_pago_detalle],['estado',1])->get();
+                    $registroExistente = HistorialPresupuestoInternoSaldo::where([['id_requerimiento_pago',$idRequerimiento],['id_requerimiento_pago_detalle',$item->id_requerimiento_pago_detalle],['estado',1]])->get();
 
                     if(count($registroExistente)>0){ // actualizar
                     PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoPago($requerimientoPago->id_presupuesto_interno,$item->id_partida_pi,$importe,1, $item->id_requerimiento_pago,$item->id_requerimiento_pago_detalle,$requerimientoPago->fecha_registro);
@@ -117,7 +117,7 @@ class PresupuestoInternoHistorialHelper
         
         $historial = null;
         if($idDetalleRequerimiento >0 && $idPartida>0 ){
-            $historial = HistorialPresupuestoInternoSaldo::where(['id_requerimiento',$idRequerimiento],['id_detalle_requerimiento',$idDetalleRequerimiento],['estado',1]);
+            $historial = HistorialPresupuestoInternoSaldo::where([['id_requerimiento',$idRequerimiento],['id_detalle_requerimiento',$idDetalleRequerimiento],['estado',1]])->first();
             $historial->id_presupuesto_interno = $idPresupuesto;
             $historial->id_partida = $idPartida;
             $historial->id_requerimiento = $idRequerimiento;
@@ -185,7 +185,7 @@ class PresupuestoInternoHistorialHelper
     public static function actualizarHistorialSaldoParaDetalleRequerimientoPago($idPresupuesto,$idPartida,$importe,$estado,$idRequerimientoPago,$idDetalleRequerimientoPago,$fecha, $idPago =null){
         $historial = null;
         if($idPresupuesto >0 && $idPartida>0 ){
-            $historial =  HistorialPresupuestoInternoSaldo::where(['id_requerimiento_pago',$idRequerimientoPago],['id_requerimiento_pago_detalle',$idDetalleRequerimientoPago],['estado',1])->get();
+            $historial =  HistorialPresupuestoInternoSaldo::where([['id_requerimiento_pago',$idRequerimientoPago],['id_requerimiento_pago_detalle',$idDetalleRequerimientoPago],['estado',1]])->first();
             $historial->id_presupuesto_interno = $idPresupuesto;
             $historial->id_partida = $idPartida;
             $historial->id_requerimiento_pago = $idRequerimientoPago;
