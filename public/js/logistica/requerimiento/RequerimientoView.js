@@ -532,7 +532,6 @@ class RequerimientoView {
         document.querySelector("select[name='id_almacen']").value = data.id_almacen;
         // document.querySelector("input[name='descripcion_grupo']").value =data.
         document.querySelector("input[name='codigo_proyecto']").value = data.codigo_proyecto;
-        document.querySelector("select[name='id_proyecto']").value = data.id_proyecto;
         document.querySelector("select[name='tipo_cliente']").value = data.tipo_cliente;
         document.querySelector("input[name='id_cliente']").value = data.id_cliente;
         document.querySelector("input[name='cliente_ruc']").value = data.cliente_ruc;
@@ -1080,7 +1079,7 @@ class RequerimientoView {
 
     llenarComboProyectos(idGrupo,idProyecto=null){
         this.requerimientoCtrl.obtenerListaProyectos(idGrupo).then((res) => {
-            this.construirListaProyecto(res,idProyecto=null);
+            this.construirListaProyecto(res,idProyecto);
         }).catch(function (err) {
             console.log(err)
         })
@@ -1108,6 +1107,8 @@ class RequerimientoView {
             option.setAttribute('data-descripcion-centro-costo', element.descripcion_centro_costo);
             if (element.id_proyecto == idProyecto) {
                 option.selected = true;
+                document.querySelector("div[id='input-group-proyecto'] input[name='codigo_proyecto']").value = element.codigo;
+
             }
             selectElement.add(option);
         });

@@ -441,10 +441,9 @@ Registro de pagos
     <script src="{{ asset('js/logistica/reportes/modalAdjuntosLogisticos.js')}}?v={{filemtime(public_path('js/logistica/reportes/modalAdjuntosLogisticos.js'))}}"></script>
     {{-- <script src="{{ asset('js/tesoreria/requerimientoPago/ListarRequerimientoPagoView.js')}}?v={{filemtime(public_path('js/Tesoreria/requerimientoPago/ListarRequerimientoPagoView.js'))}}"></script> --}}
 
-    <script src="{{ asset('js/tesoreria/pagos/modalVistaRapidaRequerimiento.js')}}"></script>
-    <script src="{{ asset('js/Tesoreria/Pagos/cuadro-comparativo.js')}}"></script>
+    <script src="{{ asset('js/tesoreria/pagos/modalVistaRapidaRequerimiento.js')}}?v={{filemtime(public_path('js/tesoreria/pagos/modalVistaRapidaRequerimiento.js'))}}"></script>
 
-<script>
+    <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);
         vista_extendida();
