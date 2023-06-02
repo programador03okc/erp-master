@@ -4760,7 +4760,7 @@ class OrdenController extends Controller
                 'concepto_requerimiento' => $d['concepto_requerimiento'] ?? '',
                 'razon_social_cliente' => $d['razon_social_cliente'] ?? '',
                 'razon_social_proveedor' => $d['razon_social_proveedor'] ?? '',
-                'descripcion_clasificacion' => $d['descripcion_clasificacion'] ?? '',
+                'descripcion_subcategoria' => $d['descripcion_subcategoria'] ?? '',
                 'descripcion_categoria' => $d['descripcion_categoria'] ?? '',
                 'codigo_producto' => $d['codigo_producto'] ?? '',
                 'part_number_producto' => $d['part_number_producto'] ?? '',
