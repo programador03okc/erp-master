@@ -57,7 +57,9 @@
                             <select class="form-control js-example-basic-single" name="id_operacion" >
                                 <option value="">Elija una opción</option>
                                 @foreach ($tp_operacion as $tp)
+                                @if($tp->cod_sunat != 12)
                                 <option value="{{$tp->id_operacion}}">{{$tp->cod_sunat}} - {{$tp->descripcion}}</option>
+                                @endif
                                 @endforeach
                             </select>
                         </div>
