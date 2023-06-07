@@ -11,6 +11,7 @@ use App\Models\Finanzas\PresupuestoInterno;
 use App\Models\Finanzas\PresupuestoInternoDetalle;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
+use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use Illuminate\Support\Facades\DB;
@@ -59,7 +60,7 @@ class PresupuestoInternoHistorialHelper
     {
         // $orden = Orden::find($idOrden);
         // $detalleOrden = OrdenCompraDetalle::where([['id_orden_compra',$idOrden],['estado','!=',7]])->get();
-
+        $presupuestoInternoDetalle = [];
         foreach ($detalleItemList as $detOrd) {
             if ($detOrd->id_detalle_requerimiento > 0) {
                 if ($detOrd->detalleRequerimiento->id_partida_pi > 0) {
@@ -76,7 +77,7 @@ class PresupuestoInternoHistorialHelper
                         $idPago
                     );
 
-                    PresupuestoInternoHistorialHelper::afectarPresupuesto(
+                    $presupuestoInternoDetalle =   PresupuestoInternoHistorialHelper::afectarPresupuesto(
                         $detOrd->detalleRequerimiento->requerimiento->id_presupuesto_interno,
                         $detOrd->detalleRequerimiento->id_partida_pi,
                         $detOrd->detalleRequerimiento->requerimiento->fecha_requerimiento,
@@ -86,6 +87,7 @@ class PresupuestoInternoHistorialHelper
                 }
             }
         }
+        return $presupuestoInternoDetalle;
     }
 
 
@@ -295,6 +297,8 @@ class PresupuestoInternoHistorialHelper
     public static function registrarEstadoGastoAfectadoDeRequerimientoPago($idRequerimientoPago, $idPago, $detalleItemList, $operacion)
     {
 
+        $presupuestoInternoDetalle = [];
+
         foreach ($detalleItemList as $item) {
             if ($item->id_requerimiento_pago_detalle > 0) {
                 if ($item->id_partida_pi > 0) {
@@ -310,7 +314,7 @@ class PresupuestoInternoHistorialHelper
                         $idPago
                     );
 
-                    PresupuestoInternoHistorialHelper::afectarPresupuesto(
+                    $presupuestoInternoDetalle = PresupuestoInternoHistorialHelper::afectarPresupuesto(
                         $requerimientoPago->id_presupuesto_interno,
                         $item->id_partida_pi,
                         $requerimientoPago->fecha_registro,
@@ -320,6 +324,7 @@ class PresupuestoInternoHistorialHelper
                 }
             }
         }
+        return $presupuestoInternoDetalle;
     }
 
     public static function actualizarRegistroPorDocumentoAnuladoEnHistorialSaldo($idrequerimiento = null, $idOrden = null, $idRequerimientoPago = null)
@@ -432,6 +437,40 @@ class PresupuestoInternoHistorialHelper
         }
 
         return $historialList;
+    }
+
+    public static function normalizarRequerimientoDePago($idRequerimientoPago)
+    {
+
+        $registroPago = RegistroPago::where([['id_requerimiento_pago', $idRequerimientoPago], ['estado', '!=', 7]])->get();
+        $mensaje = '';
+        $presupuestoInternoDetalle = [];
+        $totalImporteRegistroPago = 0;
+        if ($registroPago) {
+            $mensaje = 'Se encontro el registro de pago';
+            foreach ($registroPago as $rp) {
+                $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, floatval($rp->total_pago));
+                $presupuestoInternoDetalle = PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($idRequerimientoPago, $registroPago->id_pago, $detalleArray, 'R');
+                $totalImporteRegistroPago += $rp->total_pago;
+            }
+
+            if ($presupuestoInternoDetalle != null) {
+
+                $mensaje += '. Se afectó presupuesto';
+            }
+
+            $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
+            // $requerimientoPago->estado_normalizacion_presupuesto_interno = 1;
+            $requerimientoPago->save();
+
+            // $requerimientoPago->afectado_presupuesto_interno= true;
+            //     if($totalImporteRegistroPago == $montoTotalRequerimientoPago){
+            // }
+        } else {
+            $mensaje = 'No se encontró registro de pago para vincular';
+        }
+
+        return $mensaje;
     }
 
     // public static function actualizaReqLogisticoEstadoHistorial($idDetalleRequerimiento,$estado,  $importe = null, $operacion=null)

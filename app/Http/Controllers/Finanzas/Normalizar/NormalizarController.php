@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Finanzas\Normalizar;
 
 use App\Helpers\ConfiguracionHelper;
+use App\Helpers\Finanzas\PresupuestoInternoHistorialHelper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
@@ -53,7 +54,9 @@ class NormalizarController extends Controller
         ->whereDate('requerimiento_pago.fecha_autorizacion','>=','2023-01-01 00:00:00')
         ->whereDate('requerimiento_pago.fecha_autorizacion','<=','2023-04-30 23:59:59')
         ->where('requerimiento_pago.id_estado','=',6)
-        ->join('tesoreria.requerimiento_pago_detalle','requerimiento_pago_detalle.id_requerimiento_pago','=','requerimiento_pago.id_requerimiento_pago')->whereNull('requerimiento_pago_detalle.id_partida')->whereNull('requerimiento_pago_detalle.id_partida_pi');
+        ->join('tesoreria.requerimiento_pago_detalle','requerimiento_pago_detalle.id_requerimiento_pago','=','requerimiento_pago.id_requerimiento_pago')
+        ->whereNull('requerimiento_pago_detalle.id_partida')
+        ->whereNull('requerimiento_pago_detalle.id_partida_pi');
         if (!empty($request->division)) {
             $req_pago = $req_pago->where('requerimiento_pago.id_division',$request->division);
         }
@@ -152,15 +155,22 @@ class NormalizarController extends Controller
 
                         $requerimiento_pago->id_presupuesto_interno=$request->presupuesto_interno_id;
                         $requerimiento_pago->save();
-
+                        
                         $requerimiento_pago = RequerimientoPagoDetalle::find($request->requerimiento_pago_detalle_id);
                         $requerimiento_pago->id_partida_pi = $request->presupuesto_interno_detalle_id;
                         $requerimiento_pago->save();
 
                         #agrega un campo al detalle del requerimiento de pago
-                        $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($requerimiento_pago->monto_total),'completo');
+                        // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($requerimiento_pago->monto_total),'completo');
                         #registra en la tabla saldo para su descuento
-                        (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
+                        // (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
+
+                        // $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($requerimiento_pago->monto_total));
+                        $tipo='info';
+                        $mensaje = PresupuestoInternoHistorialHelper::normalizarRequerimientoDePago($request->requerimiento_pago_id);
+                        $titulo='Información';
+
+                        // PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->requerimiento_pago_id, $id_pago, $detalleArray, 'R');
                     }else{
                         $tipo='warning';
                         $mensaje='El saldo del mes de '.$mes_string.' es menor que el monto del Requerimiento de Pago.';
@@ -172,6 +182,7 @@ class NormalizarController extends Controller
                     $mensaje='El requerimiento ya se asigno a una partida';
                     $titulo='Información';
                 }
+                
             break;
         }
 
