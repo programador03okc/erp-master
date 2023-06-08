@@ -2680,7 +2680,7 @@ class ListarRequerimientoPagoView {
             document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value = data.contribuyente != null && data.contribuyente.razon_social != null ? data.contribuyente.razon_social : '';
             document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_contribuyente']").value = data.id_cuenta_contribuyente != null ? data.id_cuenta_contribuyente : '';
 
-            obtenerCuentasBancariasContribuyente(data.id_contribuyente);
+            obtenerCuentasBancariasContribuyente(data.id_contribuyente, (data.id_cuenta_contribuyente != null ? data.id_cuenta_contribuyente : null));
         }
 
         // document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value = data.proveedor != null ? data.proveedor.razon_social : '';

@@ -231,7 +231,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
 
 }
 
-function obtenerCuentasBancariasContribuyente(id_contribuyente) {
+function obtenerCuentasBancariasContribuyente(id_contribuyente, id_cuenta=null) {
 
     obtenerNombreModalPadre();
 
@@ -250,7 +250,8 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
                 if (response.data.length > 0) {
                     // llenar cuenta bancaria
 
-                    let idCuentePorDefecto =document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value;
+                    // let idCuentePorDefecto =document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value;
+                    // let idCuentePorDefecto =0;
                     document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
                     let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
                     if (selectCuenta != null) {
@@ -258,19 +259,22 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente) {
                             selectCuenta.removeChild(selectCuenta.lastChild);
                         }
                     }
-                    // console.log(response.data);
+
                     (response.data).forEach(element => {
-                        option += `
-                        <option
-                            data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
-                            data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}"
-                            data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
-                            data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
-                            data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
-                            value="${element.id_cuenta_contribuyente}" ${element.id_cuenta_contribuyente == idCuentePorDefecto ? 'selected' : ''}>
-                            ${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}
-                            ${element.moneda != null ? ' ('+element.moneda.descripcion+')' : ''}
-                        </option>`;
+                        
+                            option += `
+                            <option
+                                data-nro-cuenta="${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : ''}"
+                                data-nro-cci="${element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? element.nro_cuenta_interbancaria : ''}"
+                                data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
+                                data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
+                                data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
+                                value="${element.id_cuenta_contribuyente}" ${ id_cuenta >0 && element.id_cuenta_contribuyente == id_cuenta ? 'selected' : ''}>
+                                ${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cuenta_interbancaria != null && element.nro_cuenta_interbancaria != "" ? (element.nro_cuenta_interbancaria + " (CCI)") : "")}
+                                ${element.moneda != null ? ' ('+element.moneda.descripcion+')' : ''}
+                            </option>`;
+
+                        
                     });
                     document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
 
