@@ -59,11 +59,13 @@ class CobranzaController extends Controller
             session()->put('cobranzaPeriodo', $periodoActual->descripcion);
         }
 
+        #array de accesos de los modulos copiar en caso tenga accesos -----
         $array_accesos = [];
         $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
         foreach ($accesos_usuario as $key => $value) {
             array_push($array_accesos, $value->id_acceso);
         }
+        #-------------------------------
         // return $array_accesos;exit;
         return view('gerencial.cobranza.registro', get_defined_vars());
     }

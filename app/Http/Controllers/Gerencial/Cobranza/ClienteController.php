@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Comercial\Cliente;
 use App\Models\Comercial\EstablecimientoCliente;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Departamento;
 use App\Models\Configuracion\Distrito;
 use App\Models\Configuracion\Moneda;
@@ -21,6 +22,7 @@ use App\Models\Contabilidad\TipoContribuyente;
 use App\Models\Contabilidad\TipoCuenta;
 use App\Models\mgcp\Oportunidad\Status;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 // use App\Models\sistema\sistema_doc_identidad;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -30,10 +32,18 @@ class ClienteController extends Controller
     public function cliente()
     {
         # code...
+        #array de accesos de los modulos copiar en caso tenga accesos -----
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
+        #-------------------------------
+
         $pais = Pais::get();
         $departamento = Departamento::get();
         $tipo_documentos = Identidad::where('estado',1)->get();
-        return view('gerencial/cobranza/cliente',compact('pais','departamento','tipo_documentos'));
+        return view('gerencial.cobranza.cliente',compact('pais','departamento','tipo_documentos','array_accesos'));
     }
     public function listarCliente()
     {

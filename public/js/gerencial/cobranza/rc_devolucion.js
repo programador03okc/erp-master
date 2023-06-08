@@ -103,6 +103,17 @@ $(function () {
 });
 
 function listar() {
+    const button_descargar_excel=(array_accesos.find(element => element === 322)?{
+        text: '<i class="fas fa-file-excel"></i> Descargar',
+        action: () => {
+            exportarExcel();
+        },
+        className: 'btn-default btn-sm',
+        init: function(api, node, config) {
+            $(node).removeClass('btn-default')
+        }
+    }:[]);
+
     const $tabla = $('#tabla').DataTable({
         dom: 'Bfrtip',
         pageLength: 30,
@@ -151,16 +162,7 @@ function listar() {
             {data: 'accion', orderable: false, searchable: false, className: 'text-center'}
         ],
         buttons: [
-            {
-                text: '<i class="fas fa-file-excel"></i> Descargar',
-                action: () => {
-                    exportarExcel();
-                },
-                className: 'btn-default btn-sm',
-                init: function(api, node, config) {
-                    $(node).removeClass('btn-default')
-                }
-            },
+            button_descargar_excel
         ]
     });
     $tabla.on('search.dt', function() {

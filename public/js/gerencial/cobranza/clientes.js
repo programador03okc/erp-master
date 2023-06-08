@@ -30,12 +30,11 @@ function listarRegistros() {
             {
                 render: function (data, type, row) {
                     html='';
-                        html+='<button type="button" class="btn btn-primary btn-flat botonList ver-registro" data-toggle="tooltip" title="Ver cliente" data-original-title="Ver cliente" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-eye"></i></button>';
+                    (array_accesos.find(element => element === 316)?html+='<button type="button" class="btn btn-primary btn-flat botonList ver-registro" data-toggle="tooltip" title="Ver cliente" data-original-title="Ver cliente" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-eye"></i></button>':'');
 
-                        html+='<a href="cliente/'+row['id_contribuyente']+'" class="btn btn-warning btn-flat botonList " data-toggle="tooltip" title="Editar" data-original-title="Editar" ><i class="fas fa-edit"></i></a>';
+                    (array_accesos.find(element => element === 317)?html+='<a href="cliente/'+row['id_contribuyente']+'" class="btn btn-warning btn-flat botonList " data-toggle="tooltip" title="Editar" data-original-title="Editar" ><i class="fas fa-edit"></i></a>':'');
 
-                        html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar-registro" data-toggle="tooltip" title="Anular" data-original-title="Anular" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-trash"></i></button>';
-
+                    (array_accesos.find(element => element === 318)?html+='<button type="button" class="btn btn-danger btn-flat botonList eliminar-registro" data-toggle="tooltip" title="Anular" data-original-title="Anular" data-id-contribuyente="'+row['id_contribuyente']+'"><i class="fas fa-trash"></i></button>':'');
                     html+='';
                     return html;
                 },

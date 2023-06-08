@@ -118,6 +118,32 @@ $(function () {
 });
 
 function listar() {
+    const button_descargar_excel=(array_accesos.find(element => element === 319)?{
+        text: '<i class="fas fa-file-excel"></i> Descargar',
+        action: () => {
+            exportarExcel();
+        },
+        className: 'btn btn-sm btn-success',
+        init: function(api, node, config) {
+            $(node).removeClass('btn-default')
+        }
+    }:[]);
+    const button_agregar_registro=(array_accesos.find(element => element === 320)?{
+        text: '<i class="fas fa-plus"></i> Agregar registro',
+        action: function () {
+            $("#formulario")[0].reset();
+            $("[name=id]").val(0);
+            $("[name=cliente_id]").val(null).trigger('change');
+            $("[name=responsable_id]").val(null).trigger('change');
+            $("#modalFondo").find(".modal-title").text("Agregar nuevo registro");
+            $("#modalFondo").modal("show");
+        },
+        className: 'btn btn-sm btn-primary',
+        init: function(api, node, config) {
+            $(node).removeClass('btn-default')
+        }
+    }:[]);
+
     const $tabla = $('#tabla').DataTable({
         dom: 'Bfrtip',
         pageLength: 30,
@@ -164,33 +190,7 @@ function listar() {
             {data: 'flag_estado'},
             {data: 'accion', orderable: false, searchable: false, className: 'text-center'}
         ],
-        buttons: [
-            {
-                text: '<i class="fas fa-file-excel"></i> Descargar',
-                action: () => {
-                    exportarExcel();
-                },
-                className: 'btn btn-sm btn-success',
-                init: function(api, node, config) {
-                    $(node).removeClass('btn-default')
-                }
-            },
-            {
-                text: '<i class="fas fa-plus"></i> Agregar registro',
-                action: function () {
-                    $("#formulario")[0].reset();
-                    $("[name=id]").val(0);
-                    $("[name=cliente_id]").val(null).trigger('change');
-                    $("[name=responsable_id]").val(null).trigger('change');
-                    $("#modalFondo").find(".modal-title").text("Agregar nuevo registro");
-                    $("#modalFondo").modal("show");
-                },
-                className: 'btn btn-sm btn-primary',
-                init: function(api, node, config) {
-                    $(node).removeClass('btn-default')
-                }
-            },
-        ]
+        buttons: [button_descargar_excel,button_agregar_registro]
     });
     $tabla.on('search.dt', function() {
         $('#tabla_filter input').attr('disabled', true);
@@ -211,3 +211,4 @@ function listar() {
 function exportarExcel() {
     window.open('exportar-excel');
 }
+

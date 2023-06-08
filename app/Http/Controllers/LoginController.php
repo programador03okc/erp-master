@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\VarDumper\Cloner\Data;
 use App\Helpers\StringHelper;
+use App\models\Configuracion\AccesosUsuarios;
 
 class LoginController extends Controller{
 
@@ -40,6 +41,13 @@ class LoginController extends Controller{
         $sql = DB::table('configuracion.modulos')->where([['id_padre', '=', 0],['estado','!=',7]])->orderBy('descripcion', 'ASC')->get();
         $html = '';
 
+         #array de accesos de los modulos copiar en caso tenga accesos -----
+         $array_accesos = [];
+         $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+         foreach ($accesos_usuario as $key => $value) {
+             array_push($array_accesos, $value->id_acceso);
+         }
+         #-------------------------------
         foreach ($sql as $row){
             $id = $row->id_modulo;
             $name = $row->descripcion;
@@ -47,7 +55,8 @@ class LoginController extends Controller{
             $rutas = '';
 
             if ($id===169) {
-                if (in_array(Auth::user()->id_usuario, [1,31,6,129,131,26])) {
+                // if (in_array(Auth::user()->id_usuario, [1,31,6,129,131,26])) {
+                if (in_array(326, $array_accesos)) {
                     $html .=
                     '<div class="col-md-3">
                         <div class="panel panel-default">
