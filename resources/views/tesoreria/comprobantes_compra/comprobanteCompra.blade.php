@@ -259,6 +259,7 @@ Crear Comprobante Compra
     <script src="{{ asset('datatables/JSZip/jszip.min.js') }}"></script> -->
 <script src="{{ asset('template/plugins/select2/select2.min.js') }}"></script>
 <script src="{{ asset('template/plugins/moment.min.js') }}"></script>
+<script src="{{ asset('template/plugins/js-xlsx/xlsx.full.min.js') }}"></script>
 
 <script src="{{ asset('js/almacen/customizacion/customizacion.js')}}?v={{filemtime(public_path('js/almacen/customizacion/customizacion.js'))}}"></script>
 <script src="{{ asset('js/almacen/customizacion/transformacionModal.js')}}?v={{filemtime(public_path('js/almacen/customizacion/transformacionModal.js'))}}"></script>
