@@ -279,8 +279,7 @@ class CobranzaController extends Controller
                 $ordenVista = OrdenCompraPropiaView::where('nro_orden', $request->oc)->orWhere('codigo_oportunidad', $request->cdp)->count();
 
                 if ($ordenVista > 0) {
-                    $busqueda = strpos($cobranza->ocam, 'DIRECTA');
-                    if ($busqueda == true) {
+                    if (strpos($cobranza->ocam, 'DIRECTA') == 0) {
                         OrdenCompraDirecta::where('nro_orden', rtrim($cobranza->ocam))
                         ->update([
                             'factura'        => (($cobranza->factura !== '') && ($cobranza->factura != null)) ? $cobranza->factura : '',
@@ -288,8 +287,8 @@ class CobranzaController extends Controller
                             'orden_compra'   => (($cobranza->oc_fisica !== '') && ($cobranza->oc_fisica != null )) ? $cobranza->oc_fisica : '',
                         ]);
                     }
-                    $busqueda = strpos($cobranza->ocam, 'OCAM');
-                    if ($busqueda == true) {
+                    
+                    if (strpos($cobranza->ocam, 'OCAM') == 0) {
                         OrdenCompraPropias::where('orden_am', rtrim($cobranza->ocam))
                         ->update([
                             'factura'        => (($cobranza->factura !== '') && ($cobranza->factura != null)) ? $cobranza->factura : '',

@@ -4517,9 +4517,13 @@ class OrdenController extends Controller
                 $orden->estado_pago = 8; //enviado a pago
                 $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
                 $orden->id_prioridad_pago = $request->id_prioridad;
-                $orden->id_cta_principal = $request->id_cuenta_contribuyente;
+
+                if( $request->id_tipo_destinatario == 2){
+                    $orden->id_cta_principal = $request->id_cuenta;
+                }elseif( $request->id_tipo_destinatario == 1){
+                    $orden->id_cuenta_persona_pago = $request->id_cuenta;
+                }
                 $orden->id_persona_pago = $request->id_persona;
-                $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
                 $orden->comentario_pago = $request->comentario;
                 $orden->tiene_pago_en_cuotas = $request->pagoEnCuotasCheckbox;
                 $orden->fecha_solicitud_pago = Carbon::now();
@@ -4618,9 +4622,12 @@ class OrdenController extends Controller
             $orden->estado_pago = 8; //enviado a pago
             $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
             $orden->id_prioridad_pago = $request->id_prioridad;
-            $orden->id_cta_principal = $request->id_cuenta_contribuyente;
+            if( $request->id_tipo_destinatario == 2){
+                $orden->id_cta_principal = $request->id_cuenta;
+            }elseif( $request->id_tipo_destinatario == 1){
+                $orden->id_cuenta_persona_pago = $request->id_cuenta;
+            }
             $orden->id_persona_pago = $request->id_persona;
-            $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
             $orden->comentario_pago = $request->comentario;
             $orden->tiene_pago_en_cuotas = false;
             $orden->fecha_solicitud_pago = Carbon::now();
@@ -4757,15 +4764,19 @@ class OrdenController extends Controller
                 'codigo_orden' => $d['codigo_orden'] ?? '',
                 'codigo_requerimiento' => $d['codigo_requerimiento'] ?? '',
                 'codigo_softlink' => $d['codigo_softlink'] ?? '',
+                'nro_orden_mgc'=> $d['nro_orden_mgc']??'',
                 'concepto_requerimiento' => $d['concepto_requerimiento'] ?? '',
                 'razon_social_cliente' => $d['razon_social_cliente'] ?? '',
                 'razon_social_proveedor' => $d['razon_social_proveedor'] ?? '',
-                'descripcion_clasificacion' => $d['descripcion_clasificacion'] ?? '',
+                'codigo_am'=> $d['codigo_am']??'',
+                'nombre_am'=> $d['nombre_am']??'',
+                'descripcion_subcategoria' => $d['descripcion_subcategoria'] ?? '',
                 'descripcion_categoria' => $d['descripcion_categoria'] ?? '',
                 'codigo_producto' => $d['codigo_producto'] ?? '',
                 'part_number_producto' => $d['part_number_producto'] ?? '',
                 'cod_softlink_producto' => $d['cod_softlink_producto'] ?? '',
                 'descripcion_producto' => $d['descripcion_producto'] ? $d['descripcion_producto'] : $d['descripcion_adicional'],
+                'lugar_entrega_cdp'=> $d['lugar_entrega_cdp']??'',
                 'cantidad' => $d['cantidad'] ?? '',
                 'abreviatura_unidad_medida_producto' => $d['abreviatura_unidad_medida_producto'] ?? ($d['abreviatura_unidad_medida_det_orden']??'') ,
                 'simbolo_moneda_orden' => $d['simbolo_moneda_orden'] ?? '',

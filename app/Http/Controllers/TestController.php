@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Gerencial\RegistroCobranza;
 use App\Models\Logistica\OrdenCompraDetalle;
+use App\Models\mgcp\AcuerdoMarco\OrdenCompraPropias;
+use App\Models\mgcp\OrdenCompra\Propia\Directa\OrdenCompraDirecta;
+use App\Models\mgcp\OrdenCompra\Propia\OrdenCompraPropiaView;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -83,4 +87,43 @@ class TestController extends Controller
 		);
 		return $cadena;
     }
+
+	public function testGuiasCobranza() {
+		set_time_limit(0);
+		$cobranza = RegistroCobranza::all();
+		$contador = 0;
+		$nulo = 0;
+
+		foreach ($cobranza as $key) {
+			
+			if ($key->id_oc != null) {
+				$ordenVista = OrdenCompraPropiaView::where('nro_orden', $key->oc)->orWhere('codigo_oportunidad', $key->cdp)->count();
+
+                if ($ordenVista > 0) {
+                    if (strpos($key->ocam, 'DIRECTA') == 0) {
+                        OrdenCompraDirecta::where('nro_orden', trim($key->ocam))
+                        ->update([
+                            'factura'        => (($key->factura !== '') && ($key->factura != null)) ? $key->factura : '',
+                            'siaf'           => (($key->siaf !== '') && ($key->siaf != null)) ? $key->siaf : '',
+                            'orden_compra'   => (($key->oc_fisica !== '') && ($key->oc_fisica != null )) ? $key->oc_fisica : '',
+                        ]);
+                    }
+                    
+                    if (strpos($key->ocam, 'OCAM') == 0) {
+						OrdenCompraPropias::where('orden_am', trim($key->ocam))
+                        ->update([
+							'factura'        => (($key->factura !== '') && ($key->factura != null)) ? $key->factura : '',
+                            'siaf'           => (($key->siaf !== '') && ($key->siaf != null)) ? $key->siaf : '',
+                            'orden_compra'   => (($key->oc_fisica !== '') && ($key->oc_fisica != null )) ? $key->oc_fisica : '',
+                        ]);
+						$contador++;
+                    }
+                }
+			} else {
+				$nulo++;
+			}
+		}
+
+		return response()->json(array('validados' => $contador, 'no_encontrados' => $nulo), 200);
+	}
 }
