@@ -15,8 +15,10 @@ use App\Models\Finanzas\PresupuestoInternoDetalle;
 use App\Models\Logistica\Orden;
 use App\Models\Logistica\OrdenCompraDetalle;
 use App\Models\Logistica\OrdenesView;
+use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
+use Exception;
 use Yajra\DataTables\Facades\DataTables;
 
 class NormalizarController extends Controller
@@ -117,73 +119,90 @@ class NormalizarController extends Controller
     }
     public function vincularPartida(Request $request)
     {
-        // return response()->json($request->all(),200);exit;
-        $variable = $request->tap;
+        try {
+            // return response()->json($request->all(),200);exit;
+            $variable = $request->tap;
 
-        $afectaPresupuestoInternoResta = null;
+            $afectaPresupuestoInternoResta = null;
 
-        $tipo='success';
-        $mensaje='Se asigno a la partida con exito';
-        $titulo='Éxito';
-        switch ($variable) {
-            case 'orden':
-                // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($request->total_pago),'completo');
-                // $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra, $detalleParaPresupuestoRestaArray);
-            break;
+            $tipo='success';
+            $mensaje='Se asigno a la partida con exito';
+            $titulo='Éxito';
+            switch ($variable) {
+                case 'orden':
+                    // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($request->total_pago),'completo');
+                    // $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra, $detalleParaPresupuestoRestaArray);
+                break;
 
-            case 'requerimiento de pago':
-
-
-                $requerimiento_pago = RequerimientoPago::find($request->requerimiento_pago_id);
-                $fecha_como_entero = strtotime($requerimiento_pago->fecha_autorizacion);
-                $mes = date("m", $fecha_como_entero);
+                case 'requerimiento de pago':
 
 
-                $mes_string = ConfiguracionHelper::mesNumero($mes);
-                $mes_text = ConfiguracionHelper::mesNumero($mes).'_aux';
-
-                $saldo_presupuesto_detalle = PresupuestoInternoDetalle::where('id_presupuesto_interno_detalle',$request->presupuesto_interno_detalle_id)->first();
-
-                $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_pago_detalle',$request->requerimiento_pago_detalle_id)
-                ->where('id_requerimiento_pago',$request->requerimiento_pago_id)
-                ->first();
-
-                if (!$historial_saldo) {
+                    $requerimiento_pago = RequerimientoPago::find($request->requerimiento_pago_id);
+                    $fecha_como_entero = strtotime($requerimiento_pago->fecha_autorizacion);
+                    $mes = date("m", $fecha_como_entero);
 
 
-                    if (floatval($saldo_presupuesto_detalle->$mes_text)>=floatval($requerimiento_pago->monto_total)) {
+                    $mes_string = ConfiguracionHelper::mesNumero($mes);
+                    $mes_text = ConfiguracionHelper::mesNumero($mes).'_aux';
 
-                        $requerimiento_pago->id_presupuesto_interno=$request->presupuesto_interno_id;
-                        $requerimiento_pago->save();
-                        
-                        $requerimiento_pago = RequerimientoPagoDetalle::find($request->requerimiento_pago_detalle_id);
-                        $requerimiento_pago->id_partida_pi = $request->presupuesto_interno_detalle_id;
-                        $requerimiento_pago->save();
+                    $saldo_presupuesto_detalle = PresupuestoInternoDetalle::where('id_presupuesto_interno_detalle',$request->presupuesto_interno_detalle_id)->first();
 
-                        #agrega un campo al detalle del requerimiento de pago
-                        // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($requerimiento_pago->monto_total),'completo');
-                        #registra en la tabla saldo para su descuento
-                        // (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
-                        // $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($requerimiento_pago->monto_total));
-                        $tipo='info';
-                        $mensaje = PresupuestoInternoHistorialHelper::normalizarRequerimientoDePago($request->requerimiento_pago_id,$request->requerimiento_pago_detalle_id);
-                        $titulo='Información';
+                    $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_pago_detalle',$request->requerimiento_pago_detalle_id)
+                    ->where('id_requerimiento_pago',$request->requerimiento_pago_id)
+                    ->first();
 
-                        // PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->requerimiento_pago_id, $id_pago, $detalleArray, 'R');
+                    if (!$historial_saldo || $historial_saldo->estado!==3) {
+
+                        if (floatval($saldo_presupuesto_detalle->$mes_text)>=floatval($requerimiento_pago->monto_total)) {
+
+                            $requerimiento_pago->id_presupuesto_interno=$request->presupuesto_interno_id;
+                            $requerimiento_pago->save();
+
+                            $requerimiento_pago = RequerimientoPagoDetalle::find($request->requerimiento_pago_detalle_id);
+                            $requerimiento_pago->id_partida_pi = $request->presupuesto_interno_detalle_id;
+                            $requerimiento_pago->save();
+
+                            #agrega un campo al detalle del requerimiento de pago
+                            // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($requerimiento_pago->monto_total),'completo');
+                            #registra en la tabla saldo para su descuento
+                            // (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
+                            // $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($requerimiento_pago->monto_total));
+                            $tipo='info';
+
+                            #registrar el pago en la tabla "tesoreria"."registro_pago" para que se pueda vincular al normalizar
+                            // $registro_pago = new RegistroPago();
+                            // $registro_pago->fecha_pago = ;
+                            // $registro_pago->observacion = "NORMALIZACION DE PAGO";
+                            // $registro_pago->fecha_pago = ;
+                            // $registro_pago->fecha_pago = ;
+                            // $registro_pago->fecha_pago = ;
+                            // $registro_pago->save();
+                            #--------------
+                            $mensaje = PresupuestoInternoHistorialHelper::normalizarRequerimientoDePago($request->requerimiento_pago_id,$request->requerimiento_pago_detalle_id);
+                            $titulo='Información';
+
+                            // PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->requerimiento_pago_id, $id_pago, $detalleArray, 'R');
+                        }else{
+                            $tipo='warning';
+                            $mensaje='El saldo del mes de '.$mes_string.' es menor que el monto del Requerimiento de Pago.';
+                            $titulo='Éxito';
+                        }
+
                     }else{
                         $tipo='warning';
-                        $mensaje='El saldo del mes de '.$mes_string.' es menor que el monto del Requerimiento de Pago.';
-                        $titulo='Éxito';
+                        $mensaje='El requerimiento ya se asigno a una partida';
+                        $titulo='Información';
                     }
 
-                }else{
-                    $tipo='warning';
-                    $mensaje='El requerimiento ya se asigno a una partida';
-                    $titulo='Información';
-                }
-                
-            break;
+                break;
+            }
+        } catch (\PDOException $message) {
+
+			$ouput=['status'=>false,'message'=> $message];
+
+            return response()->json($ouput,200);
         }
+
 
         return response()->json(["tipo"=>$tipo,"mensaje"=>$mensaje,"titulo"=>$titulo],200);
     }

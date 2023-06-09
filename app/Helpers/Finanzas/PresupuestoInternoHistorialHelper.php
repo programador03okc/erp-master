@@ -33,7 +33,7 @@ class PresupuestoInternoHistorialHelper
                     $registroExistente = HistorialPresupuestoInternoSaldo::where([['id_requerimiento', $idRequerimiento], ['id_detalle_requerimiento', $item->id_detalle_requerimiento], ['estado', 1]])->get();
                     if (count($registroExistente) > 0) { // actualizar
                         PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoLogistico($requerimientoLogistico->id_presupuesto_interno, $item->id_partida_pi, $importe, 1, $item->id_requerimiento, $item->id_detalle_requerimiento, $requerimientoLogistico->fecha_requerimiento);
-                    } else { //crear 
+                    } else { //crear
                         PresupuestoInternoHistorialHelper::registrarHistorialSaldoParaDetalleRequerimientoLogistico($requerimientoLogistico->id_presupuesto_interno, $item->id_partida_pi, $importe, 1, $item->id_requerimiento, $item->id_detalle_requerimiento, $requerimientoLogistico->fecha_requerimiento);
                     }
                 }
@@ -279,7 +279,7 @@ class PresupuestoInternoHistorialHelper
 
         $detalleArray = [];
         if ($idRequerimientoPago > 0) {
-            if($idDetalleRequerimientoPago !=null ){ // si es mayor a cero, es por el caso donde se normaliza el ppto pasando solo un item 
+            if($idDetalleRequerimientoPago !=null ){ // si es mayor a cero, es por el caso donde se normaliza el ppto pasando solo un item
 
                 $requerimientoPagoDetalle = RequerimientoPagoDetalle::where([['id_requerimiento_pago', $idRequerimientoPago],['id_requerimiento_pago_detalle',$idDetalleRequerimientoPago], ['id_estado', '!=', 7]])->get();
             }else{
@@ -452,18 +452,19 @@ class PresupuestoInternoHistorialHelper
         $mensaje = '';
         $presupuestoInternoDetalle = [];
         $totalImporteRegistroPago = 0;
-        if ($registroPago) {
+        // if ($registroPago) {
+        if (sizeof($registroPago)>0) {
             $mensaje = 'Se encontro el registro de pago';
             foreach ($registroPago as $rp) {
 
                 $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, floatval($rp->total_pago), $idDetalleRequerimientoPago); // * pasar parametro $idDetalleRequerimientoPago para el caso de normaliazar, asi devolver solo un item
-                $presupuestoInternoDetalle = PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($idRequerimientoPago, $registroPago->id_pago, $detalleArray, 'R');
+                $presupuestoInternoDetalle = PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($idRequerimientoPago, $rp->id_pago, $detalleArray, 'R');
                 $totalImporteRegistroPago += $rp->total_pago;
             }
 
             if ($presupuestoInternoDetalle != null) {
 
-                $mensaje += '. Se afectó presupuesto';
+                $mensaje .= '. Se afectó presupuesto';
             }
 
             $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
