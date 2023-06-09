@@ -164,10 +164,9 @@ class NormalizarController extends Controller
                         // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($requerimiento_pago->monto_total),'completo');
                         #registra en la tabla saldo para su descuento
                         // (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
-
                         // $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($requerimiento_pago->monto_total));
                         $tipo='info';
-                        $mensaje = PresupuestoInternoHistorialHelper::normalizarRequerimientoDePago($request->requerimiento_pago_id);
+                        $mensaje = PresupuestoInternoHistorialHelper::normalizarRequerimientoDePago($request->requerimiento_pago_id,$request->requerimiento_pago_detalle_id);
                         $titulo='Información';
 
                         // PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->requerimiento_pago_id, $id_pago, $detalleArray, 'R');

@@ -270,7 +270,7 @@ class PresupuestoInternoHistorialHelper
         }
         return $detalleArray;
     }
-    public static function obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, $totalPago)
+    public static function obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, $totalPago, $idDetalleRequerimientoPago=null)
     {
 
         $requerimientoPago = RequerimientoPago::find($idRequerimientoPago);
@@ -279,7 +279,13 @@ class PresupuestoInternoHistorialHelper
 
         $detalleArray = [];
         if ($idRequerimientoPago > 0) {
-            $requerimientoPagoDetalle = RequerimientoPagoDetalle::where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])->get();
+            if($idDetalleRequerimientoPago !=null ){ // si es mayor a cero, es por el caso donde se normaliza el ppto pasando solo un item 
+
+                $requerimientoPagoDetalle = RequerimientoPagoDetalle::where([['id_requerimiento_pago', $idRequerimientoPago],['id_requerimiento_pago_detalle',$idDetalleRequerimientoPago], ['id_estado', '!=', 7]])->get();
+            }else{
+                $requerimientoPagoDetalle = RequerimientoPagoDetalle::where([['id_requerimiento_pago', $idRequerimientoPago], ['id_estado', '!=', 7]])->get();
+
+            }
             $detalleArray = $requerimientoPagoDetalle;
             // return $idRequerimientoPago;exit;
             foreach ($detalleArray as $key => $item) {
@@ -439,7 +445,7 @@ class PresupuestoInternoHistorialHelper
         return $historialList;
     }
 
-    public static function normalizarRequerimientoDePago($idRequerimientoPago)
+    public static function normalizarRequerimientoDePago($idRequerimientoPago, $idDetalleRequerimientoPago)
     {
 
         $registroPago = RegistroPago::where([['id_requerimiento_pago', $idRequerimientoPago], ['estado', '!=', 7]])->get();
@@ -449,7 +455,8 @@ class PresupuestoInternoHistorialHelper
         if ($registroPago) {
             $mensaje = 'Se encontro el registro de pago';
             foreach ($registroPago as $rp) {
-                $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, floatval($rp->total_pago));
+
+                $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, floatval($rp->total_pago), $idDetalleRequerimientoPago); // * pasar parametro $idDetalleRequerimientoPago para el caso de normaliazar, asi devolver solo un item
                 $presupuestoInternoDetalle = PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($idRequerimientoPago, $registroPago->id_pago, $detalleArray, 'R');
                 $totalImporteRegistroPago += $rp->total_pago;
             }
