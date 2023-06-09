@@ -4550,9 +4550,13 @@ class OrdenController extends Controller
                 $orden->estado_pago = 8; //enviado a pago
                 $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
                 $orden->id_prioridad_pago = $request->id_prioridad;
-                $orden->id_cta_principal = $request->id_cuenta_contribuyente;
+
+                if( $request->id_tipo_destinatario == 2){
+                    $orden->id_cta_principal = $request->id_cuenta;
+                }elseif( $request->id_tipo_destinatario == 1){
+                    $orden->id_cuenta_persona_pago = $request->id_cuenta;
+                }
                 $orden->id_persona_pago = $request->id_persona;
-                $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
                 $orden->comentario_pago = $request->comentario;
                 $orden->tiene_pago_en_cuotas = $request->pagoEnCuotasCheckbox;
                 $orden->fecha_solicitud_pago = Carbon::now();
@@ -4651,9 +4655,12 @@ class OrdenController extends Controller
             $orden->estado_pago = 8; //enviado a pago
             $orden->id_tipo_destinatario_pago = $request->id_tipo_destinatario;
             $orden->id_prioridad_pago = $request->id_prioridad;
-            $orden->id_cta_principal = $request->id_cuenta_contribuyente;
+            if( $request->id_tipo_destinatario == 2){
+                $orden->id_cta_principal = $request->id_cuenta;
+            }elseif( $request->id_tipo_destinatario == 1){
+                $orden->id_cuenta_persona_pago = $request->id_cuenta;
+            }
             $orden->id_persona_pago = $request->id_persona;
-            $orden->id_cuenta_persona_pago = $request->id_cuenta_persona;
             $orden->comentario_pago = $request->comentario;
             $orden->tiene_pago_en_cuotas = false;
             $orden->fecha_solicitud_pago = Carbon::now();

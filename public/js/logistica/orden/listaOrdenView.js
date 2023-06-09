@@ -855,11 +855,9 @@ class ListaOrdenView {
         // this.updateLabelModalEnviarSolicitudPago((obj.dataset.tienePagoEnCuotas === "true"));
         this.updateLabelModalEnviarSolicitudPago(JSON.parse((obj.dataset.tienePagoEnCuotas).toLowerCase()));
 
-
         if (obj.dataset.estadoPago == 8) {
             document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago>0?obj.dataset.idPrioridadPago:1;
             document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = obj.dataset.idTipoDestinatarioPago;
-
             if (obj.dataset.idTipoDestinatarioPago == 1) {
                 document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").removeAttribute("disabled");
                 document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").removeAttribute("disabled");
@@ -880,7 +878,7 @@ class ListaOrdenView {
                 console.log(obj.dataset);
                 obtenerContribuyente(obj.dataset.idContribuyentePago);
 
-                obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyentePago);
+                obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyentePago, (parseInt(obj.dataset.idCuentaContribuyentePago)>0?obj.dataset.idCuentaContribuyentePago:null ));
             }
         } else {
             this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor)
@@ -891,7 +889,7 @@ class ListaOrdenView {
         this.obteneAdjuntosOrden(obj.dataset.idOrdenCompra).then((res) => {
 
             let htmlAdjunto = '';
-            console.log(res);
+            // console.log(res);
             if (res.length > 0) {
                 (res).forEach(element => {
 
@@ -1147,9 +1145,9 @@ class ListaOrdenView {
         }
 
 
-
+        let idCuentaEnvioPago = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value);
         if (data.id_contribuyente > 0) {
-            obtenerCuentasBancariasContribuyente(data.id_contribuyente);
+            obtenerCuentasBancariasContribuyente(data.id_contribuyente, (idCuentaEnvioPago > 0? idCuentaEnvioPago:null));
         }
     }
 
@@ -1663,10 +1661,13 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nombre_destinatario']").value = obj.dataset.nombreDestinatario;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='tipo_documento_identidad']").value = obj.dataset.tipoDocumentoIdentidad;
 
+        let idCuentaEnvioPago = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value);
+
+
         if (obj.dataset.idPersona > 0) {
             obtenerCuentasBancariasPersona(obj.dataset.idPersona);
         } else if (obj.dataset.idContribuyente > 0) {
-            obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyente);
+            obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyente,(idCuentaEnvioPago >0 ?idCuentaEnvioPago:null));
         } else {
 
             Swal.fire(
@@ -1843,7 +1844,7 @@ class ListaOrdenView {
                                 data-id-cuenta-principal="${row.id_cta_principal ?? ''}"
                                 data-estado-pago="${row.estado_pago ?? ''}"
                                 data-id-prioridad-pago="${row.id_prioridad_pago ?? ''}"
-                                data-id-tipo-destinatario-pago="${row.id_tipo_destinatario_pago ?? ''}"
+                                data-id-tipo-destinatario-pago="${row.id_tipo_destinatario_pago ?? '2'}"
                                 data-id-cuenta-contribuyente-pago="${row.id_cta_principal ?? ''}"
                                 data-id-contribuyente-pago="${row.id_contribuyente ?? ''}"
                                 data-tiene-pago-en-cuotas="${JSON.parse((row.tiene_pago_en_cuotas)) ?? false}"

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Administracion\Periodo;
 use App\Models\Comercial\Cliente;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Moneda;
 use App\Models\Configuracion\Usuario;
 use App\Models\Gerencial\CobranzaFondo;
@@ -29,6 +30,14 @@ class CobranzaFondoController extends Controller
 
     public function index()
     {
+        #array de accesos de los modulos copiar en caso tenga accesos -----
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
+        #-------------------------------
+
         $tipoGestion = TipoGestion::orderBy('descripcion', 'asc')->get();
         $tipoNegocio = TipoNegocio::orderBy('descripcion', 'asc')->get();
         $formaPago = FormaPago::orderBy('descripcion', 'asc')->get();
@@ -56,31 +65,32 @@ class CobranzaFondoController extends Controller
             return ($data->estado == 1) ? '<label class="label label-primary" style="font-size: 10.5px;">PENDIENTE</label>' : '<label class="label label-success" style="font-size: 10.5px;">COBRADO</label>';
         })
         ->addColumn('accion', function ($data) {
+            #array de accesos de los modulos copiar en caso tenga accesos -----
+            $array_accesos = [];
+            $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+            foreach ($accesos_usuario as $key => $value) {
+                array_push($array_accesos, $value->id_acceso);
+            }
+            #-------------------------------
+
             $button = '' ;
             $documento = "$data->nro_documento";
             if ($data->estado == 1) {
-                if (Auth::user()->id_usuario == 1 || Auth::user()->id_usuario == 20) {
+                if (Auth::user()->id_usuario == 1 || Auth::user()->id_usuario == 20 || Auth::user()->id_usuario == 27) {
                     $button .=
-                    '<button type="button" class="btn btn-success btn-xs cobrar" data-id="'.$data->id.'" data-documento="'.$documento.'">
-                        <span class="fas fa-check"></span>
-                    </button>
-                    <button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
-                        <span class="fas fa-edit"></span>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-xs eliminar" data-id="'.$data->id.'">
-                        <span class="fas fa-trash-alt"></span>
-                    </button>';
+                    (in_array(327, $array_accesos, true)?'<button type="button" class="btn btn-success btn-xs cobrar" data-id="'.$data->id.'" data-documento="'.$documento.'"> <span class="fas fa-check"></span> </button>':'').
+                    (in_array(321, $array_accesos, true)?'<button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'"> <span class="fas fa-edit"></span> </button>':'')
+                    .''.
+                    (in_array(328, $array_accesos, true)?'<button type="button" class="btn btn-danger btn-xs eliminar" data-id="'.$data->id.'"> <span class="fas fa-trash-alt"></span> </button>':'').
+                    '';
                 } else {
                     $button .=
-                    '<button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
-                        <span class="fas fa-edit"></span>
-                    </button>';
+                    (in_array(321, $array_accesos, true)?'<button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'"> <span class="fas fa-edit"></span> </button>':'');
                 }
             } else {
                 $button .=
-                    '<button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
-                        <span class="fas fa-edit"></span>
-                    </button>';
+                (in_array(321, $array_accesos, true)?'<button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'"> <span class="fas fa-edit"></span> </button>':'')
+                    ;
             }
             return $button;
         })

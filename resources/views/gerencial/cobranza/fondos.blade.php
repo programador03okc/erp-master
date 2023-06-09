@@ -252,6 +252,7 @@
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
     <script>
         // let csrf_token = '{{ csrf_token() }}';
+        var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
         const idioma = {
             sProcessing: "<div class='spinner'></div>",
             sLengthMenu: "Mostrar _MENU_ registros",

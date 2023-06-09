@@ -38,7 +38,10 @@ Cobranzas
                     <h3 class="box-title">Lista de clientes</h3>
                     <div class="pull-right box-tools">
                         {{-- <button type="button" class="btn btn-success" title="Nuevo Usuario" data-action="nuevo-cliente"><i class="fa fa-save"></i> Nuevo cliente</button> --}}
+                        @if (in_array(315, $array_accesos, true))
                         <a class="btn btn-success" title="Nuevo Usuario" href="{{ route('gerencial.cobranza.nuevo.cliente') }}"><i class="fa fa-save"></i> Nuevo cliente</a>
+                        @endif
+
                         {{-- <button class="btn btn-primary" data-action="actualizar"><i class="fa fa-refresh"></i> Actualizar</button> --}}
                     </div>
                 </div>
@@ -542,6 +545,9 @@ Cobranzas
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/bootstrap-select.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
 <!-- Select2 -->
+<script>
+    var array_accesos = JSON.parse('{!!json_encode($array_accesos)!!}');
+</script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
 <script src="{{ asset('js/gerencial/cobranza/clientes.js') }}?v=2"></script>

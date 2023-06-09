@@ -81,6 +81,7 @@ Route::group(['as' => 'api-consulta.', 'prefix' => 'api-consulta'], function () 
  * Rutas para Testing
  */
 Route::get('test-descripcion-adicional', 'TestController@testDescripcionAdicionalOrden')->name('test-descripcion-adicional');
+Route::get('test-guias-mgcp', 'TestController@testGuiasCobranza')->name('test-guias-mgcp');
 
 Auth::routes();
 

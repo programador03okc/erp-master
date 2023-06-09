@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Gerencial\Cobranza;
 use App\Exports\DevolucionPenalidadExport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Gerencial\PenalidadCobro;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -18,11 +20,20 @@ class DevolucionPenalidadController extends Controller
 
     public function index()
     {
+        #array de accesos de los modulos copiar en caso tenga accesos -----
+        $array_accesos = [];
+        $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos, $value->id_acceso);
+        }
+        #-------------------------------
         return view('gerencial.cobranza.devolucion', get_defined_vars());
     }
 
     public function lista()
     {
+
+
         $data = PenalidadCobro::all();
         return DataTables::of($data)
         ->addColumn('empresa', function ($data) { return (isset($data->cobranza->empresa)) ? $data->cobranza->empresa->codigo : ''; })
@@ -33,22 +44,25 @@ class DevolucionPenalidadController extends Controller
         ->addColumn('siaf', function ($data) { return $data->cobranza->siaf; })
         ->addColumn('moneda', function($data) { return ($data->cobranza->moneda == 1) ? 'S/' : 'USD'; })
         ->addColumn('accion', function ($data) {
+            #array de accesos de los modulos copiar en caso tenga accesos -----
+            $array_accesos = [];
+            $accesos_usuario = AccesosUsuarios::where('estado', 1)->where('id_usuario', Auth::user()->id_usuario)->get();
+            foreach ($accesos_usuario as $key => $value) {
+                array_push($array_accesos, $value->id_acceso);
+            }
+            #-------------------------------
+
             $button = '';
             if ($data->estado == 'PENDIENTE') {
                 $button .=
-                    '<button type="button" class="btn btn-success btn-xs cobrar" data-id="'.$data->id.'">
-                        <span class="fas fa-check"></span>
-                    </button>
-                    <button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'">
-                        <span class="fas fa-edit"></span>
-                    </button>
-                    <button type="button" class="btn btn-danger btn-xs eliminar" data-id="'.$data->id.'">
-                        <span class="fas fa-trash-alt"></span>
-                    </button>';
+                (in_array(323, $array_accesos, true)?'<button type="button" class="btn btn-success btn-xs cobrar" data-id="'.$data->id.'"><span class="fas fa-check"></span></button>':'').
+                ''.(in_array(324, $array_accesos, true)?'<button type="button" class="btn btn-primary btn-xs editar" data-id="'.$data->id.'"><span class="fas fa-edit"></span></button>':'').''.
+                (in_array(325, $array_accesos, true)?'<button type="button" class="btn btn-danger btn-xs eliminar" data-id="'.$data->id.'"> <span class="fas fa-trash-alt"></span> </button>':'').'
+                ';
             }
             return $button;
         })
-        ->editColumn('estado', function ($data) { 
+        ->editColumn('estado', function ($data) {
             return ($data->estado == 'PENDIENTE') ? '<label class="label label-primary" style="font-size: 10.5px;">PENDIENTE</label>' : '<label class="label label-success" style="font-size: 10.5px;">PAGADO</label>';
         })
         ->editColumn('importe', function ($data) { return number_format($data->importe, 2); })
