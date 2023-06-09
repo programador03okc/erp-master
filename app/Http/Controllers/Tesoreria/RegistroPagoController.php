@@ -592,8 +592,8 @@ class RegistroPagoController extends Controller
                     $requerimientoPago =  RequerimientoPago::find($request->id_requerimiento_pago);
                     if ($requerimientoPago->id_presupuesto_interno > 0) {
                         $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($request->total_pago));
-                        Debugbar::info('prorrateo requerimiento pago');
-                        Debugbar::info(floatval($request->total_pago),floatval($request->total));
+                        // Debugbar::info('prorrateo requerimiento pago');
+                        // Debugbar::info(floatval($request->total_pago),floatval($request->total));
                         PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->id_requerimiento_pago, $id_pago, $detalleArray, 'R');
                     }
                 }
