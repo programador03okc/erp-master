@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\Tesoreria\RegistroPagoController;
 use App\Models\Administracion\Division;
+use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Finanzas\HistorialPresupuestoInternoSaldo;
 use App\Models\Finanzas\PresupuestoInterno;
 use App\Models\Finanzas\PresupuestoInternoDetalle;
@@ -110,6 +111,15 @@ class NormalizarController extends Controller
     }
     public function obtenerPresupuesto(Request $request)
     {
+        switch ($request->tap) {
+            case 'requerimiento de pago':
+
+                break;
+
+            case 'orden':
+
+                break;
+        }
         $presupuesto_interno = PresupuestoInterno::where('id_area',$request->division)->where('estado','=',2)->first();
 
         if ($presupuesto_interno) {
@@ -118,7 +128,6 @@ class NormalizarController extends Controller
             if ($presupuesto_interno_detalle) {
                 return response()->json(["presupuesto"=>$presupuesto_interno,"presupuesto_detalle"=>$presupuesto_interno_detalle,"status"=>200],200);
             }
-            return response()->json(["tipo"=>"warning","mensaje"=>"No cuenta con partidas asignadas", "titulo"=>"Alerta","status"=>400],200);
         }
         return response()->json(["tipo"=>"warning","mensaje"=>"No cuenta con un presupuesto", "titulo"=>"Alerta","status"=>400],200);
 
@@ -136,6 +145,13 @@ class NormalizarController extends Controller
             $titulo='Éxito';
             switch ($variable) {
                 case 'orden':
+
+                    // mandamos el id de la partida del presupuesto al detalle del requerimiento
+                    $requerimiento_detalle = DetalleRequerimiento::find($request->requerimiento_detalle_id);
+                    $requerimiento_detalle->id_partida_pi;
+                    $requerimiento_detalle->save();
+                    // ----------------------
+
                     // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($request->total_pago),'completo');
                     // $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra, $detalleParaPresupuestoRestaArray);
                 break;

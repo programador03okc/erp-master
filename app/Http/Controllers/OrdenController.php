@@ -2768,7 +2768,7 @@ class OrdenController extends Controller
                 // $historialPresupuestoInterno = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra,$detalleOrden);
 
                 //actualizar estado gasto
-                foreach ($detalleOrden as $item) { 
+                foreach ($detalleOrden as $item) {
                     if($item->id_detalle_requerimiento >0 ){
 
                         $detalleRequerimientoLogistico = DetalleRequerimiento::where([['id_detalle_requerimiento',$item->id_detalle_requerimiento],['estado','!=',7]])->first();

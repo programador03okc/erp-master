@@ -267,7 +267,15 @@ function construirDetalleOrdenElaboradas(table_id, row, response,mes) {
                 <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
 
                 <td style="border: none; text-align:center;">
-                    <button type="button" class="btn text-black btn-flat botonList" data-id-orde="`+element.id_detalle_orden+`" data-id-orden-detalle="`+element.id_detalle_requerimiento+`" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida" data-tap="orden" data-mes="`+mes+`">
+                    <button type="button" class="btn text-black btn-flat botonList"
+                    data-id-orde="`+element.id_orden_compra+`"
+                    data-id-orden-detalle="`+element.id_detalle_orden+`"
+                    data-id-requerimiento="`+element.id_requerimiento+`"
+                    data-id-requerimiento-detalle="`+element.id_detalle_requerimiento+`"
+                    title="Asignar a partida"
+                    data-original-title="Ver"
+                    data-action="asignar-partida"
+                    data-tap="orden" data-mes="`+mes+`">
                         <i class="fas fa-share-square"></i>
                     </button>
                 </td>
@@ -347,18 +355,30 @@ function construirDetalleRequerimientosPagos(table_id, row, response, mes) {
     }
     row.child(tabla).show();
 }
-$("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partida"]', (e) => {
+// $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partida"]', (e) => {
+$(document).on("click", 'button[data-action="asignar-partida"]', (e) => {
     e.preventDefault();
     let id = $(e.currentTarget).attr('data-id-requerimiento-pago');
     let id_detalle = $(e.currentTarget).attr('data-id-requerimiento-pago-detalle');
     let tap = $(e.currentTarget).attr('data-tap');
     let mes = $(e.currentTarget).attr('data-mes');
     let html = ``;
+
+    let id_orden = $(e.currentTarget).attr('data-id-orde');
+    let id_orden_detalle = $(e.currentTarget).attr('data-id-orden-detalle');
+    let id_requerimiento = $(e.currentTarget).attr('data-id-requerimiento');
+    let id_requerimiento_detalle = $(e.currentTarget).attr('data-id-requerimiento-detalle');
+
     $('#normalizar-partida').modal('show');
     $.ajax({
         type: 'POST',
         url: 'obtener-presupuesto',
-        data: {id:id,mes:$data.mes,division:$data.division},
+        data: {
+            id:id,
+            mes:$data.mes,
+            division:$data.division,
+            tap:tap
+        },
         // processData: false,
         // contentType: false,
         dataType: 'JSON',
@@ -405,6 +425,13 @@ $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partid
                                                 data-id-presupuesto-interno="`+element.id_presupuesto_interno+`" data-id-presupuesto-interno-detalle="`+element.id_presupuesto_interno_detalle+`"
                                                 data-id-requerimiento-pago="`+id+`"
                                                 data-id-requerimiento-pago-detalle="`+id_detalle+`"
+
+                                                data-id-orden="`+id_orden+`"
+                                                data-id-orden-detalle="`+id_orden_detalle+`"
+
+                                                data-id-requerimiento="`+id_requerimiento+`"
+                                                data-id-requerimiento-detalle="`+id_requerimiento_detalle+`"
+
                                                 data-tap="`+tap+`"
                                                 data-click="seleccionar-partida">Asignar</button>
                                             </td>
@@ -446,6 +473,11 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
     let this_button = $(this);
     let html='';
 
+    let orden_id = $(this).attr('data-id-orden');
+    let orden_detalle_id = $(this).attr('data-id-orden-detalle');
+    let requerimiento_id = $(this).attr('data-id-requerimiento');
+    let requerimiento_detalle_id = $(this).attr('data-id-requerimiento-detalle');
+
     $.ajax({
         type: 'POST',
         url: 'vincular-partida',
@@ -455,7 +487,12 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
             requerimiento_pago_id:requerimiento_pago_id,
             requerimiento_pago_detalle_id:requerimiento_pago_detalle_id,
             tap:tap,
-            mes:$data.mes
+            mes:$data.mes,
+
+            orden_id:orden_id,
+            orden_detalle_id:orden_detalle_id,
+            requerimiento_id:requerimiento_id,
+            requerimiento_detalle_id:requerimiento_detalle_id,
         },
         // processData: false,
         // contentType: false,
