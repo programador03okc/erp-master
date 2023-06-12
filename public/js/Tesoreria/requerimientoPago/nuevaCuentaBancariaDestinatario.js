@@ -129,7 +129,7 @@ function guardarCuentaBancariaDestinatario(data) {
 
 
 // ###=========== obtener y actualizar select cuenta bancaria ==========###
-function obtenerCuentasBancariasPersona(id_persona) {
+function obtenerCuentasBancariasPersona(id_persona, id_cuenta=null) {
     let option = ``;
     // console.log(id_persona);
     if (id_persona > 0) {
@@ -144,7 +144,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
                 if (response.data.length > 0) {
 
                     // llenar cuenta bancaria
-                    let idCuentePorDefecto = document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value;
+                    // let idCuentePorDefecto = document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value;
                     document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value = "";
                     let selectCuenta = document.querySelector(nombreModalPadre+" select[name='id_cuenta']");
                     if (selectCuenta != null) {
@@ -160,7 +160,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
                             data-tipo-cuenta="${element.tipo_cuenta != null ? element.tipo_cuenta.descripcion : ''}"
                             data-banco="${element.banco != null && element.banco.contribuyente != null ? element.banco.contribuyente.razon_social : ''}"
                             data-moneda="${element.moneda != null ? element.moneda.descripcion : ''}"
-                            value="${element.id_cuenta_bancaria}" ${element.id_cuenta_bancaria == idCuentePorDefecto ? 'selected':''}>
+                            value="${element.id_cuenta_bancaria}" ${element.id_cuenta_bancaria == id_cuenta ? 'selected':''}>
                             ${element.nro_cuenta != null && element.nro_cuenta != "" ? element.nro_cuenta : (element.nro_cci != null && element.nro_cci != "" ? (element.nro_cci + " (CCI)") : "")}
                         </option>`;
                         document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
@@ -169,7 +169,7 @@ function obtenerCuentasBancariasPersona(id_persona) {
                     // document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', `<option value="" selected>Seleccione...</option>`);
                     // $('#form-requerimiento-pago .modal-body select[name="id_cuenta"]').append('<option value="" selected="true">Seleccione...</option>');
 
-                    if(idCuentePorDefecto==null || idCuentePorDefecto==''){
+                    if(id_cuenta==null){
                         document.querySelector(nombreModalPadre+" input[name='id_cuenta_persona']").value=document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value;
                     }
 
@@ -278,7 +278,7 @@ function obtenerCuentasBancariasContribuyente(id_contribuyente, id_cuenta=null) 
                     });
                     document.querySelector(nombreModalPadre+" select[name='id_cuenta']").insertAdjacentHTML('beforeend', option);
 
-                    if(idCuentePorDefecto==null || idCuentePorDefecto==''){
+                    if(id_cuenta==null){
                         document.querySelector(nombreModalPadre+" input[name='id_cuenta_contribuyente']").value=document.querySelector(nombreModalPadre+" select[name='id_cuenta']").value;
                     }
 
