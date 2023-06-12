@@ -54,7 +54,7 @@ class DevolucionController extends Controller
         $monedas = Moneda::where('estado', 1)->get();
         $tipos = DB::table('cas.devolucion_tipo')->where('estado', 1)->get();
 
-        return view('almacen/devoluciones/devolucionCas', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas', 'tipos'));
+        return view('almacen.devoluciones.devolucionCas', compact('almacenes', 'empresas', 'usuarios', 'unidades', 'monedas', 'tipos'));
     }
 
     public function listarDevoluciones()
@@ -374,14 +374,14 @@ class DevolucionController extends Controller
                 $usuario = Auth::user();
                 $id_cliente = null;
                 $id_proveedor = null;
-    
+
                 $cliente = DB::table('comercial.com_cliente')
                     ->where([
                         ['id_contribuyente', '=', $request->id_contribuyente],
                         ['estado', '=', 1]
                     ])
                     ->first();
-    
+
                 if ($cliente == null) {
                     $id_cliente = DB::table('comercial.com_cliente')
                         ->insertGetId([
@@ -392,14 +392,14 @@ class DevolucionController extends Controller
                 } else {
                     $id_cliente = $cliente->id_cliente;
                 }
-    
+
                 $proveedor = DB::table('logistica.log_prove')
                     ->where([
                         ['id_contribuyente', '=', $request->id_contribuyente],
                         ['estado', '=', 1]
                     ])
                     ->first();
-    
+
                 if ($proveedor == null) {
                     $id_proveedor = DB::table('logistica.log_prove')
                         ->insertGetId([
@@ -410,7 +410,7 @@ class DevolucionController extends Controller
                 } else {
                     $id_proveedor = $proveedor->id_proveedor;
                 }
-    
+
                 $id_devolucion = DB::table('cas.devolucion')->insertGetId(
                     [
                         'codigo' => $codigo,
@@ -427,9 +427,9 @@ class DevolucionController extends Controller
                     ],
                     'id_devolucion'
                 );
-    
+
                 $items = json_decode($request->items);
-    
+
                 foreach ($items as $item) {
                     $id_detalle = DB::table('cas.devolucion_detalle')->insertGetId(
                         [
@@ -445,7 +445,7 @@ class DevolucionController extends Controller
                         ],
                         'id_detalle'
                     );
-    
+
                     if ($request->id_tipo == 2 or $request->id_tipo == 4) {
                         //Genera reserva
                         DB::table('almacen.alm_reserva')
@@ -461,9 +461,9 @@ class DevolucionController extends Controller
                             ]);
                     }
                 }
-    
+
                 $incidencias = json_decode($request->incidencias);
-    
+
                 foreach ($incidencias as $inc) {
                     DB::table('cas.devolucion_incidencia')->insert(
                         [
@@ -473,9 +473,9 @@ class DevolucionController extends Controller
                         ]
                     );
                 }
-    
+
                 $salidas = json_decode($request->salidas);
-    
+
                 foreach ($salidas as $sal) {
                     DB::table('cas.devolucion_venta')->insert(
                         [
@@ -485,9 +485,9 @@ class DevolucionController extends Controller
                         ]
                     );
                 }
-    
+
                 $ingresos = json_decode($request->ingresos);
-    
+
                 foreach ($ingresos as $ing) {
                     DB::table('cas.devolucion_compra')->insert(
                         [
@@ -497,7 +497,7 @@ class DevolucionController extends Controller
                         ]
                     );
                 }
-    
+
                 $mensaje = 'Se guardó la devolución correctamente';
                 $tipo = 'success';
             }
@@ -531,7 +531,7 @@ class DevolucionController extends Controller
                         ['estado', '=', 1]
                     ])
                     ->first();
-    
+
                 if ($cliente == null) {
                     $id_cliente = DB::table('comercial.com_cliente')
                         ->insertGetId([
@@ -542,14 +542,14 @@ class DevolucionController extends Controller
                 } else {
                     $id_cliente = $cliente->id_cliente;
                 }
-    
+
                 $proveedor = DB::table('logistica.log_prove')
                     ->where([
                         ['id_contribuyente', '=', $request->id_contribuyente],
                         ['estado', '=', 1]
                     ])
                     ->first();
-    
+
                 if ($proveedor == null) {
                     $id_proveedor = DB::table('logistica.log_prove')
                         ->insertGetId([
@@ -560,7 +560,7 @@ class DevolucionController extends Controller
                 } else {
                     $id_proveedor = $proveedor->id_proveedor;
                 }
-    
+
                 DB::table('cas.devolucion')
                     ->where('id_devolucion', $request->id_devolucion)
                     ->update([
@@ -570,20 +570,20 @@ class DevolucionController extends Controller
                         'id_cliente' => $id_cliente,
                         'id_proveedor' => $id_proveedor,
                         'observacion' => $request->observacion,
-    
+
                     ]);
-    
+
                 $items = json_decode($request->items);
-    
+
                 foreach ($items as $item) {
-    
+
                     if ($item->id_detalle > 0) {
-    
+
                         if ($item->estado == 7) {
                             DB::table('cas.devolucion_detalle')
                                 ->where('id_detalle', $item->id_detalle)
                                 ->update(['estado' => 7]);
-    
+
                             DB::table('almacen.alm_reserva')
                                 ->where('id_detalle_devolucion', $item->id_detalle)
                                 ->update(['estado' => 7]);
@@ -594,7 +594,7 @@ class DevolucionController extends Controller
                                     'id_producto' => $item->id_producto,
                                     'cantidad' => $item->cantidad,
                                 ]);
-    
+
                             DB::table('almacen.alm_reserva')
                                 ->where('id_detalle_devolucion', $item->id_detalle)
                                 ->update([
@@ -629,9 +629,9 @@ class DevolucionController extends Controller
                             ]);
                     }
                 }
-    
+
                 $incidencias = json_decode($request->incidencias);
-    
+
                 foreach ($incidencias as $inc) {
                     if ($inc->id > 0) {
                         if ($inc->estado == 7) {
@@ -649,9 +649,9 @@ class DevolucionController extends Controller
                         );
                     }
                 }
-    
+
                 $salidas = json_decode($request->salidas);
-    
+
                 foreach ($salidas as $sal) {
                     if ($sal->id > 0) {
                         if ($sal->estado == 7) {
@@ -669,9 +669,9 @@ class DevolucionController extends Controller
                         );
                     }
                 }
-    
+
                 $ingresos = json_decode($request->ingresos);
-    
+
                 foreach ($ingresos as $ing) {
                     if ($ing->id > 0) {
                         if ($ing->estado == 7) {
@@ -689,7 +689,7 @@ class DevolucionController extends Controller
                         );
                     }
                 }
-    
+
                 $devolucion = DB::table('cas.devolucion')->where('id_devolucion', $request->id_devolucion)->first();
                 $mensaje = 'Se actualizó la devolución correctamente';
                 $tipo = 'success';
