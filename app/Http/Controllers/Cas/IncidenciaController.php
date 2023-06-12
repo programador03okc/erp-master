@@ -49,7 +49,7 @@ class IncidenciaController extends Controller
         $cas_modelo = CasModelo::where('estado',1)->orderBy('descripcion','ASC')->get();
         $cas_producto = CasProducto::where('estado',1)->orderBy('descripcion','ASC')->get();
 
-        return view('cas/incidencias/incidencia', compact(
+        return view('cas.incidencias.incidencia', compact(
             'tipoFallas',
             'tipoServicios',
             'usuarios',

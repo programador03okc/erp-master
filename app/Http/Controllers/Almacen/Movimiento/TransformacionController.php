@@ -35,8 +35,7 @@ class TransformacionController extends Controller
         // $categorias = TipoProducController::mostrar_categorias_cbo();
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
-        return view(
-            'almacen/customizacion/transformacion',
+        return view('almacen.customizacion.transformacion',
             compact('almacenes', 'empresas', 'usuarios', 'unidades')
         );
     }
@@ -45,7 +44,7 @@ class TransformacionController extends Controller
     {
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
-        return view('almacen/customizacion/listarTransformaciones', compact('almacenes', 'usuarios'));
+        return view('almacen.customizacion.listarTransformaciones', compact('almacenes', 'usuarios'));
     }
 
     public function listar_transformaciones_pendientes(Request $request)
@@ -1111,7 +1110,7 @@ class TransformacionController extends Controller
             //     ->join('mgcp_cuadro_costos.cc_am_proveedores','cc_am_proveedores.id','=','cc_am_filas.proveedor_seleccionado')
             //     ->where('cc.id',$request->id_cc)
             //     ->get();
-            // } 
+            // }
             // else {
             //     $materia_prima = DB::table('mgcp_cuadro_costos.cc_venta_filas')
             //     ->select('cc_venta_filas.*','cc_venta_proveedores.precio','cc_venta_proveedores.moneda')
@@ -1355,7 +1354,7 @@ class TransformacionController extends Controller
         <html>
             <head>
                 <style type="text/css">
-                *{ 
+                *{
                     font-family: "DejaVu Sans";
                 }
                 table{
@@ -1365,7 +1364,7 @@ class TransformacionController extends Controller
                 #detalle thead{
                     padding: 4px;
                     font-size:10px;
-                    
+
                 }
                 #detalle tbody tr td{
                     font-size:10px;
@@ -1384,7 +1383,7 @@ class TransformacionController extends Controller
                 <h4 style="margin:0px; padding:0px;"><center>ORDEN DE TRANSFORMACIÓN</center></h4>
                 <h4 style="margin:0px; padding:0px;"><center>' . $result->codigo . '</center></h4>
                 <label><center>' . $result->almacen_descripcion . '</center></label>
-                
+
                 <table border="0">
                     <tr>
                         <td width="100px">Requerimiento</td>
@@ -1549,8 +1548,8 @@ class TransformacionController extends Controller
             $html .= '</tbody></table>';
         }
         $html .= '
-                
-                
+
+
                 <footer style="position:absolute;bottom:0px;right:0px;">
                     <p style="text-align:right;font-size:10px;margin-bottom:0px;">Emitido por: ' . $result->nombre_corto . ' - Impreso el: ' . (new Carbon($fecha_actual))->format('d-m-Y') . ' ' . $hora_actual . '</p>
                     <p style="text-align:right;font-size:10px;margin-top:0px;"><strong>' . config('global.nombreSistema') . ' '  . config('global.version') . '</strong></p>

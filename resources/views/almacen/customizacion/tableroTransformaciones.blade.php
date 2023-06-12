@@ -43,8 +43,8 @@ Gestión de transformaciones
                     </div>
                     </div>
                 </div>
-                
-                    
+
+
                 <div class="row">
 
                     <div class="col-md-3">
@@ -57,7 +57,7 @@ Gestión de transformaciones
                             <div class="card-body" id="listaProgramados"></div>
                         </div>
                     </div>
-    
+
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-header" style="margin-bottom: 15px;">
@@ -70,7 +70,7 @@ Gestión de transformaciones
                                     <div class="inner">
                                         <h5>OKC2110040 - BANCO DE LA NACION</h5>
                                     </div>
-                                    <a href="#" class="small-box-footer"> 
+                                    <a href="#" class="small-box-footer">
                                         <i class="fa fa-arrow-circle-left"></i>
                                         <i class="fa fa-arrow-circle-right"></i>
                                     </a>
@@ -89,7 +89,7 @@ Gestión de transformaciones
                             <div class="card-body" id="listaProceso"></div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-3">
                         <div class="card">
                             <div class="card-header" style="margin-bottom: 15px;">

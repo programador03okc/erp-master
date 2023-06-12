@@ -23,7 +23,7 @@ class OrdenesTransformacionController extends Controller
 
     function view_tablero_transformaciones()
     {
-        return view('almacen/customizacion/tableroTransformaciones');
+        return view('almacen.customizacion.tableroTransformaciones');
     }
 
     public function listarRequerimientosEnProceso()
@@ -104,7 +104,7 @@ class OrdenesTransformacionController extends Controller
             'alm_req.id_almacen',
             'alm_und_medida.abreviatura',
             'alm_prod.part_number',
-            DB::raw("(SELECT SUM(cantidad) 
+            DB::raw("(SELECT SUM(cantidad)
                         FROM almacen.orden_despacho_det AS odd
                         INNER JOIN almacen.orden_despacho AS od
                             on(odd.id_od = od.id_od)
@@ -115,7 +115,7 @@ class OrdenesTransformacionController extends Controller
             DB::raw("(SELECT SUM(cantidad) FROM logistica.log_det_ord_compra
                         WHERE log_det_ord_compra.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                           and log_det_ord_compra.estado != 7) AS cantidad_orden"),
-            DB::raw("(SELECT SUM(gv.cantidad) 
+            DB::raw("(SELECT SUM(gv.cantidad)
                         FROM almacen.guia_ven_det AS gv
                         INNER JOIN almacen.orden_despacho_det AS odd
                               on(gv.id_od_det = odd.id_od_detalle)
@@ -126,23 +126,23 @@ class OrdenesTransformacionController extends Controller
                               and od.estado != 7
                               and gv.estado != 7
                               and od.aplica_cambios = false) AS cantidad_despachada"),
-            DB::raw("(SELECT SUM(alm_reserva.stock_comprometido) 
+            DB::raw("(SELECT SUM(alm_reserva.stock_comprometido)
                         FROM almacen.alm_reserva
                         WHERE alm_reserva.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
                         and alm_reserva.estado = 1) as stock_comprometido"),
             'almacen_reserva.descripcion as almacen_reserva_descripcion',
-            // DB::raw("(SELECT SUM(guia_ven_det.cantidad) 
+            // DB::raw("(SELECT SUM(guia_ven_det.cantidad)
             //         FROM almacen.guia_ven_det
             //         WHERE guia_ven_det.id_od_det = orden_despacho_det.id_od_detalle
             //             and guia_ven_det.estado != 7) as cantidad_despachada"),
-            // DB::raw("(SELECT SUM(cantidad) 
+            // DB::raw("(SELECT SUM(cantidad)
             //         FROM almacen.orden_despacho_det AS odd
             //         INNER JOIN almacen.orden_despacho AS od
             //             on(odd.id_od = od.id_od)
             //         WHERE odd.id_detalle_requerimiento = alm_det_req.id_detalle_requerimiento
             //             and odd.estado != 7
             //             and od.aplica_cambios = false) AS suma_despachos_externos"),
-            // DB::raw("(SELECT SUM(guia.cantidad) 
+            // DB::raw("(SELECT SUM(guia.cantidad)
             //         FROM almacen.guia_com_det AS guia
             //         INNER JOIN logistica.log_det_ord_compra AS oc
             //             on(guia.id_oc_det = oc.id_detalle_orden)

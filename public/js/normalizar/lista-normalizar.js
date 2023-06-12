@@ -62,10 +62,6 @@ function listarOrdenes() {
                     html='';
                     html+='<button type="button" class="btn text-black btn-default botonList detalle-orden" data-id="'+row['id_orden_compra']+'" title="Ver detalle"><i class="fas fa-chevron-down"></i></button>'
 
-                    html+='<button type="button" class="btn text-black btn-flat botonList ver-presupuesto-interno" data-id="'+row['id_orden_compra']+'" title="Asignar Partida" ><i class="fas fa-file-excel"></i></button>'
-
-
-
                     html+='';
                     return html;
                 },
@@ -217,7 +213,7 @@ function buildFormat(obj, table_id, id, row, key, mes) {
                 dataType: 'JSON',
                 success(response) {
                     obj.removeAttribute('disabled');
-                    construirDetalleOrdenElaboradas(table_id, row, response);
+                    construirDetalleOrdenElaboradas(table_id, row, response, mes);
                 },
                 error: function(err) {
                 reject(err) // Reject the promise and go to catch()
@@ -243,7 +239,7 @@ function buildFormat(obj, table_id, id, row, key, mes) {
 
 }
 
-function construirDetalleOrdenElaboradas(table_id, row, response) {
+function construirDetalleOrdenElaboradas(table_id, row, response,mes) {
     var html = '';
     if (response.length > 0) {
         response.forEach(function (element) {
@@ -269,6 +265,10 @@ function construirDetalleOrdenElaboradas(table_id, row, response) {
                 <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad * element.precio), 2,".",",")}</td>
                 <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
 
+                <td style="border: none; text-align:center;"></td>
+                    <button type="button" class="btn text-black btn-flat botonList" data-id-requerimiento-pago="`+element.id_requerimiento_pago+`" data-id-requerimiento-pago-detalle="`+element.id_requerimiento_pago_detalle+`" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida" data-tap="orden" data-mes="`+mes+`">
+                        <i class="fas fa-share-square"></i>
+                    </button>
                 </tr>`;
         });
         var tabla = `<table class="table table-sm" style="border: none; font-size:x-small;"
@@ -288,6 +288,7 @@ function construirDetalleOrdenElaboradas(table_id, row, response) {
                     <th style="border: none;">Prec.Unit.</th>
                     <th style="border: none;">Total</th>
                     <th style="border: none;">Reserva almacén</th>
+                    <th style="border: none;">-</th>
                 </tr>
             </thead>
             <tbody style="background: #e7e8ea;">${html}</tbody>
