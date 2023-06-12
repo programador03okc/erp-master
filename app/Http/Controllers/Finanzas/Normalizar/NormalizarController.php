@@ -99,6 +99,12 @@ class NormalizarController extends Controller
         $ordenes = $ordenes->where('log_ord_compra.estado_pago',6)->groupBy('log_ord_compra.id_orden_compra')->get();
         // $ordenes = $ordenes->groupBy('log_det_ord_compra.id_orden_compra');
         return DataTables::of($ordenes)
+        ->addColumn('mes', function ($data){
+            $fecha_como_entero = strtotime($data->fecha_autorizacion);
+            $mes = date("m", $fecha_como_entero);
+
+            return $mes;
+        })
         // ->toJson();
         ->make(true);
     }

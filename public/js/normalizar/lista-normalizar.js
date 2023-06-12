@@ -60,7 +60,7 @@ function listarOrdenes() {
             {
                 render: function (data, type, row) {
                     html='';
-                    html+='<button type="button" class="btn text-black btn-default botonList detalle-orden" data-id="'+row['id_orden_compra']+'" title="Ver detalle"><i class="fas fa-chevron-down"></i></button>'
+                    html+='<button type="button" class="btn text-black btn-default botonList detalle-orden" data-id="'+row['id_orden_compra']+'" title="Ver detalle" data-mes="'+row['mes']+'"  ><i class="fas fa-chevron-down"></i></button>'
 
                     html+='';
                     return html;
@@ -136,6 +136,7 @@ $(document).on('click','.detalle-orden',function (e) {
     let tr = (e.currentTarget).closest('tr');
     var row = table_ordenes.row(tr);
     var id = $(e.currentTarget).attr('data-id');
+    var mes = $(e.currentTarget).attr('data-mes');
     if (row.child.isShown()) {
         //  This row is already open - close it
         row.child.hide();
@@ -144,7 +145,7 @@ $(document).on('click','.detalle-orden',function (e) {
     else {
         // Open this row
         //    row.child( format(iTableCounter, id) ).show();
-        buildFormat((e.currentTarget), iTableCounter, id, row, 'orden');
+        buildFormat((e.currentTarget), iTableCounter, id, row, 'orden',mes);
         tr.classList.add('shown');
         // try datatable stuff
         oInnerTable = $('#lista-ordenes_' + iTableCounter).dataTable({
@@ -265,10 +266,11 @@ function construirDetalleOrdenElaboradas(table_id, row, response,mes) {
                 <td style="border: none;">${element.moneda_simbolo}${$.number((element.cantidad * element.precio), 2,".",",")}</td>
                 <td style="border: none; text-align:center;">${stock_comprometido != null ? stock_comprometido : ''}</td>
 
-                <td style="border: none; text-align:center;"></td>
-                    <button type="button" class="btn text-black btn-flat botonList" data-id-requerimiento-pago="`+element.id_requerimiento_pago+`" data-id-requerimiento-pago-detalle="`+element.id_requerimiento_pago_detalle+`" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida" data-tap="orden" data-mes="`+mes+`">
+                <td style="border: none; text-align:center;">
+                    <button type="button" class="btn text-black btn-flat botonList" data-id-orde="`+element.id_detalle_orden+`" data-id-orden-detalle="`+element.id_detalle_requerimiento+`" title="Asignar a partida" data-original-title="Ver" data-action="asignar-partida" data-tap="orden" data-mes="`+mes+`">
                         <i class="fas fa-share-square"></i>
                     </button>
+                </td>
                 </tr>`;
         });
         var tabla = `<table class="table table-sm" style="border: none; font-size:x-small;"
