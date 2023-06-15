@@ -550,7 +550,7 @@ class RegistroPagoController extends Controller
                     $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($request->id_oc, floatval($request->total_pago));
                     // Debugbar::info('completo orden');
 
-                    PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoLogistico($request->id_oc, $id_pago, $detalleArray, 'R');
+                    PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoLogistico($request->id_oc, $id_pago, $detalleArray, 'R', "Registrar afectación regular");
                 } else if ($request->id_requerimiento_pago !== null) {
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
@@ -560,11 +560,11 @@ class RegistroPagoController extends Controller
                     $requerimientoPago =  RequerimientoPago::find($request->id_requerimiento_pago);
                     if ($requerimientoPago->id_presupuesto_interno > 0) {
                         $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($request->total_pago));
-                        Debugbar::info('completo requerimiento pago');
-                        Debugbar::info($detalleArray);
-                        Debugbar::info(floatval($request->total_pago),floatval($request->total));
+                        // Debugbar::info('completo requerimiento pago');
+                        // Debugbar::info($detalleArray);
+                        // Debugbar::info(floatval($request->total_pago),floatval($request->total));
 
-                        PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->id_requerimiento_pago, $id_pago, $detalleArray, 'R');
+                        PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->id_requerimiento_pago, $id_pago, $detalleArray, 'R',$requerimientoPago->fecha_registro, 'Registrar afectación regular');
                     }
                 }
             } else {
@@ -582,7 +582,7 @@ class RegistroPagoController extends Controller
                     // Debugbar::info('prorrateo orden compra');
                     // Debugbar::info($detalleArray);
 
-                    PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoLogistico($request->id_oc, $id_pago, $detalleArray, 'R');
+                    PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoLogistico($request->id_oc, $id_pago, $detalleArray, 'R', 'Registrar afectación regular');
                 } else if ($request->id_requerimiento_pago !== null) {
                     DB::table('tesoreria.requerimiento_pago')
                         ->where('id_requerimiento_pago', $request->id_requerimiento_pago)
@@ -594,7 +594,7 @@ class RegistroPagoController extends Controller
                         $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($request->total_pago));
                         // Debugbar::info('prorrateo requerimiento pago');
                         // Debugbar::info(floatval($request->total_pago),floatval($request->total));
-                        PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->id_requerimiento_pago, $id_pago, $detalleArray, 'R');
+                        PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->id_requerimiento_pago, $id_pago, $detalleArray, 'R',$requerimientoPago->fecha_registro, 'Registrar afectación regular');
                     }
                 }
             }

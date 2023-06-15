@@ -91,7 +91,7 @@ Normalizar
                                     <th hidden></th>
                                     <th>Código</th>
                                     <th>Concepto</th>
-                                    <th >Fecha Aprovación</th>
+                                    <th>Fecha Aprobación</th>
                                     <th>Creado por</th>
                                     <th>Monto total</th>
                                     <th>-</th>
