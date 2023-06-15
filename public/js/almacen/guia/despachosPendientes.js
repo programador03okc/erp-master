@@ -104,7 +104,6 @@ function listarDespachosPendientes(permiso) {
                     <label style="text-align: center;margin-top: 7px;margin-left: 10px;margin-right: 10px;">Mostrar: </label>
                     <select class="form-control" id="selectMostrarPendientes">
                         <option value="0" selected>Todos</option>
-                        <option value="1" >Priorizados</option>
                         <option value="2" >Los de Hoy</option>
                     </select>
                 </div>`
