@@ -1890,10 +1890,22 @@ class RequerimientoController extends Controller
         $fechaRegistroHasta = $request->fechaRegistroHasta;
         $idEstado = $request->idEstado;
         // Debugbar::info($division);
+
+        $idUsuarioEnSesion = Auth::user()->id_usuario;
         $GrupoDeUsuarioEnSesionList = Auth::user()->getAllGrupo();
         $idGrupoDeUsuarioEnSesionList = [];
         foreach ($GrupoDeUsuarioEnSesionList as $grupo) {
             $idGrupoDeUsuarioEnSesionList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
+        }
+
+        $soloAutorizadoGarantias=false;
+        $allRol = Auth::user()->getAllRol();
+        foreach ($allRol as  $rol) {
+            if($rol->id_rol == 52) // autorizado garantias
+            {
+                $soloAutorizadoGarantias=true;
+                $idGrupoDeUsuarioEnSesionList[]=2; // grupo comercial
+            }
         }
 
         $requerimientos = Requerimiento::with('detalle')
@@ -2007,7 +2019,11 @@ class RequerimientoController extends Controller
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
             ->where([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1]])
-            ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList);
+            ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList)
+            ->when((($soloAutorizadoGarantias) ==true), function ($query) {
+                return $query->whereRaw('alm_req.division_id = 2 and alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
+            })
+            ;
 
         return datatables($requerimientos)
             ->filterColumn('nombre_usuario', function ($query, $keyword) {
