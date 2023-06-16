@@ -106,7 +106,7 @@ class SalidasPendientesController extends Controller
         } else if ($request->select_mostrar_pendientes == 1) {
             $data->where('orden_despacho.estado', 25);
         } else if ($request->select_mostrar_pendientes == 2) {
-            $data->where('orden_despacho.estado', 25);
+            // $data->where('orden_despacho.estado', 25);
             $data->whereDate('orden_despacho.fecha_despacho', (new Carbon())->format('Y-m-d'));
         }
         return datatables($data)->toJson();
