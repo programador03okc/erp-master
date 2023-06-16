@@ -246,6 +246,16 @@ class RequerimientoController extends Controller
 
     public function listaDetalleRequerimiento($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
     {
+
+        $soloAutorizadoGarantias=false;
+        $allRol = Auth::user()->getAllRol();
+        foreach ($allRol as  $rol) {
+            if($rol->id_rol == 52) // autorizado garantias
+            {
+                $soloAutorizadoGarantias=true;
+            }
+        }
+
         $detalleRequerimientoList = DB::table('almacen.alm_det_req')
             ->leftJoin('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'alm_det_req.id_requerimiento')
             ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
@@ -360,7 +370,10 @@ class RequerimientoController extends Controller
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
-            ->where([['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]])
+            ->where([['alm_req.flg_compras', '=', 0], ['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]])
+            ->when((($soloAutorizadoGarantias) ==true), function ($query) {
+                return $query->whereRaw('alm_req.division_id = 2 and alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
+            })
             ->orderBy('alm_det_req.fecha_registro', 'desc')
             ->get();
 
@@ -1761,7 +1774,18 @@ class RequerimientoController extends Controller
 
     public function obtenerRequerimientosElaborados($meOrAll, $idEmpresa, $idSede, $idGrupo, $idDivision, $fechaRegistroDesde, $fechaRegistroHasta, $idEstado)
     {
-        $requerimientos = Requerimiento::with('detalle')->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
+
+        $soloAutorizadoGarantias=false;
+        $allRol = Auth::user()->getAllRol();
+        foreach ($allRol as  $rol) {
+            if($rol->id_rol == 52) // autorizado garantias
+            {
+                $soloAutorizadoGarantias=true;
+            }
+        }
+
+        $requerimientos = Requerimiento::with('detalle')
+            ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
             ->leftJoin('administracion.adm_estado_doc', 'alm_req.estado', '=', 'adm_estado_doc.id_estado_doc')
             ->leftJoin('almacen.alm_tp_req', 'alm_req.id_tipo_requerimiento', '=', 'alm_tp_req.id_tipo_requerimiento')
             ->leftJoin('administracion.adm_prioridad', 'alm_req.id_prioridad', '=', 'adm_prioridad.id_prioridad')
@@ -1779,6 +1803,7 @@ class RequerimientoController extends Controller
             ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
             ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
+            ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
             ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
 
@@ -1874,7 +1899,10 @@ class RequerimientoController extends Controller
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
-            ->where('alm_req.flg_compras', '=', 0);
+            ->where([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1]])
+            ->when((($soloAutorizadoGarantias) ==true), function ($query) {
+                return $query->whereRaw('alm_req.division_id = 2 and alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
+            });
 
         return $requerimientos;
     }
@@ -1890,10 +1918,22 @@ class RequerimientoController extends Controller
         $fechaRegistroHasta = $request->fechaRegistroHasta;
         $idEstado = $request->idEstado;
         // Debugbar::info($division);
+
+        $idUsuarioEnSesion = Auth::user()->id_usuario;
         $GrupoDeUsuarioEnSesionList = Auth::user()->getAllGrupo();
         $idGrupoDeUsuarioEnSesionList = [];
         foreach ($GrupoDeUsuarioEnSesionList as $grupo) {
             $idGrupoDeUsuarioEnSesionList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
+        }
+
+        $soloAutorizadoGarantias=false;
+        $allRol = Auth::user()->getAllRol();
+        foreach ($allRol as  $rol) {
+            if($rol->id_rol == 52) // autorizado garantias
+            {
+                $soloAutorizadoGarantias=true;
+                $idGrupoDeUsuarioEnSesionList[]=2; // grupo comercial
+            }
         }
 
         $requerimientos = Requerimiento::with('detalle')
@@ -1914,9 +1954,10 @@ class RequerimientoController extends Controller
             ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
             ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
-            // ->leftJoin('administracion.adm_aprobacion', 'adm_aprobacion.id_doc_aprob', '=', 'adm_documentos_aprob.id_doc_aprob')
             ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
             ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
+            ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
+            ->leftJoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
 
             ->select(
                 'alm_req.id_requerimiento',
@@ -2007,7 +2048,11 @@ class RequerimientoController extends Controller
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
             ->where([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1]])
-            ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList);
+            ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList)
+            ->when((($soloAutorizadoGarantias) ==true), function ($query) {
+                return $query->whereRaw('alm_req.division_id = 2 and alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
+            })
+            ;
 
         return datatables($requerimientos)
             ->filterColumn('nombre_usuario', function ($query, $keyword) {
