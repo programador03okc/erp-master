@@ -208,6 +208,8 @@ function agrega_series_sobrante(id, cantidad) {
 }
 
 function agrega_series_transformado(id, cantidad) {
+    $('#frm-example')[0].reset();
+
     console.log('agrega_series_transformado' + id);
     $('#modal-guia_com_barras').modal({
         show: true
