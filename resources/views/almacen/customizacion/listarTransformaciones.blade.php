@@ -41,7 +41,7 @@ Gestión de Transformaciones
                 <div class="tab-content">
                     <div id="pendientes" class="tab-pane fade in active">
                         <br>
-                        
+
                         <form id="formFiltrosTransformacionesPendientes" method="POST" target="_blank" action="{{route('almacen.movimientos.pendientes-ingreso.ordenesPendientesExcel')}}">
                             @csrf()
                             {{-- <input type="hidden" name="select_mostrar_pendientes" value="0"> --}}
@@ -71,7 +71,7 @@ Gestión de Transformaciones
                                 </table>
                             </div>
                         </div>
-                        
+
                     </div>
                     <div id="procesadas" class="tab-pane fade in ">
                         <br>

@@ -13,6 +13,9 @@ class Producto extends Model
     public function subcategoria(){
         return $this->hasOne('App\Models\Almacen\Catalogo\SubCategoria','id_subcategoria','id_subcategoria');
     }
+    public function marca(){
+        return $this->hasOne('App\Models\Almacen\Catalogo\Marca','id_subcategoria','id_subcategoria');
+    }
     public function moneda(){
         return $this->hasOne('App\Models\Configuracion\Moneda','id_moneda','id_moneda');
     }
