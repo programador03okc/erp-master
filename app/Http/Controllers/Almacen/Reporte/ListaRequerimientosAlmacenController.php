@@ -74,7 +74,7 @@ class ListaRequerimientosAlmacenController extends Controller
             ->leftJoin('administracion.adm_estado_doc as estado_di', 'estado_di.id_estado_doc', '=', 'despachoInterno.estado')
             // ->where([['alm_req.estado', '!=', 7]])
                        ->when((($soloAutorizadoGarantias) ==true), function ($query) {
-                return $query->whereRaw('alm_req.division_id = 2 and alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
+                return $query->whereRaw('alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial, tipo de requerimiento de garantias
             })
             ->get();
 

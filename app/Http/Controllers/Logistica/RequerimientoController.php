@@ -372,7 +372,7 @@ class RequerimientoController extends Controller
             })
             ->where([['alm_req.flg_compras', '=', 0], ['alm_det_req.estado', '!=', 7], ['alm_req.estado', '!=', 7]])
             ->when((($soloAutorizadoGarantias) ==true), function ($query) {
-                return $query->whereRaw('alm_req.division_id = 2 and alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
+                return $query->whereRaw('alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
             })
             ->orderBy('alm_det_req.fecha_registro', 'desc')
             ->get();
@@ -1901,7 +1901,7 @@ class RequerimientoController extends Controller
             })
             ->where([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1]])
             ->when((($soloAutorizadoGarantias) ==true), function ($query) {
-                return $query->whereRaw('alm_req.division_id = 2 and alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
+                return $query->whereRaw('alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
             });
 
         return $requerimientos;
@@ -2050,7 +2050,7 @@ class RequerimientoController extends Controller
             ->where([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1]])
             ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList)
             ->when((($soloAutorizadoGarantias) ==true), function ($query) {
-                return $query->whereRaw('alm_req.division_id = 2 and alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial divison CAS, tipo de requerimiento de garantias
+                return $query->whereRaw('alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial, tipo de requerimiento de garantias
             })
             ;
 
