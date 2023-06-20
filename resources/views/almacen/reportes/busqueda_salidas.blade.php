@@ -52,6 +52,7 @@ Detalle de Salidas
                                 <th>Cant.</th>
                                 <th>Estado</th>
                                 <th>Almacén</th>
+                                <th>Cod. Req.</th>
                                 <th>CDP</th>
                                 <th>Responsable</th>
                                 <th>Fecha Registro</th>
