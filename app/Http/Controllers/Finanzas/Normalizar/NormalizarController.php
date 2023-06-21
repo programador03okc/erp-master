@@ -183,8 +183,8 @@ class NormalizarController extends Controller
                             // $registro_pago->fecha_pago = ;
                             // $registro_pago->save();
                             #--------------
-                            $fechaAfectacion= $this->getFechaAprobacionRequerimientoDePago($request->requerimiento_pago_id);
-                            $mensaje = PresupuestoInternoHistorialHelper::normalizarRequerimientoDePago($request->requerimiento_pago_id,$request->requerimiento_pago_detalle_id, $fechaAfectacion);
+                            // $fechaAfectacion= $this->getFechaAprobacionRequerimientoDePago($request->requerimiento_pago_id);
+                            $mensaje = PresupuestoInternoHistorialHelper::normalizarRequerimientoDePago($request->requerimiento_pago_id,$request->requerimiento_pago_detalle_id);
                             $titulo='Información';
 
                         }else{
@@ -212,23 +212,23 @@ class NormalizarController extends Controller
         return response()->json(["tipo"=>$tipo,"mensaje"=>$mensaje,"titulo"=>$titulo],200);
     }
 
-    public function getFechaAprobacionRequerimientoDePago($idRequerimientoPago) {
-        $idDocumento = Documento::getIdDocAprob($idRequerimientoPago,11);
-        $fechaAprobacion= '';
-        if($idDocumento>0){
-            $AprobacionList = Aprobacion::getVoBo($idDocumento);
+    // public function getFechaAprobacionRequerimientoDePago($idRequerimientoPago) {
+    //     $idDocumento = Documento::getIdDocAprob($idRequerimientoPago,11);
+    //     $fechaAprobacion= '';
+    //     if($idDocumento>0){
+    //         $AprobacionList = Aprobacion::getVoBo($idDocumento);
 
-            if($AprobacionList['status']=='200'){
-                foreach ( $AprobacionList['data'] as $value) {
-                    if($value->id_vobo == 1){
-                        $fechaAprobacion= $value->fecha_vobo;
-                    }
-                };
-            }
-        }
+    //         if($AprobacionList['status']=='200'){
+    //             foreach ( $AprobacionList['data'] as $value) {
+    //                 if($value->id_vobo == 1){
+    //                     $fechaAprobacion= $value->fecha_vobo;
+    //                 }
+    //             };
+    //         }
+    //     }
 
-        return $fechaAprobacion;
-    }
+    //     return $fechaAprobacion;
+    // }
 
     public function detalleRequerimientoPago($id)
     {

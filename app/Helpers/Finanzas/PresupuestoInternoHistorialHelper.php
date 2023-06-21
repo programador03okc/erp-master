@@ -59,7 +59,7 @@ class PresupuestoInternoHistorialHelper
         }
     }
 
-    public static function registrarEstadoGastoAfectadoDeRequerimientoLogistico($idOrden, $idPago, $detalleItemList, $operacion, $descripcion)
+    public static function registrarEstadoGastoAfectadoDeRequerimientoLogistico($idOrden, $idPago, $detalleItemList, $operacion, $fechaAfectacion, $descripcion)
     {
         $orden = Orden::find($idOrden);
         $presupuestoInternoDetalle = [];
@@ -73,7 +73,7 @@ class PresupuestoInternoHistorialHelper
                         3,
                         $detOrd->detalleRequerimiento->requerimiento->id_requerimiento,
                         $detOrd->id_detalle_requerimiento,
-                        $detOrd->$orden->fecha_registro,
+                        $fechaAfectacion,
                         $idOrden,
                         $detOrd->id_detalle_orden,
                         $idPago,
@@ -83,7 +83,7 @@ class PresupuestoInternoHistorialHelper
                     $presupuestoInternoDetalle =   PresupuestoInternoHistorialHelper::afectarPresupuesto(
                         $detOrd->detalleRequerimiento->requerimiento->id_presupuesto_interno,
                         $detOrd->detalleRequerimiento->id_partida_pi,
-                        $orden->fecha_registro,
+                        $fechaAfectacion,
                         $detOrd->importe_item_para_presupuesto,
                         $operacion
                     );
@@ -470,7 +470,7 @@ class PresupuestoInternoHistorialHelper
         return $historialList;
     }
 
-    public static function normalizarRequerimientoDePago($idRequerimientoPago, $idDetalleRequerimientoPago, $fechaAfectacion)
+    public static function normalizarRequerimientoDePago($idRequerimientoPago, $idDetalleRequerimientoPago)
     {
 
         try {
@@ -485,7 +485,7 @@ class PresupuestoInternoHistorialHelper
             foreach ($registroPago as $rp) {
 
                 $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($idRequerimientoPago, floatval($rp->total_pago), $idDetalleRequerimientoPago); // * pasar parametro $idDetalleRequerimientoPago para el caso de normaliazar, asi devolver solo un item
-                $presupuestoInternoDetalle = PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($idRequerimientoPago, $rp->id_pago, $detalleArray, 'R', $fechaAfectacion, "Registrar afectación por regularización");
+                $presupuestoInternoDetalle = PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($idRequerimientoPago, $rp->id_pago, $detalleArray, 'R', $registroPago->fecha_pago, "Registrar afectación por regularización");
                 $totalImporteRegistroPago += $rp->total_pago;
             }
 
