@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Requerimiento;
 use App\Models\mgcp\Oportunidad\Oportunidad;
 use App\Models\Tesoreria\TipoCambio;
 use Carbon\Carbon;
@@ -35,7 +36,8 @@ class TransformacionController extends Controller
         // $categorias = TipoProducController::mostrar_categorias_cbo();
         $unidades = GenericoAlmacenController::mostrar_unidades_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
-        return view('almacen.customizacion.transformacion',
+        return view(
+            'almacen/customizacion/transformacion',
             compact('almacenes', 'empresas', 'usuarios', 'unidades')
         );
     }
@@ -44,7 +46,7 @@ class TransformacionController extends Controller
     {
         $almacenes = AlmacenController::mostrar_almacenes_cbo();
         $usuarios = GenericoAlmacenController::select_usuarios();
-        return view('almacen.customizacion.listarTransformaciones', compact('almacenes', 'usuarios'));
+        return view('almacen/customizacion/listarTransformaciones', compact('almacenes', 'usuarios'));
     }
 
     public function listar_transformaciones_pendientes(Request $request)
@@ -1260,303 +1262,6 @@ class TransformacionController extends Controller
 
     public function imprimir_transformacion($id_transformacion)
     {
-
-        /*$result = DB::table('almacen.transformacion')
-            ->select(
-                'transformacion.*',
-                'oc_propias.orden_am',
-                'oportunidades.codigo_oportunidad',
-                'alm_almacen.descripcion as almacen_descripcion',
-                'alm_req.codigo as codigo_req',
-                'alm_req.fecha_entrega',
-                'guia_ven.fecha_registro as fecha_almacen',
-                'orden_despacho.fecha_registro as fecha_despacho',
-                'entidades.nombre',
-                'guia_ven.serie',
-                'guia_ven.numero',
-                'adm_contri.nro_documento',
-                'adm_contri.razon_social',
-                'sis_usua.nombre_corto',
-                'adm_empresa.logo_empresa'
-            )
-            ->join('almacen.orden_despacho', 'orden_despacho.id_od', '=', 'transformacion.id_od')
-            ->join('almacen.alm_req', 'alm_req.id_requerimiento', '=', 'orden_despacho.id_requerimiento')
-            ->join('almacen.alm_almacen', 'alm_almacen.id_almacen', '=', 'transformacion.id_almacen')
-            ->join('administracion.sis_sede', 'sis_sede.id_sede', '=', 'alm_almacen.id_sede')
-            ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'sis_sede.id_empresa')
-            ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
-            ->leftjoin('almacen.guia_ven', function ($join) {
-                $join->on('guia_ven.id_od', '=', 'transformacion.id_od');
-                $join->where('guia_ven.estado', '!=', 7);
-            })
-            ->leftjoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'transformacion.id_cc')
-            ->leftjoin('mgcp_oportunidades.oportunidades', 'oportunidades.id', '=', 'cc.id_oportunidad')
-            ->leftjoin('mgcp_acuerdo_marco.oc_propias', 'oc_propias.id_oportunidad', '=', 'oportunidades.id')
-            ->leftjoin('mgcp_acuerdo_marco.entidades', 'entidades.id', '=', 'oportunidades.id_entidad')
-            ->leftjoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'transformacion.registrado_por')
-            ->where('transformacion.id_transformacion', $id_transformacion)
-            ->first();
-
-        $detalle = DB::table('almacen.transfor_materia')
-            ->select(
-                'transfor_materia.*',
-                'alm_prod.codigo',
-                'alm_prod.descripcion',
-                'alm_prod.part_number',
-                'alm_und_medida.abreviatura',
-                'cc_am_filas.part_no',
-                'cc_am_filas.marca',
-                'cc_am_filas.descripcion',
-                'cc_am_filas.part_no_producto_transformado',
-                'cc_am_filas.marca_producto_transformado',
-                'cc_am_filas.descripcion_producto_transformado',
-                'cc_am_filas.comentario_producto_transformado',
-                'cc_am_filas.etiquetado_producto_transformado',
-                'cc_am_filas.bios_producto_transformado',
-                'cc_am_filas.office_preinstalado_producto_transformado',
-                'cc_am_filas.office_activado_producto_transformado',
-                'cc_am_filas.id'
-            )
-            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_materia.id_producto')
-            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->leftjoin('almacen.orden_despacho_det', 'orden_despacho_det.id_od_detalle', '=', 'transfor_materia.id_od_detalle')
-            ->leftjoin('almacen.alm_det_req', 'alm_det_req.id_detalle_requerimiento', '=', 'orden_despacho_det.id_detalle_requerimiento')
-            ->leftjoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'alm_det_req.id_cc_am_filas')
-            ->where('id_transformacion', $id_transformacion)
-            ->orderBy('cc_am_filas.descripcion_producto_transformado', 'desc')
-            ->get();
-
-        // $detalle_transfor = DB::table('almacen.transfor_transformado')
-        // ->select('transfor_transformado.*','alm_prod.codigo','alm_prod.descripcion','alm_prod.part_number',
-        // 'alm_und_medida.abreviatura')
-        // ->join('almacen.alm_prod','alm_prod.id_producto','=','transfor_transformado.id_producto')
-        // ->join('almacen.alm_und_medida','alm_und_medida.id_unidad_medida','=','alm_prod.id_unidad_medida')
-        // ->where('id_transformacion',$id_transformacion)
-        // ->get();
-
-        $detalle_sobrante = DB::table('almacen.transfor_sobrante')
-            ->select(
-                'transfor_sobrante.*',
-                'alm_prod.codigo',
-                'alm_prod.descripcion',
-                'alm_prod.part_number',
-                'alm_und_medida.abreviatura'
-            )
-            ->join('almacen.alm_prod', 'alm_prod.id_producto', '=', 'transfor_sobrante.id_producto')
-            ->join('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_prod.id_unidad_medida')
-            ->where('id_transformacion', $id_transformacion)
-            ->get();
-
-        $fecha_actual = date('Y-m-d');
-        $hora_actual = date('H:i:s');
-
-        $html = '
-        <html>
-            <head>
-                <style type="text/css">
-                *{
-                    font-family: "DejaVu Sans";
-                }
-                table{
-                    width:100%;
-                    font-size:10px;
-                }
-                #detalle thead{
-                    padding: 4px;
-                    font-size:10px;
-
-                }
-                #detalle tbody tr td{
-                    font-size:10px;
-                    padding: 4px;
-                }
-                </style>
-            </head>
-            <body>
-                <table width="100%" style="margin-bottom: 0px">
-                    <tr>
-                        <td>
-                            <img src=".' . $result->logo_empresa . '" height="40px">
-                        </td>
-                    </tr>
-                </table>
-                <h4 style="margin:0px; padding:0px;"><center>ORDEN DE TRANSFORMACIÓN</center></h4>
-                <h4 style="margin:0px; padding:0px;"><center>' . $result->codigo . '</center></h4>
-                <label><center>' . $result->almacen_descripcion . '</center></label>
-
-                <table border="0">
-                    <tr>
-                        <td width="100px">Requerimiento</td>
-                        <td width=5px>:</td>
-                        <td width=320px>' . $result->codigo_req . '</td>
-                        <td>Guía Remisión</td>
-                        <td width=5px>:</td>
-                        <td>' . $result->serie . '-' . $result->numero . '</td>
-                    </tr>
-                    <tr>
-                        <td width="100px">Nro OC (MGC)</td>
-                        <td width=5px>:</td>
-                        <td width=320px>' . $result->orden_am . '</td>
-                        <td>Fecha Despacho</td>
-                        <td width=5px>:</td>
-                        <td width=150px>' . (new Carbon($result->fecha_despacho))->format('d-m-Y H:i') . '</td>
-                    </tr>
-                    <tr>
-                        <td width=100px>Código CDP</td>
-                        <td width=5px>:</td>
-                        <td width=320px>' . $result->codigo_oportunidad . '</td>
-                        <td>Fecha Almacén</td>
-                        <td width=5px>:</td>
-                        <td>' . (new Carbon($result->fecha_almacen))->format('d-m-Y') . '</td>
-                    </tr>
-                    <tr>
-                        <td width=100px>Entidad/Cliente</td>
-                        <td width=5px>:</td>
-                        <td width=320px>' . $result->nombre . '</td>
-                        <td>Fecha Entrega</td>
-                        <td width=5px>:</td>
-                        <td>' . (new Carbon($result->fecha_entrega))->format('d-m-Y') . '</td>
-                    </tr>
-                    <tr>
-                        <td width=100px>Observación</td>
-                        <td width=5px>:</td>
-                        <td colSpan2"4">' . $result->descripcion_sobrantes . '</td>
-                    </tr>
-                </table>
-                <table id="detalle">
-                    <thead>
-                        <tr>
-                            <th colSpan="4"><center>Productos que requieren transformación</center></th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-        $i = 1;
-
-        foreach ($detalle as $det) {
-
-            if (
-                $det->descripcion_producto_transformado !== null || $det->part_no_producto_transformado !== null ||
-                $det->comentario_producto_transformado !== null
-            ) {
-                $html .= '  <tr>
-                                <th colSpan="4" style="background-color: #bce8f1;"><center>' . $i . '. Producto a transformar</center></th>
-                            </tr>
-                            <tr>
-                                <td colSpan="4" style="background-color: #ededed;"><strong>Producto Base:</strong></td>
-                            </tr>
-                            <tr>
-                                <th style="border-bottom: 1px solid #cfcfcf">Part Number</th>
-                                <th style="border-bottom: 1px solid #cfcfcf">Marca</th>
-                                <th style="border-bottom: 1px solid #cfcfcf" width="60%">Descripción</th>
-                                <th style="border-bottom: 1px solid #cfcfcf">Cant.</th>
-                            </tr>
-                            <tr>
-                                <td style="text-align:center;">' . $det->part_no . '</td>
-                                <td style="text-align:center;">' . $det->marca . '</td>
-                                <td>' . $det->descripcion . '</td>
-                                <td style="text-align:center;">' . $det->cantidad . '</td>
-                            </tr>
-                            <tr>
-                                <td colSpan="4" style="background-color: #ededed;"><strong>Producto Transformado:</strong></td>
-                            </tr>
-                            <tr>
-                                <th style="border-bottom: 1px solid #cfcfcf">Part Number</th>
-                                <th style="border-bottom: 1px solid #cfcfcf">Marca</th>
-                                <th style="border-bottom: 1px solid #cfcfcf" width="40%">Descripción</th>
-                                <th style="border-bottom: 1px solid #cfcfcf">Cant.</th>
-                            </tr>
-                            <tr>
-                                <td style="text-align:center;">' . $det->part_no_producto_transformado . '</td>
-                                <td style="text-align:center;">' . $det->marca_producto_transformado . '</td>
-                                <td>' . $det->descripcion_producto_transformado . '</td>
-                                <td style="text-align:center;">' . $det->cantidad . '</td>
-                            </tr>';
-
-                $html .= '
-                            <tr>
-                                <td colSpan="4">' . ($det->etiquetado_producto_transformado ? '  Etiquetado: <strong>Si</strong>  ' : '  Etiquetado: <strong>No</strong>  ') .
-                    ($det->bios_producto_transformado ? ',  BIOS: <strong>Si</strong>  ' : ',  BIOS: <strong>No</strong>  ') .
-                    ($det->office_preinstalado_producto_transformado ? ',  Office Preinstalado: <strong>Si</strong>  ' : ',  Office Preinstalado: <strong>No</strong>  ') .
-                    ($det->office_activado_producto_transformado ? ',  Office Activado: <strong>Si</strong>  ' : ',  Office Activado: <strong>No</strong>  ') . '</td>
-                            </tr>';
-
-                $ingresaSale = DB::table('mgcp_cuadro_costos.cc_fila_movimientos_transformacion')
-                    ->select(
-                        'cc_am_filas.descripcion as ingresa',
-                        'cc_fila_movimientos_transformacion.sale',
-                        'cc_fila_movimientos_transformacion.comentario'
-                    )
-                    ->leftjoin('mgcp_cuadro_costos.cc_am_filas', 'cc_am_filas.id', '=', 'cc_fila_movimientos_transformacion.id_fila_ingresa')
-                    ->where('cc_fila_movimientos_transformacion.id_fila_base', $det->id)
-                    ->get();
-
-                if (count($ingresaSale) > 0) {
-                    $html .= '
-                            <tr>
-                                <td colSpan="4" style="background-color: #ededed;"><strong>Ingresos y salidas:</strong></td>
-                            </tr>
-                            <tr>
-                                <th style="border-bottom: 1px solid #cfcfcf" colSpan="2">Ingresa</th>
-                                <th style="border-bottom: 1px solid #cfcfcf">Sale</th>
-                                <th style="border-bottom: 1px solid #cfcfcf">Comentario</th>
-                            </tr>';
-                    foreach ($ingresaSale as $val) {
-                        $html .= '
-                            <tr>
-                                <td colSpan="2">' . ($val->ingresa !== null ? $val->ingresa : '') . '</td>
-                                <td>' . ($val->sale !== null ? $val->sale : '') . '</td>
-                                <td>' . ($val->comentario !== null ? $val->comentario : '') . '</td>
-                            </tr>';
-                    }
-                }
-                $i++;
-            }
-        }
-        $html .= '</tbody></table>';
-
-        if (count($detalle_sobrante) > 0) {
-            $html .= '<br/>
-                        <table id="detalle">
-                        <thead style="background-color: #ebccd1;">
-                            <tr>
-                                <th colSpan="6"><center>Productos Sobrantes</center></th>
-                            </tr>
-                            <tr>
-                                <th>#</th>
-                                <th>Código</th>
-                                <th>Part Number</th>
-                                <th>Descripción</th>
-                                <th>Cant.</th>
-                                <th>Unid.</th>
-                            </tr>
-                        </thead>
-                        <tbody>';
-            $i = 1;
-
-            foreach ($detalle_sobrante as $det) {
-                $html .= '
-                            <tr>
-                                <td class="right">' . $i . '</td>
-                                <td>' . $det->codigo . '</td>
-                                <td>' . $det->part_number . '</td>
-                                <td>' . $det->descripcion . '</td>
-                                <td class="right">' . $det->cantidad . '</td>
-                                <td>' . $det->abreviatura . '</td>
-                            </tr>';
-                $i++;
-            }
-            $html .= '</tbody></table>';
-        }
-        $html .= '
-
-
-                <footer style="position:absolute;bottom:0px;right:0px;">
-                    <p style="text-align:right;font-size:10px;margin-bottom:0px;">Emitido por: ' . $result->nombre_corto . ' - Impreso el: ' . (new Carbon($fecha_actual))->format('d-m-Y') . ' ' . $hora_actual . '</p>
-                    <p style="text-align:right;font-size:10px;margin-top:0px;"><strong>' . config('global.nombreSistema') . ' '  . config('global.version') . '</strong></p>
-                </footer>
-            </body>
-        </html>';
-*/
         $transformacion = DB::table('almacen.transformacion')
             ->select(
                 'transformacion.codigo',
@@ -1573,21 +1278,42 @@ class TransformacionController extends Controller
             ->where('transformacion.id_transformacion', $id_transformacion)
             ->first();
 
-        $oportunidad = Oportunidad::find($transformacion->id_oportunidad);
-        $detalleRequerimiento = DetalleRequerimiento::where([['id_requerimiento', '=', $transformacion->id_requerimiento], ['estado', '!=', 7]])->get();
+            if(isset($transformacion->id_oportunidad) && $transformacion->id_oportunidad >0){
+                $oportunidad = Oportunidad::find($transformacion->id_oportunidad);
+                $detalleRequerimiento = DetalleRequerimiento::where([['id_requerimiento', '=', $transformacion->id_requerimiento], ['estado', '!=', 7]])->get();
 
-        $codigo = $transformacion->codigo;
-        $logo_empresa = ".$transformacion->logo_empresa";
+                $codigo = $transformacion->codigo;
+                $logo_empresa = ".$transformacion->logo_empresa";
 
-        $vista = View::make(
-            'almacen/customizacion/hoja-transformacion',
-            compact('oportunidad', 'detalleRequerimiento', 'logo_empresa', 'codigo')
-        )->render();
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->loadHTML($vista);
+                $vista = View::make(
+                    'almacen/customizacion/hoja-transformacion',
+                    compact('oportunidad', 'detalleRequerimiento', 'logo_empresa', 'codigo')
+                )->render();
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->loadHTML($vista);
 
-        return $pdf->stream();
-        return $pdf->download($oportunidad->codigo_oportunidad . '.pdf');
+                return $pdf->stream();
+                return $pdf->download($oportunidad->codigo_oportunidad . '.pdf');
+            }else{ // para casos donde el requerimiento y la transformación no tiene un vinculo con un CDP
+                $requerimiento = Requerimiento::find($transformacion->id_requerimiento);
+                $detalleRequerimiento = DetalleRequerimiento::with('producto.marca')->where([['id_requerimiento', '=', $transformacion->id_requerimiento], ['estado', '!=', 7]])->get();
+
+                $codigo = $transformacion->codigo;
+                $logo_empresa = ".$transformacion->logo_empresa";
+
+                $vista = View::make(
+                    'almacen/customizacion/hoja-transformacion_sin_cdp',
+                    compact('requerimiento', 'detalleRequerimiento', 'logo_empresa', 'codigo')
+                )->render();
+
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->loadHTML($vista);
+
+                return $pdf->stream();
+                return $pdf->download($transformacion->codigo . '.pdf');
+
+            }
+
     }
 
     public function imprimir_orden_servicio_o_transformacion($idOportunidad)

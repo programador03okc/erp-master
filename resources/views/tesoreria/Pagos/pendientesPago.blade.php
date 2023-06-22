@@ -443,6 +443,7 @@ Registro de pagos
 
     <script src="{{ asset('js/tesoreria/pagos/modalVistaRapidaRequerimiento.js')}}?v={{filemtime(public_path('js/tesoreria/pagos/modalVistaRapidaRequerimiento.js'))}}"></script>
 
+    <script src="{{ asset('js/Tesoreria/Pagos/cuadro-comparativo.js')}}"></script>
     <script>
     $(document).ready(function(){
         seleccionarMenu(window.location);

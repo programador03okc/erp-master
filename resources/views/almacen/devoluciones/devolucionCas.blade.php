@@ -19,7 +19,7 @@ Orden Devolución
 @endsection
 
 @section('content')
-@if (in_array(Auth::user()->id_usuario,[1,3,27,17,77,93,64,8,71,76]))
+@if (in_array(Auth::user()->id_usuario,[1,3,27,17,77,93,64,8,71,76,141]))
     @include('almacen.devoluciones.devolucionContenido')
 @else
 <div class="row">

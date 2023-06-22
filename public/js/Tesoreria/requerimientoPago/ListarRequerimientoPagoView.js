@@ -1995,7 +1995,7 @@ class ListarRequerimientoPagoView {
                     });
                 },
                 success: (response) => {
-                    console.log(response);
+                    // console.log(response);
                     if (response.id_requerimiento_pago > 0) {
                         $('#wrapper-okc').LoadingOverlay("hide", true);
 
@@ -2106,7 +2106,7 @@ class ListarRequerimientoPagoView {
                         });
                     },
                     success: (response) => {
-                        console.log(response);
+                        // console.log(response);
                         if (response.id_requerimiento_pago > 0) {
                             $('#wrapper-okc').LoadingOverlay("hide", true);
 
@@ -2670,7 +2670,7 @@ class ListarRequerimientoPagoView {
             document.querySelector("div[id='modal-requerimiento-pago'] input[name='nombre_destinatario']").value = data.persona != null && data.persona.nombres != null ? ((data.persona.nombres).concat(' ', data.persona.apellido_paterno).concat(' ', data.persona.apellido_materno)) : '';
             document.querySelector("div[id='modal-requerimiento-pago'] input[name='id_cuenta_persona']").value = data.id_cuenta_persona != null ? data.id_cuenta_persona : '';
 
-            obtenerCuentasBancariasPersona(data.id_persona);
+            obtenerCuentasBancariasPersona(data.id_persona, (data.id_cuenta_persona != null ? data.id_cuenta_persona : null));
 
         }
         if (data.id_tipo_destinatario == 2 && data.id_contribuyente > 0) {
