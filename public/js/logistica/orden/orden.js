@@ -743,6 +743,7 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value = data.id_contacto ? data.id_contacto : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value = data.nombre_contacto ? data.nombre_contacto : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value = data.telefono_contacto ? data.telefono_contacto : '';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='moneda_cuenta_principal_proveedor']").value = data.id_moneda_cuenta == 1 ?'S/':(data.id_moneda_cuenta ==2?'$':'');
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value = data.id_cta_principal ? data.id_cta_principal : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_cuenta_principal_proveedor']").value = data.nro_cuenta ? data.nro_cuenta : '';
 

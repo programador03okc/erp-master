@@ -198,6 +198,7 @@ Orden de compra / servicio
                             <h5>Cuenta bancaria</h5>
                             <div style="display:flex;">
                                 <input class="oculto" name="id_cuenta_principal_proveedor">
+                                <input type="text" class="form-control" name="moneda_cuenta_principal_proveedor" style="width:50px;" readOnly>
                                 <input type="text" class="form-control" name="nro_cuenta_principal_proveedor" readOnly>
                                 <button type="button" class="group-text" onClick="cuentasBancariasModal();">
                                     <i class="fa fa-search"></i>

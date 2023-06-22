@@ -11,6 +11,7 @@ function listar_proveedores(){
         'ajax': {
             'url': 'mostrar-proveedores',
             'type': 'POST',
+            'data': {idMoneda:document.querySelector("select[name='id_moneda']").value??''},
             // beforeSend: data => {
 
             //     $("#listaProveedores").LoadingOverlay("show", {
@@ -43,6 +44,7 @@ function listar_proveedores(){
                         data-telefono="${row.contribuyente && row.contribuyente.telefono!=null?row.contribuyente.telefono:''}"
                         data-ubigeo-descripcion="${row.contribuyente && row.contribuyente.ubigeo_completo!=null?row.contribuyente.ubigeo_completo:''}"
                         data-ubigeo="${row.contribuyente && row.contribuyente.ubigeo!=null?row.contribuyente.ubigeo:''}"
+                        data-id-moneda-cuenta-principal="${row.cuenta_contribuyente.length>0?row.cuenta_contribuyente[0].id_moneda:''}"
                         data-id-cuenta-principal="${row.cuenta_contribuyente.length>0?row.cuenta_contribuyente[0].id_cuenta_contribuyente:''}"
                         data-cuenta-principal="${row.cuenta_contribuyente.length>0?row.cuenta_contribuyente[0].nro_cuenta:''}"
                         onclick="selectProveedor(this);">
@@ -112,6 +114,7 @@ function selectProveedor(obj){
     let ubigeo= obj.dataset.ubigeo !=null?obj.dataset.ubigeo:"";
     let cuentaPrincipal= obj.dataset.cuentaPrincipal !=null?obj.dataset.cuentaPrincipal:"";
     let idCuentaPrincipal= obj.dataset.idCuentaPrincipal !=null?obj.dataset.idCuentaPrincipal:"";
+    let idMonedaCuentaPrincipal= obj.dataset.idMonedaCuentaPrincipal !=null?obj.dataset.idMonedaCuentaPrincipal:"";
 
     document.querySelector("input[name='id_proveedor']").value =idProveedor;
     document.querySelector("input[name='id_contrib']").value =idContribuyente;
@@ -122,6 +125,7 @@ function selectProveedor(obj){
         document.querySelector("input[name='nro_documento']").value =numeroDocumento;
     }
     document.querySelector("input[name='razon_social']").value =razonSocial;
+    document.querySelector("input[name='moneda_cuenta_principal_proveedor']").value =idMonedaCuentaPrincipal ==1?'S/':(idMonedaCuentaPrincipal ==2?'$':'');
     document.querySelector("input[name='id_cuenta_principal_proveedor']").value =idCuentaPrincipal;
     document.querySelector("input[name='nro_cuenta_principal_proveedor']").value =cuentaPrincipal;
     

@@ -1453,6 +1453,7 @@ class OrdenController extends Controller
             'adm_rubro.descripcion as rubro_descripcion',
             'log_ord_compra.id_cta_principal',
             'adm_cta_contri.nro_cuenta',
+            'adm_cta_contri.id_moneda as id_moneda_cuenta',
             DB::raw("(dis_proveedor.descripcion) || ' - ' || (prov_proveedor.descripcion) || ' - ' || (dpto_proveedor.descripcion)  AS ubigeo_proveedor"),
             'log_ord_compra.id_contacto',
             'adm_ctb_contac.nombre as nombre_contacto',
@@ -4235,20 +4236,27 @@ class OrdenController extends Controller
         return json_encode($output);
     }
 
-    public function mostrarProveedores()
+    public function mostrarProveedores(Request $request)
     {
-        // $proveedores = Proveedor::with(['estadoProveedor'=> function($q){
-        //     $q->where([['estado', '=', 1]]);
-        // },'cuentaContribuyente'=> function($q){
-        //     $q->where([['estado', '=', 1]]);
-        // },'contribuyente'=> function($q){
-        //     $q->where([['estado', '=', 1],['transportista', '=', false]]);
-        // }])->where('log_prove.estado','=',1);
+
+        $idMoneda = $request->idMoneda;
+        if($idMoneda != null && $idMoneda >0){
+            $proveedores = Proveedor::with(['contribuyente.tipoDocumentoIdentidad', 'estadoProveedor', 'cuentaContribuyente'=> function($q) use($idMoneda){
+                $q->where([['estado', '=', 1],['id_moneda','=',$idMoneda]]);
+                }])
+                ->whereHas('contribuyente', function ($q) {
+                $q->where('estado', '=', 1);
+            })->where('log_prove.estado', '=', 1);
+        }else{
+            $proveedores = Proveedor::with(['contribuyente.tipoDocumentoIdentidad', 'estadoProveedor', 'cuentaContribuyente'=> function($q){
+                $q->where('estado', '=', 1);
+                }])
+                ->whereHas('contribuyente', function ($q) {
+                $q->where('estado', '=', 1);
+            })->where('log_prove.estado', '=', 1);
+        }
 
 
-        $proveedores = Proveedor::with('contribuyente.tipoDocumentoIdentidad', 'estadoProveedor', 'cuentaContribuyente')->whereHas('contribuyente', function ($q) {
-            $q->where('estado', '=', 1);
-        })->where('log_prove.estado', '=', 1);
 
 
 
