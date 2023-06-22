@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Finanzas\Presupuesto\PresupuestoInternoController;
 use App\Http\Controllers\Tesoreria\RegistroPagoController;
+use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Division;
+use App\Models\Administracion\Documento;
 use App\Models\Almacen\DetalleRequerimiento;
 use App\Models\Finanzas\HistorialPresupuestoInternoSaldo;
 use App\Models\Finanzas\PresupuestoInterno;
@@ -20,6 +22,7 @@ use App\Models\Tesoreria\RegistroPago;
 use App\Models\Tesoreria\RequerimientoPago;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class NormalizarController extends Controller
@@ -135,6 +138,8 @@ class NormalizarController extends Controller
     public function vincularPartida(Request $request)
     {
         try {
+            DB::beginTransaction();
+
             // return response()->json($request->all(),200);exit;
             $variable = $request->tap;
 
@@ -200,10 +205,10 @@ class NormalizarController extends Controller
                             // $registro_pago->fecha_pago = ;
                             // $registro_pago->save();
                             #--------------
+                            // $fechaAfectacion= $this->getFechaAprobacionRequerimientoDePago($request->requerimiento_pago_id);
                             $mensaje = PresupuestoInternoHistorialHelper::normalizarRequerimientoDePago($request->requerimiento_pago_id,$request->requerimiento_pago_detalle_id);
                             $titulo='Información';
 
-                            // PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoPago($request->requerimiento_pago_id, $id_pago, $detalleArray, 'R');
                         }else{
                             $tipo='warning';
                             $mensaje='El saldo del mes de '.$mes_string.' es menor que el monto del Requerimiento de Pago.';
@@ -219,15 +224,34 @@ class NormalizarController extends Controller
                 break;
             }
         } catch (\PDOException $message) {
-
-			$ouput=['status'=>false,'message'=> $message];
-
+            DB::rollBack();
+			$ouput=['tipo'=>'error','titulo'=>'Error','status'=>false,'message'=> $message->getMessage()];
             return response()->json($ouput,200);
         }
 
+        DB::commit();
 
         return response()->json(["tipo"=>$tipo,"mensaje"=>$mensaje,"titulo"=>$titulo],200);
     }
+
+    // public function getFechaAprobacionRequerimientoDePago($idRequerimientoPago) {
+    //     $idDocumento = Documento::getIdDocAprob($idRequerimientoPago,11);
+    //     $fechaAprobacion= '';
+    //     if($idDocumento>0){
+    //         $AprobacionList = Aprobacion::getVoBo($idDocumento);
+
+    //         if($AprobacionList['status']=='200'){
+    //             foreach ( $AprobacionList['data'] as $value) {
+    //                 if($value->id_vobo == 1){
+    //                     $fechaAprobacion= $value->fecha_vobo;
+    //                 }
+    //             };
+    //         }
+    //     }
+
+    //     return $fechaAprobacion;
+    // }
+
     public function detalleRequerimientoPago($id)
     {
         $requerimiento_pago = RequerimientoPagoDetalle::where('id_requerimiento_pago',$id)
