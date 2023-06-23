@@ -1310,7 +1310,7 @@ class RegistroPagoController extends Controller
                 "codigo"=>$value->codigo,
                 "concepto"=>$value->concepto,
                 "nombre_corto"=>$value->nombre_corto,
-                "persona"=>$value->persona,
+                // "persona"=>$value->persona,
                 "fecha_registro"=>$value->fecha_registro,
                 "simbolo"=>$value->simbolo,
                 "monto_total"=>$value->monto_total,
@@ -1329,7 +1329,7 @@ class RegistroPagoController extends Controller
 
                 //persona
                 "nro_documento_persona"=>(!empty($value->nro_documento_persona)?$value->nro_documento_persona:'-'),
-                "nombre_completo_persona"=>(!empty($value->nombre_completo_persona)?$value->nombre_completo_persona:'-'),
+                "nombre_completo_persona"=>(!empty($value->persona)?$value->persona:'-'),
                 "tipo_cuenta_persona"=>(!empty($value->tipo_cuenta_persona)?$value->tipo_cuenta_persona:'-'),
                 "banco_persona"=>(!empty($value->banco_persona)?$value->banco_persona:'-'),
                 "nro_cuenta_persona"=>(!empty($value->nro_cuenta_persona)?$value->nro_cuenta_persona:'-'),

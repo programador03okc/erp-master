@@ -6,7 +6,6 @@
             <th style="background-color: #cccccc;text-align:center;">Código</th>
             <th style="background-color: #cccccc;text-align:center;" width="80">Concepto</th>
             <th style="background-color: #cccccc;text-align:center;">Elaborado por</th>
-            <th style="background-color: #cccccc;text-align:center;"width="60">Destinatrio</th>
             <th style="background-color: #cccccc;text-align:center;">Fecha Emisión</th>
             <th style="background-color: #cccccc;text-align:center;">Mnd</th>
             <th style="background-color: #cccccc;text-align:center;">Total</th>
@@ -31,7 +30,6 @@
             <td>{{ $requerimiento->codigo }}</td>
             <td>{{ $requerimiento->concepto }}</td>
             <td>{{ $requerimiento->nombre_corto }}</td>
-            <td>{{ $requerimiento->persona }}</td>
             <td>{{ $requerimiento->fecha_registro!=null ? date("d-m-Y", strtotime($requerimiento->fecha_registro)) : '' }}</td>
             <td>{{ $requerimiento->simbolo }}</td>
             <td>{{ round($requerimiento->monto_total, 2)  }}</td>

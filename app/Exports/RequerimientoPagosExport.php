@@ -42,10 +42,10 @@ class RequerimientoPagosExport implements FromView, WithColumnFormatting, WithSt
     public function columnFormats(): array
     {
         return [
+            'H' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
             'I' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            'J' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
-            'Q' => NumberFormat::FORMAT_TEXT,
-            'R' => NumberFormat::FORMAT_TEXT
+            'P' => NumberFormat::FORMAT_TEXT,
+            'Q' => NumberFormat::FORMAT_TEXT
         ];
     }
 
