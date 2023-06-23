@@ -142,11 +142,12 @@ function mostrarPartidas(id) {
             var desPadre = '';
             response.titulos.forEach(element => {
                 desPadre = response.titulos.find(titulo => titulo.codigo == element.cod_padre);
+                let montoTitulo = $.number(element.total, 2, '.', ',');
 
                 html += `<tr style="background: LightCyan;">
                     <td><a name="${element.id_titulo}"></a>${element.codigo}</td>
                     <td>${element.descripcion}</td>
-                    <td>${element.total}</td>
+                    <td align="right">${montoTitulo}</td>
                     <td style="padding:0px;">
                         <div class="btn-group" role="group">
 
@@ -173,13 +174,13 @@ function mostrarPartidas(id) {
                 </tr>`;
 
                 response.partidas.forEach(partida => {
-
                     if (element.codigo == partida.cod_padre) {
+                        let monto = $.number(partida.importe_total, 2, '.', ',');
 
                         html += `<tr>
                             <td><a name="${partida.id_partida}"></a>${partida.codigo}</td>
                             <td>${partida.descripcion}</td>
-                            <td>${partida.importe_total}</td>
+                            <td align="right">${monto}</td>
                             <td style="padding:0px;">
                                 <div class="btn-group" role="group">
 
