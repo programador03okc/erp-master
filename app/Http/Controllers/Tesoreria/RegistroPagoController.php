@@ -1297,6 +1297,7 @@ class RegistroPagoController extends Controller
         }
 
         $data = $data->orderBy('id_requerimiento_pago', 'DESC')->get();
+        // return $data;exit;
         $json_excel = array();
         foreach ($data as $key => $value) {
             $pagado = floatval($value->suma_pagado !== null ? $value->suma_pagado : 0);
@@ -1316,6 +1317,14 @@ class RegistroPagoController extends Controller
                 "saldo"=>$por_pagar,
                 "estado_doc"=>$value->estado_doc,
                 "nombre_autorizado"=>($value->nombre_autorizado !==''?$value->nombre_autorizado.' el '.$value->fecha_autorizacion:''),
+
+                "nro_documento"=>(!empty($value->nro_documento)?$value->nro_documento:'-'),
+                "razon_social"=>(!empty($value->razon_social)?$value->razon_social:'-'),
+                "tipo_cuenta"=>(!empty($value->tipo_cuenta)?$value->tipo_cuenta:'-'),
+                "banco_contribuyente"=>(!empty($value->banco_contribuyente)?$value->banco_contribuyente:'-'),
+                "nro_cuenta"=>(!empty($value->nro_cuenta)?$value->nro_cuenta:'-'),
+                "nro_cuenta_interbancaria"=>(!empty($value->nro_cuenta_interbancaria)?$value->nro_cuenta_interbancaria:'-'),
+                "nro_cuenta_interbancaria"=>(!empty($value->nro_cuenta_interbancaria)?$value->nro_cuenta_interbancaria:'-'),
 
             ));
         }

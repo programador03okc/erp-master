@@ -14,6 +14,13 @@
             <th>Estado</th>
             <th>Autorizado por</th>
 
+            <th>N° de Documento</th>
+            <th>Destinatario</th>
+            <th>Tipo de cuenta</th>
+            <th>Banco</th>
+            <th>Cuenta bancaria</th>
+            <th>Cuenta CCI</th>
+
         </tr>
     </thead>
     <tbody>
@@ -31,6 +38,13 @@
             <td>{{ round(($requerimiento->saldo),2) }}</td>
             <td>{{ $requerimiento->estado_doc }}</td>
             <td>{{ $requerimiento->nombre_autorizado }}</td>
+
+            <td>{{ $requerimiento->nro_documento }}</td>
+            <td>{{ $requerimiento->razon_social }}</td>
+            <td>{{ $requerimiento->tipo_cuenta }}</td>
+            <td>{{ $requerimiento->banco_contribuyente }}</td>
+            <td>{{ $requerimiento->nro_cuenta }}</td>
+            <td>{{ $requerimiento->nro_cuenta_interbancaria }}</td>
 
 
 
