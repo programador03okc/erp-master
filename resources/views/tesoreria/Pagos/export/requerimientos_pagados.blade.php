@@ -11,7 +11,6 @@
             <th style="background-color: #cccccc;text-align:center;">Mnd</th>
             <th style="background-color: #cccccc;text-align:center;">Total</th>
             <th style="background-color: #cccccc;text-align:center;">Saldo</th>
-            <th style="background-color: #cccccc;text-align:center;">Valor Cuota</th>
             <th style="background-color: #cccccc;text-align:center;">Estado</th>
             <th style="background-color: #cccccc;text-align:center;" width="30">Autorizado por</th>
 
