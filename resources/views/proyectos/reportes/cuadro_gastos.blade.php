@@ -44,23 +44,37 @@ Cuadro de gastos
                     <table class="mytable table table-condensed table-bordered table-okc-view" width="100%" id="listaEstructura" style="font-size: 13px;">
                         <thead>
                             <tr>
-                                <th class="text-center">Fecha</th>
-                                <th class="text-center">N° Req.</th>
+                                <th colspan="18">Requerimientos (logísticos y Pago)</th>
+                                <th colspan="9">Orden</th>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Tipo req.</th>
+                                <th class="text-center">Fecha req.</th>
+                                <th class="text-center">Cod. Req.</th>
                                 <th class="text-center">Cuenta(Partida)</th>
                                 <th class="text-center">Cuenta(Sub partida)</th>
                                 <th class="text-center">Tipo Doc.</th>
                                 <th class="text-center">Serie - número</th>
                                 <th class="text-center">RUC/DNI</th>
                                 <th class="text-center">Proveedor o persona asignada</th>
+                                <th class="text-center">Desripción</th>
                                 <th class="text-center">Cant.</th>
                                 <th class="text-center">Und.</th>
-                                <th class="text-center">Desripción</th>
                                 <th class="text-center">Mon.</th>
-                                <th class="text-center">P.U</th>
+                                <th class="text-center">P.U.</th>
                                 <th class="text-center">V.Compra</th>
                                 <th class="text-center">IGV</th>
                                 <th class="text-center">P.Compra</th>
                                 <th class="text-center">Estado Pago</th>
+                                <th class="text-center">Fecha</th>
+                                <th class="text-center">Cod</th>
+                                <th class="text-center">Cant.</th>
+                                <th class="text-center">Und.</th>
+                                <th class="text-center">Mon.</th>
+                                <th class="text-center">P.U.</th>
+                                <th class="text-center">V.Compra</th>
+                                <th class="text-center">IGV</th>
+                                <th class="text-center">P.Compra</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
