@@ -671,7 +671,7 @@ class RevisarAprobarController extends Controller{
                 break;
             case '3':
                 $requerimientoPago->id_estado = 3;
-                if($requerimientoPago->estado !=3){
+                if($requerimientoPago->id_estado !=3){
                     $requerimientoPago->estado_anterior = $requerimientoPago->id_estado;
                 }
                 break;
