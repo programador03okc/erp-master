@@ -9,7 +9,7 @@ Lista de Presupuestos
 <link rel="stylesheet" href="{{ asset('template/plugins/jquery-datatables-checkboxes/css/dataTables.checkboxes.css') }}">
 <style>
     .lbl-codigo:hover{
-        color:#007bff !important; 
+        color:#007bff !important;
         cursor:pointer;
     }
 </style>
@@ -27,7 +27,7 @@ Lista de Presupuestos
         <div class="box-header with-border">
             <h3 class="box-title">Datos Generales</h3>
             <div class="box-tools pull-right">
-                {{-- <button type="button" data-toggle="modal" data-target="actualizarPartidas" 
+                {{-- <button type="button" data-toggle="modal" data-target="actualizarPartidas"
                     title="Actualizar descripcion de partidas" class="btn btn-box-tool btn-sm btn-info"
                     onClick="actualizarPartidas();">
                     <i class="fas fa-sync-alt"></i>
@@ -37,7 +37,7 @@ Lista de Presupuestos
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <table class="mytable table table-condensed table-bordered table-okc-view" 
+                    <table class="mytable table table-condensed table-bordered table-okc-view"
                         id="listaPresupuestos">
                         <thead>
                             <tr>
@@ -45,6 +45,7 @@ Lista de Presupuestos
                                 <th scope="col">Código</th>
                                 <th scope="col">Descripción</th>
                                 <th scope="col">Fecha Emisión</th>
+                                <th scope="col">Activo</th>
                                 <th scope="col">Empresa</th>
                             </tr>
                         </thead>
@@ -55,6 +56,7 @@ Lista de Presupuestos
                                 <td><label class="lbl-codigo" title="Abrir Presupuesto" onClick="abrirPresupuesto('{{ $presup->id_presup }}')">{{ $presup->codigo }}</label></td>
                                 <td>{{ $presup->descripcion }}</td>
                                 <td>{{ $presup->fecha_emision }}</td>
+                                <td class="text-center"> <span class="pull-right badge bg-{{ ($presup->activo=='t'?'green':'red') }}">{{ ($presup->activo=='t'?'activo':'inactivo') }}</span></td>
                                 <td>{{ $presup->empresa->contribuyente->razon_social }}</td>
                             </tr>
                             @empty
