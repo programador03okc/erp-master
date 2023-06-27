@@ -743,6 +743,7 @@ function construirFormularioOrden(data) {
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_contacto_proveedor']").value = data.id_contacto ? data.id_contacto : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_nombre']").value = data.nombre_contacto ? data.nombre_contacto : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='contacto_proveedor_telefono']").value = data.telefono_contacto ? data.telefono_contacto : '';
+    document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='moneda_cuenta_principal_proveedor']").value = data.id_moneda_cuenta == 1 ?'S/':(data.id_moneda_cuenta ==2?'$':'');
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='id_cuenta_principal_proveedor']").value = data.id_cta_principal ? data.id_cta_principal : '';
     document.querySelector("form[id='form-crear-orden-requerimiento'] input[name='nro_cuenta_principal_proveedor']").value = data.nro_cuenta ? data.nro_cuenta : '';
 
@@ -811,7 +812,7 @@ function construirFormularioOrden(data) {
                     <td class="text-center">${detalle[i].producto.cod_softlink ? detalle[i].producto.cod_softlink : ''} </td>
                     <td class="text-center">${detalle[i].producto.part_number ? detalle[i].producto.part_number : ''} <input type="hidden"  name="idProducto[]" value="${(detalle[i].id_producto ? detalle[i].id_producto : detalle[i].id_producto)} "></td>
                     <td class="text-left">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : (detalle[i].descripcion != null ? detalle[i].descripcion : ''))} <textarea style="display:none;"  name="descripcion[]">${(detalle[i].producto.descripcion ? detalle[i].producto.descripcion : detalle[i].descripcion)}</textarea>
-                        <textarea class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;" disabled>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
+                        <textarea class="form-control ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;" readOnly>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
                     </td>
                     <td><p name="unidad[]" class="form-control-static unidadMedida" data-valor="${detalle[i].producto.id_unidad_medida}">${(detalle[i].producto != null && detalle[i].producto.unidad_medida != null ? detalle[i].producto.unidad_medida.abreviatura : 'sin und.')}</p>
                     <input type="hidden"  name="unidad[]" value="${detalle[i].producto.id_unidad_medida}">
@@ -821,12 +822,12 @@ function construirFormularioOrden(data) {
                     <td>${(cantidad_atendido_almacen > 0 ? cantidad_atendido_almacen : '')}</td>
                     <td>${(cantidad_atendido_orden > 0 ? cantidad_atendido_orden : '')}</td>
                     <td>
-                        <input class="form-control cantidad_a_comprar input-sm text-right ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : 0}" disabled>
+                        <input class="form-control cantidad_a_comprar input-sm text-right ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal"  data-id-tipo-item="1" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : 0}" readOnly>
                     </td>
                     <td>
                         <div class="input-group">
                             <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
-                            <input class="form-control precio input-sm text-right ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(detalle[i].producto_regalo ? detalle[i].producto_regalo : false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${detalle[i].precio ? detalle[i].precio : 0}" disabled>
+                            <input class="form-control precio input-sm text-right ${(detalle[i].guia_compra_detalle != null && detalle[i].guia_compra_detalle.length > 0 ? '' : 'activation')}  handleBurUpdateSubtotal" data-id-tipo-item="1" data-producto-regalo="${(detalle[i].producto_regalo ? detalle[i].producto_regalo : false)}" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${detalle[i].precio ? detalle[i].precio : 0}" readOnly>
                         </div>
                     </td>
                     <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>
@@ -845,19 +846,19 @@ function construirFormularioOrden(data) {
                 <td>(No aplica) <input type="hidden" value=""></td>
                 <td>(No aplica) <input type="hidden"  name="idProducto[]" value=""></td>
                 <td><textarea name="descripcion[]" placeholder="Descripción" class="form-control descripcion_servicio activation" value="${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}" style="width:100%;height: 60px;"> ${(detalle[i].descripcion_adicional ? detalle[i].descripcion_adicional : '')}</textarea>
-                    <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;" disabled>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
+                    <textarea class="form-control activation" style="display:none;" name="descripcionComplementaria[]" placeholder="Descripción complementaria" style="width:100%;height: 60px;" readOnly>${(detalle[i].descripcion_complementaria ? detalle[i].descripcion_complementaria : '')}</textarea>
                 </td>
                 <td><select name="unidad[]" class="form-control  input-sm" value="${detalle[i].id_unidad_medida}" >${document.querySelector("select[id='selectUnidadMedida']").innerHTML}</select></td>
                 <td>${(detalle[i].cantidad ? detalle[i].cantidad : '')}</td>
                 <td></td>
                 <td></td>
                 <td>
-                    <input class="form-control cantidad_a_comprar input-sm text-right activation handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : ''}" disabled>
+                    <input class="form-control cantidad_a_comprar input-sm text-right activation handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="cantidadAComprarRequerida[]"  placeholder="" value="${detalle[i].cantidad ? detalle[i].cantidad : ''}" readOnly>
                 </td>
                 <td>
                     <div class="input-group">
                         <div class="input-group-addon" style="background:lightgray;" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</div>
-                        <input class="form-control precio input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${detalle[i].precio ? detalle[i].precio : 0}" disabled>
+                        <input class="form-control precio input-sm text-right activation  handleBurUpdateSubtotal" data-id-tipo-item="2" type="number" min="0" name="precioUnitario[]"  placeholder="" value="${detalle[i].precio ? detalle[i].precio : 0}" readOnly>
                     </div>
                 </td>
                 <td style="text-align:right;"><span class="moneda" name="simboloMoneda">${document.querySelector("select[name='id_moneda']").options[document.querySelector("select[name='id_moneda']").selectedIndex].dataset.simboloMoneda}</span><span class="subtotal" name="subtotal[]">0.00</span></td>

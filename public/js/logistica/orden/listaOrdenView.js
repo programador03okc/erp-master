@@ -856,7 +856,6 @@ class ListaOrdenView {
         this.updateLabelModalEnviarSolicitudPago(JSON.parse((obj.dataset.tienePagoEnCuotas).toLowerCase()));
 
         if (obj.dataset.estadoPago == 8) {
-            document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_prioridad']").value = obj.dataset.idPrioridadPago>0?obj.dataset.idPrioridadPago:1;
             document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = obj.dataset.idTipoDestinatarioPago;
             if (obj.dataset.idTipoDestinatarioPago == 1) {
                 document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='nro_documento']").removeAttribute("disabled");

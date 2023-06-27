@@ -94,15 +94,20 @@ class PresupuestoController extends Controller
                 'alm_det_req.cantidad',
                 'alm_det_req.descripcion',
                 'alm_det_req.precio_unitario as precio_requerimiento',
-                'log_det_ord_compra.precio',
+                'log_det_ord_compra.cantidad as cantidad_orden',
+                'unidad_ord.abreviatura as unidad_orden',
+                'log_det_ord_compra.precio as precio_orden',
+                'log_det_ord_compra.subtotal as subtotal_orden',
                 'alm_req.codigo',
                 'alm_req.fecha_requerimiento',
                 'proveedor.nro_documento as nro_documento_proveedor',
                 'proveedor.razon_social as proveedor_razon_social',
                 'alm_und_medida.abreviatura',
                 'log_ord_compra.codigo as codigo_orden',
+                'log_ord_compra.fecha_registro as fecha_orden',
                 'log_ord_compra.id_moneda',
-                'sis_moneda.simbolo',
+                'moneda_ord.simbolo as simbolo_moneda_orden',
+                'moneda_req.simbolo as simbolo_moneda_requerimiento',
                 'presup_par.descripcion as partida_descripcion',
                 DB::raw("(SELECT presup_titu.descripcion FROM finanzas.presup_titu
                 WHERE presup_titu.codigo = presup_par.cod_padre
@@ -142,10 +147,12 @@ class PresupuestoController extends Controller
                 $join->where('cont_tp_doc.estado', '=', 1);
             })
             ->leftjoin('tesoreria.requerimiento_pago_estado', 'requerimiento_pago_estado.id_requerimiento_pago_estado', '=', 'log_ord_compra.estado_pago')
-            ->leftjoin('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'log_ord_compra.id_moneda')
+            ->leftjoin('configuracion.sis_moneda as moneda_ord', 'moneda_ord.id_moneda', '=', 'log_ord_compra.id_moneda')
+            ->leftjoin('configuracion.sis_moneda as moneda_req', 'moneda_req.id_moneda', '=', 'alm_req.id_moneda')
             ->leftjoin('logistica.log_prove', 'log_prove.id_proveedor', '=', 'log_ord_compra.id_proveedor')
             ->leftjoin('contabilidad.adm_contri as proveedor', 'proveedor.id_contribuyente', '=', 'log_prove.id_contribuyente')
             ->leftjoin('almacen.alm_und_medida', 'alm_und_medida.id_unidad_medida', '=', 'alm_det_req.id_unidad_medida')
+            ->leftjoin('almacen.alm_und_medida as unidad_ord', 'unidad_ord.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
             ->where([
                 ['presup.id_presup', '=', $id_presupuesto],
                 ['alm_det_req.estado', '!=', 7]
@@ -160,7 +167,7 @@ class PresupuestoController extends Controller
                 'requerimiento_pago_detalle.*',
                 'requerimiento_pago.codigo',
                 'adm_contri.razon_social',
-                'sis_moneda.simbolo',
+                'moneda_req.simbolo as simbolo_moneda_requerimiento',
                 'alm_und_medida.abreviatura',
                 'requerimiento_pago_estado.descripcion as estado_pago',
                 'presup_par.descripcion as partida_descripcion',
@@ -181,7 +188,7 @@ class PresupuestoController extends Controller
             ->join('administracion.adm_empresa', 'adm_empresa.id_empresa', '=', 'requerimiento_pago.id_empresa')
             ->join('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_empresa.id_contribuyente')
             ->join('finanzas.presup_par', 'presup_par.id_partida', '=', 'requerimiento_pago_detalle.id_partida')
-            ->join('configuracion.sis_moneda', 'sis_moneda.id_moneda', '=', 'requerimiento_pago.id_moneda')
+            ->join('configuracion.sis_moneda as moneda_req', 'moneda_req.id_moneda', '=', 'requerimiento_pago.id_moneda')
             ->join('rrhh.rrhh_trab', 'rrhh_trab.id_trabajador', '=', 'requerimiento_pago.id_trabajador')
             ->join('rrhh.rrhh_postu', 'rrhh_postu.id_postulante', '=', 'rrhh_trab.id_postulante')
             ->join('rrhh.rrhh_perso', 'rrhh_perso.id_persona', '=', 'rrhh_postu.id_persona')

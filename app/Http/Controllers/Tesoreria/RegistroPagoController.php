@@ -1292,30 +1292,48 @@ class RegistroPagoController extends Controller
         }
 
         $data = $data->orderBy('id_requerimiento_pago', 'DESC')->get();
+        // return $data;exit;
         $json_excel = array();
         foreach ($data as $key => $value) {
             $pagado = floatval($value->suma_pagado !== null ? $value->suma_pagado : 0);
             $total = floatval($value->monto_total);
             $por_pagar = ($total - $pagado);
 
-            array_push($json_excel, array(
-                "prioridad" => $value->prioridad,
-                "codigo_empresa" => $value->codigo_empresa,
-                "codigo" => $value->codigo,
-                "concepto" => $value->concepto,
-                "nombre_corto" => $value->nombre_corto,
-                "persona" => $value->persona,
-                "fecha_registro" => $value->fecha_registro,
-                "simbolo" => $value->simbolo,
-                "monto_total" => $value->monto_total,
-                "saldo" => $por_pagar,
-                "estado_doc" => $value->estado_doc,
-                "nombre_autorizado" => ($value->nombre_autorizado !== '' ? $value->nombre_autorizado . ' el ' . $value->fecha_autorizacion : ''),
+            array_push($json_excel,array(
+                "prioridad"=>$value->prioridad,
+                "codigo_empresa"=>$value->codigo_empresa,
+                "codigo"=>$value->codigo,
+                "concepto"=>$value->concepto,
+                "nombre_corto"=>$value->nombre_corto,
+                // "persona"=>$value->persona,
+                "fecha_registro"=>$value->fecha_registro,
+                "simbolo"=>$value->simbolo,
+                "monto_total"=>$value->monto_total,
+                "saldo"=>$por_pagar,
+                "estado_doc"=>$value->estado_doc,
+                "nombre_autorizado"=>($value->nombre_autorizado !==''?$value->nombre_autorizado.' el '.$value->fecha_autorizacion:''),
 
+                "id_tipo_destinatario"=>(!empty($value->id_tipo_destinatario)?$value->id_tipo_destinatario:'-'),
+                //contribuyente
+                "nro_documento"=>(!empty($value->nro_documento)?$value->nro_documento:'-'),
+                "razon_social"=>(!empty($value->razon_social)?$value->razon_social:'-'),
+                "tipo_cuenta"=>(!empty($value->tipo_cuenta)?$value->tipo_cuenta:'-'),
+                "banco_contribuyente"=>(!empty($value->banco_contribuyente)?$value->banco_contribuyente:'-'),
+                "nro_cuenta"=>(!empty($value->nro_cuenta)?$value->nro_cuenta:'-'),
+                "nro_cuenta_interbancaria"=>(!empty($value->nro_cuenta_interbancaria)?$value->nro_cuenta_interbancaria:'-'),
+
+                //persona
+                "nro_documento_persona"=>(!empty($value->nro_documento_persona)?$value->nro_documento_persona:'-'),
+                "nombre_completo_persona"=>(!empty($value->persona)?$value->persona:'-'),
+                "tipo_cuenta_persona"=>(!empty($value->tipo_cuenta_persona)?$value->tipo_cuenta_persona:'-'),
+                "banco_persona"=>(!empty($value->banco_persona)?$value->banco_persona:'-'),
+                "nro_cuenta_persona"=>(!empty($value->nro_cuenta_persona)?$value->nro_cuenta_persona:'-'),
+                "nro_cci_persona"=>(!empty($value->nro_cci_persona)?$value->nro_cci_persona:'-'),
+                
             ));
         }
         // $json_excel = json_encode($json_excel);
-        return Excel::download(new RequerimientoPagosExport(json_encode($json_excel)), 'requerimiento_pagados.xlsx');
+        return Excel::download(new RequerimientoPagosExport(json_encode($json_excel)), 'requerimiento_de_pago_pagados.xlsx');
         // return response()->json($json_excel,200);
     }
     public function exportarOrdenesComprasServicios(Request $request)
@@ -1417,27 +1435,41 @@ class RegistroPagoController extends Controller
                 $tiene_pago_en_cuotas = '(No aplica)';
             }
 
-            array_push($json_excel, array(
-                "prioridad" => $value->prioridad,
-                "requerimientos" => $value->requerimientos,
-                "codigo_empresa" => $value->codigo_empresa,
-                "codigo" => $value->codigo,
-                "razon_social" => $value->razon_social,
-                "fecha_solicitud_pago" => ($value->fecha_solicitud_pago !== null ? $value->fecha_solicitud_pago : ''),
-                "simbolo" => $value->simbolo,
+            array_push($json_excel,array(
+                "prioridad"=>$value->prioridad,
+                "requerimientos"=>$value->requerimientos,
+                "codigo_empresa"=>$value->codigo_empresa,
+                "codigo"=>$value->codigo,
+                "razon_social"=>$value->razon_social,
+                "fecha_solicitud_pago"=>($value->fecha_solicitud_pago !== null ? $value->fecha_solicitud_pago: ''),
+                "simbolo"=>$value->simbolo,
+                "monto_total"=>($value->monto_total!== null ? round($value->monto_total,2) : '0.00'),
+                "saldo"=>$por_pagar,
+                "tiene_pago_en_cuotas"=>$tiene_pago_en_cuotas,
+                "estado_doc"=>$value->estado_doc,
+                "nombre_autorizado"=>($value->nombre_autorizado?$value->nombre_autorizado.' el '.$value->fecha_autorizacion:''),
 
-                "monto_total" => ($value->monto_total !== null ? round($value->monto_total, 2) : '0.00'),
-
-                "saldo" => $por_pagar,
-                "tiene_pago_en_cuotas" => $tiene_pago_en_cuotas,
-
-                "estado_doc" => $value->estado_doc,
-                "nombre_autorizado" => ($value->nombre_autorizado ? $value->nombre_autorizado . ' el ' . $value->fecha_autorizacion : ''),
+                
+                "id_tipo_destinatario_pago"=>(!empty($value->id_tipo_destinatario_pago)?$value->id_tipo_destinatario_pago:'-'),
+                //contribuyente
+                "nro_documento"=>(!empty($value->nro_documento)?$value->nro_documento:'-'),
+                "razon_social"=>(!empty($value->razon_social)?$value->razon_social:'-'),
+                "tipo_cuenta"=>(!empty($value->tipo_cuenta)?$value->tipo_cuenta:'-'),
+                "banco_contribuyente"=>(!empty($value->banco_contribuyente)?$value->banco_contribuyente:'-'),
+                "nro_cuenta"=>(!empty($value->nro_cuenta)?$value->nro_cuenta:'-'),
+                "nro_cuenta_interbancaria"=>(!empty($value->nro_cuenta_interbancaria)?$value->nro_cuenta_interbancaria:'-'),
+                //persona
+                "nro_documento_persona"=>(!empty($value->nro_documento_persona)?$value->nro_documento_persona:'-'),
+                "nombre_completo_persona"=>(!empty($value->nombre_completo_persona)?$value->nombre_completo_persona:'-'),
+                "tipo_cuenta_persona"=>(!empty($value->tipo_cuenta_persona)?$value->tipo_cuenta_persona:'-'),
+                "banco_persona"=>(!empty($value->banco_persona)?$value->banco_persona:'-'),
+                "nro_cuenta_persona"=>(!empty($value->nro_cuenta_persona)?$value->nro_cuenta_persona:'-'),
+                "nro_cci_persona"=>(!empty($value->nro_cci_persona)?$value->nro_cci_persona:'-'),
 
             ));
         }
 
-        return Excel::download(new OrdenCompraServicioExport(json_encode($json_excel)), 'requerimiento_pagados.xlsx');
+        return Excel::download(new OrdenCompraServicioExport(json_encode($json_excel)), 'requerimiento_logisticos_pagados.xlsx');
     }
     public function cuadroComparativoPagos()
     {
