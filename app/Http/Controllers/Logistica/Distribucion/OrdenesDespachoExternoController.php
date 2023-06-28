@@ -152,11 +152,13 @@ class OrdenesDespachoExternoController extends Controller
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
                             alm_det_req.id_requerimiento = alm_req.id_requerimiento
                             and alm_det_req.estado != 7
+                            and alm_det_req.id_tipo_item = 1
                             and alm_det_req.id_producto is null) AS productos_no_mapeados"),
                 // DB::raw('count(*) as user_count, status')
                 DB::raw("(SELECT COUNT(*) FROM almacen.alm_det_req where
                             alm_det_req.id_requerimiento = alm_req.id_requerimiento
                             and alm_det_req.estado != 7
+                            and alm_det_req.id_tipo_item = 1
                             and alm_det_req.id_tipo_item = 1) AS count_productos"),
             )
             ->leftJoin('mgcp_cuadro_costos.cc', 'cc.id', '=', 'alm_req.id_cc')
