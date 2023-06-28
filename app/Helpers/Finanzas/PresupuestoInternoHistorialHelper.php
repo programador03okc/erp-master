@@ -157,16 +157,35 @@ class PresupuestoInternoHistorialHelper
                     ['id_requerimiento', '=', $idRequerimiento],
                     ['id_requerimiento_detalle', '=', $idDetalleRequerimiento],
                     ['tipo', '=', 'SALIDA'],
+                    ['descripcion', '=', 'Actualizar registro según la orden'],
                     ['mes', '=', str_pad(date('m', strtotime($fecha)), 2, "0", STR_PAD_LEFT)]
                 ]
-            )
-                ->first();
-            $historial->importe = $importe;
-            $historial->id_orden = $idOrden;
-            $historial->id_orden_detalle = $idDetalleOrden;
-            $historial->estado = $estado;
-            $historial->operacion = $operacion;
-            $historial->save();
+            )->first();
+
+            if($historial){
+                $historial->importe = $importe;
+                $historial->id_orden = $idOrden;
+                $historial->id_orden_detalle = $idDetalleOrden;
+                $historial->estado = $estado;
+                $historial->operacion = $operacion;
+                $historial->save();
+            }else{
+                $historial = new HistorialPresupuestoInternoSaldo();
+                $historial->id_presupuesto_interno = $idPresupuesto;
+                $historial->id_partida = $idPartida;
+                $historial->id_requerimiento = $idRequerimiento;
+                $historial->id_requerimiento_detalle = $idDetalleRequerimiento;
+                $historial->tipo = 'SALIDA';
+                $historial->descripcion = 'Registrar nuevo según la orden';            
+                $historial->operacion = $operacion;
+                $historial->importe = $importe;
+                $historial->mes = str_pad(date('m', strtotime($fecha)), 2, "0", STR_PAD_LEFT);
+                $historial->fecha_registro = new Carbon();
+                $historial->estado = $estado;
+                $historial->id_orden = $idOrden;
+                $historial->id_orden_detalle = $idDetalleOrden;
+                $historial->save();
+            }
         }
         return $historial;
     }

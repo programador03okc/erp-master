@@ -3377,6 +3377,31 @@ class OrdenController extends Controller
                     $this->actualizarNuevoEstadoRequerimiento('ACTUALIZAR', $request->id_orden, null);
                 }
 
+                //actualizar estado gasto 
+                foreach ($detalleArray as $item) {
+                    if($item->id_detalle_requerimiento >0 ){
+
+                        $detalleRequerimientoLogistico = DetalleRequerimiento::where([['id_detalle_requerimiento',$item->id_detalle_requerimiento],['estado','!=',7]])->first();
+
+                        if ($detalleRequerimientoLogistico) {
+                            $requerimientoLogistico = Requerimiento::find($detalleRequerimientoLogistico->id_requerimiento);
+                            $idPartida= $detalleRequerimientoLogistico->id_partida_pi;
+                            $idRequerimiento=$detalleRequerimientoLogistico->id_requerimiento;
+                            $fecha =$requerimientoLogistico->fecha_requerimiento;
+                            $idPresupuesto= $requerimientoLogistico->id_presupuesto_interno;
+                            $idDetalleRequerimiento= $item->id_detalle_requerimiento;
+                            $idOrden= $item->id_orden_compra;
+                            $idDetalleOrden= $item->id_detalle_orden;
+                            $importe= floatval($item->cantidad) * floatval($item->precio);
+                            $estado= 2;
+                            $operacion= 'R';
+                            if($idPresupuesto > 0 && $idPartida > 0){
+                                PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoLogisticoConOrden($idPresupuesto, $idPartida, $idRequerimiento, $idDetalleRequerimiento, $fecha, $idOrden, $idDetalleOrden,$importe, $estado,$operacion);
+                            }
+                        }
+
+                    }
+                }
                 // if (str_contains($data['mensaje'], 'No existe un id_softlink en la OC seleccionada')) {
                 //     $migrarOrdenSoftlink = (new MigrateOrdenSoftLinkController)->migrarOrdenCompra($request->id_orden)->original;
                 //     if ($migrarOrdenSoftlink['tipo'] == 'success') {
@@ -3413,7 +3438,6 @@ class OrdenController extends Controller
                 //         ];
                 //     }
                 // }
-
                 return response()->json($data);
                 // } else {
                 // return response()->json(['id_orden_compra' => 0, 'codigo' => '', 'tipo_estado' => 'warning', 'status_migracion_softlink' => null, 'mensaje' => 'No puede actualizar la orden, existe un requerimiento vinculado con estado "En pausa" o  "Por regularizar"']);
