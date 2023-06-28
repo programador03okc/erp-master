@@ -468,6 +468,7 @@ class PresupuestoInternoHistorialHelper
                 $nuevoHistorial->id_requerimiento_pago = $fila->id_requerimiento_pago;
                 $nuevoHistorial->id_requerimiento_pago_detalle = $fila->id_requerimiento_pago_detalle;
                 $nuevoHistorial->tipo = 'RETORNO';
+                $nuevoHistorial->descripcion = 'Retorno de presupuesto';
                 $nuevoHistorial->operacion = 'S';
                 $nuevoHistorial->importe = $fila->importe;
                 $nuevoHistorial->mes = $fila->mes;
