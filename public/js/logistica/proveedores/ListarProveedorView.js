@@ -920,6 +920,9 @@ class ListarProveedorView {
                     <td><input type="hidden" name="nroCuenta[]" value="${(element.nroCuenta != null && element.nroCuenta != '') ? element.nroCuenta : ''}"><span name="nroCuenta">${(element.nroCuenta != null && element.nroCuenta != '') ? element.nroCuenta : ''}</span></td>
                     <td><input type="hidden" name="nroCuentaInterbancaria[]" value="${(element.nroCuentaInterbancaria != null && element.nroCuentaInterbancaria != '') ? element.nroCuentaInterbancaria : ''}"><span name="nroCuentaInterbancaria">${(element.nroCuentaInterbancaria != null && element.nroCuentaInterbancaria != '') ? element.nroCuentaInterbancaria : ''}</span></td>
                     <td><input type="hidden" name="swift[]" value="${(element.swift != null && element.swift != '') ? element.swift : ''}"><span name="swift">${(element.swift != null && element.swift != '') ? element.swift : ''}</span></td>
+                    <td></td>  
+                    <td></td>  
+                    <td></td>  
                     <td>
                         <input type="hidden" class="estadoCuenta" name="estadoCuenta[]" value="1">
                         <div id="contenedorBotoneraAccionCuentaBancaria">

@@ -1,6 +1,7 @@
 $(function () {
     $("#form-agregar-cuenta-bancaria-proveedor").on("submit", function (e) {
         e.preventDefault();
+        document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] input[class~='boton']").setAttribute("disabled",true);
         guardarCuentaBancariaProveedor();
     });
 });
@@ -38,6 +39,8 @@ function guardarCuentaBancariaProveedor() {
             delayIndicator: false,
             msg: mensajeValidación
         });
+        document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] input[class~='boton']").removeAttribute("disabled");
+
     } else {
         $.ajax({
             type: 'POST',
@@ -70,6 +73,7 @@ function guardarCuentaBancariaProveedor() {
 
                     // $('#listaCuentasBancariasProveedor').DataTable().ajax.reload(null, false);
                     listarCuentasBancariasContribuyente(idProveedor);
+                    document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] input[class~='boton']").removeAttribute("disabled");
 
                 } else {
                     Swal.fire(
@@ -77,6 +81,8 @@ function guardarCuentaBancariaProveedor() {
                         'Hubo un error al intentar guardar la cuenta bancaria del proveedor, por favor intente nuevamente',
                         'error'
                     );
+                    document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] input[class~='boton']").removeAttribute("disabled");
+
                 }
 
 
@@ -91,6 +97,9 @@ function guardarCuentaBancariaProveedor() {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
+
+            document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] input[class~='boton']").removeAttribute("disabled");
+
         });
     }
 
@@ -102,6 +111,7 @@ function limpiarFormularioCuentaBancaria(){
     document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor']") ? document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='nro_cuenta']").value='' : false;
     document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor']") ? document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='nro_cuenta_interbancaria']").value='' : false;
     document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor']") ? document.querySelector("div[id='modal-agregar-cuenta-bancaria-proveedor'] input[name='swift']").value='' : false;
+    document.querySelector("form[id='form-agregar-cuenta-bancaria-proveedor'] input[class~='boton']").removeAttribute("disabled");
 }
 
 function agregar_cuenta_proveedor() {
