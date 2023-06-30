@@ -330,12 +330,14 @@ class ProveedoresController extends Controller
                             $cuentaSeleccionada->nro_cuenta  =  $request->nroCuenta[$i];
                             $cuentaSeleccionada->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i];
                             $cuentaSeleccionada->swift  = $request->swift[$i];
+                            $cuentaSeleccionada->updated_at = new Carbon();
                             $cuentaSeleccionada->save();
                         }
                     } elseif ($request->estadoCuenta[$i] == 7 && $request->idCuenta[$i] > 0) {
                         $cuentaSeleccionada = CuentaContribuyente::where("id_cuenta_contribuyente", $request->idCuenta[$i])->first();
                         if ($cuentaSeleccionada) {
                             $cuentaSeleccionada->estado  = 7;
+                            $cuentaSeleccionada->updated_at = new Carbon();
                             $cuentaSeleccionada->save();
                         }
                     } elseif ($request->estadoCuenta[$i] == 1 && ($request->idCuenta[$i] == '' || $request->idCuenta[$i] == null || $request->idCuenta[$i] == 0)) {
