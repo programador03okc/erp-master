@@ -79,6 +79,7 @@ class Proveedor extends Model
         'cuentaContribuyente.banco.contribuyente',
         'cuentaContribuyente.tipoCuenta',
         'cuentaContribuyente.moneda',
+        'cuentaContribuyente.usuario',
         'pais',
         'distrito',
         'contactoContribuyente' => function($q){

@@ -27,5 +27,8 @@ class CuentaContribuyente extends Model
     public function moneda(){
         return $this->hasOne('App\Models\Configuracion\Moneda','id_moneda','id_moneda');
     }
+    public function usuario(){
+        return $this->hasOne('App\Models\Configuracion\Usuario','id_usuario','id_usuario');
+    }
 }
 
