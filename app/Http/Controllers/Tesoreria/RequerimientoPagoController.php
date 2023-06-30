@@ -25,6 +25,7 @@ use App\Models\Almacen\Trazabilidad;
 use App\Models\Almacen\UnidadMedida;
 use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
+use App\Models\Configuracion\LogActividad;
 use App\Models\Configuracion\Moneda;
 use App\Models\Contabilidad\Banco;
 use App\Models\Contabilidad\Contribuyente;
@@ -1368,6 +1369,9 @@ class RequerimientoPagoController extends Controller
                 $cuentaPersona->save();
 
                 $idCuenta = $cuentaPersona->id_cuenta_bancaria;
+                $comentario = 'Cuenta: '.($request->nro_cuenta??'').', CCI: '.$request->nro_cuenta_interbancaria??''.', Agregado por: '.Auth::user()->nombre_corto;
+                LogActividad::registrar(Auth::user(), 'Agregar cuenta bancaria', 2, $cuentaPersona->getTable(), null, $cuentaPersona);
+
             } elseif ($request->id_tipo_destinatario == 2) { //tipo contribuyente
 
                 $cuentaContribuyente = new CuentaContribuyente();
@@ -1378,10 +1382,14 @@ class RequerimientoPagoController extends Controller
                 $cuentaContribuyente->nro_cuenta_interbancaria = trim($request->nro_cuenta_interbancaria);
                 $cuentaContribuyente->id_moneda = $request->moneda;
                 $cuentaContribuyente->fecha_registro = date('Y-m-d H:i:s');
+                $cuentaContribuyente->id_usuario = Auth::user()->id_usuario;
                 $cuentaContribuyente->estado = 1;
                 $cuentaContribuyente->save();
 
                 $idCuenta = $cuentaContribuyente->id_cuenta_contribuyente;
+                $comentario = 'Cuenta: '.($request->nro_cuenta??'').', CCI: '.$request->nro_cuenta_interbancaria??''.', Agregado por: '.Auth::user()->nombre_corto;
+                LogActividad::registrar(Auth::user(), 'Agregar cuenta bancaria', 2, $cuentaContribuyente->getTable(), null, $cuentaContribuyente,$comentario);
+
             }
 
             if ($idCuenta > 0) {

@@ -99,6 +99,9 @@
                                                     <th class="text-center" style="width:10%">Nro cuenta</th>
                                                     <th class="text-center" style="width:10%">Nro cuenta interbancaria</th>
                                                     <th class="text-center" style="width:10%">Swift</th>
+                                                    <th class="text-center" style="width:10%">Fecha registro</th>
+                                                    <th class="text-center" style="width:10%">Fecha actualización</th>
+                                                    <th class="text-center" style="width:10%">Usuario</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="bodylistaCuentasBancariasProveedorSoloLectura"></tbody>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Logistica;
 use App\Http\Controllers\Controller;
 use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Distrito;
+use App\Models\Configuracion\LogActividad;
 use App\Models\Configuracion\Moneda;
 use App\Models\Configuracion\Pais;
 use App\Models\Contabilidad\Banco;
@@ -31,6 +32,8 @@ use Debugbar;
 
 class ProveedoresController extends Controller
 {
+    private $nombreFormulario = 'Gestión de Proveedores';
+
     public function index()
     {
         $tipoDocumentos = TipoDocumentoIdentidad::mostrar();
@@ -323,6 +326,7 @@ class ProveedoresController extends Controller
                 for ($i = 0; $i < $countCuenta; $i++) {
                     if ($request->estadoCuenta[$i] == 1 && $request->idCuenta[$i] > 0) {
                         $cuentaSeleccionada = CuentaContribuyente::where("id_cuenta_contribuyente", $request->idCuenta[$i])->first();
+                        $cuentaSeleccionadaAnterior =$cuentaSeleccionada ;
                         if ($cuentaSeleccionada) {
                             $cuentaSeleccionada->id_banco  = $request->idBanco[$i];
                             $cuentaSeleccionada->id_tipo_cuenta  = $request->idTipoCuenta[$i] > 0 ? $request->idTipoCuenta[$i] : null;
@@ -330,13 +334,28 @@ class ProveedoresController extends Controller
                             $cuentaSeleccionada->nro_cuenta  =  $request->nroCuenta[$i];
                             $cuentaSeleccionada->nro_cuenta_interbancaria  = $request->nroCuentaInterbancaria[$i];
                             $cuentaSeleccionada->swift  = $request->swift[$i];
+                            $cuentaSeleccionada->updated_at = new Carbon();
+                            $cuentaSeleccionada->id_usuario = Auth::user()->id_usuario;
                             $cuentaSeleccionada->save();
+
+                            $comentario = 'Cuenta: '.($cuentaSeleccionada->nro_cuenta ?? '').', CCI: '.($cuentaSeleccionada->nro_cuenta_interbancaria??'').', Actualizado por: '.Auth::user()->nombre_corto;
+
+                            LogActividad::registrar(Auth::user(), $this->nombreFormulario, 3, $cuentaSeleccionada->getTable(), ($cuentaSeleccionadaAnterior??null), $cuentaSeleccionada,$comentario);
+
                         }
                     } elseif ($request->estadoCuenta[$i] == 7 && $request->idCuenta[$i] > 0) {
                         $cuentaSeleccionada = CuentaContribuyente::where("id_cuenta_contribuyente", $request->idCuenta[$i])->first();
+                        $cuentaSeleccionadaAnterior =$cuentaSeleccionada ;
+
                         if ($cuentaSeleccionada) {
                             $cuentaSeleccionada->estado  = 7;
+                            $cuentaSeleccionada->updated_at = new Carbon();
+                            $cuentaSeleccionada->id_usuario = Auth::user()->id_usuario;
                             $cuentaSeleccionada->save();
+
+                            $comentario = 'Cuenta: '.($cuentaSeleccionada->nro_cuenta ?? '').', CCI: '.($cuentaSeleccionada->nro_cuenta_interbancaria??'').', Anulado por: '.Auth::user()->nombre_corto;
+                            LogActividad::registrar(Auth::user(), $this->nombreFormulario, 4, $cuentaBancariaProveedor->getTable(), $cuentaSeleccionadaAnterior??null, $cuentaSeleccionada,$comentario);
+
                         }
                     } elseif ($request->estadoCuenta[$i] == 1 && ($request->idCuenta[$i] == '' || $request->idCuenta[$i] == null || $request->idCuenta[$i] == 0)) {
                         $cuentaBancariaProveedor = new CuentaContribuyente();
@@ -349,7 +368,13 @@ class ProveedoresController extends Controller
                         $cuentaBancariaProveedor->swift  = $request->swift[$i] ?? null;
                         $cuentaBancariaProveedor->estado  = 1;
                         $cuentaBancariaProveedor->fecha_registro  = new Carbon();
+                        $cuentaBancariaProveedor->id_usuario = Auth::user()->id_usuario;
+
                         $cuentaBancariaProveedor->save();
+                        
+                        $comentario = 'Cuenta: '.($request->nroCuenta[$i] ?? '').', CCI: '.($request->nroCuentaInterbancaria[$i]??'').', Agregado por: '.Auth::user()->nombre_corto;
+                        LogActividad::registrar(Auth::user(), $this->nombreFormulario, 2, $cuentaBancariaProveedor->getTable(), null, $cuentaBancariaProveedor,$comentario);
+
                     }
                 }
             }

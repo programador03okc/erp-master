@@ -46,6 +46,7 @@ use App\Models\Almacen\UnidadMedida;
 use App\Models\Comercial\CuadroCosto\CcAmFila;
 use App\models\Configuracion\AccesosUsuarios;
 use App\Models\Configuracion\Grupo;
+use App\Models\Configuracion\LogActividad;
 use App\Models\Configuracion\Moneda;
 use App\Models\Configuracion\Notificacion;
 use App\Models\Configuracion\Usuario;
@@ -4263,25 +4264,29 @@ class OrdenController extends Controller
 
         $idContribuyente = Proveedor::find($request->id_proveedor)->id_contribuyente;
 
-        $idCuentaContribuyente = DB::table('contabilidad.adm_cta_contri')->insertGetId(
-            [
-                'id_contribuyente' => $idContribuyente,
-                'id_banco' => $request->id_banco,
-                'id_tipo_cuenta' => $request->id_tipo_cuenta,
-                'nro_cuenta' => $request->nro_cuenta,
-                'nro_cuenta_interbancaria' => $request->nro_cuenta_interbancaria,
-                'estado' => 1,
-                'fecha_registro' => Carbon::now(),
-                'id_moneda' => $request->id_moneda,
-                'swift' => $request->swift
-            ],
-            'id_cuenta_contribuyente'
-        );
-        if ($idCuentaContribuyente > 0) {
+        $cuentaBancariaProveedor = new CuentaContribuyente();
+        $cuentaBancariaProveedor->id_contribuyente  = $idContribuyente;
+        $cuentaBancariaProveedor->id_banco  = $request->id_banco;
+        $cuentaBancariaProveedor->id_tipo_cuenta  = $request->id_tipo_cuenta;
+        $cuentaBancariaProveedor->id_moneda  = $request->id_moneda;
+        $cuentaBancariaProveedor->nro_cuenta  = $request->nro_cuenta;
+        $cuentaBancariaProveedor->nro_cuenta_interbancaria  = $request->nro_cuenta_interbancaria;
+        $cuentaBancariaProveedor->swift  = $request->swift;
+        $cuentaBancariaProveedor->estado  = 1;
+        $cuentaBancariaProveedor->fecha_registro  = new Carbon();
+        $cuentaBancariaProveedor->id_usuario = Auth::user()->id_usuario;
+
+        $cuentaBancariaProveedor->save();
+
+        
+        if ($cuentaBancariaProveedor && $cuentaBancariaProveedor->id_cuenta_contribuyente > 0) {
+            $comentario = 'Cuenta: '.($request->nro_cuenta??'').', CCI: '.($request->nro_cuenta_interbancaria??'').', Agregado por: '.Auth::user()->nombre_corto;
+            LogActividad::registrar(Auth::user(), 'Orden Compra / servicio', 2, $cuentaBancariaProveedor->getTable(), null, $cuentaBancariaProveedor, $comentario);
+
             $status = 200;
         }
 
-        $output = ['status' => $status, 'id_cuenta_contribuyente' => $idCuentaContribuyente];
+        $output = ['status' => $status, 'id_cuenta_contribuyente' => $cuentaBancariaProveedor->id_cuenta_contribuyente];
 
         return json_encode($output);
     }
