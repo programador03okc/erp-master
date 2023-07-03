@@ -285,7 +285,7 @@ class RevisarAprobarController extends Controller{
             // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
             // alm_det_req.estado != 7) AS monto_total")
         )
-        ->where([['adm_documentos_aprob.id_tp_documento',1],['flg_compras',0]]) //documento => requerimiento de B/S
+        ->where([['adm_documentos_aprob.id_tp_documento',1],['flg_compras',0],['alm_req.id_tipo_requerimiento','!=',1]]) //documento => requerimiento de B/S
         ->whereIn('alm_req.estado',[1,12]) // elaborado, pendiente aprobación
         // ->when((intval($idEmpresa) > 0), function ($query)  use ($idEmpresa) {
         //     return $query->whereRaw('requerimiento_pago.id_empresa = ' . $idEmpresa);
@@ -387,7 +387,10 @@ class RevisarAprobarController extends Controller{
                 }
 
                 $operaciones = Operacion::getOperacion($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList);
-                // Debugbar::info($operaciones);
+                if($operaciones ==null){
+                    Debugbar::info($idDocumento);
+
+                }
                 // Debugbar::info($tipoDocumento, $idTipoRequerimiento, $idGrupo, $idDivision, $idPrioridad, $idMoneda, $montoTotal, $idTipoRequerimientoPago,$idRolUsuarioDocList);
                 if(count($operaciones)>1){
                     $mensaje[]= "Se detecto que los criterios del requerimiento dan como resultado multibles operaciones :".$operaciones;
