@@ -32,7 +32,7 @@ class PresupuestoInternoHistorialHelper
                     }else{
                         $precioUnitario = floatval($item['precio_unitario']);
                     }
-                    $importe = $item->cantidad * $precioUnitario;
+                    $importe =floatval($item->cantidad) * floatval($precioUnitario) * floatval(1.18); // incluir IGV
                     $registroExistente = HistorialPresupuestoInternoSaldo::where([['id_requerimiento', $idRequerimiento], ['id_requerimiento_detalle', $item->id_detalle_requerimiento], ['estado', 1]])->get();
                     if (count($registroExistente) > 0) { // actualizar
                         PresupuestoInternoHistorialHelper::actualizarHistorialSaldoParaDetalleRequerimientoLogistico($requerimientoLogistico->id_presupuesto_interno, $item->id_partida_pi, $importe, 1, $item->id_requerimiento, $item->id_detalle_requerimiento, $requerimientoLogistico->fecha_requerimiento,null,null,null,'Actualizar afectación regular');

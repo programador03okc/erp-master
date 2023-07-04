@@ -2784,7 +2784,12 @@ class OrdenController extends Controller
                             $idDetalleRequerimiento= $item->id_detalle_requerimiento;
                             $idOrden= $item->id_orden_compra;
                             $idDetalleOrden= $item->id_detalle_orden;
-                            $importe= floatval($item->cantidad) * floatval($item->precio);
+                            if(isset($request->incluye_igv) && $item->tipo_item_id ==1){
+                                $importe= floatval($item->cantidad) * floatval($item->precio) * floatval(1.18);
+                            }else{
+                                $importe= floatval($item->cantidad) * floatval($item->precio);
+                            }
+
                             $estado= 2;
                             $operacion= 'R';
                             if($idPresupuesto > 0 && $idPartida > 0){
@@ -3393,7 +3398,12 @@ class OrdenController extends Controller
                             $idDetalleRequerimiento= $item->id_detalle_requerimiento;
                             $idOrden= $item->id_orden_compra;
                             $idDetalleOrden= $item->id_detalle_orden;
-                            $importe= floatval($item->cantidad) * floatval($item->precio);
+
+                            if(isset($request->incluye_igv) && $item->tipo_item_id ==1){ // incluir IGV
+                                $importe= floatval($item->cantidad) * floatval($item->precio) * floatval(1.18);
+                            }else{
+                                $importe= floatval($item->cantidad) * floatval($item->precio);
+                            }
                             $estado= 2;
                             $operacion= 'R';
                             if($idPresupuesto > 0 && $idPartida > 0){
