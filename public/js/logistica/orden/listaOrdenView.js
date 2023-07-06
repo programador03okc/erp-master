@@ -861,7 +861,7 @@ class ListaOrdenView {
                 obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyentePago, (parseInt(obj.dataset.idCuentaContribuyentePago)>0?obj.dataset.idCuentaContribuyentePago:null ));
             }
         } else {
-            this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor)
+            this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor,  obj.dataset.idCuentaContribuyentePago); 
         }
 
         // this.obtenerMontosParaPago(obj.dataset.idOrdenCompra);
@@ -1084,12 +1084,12 @@ class ListaOrdenView {
     }
 
 
-    obtenerContribuyentePorIdProveedor(idProveedor) {
+    obtenerContribuyentePorIdProveedor(idProveedor, idCuenta=null) {
         this.getContribuyentePorIdProveedor(idProveedor).then((res) => {
             // console.log(res);
             if (res.tipo_estado == 'success') {
                 tempDataProveedorParaPago = res.data;
-                this.llenarInputsDeDestinatario(res.data);
+                this.llenarInputsDeDestinatario(res.data,idCuenta);
             } else {
                 Lobibox.notify(res.tipo_estado, {
                     title: false,
@@ -1106,7 +1106,7 @@ class ListaOrdenView {
     }
 
 
-    llenarInputsDeDestinatario(data) {
+    llenarInputsDeDestinatario(data,idCuenta=null) {
         // console.log(data);
         document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_tipo_destinatario']").value = 2;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_contribuyente']").value = data.id_contribuyente != '' && data.id_contribuyente != null ? data.id_contribuyente : '';
@@ -1125,9 +1125,8 @@ class ListaOrdenView {
         }
 
 
-        let idCuentaEnvioPago = parseInt(document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='id_cuenta']").value);
         if (data.id_contribuyente > 0) {
-            obtenerCuentasBancariasContribuyente(data.id_contribuyente, (idCuentaEnvioPago > 0? idCuentaEnvioPago:null));
+            obtenerCuentasBancariasContribuyente(data.id_contribuyente, (idCuenta > 0? idCuenta:null));
         }
     }
 
