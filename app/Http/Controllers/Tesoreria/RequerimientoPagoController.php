@@ -368,7 +368,7 @@ class RequerimientoPagoController extends Controller
             $documento->id_doc = $requerimientoPago->id_requerimiento_pago;
             $documento->save();
 
-            // guardar factura solo si existe vinculo 
+            // guardar factura solo si existe vinculo
             // $documentoCompraArray=[];
             $documentoCompraArray = $this->VincularFacturaRequerimientoPago($request, $count, $detalleArray, $codigo);
 
@@ -1951,5 +1951,14 @@ class RequerimientoPagoController extends Controller
             "data" => $adjuntos_pagos_complementarios,
             "data_pagos" => $adjuntos_pagos
         ]);
+    }
+    public function requerimientoSustentado(Request $request)  {
+        $requerimiento = RequerimientoPago::find($request->id);
+        $requerimiento->requerimiento_sustentado = $request->requerimiento_sustentado;
+        $requerimiento->save();
+        $respuesta = array(
+            "status"=>'success'
+        );
+        return response()->json($respuesta,200);
     }
 }
