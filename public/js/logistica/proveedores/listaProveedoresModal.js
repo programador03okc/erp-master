@@ -45,6 +45,7 @@ function listar_proveedores(){
                         data-ubigeo-descripcion="${row.contribuyente && row.contribuyente.ubigeo_completo!=null?row.contribuyente.ubigeo_completo:''}"
                         data-ubigeo="${row.contribuyente && row.contribuyente.ubigeo!=null?row.contribuyente.ubigeo:''}"
                         data-id-moneda-cuenta-principal="${row.cuenta_contribuyente.length>0?row.cuenta_contribuyente[0].id_moneda:''}"
+                        data-cantidad-cuentas-con-misma-moneda="${row.cuenta_contribuyente.length}"
                         data-id-cuenta-principal="${row.cuenta_contribuyente.length>0?row.cuenta_contribuyente[0].id_cuenta_contribuyente:''}"
                         data-cuenta-principal="${row.cuenta_contribuyente.length>0?row.cuenta_contribuyente[0].nro_cuenta:''}"
                         onclick="selectProveedor(this);">
@@ -101,7 +102,7 @@ function proveedorModal(){
 }
 
 function selectProveedor(obj){
-    // console.log(obj);
+    console.log(obj.dataset.cantidadCuentasConMismaMoneda);
     let idProveedor= obj.dataset.idProveedor? obj.dataset.idProveedor: "";
     let idContribuyente= obj.dataset.idContribuyente !=null ?obj.dataset.idContribuyente: "";
     let tipoDocumentoIdentidad= obj.dataset.tipoDocumentoIdentidad !=null ? obj.dataset.tipoDocumentoIdentidad:"";
@@ -115,6 +116,18 @@ function selectProveedor(obj){
     let cuentaPrincipal= obj.dataset.cuentaPrincipal !=null?obj.dataset.cuentaPrincipal:"";
     let idCuentaPrincipal= obj.dataset.idCuentaPrincipal !=null?obj.dataset.idCuentaPrincipal:"";
     let idMonedaCuentaPrincipal= obj.dataset.idMonedaCuentaPrincipal !=null?obj.dataset.idMonedaCuentaPrincipal:"";
+
+    if(obj.dataset.cantidadCuentasConMismaMoneda >1){
+        Lobibox.notify('warning', {
+            title:false,
+            size: 'mini',
+            rounded: true,
+            sound: false,
+            delayIndicator: false,
+            msg: `Proveedor seleccionado tiene mas de una cuenta en ${obj.dataset.idMonedaCuentaPrincipal==1?'soles':'moneda extranjera'}.`,
+        });
+
+    }
 
     document.querySelector("input[name='id_proveedor']").value =idProveedor;
     document.querySelector("input[name='id_contrib']").value =idContribuyente;
