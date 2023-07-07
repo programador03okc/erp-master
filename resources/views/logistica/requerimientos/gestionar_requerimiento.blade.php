@@ -357,11 +357,10 @@ Crear / editar requerimiento
                         <div class="col-md-12">
                             <h5>Nombre</h5>
                             <div style="display:flex;">
-                                <input type="text" name="codigo_presupuesto_interno" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                                 <div class="input-group-okc">
                                     <select class="form-control activation handleChangePresupuestoInterno" name="id_presupuesto_interno">
                                         @foreach ($presupuestoInternoList as $presupuestoInterno)
-                                        <option value="{{$presupuestoInterno->id_presupuesto_interno}}" data-codigo="{{$presupuestoInterno->codigo}}">{{$presupuestoInterno->descripcion}}</option>
+                                        <option value="{{$presupuestoInterno->id_presupuesto_interno}}" data-codigo="{{$presupuestoInterno->codigo}}">{{$presupuestoInterno->codigo}} - {{$presupuestoInterno->descripcion}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -381,7 +380,6 @@ Crear / editar requerimiento
                             <h5>Nombre</h5>
                             <div style="display:flex;">
                                 <input type="text" class="form-control oculto" name="descripcion_grupo">
-                                <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                                 <div class="input-group-okc">
                                     <select class="form-control activation handleChangeProyecto" name="id_proyecto">
                                         <option value="0">Seleccione un Proyecto</option>

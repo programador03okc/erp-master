@@ -107,7 +107,6 @@
 
                                             <h5>Proyecto</h5>
                                             <div style="display:flex;">
-                                                <input type="text" name="codigo_proyecto" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                                                 <div class="input-group-okc">
                                                     <select class="form-control activation handleCheckStatusValue handleChangeProyecto" name="proyecto">
                                                         <option value="0">Seleccione un Proyecto</option>
@@ -174,7 +173,6 @@
                                                 <div class="col-md-12">
                                                     <h5>Nombre</h5>
                                                     <div style="display:flex;">
-                                                        <input type="text" name="codigo_presupuesto_interno" class="form-control group-elemento" style="width:130px; text-align:center;" readonly>
                                                         <div class="input-group-okc">
                                                             <select class="form-control activation handleChangePresupuestoInterno" name="id_presupuesto_interno">
                                                                 @foreach ($presupuestoInternoList as $presupuestoInterno)
