@@ -125,13 +125,13 @@ class RequerimientoController extends Controller
         $presupuestoInternoList = (new PresupuestoInternoController)->comboPresupuestoInterno(0, 0);
 
         return view('logistica/requerimientos/gestionar_requerimiento', compact('tipo_cambio', 'idTrabajador', 'nombreUsuario',
-            'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida', 
-            'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'fuentes', 
+            'categoria_adjunto', 'grupos', 'sis_identidad', 'tipo_requerimiento', 'monedas', 'prioridades', 'empresas', 'unidadesMedida',
+            'roles', 'periodos', 'bancos', 'tipos_cuenta', 'clasificaciones', 'subcategorias', 'categorias', 'unidades', 'fuentes',
             'divisiones', 'array_accesos', 'array_accesos_botonera', 'modulo', 'presupuestoInternoList'));
     }
 
     public function obtenerListaProyectos($idGrupo){
-        
+
         $tipoProyecto= 'INTERNO';
         if($idGrupo==3){
             $tipoProyecto= 'EXTERNO';
@@ -331,12 +331,12 @@ class RequerimientoController extends Controller
                 FROM finanzas.presupuesto_interno_detalle
                 inner join finanzas.presupuesto_interno_modelo on presupuesto_interno_modelo.id_modelo_presupuesto_interno = presupuesto_interno_detalle.id_padre
                 WHERE presupuesto_interno_detalle.id_presupuesto_interno_detalle = alm_det_req.id_partida_pi and alm_req.id_presupuesto_interno > 0 limit 1) AS descripcion_partida_presupuesto_interno"),
-                
+
                 'alm_req.fecha_requerimiento',
-                DB::raw("(SELECT cont_tp_cambio.venta  
+                DB::raw("(SELECT cont_tp_cambio.venta
                 FROM contabilidad.cont_tp_cambio
                 WHERE TO_DATE(to_char(cont_tp_cambio.fecha,'YYYY-MM-DD'),'YYYY-MM-DD') = TO_DATE(to_char(alm_req.fecha_requerimiento,'YYYY-MM-DD'),'YYYY-MM-DD') limit 1) AS tipo_cambio"),
-                
+
             )
             ->when(($meOrAll === 'ME'), function ($query) {
                 $idUsuario = Auth::user()->id_usuario;
@@ -649,7 +649,7 @@ class RequerimientoController extends Controller
                 ->leftJoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'log_prove.id_contribuyente')
                 ->leftJoin('finanzas.presup_par', 'presup_par.id_partida', '=', 'alm_det_req.partida')
                 ->leftJoin('finanzas.presupuesto_interno_detalle', 'presupuesto_interno_detalle.id_presupuesto_interno_detalle', '=', 'alm_det_req.id_partida_pi')
-                
+
                 ->select(
                     'alm_det_req.id_detalle_requerimiento',
                     'alm_req.id_requerimiento',
@@ -709,19 +709,19 @@ class RequerimientoController extends Controller
                     FROM almacen.trans_detalle
                     WHERE   trans_detalle.id_requerimiento_detalle = alm_det_req.id_detalle_requerimiento AND
                             trans_detalle.estado != 7) AS suma_transferencias"),
-                    
+
                     'presup_par.codigo as codigo_partida',
                     'presup_par.descripcion as descripcion_partida',
-                    // partida presupuesto interno 
+                    // partida presupuesto interno
                     'presupuesto_interno_detalle.partida as codigo_partida_presupuesto_interno',
                     'presupuesto_interno_detalle.descripcion as descripcion_partida_presupuesto_interno',
-                    // 
+                    //
 
                     DB::raw("(SELECT (presup_par.importe_total)
                     FROM finanzas.presup_par
                     WHERE  presup_par.id_partida = alm_det_req.partida ) AS presupuesto_old_total_partida"),
 
-                    DB::raw("(SELECT 
+                    DB::raw("(SELECT
                     (CAST (replace(presupuesto_interno_detalle.enero, ',', '') AS NUMERIC(10,2))
                     + CAST (replace(presupuesto_interno_detalle.febrero, ',', '') AS NUMERIC(10,2))
                     + CAST (replace(presupuesto_interno_detalle.marzo, ',', '') AS NUMERIC(10,2))
@@ -882,7 +882,7 @@ class RequerimientoController extends Controller
             $historialAprobacionList[] = $value;
         }
 
-        
+
         $flujoDeAprobacion = (new RevisarAprobarController)->mostrarTodoFlujoAprobacionDeDocumento($num_doc);
         // Debugbar::info($flujoDeAprobacion);
 
@@ -4624,5 +4624,14 @@ class RequerimientoController extends Controller
                 break;
         }
         return $nombre_mes;
+    }
+    public function requerimientoSustentado(Request $request)  {
+        $requerimiento = Requerimiento::find($request->id);
+        $requerimiento->requerimiento_sustentado = $request->requerimiento_sustentado;
+        $requerimiento->save();
+        $respuesta = array(
+            "status"=>'success'
+        );
+        return response()->json($respuesta,200);
     }
 }
