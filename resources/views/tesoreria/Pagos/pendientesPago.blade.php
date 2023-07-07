@@ -410,6 +410,7 @@ Registro de pagos
 
     <script>
         // let csrf_token = '{{ csrf_token() }}';
+        let auth_137 = '{{Auth::user()->tieneAccion(137)}}', auth_138 ='{{Auth::user()->tieneAccion(138)}}',auth_139 ='{{Auth::user()->tieneAccion(139)}}';
     </script>
     <script src="{{ asset('js/tesoreria/pagos/pendientesPago.js')}}?v={{filemtime(public_path('js/tesoreria/pagos/pendientesPago.js'))}}"></script>
     <script src="{{ asset('js/tesoreria/pagos/procesarPago.js')}}?v={{filemtime(public_path('js/tesoreria/pagos/procesarPago.js'))}}"></script>
