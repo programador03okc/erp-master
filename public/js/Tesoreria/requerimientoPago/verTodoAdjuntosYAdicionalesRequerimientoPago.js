@@ -740,7 +740,7 @@ $('[name="requerimiento_sustentado"]').click(function (e) {
                     delayIndicator: false,
                     msg: 'Se realizo con éxito el su proceso de requerimiento sustentado'
                 });
-                $("#ListaRequerimientoPago").DataTable().ajax.reload();
+                $("#ListaRequerimientoPago").DataTable().ajax.reload(null,false);
                 // $('#modal-ver-agregar-adjuntos-requerimiento-compra').modal('hide');
             }
         },
