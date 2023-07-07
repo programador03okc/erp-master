@@ -512,7 +512,6 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
         </div>
         `;
         $('[data-mensaje="respuesta"]').html(html);
-        console.log(response);
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
         console.log(textStatus);

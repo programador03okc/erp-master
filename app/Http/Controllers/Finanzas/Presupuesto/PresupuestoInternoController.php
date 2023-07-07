@@ -69,6 +69,8 @@ class PresupuestoInternoController extends Controller
         return DataTables::of($data)
         ->addColumn('total', function ($data){
             $total = ($data->gastos=='3'?PresupuestoInterno::calcularTotalPresupuestoAnual($data->id_presupuesto_interno,3):0);
+            // $total = PresupuestoInterno::calcularTotalPresupuestoAnual($data->id_presupuesto_interno,3);
+            // $total = ($total>0?$total:0);
             // return floatval(str_replace(",", "", $total));
             return round($total,2);
         })
@@ -1570,7 +1572,7 @@ class PresupuestoInternoController extends Controller
 
     // public static function afectarPresupuestoPorFila($idPresupuestoInterno,$idPartida,$importe,$fechaRegistro,$operacion){
 
-        
+
     //     $mesLista = ['1' => 'enero', '2' => 'febrero', '3' => 'marzo', '4' => 'abril', '5' => 'mayo', '6' => 'junio', '7' => 'julio', '8' => 'agosto', '9' => 'setiembre', '10' => 'octubre', '11' => 'noviembre', '12' => 'diciembre'];
     //     $mes = intval(date('m', strtotime($fechaRegistro)));
     //     $nombreMes = $mesLista[$mes];
@@ -1583,12 +1585,12 @@ class PresupuestoInternoController extends Controller
     //         ])->first();
 
     //         if($presupuestoInternoDetalle){
-                
+
     //             if($operacion == 'R'){
     //                 $nuevoImporte = floatval($presupuestoInternoDetalle->$nombreMesAux) - (isset($importe)?floatval($importe):0);
     //                 $presupuestoInternoDetalle->$nombreMesAux = $nuevoImporte;
     //                 $presupuestoInternoDetalle->save();
-    
+
     //             }elseif($operacion == 'S'){
     //                 $nuevoImporte = floatval($presupuestoInternoDetalle->$nombreMesAux) + (isset($importe)?floatval($importe):0);
     //                 $presupuestoInternoDetalle->$nombreMesAux = $nuevoImporte;
@@ -1748,53 +1750,43 @@ class PresupuestoInternoController extends Controller
         }
 
         $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$request->id)
-        ->where('tipo','SALIDA')
+        // ->where('tipo','SALIDA')
+        ->where('estado',3)
         ->whereIn('mes',$mesEnFormatoFechaList)
         ->orderBy('id','ASC')->get();
+        // return $historial_saldo;exit;
 
+        $orden_detalle = array();
+        $requerimiento_detalle = array();
         foreach($historial_saldo as $key => $value) {
-            $requerimiento = array();
-            $requerimiento = Orden::find($value->id_orden);
-            $requerimiento_detalle = OrdenCompraDetalle::where('id_detalle_orden',$value->id_orden_detalle)->get();
-            $value->cuadro = 1;
-            if (!$requerimiento) {
-
-                $requerimiento = RequerimientoPago::find($value->id_requerimiento_pago);
-                $requerimiento_detalle = RequerimientoPagoDetalle::where('id_requerimiento_pago_detalle',$value->id_requerimiento_pago_detalle)->get();
-                $value->cuadro = 2;
+            $orden = Orden::find($value->id_orden);
+            if($orden){
+                $orden_array = OrdenCompraDetalle::where('id_detalle_orden',$value->id_orden_detalle)->get();
+                foreach($orden_array as $key => $value) {
+                    array_push($orden_detalle,$value);
+                }
             }
-            $value->cabecera = $requerimiento;
-            $value->detalle = $requerimiento_detalle;
+            $value->orden_cabecera = $orden;
+            $value->orden_detalle = $orden_detalle;
 
-            $partida_detalle = PresupuestoInternoDetalle::find($value->id_partida);
-            $value->partida = $partida_detalle->partida;
-            $value->partida_descripcion = $partida_detalle->descripcion;
-
-            $tipo='';
-            switch ($partida_detalle->id_tipo_presupuesto) {
-                case 1:
-                    $tipo='INGRESOS';
-                break;
-
-                case 2:
-                    $tipo='COSTOS';
-                break;
-                case 3:
-                    $tipo='GASTOS';
-                break;
+            $requerimiento = RequerimientoPago::find($value->id_requerimiento_pago);
+            if($requerimiento){
+                $requerimiento_array = RequerimientoPagoDetalle::where('id_requerimiento_pago_detalle',$value->id_requerimiento_pago_detalle)->get();
+                foreach($requerimiento_array as $key => $value) {
+                    array_push($requerimiento_detalle,$value);
+                }
             }
-            $value->tipo = $tipo;
 
-            $presupuesto_interno = PresupuestoInterno::find($value->id_presupuesto_interno);
-            $value->codigo_ppt = $presupuesto_interno->codigo;
-            $value->codigo_nombre = $presupuesto_interno->descripcion;
-
-            $partid_padre = PresupuestoInternoDetalle::where('id_hijo',$partida_detalle->id_padre)->where('id_presupuesto_interno',$value->id_presupuesto_interno)->first();
-            $value->partida_padre = $partid_padre->partida;
-            $value->partida_padre_descripcion = $partid_padre->descripcion;
+            $value->requerimiento_cabecera = $requerimiento;
+            $value->requerimiento_detalle = $requerimiento_detalle;
         }
 
-        // return response()->json($historial_saldo,200);
+        if(sizeof($orden_detalle)>0){
+
+        }
+
+
+        return response()->json([$orden_detalle,$requerimiento_detalle],200);
         return Excel::download(new PresupuestoInternoEjecutadoExport($historial_saldo), 'presupuesto_interno_monto_ejecutado.xlsx');
 
         // return response()->json($historial_saldo,200);

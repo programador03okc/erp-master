@@ -27,31 +27,31 @@ class PresupuestoInterno extends Model
     // el total de todo el año suma las cabeceras
     public static function calcularTotalPresupuestoAnual($id_presupuesto_interno, $id_tipo_presupuesto)
     {
-        $presupuesto_interno_destalle=array();
+        $presupuesto_interno_detalle=array();
         switch ($id_tipo_presupuesto) {
             case 1:
-                $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
+                $presupuesto_interno_detalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',1)->where('estado', 1)->orderBy('partida')->get();
             break;
 
             case 2:
-                $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
+                $presupuesto_interno_detalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',2)->where('estado', 1)->orderBy('partida')->get();
             break;
             case 3:
-                $presupuesto_interno_destalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
+                $presupuesto_interno_detalle= PresupuestoInternoDetalle::where('id_presupuesto_interno',$id_presupuesto_interno)->where('id_tipo_presupuesto',3)->where('estado', 1)->orderBy('partida')->get();
             break;
         }
-        $enero      = $presupuesto_interno_destalle[0]->float_enero;
-        $febrero    = $presupuesto_interno_destalle[0]->float_febrero;
-        $marzo      = $presupuesto_interno_destalle[0]->float_marzo;
-        $abril      = $presupuesto_interno_destalle[0]->float_abril;
-        $mayo       = $presupuesto_interno_destalle[0]->float_mayo;
-        $junio      = $presupuesto_interno_destalle[0]->float_junio;
-        $julio      = $presupuesto_interno_destalle[0]->float_julio;
-        $agosto     = $presupuesto_interno_destalle[0]->float_agosto;
-        $setiembre  = $presupuesto_interno_destalle[0]->float_setiembre;
-        $octubre    = $presupuesto_interno_destalle[0]->float_octubre;
-        $noviembre  = $presupuesto_interno_destalle[0]->float_noviembre;
-        $diciembre  = $presupuesto_interno_destalle[0]->float_diciembre;
+        $enero      = $presupuesto_interno_detalle[0]->float_enero;
+        $febrero    = $presupuesto_interno_detalle[0]->float_febrero;
+        $marzo      = $presupuesto_interno_detalle[0]->float_marzo;
+        $abril      = $presupuesto_interno_detalle[0]->float_abril;
+        $mayo       = $presupuesto_interno_detalle[0]->float_mayo;
+        $junio      = $presupuesto_interno_detalle[0]->float_junio;
+        $julio      = $presupuesto_interno_detalle[0]->float_julio;
+        $agosto     = $presupuesto_interno_detalle[0]->float_agosto;
+        $setiembre  = $presupuesto_interno_detalle[0]->float_setiembre;
+        $octubre    = $presupuesto_interno_detalle[0]->float_octubre;
+        $noviembre  = $presupuesto_interno_detalle[0]->float_noviembre;
+        $diciembre  = $presupuesto_interno_detalle[0]->float_diciembre;
         $total      = $enero + $febrero + $marzo + $abril + $mayo + $junio + $julio + $agosto + $setiembre + $octubre + $noviembre + $diciembre;
         return $total;
     }
@@ -635,7 +635,11 @@ class PresupuestoInterno extends Model
 
         for ($i=1; $i <= $mes ; $i++) {
             $saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$id_presupuesto_interno)
-            ->where([['mes',ConfiguracionHelper::leftZero(2,$i)], ['tipo','SALIDA']])
+            ->where([
+                ['mes',ConfiguracionHelper::leftZero(2,$i)],
+                // ['tipo','SALIDA'],
+                ['estado',3]]
+            )
             ->orderBy('id','ASC')
             ->get();
 
