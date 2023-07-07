@@ -1050,6 +1050,8 @@ class OrdenController extends Controller
             }
         })
         ;
+        $ordenes = $ordenes->whereDate('fecha_emision','>=',$request->fecha_inicio);
+        $ordenes = $ordenes->whereDate('fecha_emision','<=',$request->fecha_actual);
         // return datatables($ordenes)
         // ->filterColumn('codigo_requerimiento', function ($query, $keyword) {
         //     $query->whereHas('data_requerimiento.codigo_requerimiento', function ($q) use ($keyword) {
@@ -3383,7 +3385,7 @@ class OrdenController extends Controller
                     $this->actualizarNuevoEstadoRequerimiento('ACTUALIZAR', $request->id_orden, null);
                 }
 
-                //actualizar estado gasto 
+                //actualizar estado gasto
                 foreach ($detalleArray as $item) {
                     if($item->id_detalle_requerimiento >0 ){
 
@@ -4288,7 +4290,7 @@ class OrdenController extends Controller
 
         $cuentaBancariaProveedor->save();
 
-        
+
         if ($cuentaBancariaProveedor && $cuentaBancariaProveedor->id_cuenta_contribuyente > 0) {
             $comentario = 'Cuenta: '.($request->nro_cuenta??'').', CCI: '.($request->nro_cuenta_interbancaria??'').', Agregado por: '.Auth::user()->nombre_corto;
             LogActividad::registrar(Auth::user(), 'Orden Compra / servicio', 2, $cuentaBancariaProveedor->getTable(), null, $cuentaBancariaProveedor, $comentario);

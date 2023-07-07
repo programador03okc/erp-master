@@ -880,7 +880,7 @@ class ListaOrdenView {
                 obtenerCuentasBancariasContribuyente(obj.dataset.idContribuyentePago, (parseInt(obj.dataset.idCuentaContribuyentePago)>0?obj.dataset.idCuentaContribuyentePago:null ));
             }
         } else {
-            this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor,  obj.dataset.idCuentaContribuyentePago); 
+            this.obtenerContribuyentePorIdProveedor(obj.dataset.idProveedor,  obj.dataset.idCuentaContribuyentePago);
         }
 
         // this.obtenerMontosParaPago(obj.dataset.idOrdenCompra);
@@ -1682,6 +1682,10 @@ class ListaOrdenView {
     mostrarListaOrdenesElaboradas(filtro = 'SIN_FILTRO') {
 
         let that = this;
+        let fecha_actual = new Date();
+        let fecha_inicio = "01-01-"+fecha_actual.getFullYear();
+        fecha_actual = moment().format("DD-MM-YYYY");
+
         vista_extendida();
         var vardataTables = funcDatatables();
         // const button_filtro = (array_accesos.find(element => element === 287)?{
@@ -1720,7 +1724,11 @@ class ListaOrdenView {
             'ajax': {
                 'url': 'lista-ordenes-elaboradas',
                 'type': 'POST',
-                'data': { 'filtro': filtro},
+                'data': {
+                    'filtro': filtro,
+                    'fecha_inicio':fecha_inicio,
+                    'fecha_actual':fecha_actual,
+                },
                 beforeSend: data => {
                     $("#listaOrdenes").LoadingOverlay("show", {
                         imageAutoResize: true,
@@ -1896,6 +1904,19 @@ class ListaOrdenView {
                 })
                 //Fin boton de busqueda
 
+                let html_fechas = `
+
+                <input type="text" class="form-control date-picker input-sm" size="10" id="fecha-inicio"
+                value="`+fecha_inicio+`"/> <input type="text" class="form-control date-picker input-sm" size="10" id="txtOrdenPendienteFechaFin"
+                    value="`+fecha_actual+`"/> `;
+                $('#listaOrdenes_wrapper .dt-buttons').append(html_fechas);
+
+                $('input.date-picker').datepicker({
+                    language: "es",
+                    orientation: "bottom auto",
+                    format: 'dd-mm-yyyy',
+                    autoclose: true
+                });
             },
             "drawCallback": function (settings) {
 
