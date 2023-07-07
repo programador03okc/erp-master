@@ -749,6 +749,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 				Route::get('listar-flujo/{idDocumento}', 'RevisarAprobarController@mostrarTodoFlujoAprobacionDeDocumento');
 				// Route::get('detalleRequerimiento/{id}', 'Logistica\RequerimientoController@detalleRequerimiento')->name('detalle-requerimiento');
+                Route::post('requerimiento-sustentado', 'Logistica\RequerimientoController@requerimientoSustentado')->name('requerimiento-sustentado');
 
 			});
 			Route::group(['as' => 'aprobar.', 'prefix' => 'aprobar'], function () {
@@ -823,6 +824,7 @@ Route::group(['middleware' => ['auth']], function () {
 				Route::get('combo-presupuesto-interno/{idGrupo?}/{idArea?}', 'Finanzas\Presupuesto\PresupuestoInternoController@comboPresupuestoInterno');
 				Route::get('obtener-detalle-presupuesto-interno/{idPresupuesto?}', 'Finanzas\Presupuesto\PresupuestoInternoController@obtenerDetallePresupuestoInterno');
 				Route::get('obtener-lista-proyectos/{idGrupo?}', 'Logistica\RequerimientoController@obtenerListaProyectos');
+                Route::post('requerimiento-sustentado', 'Tesoreria\RequerimientoPagoController@requerimientoSustentado')->name('requerimiento-sustentado');
 
 			});
 			// Route::group(['as' => 'revisar_aprobar.', 'prefix' => 'revisar_aprobar'], function () {

@@ -154,6 +154,12 @@ function verAgregarAdjuntosRequerimiento(obj) {
     document.querySelector("div[id='modal-ver-agregar-adjuntos-requerimiento-compra'] span[id='codigo_requerimiento']").textContent =codigoRequerimiento;
     cargarAdjuntosLogisticosYPago(idRequerimiento);
 
+    // console.log(obj.dataset.sustento);
+    $('#modal-ver-agregar-adjuntos-requerimiento-compra').find('[name="requerimiento_sustentado"]').attr('data-id',idRequerimiento);
+    $('#modal-ver-agregar-adjuntos-requerimiento-compra').find('[name="requerimiento_sustentado"]').prop('checked',false);
+    if (obj.dataset.sustento =='true') {
+        $('#modal-ver-agregar-adjuntos-requerimiento-compra').find('[name="requerimiento_sustentado"]').prop('checked',true);
+    }
 }
 
 function cargarAdjuntosLogisticosYPago(idRequerimiento){
@@ -665,3 +671,46 @@ function guardarAdjuntos(){
         );
     }
 }
+
+$('[name="requerimiento_sustentado"]').click(function (e) {
+    // e.preventDefault();
+    let id = $(this).attr('data-id');
+
+    if ($(this).is(':checked') ) {
+        value = 't';
+    } else {
+        value = 'f';
+    }
+    // $("#ListaRequerimientosElaborados").LoadingOverlay("hide", true);
+    $.ajax({
+        type: 'POST',
+        url: 'requerimiento-sustentado',
+        data: {
+            requerimiento_sustentado:value,
+            id:id
+        },
+        dataType: 'JSON',
+        success: (response) =>{
+            console.log(response);
+            if (response.status =='success') {
+
+                Lobibox.notify('success', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Se realizo con éxito el su proceso de requerimiento sustentado'
+                });
+                $("#ListaRequerimientosElaborados").DataTable().ajax.reload();
+                // $('#modal-ver-agregar-adjuntos-requerimiento-compra').modal('hide');
+            }
+        },
+        fail:  (jqXHR, textStatus, errorThrown) =>{
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    });
+
+});

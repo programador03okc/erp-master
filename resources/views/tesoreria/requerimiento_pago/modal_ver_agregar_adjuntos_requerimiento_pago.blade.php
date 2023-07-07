@@ -6,6 +6,14 @@
                 <h3 class="modal-title">Adjuntos de requerimiento de pago</h3>
             </div>
             <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <label for="requerimiento_sustentado">
+                            <input type="checkbox" name="requerimiento_sustentado" id="requerimiento_sustentado" value="t">
+                            Requerimiento sustentado
+                        </label>
+                    </div>
+                </div>
                 <form id="form_ver_agregar_adjuntos_requerimiento_pago">
                     <input type="text" class="oculto" name="id_requerimiento_pago" />
                     <input type="text" class="oculto" name="id_moneda" />

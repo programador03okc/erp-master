@@ -4,8 +4,17 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
                 <h3 class="modal-title">Adjuntos de requerimiento logístico <span id="codigo_requerimiento" style="color:cadetblue;"></span></h3>
+
             </div>
             <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <label for="requerimiento_sustentado">
+                            <input type="checkbox" name="requerimiento_sustentado" id="requerimiento_sustentado" value="t">
+                            Requerimiento sustentado
+                        </label>
+                    </div>
+                </div>
                 <form id="form_ver_agregar_adjuntos_requerimiento_compra">
                     <input type="text" class="oculto" name="id_requerimiento" />
                     <fieldset class="group-table">

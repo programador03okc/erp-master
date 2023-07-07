@@ -148,7 +148,7 @@ function verAgregarAdjuntosRequerimientoPago(obj) {
                     }
 
                     if (element.id_estado != 7) {
-                    
+
                         htmlCabecera += `<tr>
                         <td style="text-align:left;"><a href="/files/necesidades/requerimientos/pago/cabecera/${element.archivo}" target="_blank">${element.archivo}</a></td>
                         <td style="text-align:left;">${element.fecha_emision ?? ''}</td>
@@ -189,6 +189,12 @@ function verAgregarAdjuntosRequerimientoPago(obj) {
     }
     otrosAdjuntosTesoreria(idRequerimientoPago);
 
+    // console.log(obj.dataset.sustento);
+    $('#modal-ver-agregar-adjuntos-requerimiento-pago').find('[name="requerimiento_sustentado"]').attr('data-id',idRequerimientoPago);
+    $('#modal-ver-agregar-adjuntos-requerimiento-pago').find('[name="requerimiento_sustentado"]').prop('checked',false);
+    if (obj.dataset.sustento =='true') {
+        $('#modal-ver-agregar-adjuntos-requerimiento-pago').find('[name="requerimiento_sustentado"]').prop('checked',true);
+    }
 }
 
 function estaHabilitadoLaExtension(file) {
@@ -312,7 +318,7 @@ function addToTablaArchivosRequerimientoPagoCabecera(payload) {
         html = `<tr id="${payload.id}" style="text-align:center">
         <td style="text-align:left;">${payload.nameFile}</td>
         <td> <input type="date" class="form-control handleChangeFechaEmision" name="fecha_emision" value="${moment().format("YYYY-MM-DD")}" /></td>
-        <td style="text-align:left; display:flex;"> 
+        <td style="text-align:left; display:flex;">
             <input type="text" class="form-control handleChangeSerieComprobante" name="serie"  placeholder="serie">
             <input type="text" class="form-control handleChangeNumeroComprobante" name="numero"  placeholder="Número">
         </td>
@@ -704,3 +710,45 @@ function otrosAdjuntosTesoreria(idRequerimientoPago) {
         console.log(errorThrown);
     });
 }
+$('[name="requerimiento_sustentado"]').click(function (e) {
+    // e.preventDefault();
+    let id = $(this).attr('data-id');
+
+    if ($(this).is(':checked') ) {
+        value = 't';
+    } else {
+        value = 'f';
+    }
+    // $("#ListaRequerimientosElaborados").LoadingOverlay("hide", true);
+    $.ajax({
+        type: 'POST',
+        url: 'requerimiento-sustentado',
+        data: {
+            requerimiento_sustentado:value,
+            id:id
+        },
+        dataType: 'JSON',
+        success: (response) =>{
+            console.log(response);
+            if (response.status =='success') {
+
+                Lobibox.notify('success', {
+                    title:false,
+                    size: 'mini',
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Se realizo con éxito el su proceso de requerimiento sustentado'
+                });
+                $("#ListaRequerimientoPago").DataTable().ajax.reload();
+                // $('#modal-ver-agregar-adjuntos-requerimiento-compra').modal('hide');
+            }
+        },
+        fail:  (jqXHR, textStatus, errorThrown) =>{
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        }
+    });
+
+});
