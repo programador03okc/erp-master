@@ -254,12 +254,6 @@ class ListarRequerimientoPagoView {
         });
 
         $('#modal-requerimiento-pago').on("change", "select.handleChangeProyecto", (e) => {
-            let codigoProyecto = document.querySelector("select[name='proyecto']").options[document.querySelector("select[name='proyecto']").selectedIndex].dataset.codigo;
-            if(e.currentTarget.value >0){
-                document.querySelector("div[id='contenedor-proyecto'] input[name='codigo_proyecto']").value = codigoProyecto;
-            }else{
-                document.querySelector("div[id='contenedor-proyecto'] input[name='codigo_proyecto']").value = '';
-            }
             this.deshabilitarOtrosTiposDePresupuesto('SELECCION_PROYECTOS', e.currentTarget.value); // deshabilitar el poder afectar otro presupuesto ejemplo: selector de proyectos, selctor de cdp 
         });
         $('#modal-requerimiento-pago').on("change", "select.handleChangePresupuestoInterno", (e) => {
@@ -985,7 +979,6 @@ class ListarRequerimientoPagoView {
                 document.querySelector("div[id='modal-requerimiento-pago'] div[id='contenedor-cdp']").classList.add("oculto");
             }else{
                 document.querySelector("div[id='modal-requerimiento-pago'] select[name='proyecto']").value = 0;
-                document.querySelector("div[id='modal-requerimiento-pago'] input[name='codigo_proyecto']").value = '';
 
             }
 
@@ -1046,7 +1039,6 @@ class ListarRequerimientoPagoView {
 
         let selectElement = document.querySelector("div[id='contenedor-proyecto'] select[name='proyecto']");
         selectElement.innerHTML='';
-        document.querySelector("div[id='contenedor-proyecto'] input[name='codigo_proyecto']").value = '';
         let option = document.createElement("option");
         option.text = "Seleccionar un proyecto";
         option.value = '';
@@ -1054,7 +1046,7 @@ class ListarRequerimientoPagoView {
 
         data.forEach(element => {
             let option = document.createElement("option");
-            option.text = element.descripcion;
+            option.text = element.codigo+' - '+element.descripcion;
             option.value = element.id_proyecto;
             option.setAttribute('data-codigo', element.codigo);
             option.setAttribute('data-id-centro-costo', element.id_centro_costo);
