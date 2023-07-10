@@ -49,18 +49,20 @@ class NormalizarController extends Controller
     }
     public function listarRequerimientosPagos(Request $request)
     {
-        // return $request->all();exit;;
-        // $req_pago = RequerimientoPago::whereMonth('fecha_registro',$request->mes);
-        // if (!empty($request->division)) {
-        //     $req_pago = $req_pago->where('id_division',$request->division);
-        // }
-        // $req_pago = $req_pago->get();
+        // return $request->all();exit;
 
         $req_pago = RequerimientoPago::select('requerimiento_pago.*')
-        ->whereDate('requerimiento_pago.fecha_autorizacion','>=','2023-01-01 00:00:00')
-        ->whereDate('requerimiento_pago.fecha_autorizacion','<=','2023-04-30 23:59:59')
-        ->where('requerimiento_pago.id_estado','=',6)
+        // ->whereDate('requerimiento_pago.fecha_autorizacion','>=','2023-01-01 00:00:00')
+        // ->whereDate('requerimiento_pago.fecha_autorizacion','<=','2023-04-30 23:59:59')
+
         ->join('tesoreria.requerimiento_pago_detalle','requerimiento_pago_detalle.id_requerimiento_pago','=','requerimiento_pago.id_requerimiento_pago')
+
+        ->join('tesoreria.registro_pago','registro_pago.id_requerimiento_pago','=','requerimiento_pago.id_requerimiento_pago')
+
+        ->whereDate('registro_pago.fecha_pago','>=','2023-01-01 00:00:00')
+        ->whereDate('registro_pago.fecha_pago','<=','2023-04-30 23:59:59')
+
+        ->where('requerimiento_pago.id_estado','=',6)
         ->whereNull('requerimiento_pago_detalle.id_partida')
         ->whereNull('requerimiento_pago_detalle.id_partida_pi');
         if (!empty($request->division)) {
@@ -72,7 +74,10 @@ class NormalizarController extends Controller
         ->get();
         return DataTables::of($req_pago)
         ->addColumn('mes', function ($data){
-            $fecha_como_entero = strtotime($data->fecha_autorizacion);
+
+            $registro_pago = RegistroPago::where('id_requerimiento_pago',$data->id_requerimiento_pago)->first();
+
+            $fecha_como_entero = strtotime($registro_pago->fecha_pago);
             $mes = date("m", $fecha_como_entero);
 
             return $mes;
@@ -165,7 +170,8 @@ class NormalizarController extends Controller
 
 
                     $requerimiento_pago = RequerimientoPago::find($request->requerimiento_pago_id);
-                    $fecha_como_entero = strtotime($requerimiento_pago->fecha_autorizacion);
+                    $registro_pago = RegistroPago::where('id_requerimiento_pago',$request->requerimiento_pago_id)->first();
+                    $fecha_como_entero = strtotime($registro_pago->fecha_pago);
                     $mes = date("m", $fecha_como_entero);
 
 
