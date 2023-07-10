@@ -19,7 +19,7 @@ class ReporteComprasLocalesExcel implements FromView
         foreach($comLocales as $element){
             $data[] = [
                 'codigo'                                    => $element->codigo ?? '',
-                'fecha_emision'                             => $element->fecha_emision ?? '',
+                'fecha_emision'                             =>date('Y-m-d', strtotime($element->fecha_emision)) ?? '',
                 'codigo_requerimiento'                      => $element->codigo_requerimiento ?? '',
                 'codigo_producto'                           => $element->codigo_producto ?? '',
                 'descripcion'                               => str_replace("'", "", str_replace("", "", $element->descripcion)) ?? '',
