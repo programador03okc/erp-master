@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th><b>Cód. Orden</b></th>
+            <th><b>Fecha Emisión Orden</b></th>
             <th><b>Cód. Requerimiento</b></th>
             <th><b>Cód. Producto</b></th>
             <th><b>Bien comprado/ servicio contratado</b></th>
@@ -25,6 +26,7 @@
             <th><b>Grupo</b></th>
             <th><b>Proyecto</b></th>
             <th><b>Estado pago</b></th>
+            <th><b>Observación</b></th>
         </tr>
     </thead>
     <tbody>
@@ -32,6 +34,7 @@
 
         <tr>
             <td>{{ $compras['codigo'] }}</td>
+            <td>{{ $compras['fecha_emision'] }}</td>
             <td>{{ $compras['codigo_requerimiento'] }}</td>
             <td>{{ $compras['codigo_producto'] }}</td>
             <td>{{ $compras['descripcion'] }}</td>
@@ -55,6 +58,7 @@
             <td>{{ $compras['descripcion_grupo'] }}</td>
             <td>{{ $compras['descripcion_proyecto'] }}</td>
             <td>{{ $compras['descripcion_estado_pago'] }}</td>
+            <td>{{ $compras['observacion_orden'] }}</td>
         </tr>
         @endforeach
     </tbody>

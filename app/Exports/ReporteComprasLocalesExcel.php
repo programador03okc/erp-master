@@ -19,6 +19,7 @@ class ReporteComprasLocalesExcel implements FromView
         foreach($comLocales as $element){
             $data[] = [
                 'codigo'                                    => $element->codigo ?? '',
+                'fecha_emision'                             => $element->fecha_emision ?? '',
                 'codigo_requerimiento'                      => $element->codigo_requerimiento ?? '',
                 'codigo_producto'                           => $element->codigo_producto ?? '',
                 'descripcion'                               => str_replace("'", "", str_replace("", "", $element->descripcion)) ?? '',
@@ -41,7 +42,8 @@ class ReporteComprasLocalesExcel implements FromView
                 'descripcion_sede_empresa'                  => $element->descripcion_sede_empresa ?? '',
                 'descripcion_grupo'                         => $element->descripcion_grupo ?? '',
                 'descripcion_proyecto'                      => $element->descripcion_proyecto ?? '',
-                'descripcion_estado_pago'                   => $element->descripcion_estado_pago ?? ''
+                'descripcion_estado_pago'                   => $element->descripcion_estado_pago ?? '',
+                'observacion_orden'                               => $element->observacion_orden ?? ''
             ];
         }
         return view('logistica.reportes.view_compras_locales_export', ['comprasLocales' => $data]);
