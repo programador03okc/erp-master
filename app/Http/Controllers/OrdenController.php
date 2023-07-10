@@ -2761,9 +2761,9 @@ class OrdenController extends Controller
                 $ord->codigo = $codigo;
                 $ord->save();
 
+                $codigoOrden = $ord->codigo;
                 $idOrden = $orden->id_orden_compra;
                 $idTipoDocumento = $orden->id_tp_documento;
-                $codigoOrden = $orden->codigo;
 
                 if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento('CREAR', $orden->id_orden_compra, $orden->codigo);
