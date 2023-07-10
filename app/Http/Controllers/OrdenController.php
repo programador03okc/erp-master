@@ -2684,7 +2684,7 @@ class OrdenController extends Controller
 
                 $orden = new Orden();
                 $tp_doc = ($request->id_tp_documento !== null ? $request->id_tp_documento : 2);
-                $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
+                // $orden->codigo =  Orden::nextCodigoOrden($tp_doc);
                 $orden->id_grupo_cotizacion = $request->id_grupo_cotizacion ? $request->id_grupo_cotizacion : null;
                 $orden->id_tp_documento = $tp_doc;
                 $orden->id_periodo = $request->id_periodo ? $request->id_periodo : null;
@@ -2752,11 +2752,18 @@ class OrdenController extends Controller
                     $detalleOrden[]= $detalle;
                 }
 
+            
+
+                DB::commit();
+
+                $codigo = Orden::nextCodigoOrden($orden->id_tp_documento);
+                $ord = Orden::find($orden->id_orden_compra);
+                $ord->codigo = $codigo;
+                $ord->save();
+
                 $idOrden = $orden->id_orden_compra;
                 $idTipoDocumento = $orden->id_tp_documento;
                 $codigoOrden = $orden->codigo;
-
-                DB::commit();
 
                 if (isset($orden->id_orden_compra) and $orden->id_orden_compra > 0) {
                     $actualizarEstados = $this->actualizarNuevoEstadoRequerimiento('CREAR', $orden->id_orden_compra, $orden->codigo);
