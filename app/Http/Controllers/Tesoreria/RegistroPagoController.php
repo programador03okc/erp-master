@@ -471,7 +471,7 @@ class RegistroPagoController extends Controller
             ->select('adm_cta_contri.id_cuenta_contribuyente', 'adm_cta_contri.nro_cuenta')
             // ->leftjoin('contabilidad.adm_contri', 'adm_contri.id_contribuyente', '=', 'adm_cta_contri.id_contribuyente')
             ->leftjoin('administracion.adm_empresa', 'adm_empresa.id_contribuyente', '=', 'adm_cta_contri.id_contribuyente')
-            ->where('adm_empresa.id_empresa', $id_empresa)
+            ->where([['adm_empresa.id_empresa', $id_empresa],['adm_cta_contri.estado','!=',7]])
             ->get();
         return response()->json($cuentas);
     }
