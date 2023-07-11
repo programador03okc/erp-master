@@ -27,6 +27,7 @@
             <th><b>Proyecto</b></th>
             <th><b>Estado pago</b></th>
             <th><b>Observación</b></th>
+            <th><b>Monto Total Orden</b></th>
         </tr>
     </thead>
     <tbody>
@@ -59,6 +60,7 @@
             <td>{{ $compras['descripcion_proyecto'] }}</td>
             <td>{{ $compras['descripcion_estado_pago'] }}</td>
             <td>{{ $compras['observacion_orden'] }}</td>
+            <td>{{ $compras['monto_orden_total'] }}</td>
         </tr>
         @endforeach
     </tbody>
