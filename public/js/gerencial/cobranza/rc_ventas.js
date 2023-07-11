@@ -821,7 +821,7 @@ function listarAcciones(id, tipo) {
             if (response.status == 200) {
                 if (datos.length > 0) {
                     datos.forEach(element => {
-                        let fecha = moment(element.fecha).format("MM-DD-YY");
+                        let fecha = moment(element.fecha).format("DD-MM-YYYY");
                         let estado = (element.estado == 1) ? 'ELABORADO' : 'ANULADO';
                         let estado_pen = (element.estado_penalidad != null) ? element.estado_penalidad : '';
                         let monto = $.number(element.monto, 2);
