@@ -76,8 +76,8 @@ function lista() {
             {
                 class:"text-center",
                 render: function (data, type, row) {
-                    // return '<a href="#" data-action="exportar-ejecutado" data-id="'+row['id_presupuesto_interno']+'">'+row['total_ejecutado']+'</a>';
-                    return '<a href="#" data-id="'+row['id_presupuesto_interno']+'">'+row['total_ejecutado']+'</a>';
+                    return '<a href="#" data-action="exportar-ejecutado" data-id="'+row['id_presupuesto_interno']+'">'+row['total_ejecutado']+'</a>';
+                    // return '<a href="#" data-id="'+row['id_presupuesto_interno']+'">'+row['total_ejecutado']+'</a>';
                 }
             },
             // {data: 'total_ejecutado', name:"total_ejecutado" , class:"text-center"},

@@ -1750,44 +1750,74 @@ class PresupuestoInternoController extends Controller
         }
 
         $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_presupuesto_interno',$request->id)
-        // ->where('tipo','SALIDA')
-        ->where('estado',3)
+        ->where('tipo','SALIDA')
+        // ->where('estado',3)
         ->whereIn('mes',$mesEnFormatoFechaList)
         ->orderBy('id','ASC')->get();
-        // return $historial_saldo;exit;
+
 
         $orden_detalle = array();
         $requerimiento_detalle = array();
         foreach($historial_saldo as $key => $value) {
-            $orden = Orden::find($value->id_orden);
-            if($orden){
+
+            $presupuesto = PresupuestoInterno::find($value->id_presupuesto_interno);
+            $presupuesto_detalle = PresupuestoInternoDetalle::find($value->id_partida);
+
+            if(!empty($value->id_orden)){
+                $orden = Orden::find($value->id_orden);
                 $orden_array = OrdenCompraDetalle::where('id_detalle_orden',$value->id_orden_detalle)->get();
-                foreach($orden_array as $key => $value) {
-                    array_push($orden_detalle,$value);
+                if(sizeof($orden_array)>0){
+                    foreach($orden_array as $key => $value_orden) {
+                        $value_orden->codigo_orden = $orden->codigo;
+
+                        $value_orden->presupuesto_codigo = $presupuesto->codigo;
+                        $value_orden->presupuesto_descripcion = $presupuesto->descripcion;
+                        $value_orden->codigo_partida = $presupuesto_detalle->partida;
+                        $value_orden->codigo_descripcion = $presupuesto_detalle->descripcion;
+                        $value_orden->tipo = 'GASTO';
+
+                        $req_detalle = DetalleRequerimiento::find($value_orden->id_detalle_requerimiento);
+                        $requerimiento = Requerimiento::find($req_detalle->id_requerimiento);
+
+                        $value_orden->codigo_req = $requerimiento->codigo;
+                        $value_orden->fecha_autorizacion = $orden->fecha_autorizacion;
+
+                        array_push($orden_detalle,$value_orden);
+                    }
                 }
             }
-            $value->orden_cabecera = $orden;
-            $value->orden_detalle = $orden_detalle;
 
-            $requerimiento = RequerimientoPago::find($value->id_requerimiento_pago);
-            if($requerimiento){
+            if(!empty($value->id_requerimiento_pago)){
+                $requerimiento = RequerimientoPago::find($value->id_requerimiento_pago);
+
                 $requerimiento_array = RequerimientoPagoDetalle::where('id_requerimiento_pago_detalle',$value->id_requerimiento_pago_detalle)->get();
-                foreach($requerimiento_array as $key => $value) {
-                    array_push($requerimiento_detalle,$value);
+
+                // return [$presupuesto,$presupuesto_detalle];exit;
+                if(sizeof($requerimiento_array)>0){
+                    foreach($requerimiento_array as $key => $value_requerimiento) {
+                        $value_requerimiento->codigo_req                = $requerimiento->codigo;
+                        $value_requerimiento->fecha_registro_req        = $requerimiento->fecha_registro;
+
+                        $value_requerimiento->presupuesto_codigo        = $presupuesto->codigo;
+                        $value_requerimiento->presupuesto_descripcion   = $presupuesto->descripcion;
+                        $value_requerimiento->codigo_partida            = $presupuesto_detalle->partida;
+                        $value_requerimiento->codigo_descripcion        = $presupuesto_detalle->descripcion;
+                        $value_requerimiento->tipo                      = 'GASTO';
+
+                        array_push($requerimiento_detalle, $value_requerimiento);
+                    }
                 }
+
             }
-
-            $value->requerimiento_cabecera = $requerimiento;
-            $value->requerimiento_detalle = $requerimiento_detalle;
         }
+        $detalle_array = array(
+            "orden"=>$orden_detalle,
+            "requerimiento"=>$requerimiento_detalle
+        );
+        // return [$historial_saldo->orden_detalle , $historial_saldo->requerimiento_detalle];exit;
 
-        if(sizeof($orden_detalle)>0){
-
-        }
-
-
-        return response()->json([$orden_detalle,$requerimiento_detalle],200);
-        return Excel::download(new PresupuestoInternoEjecutadoExport($historial_saldo), 'presupuesto_interno_monto_ejecutado.xlsx');
+        // return response()->json($detalle_array,200);exit;
+        return Excel::download(new PresupuestoInternoEjecutadoExport($detalle_array), 'presupuesto_interno_monto_ejecutado.xlsx');
 
         // return response()->json($historial_saldo,200);
     }
