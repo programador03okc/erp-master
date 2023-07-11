@@ -34,14 +34,14 @@
 
                     @foreach ($data['requerimiento'] as $key_detalle => $item_detalle)
                         @php
-                            $total_1 = $total_1 + $item_detalle->subtotal;
+                            $total_1 = $total_1 + $item_detalle->importe_historial;
                         @endphp
                         <tr>
                             <td style="vertical-align: baseline;text-align: center;">{{ date("d/m/Y H:i:s", strtotime($item_detalle->fecha_registro_req))  }}</td>
                             <td style="vertical-align: text-bottom;text-align: center;">{{ date("d/m/Y H:i:s", strtotime($item_detalle->fecha_registro))}}</td>
                             <td style="vertical-align: text-bottom;text-align: center;">{{$item_detalle->codigo_req}}</td>
                             <td style="">{{$item_detalle->descripcion}}</td>
-                            <td style="vertical-align: text-bottom;text-align: center;">S/.{{$item_detalle->subtotal}}</td>
+                            <td style="vertical-align: text-bottom;text-align: center;">S/.{{$item_detalle->importe_historial}}</td>
                             <td style="vertical-align: text-bottom;text-align: center;">{{$item_detalle->tipo}}</td>
 
                             <td style="vertical-align: text-bottom;text-align: center;">{{ $item_detalle->presupuesto_codigo}}</td>
@@ -91,7 +91,7 @@
             @endphp
             @foreach ($data['orden'] as $item)
                     @php
-                        $total_2 = $total_2 + $item->subtotal;
+                        $total_2 = $total_2 + $item->importe_historial;
                     @endphp
                 <tr>
                     <td style="vertical-align: baseline;text-align: center;">{{ date("d/m/Y H:i:s", strtotime($item->fecha_registro))  }}</td>
@@ -99,7 +99,7 @@
                     <td style="vertical-align: text-bottom;text-align: center;">{{$item->codigo_orden}}</td>
                     <td style="vertical-align: text-bottom;text-align: center;">{{$item->codigo_req}}</td>
                     <td style="">{{$item->descripcion_adicional}}</td>
-                    <td style="vertical-align: text-bottom;text-align: center;">S/.{{$item->subtotal}}</td>
+                    <td style="vertical-align: text-bottom;text-align: center;">S/.{{$item->importe_historial}}</td>
                     <td style="vertical-align: text-bottom;text-align: center;">{{$item->tipo}}</td>
 
                     <td style="">{{ $item_detalle->presupuesto_codigo}}</td>

@@ -1781,6 +1781,7 @@ class PresupuestoInternoController extends Controller
 
                         $value_orden->codigo_req = $requerimiento->codigo;
                         $value_orden->fecha_autorizacion = $orden->fecha_autorizacion;
+                        $value_orden->importe_historial = $value->importe;
 
                         array_push($orden_detalle,$value_orden);
                     }
@@ -1803,7 +1804,7 @@ class PresupuestoInternoController extends Controller
                         $value_requerimiento->codigo_partida            = $presupuesto_detalle->partida;
                         $value_requerimiento->codigo_descripcion        = $presupuesto_detalle->descripcion;
                         $value_requerimiento->tipo                      = 'GASTO';
-
+                        $value_requerimiento->importe_historial = $value->importe;
                         array_push($requerimiento_detalle, $value_requerimiento);
                     }
                 }
