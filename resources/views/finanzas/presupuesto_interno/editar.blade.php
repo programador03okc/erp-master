@@ -70,7 +70,7 @@ Presupuesto Interno
                                 <div class="col-md-12">
                                     <div class="alert alert-warning" role="alert">
                                         <strong><i class="fa fa-question-circle"></i></strong>
-                                        El presupuestato se encuentra aprobado.
+                                        El presupuesto se encuentra aprobado.
                                         Al editar tener en concideración que la suma de las partidas no puede pasar el monto ya aprobado del Presupuesto Interno.
                                     </div>
                                 </div>

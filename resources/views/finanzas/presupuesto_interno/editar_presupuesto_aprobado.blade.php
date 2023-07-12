@@ -31,6 +31,7 @@ Presupuesto Interno
     <form action="{{ route('finanzas.presupuesto.presupuesto-interno.actualizar') }}" method="post" data-form="editar-partida" enctype="multipart/formdata">
         <input type="hidden" name="id_presupuesto_interno" value="{{ $id }}">
         <input type="hidden" name="estado" value="1">
+        <input type="hidden" name="total_presupuesto" value="{{$total_presupuesto}}">
         <div class="row">
             <div class="col-md-12">
                 <div class="box box-danger">

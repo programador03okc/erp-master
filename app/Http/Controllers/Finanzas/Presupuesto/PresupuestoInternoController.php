@@ -680,13 +680,40 @@ class PresupuestoInternoController extends Controller
         }
         // return 'ss';exit;
         $sedes = Sede::listarSedesPorEmpresa($presupuesto_interno->empresa_id);
-        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos','empresas','sedes'));
+        $total_presupuesto = PresupuestoInterno::calcularTotalPresupuestoAnual($id,3);
+        return view('finanzas.presupuesto_interno.editar_presupuesto_aprobado', compact('grupos','area','moneda','id','presupuesto_interno','ingresos','costos','gastos','array_accesos','empresas','sedes','total_presupuesto'));
     }
     public function actualizar(Request $request)
     {
         // set_time_limit(0);
-        ini_set('max_input_vars', 800000);
 
+        ini_set('max_input_vars', 800000);
+        $array_accesos=[];
+        $accesos_usuario = AccesosUsuarios::where('estado',1)->where('id_usuario',Auth::user()->id_usuario)->get();
+        foreach ($accesos_usuario as $key => $value) {
+            array_push($array_accesos,$value->id_acceso);
+        }
+
+        if ($request->tipo_gastos==='3' && in_array(329,$array_accesos) === false) {
+            // return floatval(str_replace(",", "", $request->gastos[0]['enero']));exit;
+            foreach($request->gastos as $key=>$value){
+                $array_partida = explode('.',$value['partida']);
+                if(sizeof($array_partida)===1){
+                    $total = floatval(str_replace(",", "", $value['enero'])) + floatval(str_replace(",", "", $value['febrero'])) + floatval(str_replace(",", "", $value['marzo'])) + floatval(str_replace(",", "", $value['abril'])) + floatval(str_replace(",", "", $value['mayo'])) + floatval(str_replace(",", "", $value['junio'])) + floatval(str_replace(",", "", $value['julio'])) + floatval(str_replace(",", "", $value['agosto'])) + floatval(str_replace(",", "", $value['setiembre'])) + floatval(str_replace(",", "", $value['octubre'])) + floatval(str_replace(",", "", $value['noviembre'])) + floatval(str_replace(",", "", $value['diciembre']));
+
+                    if(round($total,2) > (float)$request->total_presupuesto){
+                        return response()->json([
+                            "titulo"=>"Error",
+                            "texto"=>"Esta sobre pasando los limites del presupueto ya aprobado.",
+                            "icono"=>"error"
+                        ],200);exit;
+                    }
+
+                }
+
+            }
+
+        }
         $array_descripcion = explode('-',$request->descripcion);
 
         // return $request->descripcion ;exit;

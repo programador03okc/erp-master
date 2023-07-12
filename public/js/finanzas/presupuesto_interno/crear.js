@@ -770,6 +770,20 @@ $(document).on('submit','[data-form="editar-partida"]',function (e) {
                         window.location.href = "lista";
                     }
                 })
+            }else{
+                Swal.fire({
+                    title: result.value.titulo,
+                    text: result.value.texto,
+                    icon: result.value.icono,
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((resultado) => {
+                    if (resultado.isConfirmed) {
+                        // $('#nuevo-cliente').modal('hide');
+                        // window.location.href = "lista";
+                    }
+                })
             }
         }
     });
