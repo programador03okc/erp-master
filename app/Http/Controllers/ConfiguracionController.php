@@ -29,7 +29,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use DateTime;
 ini_set('max_execution_time', 3600);
 date_default_timezone_set('America/Lima');
@@ -389,12 +388,13 @@ class ConfiguracionController extends Controller{
     function cambiar_clave(Request $request){
         $p1 = StringHelper::encode5t(addslashes($request->pass_old));
         $p2 = StringHelper::encode5t(addslashes($request->pass_new));
+        $p3 = StringHelper::claveHash($request->pass_new);
         $user = Auth::user()->id_usuario;
 
         $sql = DB::table('configuracion.sis_usua')->where([['clave', '=', $p1], ['id_usuario', '=', $user], ['estado', '=', 1]])->first();
 
         if ($sql !== null) {
-            $data = DB::table('configuracion.sis_usua')->where('id_usuario', $sql->id_usuario)->update(['clave'  => $p2, 'password' => Hash::make($request->pass_new)]);
+            $data = DB::table('configuracion.sis_usua')->where('id_usuario', $sql->id_usuario)->update(['clave'  => $p2, 'password' => $p3]);
             $rpta = $data;
         }else{
             $rpta = 0;
@@ -620,7 +620,7 @@ class ConfiguracionController extends Controller{
         $sis_usua->usuario          = $request->usuario;
         if ($request->clave) {
             $sis_usua->clave        = StringHelper::encode5t($request->clave);
-            $sis_usua->password     = Hash::make($request->clave);
+            $sis_usua->password     = StringHelper::claveHash($request->clave);
         }
         $sis_usua->nombre_corto     = $request->nombre_corto;
         $sis_usua->codvend_softlink = $request->codvent_softlink;
@@ -711,7 +711,7 @@ class ConfiguracionController extends Controller{
         ->update([
             'usuario' => $usuario,
             'clave' => $contraseña,
-            'password' => Hash::make($request->contraseña),
+            'password' => StringHelper::claveHash($request->clave),
             'nombre_corto' => $nombre_corto
         ]);
 
@@ -2166,7 +2166,7 @@ public function anular_configuracion_socket($id){
     {
         $usuario = SisUsua::find($request->id_usuario);
             $usuario->clave = StringHelper::encode5t($request->nueva_clave);
-            $usuario->password = Hash::make($request->nueva_clave);
+            $usuario->password = StringHelper::claveHash($request->nueva_clave);
         $usuario->save();
         return response()->json(["status" => 200, "success" => true, "modelo" => $usuario]);
 
