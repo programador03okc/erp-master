@@ -412,7 +412,7 @@ $(document).on("click", 'button[data-action="asignar-partida"]', (e) => {
                             <tbody>`;
 
                                 $.each(response.presupuesto_detalle, function (idnex, element) {
-                                    if (element.registro==='2') {
+
                                         html+=`<tr>
                                             <td>`+element.partida+`</td>
                                             <td>`+element.descripcion+`</td>
@@ -421,22 +421,23 @@ $(document).on("click", 'button[data-action="asignar-partida"]', (e) => {
                                             <td style="`+(mes==='03'?'background-color: #bb24249c;':'')+`">`+element.marzo+`</td>
                                             <td style="`+(mes==='04'?'background-color: #bb24249c;':'')+`">`+element.abril+`</td>
                                             <td>
-                                                <button class="btn btn-default btn-sm"
-                                                data-id-presupuesto-interno="`+element.id_presupuesto_interno+`" data-id-presupuesto-interno-detalle="`+element.id_presupuesto_interno_detalle+`"
-                                                data-id-requerimiento-pago="`+id+`"
-                                                data-id-requerimiento-pago-detalle="`+id_detalle+`"
+                                            `+ (element.registro==='2' ?`<button class="btn btn-default btn-sm"
+                                            data-id-presupuesto-interno="`+element.id_presupuesto_interno+`" data-id-presupuesto-interno-detalle="`+element.id_presupuesto_interno_detalle+`"
+                                            data-id-requerimiento-pago="`+id+`"
+                                            data-id-requerimiento-pago-detalle="`+id_detalle+`"
 
-                                                data-id-orden="`+id_orden+`"
-                                                data-id-orden-detalle="`+id_orden_detalle+`"
+                                            data-id-orden="`+id_orden+`"
+                                            data-id-orden-detalle="`+id_orden_detalle+`"
 
-                                                data-id-requerimiento="`+id_requerimiento+`"
-                                                data-id-requerimiento-detalle="`+id_requerimiento_detalle+`"
+                                            data-id-requerimiento="`+id_requerimiento+`"
+                                            data-id-requerimiento-detalle="`+id_requerimiento_detalle+`"
 
-                                                data-tap="`+tap+`"
-                                                data-click="seleccionar-partida">Asignar</button>
+                                            data-tap="`+tap+`"
+                                            data-click="seleccionar-partida">Asignar</button>` :``) +`
+
                                             </td>
                                         </tr>`;
-                                    }
+
 
                                 });
 
@@ -512,6 +513,11 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
         </div>
         `;
         $('[data-mensaje="respuesta"]').html(html);
+        Swal.fire(
+            response.titulo,
+            response.mensaje,
+            response.tipo
+          )
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
         console.log(textStatus);

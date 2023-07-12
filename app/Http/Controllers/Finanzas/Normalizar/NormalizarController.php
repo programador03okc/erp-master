@@ -63,6 +63,8 @@ class NormalizarController extends Controller
         ->whereDate('registro_pago.fecha_pago','<=','2023-04-30 23:59:59')
 
         ->where('requerimiento_pago.id_estado','=',6)
+        ->whereNull('requerimiento_pago.id_proyecto')
+        ->whereNull('requerimiento_pago.id_cc')
         ->whereNull('requerimiento_pago_detalle.id_partida')
         ->whereNull('requerimiento_pago_detalle.id_partida_pi');
         if (!empty($request->division)) {
