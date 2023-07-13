@@ -82,7 +82,7 @@ class PresupuestoInternoController extends Controller
                 $meses_numero = date('m');
                 $total_ejecutado =  PresupuestoInterno::totalEjecutatoMonto($meses_numero,$data->id_presupuesto_interno);
             }
-            return round($total_ejecutado, 2);
+            return (round($total_ejecutado, 2)*1.18);
         })
         // ->toJson();
         ->make(true);
