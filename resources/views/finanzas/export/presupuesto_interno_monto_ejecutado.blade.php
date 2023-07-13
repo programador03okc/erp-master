@@ -8,6 +8,9 @@
     <br>
     <br>
     <h2>Requerimiento de pago</h2>
+    @php
+        $total_1 = 0;
+    @endphp
     @if (sizeof($data['requerimiento'])>0)
         <table>
             <thead>
@@ -28,9 +31,7 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $total_1 = 0;
-                @endphp
+
 
 
                     @foreach ($data['requerimiento'] as $key_detalle => $item_detalle)
@@ -68,6 +69,9 @@
 
     <br>
     <br>
+    @php
+        $total_2 = 0;
+    @endphp
     @if (sizeof($data['orden'])>0)
    <h2>Ordenes</h2>
     <table>
@@ -89,9 +93,7 @@
             </tr>
         </thead>
         <tbody>
-            @php
-                $total_2 = 0;
-            @endphp
+
             @foreach ($data['orden'] as $item)
                     @php
                         $total_2 = $total_2 + ((float)$item->importe_historial*1.18);
