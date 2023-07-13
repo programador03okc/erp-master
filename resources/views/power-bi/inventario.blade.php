@@ -2,10 +2,6 @@
 @include('layout.menu_powerbi')
 
 @section('cabecera') PowerBi - Inventario @endsection
-@extends('layout.main')
-@include('layout.menu_powerbi')
-
-@section('cabecera') PowerBi - Inventario @endsection
 
 @section('content')
 <div class="box box-solid">
