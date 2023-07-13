@@ -35,7 +35,7 @@
 
                     @foreach ($data['requerimiento'] as $key_detalle => $item_detalle)
                         @php
-                            $total_1 = $total_1 + $item_detalle->importe_historial;
+                            $total_1 = $total_1 + ((float)$item_detalle->importe_historial*1.18);
                         @endphp
                         <tr>
                             <td style="vertical-align: baseline;text-align: center;">{{ date("d/m/Y H:i:s", strtotime($item_detalle->fecha_registro_req))  }}</td>
@@ -43,7 +43,7 @@
                             <td style="vertical-align: text-bottom;text-align: center;">{{$item_detalle->codigo_req}}</td>
                             <td style="vertical-align: text-bottom;text-align: center;"></td>
                             <td style="">{{$item_detalle->descripcion}}</td>
-                            <td style="vertical-align: text-bottom;text-align: center;">S/.{{$item_detalle->importe_historial}}</td>
+                            <td style="vertical-align: text-bottom;text-align: center;">S/.{{((float)$item_detalle->importe_historial*1.18)}}</td>
                             <td style="vertical-align: text-bottom;text-align: center;">{{$item_detalle->tipo}}</td>
 
                             <td style="vertical-align: text-bottom;text-align: center;">{{ $item_detalle->presupuesto_codigo}}</td>
@@ -94,7 +94,7 @@
             @endphp
             @foreach ($data['orden'] as $item)
                     @php
-                        $total_2 = $total_2 + $item->importe_historial;
+                        $total_2 = $total_2 + ((float)$item->importe_historial*1.18);
                     @endphp
                 <tr>
                     <td style="vertical-align: baseline;text-align: center;">{{ date("d/m/Y H:i:s", strtotime($item->fecha_registro))  }}</td>
@@ -102,7 +102,7 @@
                     <td style="vertical-align: text-bottom;text-align: center;">{{$item->codigo_orden}}</td>
                     <td style="vertical-align: text-bottom;text-align: center;">{{$item->codigo_req}}</td>
                     <td style="">{{$item->descripcion_adicional}}</td>
-                    <td style="vertical-align: text-bottom;text-align: center;">S/.{{$item->importe_historial}}</td>
+                    <td style="vertical-align: text-bottom;text-align: center;">S/.{{((float)$item->importe_historial*1.18)}}</td>
                     <td style="vertical-align: text-bottom;text-align: center;">{{$item->tipo}}</td>
 
                     <td style="">{{ $item_detalle->presupuesto_codigo}}</td>
@@ -132,7 +132,7 @@
 
             <tr>
                 <td style="vertical-align: text-bottom;text-align: center;">Total : </td>
-                <td style="vertical-align: text-bottom;text-align: center;" >S/.{{($total_1 + $total_2)}}</td>
+                <td style="vertical-align: text-bottom;text-align: center;" >S/.{{round(($total_1 + $total_2),2)}}</td>
             </tr>
         </tbody>
     </table>
