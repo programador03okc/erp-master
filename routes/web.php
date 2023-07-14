@@ -2397,6 +2397,7 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::get('script-generar-codigo-clientes', 'Gerencial\Cobranza\CobranzaController@scriptGenerarCodigoCliente')->name('script-generar-codigo-clientes');
                 #generar codigo para los clientes
                 Route::get('script-generar-codigo-proveedores', 'Gerencial\Cobranza\CobranzaController@scriptGenerarCodigoProveedores')->name('script-generar-codigo-proveedores');
+				Route::get('carga-manual', 'Gerencial\Cobranza\CobranzaController@cargaManual')->name('carga-manual');
 			});
 
 
