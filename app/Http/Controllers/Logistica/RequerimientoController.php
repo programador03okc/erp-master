@@ -2014,7 +2014,7 @@ class RequerimientoController extends Controller
                 WHERE   adm_aprobacion.id_vobo = 3 AND
                 adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos"),
 
-                DB::raw(" CASE WHEN almacen.alm_req.id_tipo_requerimiento =1 THEN  sis_usua.nombre_largo
+                DB::raw("CASE WHEN almacen.alm_req.id_tipo_requerimiento =1 THEN  sis_usua.nombre_largo
                 ELSE CONCAT(pers_solicitado_por.nombres,' ',pers_solicitado_por.apellido_paterno,' ',pers_solicitado_por.apellido_materno)
                 END AS nombre_solicitado_por")
 
@@ -2070,9 +2070,13 @@ class RequerimientoController extends Controller
             ;
 
         return datatables($requerimientos)
+            ->filterColumn('nombre_solicitado_por', function ($query, $keyword) {
+                $keywords = trim(strtoupper($keyword));
+                $query->whereRaw("UPPER(nombre_solicitado_por) LIKE ?", ["%{$keywords}%"]);
+            })
             ->filterColumn('nombre_usuario', function ($query, $keyword) {
                 $keywords = trim(strtoupper($keyword));
-                $query->whereRaw("UPPER(CONCAT(sis_usua.nombre_largo)) LIKE ?", ["%{$keywords}%"]);
+                $query->whereRaw("UPPER(sis_usua.nombre_largo) LIKE ?", ["%{$keywords}%"]);
             })
             ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {
                 try {
