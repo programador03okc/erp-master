@@ -26,6 +26,8 @@
                     <th style="background-color: #cccccc;text-align: center;" width="18"><b>NOMBRE PPTO</b></th>
                     <th style="background-color: #cccccc;text-align: center;" width="18"><b>PARTIDA</b></th>
                     <th style="background-color: #cccccc;text-align: center;" width="18"><b>DESCRIPCIÓN</b></th>
+                    <th style="background-color: #cccccc;text-align: center;" width="18"><b>COD. SOFTLINK</b></th>
+                    <th style="background-color: #cccccc;text-align: center;" width="18"><b>NOMBRE DESTINATARIO</b></th>
 
 
                 </tr>
@@ -51,6 +53,8 @@
                             <td style="">{{ $item_detalle->presupuesto_descripcion}}</td>
                             <td style="vertical-align: text-bottom;text-align: center;"><p>{{$item_detalle->codigo_partida}}</p></td>
                             <td style="vertical-align: text-bottom;text-align: center;"><p>{{$item_detalle->codigo_descripcion}}</p></td>
+                            <td style="vertical-align: text-bottom;text-align: center;"><p> - </p></td>
+                            <td style="vertical-align: text-bottom;text-align: center;"><p>{{$item_detalle->persona}}</p></td>
                         </tr>
 
                     @endforeach
@@ -88,7 +92,8 @@
                 <th style="background-color: #cccccc;text-align: center;" width="18"><b>NOMBRE PPTO</b></th>
                 <th style="background-color: #cccccc;text-align: center;" width="18"><b>PARTIDA</b></th>
                 <th style="background-color: #cccccc;text-align: center;" width="18"><b>DESCRIPCIÓN</b></th>
-
+                <th style="background-color: #cccccc;text-align: center;" width="18"><b>COD. SOFTLINK</b></th>
+                <th style="background-color: #cccccc;text-align: center;" width="18"><b>PROVEEDOR</b></th>
 
             </tr>
         </thead>
@@ -107,10 +112,13 @@
                     <td style="vertical-align: text-bottom;text-align: center;">S/.{{((float)$item->importe_historial)}}</td>
                     <td style="vertical-align: text-bottom;text-align: center;">{{$item->tipo}}</td>
 
-                    <td style="">{{ $item_detalle->presupuesto_codigo}}</td>
-                    <td style="">{{ $item_detalle->presupuesto_descripcion}}</td>
-                    <td style=""><p>{{$item_detalle->codigo_partida}}</p></td>
-                    <td style=""><p>{{$item_detalle->codigo_descripcion}}</p></td>
+                    <td style="">{{ $item->presupuesto_codigo}}</td>
+                    <td style="">{{ $item->presupuesto_descripcion}}</td>
+                    <td style=""><p>{{$item->codigo_partida}}</p></td>
+                    <td style=""><p>{{$item->codigo_descripcion}}</p></td>
+
+                    <td style=""><p>{{$item->codigo_softlink}}</p></td>
+                    <td style=""><p>{{$item->proveedor}}</p></td>
                 </tr>
             @endforeach
             <tr>

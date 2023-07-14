@@ -31,8 +31,11 @@ use Yajra\DataTables\Facades\DataTables;
 
 use App\models\Configuracion\AccesosUsuarios;
 use App\models\Configuracion\UsuarioGrupo;
+use App\Models\Contabilidad\Contribuyente;
 use App\Models\Finanzas\PresupuestoInternoDetalleHistorial;
 use App\Models\Logistica\OrdenCompraDetalle;
+use App\Models\Logistica\Proveedor;
+use App\Models\Rrhh\Persona;
 use App\Models\Tesoreria\RequerimientoPagoDetalle;
 use Illuminate\Support\Facades\Auth;
 use Debugbar;
@@ -1792,6 +1795,10 @@ class PresupuestoInternoController extends Controller
 
             if(!empty($value->id_orden)){
                 $orden = Orden::find($value->id_orden);
+                $proveedor = Proveedor::where('id_proveedor',$orden->id_proveedor)->first();
+                $contribuyente = Contribuyente::find($proveedor->id_contribuyente);
+                $proveedor = ($contribuyente ? $contribuyente->razon_social: '-');
+                // return $contribuyente;exit;
                 $orden_array = OrdenCompraDetalle::where('id_detalle_orden',$value->id_orden_detalle)->get();
                 if(sizeof($orden_array)>0){
                     foreach($orden_array as $key => $value_orden) {
@@ -1810,6 +1817,9 @@ class PresupuestoInternoController extends Controller
                         $value_orden->fecha_autorizacion = $orden->fecha_autorizacion;
                         $value_orden->importe_historial = $value->importe;
 
+                        $value_orden->codigo_softlink = $orden->codigo_softlink;
+                        $value_orden->proveedor = $proveedor;
+
                         array_push($orden_detalle,$value_orden);
                     }
                 }
@@ -1819,6 +1829,18 @@ class PresupuestoInternoController extends Controller
                 $requerimiento = RequerimientoPago::find($value->id_requerimiento_pago);
 
                 $requerimiento_array = RequerimientoPagoDetalle::where('id_requerimiento_pago_detalle',$value->id_requerimiento_pago_detalle)->get();
+
+                if(!empty($requerimiento->id_persona)){
+                    $rrhh_persona = Persona::find($requerimiento->id_persona);
+                    $persona = ($rrhh_persona ? $rrhh_persona->nombres.' '.$rrhh_persona->apellido_paterno.' '.$rrhh_persona->apellido_materno:'-');
+                }else{
+
+                    $contibuyente = Contribuyente::find($requerimiento->id_contribuyente);
+                    // return [$contibuyente];exit ;
+                    $persona = ($contibuyente ? $contibuyente->razon_social : '-');
+                }
+
+
 
                 // return [$presupuesto,$presupuesto_detalle];exit;
                 if(sizeof($requerimiento_array)>0){
@@ -1832,6 +1854,8 @@ class PresupuestoInternoController extends Controller
                         $value_requerimiento->codigo_descripcion        = $presupuesto_detalle->descripcion;
                         $value_requerimiento->tipo                      = 'GASTO';
                         $value_requerimiento->importe_historial = $value->importe;
+
+                        $value_requerimiento->persona = $persona;
                         array_push($requerimiento_detalle, $value_requerimiento);
                     }
                 }
