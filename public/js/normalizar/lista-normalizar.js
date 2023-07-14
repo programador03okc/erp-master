@@ -397,8 +397,8 @@ $(document).on("click", 'button[data-action="asignar-partida"]', (e) => {
                         <p>Código :`+response.presupuesto.codigo+`</p>
                         <p>Descripción :`+response.presupuesto.descripcion+`</p>
                         <table class="table table-bordered table-hover dataTable"
-                        id="lista-partidas" data-table="lista-partidas">
-                            <thead>
+                        id="lista-partidas" data-table="lista-partidas" >
+                            <thead style=" position: sticky; top: 0; background: #fff; ">
                                 <tr>
                                     <th scope="col">Partida</th>
                                     <th scope="col">Descripcion</th>
@@ -513,11 +513,28 @@ $(document).on('click','button[data-click="seleccionar-partida"]',function (e) {
         </div>
         `;
         $('[data-mensaje="respuesta"]').html(html);
-        Swal.fire(
-            response.titulo,
-            response.mensaje,
-            response.tipo
-          )
+            // Swal.fire(
+            //     response.titulo,
+            //     response.mensaje,
+            //     response.tipo
+            // )
+
+          Swal.fire({
+            title: response.titulo,
+            text: response.mensaje,
+            icon: response.tipo,
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar',
+            allowOutsideClick: false
+          }).then((result) => {
+            if (result.isConfirmed) {
+                $('#normalizar-partida').modal('hide');
+                listarRequerimientosPagos();
+                listarOrdenes();
+            }
+          })
     }).fail( function( jqXHR, textStatus, errorThrown ){
         console.log(jqXHR);
         console.log(textStatus);

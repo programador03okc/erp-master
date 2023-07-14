@@ -197,23 +197,7 @@ class NormalizarController extends Controller
                             $requerimiento_pago->id_partida_pi = $request->presupuesto_interno_detalle_id;
                             $requerimiento_pago->save();
 
-                            #agrega un campo al detalle del requerimiento de pago
-                            // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($requerimiento_pago->monto_total),'completo');
-                            #registra en la tabla saldo para su descuento
-                            // (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','requerimiento de pago',$request->requerimiento_pago_id,$detalleArray);
-                            // $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->id_requerimiento_pago, floatval($requerimiento_pago->monto_total));
                             $tipo='info';
-
-                            #registrar el pago en la tabla "tesoreria"."registro_pago" para que se pueda vincular al normalizar
-                            // $registro_pago = new RegistroPago();
-                            // $registro_pago->fecha_pago = ;
-                            // $registro_pago->observacion = "NORMALIZACION DE PAGO";
-                            // $registro_pago->fecha_pago = ;
-                            // $registro_pago->fecha_pago = ;
-                            // $registro_pago->fecha_pago = ;
-                            // $registro_pago->save();
-                            #--------------
-                            // $fechaAfectacion= $this->getFechaAprobacionRequerimientoDePago($request->requerimiento_pago_id);
                             $mensaje = PresupuestoInternoHistorialHelper::normalizarRequerimientoDePago($request->requerimiento_pago_id,$request->requerimiento_pago_detalle_id);
                             $titulo='Información';
 

@@ -177,7 +177,7 @@ Presupuesto Interno
                             </div>
                             <div class="col-md-12 panel-collapse collapse in" id="collapse_ingresos">
                                 <table class="table small" id="partida-ingresos">
-                                    <thead>
+                                    <thead >
                                         <tr>
                                             <th class="text-left" width="30">PARTIDA</th>
                                             <th class="text-left" width="">DESCRIPCION</th>
@@ -654,7 +654,7 @@ Presupuesto Interno
                                 </div>
                                 <div class="col-md-12 panel-collapse collapse in" id="collapse_costos">
                                     <table class="table small" id="partida-costos">
-                                        <thead>
+                                        <thead >
                                             <tr>
                                                 <th class="text-left" width="30">PARTIDA</th>
                                                 <th class="text-left" width="">DESCRIPCION</th>
@@ -1056,7 +1056,7 @@ Presupuesto Interno
                             </div>
                             <div class="col-md-12 panel-collapse collapse in" id="collapse_gastos">
                                 <table class="table small" id="partida-gastos">
-                                    <thead>
+                                    <thead >
                                         <tr>
                                             <th class="text-left" width="30">PARTIDA</th>
                                             <th class="text-left" width="">DESCRIPCION</th>
@@ -1465,6 +1465,7 @@ Presupuesto Interno
             </div>
         </div>
     </form>
+
     <div id="modal-titulo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">

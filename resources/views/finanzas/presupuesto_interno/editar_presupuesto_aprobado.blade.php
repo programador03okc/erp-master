@@ -16,6 +16,15 @@ Presupuesto Interno
     .d-none{
         display: none;
     }
+    thead {
+        position: sticky;
+        top: 0;
+    }
+    /*
+    .table-responsive {
+        height:200px;
+        overflow:scroll;
+    } */
 </style>
 @endsection
 
@@ -166,7 +175,7 @@ Presupuesto Interno
                             </div>
                             <div class="col-md-12 panel-collapse collapse in" id="collapse_ingresos">
                                 <table class="table small" id="partida-ingresos">
-                                    <thead>
+                                    <thead >
                                         <tr>
                                             <th class="text-left" width="30">PARTIDA</th>
                                             <th class="text-left" width="">DESCRIPCION</th>
@@ -1043,9 +1052,31 @@ Presupuesto Interno
 
                                 </div>
                             </div>
-                            <div class="col-md-12 panel-collapse collapse in" id="collapse_gastos">
+                            <div class="col-md-12 panel-collapse collapse in " id="collapse_gastos">
+                                {{-- <table class="table small">
+                                    <thead >
+                                        <tr>
+                                            <th class="text-left" width="30">PARTIDA</th>
+                                            <th class="text-left" width="">DESCRIPCION</th>
+                                            <th class="text-left" width="" hidden>%</th>
+                                            <th class="text-left" width=""colspan="">ENE </th>
+                                            <th class="text-left" width=""colspan="">FEB</th>
+                                            <th class="text-left" width=""colspan="">MAR</th>
+                                            <th class="text-left" width=""colspan="">ABR</th>
+                                            <th class="text-left" width=""colspan="">MAY</th>
+                                            <th class="text-left" width=""colspan="">JUN</th>
+                                            <th class="text-left" width=""colspan="">JUL</th>
+                                            <th class="text-left" width=""colspan="">AGO</th>
+                                            <th class="text-left" width=""colspan="">SET</th>
+                                            <th class="text-left" width=""colspan="">OCT</th>
+                                            <th class="text-left" width=""colspan="">NOV</th>
+                                            <th class="text-left" width=""colspan="">DIC</th>
+                                            <th class="text-center" width="10"></th>
+                                        </tr>
+                                    </thead>
+                                </table> --}}
                                 <table class="table small" id="partida-gastos">
-                                    <thead>
+                                    <thead >
                                         <tr>
                                             <th class="text-left" width="30">PARTIDA</th>
                                             <th class="text-left" width="">DESCRIPCION</th>
@@ -1452,6 +1483,7 @@ Presupuesto Interno
                     </div>
                 </div>
             </div>
+
         </div>
     </form>
     <div id="modal-titulo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
@@ -1568,5 +1600,24 @@ Presupuesto Interno
     </script>
 
     <script src="{{asset('js/finanzas/presupuesto_interno/crear.js') }}""></script>
+    <script>
+        $(window).scroll(function(event) {
+            var scrollLeft = $(window).scrollLeft();
+            var scrollTop = $(window).scrollTop();
+
+            var posicion_dt_gastos_1 = $('#partida-gastos').offset().top;
+            // var posicion_dt_gastos_2 = $('#partida-GASTOS').offset().top;
+            // console.log("Vertical "+scrollTop);
+            // console.log("Horizontal "+scrollLeft);
+            // console.log("scroll "+posicion);
+            // console.log(`input`, $('[name="id_moneda"]').offset().top);
+
+            if ((scrollTop>=posicion_dt_gastos_1)) {
+                // $('#partida-gastos thead tr ').css({"position":"fixed", "background":"#fff", "top":"0"});
+            }else{
+                // $('#partida-gastos thead tr').css({"position":"static"});
+            }
+        });
+    </script>
     @endif
 @endsection
