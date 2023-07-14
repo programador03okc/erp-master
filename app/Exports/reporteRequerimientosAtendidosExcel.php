@@ -40,7 +40,8 @@ class reporteRequerimientosAtendidosExcel implements FromView
                 'concepto'=> str_replace("'", "", str_replace("", "", $element->concepto)),
                 'tipo_req_desc'=> $element->tipo_req_desc,
                 'division'=> $element->division,
-                'cc_solicitado_por'=> $element->cc_solicitado_por,
+                'nombre_usuario'=> ucwords(strtolower($element->nombre_usuario)),
+                'nombre_solicitado_por'=> ucwords(strtolower($element->nombre_solicitado_por)),
                 'estado_doc'=> $element->estado_doc    
 
             ];

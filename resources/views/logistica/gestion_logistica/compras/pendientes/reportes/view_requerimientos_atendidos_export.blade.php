@@ -8,6 +8,7 @@
             <th>Concepto</th>
             <th>Tipo Req.</th>
             <th>División</th>
+            <th>Creado por</th>
             <th>Solicitado por</th>
             <th>Estado</th>
         </tr>
@@ -22,7 +23,8 @@
             <td>{{$requerimiento["concepto"]}}</td>
             <td>{{$requerimiento["tipo_req_desc"]}}</td>
             <td>{{$requerimiento["division"]}}</td>
-            <td>{{$requerimiento["cc_solicitado_por"]}}</td>
+            <td>{{$requerimiento["nombre_usuario"]}}</td>
+            <td>{{$requerimiento["nombre_solicitado_por"]}}</td>
             <td>{{$requerimiento["estado_doc"]}}</td>
         </tr>
         @endforeach
