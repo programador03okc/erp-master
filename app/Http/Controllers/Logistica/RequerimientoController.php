@@ -1950,9 +1950,10 @@ class RequerimientoController extends Controller
             ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-            ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
-            ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
-            ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
+
+            ->leftJoin('rrhh.rrhh_trab as trab_solicitado_por', 'trab_solicitado_por.id_trabajador', '=', 'alm_req.trabajador_id')
+            ->leftJoin('rrhh.rrhh_postu as post_solicitado_por', 'post_solicitado_por.id_postulante', '=', 'trab_solicitado_por.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers_solicitado_por', 'pers_solicitado_por.id_persona', '=', 'post_solicitado_por.id_persona')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
             ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
             ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
@@ -1998,7 +1999,8 @@ class RequerimientoController extends Controller
                 'alm_req.fecha_registro',
                 'alm_req.division_id',
                 'division.descripcion as division',
-                DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+                'sis_usua.nombre_largo as nombre_usuario',
+                DB::raw("CONCAT(pers_solicitado_por.nombres,' ',pers_solicitado_por.apellido_paterno,' ',pers_solicitado_por.apellido_materno) as nombre_solicitado_por"),
                 DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion)
                 FROM administracion.adm_aprobacion
                 WHERE   adm_aprobacion.id_vobo = 3 AND
