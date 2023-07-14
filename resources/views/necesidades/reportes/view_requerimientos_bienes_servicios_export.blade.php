@@ -17,6 +17,7 @@
             <th>Monto Total</th>
             <th>Observacion</th>
             <th>Elaborado por</th>
+            <th>Solicitado por</th>
             <th>Aprobado por</th>
             <th>Estado</th>
         </tr>
@@ -40,6 +41,7 @@
             <td>{{ $requerimiento["monto_total"] }}</td>
             <td>{{ $requerimiento["observacion"] }}</td>
             <td>{{ $requerimiento["nombre_usuario"] }}</td>
+            <td>{{ $requerimiento["nombre_solicitado_por"] }}</td>
             <td>{{ $requerimiento["ultimo_aprobador"] }}</td>
             <td>{{ $requerimiento["estado_doc"] }}</td>
 

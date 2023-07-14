@@ -54,7 +54,8 @@ class reporteRequerimientosBienesServiciosExcel implements FromView,ShouldAutoSi
                 'simbolo_moneda'=> $element->simbolo_moneda,
                 'monto_total'=> number_format($element->monto_total,2),
                 'observacion'=> $element->observacion,
-                'nombre_usuario'=> $element->nombre_usuario,
+                'nombre_usuario'=> ucfirst(trim($element->nombre_usuario)),
+                'nombre_solicitado_por'=>ucfirst(trim(strtolower($element->nombre_solicitado_por))),
                 'ultimo_aprobador'=>$element->ultimo_aprobador,
                 'observacion'=> $element->observacion,
                 'estado_doc'=> $element->nombre_estado
