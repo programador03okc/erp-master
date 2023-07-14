@@ -155,7 +155,10 @@ class PresupuestoController extends Controller
             ->leftjoin('almacen.alm_und_medida as unidad_ord', 'unidad_ord.id_unidad_medida', '=', 'log_det_ord_compra.id_unidad_medida')
             ->where([
                 ['presup.id_presup', '=', $id_presupuesto],
-                ['alm_det_req.estado', '!=', 7]
+                ['alm_req.estado', '!=', 7],
+                ['alm_det_req.estado', '!=', 7],
+                ['log_ord_compra.estado_pago', '!=', 7],
+                ['log_ord_compra.estado', '!=', 7]
             ])->distinct()->get();
 
         return $detalle;
@@ -178,7 +181,7 @@ class PresupuestoController extends Controller
                 where cont_tp_cambio.fecha<=registro_pago.fecha_pago limit 1) tipo_cambio_venta
                             FROM tesoreria.registro_pago
                                 WHERE registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago
-                                limit 1 ) AS tipo_cambio"),
+                                and registro_pago.estado !=7 limit 1 ) AS tipo_cambio"),
                 'rrhh_perso.apellido_paterno','rrhh_perso.apellido_materno','rrhh_perso.nombres',
                 'rrhh_perso.nro_documento as nro_documento_persona',
             )
@@ -206,7 +209,8 @@ class PresupuestoController extends Controller
             ->where([
                 ['presup_par.id_presup', '=', $id_presupuesto],
                 // ['registro_pago.estado', '!=', 7],
-                ['requerimiento_pago_detalle.id_estado', '!=', 7],
+                ['requerimiento_pago.id_estado', '!=', 7],
+                ['requerimiento_pago_detalle.id_estado', '!=', 7]
             ])
             ->get();
         return $pagos;
