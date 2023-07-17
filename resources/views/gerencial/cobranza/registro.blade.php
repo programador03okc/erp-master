@@ -727,7 +727,7 @@
                                         <th>Estado</th>
                                         <th class="estado-penalidad">Estado de Penalidad</th>
                                         <th>Fecha</th>
-                                        <th width="130">-</th>
+                                        <th width="120">-</th>
                                     </tr>
                                 </thead>
 								<tbody id="resultadoPenalidades"></tbody>

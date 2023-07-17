@@ -132,7 +132,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             <h5>Comentario</h5>
                                             <textarea class="form-control activation handleCheckStatusValue" name="comentario" placeholder="Comentario/observación (opcional)" cols="100" rows="100" style="height:50px;"></textarea>
@@ -149,6 +149,17 @@
                                                     <i class="fa fa-search"></i>
                                                 </button>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2" id="input-group-tipo-impuesto">
+                                        <div class="form-group">
+                                        <h5>Tipo Impuesto</h5>
+                                            <select class="form-control activation " name="tipo_impuesto">
+                                                <option value="0">No aplica</option>
+                                                <option value="1">Detracción</option>
+                                                <option value="2">Renta</option>
+                                            </select>
                                         </div>
                                     </div>
 

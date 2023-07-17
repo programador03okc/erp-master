@@ -16,7 +16,7 @@
                         </div>
                     </div>
 
-                    <fieldset class="group-table" style="margin-bottom: 25px">
+                    <fieldset class="group-table" style="margin-bottom: 25px; border-color: #337ab7;">
                         <h5 style="display:flex;justify-content: space-between;"><strong>Datos de generales</strong></h5>
                         <div class="row">
 
@@ -132,12 +132,39 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-12">
+
+                                <div class="panel panel-primary" style="padding: 5px;">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <h5>Tipo Impuesto</h5>
+                                                <div style="display:flex;">
+
+                                                    <select class="form-control" name="tipo_impuesto" placeholder="Tipo impuesto">
+                                                        <option value="0">No aplica</option>
+                                                        <option value="1">Detracción</option>
+                                                        <option value="2">Renta</option>
+                                                    </select>
+                                                    <button type="button" class="btn btn-sm btn-flat btn-default handleClickInfoAdicionalTipoImpuesto">
+                                                        <i class="fas fa-question-circle"></i>
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
                         </div>
                     </fieldset>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <fieldset class="group-table" style="margin-bottom: 25px">
+                            <fieldset class="group-table" style="margin-bottom: 25px; border-color: #337ab7;">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos para subir</strong></h5>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -172,7 +199,7 @@
 
                     <div class="row">
                         <div class="col-md-12" id="group-adjuntosLogisticosRegistrados" hidden>
-                            <fieldset class="group-table">
+                            <fieldset class="group-table" style="margin-bottom: 25px; border-color: #337ab7;">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Adjuntos logísticos registrados</strong></h5>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -198,7 +225,7 @@
 
                     <div class="row">
                         <div class="col-md-12" id="group-historialEnviosAPagoLogistica" hidden>
-                            <fieldset class="group-table">
+                            <fieldset class="group-table" style="margin-bottom: 25px; border-color: #337ab7;">
                                 <h5 style="display:flex;justify-content: space-between;"><strong>Historial de envios a pagos en cuotas</strong></h5>
                                 <div class="row">
                                     <div class="col-md-12" style="height: 170px; min-height: 170px; overflow: auto; resize: vertical;">

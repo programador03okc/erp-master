@@ -4528,7 +4528,7 @@ class OrdenController extends Controller
         try {
             DB::beginTransaction();
 
-            $orden = Orden::find($request->id_orden_compra);
+            $orden = Orden::with('detalle.detalleRequerimiento.requerimiento')->find($request->id_orden_compra);
 
             if (!empty($orden)) {
                 //ya fue autorizado?
@@ -4567,6 +4567,37 @@ class OrdenController extends Controller
                         'data' => $orden
                     );
                 }
+
+                //actualiar tipo impuesto en los requerimientos
+                if($request->tipo_impuesto >=0){                    
+        
+                    if(count($orden->detalle)>0){
+                        foreach (($orden->detalle) as $detalleOrden) {
+                            if($detalleOrden->estado != 7 && $detalleOrden->id_detalle_requerimiento >0){
+                                if($detalleOrden->detalleRequerimiento !=null && $detalleOrden->detalleRequerimiento->requerimiento->tipo_impuesto >0){
+                                    if($detalleOrden->detalleRequerimiento->requerimiento->id_requerimiento > 0){
+                                        $requerimiento = Requerimiento::find($detalleOrden->detalleRequerimiento->requerimiento->id_requerimiento);
+                                        if($requerimiento->tipo_impuesto != $request->tipo_impuesto){
+
+                                            $anteriorValor = $requerimiento->tipo_impuesto;
+                                            $nuevoValor = $request->tipo_impuesto;
+
+                                            $requerimiento->tipo_impuesto = $request->tipo_impuesto!=''?$request->tipo_impuesto:null;
+                                            $requerimiento->save();
+
+                                            $comentario = 'Tipo de cuenta: '.($request->tipo_impuesto==1?'Detracción':($request->tipo_impuesto==2?'Renta':'No aplica')).', Agregado por: '.Auth::user()->nombre_corto;
+
+                                            LogActividad::registrar(Auth::user(), 'Enviar a pago', 3, $requerimiento->getTable(), $anteriorValor, $nuevoValor, $comentario);
+
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
             } else {
                 $arrayRspta = array(
                     'tipo_estado' => 'warning',
@@ -4616,6 +4647,7 @@ class OrdenController extends Controller
                 $orden->comentario_pago = $request->comentario;
                 $orden->tiene_pago_en_cuotas = $request->pagoEnCuotasCheckbox;
                 $orden->fecha_solicitud_pago = Carbon::now();
+                $orden->tipo_impuesto = $request->tipo_impuesto >0?$request->tipo_impuesto:null;
                 $orden->save();
 
                 if ((isset($request->pagoEnCuotasCheckbox) == true)) {
@@ -4720,6 +4752,7 @@ class OrdenController extends Controller
             $orden->comentario_pago = $request->comentario;
             $orden->tiene_pago_en_cuotas = false;
             $orden->fecha_solicitud_pago = Carbon::now();
+            $orden->tipo_impuesto = $request->tipo_impuesto >0?$request->tipo_impuesto:null;
             $orden->save();
 
 
@@ -5092,6 +5125,8 @@ class OrdenController extends Controller
 
         return ["data" => $output, "mensaje" => $mensaje];
     }
+
+
     public function calcularPrioridad($id_orden)
     {
         $detalle_orden = OrdenCompraDetalle::select('alm_req.*')
@@ -5115,5 +5150,48 @@ class OrdenController extends Controller
             "prioridad_id"=>$prioridad_mayor,
             // "requerimientos"=>$detalle_orden,
         ],200);
+    }
+
+    public function obtenerRequerimientosConImpuesto($idOrden){
+
+        $mensaje='';
+        $estado='info';
+
+        $requerimientoList=[];
+        $tipoImpuestoList=[];
+        $payload=[];
+
+        $orden = Orden::with('detalle.detalleRequerimiento.requerimiento')->find($idOrden);
+        
+        if(count($orden->detalle)>0){
+            foreach (($orden->detalle) as $detalleOrden) {
+                if($detalleOrden->estado != 7 && $detalleOrden->id_detalle_requerimiento >0){
+                    if($detalleOrden->detalleRequerimiento !=null && $detalleOrden->detalleRequerimiento->requerimiento->tipo_impuesto >0){
+
+                        $requerimientoList[]=['id_requerimiento'=>$detalleOrden->detalleRequerimiento->requerimiento->id_requerimiento, 'codigo'=>$detalleOrden->detalleRequerimiento->requerimiento->codigo]; 
+                        $tipoImpuestoList[]=$detalleOrden->detalleRequerimiento->requerimiento->tipo_impuesto; 
+                    }
+                }
+            }
+        }
+
+    
+        $payload['lista_requerimientos']= array_unique($requerimientoList);
+
+        if(count($tipoImpuestoList) ==1){
+            
+        $tipoImpuesto= $tipoImpuestoList[0];
+        $estado='success';
+
+        }else{
+            $tipoImpuesto='';
+            $mensaje = 'Debe seleccionar el tipo de impuesto, existe requerimientos con distinto tipo de impuesto ';
+            $estado='warning';
+        }
+
+        $payload['tipo_impuesto']= $tipoImpuesto;
+
+        return ["data" => $payload, 'estado'=>$estado, "mensaje" => $mensaje];
+
     }
 }

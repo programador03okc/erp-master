@@ -195,9 +195,10 @@ class RequerimientoPago {
                                         data-cci="${row['nro_cuenta_interbancaria'] !== null ? row['nro_cuenta_interbancaria'] : row['nro_cci_persona']}"
                                         data-tpcta="${row['tipo_cuenta'] !== null ? row['tipo_cuenta'] : row['tipo_cuenta_persona']}"
                                         data-banco="${row['banco_persona'] !== null ? row['banco_persona'] : row['banco_contribuyente']}"
-                                        data-empresa="${row['razon_social_empresa']}" data-idempresa="${row['id_empresa']}"
+                                        data-empresa="${row['razon_social_empresa']}" data-id-empresa="${row['id_empresa']}"
                                         data-motivo="${encodeURIComponent(row['concepto'])}"
                                         data-observacion-requerimiento="${row['comentario']}"
+                                        data-tipo-impuesto="${row['tipo_impuesto']}"
                                         title="Registrar Pago">
                                     <i class="fas fa-hand-holding-usd"></i> </button>`
                                         : ''}`
@@ -454,7 +455,7 @@ class RequerimientoPago {
                                     data-motivo="${encodeURIComponent(row['condicion_pago'])}"
                                     data-comentario-pago-logistica="${row['comentario_pago']}"
                                     data-tiene-pago-en-cuotas="${row['tiene_pago_en_cuotas']}"
-
+                                    data-tipo-impuesto="${row['tipo_impuesto']}"
                                     data-observacion-requerimiento="${observacionRequerimiento}"
                                     title="Registrar Pago"><i class="fas fa-hand-holding-usd"></i></button>`: ''}`
                                     : ''}

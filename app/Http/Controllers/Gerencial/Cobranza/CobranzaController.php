@@ -726,4 +726,19 @@ class CobranzaController extends Controller
 
         return response()->json(["mensaje"=>"Los proveedores cuenta con su codigo correspondiente","cantidad_null"=>$sincodigo,"cantidad_not_null"=>$con_codigo],200);
     }
+
+    public function cargaManual() {
+        $data = RegistroCobranza::where('fecha_registro', '2023-07-14')->get();
+        $count = 0;
+
+        foreach ($data as $key) {
+            $nuevo = new RegistroCobranzaFase();
+                $nuevo->id_registro_cobranza = $key->id_registro_cobranza;
+                $nuevo->fase = 'COMPROMISO';
+                $nuevo->fecha = $key->fecha_registro;
+            $nuevo->save();
+            $count++;
+        }
+        return response()->json($count, 200);
+    }
 }

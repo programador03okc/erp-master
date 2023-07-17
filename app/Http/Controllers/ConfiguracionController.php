@@ -388,12 +388,13 @@ class ConfiguracionController extends Controller{
     function cambiar_clave(Request $request){
         $p1 = StringHelper::encode5t(addslashes($request->pass_old));
         $p2 = StringHelper::encode5t(addslashes($request->pass_new));
+        $p3 = StringHelper::claveHash($request->pass_new);
         $user = Auth::user()->id_usuario;
 
         $sql = DB::table('configuracion.sis_usua')->where([['clave', '=', $p1], ['id_usuario', '=', $user], ['estado', '=', 1]])->first();
 
         if ($sql !== null) {
-            $data = DB::table('configuracion.sis_usua')->where('id_usuario', $sql->id_usuario)->update(['clave'  => $p2]);
+            $data = DB::table('configuracion.sis_usua')->where('id_usuario', $sql->id_usuario)->update(['clave'  => $p2, 'password' => $p3]);
             $rpta = $data;
         }else{
             $rpta = 0;
@@ -616,13 +617,14 @@ class ConfiguracionController extends Controller{
 
     public function savePerfil(Request $request){
         $sis_usua                   = SisUsua::where('id_usuario',$request->id_usuario)->first();
-        $sis_usua->usuario          = $request->usuario;
-        if ($request->clave) {
-            $sis_usua->clave        = StringHelper::encode5t($request->clave);
-        }
-        $sis_usua->nombre_corto     = $request->nombre_corto;
-        $sis_usua->codvend_softlink = $request->codvent_softlink;
-        $sis_usua->email            = $request->email;
+            $sis_usua->usuario          = $request->usuario;
+            if ($request->clave) {
+                $sis_usua->clave        = StringHelper::encode5t($request->clave);
+                $sis_usua->password     = StringHelper::claveHash($request->clave);
+            }
+            $sis_usua->nombre_corto     = $request->nombre_corto;
+            $sis_usua->codvend_softlink = $request->codvent_softlink;
+            $sis_usua->email            = $request->email;
         $sis_usua->save();
 
         $rrhh_trab = rrhh_trab::where('id_trabajador',$sis_usua->id_trabajador)->first();
@@ -701,6 +703,7 @@ class ConfiguracionController extends Controller{
         $nombre_corto = $request->nombre_corto;
         $usuario = $request->usuario;
         $contraseña =  StringHelper::encode5t($request->contraseña);
+        $claveHash = StringHelper::claveHash($request->clave);
         $email = $request->email;
         $rol = $request->rol;
 
@@ -709,6 +712,7 @@ class ConfiguracionController extends Controller{
         ->update([
             'usuario' => $usuario,
             'clave' => $contraseña,
+            'password' => $claveHash,
             'nombre_corto' => $nombre_corto
         ]);
 
@@ -854,6 +858,7 @@ class ConfiguracionController extends Controller{
         $sis_usua->id_trabajador    = $rrhh_trab->id_trabajador;
         $sis_usua->usuario          = $request->usuario;
         $sis_usua->clave            = StringHelper::encode5t('Inicio01');
+        $sis_usua->password         = StringHelper::claveHash('Inicio01');
         $sis_usua->estado           = 1;
         $sis_usua->fecha_registro   = date('Y-m-d H:i:s');
         $sis_usua->nombre_corto     = $request->nombre_corto;
@@ -2161,20 +2166,11 @@ public function anular_configuracion_socket($id){
     }
     public function cambiarClave(Request $request)
     {
-        $usuario = SisUsua::where('estado', 1)
-          ->where('id_usuario', $request->id_usuario)
-          ->update(['clave' => StringHelper::encode5t($request->nueva_clave)]);
-        if ($usuario) {
-            return response()->json([
-                "status"=>200,
-                "success"=>true
-            ]);
-        }else{
-            return response()->json([
-                "status"=>404,
-                "success"=>false
-            ]);
-        }
+        $usuario = SisUsua::find($request->id_usuario);
+            $usuario->clave = StringHelper::encode5t($request->nueva_clave);
+            $usuario->password = StringHelper::claveHash($request->nueva_clave);
+        $usuario->save();
+        return response()->json(["status" => 200, "success" => true, "modelo" => $usuario]);
 
     }
     public function viewAccesos($id)

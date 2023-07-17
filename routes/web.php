@@ -1015,7 +1015,9 @@ Route::group(['middleware' => ['auth']], function () {
 						Route::post('obtener-destinatario-por-nombre', 'Tesoreria\RequerimientoPagoController@obtenerDestinatarioPorNombre');
 
 						Route::get('listar-archivos-adjuntos-pago-requerimiento/{idOrden}', 'OrdenController@listarArchivoAdjuntoPagoRequerimiento');
-
+						
+						Route::get('obtener-requerimientos-con-impuesto/{idOrden}', 'OrdenController@obtenerRequerimientosConImpuesto');
+						
 						// Route::put('guardar_aprobacion_orden/', 'LogisticaController@guardar_aprobacion_orden');
 						// Route::post('guardar_pago_orden', 'LogisticaController@guardar_pago_orden');
 						// Route::get('eliminar_pago/{id_pago}', 'LogisticaController@eliminar_pago');
@@ -2403,6 +2405,7 @@ Route::group(['middleware' => ['auth']], function () {
                 Route::get('script-generar-codigo-clientes', 'Gerencial\Cobranza\CobranzaController@scriptGenerarCodigoCliente')->name('script-generar-codigo-clientes');
                 #generar codigo para los clientes
                 Route::get('script-generar-codigo-proveedores', 'Gerencial\Cobranza\CobranzaController@scriptGenerarCodigoProveedores')->name('script-generar-codigo-proveedores');
+				Route::get('carga-manual', 'Gerencial\Cobranza\CobranzaController@cargaManual')->name('carga-manual');
 			});
 
 

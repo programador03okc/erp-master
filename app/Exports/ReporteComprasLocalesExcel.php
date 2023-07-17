@@ -33,6 +33,7 @@ class ReporteComprasLocalesExcel implements FromView
                 'tiempo_cancelacion'                        => $element->tiempo_cancelacion ?? '',
                 'cantidad'                                  => $element->cantidad ?? '',
                 'moneda_orden'                              => $element->moneda_orden ?? '',
+                'monto_orden_total'                         => $element->monto_orden_total ?? '',
                 'total_precio_soles_item'                   => $element->total_precio_soles_item ?? '',
                 'total_precio_dolares_item'                 => $element->total_precio_dolares_item ?? '',
                 'total_a_pagar_soles'                       => $element->total_a_pagar_soles ?? '',

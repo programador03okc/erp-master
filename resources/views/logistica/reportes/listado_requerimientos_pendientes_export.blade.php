@@ -31,8 +31,8 @@
             <td>{{ date("d-m-Y", strtotime($requerimiento->fecha_entrega)) }}</td>
             <td>{{ $requerimiento->tipo_req_desc }}</td>
             <td>{{ $requerimiento->descripcion_division }}</td>
-            <td>{{ $requerimiento->solicitado_por }}</td>
-            <td>{{ $requerimiento->nombre_usuario }}</td>
+            <td>{{ ucwords(strtolower($requerimiento->nombre_solicitado_por)) }}</td>
+            <td>{{ ucwords(strtolower($requerimiento->nombre_usuario)) }}</td>
             <td>{{ $requerimiento->observacion }}</td>
             <td>{{ $requerimiento->estado_doc }}</td>
         </tr>

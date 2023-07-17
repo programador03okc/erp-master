@@ -233,8 +233,9 @@ class ComprasPendientesController extends Controller
                 'alm_req.fecha_entrega',
                 'alm_tp_req.descripcion AS tipo_req_desc',
                 'division.descripcion as descripcion_division',
-                DB::raw("UPPER(CONCAT(perso_solicitado_por.nombres,' ', perso_solicitado_por.apellido_paterno,' ', perso_solicitado_por.apellido_materno))  AS solicitado_por"),
-                DB::raw("UPPER(CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno)) as nombre_usuario"),
+                DB::raw("CASE WHEN almacen.alm_req.id_tipo_requerimiento =1 THEN sis_usua.nombre_largo 
+                ELSE UPPER(CONCAT(perso_solicitado_por.nombres,' ', perso_solicitado_por.apellido_paterno,' ', perso_solicitado_por.apellido_materno)) END AS nombre_solicitado_por"),
+                'sis_usua.nombre_largo as nombre_usuario',
                 'alm_req.observacion',
                 'adm_estado_doc.estado_doc'
             )
@@ -646,7 +647,7 @@ class ComprasPendientesController extends Controller
                 'alm_req.tipo_cliente',
                 'tipo_cliente.descripcion AS tipo_cliente_desc',
                 'sis_usua.usuario',
-                DB::raw("CONCAT(rrhh_perso.nombres,' ',rrhh_perso.apellido_paterno,' ',rrhh_perso.apellido_materno) as nombre_usuario"),
+                'sis_usua.nombre_largo as nombre_usuario',
                 'rrhh_rol.id_area',
                 'adm_area.descripcion AS area_desc',
                 'rrhh_rol.id_rol',
@@ -664,7 +665,9 @@ class ComprasPendientesController extends Controller
                 'alm_req.id_prioridad',
                 'alm_req.fecha_registro',
                 'alm_req.trabajador_id',
-                DB::raw("CONCAT(perso_solicitado_por.nombres,' ', perso_solicitado_por.apellido_paterno,' ', perso_solicitado_por.apellido_materno)  AS solicitado_por"),
+                DB::raw(" CASE WHEN almacen.alm_req.id_tipo_requerimiento =1 THEN  sis_usua.nombre_largo
+                ELSE CONCAT(perso_solicitado_por.nombres,' ',perso_solicitado_por.apellido_paterno,' ',perso_solicitado_por.apellido_materno)
+                END AS nombre_solicitado_por"),
                 'cc_view.name as cc_solicitado_por',
                 'alm_req.estado',
                 'alm_req.id_empresa',

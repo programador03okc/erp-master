@@ -44,6 +44,12 @@
                             <div class="col-md-5">
                                 <label style="font-size: 14px;" name="total_pagado"></label>
                             </div>
+                            <div class="col-md-2">
+                                <span style="font-size: 14px;">Tipo impuesto: </span>
+                            </div>
+                            <div class="col-md-5">
+                                <label style="font-size: 14px; color: orange !important;" name="tipo_impuesto"></label>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-2 oculto" id="contenedor_observacion_requerimiento">

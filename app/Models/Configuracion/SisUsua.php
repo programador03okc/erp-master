@@ -11,6 +11,7 @@ class SisUsua extends Model
     //
     protected $table = 'configuracion.sis_usua';
 	protected $primaryKey = 'id_usuario';
+    protected $fillable = ['id_trabajador', 'usuario', 'clave', 'password', 'estado', 'email', 'nombre_corto', 'nombre_largo', 'renovar'];
     public $timestamps = false;
 
     public function usuarioGrupo()

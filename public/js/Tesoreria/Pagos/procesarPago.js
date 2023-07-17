@@ -28,13 +28,14 @@ function openRegistroPago(data) {
     var cci = data.data('cci');
     var banco = data.data('banco');
     var empresa = data.data('empresa');
-    var idempresa = data.data('idempresa');
+    var idempresa = data.data('idEmpresa');
     var motivo = data.data('motivo');
     var comentarioPagoLogistica = data.data('comentarioPagoLogistica');
     var observacionRequerimiento = data.data('observacionRequerimiento');
     var cantidadAdjuntosLogisticos = data.data('cantidadAdjuntosLogisticos');
     var tienePagoEnCuotas = data.data('tienePagoEnCuotas');
     var sumaCuotaConAutorizacion = data.data('sumaCuotaConAutorizacion');
+    var tipoImpuesto = data.data('tipoImpuesto');
 
     var total_pago = formatDecimal(parseFloat(total) - pago);
     console.log(data);
@@ -106,9 +107,8 @@ function openRegistroPago(data) {
     $('[name=motivo]').text(motivo !== undefined ? decodeURIComponent(motivo) : '');
     $('[name=comentario_pago_logistica]').text(comentarioPagoLogistica ?? '');
     $('[name=observacion_requerimiento]').text(observacionRequerimiento ?? '');
+    $('[name=tipo_impuesto]').text(tipoImpuesto ==1? 'Detracción':(tipoImpuesto==2?'Renta':''));
     
-   
-
     if (comentarioPagoLogistica != undefined && comentarioPagoLogistica != '') {
         document.querySelector("div[id='modal-procesarPago'] div[id='contenedor_comentario_pago_logistica']").classList.remove("oculto");
     } else {

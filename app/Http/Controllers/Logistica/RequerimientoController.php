@@ -494,6 +494,7 @@ class RequerimientoController extends Controller
                 'alm_req.trabajador_id',
                 'alm_req.id_incidencia',
                 'alm_req.id_presupuesto',
+                'alm_req.tipo_impuesto',
                 'presup.codigo as codigo_presupuesto_old',
                 'presup.descripcion as descripcion_presupuesto_old',
                 'alm_req.id_presupuesto_interno',
@@ -601,6 +602,7 @@ class RequerimientoController extends Controller
                     'id_presupuesto_interno' => $data->id_presupuesto_interno,
                     'codigo_presupuesto_interno' => $data->codigo_presupuesto_interno,
                     'descripcion_presupuesto_interno' => $data->descripcion_presupuesto_interno,
+                    'tipo_impuesto' => $data->tipo_impuesto >0?$data->tipo_impuesto:'',
                     'adjuntos' => []
 
                 ];
@@ -991,6 +993,7 @@ class RequerimientoController extends Controller
             $requerimiento->id_incidencia = isset($request->id_incidencia) && $request->id_incidencia != null ? $request->id_incidencia : null;
             $requerimiento->id_tipo_detalle = $idTipoDetalle;
             $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno : null;
+            $requerimiento->tipo_impuesto = $request->tipo_impuesto > 0 ? $request->tipo_impuesto : null;
             $requerimiento->save();
             $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimiento1;
             $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimiento2;
@@ -1458,6 +1461,8 @@ class RequerimientoController extends Controller
         $requerimiento->id_incidencia = $request->id_incidencia > 0 ? $request->id_incidencia : null;
         $requerimiento->id_tipo_detalle = $idTipoDetalle;
         $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno : null;
+        $requerimiento->tipo_impuesto = $request->tipo_impuesto > 0 ? $request->tipo_impuesto : null;
+
         $requerimiento->save();
         $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1;
         $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2;
@@ -1798,9 +1803,9 @@ class RequerimientoController extends Controller
             ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-            ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
-            ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
-            ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
+            ->leftJoin('rrhh.rrhh_trab as trab_solicitado_por', 'trab_solicitado_por.id_trabajador', '=', 'alm_req.trabajador_id')
+            ->leftJoin('rrhh.rrhh_postu as post_solicitado_por', 'post_solicitado_por.id_postulante', '=', 'trab_solicitado_por.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers_solicitado_por', 'pers_solicitado_por.id_persona', '=', 'post_solicitado_por.id_persona')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
             ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
             ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
@@ -1844,15 +1849,21 @@ class RequerimientoController extends Controller
                 'alm_req.fecha_registro',
                 'alm_req.division_id',
                 'division.descripcion as division',
-                DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+                'sis_usua.nombre_largo as nombre_usuario',
+                DB::raw(" CASE WHEN almacen.alm_req.id_tipo_requerimiento =1 THEN  sis_usua.nombre_largo
+                ELSE CONCAT(pers_solicitado_por.nombres,' ',pers_solicitado_por.apellido_paterno,' ',pers_solicitado_por.apellido_materno)
+                END AS nombre_solicitado_por"),
+
                 DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion)
                 FROM administracion.adm_aprobacion
                 WHERE   adm_aprobacion.id_vobo = 3 AND
                 adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos"),
+
                 DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
                 FROM almacen.alm_det_req
                 WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
                 alm_det_req.estado != 7) AS monto_total"),
+
                 DB::raw("(SELECT sis_usua.nombre_corto
                 FROM administracion.adm_documentos_aprob
                      INNER JOIN administracion.adm_aprobacion ON adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob
@@ -1950,9 +1961,10 @@ class RequerimientoController extends Controller
             ->leftJoin('contabilidad.adm_contri', 'adm_empresa.id_contribuyente', '=', 'adm_contri.id_contribuyente')
             ->leftJoin('contabilidad.sis_identi', 'sis_identi.id_doc_identidad', '=', 'adm_contri.id_doc_identidad')
             ->leftJoin('configuracion.sis_usua', 'sis_usua.id_usuario', '=', 'alm_req.id_usuario')
-            ->leftJoin('rrhh.rrhh_trab as trab', 'trab.id_trabajador', '=', 'sis_usua.id_trabajador')
-            ->leftJoin('rrhh.rrhh_postu as post', 'post.id_postulante', '=', 'trab.id_postulante')
-            ->leftJoin('rrhh.rrhh_perso as pers', 'pers.id_persona', '=', 'post.id_persona')
+
+            ->leftJoin('rrhh.rrhh_trab as trab_solicitado_por', 'trab_solicitado_por.id_trabajador', '=', 'alm_req.trabajador_id')
+            ->leftJoin('rrhh.rrhh_postu as post_solicitado_por', 'post_solicitado_por.id_postulante', '=', 'trab_solicitado_por.id_postulante')
+            ->leftJoin('rrhh.rrhh_perso as pers_solicitado_por', 'pers_solicitado_por.id_persona', '=', 'post_solicitado_por.id_persona')
             ->leftJoin('administracion.division', 'division.id_division', '=', 'alm_req.division_id')
             ->leftJoin('proyectos.proy_proyecto', 'proy_proyecto.id_proyecto', '=', 'alm_req.id_proyecto')
             ->leftJoin('finanzas.presupuesto_interno', 'presupuesto_interno.id_presupuesto_interno', '=', 'alm_req.id_presupuesto_interno')
@@ -1998,11 +2010,13 @@ class RequerimientoController extends Controller
                 'alm_req.fecha_registro',
                 'alm_req.division_id',
                 'division.descripcion as division',
-                DB::raw("CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno) as nombre_usuario"),
+                'sis_usua.nombre_largo as nombre_usuario',
+                DB::raw("CONCAT(pers_solicitado_por.nombres,' ',pers_solicitado_por.apellido_paterno,' ',pers_solicitado_por.apellido_materno) as solicitado_por"),
                 DB::raw("(SELECT COUNT(adm_aprobacion.id_aprobacion)
                 FROM administracion.adm_aprobacion
                 WHERE   adm_aprobacion.id_vobo = 3 AND
-                adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos")
+                adm_aprobacion.tiene_sustento = true AND adm_aprobacion.id_doc_aprob = adm_documentos_aprob.id_doc_aprob) AS cantidad_sustentos"),
+
                 // DB::raw("(SELECT SUM(alm_det_req.cantidad * alm_det_req.precio_unitario)
                 // FROM almacen.alm_det_req
                 // WHERE   alm_det_req.id_requerimiento = alm_req.id_requerimiento AND
@@ -2055,9 +2069,12 @@ class RequerimientoController extends Controller
             ;
 
         return datatables($requerimientos)
+            ->addColumn('nombre_solicitado_por', function ($requerimientos) {
+                return ($requerimientos->id_tipo_requerimiento == 1) ? $requerimientos->nombre_usuario : $requerimientos->solicitado_por;
+            })
             ->filterColumn('nombre_usuario', function ($query, $keyword) {
                 $keywords = trim(strtoupper($keyword));
-                $query->whereRaw("UPPER(CONCAT(pers.nombres,' ',pers.apellido_paterno,' ',pers.apellido_materno)) LIKE ?", ["%{$keywords}%"]);
+                $query->whereRaw("UPPER(sis_usua.nombre_largo) LIKE ?", ["%{$keywords}%"]);
             })
             ->filterColumn('alm_req.fecha_entrega', function ($query, $keyword) {
                 try {
@@ -4061,6 +4078,9 @@ class RequerimientoController extends Controller
                     <td class="subtitle">Empresa</td>
                     <td class="subtitle verticalTop">:</td>
                     <td class="verticalTop">' . $requerimiento['requerimiento'][0]['razon_social_empresa'] . ' - ' . $requerimiento['requerimiento'][0]['codigo_sede_empresa'] . '</td>
+                    <td class="subtitle verticalTop">Tipo Impuesto</td>
+                    <td class="subtitle verticalTop">:</td>
+                    <td>' . ($requerimiento['requerimiento'][0]['tipo_impuesto']==1?'Detracción':($requerimiento['requerimiento'][0]['tipo_impuesto']==2?'Renta':'No Aplica')) . '</td>
                 </tr>
                 <tr>
                     <td class="subtitle">Gerencia</td>
