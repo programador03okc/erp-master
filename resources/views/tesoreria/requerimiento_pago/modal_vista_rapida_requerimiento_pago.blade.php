@@ -46,6 +46,8 @@
                                             <td id="solicitado_por" style="width:10%;"></td>
                                             <td style="width:5%; font-weight:bold; text-align:right;">Comentario</td>
                                             <td id="comentario" style="width:5%;"></td>
+                                            <td style="width:5%; font-weight:bold; text-align:right;">Tipo Impuesto</td>
+                                            <td id="tipo_impuesto" style="width:5%;"></td>
                                             <td style="width:10%; font-weight:bold; text-align:right;">Archivos adjuntos</td>
                                             <td id='adjuntosRequerimientoPago'>-</td>
                                             <td></td>

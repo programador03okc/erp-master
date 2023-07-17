@@ -83,6 +83,9 @@ class ListaOrdenView {
         $('#modal-enviar-solicitud-pago').on("click", "button.handleClickInfoAdicionalCuentaSeleccionada", (e) => {
             this.mostrarInfoAdicionalCuentaSeleccionada(e.currentTarget);
         });
+        $('#modal-enviar-solicitud-pago').on("click", "button.handleClickInfoAdicionalTipoImpuesto", (e) => {
+            this.mostrarInfoAdicionalTipoImpuesto(e.currentTarget);
+        });
 
         $('#modal-enviar-solicitud-pago').on("blur", "input.handleBlurBuscarDestinatarioPorNumeroDocumento", (e) => {
             this.buscarDestinatarioPorNumeroDeDocumento(e.currentTarget);
@@ -107,7 +110,6 @@ class ListaOrdenView {
         $('#modal-enviar-solicitud-pago').on("change", "select.handleChangeNumeroDeCuotas", (e) => {
             this.updateMontoAPagarEnCuotas();
         });
-
 
         $('#listaDestinatariosEncontrados').on("click", "tr.handleClickSeleccionarDestinatario", (e) => {
             this.seleccionarDestinatario(e.currentTarget);
@@ -834,6 +836,10 @@ class ListaOrdenView {
         document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='id_cuenta_contribuyente']").value = obj.dataset.idCuentaPrincipal;
         document.querySelector("div[id='modal-enviar-solicitud-pago'] textarea[name='comentario']").value = obj.dataset.comentarioPago != null ? obj.dataset.comentarioPago : '';
 
+        document.querySelector("div[id='modal-enviar-solicitud-pago'] select[name='tipo_impuesto']").value = "";
+        document.querySelector("div[id='modal-info-adicional-tipo-impuesto'] ul[id='listaRequerimientosSeleccionadosConImpuesto']").innerHTML = "";
+
+        
         // this.updateLabelModalEnviarSolicitudPago((obj.dataset.tienePagoEnCuotas === "true"));
         this.updateLabelModalEnviarSolicitudPago(JSON.parse((obj.dataset.tienePagoEnCuotas).toLowerCase()));
 
@@ -1016,6 +1022,9 @@ class ListaOrdenView {
 
         this.updateMontoAPagarEnCuotas();
 
+
+        this.obtenerRequerimientosConImpuesto(obj.dataset.idOrdenCompra);
+
         $('#modal-enviar-solicitud-pago').modal({
             show: true,
             backdrop: 'static'
@@ -1056,6 +1065,77 @@ class ListaOrdenView {
             document.querySelector("div[id='modal-enviar-solicitud-pago'] input[name='monto_a_pagar']").setAttribute("readonly",true);
 
         }
+    }
+
+
+    obtenerRequerimientosConImpuesto(idOrden) {        
+        let liList = ``;
+        if (idOrden > 0) {
+            $.ajax({
+                type: 'GET',
+                url: 'obtener-requerimientos-con-impuesto/' + idOrden,
+                dataType: 'JSON',
+            }).done(function (response) {
+                console.log(response);
+                if (response.estado == 'success') {
+    
+                    if (response.data.lista_requerimientos.length > 0) {
+    
+                        document.querySelector(nombreModalPadre+" select[name='tipo_impuesto']").value= response.data.tipo_impuesto;
+                
+                        (response.data.lista_requerimientos).forEach(requerimiento => {
+                            liList += `<li><h5><span class="label label-default"><a href="/necesidades/requerimiento/listado/imprimir-requerimiento-pdf/${requerimiento.id_requerimiento}/0" target="blank_" style="color:#fff">${requerimiento.codigo}</a></span></h5></li>`;
+                        });
+
+                        document.querySelector("div[id='modal-info-adicional-tipo-impuesto'] ul[id='listaRequerimientosSeleccionadosConImpuesto']").insertAdjacentHTML('beforeend', liList);
+    
+                    } else {
+                        Lobibox.notify('error', {
+                            size: "mini",
+                            rounded: true,
+                            sound: false,
+                            delayIndicator: false,
+                            msg: 'Hubo un problema. no se encontró un id cuenta valido'
+                        });
+                    }
+    
+                } else {
+                    document.querySelector(nombreModalPadre+" select[name='tipo_impuesto']").value = "";
+                    Lobibox.notify(response.tipo_estado, {
+                        size: "mini",
+                        rounded: true,
+                        sound: false,
+                        delayIndicator: false,
+                        msg: response.mensaje
+                    });
+                }
+    
+            }).always(function () {
+    
+            }).fail(function (jqXHR) {
+                $("select[name='tipo_impuesto']").LoadingOverlay("hide", true);
+    
+                Lobibox.notify('error', {
+                    size: "mini",
+                    rounded: true,
+                    sound: false,
+                    delayIndicator: false,
+                    msg: 'Hubo un problema. Por favor actualice la página e intente de nuevo.'
+                });
+                console.log('Error devuelto: ' + jqXHR.responseText);
+            });
+        } else {
+            $("select[name='tipo_impuesto']").LoadingOverlay("hide", true);
+    
+            Lobibox.notify('error', {
+                size: "mini",
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: 'Hubo un problema. al intentar buscar los requerimientos con impuesto'
+            });
+        }
+    
     }
 
     getContribuyentePorIdProveedor(id) {
@@ -1312,6 +1392,12 @@ class ListaOrdenView {
                 'info'
             );
         }
+    }
+
+    mostrarInfoAdicionalTipoImpuesto() {
+            $('#modal-info-adicional-tipo-impuesto').modal({
+                show: true
+            });
     }
 
     buscarDestinatarioPorNumeroDeDocumento(obj) {
@@ -1816,10 +1902,11 @@ class ListaOrdenView {
                                 data-tiene-pago-en-cuotas="${JSON.parse((row.tiene_pago_en_cuotas)) ?? false}"
                                 data-numero-de-cuotas="${(row.numero_de_cuotas) ?? 0}"
                                 data-numero-envios-a-pago="${(row.numero_envios_a_pago) ?? 0}"
-
                                 data-id-persona-pago="${row.id_persona_pago ?? ''}"
                                 data-id-cuenta-persona-pago="${row.id_cuenta_persona_pago ?? ''}"
-                                data-comentario-pago="${row.comentario_pago ?? ''}" >
+                                data-comentario-pago="${row.comentario_pago ?? ''}" 
+                                data-lista-requerimientos-con-tipo-impuesto="${row.lista_requerimientos_con_tipo_impuesto ?? ''}" 
+                                >
                                     <i class="fas fa-money-check-alt fa-xs"></i>
                                 </button>`:'');
 

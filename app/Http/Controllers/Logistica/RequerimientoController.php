@@ -494,6 +494,7 @@ class RequerimientoController extends Controller
                 'alm_req.trabajador_id',
                 'alm_req.id_incidencia',
                 'alm_req.id_presupuesto',
+                'alm_req.tipo_impuesto',
                 'presup.codigo as codigo_presupuesto_old',
                 'presup.descripcion as descripcion_presupuesto_old',
                 'alm_req.id_presupuesto_interno',
@@ -601,6 +602,7 @@ class RequerimientoController extends Controller
                     'id_presupuesto_interno' => $data->id_presupuesto_interno,
                     'codigo_presupuesto_interno' => $data->codigo_presupuesto_interno,
                     'descripcion_presupuesto_interno' => $data->descripcion_presupuesto_interno,
+                    'tipo_impuesto' => $data->tipo_impuesto >0?$data->tipo_impuesto:'',
                     'adjuntos' => []
 
                 ];
@@ -991,6 +993,7 @@ class RequerimientoController extends Controller
             $requerimiento->id_incidencia = isset($request->id_incidencia) && $request->id_incidencia != null ? $request->id_incidencia : null;
             $requerimiento->id_tipo_detalle = $idTipoDetalle;
             $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno : null;
+            $requerimiento->tipo_impuesto = $request->tipo_impuesto > 0 ? $request->tipo_impuesto : null;
             $requerimiento->save();
             $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimiento1;
             $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimiento2;
@@ -1458,6 +1461,8 @@ class RequerimientoController extends Controller
         $requerimiento->id_incidencia = $request->id_incidencia > 0 ? $request->id_incidencia : null;
         $requerimiento->id_tipo_detalle = $idTipoDetalle;
         $requerimiento->id_presupuesto_interno = $request->id_presupuesto_interno > 0 ? $request->id_presupuesto_interno : null;
+        $requerimiento->tipo_impuesto = $request->tipo_impuesto > 0 ? $request->tipo_impuesto : null;
+
         $requerimiento->save();
         $requerimiento->adjuntoOtrosAdjuntos = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar1;
         $requerimiento->adjuntoOrdenes = $request->archivoAdjuntoRequerimientoCabeceraFileGuardar2;
@@ -4073,6 +4078,9 @@ class RequerimientoController extends Controller
                     <td class="subtitle">Empresa</td>
                     <td class="subtitle verticalTop">:</td>
                     <td class="verticalTop">' . $requerimiento['requerimiento'][0]['razon_social_empresa'] . ' - ' . $requerimiento['requerimiento'][0]['codigo_sede_empresa'] . '</td>
+                    <td class="subtitle verticalTop">Tipo Impuesto</td>
+                    <td class="subtitle verticalTop">:</td>
+                    <td>' . ($requerimiento['requerimiento'][0]['tipo_impuesto']==1?'Detracción':($requerimiento['requerimiento'][0]['tipo_impuesto']==2?'Renta':'No Aplica')) . '</td>
                 </tr>
                 <tr>
                     <td class="subtitle">Gerencia</td>

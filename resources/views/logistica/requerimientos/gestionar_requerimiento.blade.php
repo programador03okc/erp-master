@@ -270,10 +270,22 @@ Crear / editar requerimiento
 
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-12" id="input-group-observacion">
+                                <div class="col-md-10" id="input-group-observacion">
                                     <h5>Observación:</h5>
                                     <textarea class="form-control activation" name="observacion" cols="100" rows="100" style="height:50px;" disabled></textarea>
                                 </div>
+
+                                <div class="col-md-2" id="input-group-tipo-impuesto">
+                                    <div class="form-group">
+                                    <h5>Tipo de Impuesto</h5>
+                                        <select class="form-control activation " name="tipo_impuesto">
+                                            <option value="0">No aplica</option>
+                                            <option value="1">Detracción</option>
+                                            <option value="2">Renta</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
