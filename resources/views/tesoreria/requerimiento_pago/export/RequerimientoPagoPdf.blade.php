@@ -142,10 +142,14 @@ if($requerimientoPago->id_tipo_destinatario ==1){
                 <td style="width: 35%">{{$requerimientoPago->fecha_registro!=null ? $requerimientoPago->fecha_registro:''}}</td>
             </tr>
             <tr>
-            <th style="width: 15%" class="text-right">Presupuesto:</th>
+                <th style="width: 15%" class="text-right">Presupuesto:</th>
                 <td style="width: 35%">{{$requerimientoPago->presupuestoInterno != null  ? ($requerimientoPago->presupuestoInterno['codigo'].' - '.$requerimientoPago->presupuestoInterno['descripcion']):'' }}</td>
                 <th style="width: 15%" class="text-right">Solicitado por:</th>
                 <td style="width: 35%">{{$requerimientoPago->nombre_trabajador!=null ? $requerimientoPago->nombre_trabajador:'' }}</td>
+            </tr>
+            <tr>
+                <th style="width: 15%" class="text-right">Tipo Impuesto:</th>
+                <td style="width: 35%">{{$requerimientoPago->tipo_impuesto ==1  ? 'Detracción' : ($requerimientoPago->tipo_impuesto ==2?'Renta':'No aplica') }}</td>
             </tr>
         </thead>
     </table>
