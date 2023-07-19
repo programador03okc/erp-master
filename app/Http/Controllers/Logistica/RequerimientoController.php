@@ -1933,6 +1933,8 @@ class RequerimientoController extends Controller
         $idUsuarioEnSesion = Auth::user()->id_usuario;
         $GrupoDeUsuarioEnSesionList = Auth::user()->getAllGrupo();
         $idGrupoDeUsuarioEnSesionList = [];
+        $idTipoRequerimientoList=[1,2,3,4,5,6,7,8];
+        
         foreach ($GrupoDeUsuarioEnSesionList as $grupo) {
             $idGrupoDeUsuarioEnSesionList[] = $grupo->id_grupo; // lista de id_rol del usuario en sesion
         }
@@ -1944,6 +1946,7 @@ class RequerimientoController extends Controller
             {
                 $soloAutorizadoGarantias=true;
                 $idGrupoDeUsuarioEnSesionList[]=2; // grupo comercial
+                $idTipoRequerimientoList=[6];
             }
         }
 
@@ -2063,11 +2066,7 @@ class RequerimientoController extends Controller
             ->when((intval($idEstado) > 0), function ($query)  use ($idEstado) {
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
-            ->where([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1]])
-            ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList)
-            ->when((($soloAutorizadoGarantias) ==true), function ($query) {
-                return $query->whereRaw('(alm_req.id_tipo_requerimiento = 6) or (alm_req.flg_compras =0 and adm_documentos_aprob.id_tp_documento = 1)');  // autorizado solo ver comercial, tipo de requerimiento de garantias
-            });
+            ->whereRaw("alm_req.id_grupo IN (".implode(",",$idGrupoDeUsuarioEnSesionList).") and  (alm_req.id_tipo_requerimiento IN (".implode(",",$idTipoRequerimientoList).") OR alm_req.id_usuario = ".Auth::user()->id_usuario."  ) and alm_req.flg_compras =0 and adm_documentos_aprob.id_tp_documento =1");
 
         return datatables($requerimientos)
             ->addColumn('nombre_solicitado_por', function ($requerimientos) {
