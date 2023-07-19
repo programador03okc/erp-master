@@ -2066,7 +2066,7 @@ class RequerimientoController extends Controller
             ->where([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1]])
             ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList)
             ->when((($soloAutorizadoGarantias) ==true), function ($query) {
-                return $query->whereRaw('(alm_req.id_tipo_requerimiento = 6) or (alm_req.flg_compras =0 and adm_documentos_aprob.id_tp_documento = 1 and alm_req.id_usuario ='.Auth::user()->id_usuario.')');  // autorizado solo ver comercial, tipo de requerimiento de garantias
+                return $query->whereRaw('(alm_req.id_tipo_requerimiento = 6) or (alm_req.flg_compras =0 and adm_documentos_aprob.id_tp_documento = 1)');  // autorizado solo ver comercial, tipo de requerimiento de garantias
             });
 
         return datatables($requerimientos)
