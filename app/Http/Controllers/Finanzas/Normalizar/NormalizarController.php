@@ -107,7 +107,10 @@ class NormalizarController extends Controller
         $ordenes = $ordenes->whereDate('log_ord_compra.fecha_autorizacion','>=','2023-01-01 00:00:00');
         $ordenes = $ordenes->whereDate('log_ord_compra.fecha_autorizacion','<=','2023-04-30 23:59:59');
 
-        $ordenes = $ordenes->where('log_ord_compra.estado_pago',6)->groupBy('log_ord_compra.id_orden_compra')->get();
+        $ordenes = $ordenes->whereIn('log_ord_compra.estado_pago',[6,9,10]); //pagado, con saldo, pagado con saldo
+        $ordenes = $ordenes->where([['log_ord_compra.estado','!=',7],['alm_req.id_cc','=',null],['alm_req.id_proyecto','=',null]])
+        ->groupBy('log_ord_compra.id_orden_compra')
+        ->get();
         // $ordenes = $ordenes->groupBy('log_det_ord_compra.id_orden_compra');
         return DataTables::of($ordenes)
         ->addColumn('mes', function ($data){
