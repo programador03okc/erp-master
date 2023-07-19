@@ -1947,7 +1947,7 @@ class RequerimientoController extends Controller
             }
         }
 
-        $idTrabajadorEnSesion = Auth::user()->id_trabajador;
+        // $idTrabajadorEnSesion = Auth::user()->id_trabajador;
 
         $requerimientos = Requerimiento::with('detalle')
             ->leftJoin('administracion.adm_documentos_aprob', 'alm_req.id_requerimiento', '=', 'adm_documentos_aprob.id_doc')
@@ -2064,10 +2064,9 @@ class RequerimientoController extends Controller
                 return $query->whereRaw('alm_req.estado = ' . $idEstado);
             })
             ->where([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1]])
-            ->whereOr([['alm_req.flg_compras', '=', 0], ['adm_documentos_aprob.id_tp_documento', '=', 1],['alm_req.trabajador_id', $idTrabajadorEnSesion]])
             ->whereIn('alm_req.id_grupo', $idGrupoDeUsuarioEnSesionList)
             ->when((($soloAutorizadoGarantias) ==true), function ($query) {
-                return $query->whereRaw('alm_req.id_tipo_requerimiento = 6');  // autorizado solo ver comercial, tipo de requerimiento de garantias
+                return $query->whereRaw('(alm_req.id_tipo_requerimiento = 6) or (alm_req.flg_compras =0 and adm_documentos_aprob.id_tp_documento = 1 and alm_req.id_usuario ='.Auth::user()->id_usuario.')');  // autorizado solo ver comercial, tipo de requerimiento de garantias
             });
 
         return datatables($requerimientos)
