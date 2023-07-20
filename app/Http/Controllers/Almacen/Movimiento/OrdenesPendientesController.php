@@ -1395,6 +1395,7 @@ class OrdenesPendientesController extends Controller
                             ]);
                     } else {
                         if (intval($id_almacen) !== intval($dreq->id_almacen)) {
+                            if (intval($dreq->id_tipo_requerimiento) !== 4) {
                             DB::table('almacen.alm_reserva')
                                 ->insert([
                                     'codigo' => Reserva::crearCodigo($id_almacen),
@@ -1407,6 +1408,7 @@ class OrdenesPendientesController extends Controller
                                     'usuario_registro' => $id_usuario,
                                     'fecha_registro' => date('Y-m-d H:i:s'),
                                 ]);
+                            }
                         }
                     }
                 }
