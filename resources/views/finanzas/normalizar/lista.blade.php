@@ -109,9 +109,15 @@ Normalizar
                                 <tr>
                                     <th hidden></th>
                                     <th >Código</th>
+                                    <th >Req.</th>
                                     <th >Fecha de emisión</th>
-                                    <th >Estado del Pago</th>
                                     <th >Importe total orden</th>
+                                    <th >Saldo <small>(Tesorería)</small></th>
+                                    <th >Estado de pago <small>(Tesorería)</small></th>
+                                    <th >N° de Cuotas</th>
+                                    <th >Estado Cuota</th>
+                                    <th >Comentario del Pago <small>(Logística)</small></th>
+                                    <th >Tipo Impuesto</th>
                                     <th >-</th>
                                 </tr>
                             </thead>

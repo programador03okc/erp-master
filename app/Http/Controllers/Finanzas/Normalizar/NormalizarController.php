@@ -92,10 +92,20 @@ class NormalizarController extends Controller
 
 
         // $ordenes = OrdenesView::select('ordenes_view.*')
-        $ordenes = Orden::select('log_ord_compra.*')
+        $ordenes = Orden::select('log_ord_compra.*',
+        DB::raw("string_agg(DISTINCT alm_req.codigo::text, ', '::text) AS codigo_requerimiento_list"),
+        'estado_pago_orden.descripcion as estado_pago',
+        DB::raw("CASE WHEN pago_cuota.numero_de_cuotas =1 THEN 'CUOTA PERSONALIZADA' WHEN pago_cuota.numero_de_cuotas >1 THEN CONCAT(pago_cuota.numero_de_cuotas,' CUOTAS') ELSE 'NO APLICA' END AS numero_de_cuotas"),
+        DB::raw("CASE WHEN estado_cuota.descripcion NOTNULL THEN estado_cuota.descripcion ELSE 'NO APLICA' END AS estado_pago_cuota"),
+        DB::raw("log_ord_compra.monto_total::numeric  - (select sum(registro_pago.total_pago)  from tesoreria.registro_pago  where registro_pago.id_oc = log_ord_compra.id_orden_compra  and registro_pago.estado !=7)::numeric as saldo"),
+        DB::raw("CASE WHEN alm_req.tipo_impuesto =1 THEN 'DETRACCIÓN' WHEN alm_req.tipo_impuesto =2 THEN 'RENTA' ELSE '' END AS tipo_impuesto")
+        )
         ->join('logistica.log_det_ord_compra','log_det_ord_compra.id_orden_compra','=','log_ord_compra.id_orden_compra')
         ->join('almacen.alm_det_req','alm_det_req.id_detalle_requerimiento','=','log_det_ord_compra.id_detalle_requerimiento')
-        ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento');
+        ->join('almacen.alm_req','alm_req.id_requerimiento','=','alm_det_req.id_requerimiento')
+        ->leftJoin('logistica.pago_cuota','pago_cuota.id_orden','=','log_ord_compra.id_orden_compra')
+        ->leftJoin('tesoreria.requerimiento_pago_estado as estado_pago_orden','estado_pago_orden.id_requerimiento_pago_estado','=','log_ord_compra.estado_pago')
+        ->leftJoin('tesoreria.requerimiento_pago_estado as estado_cuota','estado_cuota.id_requerimiento_pago_estado','=','pago_cuota.id_estado')
         ;
 
         if (!empty($request->division)) {
@@ -109,7 +119,7 @@ class NormalizarController extends Controller
 
         $ordenes = $ordenes->whereIn('log_ord_compra.estado_pago',[6,9,10]); //pagado, con saldo, pagado con saldo
         $ordenes = $ordenes->where([['log_ord_compra.estado','!=',7],['alm_req.id_cc','=',null],['alm_req.id_proyecto','=',null]])
-        ->groupBy('log_ord_compra.id_orden_compra')
+        ->groupBy('log_ord_compra.id_orden_compra','estado_pago_orden.descripcion','estado_cuota.descripcion','pago_cuota.numero_de_cuotas', 'estado_cuota.descripcion','alm_req.tipo_impuesto')
         ->get();
         // $ordenes = $ordenes->groupBy('log_det_ord_compra.id_orden_compra');
         return DataTables::of($ordenes)

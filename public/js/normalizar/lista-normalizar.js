@@ -48,8 +48,8 @@ function listarOrdenes() {
             {data: 'id_orden_compra', name:"id_orden_compra" },
 
             {data: 'codigo', name:"codigo" , class:"text-center"},
+            {data: 'codigo_requerimiento_list', name:"codigo_requerimiento_list" , class:"text-center"},
             {data: 'fecha_autorizacion', name:"fecha_autorizacion" , class:"text-center"},
-            {data: 'comentario_pago', name:"comentario_pago" , class:"text-center"},
             {
                 data: 'monto_total', name:"monto_total",
                 render : function(data, type, row){
@@ -57,6 +57,18 @@ function listarOrdenes() {
                     return total
                 }
                 , class:"text-center"},
+            {
+                data: 'saldo', name:"saldo",
+                render : function(data, type, row){
+                    let total = (row['id_moneda']===1?'S/.':'$')+row['saldo']
+                    return total
+                }
+                , class:"text-center"},
+            {data: 'estado_pago', name:"estado_pago" , class:"text-center"},
+            {data: 'numero_de_cuotas', name:"numero_de_cuotas" , class:"text-center"},
+            {data: 'estado_pago_cuota', name:"estado_pago_cuota" , class:"text-center"},
+            {data: 'comentario_pago', name:"comentario_pago" , class:"text-center"},    
+            {data: 'tipo_impuesto', name:"tipo_impuesto" , class:"text-center"},    
             {
                 render: function (data, type, row) {
                     html='';
@@ -67,6 +79,7 @@ function listarOrdenes() {
                 },
                 className: "text-center"
             }
+
         ],
         order: [[0, "desc"]],
         columnDefs: [{ aTargets: [0], sClass: "invisible" }],
