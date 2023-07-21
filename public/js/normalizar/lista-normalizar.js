@@ -47,13 +47,22 @@ function listarOrdenes() {
         columns: [
             {data: 'id_orden_compra', name:"id_orden_compra" },
 
-            {data: 'codigo', name:"codigo" , class:"text-center"},
+            {data: 'codigo', name:"codigo" , class:"text-center", render: function(data,type,row){
+                return `<a href="/logistica/gestion-logistica/compras/ordenes/listado/generar-orden-pdf/${row.id_orden_compra}" target="black_">${row.codigo}</a>`;
+            }},
             {data: 'codigo_requerimiento_list', name:"codigo_requerimiento_list" , class:"text-center"},
             {data: 'fecha_autorizacion', name:"fecha_autorizacion" , class:"text-center"},
             {
                 data: 'monto_total', name:"monto_total",
                 render : function(data, type, row){
                     let total = (row['id_moneda']===1?'S/.':'$')+row['monto_total']
+                    return total
+                }
+                , class:"text-center"},
+            {
+                data: 'total_patado', name:"total_patado",
+                render : function(data, type, row){
+                    let total = (row['id_moneda']===1?'S/.':'$')+row['total_pagado']
                     return total
                 }
                 , class:"text-center"},

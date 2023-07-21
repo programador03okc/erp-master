@@ -97,6 +97,7 @@ class NormalizarController extends Controller
         'estado_pago_orden.descripcion as estado_pago',
         DB::raw("CASE WHEN pago_cuota.numero_de_cuotas =1 THEN 'CUOTA PERSONALIZADA' WHEN pago_cuota.numero_de_cuotas >1 THEN CONCAT(pago_cuota.numero_de_cuotas,' CUOTAS') ELSE 'NO APLICA' END AS numero_de_cuotas"),
         DB::raw("CASE WHEN estado_cuota.descripcion NOTNULL THEN estado_cuota.descripcion ELSE 'NO APLICA' END AS estado_pago_cuota"),
+        DB::raw("(select sum(registro_pago.total_pago)  from tesoreria.registro_pago  where registro_pago.id_oc = log_ord_compra.id_orden_compra  and registro_pago.estado !=7)::numeric as total_pagado"),
         DB::raw("log_ord_compra.monto_total::numeric  - (select sum(registro_pago.total_pago)  from tesoreria.registro_pago  where registro_pago.id_oc = log_ord_compra.id_orden_compra  and registro_pago.estado !=7)::numeric as saldo"),
         DB::raw("CASE WHEN alm_req.tipo_impuesto =1 THEN 'DETRACCIÓN' WHEN alm_req.tipo_impuesto =2 THEN 'RENTA' ELSE '' END AS tipo_impuesto")
         )

@@ -112,6 +112,7 @@ Normalizar
                                     <th >Req.</th>
                                     <th >Fecha de emisión</th>
                                     <th >Importe total orden</th>
+                                    <th >Total pagado <small>(Tesorería)</small></th>
                                     <th >Saldo <small>(Tesorería)</small></th>
                                     <th >Estado de pago <small>(Tesorería)</small></th>
                                     <th >N° de Cuotas</th>
