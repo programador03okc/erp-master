@@ -50,7 +50,7 @@ class PresupuestoInternoView{
         let idPresupuestoInternoDetalle= obj.dataset.idPresupuestoInternoDetalle;
         let partida= obj.dataset.partida;
         let descripcion= obj.dataset.descripcion;
-        let montoTotal= obj.dataset.montoTotal;
+        let montoTotal= obj.dataset.totalPresupuestoAño;
 
         tempObjectBtnPartida.nextElementSibling.querySelector("input[class='partida']").value = idPresupuestoInternoDetalle;
         tempObjectBtnPartida.textContent = 'Cambiar';
