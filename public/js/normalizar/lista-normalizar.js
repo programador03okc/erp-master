@@ -285,6 +285,10 @@ function construirDetalleOrdenElaboradas(table_id, row, response,mes) {
                     data-id-orden-detalle="`+element.id_detalle_orden+`"
                     data-id-requerimiento="`+element.id_requerimiento+`"
                     data-id-requerimiento-detalle="`+element.id_detalle_requerimiento+`"
+                    data-id-moneda="`+element.id_moneda+`"
+                    data-monto-total-orden="`+element.monto_total+`"
+                    data-saldo="`+element.saldo+`"
+                    data-tipo-impuesto="`+element.tipo_impuesto+`"
                     title="Asignar a partida"
                     data-original-title="Ver"
                     data-action="asignar-partida"
@@ -371,16 +375,40 @@ function construirDetalleRequerimientosPagos(table_id, row, response, mes) {
 // $("#lista-requerimientos-pagos").on("click", 'button[data-action="asignar-partida"]', (e) => {
 $(document).on("click", 'button[data-action="asignar-partida"]', (e) => {
     e.preventDefault();
+
+    let html = ``;
+
     let id = $(e.currentTarget).attr('data-id-requerimiento-pago');
     let id_detalle = $(e.currentTarget).attr('data-id-requerimiento-pago-detalle');
     let tap = $(e.currentTarget).attr('data-tap');
     let mes = $(e.currentTarget).attr('data-mes');
-    let html = ``;
+    let id_moneda = $(e.currentTarget).attr('data-id-moneda');
+    let monto_total_orden = $(e.currentTarget).attr('data-monto-total');
+    let saldo = $(e.currentTarget).attr('data-saldo');
+    let tipo_impuesto = $(e.currentTarget).attr('data-tipo-impuesto');
 
     let id_orden = $(e.currentTarget).attr('data-id-orde');
     let id_orden_detalle = $(e.currentTarget).attr('data-id-orden-detalle');
     let id_requerimiento = $(e.currentTarget).attr('data-id-requerimiento');
     let id_requerimiento_detalle = $(e.currentTarget).attr('data-id-requerimiento-detalle');
+
+    if(id_orden >0){
+        if(parseFloat(saldo) == 0){
+            // TODO : Cargar modal con opciones: Impuesto de detracción, Impuesto de renta, Cuota pendiente , no considerar el saldo
+        }else{
+            Lobibox.notify('warning', {
+                title: false,
+                size: 'mini',
+                rounded: true,
+                sound: false,
+                delayIndicator: false,
+                msg: `La orden tiene un saldo de ${id_moneda==1?'S/':(id_moneda==2?'$':'')}${saldo}`
+            });
+    
+        }
+    }
+
+
 
     $('#normalizar-partida').modal('show');
     $.ajax({

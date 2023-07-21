@@ -1316,6 +1316,12 @@ class OrdenController extends Controller
         $detalle = OrdenCompraDetalle::with(['reserva' => function ($q) {
             $q->where('alm_reserva.estado', '=', 1);
         }])->select(
+            'log_ord_compra.id_orden_compra',
+            'log_ord_compra.codigo as codigo_orden',
+            'log_ord_compra.id_moneda',
+            'log_ord_compra.monto_total',
+            DB::raw("log_ord_compra.monto_total::numeric  - (select sum(registro_pago.total_pago)  from tesoreria.registro_pago  where registro_pago.id_oc = log_ord_compra.id_orden_compra  and registro_pago.estado !=7)::numeric as saldo"),
+            'log_ord_compra.tipo_impuesto',
             'log_det_ord_compra.*',
             'alm_prod.codigo',
             'sis_moneda.simbolo as moneda_simbolo',
