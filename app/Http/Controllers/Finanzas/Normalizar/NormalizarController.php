@@ -51,7 +51,10 @@ class NormalizarController extends Controller
     {
         // return $request->all();exit;
 
-        $req_pago = RequerimientoPago::select('requerimiento_pago.*')
+        $req_pago = RequerimientoPago::select('requerimiento_pago.*',
+        DB::raw("requerimiento_pago.monto_total::numeric  - (select sum(registro_pago.total_pago)  from tesoreria.registro_pago  where registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago  and registro_pago.estado !=7)::numeric as saldo")
+
+        )
         // ->whereDate('requerimiento_pago.fecha_autorizacion','>=','2023-01-01 00:00:00')
         // ->whereDate('requerimiento_pago.fecha_autorizacion','<=','2023-04-30 23:59:59')
 
@@ -71,6 +74,13 @@ class NormalizarController extends Controller
             $req_pago = $req_pago->where('requerimiento_pago.id_division',$request->division);
         }
         $req_pago = $req_pago
+
+        ->when(($request->tipo_pago ==1), function ($query) { // rtipo de pago es sin saldo
+            return $query->whereRaw('requerimiento_pago.monto_total::numeric  - (select sum(registro_pago.total_pago)  from tesoreria.registro_pago  where registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago  and registro_pago.estado !=7)::numeric =' . 0);
+        })
+        ->when(($request->tipo_pago ==2), function ($query) { //tipo de pago es con saldo
+            return $query->whereRaw('requerimiento_pago.monto_total::numeric  - (select sum(registro_pago.total_pago)  from tesoreria.registro_pago  where registro_pago.id_requerimiento_pago = requerimiento_pago.id_requerimiento_pago  and registro_pago.estado !=7)::numeric >' . 0);
+        })
         ->groupBy('requerimiento_pago.id_requerimiento_pago')
         // ->where('requerimiento_pago_detalle.id_estado','!=',7)
         ->get();
@@ -120,6 +130,12 @@ class NormalizarController extends Controller
 
         $ordenes = $ordenes->whereIn('log_ord_compra.estado_pago',[6,9,10]); //pagado, con saldo, pagado con saldo
         $ordenes = $ordenes->where([['log_ord_compra.estado','!=',7],['alm_req.id_cc','=',null],['alm_req.id_proyecto','=',null]])
+        ->when(($request->tipo_pago ==1), function ($query) { // rtipo de pago es sin saldo
+            return $query->whereRaw('log_ord_compra.monto_total::numeric  - (select sum(registro_pago.total_pago)  from tesoreria.registro_pago  where registro_pago.id_oc = log_ord_compra.id_orden_compra  and registro_pago.estado !=7)::numeric =' . 0);
+        })
+        ->when(($request->tipo_pago ==2), function ($query) { //tipo de pago es con saldo
+            return $query->whereRaw('log_ord_compra.monto_total::numeric  - (select sum(registro_pago.total_pago)  from tesoreria.registro_pago  where registro_pago.id_oc = log_ord_compra.id_orden_compra  and registro_pago.estado !=7)::numeric >' . 0);
+        })
         ->groupBy('log_ord_compra.id_orden_compra','estado_pago_orden.descripcion','estado_cuota.descripcion','pago_cuota.numero_de_cuotas', 'estado_cuota.descripcion','alm_req.tipo_impuesto')
         ->get();
         // $ordenes = $ordenes->groupBy('log_det_ord_compra.id_orden_compra');

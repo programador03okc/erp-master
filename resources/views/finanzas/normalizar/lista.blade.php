@@ -9,7 +9,7 @@ Normalizar
 <link rel="stylesheet" href="{{asset('template/plugins/select2/select2.min.css')}}">
 <link rel="stylesheet" href="{{ asset('css/usuario-accesos.css') }}">
 <style>
-    .contenido-detalle{
+    .contenido-detalle {
         height: 0;
         transition: .3s height;
     }
@@ -17,28 +17,28 @@ Normalizar
 @endsection
 
 @section('breadcrumb')
-    <ol class="breadcrumb">
-        <li><a href="{{route('finanzas.index')}}"><i class="fa fa-usd"></i> Finanzas</a></li>
-        <li class="active"> @yield('cabecera')</li>
-    </ol>
+<ol class="breadcrumb">
+    <li><a href="{{route('finanzas.index')}}"><i class="fa fa-usd"></i> Finanzas</a></li>
+    <li class="active"> @yield('cabecera')</li>
+</ol>
 @endsection
 
 @section('content')
 
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box box-solid">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Normalizar Requerimientos de pago/Ordenes</h3>
-                    <div class="box-tools pull-right">
-                    </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">Normalizar Requerimientos de pago/Ordenes</h3>
+                <div class="box-tools pull-right">
                 </div>
-                <div class="box-body">
-                    <div class="row">
-                        <form action="" data-form="buscar">
-                            @csrf
-                            {{-- <div class="col-md-4">
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <form action="" data-form="buscar">
+                        @csrf
+                        {{-- <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Meses</label>
                                     <select class="form-control" name="mes" required>
@@ -49,113 +49,171 @@ Normalizar
                                     </select>
                                 </div>
                             </div> --}}
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="">Divisiones</label>
-                                    <select class="form-control" name="division" required>
-                                        @foreach ($division as $key=>$item)
-                                        @if ($key===0)
-                                            <option value="{{$item->id_division}}" selected>{{$item->descripcion}}</option>
-                                        @else
-                                            <option value="{{$item->id_division}}">{{$item->descripcion}}</option>
-                                        @endif
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Divisiones</label>
+                                <select class="form-control" name="division" required>
+                                    @foreach ($division as $key=>$item)
+                                    @if ($key===0)
+                                    <option value="{{$item->id_division}}" selected>{{$item->descripcion}}</option>
+                                    @else
+                                    <option value="{{$item->id_division}}">{{$item->descripcion}}</option>
+                                    @endif
 
-                                        @endforeach
-                                    </select>
-                                </div>
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="">Tipo de pago</label>
+                                <select class="form-control" name="tipo_pago" required>
+                                    <option value="1" selected>Sin saldo</option>
+                                </select>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab">Requerimientos de Pagos</a></li>
-                    <li><a href="#tab_2" data-toggle="tab">Ordenes</a></li>
-                    <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="tab_1">
-                        <table width="100%" class="table table-bordered table-hover dataTable" id="lista-requerimientos-pagos" >
-                            <thead>
-                                <tr>
-                                    <th hidden></th>
-                                    <th>Código</th>
-                                    <th>Concepto</th>
-                                    <th>Fecha Aprobación</th>
-                                    <th>Creado por</th>
-                                    <th>Monto total</th>
-                                    <th>-</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_1" data-toggle="tab">Requerimientos de Pagos</a></li>
+                <li><a href="#tab_2" data-toggle="tab">Ordenes</a></li>
+                <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1">
+                    <table width="100%" class="table table-bordered table-hover dataTable" id="lista-requerimientos-pagos">
+                        <thead>
+                            <tr>
+                                <th hidden></th>
+                                <th>Código</th>
+                                <th>Concepto</th>
+                                <th>Fecha Aprobación</th>
+                                <th>Creado por</th>
+                                <th>Monto total</th>
+                                <th>Saldo <small>(Tesorería)</small></th>
+                                <th>-</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.tab-pane -->
-                    <div class="tab-pane" id="tab_2">
-                        <table class="table table-bordered table-hover dataTable"  id="lista-ordenes" width="100%">
-                            <thead>
-                                <tr>
-                                    <th hidden></th>
-                                    <th >Código</th>
-                                    <th >Req.</th>
-                                    <th >Fecha de emisión</th>
-                                    <th >Importe total orden</th>
-                                    <th >Total pagado <small>(Tesorería)</small></th>
-                                    <th >Saldo <small>(Tesorería)</small></th>
-                                    <th >Estado de pago <small>(Tesorería)</small></th>
-                                    <th >N° de Cuotas</th>
-                                    <th >Estado Cuota</th>
-                                    <th >Comentario del Pago <small>(Logística)</small></th>
-                                    <th >Tipo Impuesto</th>
-                                    <th >-</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.tab-pane -->
+                        </tbody>
+                    </table>
                 </div>
-                <!-- /.tab-content -->
+                <!-- /.tab-pane -->
+                <div class="tab-pane" id="tab_2">
+                    <table class="table table-bordered table-hover dataTable" id="lista-ordenes" width="100%">
+                        <thead>
+                            <tr>
+                                <th hidden></th>
+                                <th>Código</th>
+                                <th>Req.</th>
+                                <th>Fecha de emisión</th>
+                                <th>Importe total orden</th>
+                                <th>Total pagado <small>(Tesorería)</small></th>
+                                <th>Saldo <small>(Tesorería)</small></th>
+                                <th>Estado de pago <small>(Tesorería)</small></th>
+                                <th>N° de Cuotas</th>
+                                <th>Estado Cuota</th>
+                                <th>Comentario del Pago <small>(Logística)</small></th>
+                                <th>Tipo Impuesto</th>
+                                <th>-</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="normalizar-definir-criterio-para-saldo" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title">Normalizar - Definir para a Saldo</h5>
+            </div>
+            <div class="modal-body">
+                <p>Elgir una opción</p>
+
+                <div class="list-group">
+                    <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading"> <input type="radio" name="optionsRadioSaldo" value="0"> Saldo pendiente de pago</h4>
+                        <p class="list-group-item-text">Acción: Se afectará el presupuesto a las partidas de cada item, se ignorará el saldo, afectando solamente el monto pagado sin aplicar impuestos. </p>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading"> <input type="radio" name="optionsRadioSaldo" value="0"> Orden con impuesto por detracción sin cuotas </h4>
+                        <p class="list-group-item-text">Acción: Se afectará el presupuesto a las partidas de cada item, se  marcará a la orden que tiene impuesto por detracción y el saldo considerado como detracción, el presupuesto ejecutado se incluirá la detracción</p>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading"> <input type="radio" name="optionsRadioSaldo" value="0"> Orden con Impuesto por detracción y con cuotas</h4>
+                        <p class="list-group-item-text">Acción: Se afectará el presupuesto a las partidas de cada item, se  marcará a la orden que tiene impuesto por detracción y el saldo considerado como impuesto en cada cuota, el presupuesto ejecutado se incluirá la detracción</p>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading"> <input type="radio" name="optionsRadioSaldo" value="0"> Orden con impuesto a la renta y sin cuotas</h4>
+                        <p class="list-group-item-text">Acción: Se afectará el presupuesto a las partidas de cada item, se  marcará a la orden que tiene impuesto por renta y el saldo considerado como impuesto, el presupuesto ejecutado se incluirá la renta</p>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading"> <input type="radio" name="optionsRadioSaldo" value="0"> Orden con impuesto a la renta y con cuotas</h4>
+                        <p class="list-group-item-text">Acción: Se afectará el presupuesto a las partidas de cada item, se  marcará a la orden que tiene impuesto por renta y el saldo considerado como impuesto en cada cuota, el presupuesto ejecutado se incluirá la renta</p>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <h4 class="list-group-item-heading"> <input type="radio" name="optionsRadioSaldo" value="0"> El Saldo no aplicable a pago. (ignorar)</h4>
+                        <p class="list-group-item-text">Acción: Se afectará el presupuesto de cada item con los monto sin considerar el saldo </p>
+                    </a>
+                </div>
+
+ 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success">Grabar</button>
             </div>
         </div>
     </div>
+</div> -->
+<!-- Modal -->
+<div class="modal fade" id="normalizar-partida" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title">Normalizar Requerimientos de pago / Partidas de Presupuesto Interno</h5>
 
+            </div>
+            <div class="modal-body">
 
-    <!-- Modal -->
-    <div class="modal fade" id="normalizar-partida" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h5 class="modal-title">Normalizar Requerimientos de pago / Partidas de Presupuesto Interno</h5>
-
-                </div>
-                <div class="modal-body">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary">Aceptar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Aceptar</button>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -173,10 +231,10 @@ Normalizar
 <script src="{{ asset('template/plugins/bootstrap-select/dist/js/i18n/defaults-es_ES.min.js') }}"></script>
 <script src="{{asset('template/plugins/select2/select2.min.js')}}"></script>
 
-    <script>
-        // console.log(ruta);
-    </script>
-    <script src="{{asset('js/normalizar/lista-normalizar.js')}}"></script>
+<script>
+    // console.log(ruta);
+</script>
+<script src="{{asset('js/normalizar/lista-normalizar.js')}}"></script>
 
 
 @endsection
