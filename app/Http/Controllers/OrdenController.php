@@ -1364,7 +1364,7 @@ class OrdenController extends Controller
 
             ->where([
                 ['log_det_ord_compra.id_orden_compra', '=', $idOrden],
-                ['log_det_ord_compra.estado', '=', 7]
+                ['log_det_ord_compra.estado', '!=', 7]
             ])
             ->get();
         return response()->json($detalle);
