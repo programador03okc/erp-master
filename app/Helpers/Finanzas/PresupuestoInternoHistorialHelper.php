@@ -65,7 +65,21 @@ class PresupuestoInternoHistorialHelper
         $presupuestoInternoDetalle = [];
         foreach ($detalleItemList as $detOrd) {
             if ($detOrd->id_detalle_requerimiento > 0) {
+                // Debugbar::info($detOrd->detalleRequerimiento->id_partida_pi);
+
                 if ($detOrd->detalleRequerimiento->id_partida_pi > 0) {
+                    // Debugbar::info($detOrd->detalleRequerimiento->requerimiento->id_presupuesto_interno,
+                    // $detOrd->detalleRequerimiento->id_partida_pi,
+                    // $detOrd->importe_item_para_presupuesto,
+                    // 3,
+                    // $detOrd->detalleRequerimiento->requerimiento->id_requerimiento,
+                    // $detOrd->id_detalle_requerimiento,
+                    // $fechaAfectacion,
+                    // $idOrden,
+                    // $detOrd->id_detalle_orden,
+                    // $idPago,
+                    // $descripcion);
+
                     PresupuestoInternoHistorialHelper::registrarHistorialSaldoParaDetalleRequerimientoLogistico(
                         $detOrd->detalleRequerimiento->requerimiento->id_presupuesto_interno,
                         $detOrd->detalleRequerimiento->id_partida_pi,
@@ -263,7 +277,7 @@ class PresupuestoInternoHistorialHelper
     }
 
 
-    public static function obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($idOrden, $totalPago)
+    public static function obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($idOrden, $totalPago, $idDetalleRequerimientoLogistico = null)
     {
 
         $orden = Orden::find($idOrden);
@@ -275,10 +289,21 @@ class PresupuestoInternoHistorialHelper
                 ->where([['id_orden_compra', $idOrden], ['estado', '!=', 7]])->get();
 
             foreach ($ordenDetalle as $detOrd) {
-                if ($detOrd->id_detalle_requerimiento > 0) {
 
-                    if ($detOrd->detalleRequerimiento->id_partida_pi > 0) {
-                        $detalleArray[] = $detOrd;
+                if($idDetalleRequerimientoLogistico !=null){ // si exista un id de detalle requerimiento logistico pasado como parametro
+                    if ($detOrd->id_detalle_requerimiento == $idDetalleRequerimientoLogistico) {
+                        if ($detOrd->detalleRequerimiento->id_partida_pi > 0) {
+                            $detalleArray[] = $detOrd;
+                        }
+                    }
+
+                }else{ // de lo contrario debe recorrera todo el detalle
+
+                    if ($detOrd->id_detalle_requerimiento > 0) {
+    
+                        if ($detOrd->detalleRequerimiento->id_partida_pi > 0) {
+                            $detalleArray[] = $detOrd;
+                        }
                     }
                 }
             }
@@ -522,6 +547,72 @@ class PresupuestoInternoHistorialHelper
             //     if($totalImporteRegistroPago == $montoTotalRequerimientoPago){
             // }
         } else {
+            $mensaje = 'No se encontró registro de pago para vincular';
+        }
+
+        DB::commit();
+        return $mensaje;
+
+        } catch (\PDOException $e) {
+            DB::rollBack();
+        }
+    }
+    public static function normalizarOrden($idOrden, $idDetalleRequerimientoLogistico)
+    {
+
+        try {
+            DB::beginTransaction();
+        $registroPago = RegistroPago::where([['id_oc', $idOrden], ['estado', '!=', 7]])->get();
+        $orden = Orden::find($idOrden);
+        $mensaje = '';
+        $presupuestoInternoDetalle = [];
+        $totalImporteRegistroPago = 0;
+        // if ($registroPago) {
+        if (sizeof($registroPago)>0) {
+            $mensaje = 'Se encontro el registro de pago';
+            
+            foreach ($registroPago as $rp) {
+                $totalImporteRegistroPago += floatval($rp->total_pago);
+            }
+
+            if(floatval($totalImporteRegistroPago) == floatval($orden->monto_total)){
+                $detalleArray = PresupuestoInternoHistorialHelper::obtenerDetalleRequerimientoLogisticoDeOrdenParaAfectarPresupuestoInterno($idOrden, floatval($rp->total_pago), $idDetalleRequerimientoLogistico); // * pasar parametro $idDetalleRequerimientoLogistico para el caso de normaliazar, asi devolver solo un item
+                $presupuestoInternoDetalle = PresupuestoInternoHistorialHelper::registrarEstadoGastoAfectadoDeRequerimientoLogistico($idOrden, $rp->id_pago, $detalleArray, 'R', $rp->fecha_pago, "Registrar afectación por regularización");
+                
+
+            }else{
+                $mensaje .= '. El monto de total de pagos (tesoreria) '.floatval($totalImporteRegistroPago).' no es igual al monto total de la orden '.floatval($orden->monto_total);
+
+
+                $requerimiento_detalle = DetalleRequerimiento::find($idDetalleRequerimientoLogistico);
+                $requerimiento_detalle->id_partida_pi = null;
+                $requerimiento_detalle->save();
+
+                $requerimiento = Requerimiento::find($requerimiento_detalle->id_requerimiento);
+                $requerimiento->id_presupuesto_interno = null;
+                $requerimiento->save();
+            }
+
+            if ($presupuestoInternoDetalle != null) {
+
+                $mensaje .= '. Se afectó presupuesto';
+            }
+
+            // $requerimientoPago = RequerimientoPago::find($idOrden);
+            // $requerimientoPago->estado_normalizacion_presupuesto_interno = 1;
+            // $requerimientoPago->save();
+
+            // $requerimientoPago->afectado_presupuesto_interno= true;
+            //     if($totalImporteRegistroPago == $montoTotalRequerimientoPago){
+            // }
+        } else {
+            $requerimiento_detalle = DetalleRequerimiento::find($idDetalleRequerimientoLogistico);
+            $requerimiento_detalle->id_partida_pi = null;
+            $requerimiento_detalle->save();
+
+            $requerimiento = Requerimiento::find($requerimiento_detalle->id_requerimiento);
+            $requerimiento->id_presupuesto_interno = null;
+            $requerimiento->save();
             $mensaje = 'No se encontró registro de pago para vincular';
         }
 

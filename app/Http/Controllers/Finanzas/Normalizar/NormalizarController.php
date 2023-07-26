@@ -12,6 +12,7 @@ use App\Models\Administracion\Aprobacion;
 use App\Models\Administracion\Division;
 use App\Models\Administracion\Documento;
 use App\Models\Almacen\DetalleRequerimiento;
+use App\Models\Almacen\Requerimiento;
 use App\Models\Finanzas\HistorialPresupuestoInternoSaldo;
 use App\Models\Finanzas\PresupuestoInterno;
 use App\Models\Finanzas\PresupuestoInternoDetalle;
@@ -185,14 +186,51 @@ class NormalizarController extends Controller
             $tipo='success';
             $mensaje='Se asigno a la partida con exito';
             $titulo='Éxito';
+            $montoTotalRegistroDePago=0;
             switch ($variable) {
                 case 'orden':
 
-                    // mandamos el id de la partida del presupuesto al detalle del requerimiento
-                    $requerimiento_detalle = DetalleRequerimiento::find($request->requerimiento_detalle_id);
-                    $requerimiento_detalle->id_partida_pi;
-                    $requerimiento_detalle->save();
-                    // ----------------------
+                    $registro_pago = RegistroPago::where([['id_oc',$request->orden_id],['estado',1]])->get();
+                    $orden = Orden::find($request->orden_id);
+
+
+                    $historial_saldo = HistorialPresupuestoInternoSaldo::where('id_requerimiento_detalle',$request->requerimiento_detalle_id)
+                    ->where('id_orden',$request->orden_id)
+                    ->first();
+
+                    if (!$historial_saldo || $historial_saldo->estado!==3) {
+                    
+                        foreach ($registro_pago as $rp) {
+                            $montoTotalRegistroDePago=+$rp->total_pago;
+                        }
+                        
+                        // * caso #1: cuando el monto total de registro de pagos es igual al monto total de la orden
+                        if($montoTotalRegistroDePago == $orden->monto_total){
+                            
+                        $requerimiento = Requerimiento::find($request->requerimiento_id);
+                        $requerimiento->id_presupuesto_interno = $request->presupuesto_interno_id;
+                        $requerimiento->save();
+                        $requerimiento_detalle = DetalleRequerimiento::find($request->requerimiento_detalle_id);
+                        $requerimiento_detalle->id_partida_pi = $request->presupuesto_interno_detalle_id;
+                        $requerimiento_detalle->save();
+                        // ----------------------
+                        $tipo='info';
+                        $mensaje = PresupuestoInternoHistorialHelper::normalizarOrden($request->orden_id,$request->requerimiento_detalle_id);
+                        $titulo='Información';
+
+                        }else{
+                            // TODO : crear método para caso #2
+                            // * caso #2: cuando el monto total de registro de pagos NO es igual al monto total de la orden (saldo)
+                            $tipo='warning';
+                            $mensaje='La orden tiene saldo pendiente, no esta habilitada la opcion para afectar este tipo de caso.';
+                            $titulo='Información';
+                        }
+
+                    }else{
+                        $tipo='warning';
+                        $mensaje='El requerimiento ya se asigno a una partida';
+                        $titulo='Información';
+                    }
 
                     // $detalleArray = (new RegistroPagoController)->obtenerDetalleRequerimientoPagoParaPresupuestoInterno($request->requerimiento_pago_id,floatval($request->total_pago),'completo');
                     // $afectaPresupuestoInternoResta = (new PresupuestoInternoController)->afectarPresupuestoInterno('resta','orden',$orden->id_orden_compra, $detalleParaPresupuestoRestaArray);

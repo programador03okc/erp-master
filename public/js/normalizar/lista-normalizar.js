@@ -447,10 +447,10 @@ function cargarModalAsignarPartidas(e) {
     let id_detalle = $(e.currentTarget).attr('data-id-requerimiento-pago-detalle');
     let tap = $(e.currentTarget).attr('data-tap');
     let mes = $(e.currentTarget).attr('data-mes');
-    let id_moneda = $(e.currentTarget).attr('data-id-moneda');
-    let monto_total_orden = $(e.currentTarget).attr('data-monto-total');
-    let saldo = $(e.currentTarget).attr('data-saldo');
-    let tipo_impuesto = $(e.currentTarget).attr('data-tipo-impuesto');
+    // let id_moneda = $(e.currentTarget).attr('data-id-moneda');
+    // let monto_total_orden = $(e.currentTarget).attr('data-monto-total');
+    // let saldo = $(e.currentTarget).attr('data-saldo');
+    // let tipo_impuesto = $(e.currentTarget).attr('data-tipo-impuesto');
 
     let id_orden = $(e.currentTarget).attr('data-id-orde');
     let id_orden_detalle = $(e.currentTarget).attr('data-id-orden-detalle');
